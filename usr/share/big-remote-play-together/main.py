@@ -10,6 +10,9 @@ from utils.logger import Logger
 from utils.i18n import _
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+print(f"DEBUG: BASE_DIR: {BASE_DIR}")
+sys.path.insert(0, BASE_DIR)
+print(f"DEBUG: sys.path[0]: {sys.path[0]}")
 ICONS_DIR = os.path.join(BASE_DIR, "icons")
 
 class BigRemotePlayApp(Adw.Application):

@@ -13,6 +13,7 @@ from gi.repository import GLib
 from utils.i18n import _
 class HostView(Gtk.Box):
     def __init__(self):
+        print("DEBUG: HostView.__init__ called")
         self.loading_settings = True
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.config = Config()
@@ -770,7 +771,10 @@ class HostView(Gtk.Box):
         try:
             # Locate the script relative to this file
             # src/ui/host_view.py -> src/ui -> src -> root -> scripts
-            script_path = Path(__file__).parent.parent.parent / 'scripts' / 'configure_firewall.sh'
+            script_path = Path(__file__).parent.parent / 'scripts' / 'configure_firewall.sh'
+            
+            if not script_path.exists():
+                script_path = Path("/usr/share/big-remote-play-together/scripts/configure_firewall.sh")
             
             if not script_path.exists():
                 self.show_error_dialog(_("Error"), f"Script not found: {script_path}")
@@ -830,17 +834,17 @@ class HostView(Gtk.Box):
              self.get_root().get_clipboard().set(val); self.show_toast(_("Copied!"))
 
     def toggle_hosting(self, button):
+        print("DEBUG: HostView.toggle_hosting called")
+        self.show_toast(_("Clicked Start Server..."))
         self.start_button.set_sensitive(False)
         self.start_btn_spinner.set_visible(True)
         self.start_btn_spinner.start()
         
-        # Force UI update to show spinner
-        while GLib.MainContext.default().pending(): GLib.MainContext.default().iteration(False)
-        
         # Defer action slightly to allow UI to paint
-        GLib.timeout_add(50, self._perform_toggle_hosting)
+        GLib.timeout_add(100, self._perform_toggle_hosting)
 
     def _perform_toggle_hosting(self):
+        print(f"DEBUG: HostView._perform_toggle_hosting - is_hosting: {self.is_hosting}")
         if self.is_hosting: self.stop_hosting()
         else: self.start_hosting()
         return False
@@ -1056,9 +1060,8 @@ class HostView(Gtk.Box):
         self._run_audio_enforcer()
              
     def start_hosting(self, b=None):
+        print("DEBUG: HostView.start_hosting called")
         self.loading_bar.set_visible(True); self.loading_bar.pulse()
-        context = GLib.MainContext.default()
-        while context.pending(): context.iteration(False)
             
         try:
             if self.sunshine.is_running():
@@ -1125,13 +1128,9 @@ class HostView(Gtk.Box):
                 if self.audio_manager:
                     # Returns True if success
                     if self.audio_manager.enable_streaming_audio(host_sink):
-                        # Dynamically get monitor source name
-                        # OLD: monitor_src = self.audio_manager.get_sink_monitor_source("SunshineGameSink")
-                        # OLD: sunshine_config['audio_sink'] = monitor_src if monitor_src else "SunshineGameSink.monitor"
-                        
-                        # RADICAL SOLUTION: Use SINK name directly, per user bash script.
-                        # Sunshine (pulse backend) should be able to record from Sink by specifying its name.
-                        sunshine_config['audio_sink'] = "SunshineGameSink"
+                        # Ensure we use the monitor source for pulse
+                        monitor_src = self.audio_manager.get_sink_monitor_source("SunshineGameSink")
+                        sunshine_config['audio_sink'] = monitor_src if monitor_src else "SunshineGameSink.monitor"
                         
                         print(f"DEBUG: Configured Sunshine audio_sink to: {sunshine_config['audio_sink']}")
                         
@@ -1206,7 +1205,7 @@ class HostView(Gtk.Box):
                                     error_msg = _("Missing library: {}\n\nWould you like to try to fix it automatically?").format(lib)
                                     
                                     # Locate the fix script
-                                    script_path = Path(__file__).parent.parent.parent / 'scripts' / 'fix_sunshine_libs.sh'
+                                    script_path = Path(__file__).parent.parent / 'scripts' / 'fix_sunshine_libs.sh'
                                     if script_path.exists():
                                         fix_cmd = ['pkexec', str(script_path)]
                                     break
@@ -1245,47 +1244,53 @@ class HostView(Gtk.Box):
             self.start_btn_spinner.set_visible(False)
         
     def stop_hosting(self, b=None):
-        self.loading_bar.set_visible(True)
+        print("DEBUG: HostView.stop_hosting called")
+        self.show_toast(_("Stopping server..."))
+        self.loading_bar.set_visible(True); self.loading_bar.pulse()
         self.audio_mixer_expander.set_visible(self.streaming_audio_row.get_active())
         self.stop_audio_mixer_refresh()
         
-        context = GLib.MainContext.default()
-        while context.pending(): context.iteration(False)
-        if hasattr(self, 'stop_pin_listener'):
-            self.stop_pin_listener(); del self.stop_pin_listener
+        if hasattr(self, 'stop_pin_listener') and self.stop_pin_listener:
+            try: self.stop_pin_listener()
+            except: pass
+            self.stop_pin_listener = None
             
         # Restore audio configuration
         if hasattr(self, 'audio_manager') and hasattr(self, 'active_host_sink') and self.active_host_sink:
             try:
                 self.audio_manager.disable_streaming_audio(self.active_host_sink)
-                # del self.active_host_sink
             except Exception as e:
                 print(f"Error restoring audio: {e}")
             
         try:
-            if not self.sunshine.stop(): self.show_error_dialog(_('Error'), _('Failed to stop Sunshine.'))
-        except Exception as e: print(f"Error: {e}")
+            self.sunshine.stop()
+        except Exception as e:
+            print(f"Error stopping Sunshine: {e}")
         
-        if self.process:
-            try:
-                # Kills process and ensures children die
-                self.process.terminate()
-                # If not closed in 2s, kill
-                GLib.timeout_add(2000, lambda: self.process.kill() if self.process.poll() is None else None)
-                # System command to ensure port cleanup
-                subprocess.run(['pkill', '-9', 'sunshine'], stderr=subprocess.DEVNULL)
-            except: pass
-            self.process = None
+        # Hard kill fallback
+        subprocess.run(['pkill', '-9', 'sunshine'], stderr=subprocess.DEVNULL)
             
-        self.is_hosting = False; self.sync_ui_state(); self.loading_bar.set_visible(False)
+        self.is_hosting = False
+        self.sync_ui_state()
+        self.loading_bar.set_visible(False)
         self.start_button.set_sensitive(True) 
         self.start_btn_spinner.stop()
         self.start_btn_spinner.set_visible(False)
-        self.show_toast(_('Server stopped and ports released.'))
+        self.show_toast(_('Server stopped'))
         
     def update_status_info(self):
-        if not self.is_hosting: return True
         sunshine_running = self.check_process_running('sunshine')
+        
+        # If it was supposed to be hosting but sunshine is not running
+        if self.is_hosting and not sunshine_running:
+             print("DEBUG: Sunshine crashed or was stopped externally. Updating UI.")
+             self.is_hosting = False
+             self.sync_ui_state()
+             self.show_toast(_("Sunshine stopped unexpectedly"))
+             return True
+
+        if not self.is_hosting: return True
+        
         if hasattr(self, 'sunshine_val'):
             self.sunshine_val.set_markup('<span color="#2ec27e">On-line</span>' if sunshine_running else '<span color="#e01b24">Parado</span>')
         ipv4, ipv6 = self.get_ip_addresses()

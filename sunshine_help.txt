@@ -1,0 +1,16 @@
+Usage: sunshine [options] [/path/to/configuration_file] [--cmd]
+    Any configurable option can be overwritten with: "name=value"
+
+    Note: The configuration will be created if it doesn't exist.
+
+    --help                    | print help
+    --creds username password | set user credentials for the Web manager
+    --version                 | print the version of sunshine
+
+    flags
+        -0 | Read PIN from stdin
+        -1 | Do not load previously saved state and do retain any state after shutdown
+           | Effectively starting as if for the first time without overwriting any pairings with your devices
+        -2 | Force replacement of headers in video stream
+        -p | Enable/Disable UPnP
+

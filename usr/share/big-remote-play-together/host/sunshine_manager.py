@@ -9,9 +9,14 @@ class SunshineHost:
         self.pid = None
         
     def start(self, **kwargs):
-        if self.is_running(): return False
+        if self.is_running():
+            print("DEBUG: SunshineHost.start - already running")
+            return False
+            
         sc = shutil.which('sunshine')
-        if not sc: return False
+        if not sc:
+            print("DEBUG: SunshineHost.start - sunshine executable not found")
+            return False
         try:
             config_file = self.config_dir / 'sunshine.conf'
             # Prepare environment
@@ -59,7 +64,8 @@ class SunshineHost:
             # Check if process died immediately (e.g. library error)
             try:
                 # Wait a bit to see if startup fails
-                exit_code = self.process.wait(timeout=1.0)
+                print("DEBUG: SunshineHost.start - process started, waiting for exit")
+                exit_code = self.process.wait(timeout=2.0)
                 
                 # If reached here, process ended (failed)
                 self.log_file.flush()
@@ -111,17 +117,20 @@ class SunshineHost:
             
         try:
             if self.process:
-                # Send SIGTERM
-                print(f"Stopping child process {self.process.pid}...")
-                os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)
+                print(f"Stopping child process group for PID {self.process.pid}...")
                 try:
-                    self.process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    print("Timeout, forcing kill...")
-                    os.killpg(os.getpgid(self.process.pid), signal.SIGKILL)
-                
+                    pgid = os.getpgid(self.process.pid)
+                    os.killpg(pgid, signal.SIGTERM)
+                    try:
+                        self.process.wait(timeout=2)
+                    except subprocess.TimeoutExpired:
+                        print("Timeout, forcing SIGKILL...")
+                        os.killpg(pgid, signal.SIGKILL)
+                except Exception as e:
+                    print(f"Error killing process group: {e}")
+                    try: self.process.terminate()
+                    except: pass
             else:
-                # Use saved PID
                 pid_file = self.config_dir / 'sunshine.pid'
                 if pid_file.exists():
                     try:
@@ -129,12 +138,10 @@ class SunshineHost:
                             pid = int(f.read().strip())
                         print(f"Stopping PID {pid} from file...")
                         os.kill(pid, signal.SIGTERM)
-                    except Exception as e:
-                        print(f"Error killing PID from file: {e}")
-            
-            # Fallback: ensure nothing is running via pkill
-            # Resolves cases where process started externally or PID file lost sync
-            subprocess.run(['pkill', '-x', 'sunshine'], stderr=subprocess.DEVNULL)
+                    except: pass
+        
+            # Fallback for orphan processes
+            subprocess.run(['pkill', 'sunshine'], stderr=subprocess.DEVNULL)
             
             # Close log
             if hasattr(self, 'log_file'):
@@ -142,21 +149,15 @@ class SunshineHost:
                 except: pass
                 del self.log_file
                     
-            # Remove PID file
             pid_file = self.config_dir / 'sunshine.pid'
-            if pid_file.exists():
-                pid_file.unlink()
+            if pid_file.exists(): pid_file.unlink()
                 
             self.process = None
             self.pid = None
-            
-            print(_("Sunshine stopped"))
             return True
-            
         except Exception as e:
-            print(_("Error stopping Sunshine: {}").format(e))
-            # Try to kill anyway
-            subprocess.run(['pkill', '-x', 'sunshine'], stderr=subprocess.DEVNULL)
+            print(f"Error in stop: {e}")
+            subprocess.run(['pkill', '-9', 'sunshine'], stderr=subprocess.DEVNULL)
             return False
             
     def restart(self) -> bool:

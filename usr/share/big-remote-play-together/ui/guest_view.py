@@ -13,6 +13,7 @@ from utils.i18n import _
 
 class GuestView(Gtk.Box):
     def __init__(self):
+        print("DEBUG: GuestView.__init__ called")
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         
         self.discovered_hosts = []
@@ -459,6 +460,8 @@ class GuestView(Gtk.Box):
         return box
 
     def on_main_button_clicked(self, source):
+        print(f"DEBUG: GuestView.on_main_button_clicked called with source: {source}")
+        self.show_toast(_("Clicked Connect..."))
         # If connecting (loading) or connected, button becomes "Stop"
         if getattr(self, 'is_connecting', False) or self.is_connected:
             self.on_cancel_connection(None)
@@ -632,9 +635,6 @@ class GuestView(Gtk.Box):
     def show_loading(self, show=True, message=""):
         self.is_connecting = show
         self._update_all_buttons_state()
-            
-        context = GLib.MainContext.default()
-        while context.pending(): context.iteration(False)
 
     def on_cancel_connection(self, btn):
         self.show_toast(_("Canceling connection..."))
