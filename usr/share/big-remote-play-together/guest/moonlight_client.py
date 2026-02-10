@@ -130,8 +130,8 @@ class MoonlightClient:
                 if "successfully paired" in line.lower() or "already paired" in line.lower(): 
                     if self.logger: self.logger.info("Pairing successful")
                     success = True
-                    self.process.terminate()
-                    break
+                    # Do not terminate immediately, let it finish and sync
+                    continue
             
             # Record return code and cleanup
             ret = self.process.wait()
@@ -167,7 +167,16 @@ class MoonlightClient:
             if self.logger: 
                 self.logger.debug(f"List apps {host_ip} (target: {target_ip}) stdout: {r.stdout}")
                 if r.stderr: self.logger.error(f"List apps {host_ip} stderr: {r.stderr}")
-            return [l.strip() for l in r.stdout.splitlines() if l.strip()] if r.returncode == 0 else []
+            
+            if r.returncode == 0:
+                return [l.strip() for l in r.stdout.splitlines() if l.strip()]
+            
+            # Check for explicit pairing error in stderr
+            err = (r.stderr or "").lower()
+            if "not paired" in err or "não foi pareado" in err or "unpaired" in err:
+                return None
+                
+            return [] # Other error (timeout, connection refused, etc)
         except Exception as e: 
             if self.logger: self.logger.error(f"List apps error: {e}")
             return []

@@ -5,7 +5,7 @@ gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
 from gi.repository import Gtk, Adw, GLib, Gdk
-import subprocess, threading, os
+import subprocess, threading, os, time
 from pathlib import Path
 from utils.config import Config
 from guest.moonlight_client import MoonlightClient
@@ -504,16 +504,28 @@ class GuestView(Gtk.Box):
         self.show_loading(True)
         
         def run():
-            # 1. Check if already paired
-            if not self.moonlight.list_apps(host['ip']):
-                if paired_retry:
-                    GLib.idle_add(lambda: (self.show_loading(False), self.show_error_dialog(_('Pairing Error'), _('Host still reports as not paired after pairing attempt.'))))
-                    return
+            # 1. Check if already paired (with retries if we just successfuly paired)
+            is_paired = False
+            checks = 10 if paired_retry else 1
+            for i in range(checks):
+                apps = self.moonlight.list_apps(host['ip'])
+                if apps is not None:
+                    is_paired = True
+                    break
+                print(f"DEBUG: Host {host['ip']} reports as not paired. Retry {i+1}/{checks}")
+                if i < checks - 1:
+                    time.sleep(1.0) # Larger delay for host sync
 
-                print(f"DEBUG: Host {host['ip']} not paired. Starting pairing flow.")
+            if not is_paired and not paired_retry:
+                print(f"DEBUG: Host {host['ip']} definitely not paired. Starting pairing flow.")
                 GLib.idle_add(self.show_loading, False)
                 GLib.idle_add(lambda: self.start_pairing_flow(host))
                 return
+            
+            if not is_paired and paired_retry:
+                # If we just paired, but list_apps STILL says not paired, it might be a bug in detection.
+                # Try to connect anyway as a desperate fallback.
+                print(f"DEBUG: Host {host['ip']} still reports as not paired after SUCCESS. Attempting connection anyway.")
             
             # Check for cancellation
             if not getattr(self, 'is_connecting', False): return
@@ -560,14 +572,24 @@ class GuestView(Gtk.Box):
                  display_mode = ['borderless', 'fullscreen', 'windowed'][display_mode_idx]
                  opts = {'width': w, 'height': h, 'fps': fps, 'bitrate': int(bitrate_val * 1000), 'display_mode': display_mode, 'audio': audio_active, 'hw_decode': hw_decode_active}
                  
-                 # Pairing check copy-paste
-                 if not self.moonlight.list_apps(host['ip']):
-                    if paired_retry:
-                        GLib.idle_add(lambda: (self.show_loading(False), self.show_error_dialog(_('Pairing Error'), _('Host still reports as not paired after pairing attempt.'))))
-                        return
+                 # Pairing check (with retries if retry)
+                 is_paired = False
+                 checks = 10 if paired_retry else 1
+                 for i in range(checks):
+                     apps = self.moonlight.list_apps(host['ip'])
+                     if apps is not None:
+                         is_paired = True
+                         break
+                     if i < checks - 1:
+                         time.sleep(1.0)
+
+                 if not is_paired and not paired_retry:
                     GLib.idle_add(self.show_loading, False)
                     GLib.idle_add(lambda: self.start_pairing_flow(host))
                     return
+                 
+                 if not is_paired and paired_retry:
+                    print(f"DEBUG: run_patched pairing check failed after success. Trying to connect anyway.")
 
                  # Check for cancellation
                  if not getattr(self, 'is_connecting', False): return
@@ -614,23 +636,16 @@ class GuestView(Gtk.Box):
             
             GLib.idle_add(self.close_pairing_dialog)
             
-            # Check for cancellation IMMEDIATELY after pairing attempt
-            if not getattr(self, 'is_connecting', False):
-                print("DEBUG: do_pair cancelled - aborting")
-                return
+            # Record current connection attempt status
+            print(f"DEBUG: do_pair finished. success={success}")
 
             # Double check: If pair returns False, check if it really failed by listing apps.
             # Moonlight sometimes closes pipe abruptly after success.
             if not success:
-                print("DEBUG: Pair retornou False, verificando com list_apps...")
-                if self.moonlight.list_apps(host['ip']):
+                print("DEBUG: Pair returned False, checking with list_apps fallback...")
+                if self.moonlight.list_apps(host['ip']) is not None:
                     print("DEBUG: list_apps worked! Pairing was a masked success.")
                     success = True
-            
-            # Check for cancellation AGAIN after potential slow list_apps call
-            if not getattr(self, 'is_connecting', False):
-                print("DEBUG: do_pair cancelled after list_apps check - aborting")
-                return
 
             if success:
                 GLib.idle_add(lambda: (self.show_toast(_("Paired successfully!")), self.connect_to_host(host, paired_retry=True)))
