@@ -251,3 +251,68 @@ entry:focus {
     font-size: 13px;
     font-weight: 500;
 }
+
+/* Progress Indicator - iOS-inspired pills */
+.progress-container { padding: 6px 0; }
+
+.progress-dot {
+    min-width: 10px;
+    min-height: 10px;
+    border-radius: 50%;
+    background: alpha(@theme_fg_color, 0.12);
+}
+
+.progress-dot.active {
+    min-width: 32px;
+    border-radius: 100px;
+    background: @accent_bg_color;
+    box-shadow: 0 2px 8px alpha(@accent_bg_color, 0.3);
+}
+
+.progress-dot.completed {
+    background: alpha(@accent_bg_color, 0.4);
+}
+
+/* Navigation Buttons - Minimal and elegant */
+.nav-button {
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 50%;
+}
+
+.nav-button.back {
+    background: alpha(@theme_fg_color, 0.05);
+    color: alpha(@theme_fg_color, 0.6);
+}
+
+.nav-button.back:hover {
+    background: alpha(@theme_fg_color, 0.1);
+    color: alpha(@theme_fg_color, 0.8);
+}
+
+.nav-button.next {
+    background: @accent_bg_color;
+    color: white;
+    box-shadow: 0 4px 16px alpha(@accent_bg_color, 0.3);
+}
+
+.nav-button.next:hover {
+    box-shadow: 0 6px 20px alpha(@accent_bg_color, 0.4);
+}
+
+.finish-button {
+    padding: 12px 32px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    background: @accent_bg_color;
+    color: white;
+    box-shadow: 0 4px 16px alpha(@accent_bg_color, 0.3);
+}
+
+.finish-button:hover {
+    box-shadow: 0 6px 24px alpha(@accent_bg_color, 0.4);
+}
+
+.bottom-bar { padding: 14px 28px 14px 28px; }

@@ -10,6 +10,7 @@ import configparser
 import os
 
 from utils.i18n import _
+from utils.icons import create_icon_widget
 
 class SunshineConfigManager:
     def __init__(self):
@@ -234,9 +235,10 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
             # Check if file exists
             if not path.exists():
                 row.add_css_class("error")
-                row.set_icon_name("dialog-warning-symbolic")
+                row.add_prefix(create_icon_widget("dialog-warning-symbolic", size=16))
             
-            btn = Gtk.Button(icon_name="document-open-symbolic")
+            btn = Gtk.Button()
+            btn.set_child(create_icon_widget("document-open-symbolic", size=16))
             btn.set_valign(Gtk.Align.CENTER)
             btn.add_css_class("flat")
             btn.connect('clicked', lambda _, p=path: self.open_file(p))

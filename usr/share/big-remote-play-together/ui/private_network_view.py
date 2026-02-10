@@ -1,12 +1,39 @@
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, GLib, Gio
+from gi.repository import Gtk, Adw, GLib, Gio, Gdk
 import subprocess
 import threading
 import os
 import shutil
+import time
+import json
+import re
+from concurrent.futures import ThreadPoolExecutor
 from utils.i18n import _
+from utils.icons import create_icon_widget
+
+class ProgressDots(Gtk.Box):
+    """Progress indicator with dots - BigLinux Welcome Style"""
+    def __init__(self, total):
+        super().__init__(spacing=8)
+        self.add_css_class("progress-container")
+        self.set_halign(Gtk.Align.CENTER)
+        self.set_valign(Gtk.Align.CENTER)
+        self.dots = []
+        for i in range(total):
+            dot = Gtk.Box()
+            dot.add_css_class("progress-dot")
+            if i == 0: dot.add_css_class("active")
+            self.dots.append(dot)
+            self.append(dot)
+
+    def set_page(self, page):
+        for i, dot in enumerate(self.dots):
+            dot.remove_css_class("active")
+            dot.remove_css_class("completed")
+            if i == page: dot.add_css_class("active")
+            elif i < page: dot.add_css_class("completed")
 
 class PrivateNetworkView(Adw.Bin):
     """View for managing private network (Headscale) with BigLinux Welcome aesthetic"""
@@ -17,6 +44,10 @@ class PrivateNetworkView(Adw.Bin):
         self.mode = mode
         self.public_ip = "..."
         self.dynamic_labels = [] # Labels to update with domain
+        
+        self._worker_running = False
+        self._worker_thread = None
+        self._ping_executor = ThreadPoolExecutor(max_workers=10)
         
         self.setup_ui()
         self.set_mode(mode)
@@ -38,78 +69,104 @@ class PrivateNetworkView(Adw.Bin):
     def set_mode(self, mode):
         self.mode = mode
         self.main_stack.set_visible_child_name(mode)
+        
+        if mode == 'connect':
+            self._start_worker()
+        else:
+            self._stop_worker()
+
         if mode == 'create':
-            # Reset create wizard to first page
-            if hasattr(self, 'create_carousel') and self.create_carousel.get_n_pages() > 0:
-                first_page = self.create_carousel.get_nth_page(0)
-                self.create_carousel.scroll_to(first_page, False)
-                self.btn_next.set_label(_("Next"))
-                self.btn_next.set_sensitive(True)
-                self.btn_back.set_sensitive(False)
+            self.current_idx = 0
+            self.create_stack.set_visible_child_name("step_0")
+            self._update_nav()
 
     def setup_create_page(self):
-        self.create_carousel = Adw.Carousel()
-        self.create_carousel.set_interactive(False) # Force navigation via buttons
+        self.create_stack = Gtk.Stack()
+        self.create_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        self.create_stack.set_transition_duration(320)
         
         # Steps
-        self.create_step_1_domain()
-        self.create_step_2_cloudflare()
-        self.create_step_3_api_setup()
-        self.create_step_4_network()
-        self.create_step_5_execution()
+        self.page_widgets = []
+        self.page_widgets.append(self.create_step_1_domain())
+        self.page_widgets.append(self.create_step_2_cloudflare())
+        self.page_widgets.append(self.create_step_3_api_setup())
+        self.page_widgets.append(self.create_step_4_network())
+        self.page_widgets.append(self.create_step_5_execution())
         
-        # Dots Indicator for Header
-        self.dots = Adw.CarouselIndicatorDots()
-        self.dots.set_carousel(self.create_carousel)
-        self.dots.set_margin_top(10)
-        self.dots.set_margin_bottom(10)
+        for i, page in enumerate(self.page_widgets):
+            self.create_stack.add_named(page, f"step_{i}")
+        
+        self.current_idx = 0
+
+        # Custom Progress dots
+        self.progress = ProgressDots(len(self.page_widgets))
         
         header = Adw.HeaderBar()
         header.set_show_start_title_buttons(False)
         header.set_show_end_title_buttons(False)
-        header.set_title_widget(self.dots)
-        
-        # Content Box
-        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         
         # Bottom Navigation
-        bottom_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=24)
-        bottom_bar.set_margin_top(18)
-        bottom_bar.set_margin_bottom(24)
-        bottom_bar.set_margin_start(24)
-        bottom_bar.set_margin_end(24)
-        bottom_bar.set_halign(Gtk.Align.CENTER)
+        bottom_bar = Gtk.CenterBox()
         bottom_bar.add_css_class("bottom-bar")
         
-        self.btn_back = Gtk.Button(label=_("Back"))
-        self.btn_back.add_css_class("pill")
-        self.btn_back.set_sensitive(False)
-        self.btn_back.set_size_request(120, -1)
+        # Dots in center
+        bottom_bar.set_center_widget(self.progress)
+        
+        # Buttons on the right (nav box)
+        nav_box = Gtk.Box(spacing=10)
+        
+        self.btn_back = Gtk.Button()
+        self.btn_back.set_child(create_icon_widget("go-previous-symbolic", size=16))
+        self.btn_back.add_css_class("nav-button")
+        self.btn_back.add_css_class("back")
+        self.btn_back.set_visible(False)
         self.btn_back.connect("clicked", self.on_back_clicked)
         
-        self.btn_next = Gtk.Button(label=_("Next"))
-        self.btn_next.add_css_class("suggested-action")
-        self.btn_next.add_css_class("pill")
-        self.btn_next.set_size_request(120, -1)
+        self.btn_next = Gtk.Button()
+        # Initial state will be updated by _update_nav
         self.btn_next.connect("clicked", self.on_next_clicked)
         
-        bottom_bar.append(self.btn_back)
-        bottom_bar.append(self.btn_next)
+        nav_box.append(self.btn_back)
+        nav_box.append(self.btn_next)
+        bottom_bar.set_end_widget(nav_box)
         
         toolbar_view = Adw.ToolbarView()
         toolbar_view.add_top_bar(header)
-        toolbar_view.set_content(self.create_carousel)
+        toolbar_view.set_content(self.create_stack)
         toolbar_view.add_bottom_bar(bottom_bar)
         
+        self._update_nav()
         return toolbar_view
+
+    def _update_nav(self):
+        """Update navigation buttons and progress dots exactly like biglinux-welcome"""
+        n_pages = len(self.page_widgets)
+        
+        # Update dots
+        self.progress.set_page(self.current_idx)
+        
+        # Update Back button
+        self.btn_back.set_visible(self.current_idx > 0)
+        
+        # Update Next button style
+        is_last = (self.current_idx == n_pages - 1)
+        if is_last:
+            self.btn_next.remove_css_class("nav-button")
+            self.btn_next.remove_css_class("next")
+            self.btn_next.add_css_class("finish-button")
+            self.btn_next.set_child(Gtk.Label(label=_("Install Server")))
+        else:
+            self.btn_next.add_css_class("nav-button")
+            self.btn_next.add_css_class("next")
+            self.btn_next.remove_css_class("finish-button")
+            self.btn_next.set_child(create_icon_widget("go-next-symbolic", size=16))
 
     def create_step_1_domain(self):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
         box.set_margin_top(30); box.set_margin_bottom(30); box.set_margin_start(40); box.set_margin_end(40)
 
         header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
-        icon = Gtk.Image.new_from_icon_name("network-server-symbolic")
-        icon.set_pixel_size(32)
+        icon = create_icon_widget("network-server-symbolic", size=32)
         
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         title = Gtk.Label(label=_("1. Domain Registration"))
@@ -130,7 +187,7 @@ class PrivateNetworkView(Adw.Bin):
         box.append(header)
         box.append(entry_group)
         box.append(btn_site)
-        self.create_carousel.append(box)
+        return box
 
     def create_step_2_cloudflare(self):
         scroll = Gtk.ScrolledWindow(vexpand=True)
@@ -139,8 +196,7 @@ class PrivateNetworkView(Adw.Bin):
         scroll.set_child(box)
 
         header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
-        icon = Gtk.Image.new_from_icon_name("cloud-symbolic")
-        icon.set_pixel_size(32)
+        icon = create_icon_widget("network-workgroup-symbolic", size=32)
         vbox_h = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         title_h = Gtk.Label(label=_("2. Cloudflare Setup"))
         title_h.add_css_class("title-3"); title_h.set_halign(Gtk.Align.START)
@@ -185,7 +241,8 @@ class PrivateNetworkView(Adw.Bin):
         # Public IP Section
         ip_row = Adw.ActionRow(title=_("Your Public IP"))
         self.label_public_ip = Gtk.Label(label="...")
-        btn_copy_ip = Gtk.Button(icon_name="edit-copy-symbolic")
+        btn_copy_ip = Gtk.Button()
+        btn_copy_ip.set_child(create_icon_widget("edit-copy-symbolic", size=16))
         btn_copy_ip.add_css_class("flat"); btn_copy_ip.set_valign(Gtk.Align.CENTER)
         btn_copy_ip.connect("clicked", lambda b: self._copy_to_clipboard(self.public_ip))
         ip_row.add_suffix(self.label_public_ip)
@@ -235,7 +292,7 @@ class PrivateNetworkView(Adw.Bin):
         g5.add(row_g5)
         box.append(g5)
 
-        self.create_carousel.append(scroll)
+        return scroll
 
     def create_step_3_api_setup(self):
         scroll = Gtk.ScrolledWindow(vexpand=True)
@@ -244,8 +301,7 @@ class PrivateNetworkView(Adw.Bin):
         scroll.set_child(box)
 
         header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
-        icon = Gtk.Image.new_from_icon_name("dialog-password-symbolic")
-        icon.set_pixel_size(32)
+        icon = create_icon_widget("dialog-password-symbolic", size=32)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         title = Gtk.Label(label=_("3. Credentials"))
         title.add_css_class("title-3"); title.set_halign(Gtk.Align.START)
@@ -294,15 +350,14 @@ class PrivateNetworkView(Adw.Bin):
         info_card.append(info_text)
         box.append(info_card)
         
-        self.create_carousel.append(scroll)
+        return scroll
 
     def create_step_4_network(self):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
         box.set_margin_top(30); box.set_margin_bottom(30); box.set_margin_start(40); box.set_margin_end(40)
 
         header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
-        icon = Gtk.Image.new_from_icon_name("network-transmit-receive-symbolic")
-        icon.set_pixel_size(32)
+        icon = create_icon_widget("network-transmit-receive-symbolic", size=32)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         title = Gtk.Label(label=_("4. Network & Ports"))
         title.add_css_class("title-3"); title.set_halign(Gtk.Align.START)
@@ -323,7 +378,7 @@ class PrivateNetworkView(Adw.Bin):
             
         warning = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         warning.add_css_class("info-card")
-        warn_icon = Gtk.Image.new_from_icon_name("dialog-warning-symbolic")
+        warn_icon = create_icon_widget("dialog-warning-symbolic")
         warn_label = Gtk.Label(label=_("Cloudflare Proxy (Orange Cloud) MUST be DISABLED (Gray)."))
         warn_label.set_wrap(True)
         warning.append(warn_icon)
@@ -332,15 +387,14 @@ class PrivateNetworkView(Adw.Bin):
         box.append(header)
         box.append(ports_group)
         box.append(warning)
-        self.create_carousel.append(box)
+        return box
 
     def create_step_5_execution(self):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
         box.set_margin_top(30); box.set_margin_bottom(30); box.set_margin_start(40); box.set_margin_end(40)
 
         header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
-        icon = Gtk.Image.new_from_icon_name("system-run-symbolic")
-        icon.set_pixel_size(32)
+        icon = create_icon_widget("preferences-system-symbolic", size=32)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         title = Gtk.Label(label=_("5. Installation"))
         title.add_css_class("title-3"); title.set_halign(Gtk.Align.START)
@@ -363,7 +417,7 @@ class PrivateNetworkView(Adw.Bin):
         box.append(header)
         box.append(self.exec_label)
         box.append(scroll)
-        self.create_carousel.append(box)
+        return box
 
     def setup_connect_page(self):
         self.connect_toolbar_view = Adw.ToolbarView()
@@ -413,7 +467,8 @@ class PrivateNetworkView(Adw.Bin):
         scroll_log = Gtk.ScrolledWindow(vexpand=True); scroll_log.set_child(self.connect_log)
         conn_box.append(scroll_log)
         
-        self.connect_stack.add_titled(conn_box, "connection", _("Connect"))
+        page_conn = self.connect_stack.add_titled(conn_box, "connection", _("Connect"))
+        page_conn.set_icon_name("network-server-symbolic")
 
         # 2. Network Status Tab
         net_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
@@ -424,29 +479,34 @@ class PrivateNetworkView(Adw.Bin):
         net_title.add_css_class("title-4")
         net_header.append(net_title)
         
-        btn_refresh = Gtk.Button(icon_name="view-refresh-symbolic")
+        btn_refresh = Gtk.Button()
+        btn_refresh.set_child(create_icon_widget("view-refresh-symbolic", size=16))
         btn_refresh.add_css_class("flat")
         btn_refresh.connect("clicked", lambda b: self.refresh_peers())
         btn_refresh.set_halign(Gtk.Align.END); btn_refresh.set_hexpand(True)
         net_header.append(btn_refresh)
         net_box.append(net_header)
 
-        self.peers_model = Gtk.ListStore(str, str, str, str, str)
+        # Columns: IP, Host, User, OS, Connection/Relay, Stats (Tx/Rx), Ping
+        self.peers_model = Gtk.ListStore(str, str, str, str, str, str, str)
         self.peers_tree = Gtk.TreeView(model=self.peers_model)
         
-        cols = [_("IP"), _("Host"), _("User"), _("System"), _("Ping")]
+        cols = [_("IP"), _("Host"), _("User"), _("System"), _("Connection"), _("Traffic (Tx/Rx)"), _("Ping")]
         for i, col_title in enumerate(cols):
             renderer = Gtk.CellRendererText()
             column = Gtk.TreeViewColumn(col_title, renderer, text=i)
-            if i == 4: renderer.set_property("xalign", 0.5)
-            column.set_resizable(True); column.set_expand(True if i == 1 else False)
+            if i == 6: renderer.set_property("xalign", 0.5)
+            column.set_resizable(True)
+            # Expand Host and Connection
+            column.set_expand(True if i in [1, 4] else False)
             self.peers_tree.append_column(column)
         
         scroll_tree = Gtk.ScrolledWindow(vexpand=True); scroll_tree.set_child(self.peers_tree)
         scroll_tree.add_css_class("card")
         net_box.append(scroll_tree)
         
-        self.connect_stack.add_titled(net_box, "network", _("Status"))
+        page_net = self.connect_stack.add_titled(net_box, "network", _("Status"))
+        page_net.set_icon_name("network-transmit-receive-symbolic")
         
         header = Adw.HeaderBar()
         header.set_show_start_title_buttons(False)
@@ -458,7 +518,8 @@ class PrivateNetworkView(Adw.Bin):
         
         self.connect_stack.connect("notify::visible-child-name", self.on_connect_stack_changed)
         
-        if self.mode == 'connect': GLib.timeout_add_seconds(10, self.refresh_peers)
+        if self.mode == 'connect': 
+            self._start_worker()
 
         return self.connect_toolbar_view
 
@@ -496,39 +557,138 @@ class PrivateNetworkView(Adw.Bin):
         if hasattr(app, 'config'):
             app.config.set('private_network_key', entry.get_text())
 
+    def _start_worker(self):
+        if self._worker_running: return
+        self._worker_running = True
+        self._worker_thread = threading.Thread(target=self._status_worker, daemon=True)
+        self._worker_thread.start()
+
+    def _stop_worker(self):
+        self._worker_running = False
+
+    def _status_worker(self):
+        while self._worker_running:
+            if self.mode == 'connect':
+                # Only refresh if the network tab is visible to save resources
+                if hasattr(self, 'connect_stack') and self.connect_stack.get_visible_child_name() == "network":
+                    self._get_tailscale_status()
+            
+            # Refresh cycle
+            for _ in range(30): # 3 seconds total
+                if not self._worker_running: break
+                time.sleep(0.1)
+
     def refresh_peers(self):
-        if self.mode != 'connect': return False
         threading.Thread(target=self._get_tailscale_status, daemon=True).start()
         return True
 
     def _get_tailscale_status(self):
+        if hasattr(self, '_fetching_status') and self._fetching_status: return
+        self._fetching_status = True
+        
         try:
-            if shutil.which("tailscale") is None: return
-            import json, re
-            result = subprocess.run(["tailscale", "status", "--json"], capture_output=True, text=True)
-            if result.returncode == 0:
-                data = json.loads(result.stdout)
-                peers_raw = []
-                self_node = data.get('Self', {})
-                peers_raw.append({'ip': self_node.get('TailscaleIPs', ['-'])[0], 'host': self_node.get('Hostname', _('Local')), 'user': self_node.get('User', '-'), 'os': self_node.get('OS', '-'), 'is_self': True})
-                peer_nodes = data.get('Peer')
-                if peer_nodes:
-                    for p_id in peer_nodes:
-                        node = peer_nodes[p_id]
-                        peers_raw.append({'ip': node.get('TailscaleIPs', ['-'])[0], 'host': node.get('Hostname', '-'), 'user': node.get('User', '-'), 'os': node.get('OS', '-'), 'is_self': False})
-                final_peers = []
-                for p in peers_raw:
-                    ping_val = "-"
-                    if not p['is_self'] and p['ip'] != "-":
-                        try:
-                            ping_proc = subprocess.run(["ping", "-c", "1", "-W", "1", p['ip']], capture_output=True, text=True)
-                            if ping_proc.returncode == 0:
-                                match = re.search(r'time=([\d.]+) ms', ping_proc.stdout)
-                                if match: ping_val = f"{match.group(1)} ms"
-                        except: ping_val = "Error"
-                    elif p['is_self']: ping_val = "0 ms"
-                    final_peers.append((p['ip'], p['host'], p['user'], p['os'], ping_val))
-                GLib.idle_add(self._update_peers_ui, final_peers)
+            ts_path = shutil.which("tailscale") or "/usr/bin/tailscale"
+            if not os.path.exists(ts_path):
+                self._fetching_status = False
+                return
+            
+            result = subprocess.run([ts_path, "status"], capture_output=True, text=True)
+            if result.returncode != 0:
+                self._fetching_status = False
+                return
+            
+            nodes = []
+            for line in result.stdout.splitlines():
+                if not line or line.startswith('IP'): continue
+                
+                parts = line.split()
+                if len(parts) >= 4:
+                    ip = parts[0]
+                    host = parts[1]
+                    user = parts[2]
+                    os_sys = parts[3]
+                    status_raw = " ".join(parts[4:]) if len(parts) > 4 else "-"
+                    
+                    # Connection parsing logic inspired by user script
+                    conn_type = "inactive"
+                    conn_detail = "-"
+                    online_status = "offline"
+                    
+                    if "active" in status_raw.lower():
+                        online_status = "online"
+                    if "offline" in status_raw.lower():
+                        online_status = "offline"
+                        
+                    if "direct" in status_raw.lower():
+                        conn_type = "direct"
+                        match_addr = re.search(r'direct ([\d\.:]*)', status_raw)
+                        conn_detail = match_addr.group(1) if match_addr else "direct"
+                    elif "relay" in status_raw.lower():
+                        conn_type = "relay"
+                        match_relay = re.search(r'relay "([^"]*)"', status_raw)
+                        conn_detail = match_relay.group(1) if match_relay else "relay"
+                    
+                    # Extract TX/RX
+                    tx_match = re.search(r'tx (\d+)', status_raw)
+                    rx_match = re.search(r'rx (\d+)', status_raw)
+                    tx = tx_match.group(1) if tx_match else "0"
+                    rx = rx_match.group(1) if rx_match else "0"
+                    
+                    traffic = f"↑{tx} ↓{rx}"
+                    connection = f"{online_status} ({conn_type}: {conn_detail})"
+                    
+                    nodes.append({
+                        'ip': ip,
+                        'host': host,
+                        'user': user,
+                        'os': os_sys,
+                        'connection': connection,
+                        'traffic': traffic,
+                        'ping': "..."
+                    })
+
+            # Update UI immediately
+            ui_data = []
+            for n in nodes:
+                ui_data.append((n['ip'], n['host'], n['user'], n['os'], n['connection'], n['traffic'], n['ping']))
+            
+            GLib.idle_add(self._update_peers_ui, ui_data)
+
+            # Parallel Pings
+            def do_ping_and_update(idx, node):
+                ip = node['ip']
+                if not ip or ip == '-': return
+                
+                ping_val = "-"
+                try:
+                    res = subprocess.run(["ping", "-c", "2", "-W", "1", "-n", ip], capture_output=True, text=True)
+                    if res.returncode == 0:
+                        # Extract average RTT
+                        summary_match = re.search(r'min/avg/max/mdev\s*=\s*[\d.]+/([\d.]+)/', res.stdout)
+                        if summary_match:
+                            ping_val = f"{summary_match.group(1)} ms"
+                        else:
+                            time_match = re.search(r'time=([\d.,]+)\s*ms', res.stdout)
+                            if time_match:
+                                ping_val = f"{time_match.group(1).replace(',', '.')} ms"
+                except: pass
+                
+                GLib.idle_add(self._update_single_ping, idx, ping_val)
+
+            for i, node in enumerate(nodes):
+                self._ping_executor.submit(do_ping_and_update, i, node)
+
+        except: pass
+        finally:
+            self._fetching_status = False
+
+    def _update_single_ping(self, idx, ping_val):
+        try:
+            if idx < self.peers_model.iter_n_children():
+                it = self.peers_model.get_iter_from_string(str(idx))
+                if it:
+                    # Column index for Ping is now 6
+                    self.peers_model.set_value(it, 6, ping_val)
         except: pass
 
     def _update_peers_ui(self, peers):
@@ -536,32 +696,31 @@ class PrivateNetworkView(Adw.Bin):
         for p in peers: self.peers_model.append(p)
 
     def on_next_clicked(self, button):
-        n_pages = self.create_carousel.get_n_pages()
-        current_idx = int(self.create_carousel.get_position())
+        n_pages = len(self.page_widgets)
         
-        if current_idx == 0:
+        if self.current_idx == 0:
             if not self.entry_domain.get_text():
                 self.main_window.show_toast(_("Domain is required"))
                 return
-        elif current_idx == 2:
+        elif self.current_idx == 2:
             if not self.entry_zone.get_text() or not self.entry_token.get_text():
                 self.main_window.show_toast(_("API Keys are required"))
                 return
         
-        if current_idx < n_pages - 1:
-            next_page = self.create_carousel.get_nth_page(current_idx + 1)
-            self.create_carousel.scroll_to(next_page, True)
-            self.btn_back.set_sensitive(True)
-            if current_idx + 1 == n_pages - 1: self.btn_next.set_label(_("Install Server"))
-        else: self.run_install()
+        if self.current_idx < n_pages - 1:
+            self.current_idx += 1
+            self.create_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT)
+            self.create_stack.set_visible_child_name(f"step_{self.current_idx}")
+            self._update_nav()
+        else:
+            self.run_install()
 
     def on_back_clicked(self, button):
-        current_idx = int(self.create_carousel.get_position())
-        if current_idx > 0:
-            prev_page = self.create_carousel.get_nth_page(current_idx - 1)
-            self.create_carousel.scroll_to(prev_page, True)
-            self.btn_next.set_label(_("Next"))
-            if current_idx - 1 == 0: self.btn_back.set_sensitive(False)
+        if self.current_idx > 0:
+            self.current_idx -= 1
+            self.create_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_RIGHT)
+            self.create_stack.set_visible_child_name(f"step_{self.current_idx}")
+            self._update_nav()
 
     def log(self, text, view=None):
         if view is None: view = self.text_view

@@ -10,6 +10,7 @@ from pathlib import Path
 from utils.config import Config
 from guest.moonlight_client import MoonlightClient
 from utils.i18n import _
+from utils.icons import create_icon_widget
 
 class GuestView(Gtk.Box):
     def __init__(self):
@@ -53,19 +54,25 @@ class GuestView(Gtk.Box):
         self.header = Adw.PreferencesGroup()
         self.header.set_title(_('Connect to Server'))
         self.header.set_description(_('Find and connect to the host using the options below.'))
+        self.header.set_header_suffix(create_icon_widget('network-workgroup-symbolic', size=24))
         
         content.append(self.header)
         content.append(self.perf_monitor)
         
-        self.method_stack = Gtk.Stack()
-        self.method_stack.set_transition_type(Gtk.StackTransitionType.NONE)
+        self.method_stack = Adw.ViewStack()
         
-        self.method_stack.add_titled(self.create_discover_page(), 'discover', _('Discover'))
-        self.method_stack.add_titled(self.create_manual_page(), 'manual', _('Manual'))
-        self.method_stack.add_titled(self.create_pin_page(), 'pin', _('PIN Code'))
+        page_dis = self.method_stack.add_titled(self.create_discover_page(), 'discover', _('Discover'))
+        page_dis.set_icon_name('system-search-symbolic')
         
-        switcher = Gtk.StackSwitcher()
+        page_man = self.method_stack.add_titled(self.create_manual_page(), 'manual', _('Manual'))
+        page_man.set_icon_name('network-wired-symbolic')
+        
+        page_pin = self.method_stack.add_titled(self.create_pin_page(), 'pin', _('PIN Code'))
+        page_pin.set_icon_name('dialog-password-symbolic')
+        
+        switcher = Adw.ViewSwitcher()
         switcher.set_stack(self.method_stack)
+        switcher.set_policy(Adw.ViewSwitcherPolicy.WIDE)
         switcher.set_halign(Gtk.Align.CENTER)
         
         self.switcher_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
@@ -308,7 +315,7 @@ class GuestView(Gtk.Box):
                 box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6); box.set_halign(Gtk.Align.CENTER); box.set_valign(Gtk.Align.CENTER)
                 box.set_size_request(-1, 150) # Match host_scroll min height
                 for m in ['top', 'bottom']: getattr(box, f'set_margin_{m}')(24)
-                icon = Gtk.Image.new_from_icon_name('network-offline-symbolic'); icon.set_pixel_size(48); icon.add_css_class('dim-label')
+                icon = create_icon_widget('network-offline-symbolic', size=48, css_class='dim-label')
                 lbl = Gtk.Label(label=_('No hosts found')); lbl.add_css_class('title-2')
                 box.append(icon); box.append(lbl); row.set_child(box); self.hosts_list.append(row)
             else:
@@ -344,7 +351,7 @@ class GuestView(Gtk.Box):
                 self.selected_host_card_data = host
                 self._update_all_buttons_state()
         radio.connect('toggled', on_toggled)
-        icon = Gtk.Image.new_from_icon_name('computer-symbolic'); icon.set_pixel_size(32)
+        icon = create_icon_widget('computer-symbolic', size=32)
         info = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2); info.set_valign(Gtk.Align.CENTER)
         n = Gtk.Label(label=host['name']); n.set_halign(Gtk.Align.START); n.add_css_class('heading')
         i = Gtk.Label(label=host['ip']); i.set_halign(Gtk.Align.START); i.add_css_class('dim-label')
@@ -353,7 +360,8 @@ class GuestView(Gtk.Box):
         spacer = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL); spacer.set_hexpand(True)
         box.append(spacer)
         
-        copy_btn = Gtk.Button(icon_name="edit-copy-symbolic")
+        copy_btn = Gtk.Button()
+        copy_btn.set_child(create_icon_widget("edit-copy-symbolic", size=16))
         copy_btn.add_css_class("flat"); copy_btn.set_valign(Gtk.Align.CENTER); copy_btn.set_tooltip_text(_("Copy IP"))
         def copy_ip(btn):
             Gdk.Display.get_default().get_clipboard().set(host['ip'])

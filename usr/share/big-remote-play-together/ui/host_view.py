@@ -11,6 +11,7 @@ from utils.config import Config
 import subprocess, os, tempfile, threading
 from gi.repository import GLib
 from utils.i18n import _
+from utils.icons import create_icon_widget
 class HostView(Gtk.Box):
     def __init__(self):
         print("DEBUG: HostView.__init__ called")
@@ -112,13 +113,16 @@ class HostView(Gtk.Box):
         self.perf_monitor.set_connection_status("Localhost", _("Sunshine Offline"), False)
         
         self.header = Adw.PreferencesGroup()
+        self.header.set_header_suffix(create_icon_widget('network-server-symbolic', size=24))
         self.header.set_title(_('Host Server'))
         self.header.set_description(_('Configure and share your game for friends to connect'))
+        
         
         game_group = Adw.PreferencesGroup()
         game_group.set_title(_('Game Configuration'))
         
-        reset_btn = Gtk.Button(icon_name="edit-undo-symbolic")
+        reset_btn = Gtk.Button()
+        reset_btn.set_child(create_icon_widget("edit-undo-symbolic", size=16))
         reset_btn.add_css_class("flat")
         reset_btn.set_tooltip_text(_("Reset to Defaults"))
         reset_btn.connect("clicked", self.on_reset_clicked)
@@ -335,7 +339,7 @@ class HostView(Gtk.Box):
         # 1. Information Page
         info_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         info_page.append(self.summary_box)
-        self.view_stack.add_titled_with_icon(info_page, "info", _("Information"), "info-symbolic")
+        self.view_stack.add_titled_with_icon(info_page, "info", _("Information"), "dialog-information-symbolic")
         
         # 2. Configuration Page
         config_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
@@ -361,7 +365,8 @@ class HostView(Gtk.Box):
         self.pin_display_label.add_css_class("title-1")
         self.pin_display_label.set_selectable(True)
         
-        copy_btn = Gtk.Button(icon_name="edit-copy-symbolic")
+        copy_btn = Gtk.Button()
+        copy_btn.set_child(create_icon_widget("edit-copy-symbolic", size=16))
         copy_btn.add_css_class("flat")
         copy_btn.set_valign(Gtk.Align.CENTER)
         copy_btn.set_tooltip_text(_("Copy PIN"))
@@ -707,7 +712,9 @@ class HostView(Gtk.Box):
         dialog.present()
 
     def create_summary_box(self):
-        self.summary_box = Adw.PreferencesGroup(); self.summary_box.set_title(_("Server Information"))
+        self.summary_box = Adw.PreferencesGroup()
+        self.summary_box.set_title(_("Server Information"))
+        self.summary_box.set_header_suffix(create_icon_widget('dialog-information-symbolic', size=24))
         self.summary_box.set_visible(False); self.field_widgets = {}
         for l, k, i, r in [('Host', 'hostname', 'computer-symbolic', True), ('IPv4', 'ipv4', 'network-wired-symbolic', True), ('IPv6', 'ipv6', 'network-wired-symbolic', True), ('IPv4 Global', 'ipv4_global', 'network-transmit-receive-symbolic', True), ('IPv6 Global', 'ipv6_global', 'network-transmit-receive-symbolic', True)]: self.create_masked_row(l, k, i, r)
 
@@ -802,7 +809,7 @@ class HostView(Gtk.Box):
     def create_masked_row(self, title, key, icon_name='text-x-generic-symbolic', default_revealed=False):
         row = Adw.ActionRow()
         row.set_title(title)
-        row.set_icon_name(icon_name)
+        row.add_prefix(create_icon_widget(icon_name, size=16))
         
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         box.set_valign(Gtk.Align.CENTER)
@@ -810,9 +817,11 @@ class HostView(Gtk.Box):
         value_lbl = Gtk.Label(label='••••••' if not default_revealed else '')
         value_lbl.set_margin_end(8)
         
-        eye_btn = Gtk.Button(icon_name='view-reveal-symbolic' if not default_revealed else 'view-conceal-symbolic')
+        eye_btn = Gtk.Button()
+        eye_btn.set_child(create_icon_widget('view-reveal-symbolic' if not default_revealed else 'view-conceal-symbolic', size=16))
         eye_btn.add_css_class('flat')
-        copy_btn = Gtk.Button(icon_name='edit-copy-symbolic')
+        copy_btn = Gtk.Button()
+        copy_btn.set_child(create_icon_widget('edit-copy-symbolic', size=16))
         copy_btn.add_css_class('flat')
         
         box.append(value_lbl); box.append(eye_btn); box.append(copy_btn)
@@ -826,7 +835,7 @@ class HostView(Gtk.Box):
     def toggle_field_visibility(self, key):
         field = self.field_widgets[key]
         field['revealed'] = not field['revealed']
-        field['btn_eye'].set_icon_name('view-conceal-symbolic' if field['revealed'] else 'view-reveal-symbolic')
+        field['btn_eye'].set_child(create_icon_widget('view-conceal-symbolic' if field['revealed'] else 'view-reveal-symbolic', size=16))
         field['label'].set_text(field['real_value'] if field['revealed'] else '••••••')
             
     def copy_field_value(self, key):
