@@ -1208,8 +1208,8 @@ class HostView(Gtk.Box):
                         with open(log_path, 'r') as f:
                             lines = f.readlines()
                             for line in lines[-10:]:
-                                if "error while loading shared libraries" in line and "libicuuc.so.7" in line:
-                                    lib = line.split("shared libraries:")[1].split(":")[0].strip()
+                                if "error while loading shared libraries" in line and "libicuuc.so.76" in line:
+                                    lib = "libicuuc.so.76"
                                     error_msg = _("Missing library: {}\n\nWould you like to try to fix it automatically?").format(lib)
                                     
                                     # Locate the fix script

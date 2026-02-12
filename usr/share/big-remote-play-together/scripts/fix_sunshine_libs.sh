@@ -1,47 +1,58 @@
 #!/bin/bash
-# Scripts to fix missing dependencies for Sunshine (libicuuc.so.7* / libicuuc.so.76)
-# This script handles missing ICU libraries common after system updates.
+# Scripts to fix missing dependencies for Sunshine (libicuuc.so.76)
+# This creates symlinks from the installed version (78) to the version Sunshine expects (76)
 
 if [ "$EUID" -ne 0 ]; then 
-    echo "⚠️  Este script precisa de permissões de root."
+    echo "⚠️  Este script precisa de permissões de root para criar links simbólicos em /usr/lib."
+    echo "   Por favor, execute: sudo $0"
     exit 1
 fi
 
 echo "🔍 Verificando bibliotecas ICU..."
 
-# 1. Try to install legacy package if on Arch-based system (BigLinux/Manjaro)
-if command -v pacman &> /dev/null; then
-    echo "📦 Tentando instalar icu76 via pacman..."
-    pacman -S --needed --noconfirm icu76
-    
-    if [ $? -eq 0 ]; then
-        echo "✅ Pacote icu76 instalado com sucesso."
-        exit 0
-    fi
-fi
+found=false
 
-# 2. Fallback: Check for existing versions to link (if package install failed)
-echo "⚠️  Falha ao instalar pacote, tentando caminhos alternativos..."
-
-FOUND_VER=""
-for ver in $(ls /usr/lib/libicuuc.so.* | grep -oE '[0-9]+' | sort -rn | uniq); do
-    if [ "$ver" -ge 76 ]; then
-        FOUND_VER=$ver
-        break
-    fi
-done
-
-if [ -n "$FOUND_VER" ]; then
-    echo "🔗 Criando links simbólicos de v$FOUND_VER para v76..."
+# Check for version 78 to link to 76
+if [ -f "/usr/lib/libicuuc.so.78" ]; then
+    echo "✅ Encontrado libicuuc.so.78"
     
-    ln -sf /usr/lib/libicuuc.so.$FOUND_VER /usr/lib/libicuuc.so.76
-    ln -sf /usr/lib/libicudata.so.$FOUND_VER /usr/lib/libicudata.so.76
-    ln -sf /usr/lib/libicui18n.so.$FOUND_VER /usr/lib/libicui18n.so.76
+    echo "🔗 Criando links simbólicos para versão 76..."
     
-    echo "✅ Links criados."
-    exit 0
+    ln -sf /usr/lib/libicuuc.so.78 /usr/lib/libicuuc.so.76
+    echo "   Created /usr/lib/libicuuc.so.76"
+    
+    ln -sf /usr/lib/libicudata.so.78 /usr/lib/libicudata.so.76
+    echo "   Created /usr/lib/libicudata.so.76"
+    
+    ln -sf /usr/lib/libicui18n.so.78 /usr/lib/libicui18n.so.76
+    echo "   Created /usr/lib/libicui18n.so.76"
+    
+    found=true
 else
-    echo "❌ Nenhuma versão compatível de libicu encontrada."
-    exit 1
+    # Try finding whatever version IS installed
+    CURRENT_LIB=$(find /usr/lib -name "libicuuc.so.*" | head -n 1)
+    if [ -n "$CURRENT_LIB" ]; then
+        VERSION=$(echo "$CURRENT_LIB" | grep -oE '[0-9]+$')
+        echo "⚠️  Encontrada versão $VERSION em $CURRENT_LIB"
+        
+        echo "🔗 Tentar criar links baseados nessa versão?"
+        read -p "[s/N] " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Ss]$ ]]; then
+             ln -sf "/usr/lib/libicuuc.so.$VERSION" /usr/lib/libicuuc.so.76
+             ln -sf "/usr/lib/libicudata.so.$VERSION" /usr/lib/libicudata.so.76
+             ln -sf "/usr/lib/libicui18n.so.$VERSION" /usr/lib/libicui18n.so.76
+             found=true
+        fi
+    else
+        echo "❌ Nenhuma versão do libicu encontrada!"
+    fi
 fi
 
+if [ "$found" = true ]; then
+    echo ""
+    echo "✅ Correção aplicada. Tente iniciar o Sunshine agora."
+else
+    echo ""
+    echo "❌ Não foi possível aplicar a correção automática."
+fi

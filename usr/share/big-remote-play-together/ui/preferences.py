@@ -104,31 +104,13 @@ class PreferencesWindow(Adw.PreferencesWindow):
         
         logs_group.add(clear_logs_row)
         
-        # Maintenance group
-        maintenance_group = Adw.PreferencesGroup()
-        maintenance_group.set_title(_('Manutenção do Sistema'))
-        maintenance_group.set_description(_('Ferramentas para resolver problemas comuns'))
-        
-        fix_libs_row = Adw.ActionRow()
-        fix_libs_row.set_title(_('Corrigir Bibliotecas (ICU)'))
-        fix_libs_row.set_subtitle(_('Resolve o erro libicuuc.so.7* ausente'))
-        
-        fix_btn = Gtk.Button(label=_('Fix Automático'))
-        fix_btn.add_css_class('suggested-action')
-        fix_btn.set_valign(Gtk.Align.CENTER)
-        fix_libs_row.add_suffix(fix_btn)
-        
-        maintenance_group.add(fix_libs_row)
-        
         # Connect signals
         verbose_row.set_active(self.config.get('verbose_logging', False))
         verbose_row.connect('notify::active', self.on_verbose_toggled)
         clear_btn.connect('clicked', self.on_clear_logs_clicked)
-        fix_btn.connect('clicked', self.on_fix_libs_clicked)
         
         advanced_page.add(paths_group)
         advanced_page.add(logs_group)
-        advanced_page.add(maintenance_group)
         
         # Add pages
         self.add(general_page)
@@ -159,30 +141,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
         diag.add_response("ok", _("OK"))
         diag.set_transient_for(self)
         diag.present()
-
-    def on_fix_libs_clicked(self, button):
-        from pathlib import Path
-        script_path = Path(__file__).parent.parent / 'scripts' / 'fix_sunshine_libs.sh'
-        if not script_path.exists():
-            script_path = Path("/usr/share/big-remote-play-together/scripts/fix_sunshine_libs.sh")
-            
-        if script_path.exists():
-            try:
-                subprocess.Popen(['pkexec', str(script_path)])
-                diag = Adw.MessageDialog(heading=_("Fix Automático Iniciado"), body=_("O script de correção de bibliotecas foi iniciado. Forneça a senha se solicitado."))
-                diag.add_response("ok", _("OK"))
-                diag.set_transient_for(self)
-                diag.present()
-            except Exception as e:
-                diag = Adw.MessageDialog(heading=_("Erro"), body=str(e))
-                diag.add_response("ok", _("OK"))
-                diag.set_transient_for(self)
-                diag.present()
-        else:
-            diag = Adw.MessageDialog(heading=_("Erro"), body=_("Script de correção não encontrado."))
-            diag.add_response("ok", _("OK"))
-            diag.set_transient_for(self)
-            diag.present()
 
     def copy_config_path(self, _):
         path = os.path.expanduser('~/.config/big-remoteplay')

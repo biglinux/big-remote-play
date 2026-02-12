@@ -60,7 +60,7 @@ class BigRemotePlayApp(Adw.Application):
             application_name='Big Remote Play Together',
             application_icon='big-remote-play-together',
             developer_name='BigLinux Team',
-            version='1.2.0',
+            version='1.1.1',
             developers=['Rafael Ruscher <rruscher@gmail.com>', 'Alexasandro Pacheco Feliciano <@pachecogameroficial>', 'Alessandro e Silva Xavier <@alessandro741>'],
             copyright='© 2026 BigLinux',
             license_type=Gtk.License.GPL_3_0,
@@ -68,7 +68,7 @@ class BigRemotePlayApp(Adw.Application):
             issue_url='https://github.com/biglinux/big-remoteplay-together/issues',
             comments=_('Integrated remote cooperative gaming system\nInspired by Steam Remote Play Together'),
         )
-        about.set_version("1.2.0") # Force override
+        about.set_version("1.1.1") # Force override
         about.add_link("Youtube", "https://www.youtube.com/watch?v=D2l9o_wXW5M")
         print(f"DEBUG: About Dialog Version: {about.get_version()}")
         about.present()
