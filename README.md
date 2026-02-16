@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="usr/share/big-remote-play-together/icons/big-remote-play-together.svg" alt="Big Remote Play Together" width="128" height="128">
+  <img src="usr/share/big-remote-play/icons/big-remote-play.svg" alt="Big Remote Play" width="128" height="128">
 </p>
 
-<h1 align="center">🎮 Big Remote Play Together</h1>
+<h1 align="center">🎮 Big Remote Play</h1>
 
 <p align="center">
   <b>Free & Open Source Remote Cooperative Gaming System — Multi-Platform</b>
@@ -25,14 +25,14 @@
   <img src="https://img.shields.io/badge/GTK-4.0-blue.svg" alt="GTK 4.0">
   <img src="https://img.shields.io/badge/Libadwaita-1.0-purple.svg" alt="Libadwaita">
   <img src="https://img.shields.io/badge/Python-3.x-yellow.svg" alt="Python 3">
-  <img src="https://img.shields.io/badge/Version-1.2.0-brightgreen.svg" alt="Version 1.2.0">
+  <img src="https://img.shields.io/badge/Version-1.3-brightgreen.svg" alt="Version 1.3">
 </p>
 
 ---
 
 ## 📖 The Story Behind the Project
 
-Big Remote Play Together was born from a **real story** of friendship, determination, and the passion for Free Software.
+Big Remote Play was born from a **real story** of friendship, determination, and the passion for Free Software.
 
 **Alessandro e Silva Xavier** (known as **Alessandro**) and **Alexasandro Pacheco Feliciano** (known as **Pacheco**) wanted to play games together on [BigLinux](https://www.biglinux.com.br) using a feature that only existed on proprietary platforms like **Steam Remote Play** and **GeForce NOW**. The problem? These systems are **proprietary**, locked to their own ecosystems. If a game wasn't available on their platform, it was nearly impossible to play remotely with friends.
 
@@ -40,7 +40,7 @@ Refusing to accept this limitation, Alessandro and Pacheco embarked on a journey
 
 Excited by their success, they started sharing their achievement during their **live streams**, which generated tremendous enthusiasm from the community. However, there was a catch — the setup was complicated. It required configuring multiple separate solutions: Sunshine, Moonlight, custom scripts, VPN connections... it was a lot for anyone to handle.
 
-That's when a friend decided to step in and help develop a unified application to simplify the entire process. And so, **Big Remote Play Together** was born! 🎉
+That's when a friend decided to step in and help develop a unified application to simplify the entire process. And so, **Big Remote Play** was born! 🎉
 
 An all-in-one application that integrates everything you need for remote cooperative gaming — no proprietary platforms, no restrictions, no limits on which games you can play.
 
@@ -86,7 +86,7 @@ An all-in-one application that integrates everything you need for remote coopera
 
 ## 🎯 Use Cases
 
-Big Remote Play Together enables a variety of exciting scenarios:
+Big Remote Play enables a variety of exciting scenarios:
 
 | Scenario | Description |
 |----------|-------------|
@@ -108,8 +108,8 @@ The package is available for Arch-based distributions:
 
 ```bash
 # Clone the repository
-git clone https://github.com/biglinux/big-remote-play-together.git
-cd big-remote-play-together/pkgbuild
+git clone https://github.com/biglinux/big-remote-play.git
+cd big-remote-play/pkgbuild
 
 # Build and install
 makepkg -si
@@ -141,22 +141,22 @@ makepkg -si
 
 ```bash
 # Clone the repository
-git clone https://github.com/biglinux/big-remote-play-together.git
-cd big-remote-play-together
+git clone https://github.com/biglinux/big-remote-play.git
+cd big-remote-play
 
 # Run directly (development mode)
-python3 usr/share/big-remote-play-together/main.py
+python3 usr/share/big-remote-play/main.py
 ```
 
 ---
 
 ## 🔧 How It Works
 
-Big Remote Play Together acts as a **unified interface** that orchestrates multiple open-source technologies:
+Big Remote Play acts as a **unified interface** that orchestrates multiple open-source technologies:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│            Big Remote Play Together (GTK4)           │
+│            Big Remote Play (GTK4)           │
 ├──────────────┬──────────────┬────────────────────────┤
 │  Host View   │  Guest View  │  Private Network View  │
 ├──────────────┴──────────────┴────────────────────────┤
@@ -170,7 +170,7 @@ Big Remote Play Together acts as a **unified interface** that orchestrates multi
 ### Quick Start Guide
 
 #### As a Host (Sharing games):
-1. Open **Big Remote Play Together**
+1. Open **Big Remote Play**
 2. Navigate to **Host Server**
 3. Configure your streaming settings (resolution, FPS, codec)
 4. Select which games to share
@@ -178,7 +178,7 @@ Big Remote Play Together acts as a **unified interface** that orchestrates multi
 6. Share your PIN or IP with your friends!
 
 #### As a Guest (Connecting to play):
-1. Open **Big Remote Play Together**
+1. Open **Big Remote Play**
 2. Navigate to **Connect to Server**
 3. Either:
    - Select a **discovered host** from the list
@@ -199,14 +199,14 @@ Big Remote Play Together acts as a **unified interface** that orchestrates multi
 ### Project Structure
 
 ```
-big-remote-play-together/
+big-remote-play/
 ├── 📁 usr/
 │   ├── 📁 bin/
-│   │   └── big-remote-play-together          # Shell launcher script
+│   │   └── big-remote-play          # Shell launcher script
 │   └── 📁 share/
 │       ├── 📁 applications/
-│       │   └── big-remote-play-together.desktop  # Desktop entry
-│       ├── 📁 big-remote-play-together/
+│       │   └── big-remote-play.desktop  # Desktop entry
+│       ├── 📁 big-remote-play/
 │       │   ├── main.py                        # Application entry point
 │       │   ├── 📁 ui/                         # User Interface
 │       │   │   ├── main_window.py             # Main window with sidebar nav
@@ -288,7 +288,7 @@ We welcome contributions from the community! Here's how you can help:
 
 ### 🐛 Reporting Bugs
 
-Found a bug? Please [open an issue](https://github.com/biglinux/big-remote-play-together/issues) with:
+Found a bug? Please [open an issue](https://github.com/biglinux/big-remote-play/issues) with:
 - Steps to reproduce
 - Expected vs actual behavior
 - System info (distro, GTK version, Sunshine/Moonlight version)
@@ -301,7 +301,7 @@ Help us reach more people! Translation files are in the `locale/` directory. We 
 2. Edit or create a `.po` file in `locale/`
 3. Submit a Pull Request
 
-The translation template is at `locale/big-remote-play-together.pot`.
+The translation template is at `locale/big-remote-play.pot`.
 
 ### 💻 Code Contributions
 
@@ -310,7 +310,7 @@ The translation template is at `locale/big-remote-play-together.pot`.
 3. **Make your changes**
 4. **Test** your changes locally:
    ```bash
-   python3 usr/share/big-remote-play-together/main.py
+   python3 usr/share/big-remote-play/main.py
    ```
 5. **Commit**: `git commit -m 'Add my feature'`
 6. **Push**: `git push origin feature/my-feature`
@@ -344,7 +344,7 @@ Have an idea to make the project better? Open an issue tagged as **Enhancement**
 This project is licensed under the **GNU General Public License v3.0** — see the [COPYING](COPYING) file for details.
 
 ```
-Big Remote Play Together
+Big Remote Play
 Copyright (C) 2026 BigLinux
 
 This program is free software: you can redistribute it and/or modify
