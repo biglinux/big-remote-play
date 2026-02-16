@@ -68,7 +68,7 @@ class BigRemotePlayApp(Adw.Application):
             application_name='Big Remote Play',
             application_icon='big-remote-play',
             developer_name='BigLinux Team',
-            version='1.1.1',
+            version='1.3',
             developers=['Rafael Ruscher <rruscher@gmail.com>', 'Alexasandro Pacheco Feliciano <@pachecogameroficial>', 'Alessandro e Silva Xavier <@alessandro741>'],
             copyright='© 2026 BigLinux',
             license_type=Gtk.License.GPL_3_0,
