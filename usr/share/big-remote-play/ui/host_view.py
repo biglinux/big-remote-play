@@ -3,7 +3,7 @@ gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
 from gi.repository import Gtk, Gdk, Adw, GLib
-import subprocess, random, string, json, socket, os
+import subprocess, random, string, json, socket, os, time
 from pathlib import Path
 from utils.game_detector import GameDetector
 
@@ -21,6 +21,7 @@ class HostView(Gtk.Box):
         self.is_hosting = False
         self.process = None # Initialize to avoid AttributeError
         self.pin_code = None
+        self.private_audio_apps = set()
         
         from host.sunshine_manager import SunshineHost
         self.sunshine = SunshineHost(Path.home() / '.config' / 'big-remoteplay' / 'sunshine')
@@ -299,13 +300,23 @@ class HostView(Gtk.Box):
         self.audio_output_row.connect('notify::selected', self.on_audio_output_changed)
         audio_group.add(self.audio_output_row)
 
-        # 2. Streaming Switch
-        self.streaming_audio_row = Adw.SwitchRow()
-        self.streaming_audio_row.set_title(_('Audio Streaming'))
-        self.streaming_audio_row.set_subtitle(_('Enable audio on client (Sound on Host + Guest)'))
-        self.streaming_audio_row.set_active(True)
-        self.streaming_audio_row.connect('notify::active', self.on_streaming_toggled)
-        audio_group.add(self.streaming_audio_row)
+        # 2. Audio Mode ComboRow
+        self.audio_mode_row = Adw.ComboRow()
+        self.audio_mode_row.set_title(_('Audio Output Mode'))
+        self.audio_mode_row.set_subtitle(_('Determine where the game sound will be played'))
+        self.audio_mode_row.set_icon_name('audio-volume-medium-symbolic')
+        
+        mode_model = Gtk.StringList()
+        mode_model.append(_('Automatic'))    # Index 0
+        mode_model.append(_('Guest'))        # Index 1
+        mode_model.append(_('Host'))         # Index 2
+        mode_model.append(_('Guest + Host')) # Index 3
+        
+        self.audio_mode_row.set_model(mode_model)
+        self.audio_mode_row.connect('notify::selected', self.on_audio_mode_changed)
+        audio_group.add(self.audio_mode_row)
+
+
         
         # 3. Mixer (Only if Streaming is Enabled)
         self.audio_mixer_expander = Adw.ExpanderRow()
@@ -638,7 +649,8 @@ class HostView(Gtk.Box):
         pin_row = Adw.EntryRow(title=_("PIN"))
         # pin_row.set_input_purpose(Gtk.InputPurpose.NUMBER) 
         
-        name_row = Adw.EntryRow(title=_("Device Name (Optional)"))
+        name_row = Adw.EntryRow(title=_("Device Name"))
+        name_row.set_text(socket.gethostname())
         
         grp.add(pin_row)
         grp.add(name_row)
@@ -652,17 +664,18 @@ class HostView(Gtk.Box):
         def on_response(d, r):
             if r == "ok":
                 pin = pin_row.get_text().strip()
+                device_name = name_row.get_text().strip()
                 if not pin: return
                 
                 # Try with stored credentials first
                 auth = self._get_sunshine_creds()
-                success, msg = self.sunshine.send_pin(pin, auth=auth)
+                success, msg = self.sunshine.send_pin(pin, name=device_name, auth=auth)
                 
                 if success:
                     self.show_toast(_("PIN sent successfully"))
                 elif "Authentication Failed" in msg or "Falha de Autenticação" in msg or "401" in msg:
                     # Se falhar autenticação, pedir credenciais
-                    self.open_sunshine_auth_dialog(pin)
+                    self.open_sunshine_auth_dialog(pin, device_name=device_name)
                 elif "307" in msg:
                     # Se retornar Redirect 307, significa que não tem usuário criado
                     self.prompt_create_user(pin)
@@ -731,7 +744,7 @@ class HostView(Gtk.Box):
         dialog.connect("response", on_create)
         dialog.present()
         
-    def open_sunshine_auth_dialog(self, pin_to_retry: str):
+    def open_sunshine_auth_dialog(self, pin_to_retry: str, device_name: str = None):
         # Prefill with existing if available (for correction)
         creds = self._get_sunshine_creds()
         curr_user = creds[0] if creds else "admin"
@@ -761,7 +774,7 @@ class HostView(Gtk.Box):
                 if not user or not pwd: return
                 
                 # Tentar novamente com credenciais
-                success, msg = self.sunshine.send_pin(pin_to_retry, auth=(user, pwd))
+                success, msg = self.sunshine.send_pin(pin_to_retry, name=device_name, auth=(user, pwd))
                 if success: 
                     self.show_toast(_("PIN sent successfully"))
                     # Save credentials on success
@@ -779,21 +792,21 @@ class HostView(Gtk.Box):
         self.summary_box.set_visible(False); self.field_widgets = {}
         for l, k, i, r in [('Host', 'hostname', 'computer-symbolic', True), ('IPv4', 'ipv4', 'network-wired-symbolic', False), ('IPv6', 'ipv6', 'network-wired-symbolic', False), ('IPv4 Global', 'ipv4_global', 'network-transmit-receive-symbolic', False), ('IPv6 Global', 'ipv6_global', 'network-transmit-receive-symbolic', False)]: self.create_masked_row(l, k, i, r)
 
-    def on_streaming_toggled(self, row, param):
-        is_active = row.get_active()
-        self.audio_mixer_expander.set_visible(is_active)
+    def on_audio_mode_changed(self, row, param):
+        if getattr(self, 'loading_settings', False): return
         
-        # If hosting, just trigger the enforcer to re-route audio
+        idx = row.get_selected()
+        # Mode Guest (1), Automatic (0) or Guest+Host (3) means mixer should be visible
+        show_mixer = idx in [0, 1, 3]
+        self.audio_mixer_expander.set_visible(show_mixer)
+        
         if self.is_hosting:
-            if is_active:
-                self.show_toast(_("Audio streaming enabled"))
-            else:
-                self.show_toast(_("Audio streaming stopped"))
-            
-            # Trigger enforcer immediately
             self._run_audio_enforcer()
+        self.save_host_settings()
+
 
     def load_audio_outputs(self):
+
         try:
             from utils.audio import AudioManager
             if not hasattr(self, 'audio_manager'):
@@ -830,7 +843,7 @@ class HostView(Gtk.Box):
             new_sink = self.audio_manager.get_default_sink()
         
         # If hosting and audio active, need to reconfigure loopback
-        if self.is_hosting and self.streaming_audio_row.get_active():
+        if self.is_hosting and self.audio_mode_row.get_selected() in [0, 1, 3]:
             if hasattr(self, 'active_host_sink') and self.active_host_sink != new_sink:
                 print(f"Changing host output in real-time to: {new_sink}")
                 self.active_host_sink = new_sink
@@ -1026,69 +1039,65 @@ class HostView(Gtk.Box):
             del self.enforcer_source_id
 
     def _run_audio_enforcer(self):
-        # Force routing:
-        # Apps in self.private_audio_apps -> Host Sink (Local Only)
-        # Others -> SunshineGameSink (Stream + Host)
         if not self.is_hosting: return True
-        # Removed expander visibility check to allow enforcer to run even if hidden (to force local routing)
-        
         if not hasattr(self, 'active_host_sink') or not self.active_host_sink: return True
         
         shared_sink = "SunshineGameSink"
         private_sink = self.active_host_sink
         
-        # Check if streaming is actually enabled in UI
-        streaming_enabled = self.streaming_audio_row.get_active()
+        # Determine behavior based on Audio Mode Selection
+        # 0: Automatic, 1: Guest, 2: Host, 3: Guest + Host
+        mode_idx = self.audio_mode_row.get_selected()
         
+        streaming_enabled = mode_idx in [0, 1, 3]
+        
+        # Audio Monitoring logic
+        should_monitor = False
+        if mode_idx == 3: # Guest + Host
+            should_monitor = True
+        elif mode_idx == 2: # Host Only
+            should_monitor = True # Doesn't matter much as everything moves to private_sink
+            streaming_enabled = False
+        elif mode_idx == 1: # Guest Only
+            should_monitor = False
+        elif mode_idx == 0: # Automatic
+            # Check for localhost guest
+            has_localhost = False
+            if hasattr(self, 'perf_monitor'):
+                for guest in getattr(self.perf_monitor, '_known_devices', {}).values():
+                     if guest.get('status') == 'active' or (time.time() - guest.get('last_seen', 0) < 5):
+                          ip = guest.get('ip', '')
+                          if ip in ['127.0.0.1', '::1', 'localhost']:
+                               has_localhost = True; break
+            should_monitor = not has_localhost
+
         if hasattr(self, 'audio_manager'):
             try:
-                # 1. Default Sink Enforcer (Fix for Guest Connect)
-                # Check if default sink was incorrectly changed by Sunshine (e.g. sink-sunshine-stereo)
+                # Update loopback
+                if not hasattr(self, '_last_monitor_state') or self._last_monitor_state != should_monitor:
+                    self.audio_manager.set_host_monitoring(private_sink, should_monitor)
+                    self._last_monitor_state = should_monitor
+
+                # Default sink hijack fix
                 current_default = self.audio_manager.get_default_sink()
                 if current_default and current_default != private_sink:
-                    # If current sink is an unwanted Sunshine virtual sink, restore Host sink
                     if "sunshine" in current_default.lower() and "stereo" in current_default.lower():
-                        print(f"Enforcer: Audio hijack detected ({current_default}). Restoring to {private_sink}")
                         self.audio_manager.set_default_sink(private_sink)
 
                 apps = self.audio_manager.get_apps()
                 for app in apps:
-                    app_id = app['id']
-                    name = app.get('name', '')
-                    
-                    # Double check to avoid loops (including GameSink and Loopback)
-                    # DO NOT move loopback itself nor monitor
-                    # ALSO DO NOT move Moonlight (Client) to avoid infinite feedback loop if running locally
+                    app_id, name = app['id'], app.get('name', '')
                     if 'sunshine' in name.lower() or 'loopback' in name.lower() or 'moonlight' in name.lower(): continue
-
-                    # Define target
-                    # If streaming is DISABLED, everything goes to Private (Local)
-                    if not streaming_enabled:
-                         target = private_sink
-                    else:
-                         target = private_sink if name in self.private_audio_apps else shared_sink
                     
-                    # Check current sink
-                    current_sink = app.get('sink_name', '')
-                    
-                    # If app already on target, ignore
-                    if current_sink == target: continue
-
-                    # Move logic
-                    if target == shared_sink:
-                        # Want to move to GameSink
-                        # But CAREFUL: If SunshineGameSink is null-sink and muted at end, user complains.
-                        # But we already configured Loopback.
-                        print(f"Enforcer: Moving {name} to Stream ({target})")
+                    target = private_sink if (not streaming_enabled or name in self.private_audio_apps) else shared_sink
+                    if app.get('sink_name', '') != target:
+                        print(f"Enforcer: Moving {name} -> {target}")
                         self.audio_manager.move_app(app_id, target)
-                    else:
-                        # Want to move to Private (Hardware)
-                        print(f"Enforcer: Moving {name} to Local ({target})")
-                        self.audio_manager.move_app(app_id, target)
-                            
             except Exception as e:
                 print(f"Enforcer Error: {e}")
         return True
+
+
 
     def _refresh_audio_mixer_ui(self):
         if not self.audio_mixer_expander.get_visible(): return True
@@ -1212,30 +1221,43 @@ class HostView(Gtk.Box):
             
             # Identify Host Sink
             host_sink_idx = self.audio_output_row.get_selected()
-            if self.audio_devices and 0 <= host_sink_idx < len(self.audio_devices):
+            if hasattr(self, 'audio_devices') and 0 <= host_sink_idx < len(self.audio_devices):
                 host_sink = self.audio_devices[host_sink_idx]['name']
             else:
                 host_sink = self.audio_manager.get_default_sink()
             
+            # PROTECT AGAINST SELF-LOOP IF DEFAULT SINK IS STILL VIRTUAL
+            if host_sink == "SunshineGameSink" or self.audio_manager.is_virtual(host_sink):
+                print(f"WARNING: Host sink '{host_sink}' is virtual. finding fallback hardware sink.")
+                hw_sinks = self.audio_manager.get_passive_sinks()
+                if hw_sinks:
+                    host_sink = hw_sinks[0]['name'] # or 'id' depending on get_passive_sinks return
+                    # usually get_passive_sinks returns dict with 'name' (id) and description
+                    # wait, check utils/audio.py get_passive_sinks returns dict with 'name' -> PA Name
+                    
             # Store it for the enforcer
             self.active_host_sink = host_sink
 
             # Enable Host+Guest Streaming (Create Sink)
             if self.audio_manager:
-                # Returns True if success
-                if self.audio_manager.enable_streaming_audio(host_sink):
-                    # Ensure we use the sink name for Sunshine to capture from its monitor
+                # Determine loopback based on Mode
+                mode_idx = self.audio_mode_row.get_selected()
+                # If mode is Guest (1), guest_only is True
+                # If mode is Guest+Host (3), guest_only is False
+                # If mode is Automatic (0), we start with guest_only=False (will be auto-muted by enforcer if needed)
+                guest_only = (mode_idx == 1)
+                
+                if self.audio_manager.enable_streaming_audio(host_sink, guest_only=guest_only):
                     sunshine_config['audio_sink'] = "SunshineGameSink"
-                    
                     print(f"DEBUG: Configured Sunshine audio_sink to: {sunshine_config['audio_sink']}")
                     
-                    # Start Mixer UI updates
+                    self._last_monitor_state = not guest_only
                     self.start_audio_mixer_refresh()
 
-                    # Default: Restore Host Sink after 500ms so user controls local volume,
-                    # while Enforcer routes games to SunshineGameSink.
-                    GLib.timeout_add(500, lambda: (self.audio_manager.set_default_sink(host_sink), self.show_toast(f"Padrão restaurado: {host_sink}"))[1])
+                    GLib.timeout_add(500, lambda: (self.audio_manager.set_default_sink(host_sink), self.show_toast(_("Host output restored: {}").format(host_sink)))[1])
                 else:
+
+
                      print("Failed to enable streaming sinks, falling back to default")
                      self.show_toast(_("Failed to create Virtual Audio"))
                      # Fallback to none if creation failed
@@ -1320,7 +1342,8 @@ class HostView(Gtk.Box):
         print("DEBUG: HostView.stop_hosting called")
         self.show_toast(_("Stopping server..."))
         self.loading_bar.set_visible(True); self.loading_bar.pulse()
-        self.audio_mixer_expander.set_visible(self.streaming_audio_row.get_active())
+        # Update mixer visibility based on mode
+        self.audio_mixer_expander.set_visible(self.audio_mode_row.get_selected() in [0, 1, 3])
         self.stop_audio_mixer_refresh()
         
         if hasattr(self, 'stop_pin_listener') and self.stop_pin_listener:
@@ -1460,9 +1483,10 @@ class HostView(Gtk.Box):
             'monitor_idx': self.monitor_row.get_selected(),
             'gpu_idx': self.gpu_row.get_selected(),
             'platform_idx': self.platform_row.get_selected(),
-            'audio': self.streaming_audio_row.get_active(), # Now maps to Streaming Audio
+            'audio_mode': self.audio_mode_row.get_selected(),
             'audio_output_idx': self.audio_output_row.get_selected(),
             'upnp': self.upnp_row.get_active(),
+
             'ipv6': self.ipv6_row.get_active(),
             'webui_anyone': self.webui_anyone_row.get_active(),
             # New settings
@@ -1470,6 +1494,7 @@ class HostView(Gtk.Box):
             'optimization_mode': self.optimization_row.get_selected(),
             'wifi_mode': self.wifi_row.get_active()
         })
+
         self.config.set('host', h)
         
         # Update monitor target FPS live
@@ -1489,7 +1514,8 @@ class HostView(Gtk.Box):
             scm.set('upnp', 'enabled' if self.upnp_row.get_active() else 'disabled')
             scm.set('address_family', 'both' if self.ipv6_row.get_active() else 'ipv4')
             scm.set('origin_web_ui_allowed', 'wan' if self.webui_anyone_row.get_active() else 'lan')
-            scm.set('stream_audio', 'true' if self.streaming_audio_row.get_active() else 'false')
+            streaming_active = self.audio_mode_row.get_selected() in [0, 1, 3]
+            scm.set('stream_audio', 'true' if streaming_active else 'false')
             
             # Map Codecs
             # If enabled -> advertised(1). If disabled -> disabled(0)
@@ -1593,10 +1619,13 @@ class HostView(Gtk.Box):
             self.gpu_row.set_selected(h.get('gpu_idx', 0))
             self.platform_row.set_selected(h.get('platform_idx', 0))
             
-            # Audio
-            streaming_active = h.get('audio', True)
-            self.streaming_audio_row.set_active(streaming_active)
-            self.audio_mixer_expander.set_visible(streaming_active)
+            # Audio Mode
+            audio_mode = h.get('audio_mode', 0)
+            self.audio_mode_row.set_selected(audio_mode)
+            show_mixer = audio_mode in [0, 1, 3]
+            self.audio_mixer_expander.set_visible(show_mixer)
+
+
             
             self.audio_output_row.set_selected(h.get('audio_output_idx', 0))
             
@@ -1612,10 +1641,13 @@ class HostView(Gtk.Box):
             self.loading_settings = False
 
     def connect_settings_signals(self):
-        for r in [self.streaming_audio_row, self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row]:
+        for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row]:
             r.connect('notify::active', self.save_host_settings)
-        for r in [self.game_mode_row, self.monitor_row, self.gpu_row, self.platform_row, self.audio_output_row, self.optimization_row, self.resolution_row, self.fps_row]:
+
+        for r in [self.audio_mode_row, self.game_mode_row, self.monitor_row, self.gpu_row, self.platform_row, self.audio_output_row, self.optimization_row, self.resolution_row, self.fps_row]:
             r.connect('notify::selected', self.save_host_settings)
+
+
         for r in [self.bandwidth_row]:
             r.connect('notify::value', self.save_host_settings)
         for r in [self.custom_name_entry, self.custom_cmd_entry]:
@@ -1635,9 +1667,11 @@ class HostView(Gtk.Box):
 
     def cleanup(self):
         if hasattr(self, 'perf_monitor'): self.perf_monitor.stop_monitoring()
-        # RADICAL FIX: Do NOT stop hosting on cleanup. 
-        # The server should persist in the background even if the UI closes.
-        # if self.is_hosting: self.stop_hosting()
-        
         if hasattr(self, 'stop_pin_listener'): self.stop_pin_listener()
-        if hasattr(self, 'audio_manager'): self.audio_manager.cleanup()
+        
+        # Only cleanup audio if we are NOT hosting, because Sunshine depends on these sinks.
+        # If we are hosting, the user expects the stream to continue working.
+        # This also avoids the feedback loop (microfonia) when the app is closed while Moonlight/Sunshine are active.
+        if not self.is_hosting:
+            if hasattr(self, 'audio_manager'): self.audio_manager.cleanup()
+

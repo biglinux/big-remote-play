@@ -282,7 +282,7 @@ class SunshineHost:
             print(f"Error configuring Sunshine: {e}")
             return False
 
-    def send_pin(self, pin: str, auth: tuple[str, str] = None) -> tuple[bool, str]:
+    def send_pin(self, pin: str, name: str = None, auth: tuple[str, str] = None) -> tuple[bool, str]:
         """Sends PIN to Sunshine via API"""
         import urllib.request, ssl, json, base64
         
@@ -307,7 +307,10 @@ class SunshineHost:
         except: pass
         
         try:
-            data = json.dumps({"pin": pin}).encode('utf-8')
+            payload = {"pin": pin}
+            if name:
+                payload["name"] = name
+            data = json.dumps(payload).encode('utf-8')
             req = urllib.request.Request(url, data=data, headers=headers, method='POST')
             
             with urllib.request.urlopen(req, context=ctx, timeout=5) as response:

@@ -1,5 +1,6 @@
 import subprocess
 from typing import List, Dict, Optional
+import time
 from utils.i18n import _
 
 class AudioManager:
@@ -63,13 +64,11 @@ class AudioManager:
             subprocess.run(['pactl', 'set-default-sink', sink_name], check=False)
         except: pass
 
-    def enable_streaming_audio(self, host_sink: str) -> bool:
+    def enable_streaming_audio(self, host_sink: str, guest_only: bool = False) -> bool:
         """
-        Activates Streaming mode (Host + Guest) using RADICAL strategy: Combine Sink.
-        Instead of Null Sink + Loopback (which fails and mutes), we use a Combine Sink.
-        SunshineGameSink -> [Hardware Sink]
-        Sunshine captures from SunshineGameSink.monitor.
-        Host hears because Hardware Sink is a slave.
+        Activates Streaming mode.
+        If guest_only=True: Games -> Null Sink (Sunshine captures). Host is muted.
+        If guest_only=False: Games -> Null Sink -> Loopback -> Hardware. Host hears too.
         """
         # If host_sink is virtual or null, try to find first real hardware
         if not host_sink or self.is_virtual(host_sink):
@@ -85,43 +84,100 @@ class AudioManager:
         self.disable_streaming_audio(None) 
         
         try:
-            print(f"Enabling Isolated Audio (Radical) -> Combine Sink 'SunshineGameSink' -> Slave: {host_sink}")
+            print(f"Enabling Isolated Audio -> Sink: SunshineGameSink (Guest Only: {guest_only})")
             
-            # 1. Combine Sink 'SunshineGameSink'
-            # This creates a virtual output that relays audio to host_sink (Hardware)
-            # And provides a .monitor for Sunshine to record.
+            # 1. Create Null Sink
             subprocess.run([
-                'pactl', 'load-module', 'module-combine-sink',
+                'pactl', 'load-module', 'module-null-sink',
                 'sink_name=SunshineGameSink',
-                f'slaves={host_sink}',
                 'sink_properties=device.description=SunshineGameSink'
             ], check=True)
             
-            # 2. Small delay and ensure volumes
-            import time; time.sleep(0.5)
+            # 2. Add Loopback if not guest_only
+            if not guest_only:
+                # Ensure the monitor source exists
+                time.sleep(0.2)
+                
+                # Check if host_sink is safe
+                if host_sink == "SunshineGameSink":
+                    print("ERROR: Cannot loopback to itself. Creating loopback skipped.")
+                else:
+                    print(f"Adding Loopback to {host_sink} for Host Monitoring")
+                    subprocess.run([
+                        'pactl', 'load-module', 'module-loopback',
+                        'source=SunshineGameSink.monitor',
+                        f'sink={host_sink}',
+                        'sink_properties=device.description=SunshineLoopback',
+                        'latency_msec=60' # Stable latency
+                    ], check=True)
+
+            # 3. Small delay and ensure volumes
+            time.sleep(0.5)
             subprocess.run(['pactl', 'set-sink-mute', 'SunshineGameSink', '0'], check=False)
             subprocess.run(['pactl', 'set-sink-volume', 'SunshineGameSink', '100%'], check=False)
 
-            # 3. Set SunshineGameSink as default
+            # 4. Set SunshineGameSink as default
             self.set_default_sink("SunshineGameSink")
 
-            # 4. Verify creation
+            # 5. Verify creation
             time.sleep(0.2)
             sinks = subprocess.run(['pactl', 'list', 'short', 'sinks'], capture_output=True, text=True).stdout
             if 'SunshineGameSink' not in sinks:
-                print("CRITICAL ERROR: SunshineGameSink (Combine) was not created!")
-                self.disable_streaming_audio(host_sink)
+                print("CRITICAL ERROR: SunshineGameSink was not created!")
                 return False
                 
-            print(f"Radical Audio Activated: SunshineGameSink combining to {host_sink}")
+            print(f"Audio Activated: SunshineGameSink (Loopback to {host_sink}: {not guest_only})")
             return True
             
         except Exception as e:
-            print(f"Falha ao ativar streaming de áudio (Combine): {e}")
+            print(f"Falha ao ativar streaming de áudio: {e}")
             self.disable_streaming_audio(host_sink) 
             return False
 
+
+    def set_host_monitoring(self, host_sink: str, enabled: bool) -> bool:
+        """
+        Enables or disables local monitoring (Loopback) of the GameSink.
+        """
+        if not host_sink: return False
+        
+        # 1. Always try to unload existing loopback first
+        try:
+            res = subprocess.run(['pactl', 'list', 'short', 'modules'], capture_output=True, text=True)
+            if res.returncode == 0:
+                for line in res.stdout.splitlines():
+                    if 'SunshineLoopback' in line or 'source=SunshineGameSink.monitor' in line:
+                        mod_id = line.split()[0]
+                        print(f"Unloading old loopback: {mod_id}")
+                        subprocess.run(['pactl', 'unload-module', mod_id], check=False)
+        except: pass
+
+        if not enabled:
+            print("Host monitoring disabled (Muted)")
+            return True
+
+        # 2. Load Loopback
+        try:
+            # Check if host_sink is safe
+            if host_sink == "SunshineGameSink":
+                print("ERROR: Cannot loopback to itself.")
+                return False
+
+            print(f"Loading host loopback monitoring -> {host_sink}")
+            subprocess.run([
+                'pactl', 'load-module', 'module-loopback',
+                'source=SunshineGameSink.monitor',
+                f'sink={host_sink}',
+                'sink_properties=device.description=SunshineLoopback',
+                'latency_msec=60'
+            ], check=True)
+            return True
+        except Exception as e:
+            print(f"Error loading loopback: {e}")
+            return False
+
     def get_sink_monitor_source(self, sink_name: str) -> Optional[str]:
+
         """
         Returns monitor name for a sink.
         Avoids issues where monitor name is not exactly .monitor
