@@ -224,6 +224,10 @@ msgstr "Запустити виправлення"
 msgid "Fix script started. Please authenticate."
 msgstr "Скрипт виправлення розпочато. Будь ласка, автентифікуйтеся."
 # 
+# File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py, line: 362
+msgid "Libraries fixed! You can now start the server."
+msgstr "Бібліотеки виправлено! Тепер ви можете запустити сервер."
+# 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py, line: 283
 msgid "Locale"
 msgstr "Локаль"
@@ -1109,6 +1113,10 @@ msgstr "Встановлення успішно завершено!"
 # 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py, line: 113
 # 
+# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py, line: 113
+# 
+# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py, line: 113
+# 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py, line: 124
 msgid "Installation failed. Exit code: {}"
 msgstr "Встановлення не вдалося. Код виходу: {}"
@@ -1170,6 +1178,10 @@ msgstr "У бічному меню"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py, line: 130
 msgid "2. Enter domain and Auth Key"
 msgstr "2. Введіть домен та ключ авторизації"
+# 
+# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py, line: 130
+# 
+# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py, line: 130
 # 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py, line: 130
 # 
@@ -2000,6 +2012,20 @@ msgstr "Clean Logs"
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 195
 msgid "Arquivos de log antigos foram removidos."
 msgstr "Старі журнали були видалені."
+# 
+# #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
+# 
+# File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 199
+# File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 305
+# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 701
+# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 765
+# 
+# #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
+# 
+# File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 199
+# File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 305
+# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 701
+# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 765
 # 
 # #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
 # 
@@ -3428,34 +3454,6 @@ msgstr "Не вдалося створити віртуальне аудіо."
 msgid "Server started"
 msgstr "Сервер запущено"
 # 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1285
-msgid "Check logs for details."
-msgstr "Перевірте журнали для отримання деталей."
-# 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1298
-msgid ""
-"Missing library: {}\n"
-"\n"
-"Please check your Sunshine installation."
-msgstr ""
-"Відсутня бібліотека: {}\n"
-"\n"
-"Будь ласка, перевірте вашу установку Sunshine."
-# 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1301
-msgid "Port already in use. Check if another instance is running."
-msgstr "Порт вже використовується. Перевірте, чи запущено інший екземпляр."
-# 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1305
-msgid "Failed to start"
-msgstr "Не вдалося запустити"
-# 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1305
-msgid ""
-"The server failed to start.\n"
-"{}"
-msgstr "Сервер не вдалося запустити."
-# 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1321
 msgid "Stopping server..."
 msgstr "Зупинка сервера..."
@@ -3467,6 +3465,32 @@ msgstr "Сервер зупинено"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1362
 msgid "Sunshine stopped unexpectedly"
 msgstr "Sunshine зупинився несподівано"
+# 
+# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1285
+msgid "Check logs for details."
+msgstr "Перевірте журнали для отримання деталей."
+# 
+# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1411
+msgid ""
+"Sunshine failed to start.\n"
+"\n"
+"Error: {}\n"
+"\n"
+"If this is a dependency issue (missing libraries), try the 'Fix Dependencies' button."
+msgstr ""
+"Sunshine не вдалося запустити.\n"
+"\n"
+"Помилка: {}\n"
+"\n"
+"Якщо це проблема з залежностями (відсутні бібліотеки), спробуйте кнопку 'Виправити залежності'."
+# 
+# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1415
+msgid "Server Failed to Start"
+msgstr "Сервер не вдалося запустити"
+# 
+# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
+msgid "View Logs"
+msgstr "Перегляд журналів"
 # 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1625
 msgid "Restore Defaults"
