@@ -8,10 +8,12 @@ from gi.repository import Gtk, Gdk, Adw, Gio, GLib, GObject
 from pathlib import Path
 import configparser
 import os
+import subprocess
 
 from utils.i18n import _
 from utils.icons import create_icon_widget
 import socket
+from utils.system_check import SystemCheck
 
 class SunshineConfigManager:
     def __init__(self):
@@ -97,6 +99,10 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
                  self.setup_config_files_tab(group)
                  has_content = True
             else:
+                if title == _("General"):
+                     self.setup_maintenance_tab(group)
+                     has_content = True
+
                 if options:
                     for opt in options:
                         row = self.create_option_row(opt)
@@ -277,6 +283,69 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
             GLib.spawn_command_line_async(f"xdg-open '{path}'")
         except:
             pass
+
+    def setup_maintenance_tab(self, group):
+        """
+        Setup maintenance actions
+        """
+        # Check ICU libraries
+        sys_check = SystemCheck()
+        missing_icu = sys_check.check_icu_libs()
+        
+        if missing_icu:
+            row = Adw.ActionRow()
+            row.set_title(_("Missing Libraries Detected"))
+            row.set_subtitle(_("Sunshine requires older ICU libraries ({}) which are missing.").format(", ".join(missing_icu)))
+            row.add_css_class("error")
+            row.add_prefix(create_icon_widget("dialog-error-symbolic", size=24))
+            
+            fix_btn = Gtk.Button(label=_("Fix Dependencies"))
+            fix_btn.add_css_class("suggested-action")
+            fix_btn.set_valign(Gtk.Align.CENTER)
+            fix_btn.connect('clicked', self.on_fix_libs_clicked)
+            
+            row.add_suffix(fix_btn)
+            group.add(row)
+        else:
+            row = Adw.ActionRow()
+            row.set_title(_("System Status"))
+            row.set_subtitle(_("All required libraries appear to be present."))
+            row.add_prefix(create_icon_widget("emblem-ok-symbolic", size=24))
+            group.add(row)
+            
+            # Force Fix button (advanced)
+            force_row = Adw.ActionRow()
+            force_row.set_title(_("Re-apply Library Fix"))
+            force_row.set_subtitle(_("Run the library fix script manually."))
+            
+            force_btn = Gtk.Button(label=_("Run Fix"))
+            force_btn.set_valign(Gtk.Align.CENTER)
+            force_btn.connect('clicked', self.on_fix_libs_clicked)
+            force_row.add_suffix(force_btn)
+            group.add(force_row)
+
+    def on_fix_libs_clicked(self, btn):
+        script_path = "/usr/share/big-remote-play/scripts/fix_sunshine_libs.sh"
+        
+        # Check if script exists, if not use local dev path for testing
+        if not os.path.exists(script_path):
+             # Try to find it in current source if running from source
+             possible_local = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "scripts", "fix_sunshine_libs.sh"))
+             if os.path.exists(possible_local):
+                 script_path = possible_local
+        
+        try:
+            # properly double quote the command for pkexec / sh -c
+            cmd = f"pkexec bash '{script_path}'"
+            subprocess.Popen(cmd, shell=True)
+            
+            # Toast
+            root = btn.get_root()
+            if hasattr(root, 'add_toast'):
+                root.add_toast(Adw.Toast.new(_("Fix script started. Please authenticate.")))
+        except Exception as e:
+             print(f"Error running fix: {e}")
+
 
     def get_general_options(self):
         return [

@@ -161,3 +161,27 @@ class SystemCheck:
             
         except:
             return _("Unknown")
+
+    def check_icu_libs(self) -> list:
+        """
+        Checks for missing ICU libraries required by Sunshine (specifically .76)
+        Returns a list of missing libraries.
+        """
+        import os
+        
+        missing = []
+        required_libs = ['libicuuc.so.76', 'libicudata.so.76', 'libicui18n.so.76']
+        lib_paths = ['/usr/lib', '/usr/lib64']
+        
+        for lib in required_libs:
+            found = False
+            for path in lib_paths:
+                full_path = os.path.join(path, lib)
+                if os.path.exists(full_path):
+                    found = True
+                    break
+            
+            if not found:
+                missing.append(lib)
+                
+        return missing
