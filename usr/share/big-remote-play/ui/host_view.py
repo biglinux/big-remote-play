@@ -1291,42 +1291,16 @@ class HostView(Gtk.Box):
                 sunshine_config['output_name'] = ':0'
             
             self.sunshine.configure(sunshine_config)
-            if self.sunshine.start():
-                self.sync_ui_state()
-                
+            success, msg = self.sunshine.start()
+            
+            if success:
                 self.is_hosting = True
-                
-                # Update final UI state
                 self.sync_ui_state()
                 self.show_toast(_('Server started'))
             else:
                 self.is_hosting = False
                 self.sync_ui_state()
-                
-                # Check for specific errors in log
-                error_msg = _("Check logs for details.")
-                fix_cmd = None
-                
-                try:
-                    log_path = self.sunshine.config_dir / 'sunshine.log'
-                    if log_path.exists():
-                        with open(log_path, 'r') as f:
-                            lines = f.readlines()
-                            for line in lines[-10:]:
-                                if "error while loading shared libraries" in line:
-                                    # Extract lib name if possible or just show generic error
-                                    parts = line.split("error while loading shared libraries:")
-                                    lib = parts[1].split(":")[0].strip() if len(parts) > 1 else "Unknown"
-                                    error_msg = _("Missing library: {}\n\nPlease check your Sunshine installation.").format(lib)
-                                    break
-                                elif "Address already in use" in line:
-                                    error_msg = _("Port already in use. Check if another instance is running.")
-                                    break
-                except: pass
-                
-                dialog = Adw.MessageDialog.new(self.get_root(), _("Failed to start"), _("The server failed to start.\n{}").format(error_msg))
-                dialog.add_response("close", _("Close"))
-                dialog.present()
+                self.show_start_error_dialog(msg)
             
         except Exception as e:
             self.show_error_dialog(_('Error'), str(e))
@@ -1431,6 +1405,35 @@ class HostView(Gtk.Box):
             
         return ipv4, ipv6
         
+    def show_start_error_dialog(self, message):
+        if not message: message = _("Check logs for details.")
+        
+        body = _("Sunshine failed to start.\n\nError: {}\n\nIf this is a dependency issue (missing libraries), try the 'Fix Dependencies' button.").format(message)
+        
+        # Use simple MessageDialog constructor for custom response handling if needed, 
+        # or simplified new() if we connect signal later.
+        dialog = Adw.MessageDialog(heading=_("Server Failed to Start"), body=body)
+        dialog.set_transient_for(self.get_root())
+        dialog.add_response("cancel", _("Close"))
+        dialog.add_response("logs", _("View Logs"))
+        dialog.add_response("fix", _("Fix Dependencies"))
+        
+        dialog.set_response_appearance("fix", Adw.ResponseAppearance.SUGGESTED)
+        
+        def on_response(d, r):
+            if r == "logs":
+                try:
+                    log_path = self.sunshine.config_dir / 'sunshine.log'
+                    subprocess.Popen(['xdg-open', str(log_path)])
+                except: pass
+            elif r == "fix":
+                app = self.get_root().get_application()
+                if hasattr(app, 'show_preferences'):
+                    app.show_preferences(tab='sunshine')
+                    
+        dialog.connect("response", on_response)
+        dialog.present()
+
     def show_error_dialog(self, title, message):
         dialog = Adw.MessageDialog.new(self.get_root(), title, message)
         dialog.add_response('ok', 'OK')

@@ -171,13 +171,21 @@ class SystemCheck:
         
         missing = []
         required_libs = ['libicuuc.so.76', 'libicudata.so.76', 'libicui18n.so.76']
-        lib_paths = ['/usr/lib', '/usr/lib64']
+        lib_paths = ['/usr/share/big-remote-play/libs', '/usr/lib', '/usr/lib64']
         
         for lib in required_libs:
             found = False
             for path in lib_paths:
                 full_path = os.path.join(path, lib)
                 if os.path.exists(full_path):
+                    # Check if it's a symlink to .78 (which is broken)
+                    try:
+                        real_path = os.path.realpath(full_path)
+                        if "78" in os.path.basename(real_path) and "76" not in os.path.basename(real_path):
+                             # It's a fake symlink
+                             continue
+                    except: pass
+                    
                     found = True
                     break
             

@@ -19,6 +19,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
     
     def __init__(self, **kwargs):
         self.config = kwargs.pop('config', None)
+        self.initial_tab = kwargs.pop('initial_tab', None)
         super().__init__(**kwargs)
         
         self.set_title(_('Preferências'))
@@ -26,12 +27,14 @@ class PreferencesWindow(Adw.PreferencesWindow):
         self.set_modal(True)
         
         self.logger = logger.Logger()
-        self.config = kwargs.get('config', None)
         if not self.config:
             from utils.config import Config
             self.config = Config()
             
         self.setup_ui()
+        
+        if self.initial_tab == 'sunshine' and hasattr(self, 'sunshine_page'):
+             self.set_visible_page(self.sunshine_page)
         
     def setup_ui(self):
         """Configures interface"""
