@@ -12,6 +12,7 @@ import subprocess, os, tempfile, threading
 from gi.repository import GLib
 from utils.i18n import _
 from utils.icons import create_icon_widget
+from ui.sunshine_preferences import SunshineConfigManager
 class HostView(Gtk.Box):
     def __init__(self):
         print("DEBUG: HostView.__init__ called")
@@ -637,6 +638,14 @@ class HostView(Gtk.Box):
 
     def open_pin_dialog(self, _widget):
         self._ensure_sunshine_config() # Ensure config before trying to use API
+        
+        # Load saved credentials
+        conf = SunshineConfigManager()
+        saved_user = conf.get('sunshine_user', '')
+        saved_pass = conf.get('sunshine_password', '')
+        if saved_user == 'None': saved_user = ''
+        if saved_pass == 'None': saved_pass = ''
+        
         dialog = Adw.MessageDialog(
             heading=_("Insert PIN"), 
             body=_("Enter the PIN displayed on the client device (Moonlight).")
@@ -647,13 +656,25 @@ class HostView(Gtk.Box):
         grp = Adw.PreferencesGroup()
         
         pin_row = Adw.EntryRow(title=_("PIN"))
-        # pin_row.set_input_purpose(Gtk.InputPurpose.NUMBER) 
         
         name_row = Adw.EntryRow(title=_("Device Name"))
         name_row.set_text(socket.gethostname())
         
+        user_row = Adw.EntryRow(title=_("Sunshine User"))
+        if saved_user: user_row.set_text(saved_user)
+        
+        pass_row = Adw.PasswordEntryRow(title=_("Sunshine Password"))
+        if saved_pass: pass_row.set_text(saved_pass)
+        
+        save_chk = Adw.SwitchRow(title=_("Save Password"))
+        save_chk.set_subtitle(_("Save credentials to Sunshine preferences"))
+        save_chk.set_active(bool(saved_user and saved_pass))
+        
         grp.add(pin_row)
         grp.add(name_row)
+        grp.add(user_row)
+        grp.add(pass_row)
+        grp.add(save_chk)
         
         dialog.set_extra_child(grp)
         
@@ -665,17 +686,25 @@ class HostView(Gtk.Box):
             if r == "ok":
                 pin = pin_row.get_text().strip()
                 device_name = name_row.get_text().strip()
+                u = user_row.get_text().strip()
+                p = pass_row.get_text().strip()
+                save = save_chk.get_active()
+
                 if not pin: return
                 
-                # Try with stored credentials first
-                auth = self._get_sunshine_creds()
+                # Update saved credentials if requested
+                if save and u and p:
+                    conf.set('sunshine_user', u)
+                    conf.set('sunshine_password', p)
+                    print("DEBUG: Credentials saved to sunshine preferences")
+                
+                auth = (u, p) if (u and p) else None
                 success, msg = self.sunshine.send_pin(pin, name=device_name, auth=auth)
                 
                 if success:
                     self.show_toast(_("PIN sent successfully"))
                 elif "Authentication Failed" in msg or "Falha de Autenticação" in msg or "401" in msg:
-                    # Se falhar autenticação, pedir credenciais
-                    self.open_sunshine_auth_dialog(pin, device_name=device_name)
+                    self.show_error_dialog(_("Authentication Failed"), _("Invalid username or password."))
                 elif "307" in msg:
                     # Se retornar Redirect 307, significa que não tem usuário criado
                     self.prompt_create_user(pin)

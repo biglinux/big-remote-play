@@ -209,7 +209,10 @@ class PreferencesWindow(Adw.PreferencesWindow):
         
 
     def on_restore_defaults_clicked(self, button):
-        dialog = Adw.MessageDialog(heading=_("Restaurar Padrões?"), body=_("Isso redefinirá todas as configurações do aplicativo para os valores originais. Dados de pareamento não serão perdidos."))
+        # Updated text as requested
+        msg = _("Todas as suas modificações no Big Remote Play serão restauradas! Isso inclui as configurações do Sunshine e Moonlight.")
+        
+        dialog = Adw.MessageDialog(heading=_("Restaurar Padrões?"), body=msg)
         dialog.add_response("cancel", _("Cancelar"))
         dialog.add_response("restore", _("Restaurar"))
         dialog.set_response_appearance("restore", Adw.ResponseAppearance.DESTRUCTIVE)
@@ -217,30 +220,39 @@ class PreferencesWindow(Adw.PreferencesWindow):
         
         def on_response(d, r):
             if r == "restore":
-                # Reset main config
-                default_conf = self.config.default_config()
-                for k, v in default_conf.items():
-                    self.config.set(k, v)
-                
-                # Reset Moonlight Config (delete file to force regeneration)
                 try:
-                    # Reset Sunshine Config (Clear file)
+                    # 1. Reset Main Config (config.json)
+                    # We load defaults and apply them. 
+                    # Ideally we should clear unknown keys too, but setting defaults covers most.
+                    default_conf = self.config.default_config()
+                    for k, v in default_conf.items():
+                        self.config.set(k, v)
+                    self.config.save()
+                    
+                    # 2. Reset Sunshine Config (sunshine.conf)
+                    # Delete the file so it regenerates cleanly or starts empty
+                    sunshine_conf = Path.home() / '.config' / 'big-remoteplay' / 'sunshine' / 'sunshine.conf'
+                    if sunshine_conf.exists():
+                        os.remove(sunshine_conf)
+                        print("Sunshine config deleted (reset)")
+                        
+                    # Reload UI config manager if active
                     if hasattr(self, 'sunshine_page') and hasattr(self.sunshine_page, 'config'):
-                        self.sunshine_page.config.config = {}
-                        self.sunshine_page.config.save()
-                        print("Sunshine config reset")
-
+                         self.sunshine_page.config.load()
+                    
+                    # 3. Reset Moonlight Config
                     from utils.moonlight_config import MoonlightConfigManager
                     mc = MoonlightConfigManager()
                     if mc.config_file and mc.config_file.exists():
                         os.remove(mc.config_file)
                     mc.reload() # Recreates Default
                     mc.save()
+                    
+                    self.add_toast(Adw.Toast.new(_("Configurações Restauradas! Reinicie o aplicativo para aplicar todas as alterações.")))
+                    self.close()
                 except Exception as e:
                     print(f"Error resetting configs: {e}")
-                
-                self.add_toast(Adw.Toast.new(_("Configurações Restauradas!")))
-                self.close()
+                    self.add_toast(Adw.Toast.new(_("Erro ao restaurar: {}").format(e)))
         
         dialog.connect("response", on_response)
         dialog.present()
