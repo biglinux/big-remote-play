@@ -11,12 +11,12 @@ class SunshineHost:
     def start(self, **kwargs):
         if self.is_running():
             print("DEBUG: SunshineHost.start - already running")
-            return False
+            return True, "Already running"
             
         sc = shutil.which('sunshine')
         if not sc:
             print("DEBUG: SunshineHost.start - sunshine executable not found")
-            return False
+            return False, "Sunshine executable not found"
         try:
             config_file = self.config_dir / 'sunshine.conf'
             # Prepare environment
@@ -39,6 +39,10 @@ class SunshineHost:
             # Pass WAYLAND_DISPLAY if exists
             if 'WAYLAND_DISPLAY' in os.environ:
                 env['WAYLAND_DISPLAY'] = os.environ['WAYLAND_DISPLAY']
+
+            custom_paths = env.get('LD_LIBRARY_PATH', '')
+            base_libs = '/usr/share/big-remote-play/libs'
+            env['LD_LIBRARY_PATH'] = f"{base_libs}:{custom_paths}" if custom_paths else base_libs
 
             cmd = [
                 sc,
@@ -91,7 +95,7 @@ class SunshineHost:
                 
                 self.process = None
                 self.pid = None
-                return False
+                return False, error_detail if error_detail else f"Exit code {exit_code}"
                 
             except subprocess.TimeoutExpired:
                 # Process continues running after timeout, success!
@@ -103,11 +107,11 @@ class SunshineHost:
                 f.write(str(self.pid))
                 
             print(_("Sunshine started (PID: {})").format(self.pid))
-            return True
+            return True, None
             
         except Exception as e:
             print(_("Error starting Sunshine: {}").format(e))
-            return False
+            return False, str(e) # Return tuple (success, error_message)
             
     def stop(self) -> bool:
         """Stops Sunshine server"""

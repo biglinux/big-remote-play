@@ -81,9 +81,9 @@ class BigRemotePlayApp(Adw.Application):
         print(f"DEBUG: About Dialog Version: {about.get_version()}")
         about.present()
         
-    def show_preferences(self, *args):
+    def show_preferences(self, *args, tab=None):
         from ui.preferences import PreferencesWindow
-        pref_win = PreferencesWindow(transient_for=self.window, config=self.config)
+        pref_win = PreferencesWindow(transient_for=self.window, config=self.config, initial_tab=tab)
         
         # Reload GuestView settings when preferences close
         def on_close(*_):

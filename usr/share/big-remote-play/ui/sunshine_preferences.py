@@ -343,8 +343,27 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
             root = btn.get_root()
             if hasattr(root, 'add_toast'):
                 root.add_toast(Adw.Toast.new(_("Fix script started. Please authenticate.")))
+            
+            # Start polling
+            self.fix_attempts = 0
+            GLib.timeout_add(2000, self._poll_fix_status)
+            
         except Exception as e:
              print(f"Error running fix: {e}")
+
+    def _poll_fix_status(self):
+        from utils.system_check import SystemCheck
+        missing = SystemCheck().check_icu_libs()
+        
+        if not missing:
+            if hasattr(self, 'get_root') and self.get_root():
+                root = self.get_root()
+                if hasattr(root, 'add_toast'):
+                    root.add_toast(Adw.Toast.new(_("Libraries fixed! You can now start the server.")))
+            return False
+            
+        self.fix_attempts += 1
+        return self.fix_attempts < 30 # Stop after ~60s
 
 
     def get_general_options(self):
