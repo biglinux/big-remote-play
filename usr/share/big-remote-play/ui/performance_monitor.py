@@ -498,7 +498,6 @@ class PerformanceMonitor(Gtk.Box):
             # whenever we use terminate_session() in the user's environment.
             if ip:
                 try:
-                    print(f"DEBUG: Attempting system-level disconnect for IP: {ip}")
                     base_dir = Path(__file__).parent.parent
                     script_path = base_dir / 'scripts' / 'drop_guest.sh'
                     
@@ -506,19 +505,16 @@ class PerformanceMonitor(Gtk.Box):
                         cmd = ["pkexec", str(script_path), ip]
                         res = subprocess.run(cmd, capture_output=True, text=True)
                         if res.returncode == 0:
-                            print("DEBUG: System-level disconnect success")
                             success = True
                         else:
-                            print(f"DEBUG: System-level disconnect failed: {res.stderr}")
+                            pass
                 except Exception as e:
-                    print(f"DEBUG: Error in system-level disconnect: {e}")
-
+                    pass
             # METHOD 2: API Fallback (Only if we haven't succeeded yet and have ID)
             # We skip this if we successfully killed the socket, because we want to avoid 
             # the API instability the user reported.
             if not success and session_id and self.sunshine:
                 try:
-                    print(f"DEBUG: Attempting API disconnect for ID: {session_id}")
                     # Caution: This might be unstable on user's system
                     success = self.sunshine.terminate_session(session_id, auth=auth)
                 except: pass

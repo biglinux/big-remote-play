@@ -15,7 +15,6 @@ from utils.icons import create_icon_widget
 from ui.sunshine_preferences import SunshineConfigManager
 class HostView(Gtk.Box):
     def __init__(self):
-        print("DEBUG: HostView.__init__ called")
         self.loading_settings = True
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.config = Config()
@@ -582,7 +581,6 @@ class HostView(Gtk.Box):
             conf_file.parent.mkdir(parents=True, exist_ok=True)
             with open(conf_file, 'w') as f:
                 f.writelines(final_lines)
-            print(f"DEBUG: Saved Sunshine credentials and config to {conf_file}")
         except Exception as e:
             print(f"Error saving Sunshine creds: {e}")
 
@@ -620,7 +618,6 @@ class HostView(Gtk.Box):
                     updates_needed = True
             
             if updates_needed:
-                print("DEBUG: Updating sunshine.conf with missing API settings...")
                 final_lines = lines.copy()
                 if final_lines and not final_lines[-1].endswith('\n'):
                     final_lines[-1] += '\n'
@@ -631,7 +628,6 @@ class HostView(Gtk.Box):
                 
                 with open(conf_file, 'w') as f:
                     f.writelines(final_lines)
-                print("DEBUG: sunshine.conf updated successfully.")
                 
         except Exception as e:
             print(f"Error ensuring sunshine config: {e}")
@@ -696,7 +692,6 @@ class HostView(Gtk.Box):
                 if save and u and p:
                     conf.set('sunshine_user', u)
                     conf.set('sunshine_password', p)
-                    print("DEBUG: Credentials saved to sunshine preferences")
                 
                 auth = (u, p) if (u and p) else None
                 success, msg = self.sunshine.send_pin(pin, name=device_name, auth=auth)
@@ -953,7 +948,6 @@ class HostView(Gtk.Box):
              self.get_root().get_clipboard().set(val); self.show_toast(_("Copied!"))
 
     def toggle_hosting(self, button):
-        print("DEBUG: HostView.toggle_hosting called")
         self.show_toast(_("Clicked Start Server..."))
         self.start_button.set_sensitive(False)
         self.start_btn_spinner.set_visible(True)
@@ -963,7 +957,6 @@ class HostView(Gtk.Box):
         GLib.timeout_add(100, self._perform_toggle_hosting)
 
     def _perform_toggle_hosting(self):
-        print(f"DEBUG: HostView._perform_toggle_hosting - is_hosting: {self.is_hosting}")
         if self.is_hosting: self.stop_hosting()
         else: self.start_hosting()
         return False
@@ -1184,7 +1177,6 @@ class HostView(Gtk.Box):
         self._run_audio_enforcer()
              
     def start_hosting(self, b=None):
-        print("DEBUG: HostView.start_hosting called")
         self.loading_bar.set_visible(True); self.loading_bar.pulse()
             
         try:
@@ -1197,22 +1189,45 @@ class HostView(Gtk.Box):
             self.stop_pin_listener = NetworkDiscovery().start_pin_listener(self.pin_code, socket.gethostname())
             
             mode_idx = self.game_mode_row.get_selected()
-            apps_config = []
             
-            if mode_idx in [1, 2]:
+            # Always use Desktop mode in apps.json - we launch games directly
+            self.sunshine.update_apps([{"name": "Desktop", "output": "", "cmd": "", "detached": ["sleep infinity"]}])
+            
+            # Store game launch info to execute AFTER Sunshine starts
+            self._game_launch_info = None
+            self._game_processes = []
+            
+            if mode_idx == 1:  # Steam
                 idx = self.game_list_row.get_selected()
                 if idx != Gtk.INVALID_LIST_POSITION:
-                    plat = {1: 'Steam', 2: 'Lutris'}[mode_idx]
-                    games = self.detected_games.get(plat, [])
+                    games = self.detected_games.get('Steam', [])
                     if 0 <= idx < len(games):
-                        apps_config.append({"name": games[idx]['name'], "cmd": games[idx]['cmd'], "detached": True})
-            elif mode_idx == 3:
+                        game = games[idx]
+                        app_id = game.get('id', '')
+                        self._game_launch_info = {
+                            'type': 'steam',
+                            'app_id': app_id,
+                            'name': game['name']
+                        }
+            elif mode_idx == 2:  # Lutris
+                idx = self.game_list_row.get_selected()
+                if idx != Gtk.INVALID_LIST_POSITION:
+                    games = self.detected_games.get('Lutris', [])
+                    if 0 <= idx < len(games):
+                        game = games[idx]
+                        self._game_launch_info = {
+                            'type': 'lutris',
+                            'cmd': game['cmd'],
+                            'name': game['name']
+                        }
+            elif mode_idx == 3:  # Custom App
                 name = self.custom_name_entry.get_text(); cmd = self.custom_cmd_entry.get_text()
-                if name and cmd: apps_config.append({"name": name, "cmd": cmd, "detached": True})
-            
-            if apps_config: self.sunshine.update_apps(apps_config)
-            else:
-                if mode_idx == 0: self.sunshine.update_apps([{"name": "Desktop", "detached": True, "cmd": "sleep infinity"}])
+                if name and cmd:
+                    self._game_launch_info = {
+                        'type': 'custom',
+                        'cmd': cmd,
+                        'name': name
+                    }
                      
             # Determine FPS
             fps_idx = self.fps_row.get_selected()
@@ -1278,7 +1293,6 @@ class HostView(Gtk.Box):
                 
                 if self.audio_manager.enable_streaming_audio(host_sink, guest_only=guest_only):
                     sunshine_config['audio_sink'] = "SunshineGameSink"
-                    print(f"DEBUG: Configured Sunshine audio_sink to: {sunshine_config['audio_sink']}")
                     
                     self._last_monitor_state = not guest_only
                     self.start_audio_mixer_refresh()
@@ -1326,6 +1340,9 @@ class HostView(Gtk.Box):
                 self.is_hosting = True
                 self.sync_ui_state()
                 self.show_toast(_('Server started'))
+                
+                # DIRECT LAUNCH: Open game/platform immediately
+                self._launch_game_direct()
             else:
                 self.is_hosting = False
                 self.sync_ui_state()
@@ -1341,10 +1358,113 @@ class HostView(Gtk.Box):
             self.start_btn_spinner.stop()
             self.start_btn_spinner.set_visible(False)
         
+    def _launch_game_direct(self):
+        """Directly launch game/platform via subprocess - radical approach"""
+        info = getattr(self, '_game_launch_info', None)
+        if not info:
+            print("Game Mode: Desktop (no game to launch)")
+            return
+        
+        if not hasattr(self, '_game_processes'):
+            self._game_processes = []
+            
+        env = os.environ.copy()
+        
+        try:
+            if info['type'] == 'steam':
+                app_id = info['app_id']
+                game_name = info['name']
+                print(f"DIRECT LAUNCH: Steam Big Picture + {game_name} (ID: {app_id})")
+                
+                # 1. Open Steam Big Picture Mode
+                p1 = subprocess.Popen(
+                    ['steam', 'steam://open/bigpicture'],
+                    env=env, start_new_session=True,
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                )
+                self._game_processes.append(p1)
+                self.show_toast(_("Opening Steam Big Picture..."))
+                
+                # 2. Launch the game after a delay (give Big Picture time to open)
+                def _delayed_game_launch():
+                    import time
+                    time.sleep(4)
+                    try:
+                        p2 = subprocess.Popen(
+                            ['steam', f'steam://rungameid/{app_id}'],
+                            env=env, start_new_session=True,
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                        )
+                        self._game_processes.append(p2)
+                        GLib.idle_add(self.show_toast, _("Launching {}...").format(game_name))
+                        print(f"DIRECT LAUNCH: Game {game_name} launched (PID: {p2.pid})")
+                    except Exception as e:
+                        print(f"Error launching game: {e}")
+                        GLib.idle_add(self.show_toast, _("Error launching game: {}").format(e))
+                
+                threading.Thread(target=_delayed_game_launch, daemon=True).start()
+                    
+            elif info['type'] == 'lutris':
+                cmd = info['cmd']
+                game_name = info['name']
+                print(f"DIRECT LAUNCH: Lutris - {game_name} ({cmd})")
+                
+                p = subprocess.Popen(
+                    cmd.split(),
+                    env=env, start_new_session=True,
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                )
+                self._game_processes.append(p)
+                self.show_toast(_("Launching {}...").format(game_name))
+                    
+            elif info['type'] == 'custom':
+                cmd = info['cmd']
+                game_name = info['name']
+                print(f"DIRECT LAUNCH: Custom - {game_name} ({cmd})")
+                
+                p = subprocess.Popen(
+                    cmd, shell=True,
+                    env=env, start_new_session=True,
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                )
+                self._game_processes.append(p)
+                self.show_toast(_("Launching {}...").format(game_name))
+                    
+        except Exception as e:
+            print(f"Error in _launch_game_direct: {e}")
+            self.show_toast(_("Error launching game: {}").format(e))
+    
+    def _stop_game_direct(self):
+        """Kill any directly launched game processes"""
+        info = getattr(self, '_game_launch_info', None)
+        
+        # Close Steam Big Picture if we opened it
+        if info and info.get('type') == 'steam':
+            try:
+                subprocess.Popen(
+                    ['steam', 'steam://close/bigpicture'],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                )
+                print("Closing Steam Big Picture")
+            except: pass
+        
+        # Kill tracked processes
+        for p in getattr(self, '_game_processes', []):
+            try:
+                if p.poll() is None:  # Still running
+                    import signal
+                    os.killpg(os.getpgid(p.pid), signal.SIGTERM)
+            except: pass
+        
+        self._game_processes = []
+        self._game_launch_info = None
+
     def stop_hosting(self, b=None):
-        print("DEBUG: HostView.stop_hosting called")
         self.show_toast(_("Stopping server..."))
         self.loading_bar.set_visible(True); self.loading_bar.pulse()
+        
+        # Stop directly launched games FIRST
+        self._stop_game_direct()
         # Update mixer visibility based on mode
         self.audio_mixer_expander.set_visible(self.audio_mode_row.get_selected() in [0, 1, 3])
         self.stop_audio_mixer_refresh()
@@ -1382,7 +1502,6 @@ class HostView(Gtk.Box):
         
         # If it was supposed to be hosting but sunshine is not running
         if self.is_hosting and not sunshine_running:
-             print("DEBUG: Sunshine crashed or was stopped externally. Updating UI.")
              self.is_hosting = False
              self.sync_ui_state()
              self.show_toast(_("Sunshine stopped unexpectedly"))
@@ -1505,6 +1624,7 @@ class HostView(Gtk.Box):
         h = self.config.get('host', {})
         h.update({
             'mode_idx': self.game_mode_row.get_selected(),
+            'game_list_idx': self.game_list_row.get_selected(),
             'custom_name': self.custom_name_entry.get_text(),
             'custom_cmd': self.custom_cmd_entry.get_text(),
             
@@ -1631,6 +1751,13 @@ class HostView(Gtk.Box):
             h = self.config.get('host', {})
             if not h: return
             self.game_mode_row.set_selected(h.get('mode_idx', 0))
+            # Restore game list selection after populating
+            mode_idx = h.get('mode_idx', 0)
+            if mode_idx in [1, 2]:
+                self.populate_game_list(mode_idx)
+                game_list_idx = h.get('game_list_idx', 0)
+                if game_list_idx is not None:
+                    self.game_list_row.set_selected(game_list_idx)
             self.custom_name_entry.set_text(h.get('custom_name', ''))
             self.custom_cmd_entry.set_text(h.get('custom_cmd', ''))
             
@@ -1676,7 +1803,7 @@ class HostView(Gtk.Box):
         for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row]:
             r.connect('notify::active', self.save_host_settings)
 
-        for r in [self.audio_mode_row, self.game_mode_row, self.monitor_row, self.gpu_row, self.platform_row, self.audio_output_row, self.optimization_row, self.resolution_row, self.fps_row]:
+        for r in [self.audio_mode_row, self.game_mode_row, self.game_list_row, self.monitor_row, self.gpu_row, self.platform_row, self.audio_output_row, self.optimization_row, self.resolution_row, self.fps_row]:
             r.connect('notify::selected', self.save_host_settings)
 
 

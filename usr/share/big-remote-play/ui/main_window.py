@@ -632,7 +632,7 @@ class MainWindow(Adw.ApplicationWindow):
         title.add_css_class('animate-fade')
         main_box.append(title)
 
-        subtitle = Gtk.Label(label=_('Play cooperatively over the local network'))
+        subtitle = Gtk.Label(label=_('Play cooperatively over the local network or the internet'))
         subtitle.add_css_class('hero-subtitle')
         subtitle.add_css_class('animate-fade')
         subtitle.add_css_class('delay-1')
@@ -741,7 +741,6 @@ class MainWindow(Adw.ApplicationWindow):
         row.add_css_class('active-category')
 
         if not hasattr(self, 'content_stack'):
-            print(f"DEBUG: stack not ready for {pid}")
             return
 
         # If no VPN is set yet and user clicks vpn_selector, show the selector
@@ -754,13 +753,11 @@ class MainWindow(Adw.ApplicationWindow):
         if pid == 'vpn_selector' or (pid in ('create_private', 'connect_private') and not self._vpn_choice):
             actual_pid = 'vpn_selector'
 
-        print(f"DEBUG: Switching to {actual_pid}")
         if self.content_stack.get_visible_child_name() != actual_pid:
             self.content_stack.set_visible_child_name(actual_pid)
             self.current_page = actual_pid
         else:
-            print(f"DEBUG: Already on {actual_pid}")
-
+            pass
     def navigate_to(self, pid):
         """Programmatic navigation: find row and select it"""
         r = self.nav_list.get_first_child()

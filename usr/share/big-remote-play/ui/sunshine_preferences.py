@@ -43,7 +43,6 @@ class SunshineConfigManager:
             with open(self.config_file, 'w') as f:
                 for key, value in self.config.items():
                     f.write(f"{key} = {value}\n")
-                print(f"DEBUG: SunshineConfigManager - Saved config to {self.config_file}")
         except Exception as e:
             print(f"Error saving Sunshine config: {e}")
 

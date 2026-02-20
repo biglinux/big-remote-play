@@ -79,6 +79,21 @@ def _delete_history(entry_id):
         json.dump({"history": history}, f, indent=2)
 
 
+def _update_history(entry_id, updated_entry):
+    """Update a specific history entry by its ID."""
+    history = _load_history()
+    for i, h in enumerate(history):
+        if h.get("id") == entry_id:
+            # Preserve id and timestamp, update the rest
+            updated_entry["id"] = entry_id
+            updated_entry["timestamp"] = h.get("timestamp", time.strftime("%Y-%m-%d %H:%M:%S"))
+            history[i] = updated_entry
+            break
+    os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
+    with open(HISTORY_FILE, "w") as f:
+        json.dump({"history": history}, f, indent=2)
+
+
 def _get_script(name):
     base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     p = os.path.join(base, "scripts", name)
@@ -1227,14 +1242,22 @@ class ConnectPage(Adw.Bin):
         scroll_tree.add_css_class("card")
         status_box.append(scroll_tree)
 
-        # Prominent API Token button
+        # Prominent API Token buttons
+        self._btn_api_box = Gtk.Box(spacing=12, halign=Gtk.Align.CENTER, margin_top=12)
+        self._btn_api_box.set_visible(self.vpn_id == 'zerotier')
+
         self._btn_api_token = Gtk.Button(label=_("Set ZeroTier API Token"))
         self._btn_api_token.add_css_class("suggested-action")
         self._btn_api_token.add_css_class("pill")
-        self._btn_api_token.set_margin_top(12)
         self._btn_api_token.connect("clicked", self._prompt_api_token)
-        self._btn_api_token.set_visible(self.vpn_id == 'zerotier')
-        status_box.append(self._btn_api_token)
+        self._btn_api_box.append(self._btn_api_token)
+
+        self._btn_get_token = Gtk.Button(label=_("Create API Access Token"))
+        self._btn_get_token.add_css_class("pill")
+        self._btn_get_token.connect("clicked", lambda b: os.system("xdg-open https://my.zerotier.com/account"))
+        self._btn_api_box.append(self._btn_get_token)
+
+        status_box.append(self._btn_api_box)
 
         p2 = stack.add_titled(status_box, "status", _("Status"))
         p2.set_icon_name("network-transmit-receive-symbolic")
@@ -1456,12 +1479,20 @@ class ConnectPage(Adw.Bin):
             self._c_progress.update(1.0, _("✅ Connected!"))
             self._c_lbl.set_label(_("Establish Connection"))
             
-            # Save to history
+            # Save ALL filled fields to history
             entry = {"vpn": self.vpn_id}
             if self.vpn_id == 'headscale':
                 entry["domain"] = self._e_domain.get_text().strip()
+                if hasattr(self, '_e_key'):
+                    key_val = self._e_key.get_text().strip()
+                    if key_val:
+                        entry["auth_key"] = key_val
             elif self.vpn_id == 'tailscale':
                 entry["domain"] = self._e_server.get_text().strip() or "tailscale.com"
+                if hasattr(self, '_e_key'):
+                    key_val = self._e_key.get_text().strip()
+                    if key_val:
+                        entry["auth_key"] = key_val
             elif self.vpn_id == 'zerotier':
                 entry["network_id"] = self._e_netid.get_text().strip()
             _save_history(entry)
@@ -1635,7 +1666,9 @@ class ConnectPage(Adw.Bin):
 
         for entry in reversed(history):
             vpn_id = entry.get("vpn", "headscale")
-            vpn_name = VPN_META.get(vpn_id, {}).get("name", vpn_id)
+            vpn_meta = VPN_META.get(vpn_id, {})
+            vpn_name = vpn_meta.get("name", vpn_id)
+            vpn_icon = vpn_meta.get("icon", "network-wired-symbolic")
             domain = entry.get("domain") or entry.get("network_id") or "?"
             ts = entry.get("timestamp", "")
 
@@ -1643,23 +1676,45 @@ class ConnectPage(Adw.Bin):
             grp.set_title(f"{vpn_name} – {domain}")
             grp.set_description(ts)
 
-            # Action buttons in header
-            hbox = Gtk.Box(spacing=4)
+            # VPN provider logo + Action buttons in header
+            header_box = Gtk.Box(spacing=8, valign=Gtk.Align.CENTER)
+
+            # VPN Logo on the left side of header
+            logo = create_icon_widget(vpn_icon, size=20)
+            header_box.append(logo)
+
+            # Separator
+            sep = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
+            sep.set_margin_top(4)
+            sep.set_margin_bottom(4)
+            header_box.append(sep)
+
+            # Reconnect button
             btn_conn = Gtk.Button()
-            btn_conn.set_child(create_icon_widget("network-wired-symbolic", size=14))
+            btn_conn.set_child(create_icon_widget("network-transmit-receive-symbolic", size=14))
             btn_conn.add_css_class("flat")
             btn_conn.set_tooltip_text(_("Reconnect"))
             btn_conn.connect("clicked", lambda b, e=entry: self._reconnect_from_history(e))
-            hbox.append(btn_conn)
+            header_box.append(btn_conn)
 
+            # Edit button
+            btn_edit = Gtk.Button()
+            btn_edit.set_child(create_icon_widget("edit-symbolic", size=14))
+            btn_edit.add_css_class("flat")
+            btn_edit.set_tooltip_text(_("Edit"))
+            btn_edit.connect("clicked", lambda b, e=entry: self._edit_history_entry(e))
+            header_box.append(btn_edit)
+
+            # Delete button
             btn_del = Gtk.Button()
-            btn_del.set_child(create_icon_widget("preferences-other-symbolic", size=14))
+            btn_del.set_child(create_icon_widget("trash-symbolic", size=14))
             btn_del.add_css_class("flat")
             btn_del.add_css_class("destructive-action")
             btn_del.set_tooltip_text(_("Delete"))
             btn_del.connect("clicked", lambda b, e=entry: self._delete_history_entry(e))
-            hbox.append(btn_del)
-            grp.set_header_suffix(hbox)
+            header_box.append(btn_del)
+
+            grp.set_header_suffix(header_box)
 
             for label, key, icon in [
                 (_("Domain"), "domain", "network-wired-symbolic"),
@@ -1685,15 +1740,154 @@ class ConnectPage(Adw.Bin):
 
     def _reconnect_from_history(self, entry):
         vpn_id = entry.get("vpn", self.vpn_id)
-        # Switch to connect tab and fill form
-        self._stack.set_visible_child_name("connect")
-        if vpn_id == 'headscale' and hasattr(self, '_e_domain'):
-            self._e_domain.set_text(entry.get("domain", ""))
-            if hasattr(self, '_e_key'):
-                self._e_key.set_text(entry.get("auth_key", ""))
-        elif vpn_id == 'zerotier' and hasattr(self, '_e_netid'):
-            self._e_netid.set_text(entry.get("network_id", ""))
-        self.main_window.show_toast(_(f"Form filled for {VPN_META.get(vpn_id, {}).get('name', vpn_id)}"))
+        vpn_name = VPN_META.get(vpn_id, {}).get('name', vpn_id)
+
+        # Navigate to the respective VPN provider's Connect page in main_window
+        if hasattr(self.main_window, '_apply_vpn_selection'):
+            self.main_window._apply_vpn_selection(vpn_id)
+            # After applying, navigate to connect_private and switch to connect tab
+            GLib.idle_add(lambda: self.main_window.navigate_to('connect_private'))
+
+            # Fill the form fields after the new view is built
+            def _fill_form():
+                if hasattr(self.main_window, 'connect_private_view'):
+                    view = self.main_window.connect_private_view
+                    # ConnectPage is the child of PrivateNetworkView (Adw.Bin)
+                    page = view.get_child() if hasattr(view, 'get_child') else None
+                    if page and hasattr(page, '_stack'):
+                        page._stack.set_visible_child_name("connect")
+                        if vpn_id == 'headscale':
+                            if hasattr(page, '_e_domain'):
+                                page._e_domain.set_text(entry.get("domain", ""))
+                            if hasattr(page, '_e_key'):
+                                page._e_key.set_text(entry.get("auth_key", ""))
+                        elif vpn_id == 'tailscale':
+                            if hasattr(page, '_e_server'):
+                                page._e_server.set_text(entry.get("domain", "") if entry.get("domain") != "tailscale.com" else "")
+                            if hasattr(page, '_e_key'):
+                                page._e_key.set_text(entry.get("auth_key", ""))
+                        elif vpn_id == 'zerotier':
+                            if hasattr(page, '_e_netid'):
+                                page._e_netid.set_text(entry.get("network_id", ""))
+                self.main_window.show_toast(_("Form filled for {}").format(vpn_name))
+            GLib.timeout_add(300, _fill_form)
+        else:
+            # Fallback: just switch to connect tab locally
+            self._stack.set_visible_child_name("connect")
+            if vpn_id == 'headscale' and hasattr(self, '_e_domain'):
+                self._e_domain.set_text(entry.get("domain", ""))
+                if hasattr(self, '_e_key'):
+                    self._e_key.set_text(entry.get("auth_key", ""))
+            elif vpn_id == 'tailscale' and hasattr(self, '_e_server'):
+                self._e_server.set_text(entry.get("domain", "") if entry.get("domain") != "tailscale.com" else "")
+                if hasattr(self, '_e_key'):
+                    self._e_key.set_text(entry.get("auth_key", ""))
+            elif vpn_id == 'zerotier' and hasattr(self, '_e_netid'):
+                self._e_netid.set_text(entry.get("network_id", ""))
+            self.main_window.show_toast(_("Form filled for {}").format(vpn_name))
+
+    def _edit_history_entry(self, entry):
+        """Open a dialog to edit the fields of a history entry."""
+        vpn_id = entry.get("vpn", "headscale")
+        vpn_name = VPN_META.get(vpn_id, {}).get("name", vpn_id)
+
+        dialog = Adw.Window(transient_for=self.main_window)
+        dialog.set_modal(True)
+        dialog.set_title(_("Edit – {}").format(vpn_name))
+        dialog.set_default_size(450, 350)
+
+        toolbar_view = Adw.ToolbarView()
+        hb = Adw.HeaderBar()
+        hb.set_title_widget(Adw.WindowTitle.new(
+            _("Edit Network Entry"),
+            vpn_name
+        ))
+        toolbar_view.add_top_bar(hb)
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+        box.set_margin_top(20)
+        box.set_margin_bottom(20)
+        box.set_margin_start(24)
+        box.set_margin_end(24)
+
+        grp = Adw.PreferencesGroup()
+        grp.set_title(_("Connection Details"))
+        grp.set_header_suffix(create_icon_widget(VPN_META.get(vpn_id, {}).get('icon', 'network-wired-symbolic'), size=20))
+
+        edit_fields = {}
+
+        if vpn_id == 'headscale':
+            e_domain = Adw.EntryRow(title=_("Domain"))
+            e_domain.set_text(entry.get("domain", ""))
+            grp.add(e_domain)
+            edit_fields['domain'] = e_domain
+
+            e_key = Adw.PasswordEntryRow(title=_("Auth Key"))
+            e_key.set_text(entry.get("auth_key", ""))
+            grp.add(e_key)
+            edit_fields['auth_key'] = e_key
+
+        elif vpn_id == 'tailscale':
+            e_domain = Adw.EntryRow(title=_("Login Server"))
+            e_domain.set_text(entry.get("domain", "") if entry.get("domain") != "tailscale.com" else "")
+            grp.add(e_domain)
+            edit_fields['domain'] = e_domain
+
+            e_key = Adw.PasswordEntryRow(title=_("Auth Key"))
+            e_key.set_text(entry.get("auth_key", ""))
+            grp.add(e_key)
+            edit_fields['auth_key'] = e_key
+
+        elif vpn_id == 'zerotier':
+            e_netid = Adw.EntryRow(title=_("Network ID"))
+            e_netid.set_text(entry.get("network_id", ""))
+            grp.add(e_netid)
+            edit_fields['network_id'] = e_netid
+
+        # Web UI (read-only display, editable)
+        if entry.get("web_ui"):
+            e_webui = Adw.EntryRow(title=_("Web UI"))
+            e_webui.set_text(entry.get("web_ui", ""))
+            grp.add(e_webui)
+            edit_fields['web_ui'] = e_webui
+
+        box.append(grp)
+
+        # Buttons
+        btn_box = Gtk.Box(spacing=12, halign=Gtk.Align.CENTER, margin_top=8)
+
+        btn_save = Gtk.Button(label=_("Save"))
+        btn_save.add_css_class("suggested-action")
+        btn_save.add_css_class("pill")
+        btn_save.set_size_request(140, 40)
+
+        btn_cancel = Gtk.Button(label=_("Cancel"))
+        btn_cancel.add_css_class("pill")
+        btn_cancel.set_size_request(140, 40)
+
+        def on_save(b):
+            updated = {"vpn": vpn_id}
+            for key, widget in edit_fields.items():
+                val = widget.get_text().strip()
+                if val:
+                    updated[key] = val
+                elif key == 'domain' and vpn_id == 'tailscale':
+                    updated[key] = "tailscale.com"
+            _update_history(entry.get("id"), updated)
+            self._refresh_history()
+            self.main_window.show_toast(_("Entry updated"))
+            dialog.close()
+
+        btn_save.connect("clicked", on_save)
+        btn_cancel.connect("clicked", lambda b: dialog.close())
+
+        btn_box.append(btn_save)
+        btn_box.append(btn_cancel)
+        box.append(btn_box)
+
+        toolbar_view.set_content(box)
+        dialog.set_content(toolbar_view)
+        dialog.present()
 
     def _delete_history_entry(self, entry):
         d = Adw.MessageDialog(

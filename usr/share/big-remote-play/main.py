@@ -10,9 +10,7 @@ from utils.logger import Logger
 from utils.i18n import _
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-print(f"DEBUG: BASE_DIR: {BASE_DIR}")
 sys.path.insert(0, BASE_DIR)
-print(f"DEBUG: sys.path[0]: {sys.path[0]}")
 ICONS_DIR = os.path.join(BASE_DIR, "icons")
 IMG_DIR = os.path.join(BASE_DIR, "img")
 
@@ -71,7 +69,7 @@ class BigRemotePlayApp(Adw.Application):
             application_name='Big Remote Play',
             application_icon='big-remote-play',
             developer_name='BigLinux Team',
-            version='1.3',
+            version='2.0.0',
             developers=['Rafael Ruscher <rruscher@gmail.com>', 'Alexasandro Pacheco Feliciano <@pachecogameroficial>', 'Alessandro e Silva Xavier <@alessandro741>'],
             copyright='© 2026 BigLinux',
             license_type=Gtk.License.GPL_3_0,
@@ -81,7 +79,6 @@ class BigRemotePlayApp(Adw.Application):
         )
         about.add_link("System-infotech", "https://www.youtube.com/@System-infotech")
         about.add_link("Youtube (Project Story)", "https://www.youtube.com/watch?v=D2l9o_wXW5M")
-        print(f"DEBUG: About Dialog Version: {about.get_version()}")
         about.present()
         
     def show_preferences(self, *args, tab=None):
@@ -91,11 +88,9 @@ class BigRemotePlayApp(Adw.Application):
         # Reload GuestView settings when preferences close
         def on_close(*_):
             if hasattr(self.window, 'guest_view') and hasattr(self.window.guest_view, 'load_guest_settings'):
-                print("DEBUG: Reloading GuestView settings from Preferences")
                 self.window.guest_view.load_guest_settings()
             
             if hasattr(self.window, 'host_view') and hasattr(self.window.host_view, 'load_settings'):
-                print("DEBUG: Reloading HostView settings from Preferences")
                 # Reload config from file first if needed
                 if hasattr(self.window.host_view, 'config') and hasattr(self.window.host_view.config, 'load'):
                     self.window.host_view.config.load()

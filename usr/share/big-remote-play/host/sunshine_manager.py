@@ -10,12 +10,10 @@ class SunshineHost:
         
     def start(self, **kwargs):
         if self.is_running():
-            print("DEBUG: SunshineHost.start - already running")
             return True, "Already running"
             
         sc = shutil.which('sunshine')
         if not sc:
-            print("DEBUG: SunshineHost.start - sunshine executable not found")
             return False, "Sunshine executable not found"
         try:
             config_file = self.config_dir / 'sunshine.conf'
@@ -68,7 +66,6 @@ class SunshineHost:
             # Check if process died immediately (e.g. library error)
             try:
                 # Wait a bit to see if startup fails
-                print("DEBUG: SunshineHost.start - process started, waiting for exit")
                 exit_code = self.process.wait(timeout=2.0)
                 
                 # If reached here, process ended (failed)
@@ -121,17 +118,14 @@ class SunshineHost:
             
         try:
             if self.process:
-                print(f"Stopping child process group for PID {self.process.pid}...")
                 try:
                     pgid = os.getpgid(self.process.pid)
                     os.killpg(pgid, signal.SIGTERM)
                     try:
                         self.process.wait(timeout=2)
                     except subprocess.TimeoutExpired:
-                        print("Timeout, forcing SIGKILL...")
                         os.killpg(pgid, signal.SIGKILL)
                 except Exception as e:
-                    print(f"Error killing process group: {e}")
                     try: self.process.terminate()
                     except: pass
             else:
@@ -140,7 +134,6 @@ class SunshineHost:
                     try:
                         with open(pid_file, 'r') as f:
                             pid = int(f.read().strip())
-                        print(f"Stopping PID {pid} from file...")
                         os.kill(pid, signal.SIGTERM)
                     except: pass
         
@@ -160,7 +153,6 @@ class SunshineHost:
             self.pid = None
             return True
         except Exception as e:
-            print(f"Error in stop: {e}")
             subprocess.run(['pkill', '-9', 'sunshine'], stderr=subprocess.DEVNULL)
             return False
             
@@ -367,16 +359,13 @@ class SunshineHost:
     def terminate_session(self, session_id: str, auth: tuple[str, str] = None) -> bool:
         """Terminates a specific session via Sunshine API"""
         if not session_id:
-             print("DEBUG: terminate_session called with empty ID")
              return False
 
-        print(f"DEBUG: SunshineManager.terminate_session called for ID: {session_id}")
         import urllib.request, ssl, base64
-        
+
         # Use 127.0.0.1 to avoid IPv6 issues
         url = f"https://127.0.0.1:47990/api/sessions/{session_id}"
-        print(f"DEBUG: Sending DELETE to {url}")
-        
+
         headers = {}
         if auth:
             u, p = auth
@@ -389,10 +378,8 @@ class SunshineHost:
         try:
             req = urllib.request.Request(url, headers=headers, method='DELETE')
             with urllib.request.urlopen(req, context=ctx, timeout=5) as response:
-                print(f"DEBUG: Terminate response code: {response.status}")
                 return response.status in [200, 204]
         except Exception as e:
-            print(f"Error terminating session {session_id}: {e}")
             return False
 
     def get_performance_stats(self, auth=None) -> dict:
@@ -417,10 +404,6 @@ class SunshineHost:
             if e.code == 404: 
                 # Endpoint doesn't exist on this version, silent fail
                 return {}
-            if e.code == 401: 
-                print("DEBUG: Sunshine API 401 Unauthorized - Check credentials")
-            else: 
-                print(f"DEBUG: Sunshine API HTTP Error (stats): {e.code} - {e.reason}")
             return {}
         except Exception as e:
             return {}
@@ -442,7 +425,6 @@ class SunshineHost:
             req = urllib.request.Request(url, headers=headers, method='GET')
             with urllib.request.urlopen(req, context=ctx, timeout=2) as r:
                 body = r.read().decode('utf-8')
-                # print(f"DEBUG: Sunshine API Response (sessions): {body}")
                 data = json.loads(body)
                 # Handle different Sunshine versions response format
                 if isinstance(data, dict): return data.get('sessions', [])
@@ -461,8 +443,7 @@ class SunshineHost:
                             return [c for c in clients if c.get('connected')]
                         return data if isinstance(data, list) else []
                 except: return []
-            if e.code == 401: print("DEBUG: Sunshine API 401 Unauthorized (sessions)")
-            else: print(f"DEBUG: Sunshine API HTTP Error (sessions): {e.code} - {e.reason}")
+
             return []
         except Exception as e:
             return []

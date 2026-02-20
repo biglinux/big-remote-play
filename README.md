@@ -25,7 +25,7 @@
   <img src="https://img.shields.io/badge/GTK-4.0-blue.svg" alt="GTK 4.0">
   <img src="https://img.shields.io/badge/Libadwaita-1.0-purple.svg" alt="Libadwaita">
   <img src="https://img.shields.io/badge/Python-3.x-yellow.svg" alt="Python 3">
-  <img src="https://img.shields.io/badge/Version-1.3-brightgreen.svg" alt="Version 1.3">
+  <img src="https://img.shields.io/badge/Version-2.0.0-brightgreen.svg" alt="Version 2.0.0">
 </p>
 
 ---
@@ -51,6 +51,7 @@ An all-in-one application that integrates everything you need for remote coopera
 ### 🖥️ Host Server (Share Your Games)
 - **One-click server** — Start/stop the Sunshine streaming server directly from the UI
 - **Automatic game detection** — Detects games from **Steam**, **Lutris**, and **Heroic Launcher** automatically
+- **Steam Big Picture mode** — Launch Steam games directly in Big Picture mode with automatic session management
 - **Streaming settings** — Configure resolution, FPS, bitrate, codec (H.264/H.265/AV1), monitor selection, and GPU selection
 - **Audio management** — Hybrid audio streaming with simultaneous host + remote playback using PulseAudio
 - **PIN-based pairing** — Secure connection flow with PIN code authentication
@@ -66,7 +67,7 @@ An all-in-one application that integrates everything you need for remote coopera
 - **Moonlight integration** — Seamless connection through Moonlight-QT client
 
 ### 🌐 Private Network (Play Over the Internet)
-- **Built-in VPN setup** — Create private networks using Headscale/Tailscale
+- **Built-in VPN setup** — Create private networks using Headscale, Tailscale, or ZeroTier
 - **Step-by-step wizard** — Guided setup with progress indicators
 - **Domain integration** — Support for [DigitalPlat Domain](https://digitalplat.org/) for easy domain setup
 - **Connection history** — Save, manage, and reconnect to previous networks
@@ -136,6 +137,7 @@ makepkg -si
 |-----------|---------|
 | `docker` | Private network (Headscale server) |
 | `tailscale` | Private network VPN client |
+| `zerotier-one` | Private network VPN client |
 
 ### Manual Installation (Development)
 
@@ -162,8 +164,8 @@ Big Remote Play acts as a **unified interface** that orchestrates multiple open-
 ├──────────────┴──────────────┴────────────────────────┤
 │                   Core Services                       │
 ├──────────────┬──────────────┬────────────────────────┤
-│  ☀️ Sunshine  │  🌙 Moonlight │  🔒 Headscale/Tailscale│
-│  (Host)      │  (Client)    │  (VPN)                 │
+│  ☀️ Sunshine  │  🌙 Moonlight │  🔒 Headscale/Tailscale/ZeroTier│
+│  (Host)      │  (Client)    │  (VPN)                        │
 └──────────────┴──────────────┴────────────────────────┘
 ```
 
@@ -265,7 +267,7 @@ big-remote-play/
 | **Streaming Client** | Moonlight-QT | Open-source game stream client |
 | **Network Discovery** | Avahi (mDNS) | Automatic host discovery on LAN |
 | **Audio** | PulseAudio | Hybrid audio routing (host + remote) |
-| **VPN** | Headscale / Tailscale | Private network for internet play |
+| **VPN** | Headscale / Tailscale / ZeroTier | Private network for internet play |
 | **Packaging** | PKGBUILD (Arch) | Distribution packaging |
 | **CI/CD** | GitHub Actions | Automated translation & packaging |
 
@@ -278,7 +280,7 @@ big-remote-play/
 | `GameDetector` | Scan Steam, Lutris, and Heroic Launcher for installed games |
 | `AudioManager` | PulseAudio sink management, hybrid audio (host + guest), streaming audio routing |
 | `NetworkDiscovery` | Avahi-based host discovery, PIN resolution, IPv4/IPv6 support |
-| `PrivateNetworkView` | Headscale VPN setup wizard, connection management, credential sharing |
+| `PrivateNetworkView` | VPN setup wizard (Headscale, Tailscale, ZeroTier), connection management, credential sharing |
 
 ---
 
