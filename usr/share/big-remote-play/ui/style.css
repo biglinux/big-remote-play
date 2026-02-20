@@ -375,3 +375,27 @@ levelbar block.filled {
     font-weight: 700;
     color: @accent_color;
 }
+
+/* VPN Selector Cards */
+.action-card.suggested-action.vpn-card {
+    min-width: 230px;
+    min-height: 210px;
+}
+
+.action-card.suggested-action.vpn-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 16px 48px alpha(@accent_bg_color, 0.3),
+        0 0 0 2px @accent_bg_color;
+}
+
+/* Sidebar VPN badge text */
+.navigation-sidebar .dim-label {
+    font-size: 0.78em;
+    opacity: 0.5;
+}
+
+/* Change VPN button in private network header */
+.action-card.suggested-action button.flat {
+    opacity: 0.7;
+    font-size: 0.85em;
+}

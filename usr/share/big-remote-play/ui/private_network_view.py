@@ -1,545 +1,531 @@
 import gi
-
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-import json
-import os
-import re
-import shutil
-import subprocess
-import threading
-import time
-from concurrent.futures import ThreadPoolExecutor
-
-from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-
-try:
-    gi.require_version("Vte", "3.91")
-    from gi.repository import Vte
-
-    HAS_VTE = True
-except:
-    HAS_VTE = False
+import json, os, re, subprocess, threading, time, shutil
+from gi.repository import Adw, Gdk, GLib, Gtk
 from utils.i18n import _
 from utils.icons import create_icon_widget
 
+# ─── Config ───────────────────────────────────────────────────────────────────
+_OLD_CFG = os.path.expanduser("~/.config/big-remoteplay")
+_NEW_CFG = os.path.expanduser("~/.config/big-remote-play")
+if os.path.exists(_OLD_CFG) and not os.path.exists(_NEW_CFG):
+    try: shutil.move(_OLD_CFG, _NEW_CFG)
+    except: pass
 
-class AccessInfoWidget(Gtk.Box):
-    """Widget to display access information after installation.
-    Fixed header + scrollable content + fixed buttons at the bottom."""
+HISTORY_FILE = os.path.join(_NEW_CFG, "private_network/history.json")
+ZT_TOKEN_FILE = os.path.join(_NEW_CFG, "zerotier/api_token.txt")
 
-    def __init__(self, data, on_save_cb, main_window=None):
+VPN_META = {
+    'headscale': {
+        'name': 'Headscale',
+        'icon': 'headscale-symbolic',
+        'color': '#3584e4',
+        'create_title': _('Create Headscale Server'),
+        'create_desc': _('Set up your own private VPN server using Docker + Cloudflare DNS.'),
+        'connect_title': _('Connect to Headscale Network'),
+        'connect_desc': _('Enter the server domain and auth key provided by the administrator.'),
+        'script': 'create-network_headscale.sh',
+    },
+    'tailscale': {
+        'name': 'Tailscale',
+        'icon': 'tailscale-symbolic',
+        'color': '#26a269',
+        'create_title': _('Login to Tailscale'),
+        'create_desc': _('Login to your Tailscale account. No server required.'),
+        'connect_title': _('Connect to Tailscale Network'),
+        'connect_desc': _('Enter your auth key or login server to join a Tailscale network.'),
+        'script': 'create-network_tailscale.sh',
+    },
+    'zerotier': {
+        'name': 'ZeroTier',
+        'icon': 'zerotier-symbolic',
+        'color': '#e5a50a',
+        'create_title': _('Create ZeroTier Network'),
+        'create_desc': _('Create a new ZeroTier virtual network using your API token.'),
+        'connect_title': _('Connect to ZeroTier Network'),
+        'connect_desc': _('Enter the 16-character Network ID to join a ZeroTier network.'),
+        'script': 'create-network_zerotier.sh',
+    },
+}
+
+
+def _load_history():
+    try:
+        if os.path.exists(HISTORY_FILE):
+            with open(HISTORY_FILE) as f:
+                return json.load(f).get("history", [])
+    except Exception:
+        pass
+    return []
+
+
+def _save_history(entry):
+    os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
+    history = _load_history()
+    new_id = max((h.get("id", 0) for h in history), default=0) + 1
+    entry["id"] = new_id
+    entry["timestamp"] = time.strftime("%Y-%m-%d %H:%M:%S")
+    history.append(entry)
+    with open(HISTORY_FILE, "w") as f:
+        json.dump({"history": history}, f, indent=2)
+    return new_id
+
+
+def _delete_history(entry_id):
+    history = [h for h in _load_history() if h.get("id") != entry_id]
+    os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
+    with open(HISTORY_FILE, "w") as f:
+        json.dump({"history": history}, f, indent=2)
+
+
+def _get_script(name):
+    base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    p = os.path.join(base, "scripts", name)
+    return p if os.path.exists(p) else f"/usr/share/big-remote-play/scripts/{name}"
+
+
+# ─── Terminal Log Widget ───────────────────────────────────────────────────────
+class LogView(Gtk.ScrolledWindow):
+    def __init__(self):
+        super().__init__()
+        self.set_vexpand(True)
+        self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self._tv = Gtk.TextView(editable=False, monospace=True, wrap_mode=Gtk.WrapMode.WORD_CHAR)
+        self._tv.add_css_class("card")
+        self.set_child(self._tv)
+        buf = self._tv.get_buffer()
+        table = buf.get_tag_table()
+        for name, color in [("green","#2ec27e"),("blue","#3584e4"),("yellow","#f5c211"),
+                             ("red","#ed333b"),("cyan","#33c7de")]:
+            t = Gtk.TextTag(name=name)
+            t.set_property("foreground", color)
+            table.add(t)
+        bold = Gtk.TextTag(name="bold")
+        bold.set_property("weight", 700)
+        table.add(bold)
+
+    def clear(self):
+        self._tv.get_buffer().set_text("")
+
+    def append(self, text):
+        GLib.idle_add(self._append_idle, text)
+
+    def _append_idle(self, text):
+        buf = self._tv.get_buffer()
+        ansi = re.compile(r"(\x1b\[[0-9;]*[mK])")
+        parts = ansi.split(text)
+        tags = []
+        for p in parts:
+            if p.startswith("\x1b["):
+                if p == "\x1b[0m": tags = []
+                elif "0;32" in p: tags = ["green"]
+                elif "0;34" in p: tags = ["blue"]
+                elif "1;33" in p: tags = ["yellow"]
+                elif "0;31" in p: tags = ["red"]
+                elif "0;36" in p: tags = ["cyan"]
+                elif "1;" in p: tags = ["bold"]
+            elif p:
+                buf.insert_with_tags_by_name(buf.get_end_iter(), p, *tags)
+        buf.insert(buf.get_end_iter(), "\n")
+        self._tv.scroll_to_mark(buf.get_insert(), 0.0, True, 0.5, 1.0)
+
+
+# ─── Progress Bar ──────────────────────────────────────────────────────────────
+class ProgressRow(Gtk.Box):
+    def __init__(self, on_show_log=None):
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        self.set_visible(False)
+        self._status = Gtk.Label(label="", halign=Gtk.Align.START)
+        self._status.add_css_class("caption")
+        self.append(self._status)
+        row = Gtk.Box(spacing=8)
+        self._bar = Gtk.LevelBar(min_value=0, max_value=1, hexpand=True)
+        self._bar.set_size_request(-1, 14)
+        self._bar.remove_offset_value(Gtk.LEVEL_BAR_OFFSET_LOW)
+        self._bar.remove_offset_value(Gtk.LEVEL_BAR_OFFSET_HIGH)
+        self._bar.remove_offset_value(Gtk.LEVEL_BAR_OFFSET_FULL)
+        row.append(self._bar)
+        self._pct = Gtk.Label(label="0%")
+        self._pct.add_css_class("caption-heading")
+        self._pct.set_size_request(38, -1)
+        row.append(self._pct)
+        if on_show_log:
+            btn = Gtk.Button()
+            btn.set_child(create_icon_widget("preferences-system-symbolic", size=16))
+            btn.add_css_class("flat")
+            btn.add_css_class("circular")
+            btn.connect("clicked", lambda b: on_show_log())
+            row.append(btn)
+        self.append(row)
+
+    def update(self, fraction, status=""):
+        GLib.idle_add(self._set, fraction, status)
+
+    def _set(self, fraction, status):
+        self.set_visible(True)
+        self._bar.set_value(fraction)
+        self._pct.set_text(f"{int(fraction*100)}%")
+        if status:
+            self._status.set_text(status)
+
+
+# ─── CREATE PAGE ──────────────────────────────────────────────────────────────
+class CreatePage(Gtk.Box):
+    """
+    Create/Login page for a specific VPN provider.
+    Shows form → runs script → shows network list + logout button.
+    """
+
+    def __init__(self, vpn_id, main_window):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        self.data = data
-        self.on_save_cb = on_save_cb
+        self.vpn_id = vpn_id
+        self.vpn = VPN_META[vpn_id]
         self.main_window = main_window
+        self._proc = None
+        self._logged_in = self._check_logged_in()
+        self._build()
 
-        # Extract clean domain
-        raw_url = data.get('api_url') or data.get('web_ui', '')
-        self.clean_domain = raw_url.replace('http://', '').replace('https://', '').split('/')[0].strip()
-        if not self.clean_domain:
-            self.clean_domain = data.get('public_ip', '')
-        self.auth_key = data.get('auth_key', '')
+    def _check_logged_in(self):
+        if self.vpn_id in ('tailscale', 'headscale'):
+            try:
+                r = subprocess.run(["tailscale", "status"], capture_output=True, text=True)
+                # If logged in and has a valid IP/DNS
+                return r.returncode == 0 and "Logged out" not in r.stdout
+            except Exception:
+                return False
+        if self.vpn_id == 'zerotier':
+            if os.path.exists(ZT_TOKEN_FILE): return True
+            try:
+                r = subprocess.run(["zerotier-cli", "listnetworks"], capture_output=True, text=True)
+                return r.returncode == 0 and "200 listnetworks <nwid>" in r.stdout.lower() or len(r.stdout.splitlines()) > 1
+            except:
+                return False
+        return False
 
-        # ═══════════════════════════════════════
-        #  FIXED HEADER (top)
-        # ═══════════════════════════════════════
-        header_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-        header_box.set_margin_top(16)
-        header_box.set_margin_start(20)
-        header_box.set_margin_end(20)
-        header_box.set_margin_bottom(8)
-
-        title = Gtk.Label(label=_('🎮 Network Created Successfully!'))
-        title.add_css_class('title-2')
-        header_box.append(title)
-
-        subtitle = Gtk.Label(
-            label=_('Share the info below with your friends so they can join '
-                    'via "Connect to Private Network" and play together!')
-        )
-        subtitle.set_wrap(True)
-        subtitle.add_css_class('dim-label')
-        subtitle.add_css_class('caption')
-        subtitle.set_margin_top(4)
-        header_box.append(subtitle)
-
-        self.append(header_box)
-        self.append(Gtk.Separator())
-
-        # ═══════════════════════════════════════
-        #  SCROLLABLE CONTENT (middle)
-        # ═══════════════════════════════════════
-        scroll = Gtk.ScrolledWindow()
+    def _build(self):
+        scroll = Gtk.ScrolledWindow(vexpand=True)
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scroll.set_vexpand(True)
+        clamp = Adw.Clamp(maximum_size=780)
+        for m in ['top','bottom','start','end']:
+            getattr(clamp, f'set_margin_{m}')(24)
+        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
 
-        clamp = Adw.Clamp()
-        clamp.set_maximum_size(600)
-        for m in ['top', 'bottom', 'start', 'end']:
-            getattr(clamp, f'set_margin_{m}')(12)
+        # Header
+        hdr = Adw.PreferencesGroup()
+        hdr.set_title(self.vpn['create_title'])
+        hdr.set_description(self.vpn['create_desc'])
+        hdr.set_header_suffix(create_icon_widget(self.vpn['icon'], size=24))
+        content.append(hdr)
 
-        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+        # Form group
+        self._form_group = Adw.PreferencesGroup()
+        self._form_group.set_title(_("Configuration"))
+        self._form_rows = []
+        self._build_form()
+        content.append(self._form_group)
 
-        # ── SHARE WITH FRIENDS ──
-        share_group = Adw.PreferencesGroup()
-        share_group.set_title(_('📤 Share with Your Friends'))
-        share_group.set_description(
-            _('Your friends only need these 2 items to join your network.')
-        )
-        content.append(share_group)
+        # Progress
+        self._progress = ProgressRow(on_show_log=self._show_log)
+        content.append(self._progress)
 
-        domain_row = Adw.ActionRow()
-        domain_row.set_title(_('Server Domain'))
-        domain_row.set_subtitle(self.clean_domain)
-        domain_row.add_css_class('property')
-        domain_row.add_prefix(create_icon_widget('network-server-symbolic', size=20))
-        btn_copy_domain = Gtk.Button()
-        btn_copy_domain.set_child(create_icon_widget('edit-copy-symbolic', size=16))
-        btn_copy_domain.add_css_class('flat')
-        btn_copy_domain.set_valign(Gtk.Align.CENTER)
-        btn_copy_domain.set_tooltip_text(_('Copy domain'))
-        btn_copy_domain.connect('clicked', lambda b: self._copy_to_clipboard(self.clean_domain))
-        domain_row.add_suffix(btn_copy_domain)
-        share_group.add(domain_row)
+        # Log view (hidden in scrolled, shown in dialog)
+        self._log = LogView()
 
-        auth_row = Adw.ActionRow()
-        auth_row.set_title(_('Auth Key (Friends)'))
-        auth_row.set_subtitle(self.auth_key)
-        auth_row.add_css_class('property')
-        auth_row.add_prefix(create_icon_widget('key-symbolic', size=20))
-        btn_copy_key = Gtk.Button()
-        btn_copy_key.set_child(create_icon_widget('edit-copy-symbolic', size=16))
-        btn_copy_key.add_css_class('flat')
-        btn_copy_key.set_valign(Gtk.Align.CENTER)
-        btn_copy_key.set_tooltip_text(_('Copy auth key'))
-        btn_copy_key.connect('clicked', lambda b: self._copy_to_clipboard(self.auth_key))
-        auth_row.add_suffix(btn_copy_key)
-        share_group.add(auth_row)
+        # Buttons
+        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        btn_box.set_halign(Gtk.Align.CENTER)
+        btn_box.set_margin_top(8)
+        btn_box.set_margin_bottom(16)
 
-        # ── HOW TO CONNECT ──
-        how_group = Adw.PreferencesGroup()
-        how_group.set_title(_('📋 How to Connect'))
-        how_group.set_description(
-            _('Both you AND your friends must connect!')
-        )
-        content.append(how_group)
+        self._spinner = Gtk.Spinner()
+        self._spinner.set_visible(False)
+        self._action_lbl = Gtk.Label(label=self._action_label())
+        btn_inner = Gtk.Box(spacing=8, halign=Gtk.Align.CENTER)
+        btn_inner.append(self._spinner)
+        btn_inner.append(self._action_lbl)
 
-        steps = [
-            (_('1. Open "Connect to Private Network"'), _('In the sidebar menu'), 'go-next-symbolic'),
-            (_('2. Enter domain and Auth Key'), _('Paste the data shown above'), 'edit-paste-symbolic'),
-            (_('3. Click "Establish Connection"'), _('Play together over the internet!'), 'media-playback-start-symbolic'),
-        ]
-        for step_title, step_sub, step_icon in steps:
-            sr = Adw.ActionRow()
-            sr.set_title(step_title)
-            sr.set_subtitle(step_sub)
-            sr.add_prefix(create_icon_widget(step_icon, size=16))
-            how_group.add(sr)
+        self._btn_action = Gtk.Button()
+        self._btn_action.add_css_class("pill")
+        self._btn_action.add_css_class("suggested-action")
+        self._btn_action.set_size_request(200, 48)
+        self._btn_action.set_child(btn_inner)
+        self._btn_action.connect("clicked", self._on_action)
+        btn_box.append(self._btn_action)
 
-        # ── SERVER DETAILS ──
-        details_group = Adw.PreferencesGroup()
-        details_group.set_title(_('🔧 Server Details'))
-        content.append(details_group)
+        self._btn_instr = Gtk.Button(label=_("Instructions"))
+        self._btn_instr.add_css_class("pill")
+        self._btn_instr.set_size_request(180, 48)
+        self._btn_instr.connect("clicked", self._on_instructions_clicked)
+        btn_box.append(self._btn_instr)
 
-        detail_fields = [
-            ('web_ui', _('Web Interface'), 'external-link-symbolic'),
-            ('api_url', _('API URL'), 'network-server-symbolic'),
-            ('public_ip', _('Public IP'), 'network-workgroup-symbolic'),
-            ('local_ip', _('Local IP'), 'network-local-symbolic'),
-            ('api_key', _('API Key (Admin UI)'), 'dialog-password-symbolic'),
-        ]
-        for key, label, icon in detail_fields:
-            val = data.get(key, '')
-            if not val:
-                continue
-            row = Adw.ActionRow(title=label, subtitle=val)
-            row.add_prefix(create_icon_widget(icon, size=16))
-            btn_copy = Gtk.Button()
-            btn_copy.set_child(create_icon_widget('edit-copy-symbolic', size=16))
-            btn_copy.add_css_class('flat')
-            btn_copy.set_valign(Gtk.Align.CENTER)
-            btn_copy.connect('clicked', lambda b, v=val: self._copy_to_clipboard(v))
-            row.add_suffix(btn_copy)
-            if 'http' in val:
-                btn_open = Gtk.Button()
-                btn_open.set_child(create_icon_widget('external-link-symbolic', size=16))
-                btn_open.add_css_class('flat')
-                btn_open.set_valign(Gtk.Align.CENTER)
-                btn_open.connect('clicked', lambda b, v=val: os.system(f'xdg-open {v}'))
-                row.add_suffix(btn_open)
-            details_group.add(row)
+        self._btn_logout = Gtk.Button(label=_("Logout / Disconnect"))
+        self._btn_logout.add_css_class("pill")
+        self._btn_logout.add_css_class("destructive-action")
+        self._btn_logout.set_size_request(180, 48)
+        self._btn_logout.connect("clicked", self._on_logout)
+        self._btn_logout.set_visible(self._logged_in)
+        btn_box.append(self._btn_logout)
+
+        content.append(btn_box)
+
+        # Network list (shown after login for zerotier/tailscale)
+        self._networks_group = Adw.PreferencesGroup()
+        self._networks_group.set_title(_("Your Networks"))
+        self._networks_group.set_visible(False)
+        self._network_rows = []   # track rows added via .add() so we can remove them safely
+        content.append(self._networks_group)
 
         clamp.set_child(content)
         scroll.set_child(clamp)
         self.append(scroll)
 
-        # ═══════════════════════════════════════
-        #  FIXED BUTTONS (bottom)
-        # ═══════════════════════════════════════
-        self.append(Gtk.Separator())
+        if self._logged_in:
+            GLib.idle_add(self._refresh_networks)
 
-        btn_area = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        btn_area.set_margin_top(12)
-        btn_area.set_margin_bottom(16)
-        btn_area.set_margin_start(20)
-        btn_area.set_margin_end(20)
+    def _action_label(self):
+        if self.vpn_id == 'tailscale': return _("Login / Connect")
+        if self.vpn_id == 'zerotier': return _("Save Token & Create Network")
+        return _("Install Server")
 
-        # Row 1: Save and Finish (primary action)
-        btn_finish = Gtk.Button(label=_('Save and Finish'))
-        btn_finish.add_css_class('suggested-action')
-        btn_finish.add_css_class('pill')
-        btn_finish.set_size_request(-1, 42)
-        btn_finish.connect('clicked', self.on_save_clicked)
-        btn_area.append(btn_finish)
+    def _on_instructions_clicked(self, btn):
+        if self.vpn_id == 'headscale':
+            self._show_headscale_instructions()
+        elif self.vpn_id == 'tailscale':
+            self._show_tailscale_instructions()
+        elif self.vpn_id == 'zerotier':
+            self._show_zerotier_instructions()
 
-        # Row 2: Save to File + Share
-        row2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        row2.set_homogeneous(True)
+    def _build_form(self):
+        for r in self._form_rows:
+            self._form_group.remove(r)
+        self._form_rows.clear()
 
-        btn_save_file = Gtk.Button()
-        save_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        save_box.set_halign(Gtk.Align.CENTER)
-        save_box.append(create_icon_widget('document-save-symbolic', size=16))
-        save_box.append(Gtk.Label(label=_('Save to File')))
-        btn_save_file.set_child(save_box)
-        btn_save_file.add_css_class('pill')
-        btn_save_file.set_size_request(-1, 38)
-        btn_save_file.connect('clicked', self._on_save_to_file)
-        row2.append(btn_save_file)
-
-        btn_share = Gtk.Button()
-        share_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        share_box.set_halign(Gtk.Align.CENTER)
-        share_box.append(create_icon_widget('emblem-shared-symbolic', size=16))
-        share_box.append(Gtk.Label(label=_('Share')))
-        btn_share.set_child(share_box)
-        btn_share.add_css_class('pill')
-        btn_share.set_size_request(-1, 38)
-        btn_share.connect('clicked', self._on_share)
-        row2.append(btn_share)
-
-        btn_area.append(row2)
-
-        # Reminder
-        reminder = Gtk.Label(
-            label=_('This info is saved in "Connect to Private Network" → "Previous Networks"')
-        )
-        reminder.set_wrap(True)
-        reminder.add_css_class('caption')
-        reminder.add_css_class('dim-label')
-        btn_area.append(reminder)
-
-        self.append(btn_area)
-
-    def _get_share_text(self):
-        """Generate formatted text for saving/sharing."""
-        d = self.data
-        text = (
-            f"🎮 Private Network - Connection Info\n"
-            f"{'=' * 42}\n\n"
-            f"📤 SHARE WITH YOUR FRIEND:\n"
-            f"  Server Domain: {self.clean_domain}\n"
-            f"  Auth Key:      {self.auth_key}\n\n"
-            f"📋 HOW TO CONNECT:\n"
-            f"  1. Open Big Remote Play\n"
-            f"  2. Go to 'Connect to Private Network'\n"
-            f"  3. Enter the Domain and Auth Key above\n"
-            f"  4. Click 'Establish Connection'\n"
-            f"  5. Play together! 🎮\n\n"
-            f"🔧 SERVER DETAILS:\n"
-            f"  Web Interface: {d.get('web_ui', '-')}\n"
-            f"  API URL:       {d.get('api_url', '-')}\n"
-            f"  Public IP:     {d.get('public_ip', '-')}\n"
-            f"  Local IP:      {d.get('local_ip', '-')}\n"
-            f"  API Key (UI):  {d.get('api_key', '-')}\n"
-            f"  Auth Key:      {d.get('auth_key', '-')}\n"
-        )
-        return text
-
-    def _on_save_to_file(self, btn):
-        """Save connection info to a .txt file."""
-        dialog = Gtk.FileDialog(title=_('Save Connection Info'))
-        dialog.set_initial_name(f'private_network_{self.clean_domain.replace(".", "_")}.txt')
-
-        parent = self.main_window or self.get_root()
-
-        def on_save_response(dialog, result):
-            try:
-                file = dialog.save_finish(result)
-                if file:
-                    path = file.get_path()
-                    with open(path, 'w') as f:
-                        f.write(self._get_share_text())
-                    if self.main_window and hasattr(self.main_window, 'show_toast'):
-                        self.main_window.show_toast(_('File saved: {}').format(path))
-            except Exception as e:
-                if self.main_window and hasattr(self.main_window, 'show_toast'):
-                    self.main_window.show_toast(_('Error saving: {}').format(e))
-
-        dialog.save(parent, None, on_save_response)
-
-    def _on_share(self, btn):
-        """Share connection info via clipboard (for pasting in apps/social media)."""
-        text = self._get_share_text()
-        clipboard = Gdk.Display.get_default().get_clipboard()
-        clipboard.set(text)
-        if self.main_window and hasattr(self.main_window, 'show_toast'):
-            self.main_window.show_toast(_('Connection info copied! Paste it in any app to share.'))
-
-    def _copy_to_clipboard(self, text):
-        clipboard = Gdk.Display.get_default().get_clipboard()
-        clipboard.set(text)
-
-    def on_save_clicked(self, btn):
-        self.on_save_cb(self.data)
+        if self.vpn_id == 'headscale':
 
 
-class PrivateNetworkView(Adw.Bin):
-    """View for managing private network (Headscale) - Single page create + Connect"""
+            self._e_domain = Adw.EntryRow(title=_("Domain (e.g. vpn.ruscher.org)"))
+            self._e_zone = Adw.EntryRow(title=_("Cloudflare Zone ID"))
+            self._e_token = Adw.PasswordEntryRow(title=_("Cloudflare API Token"))
+            self._form_group.add(self._e_domain)
+            self._form_group.add(self._e_zone)
+            self._form_group.add(self._e_token)
+            
+            self._form_rows.extend([self._e_domain, self._e_zone, self._e_token])
 
-    def __init__(self, main_window, mode="create"):
-        super().__init__()
-        self.main_window = main_window
-        self.mode = mode
-        self.public_ip = "..."
+        elif self.vpn_id == 'tailscale':
+            self._e_authkey = Adw.PasswordEntryRow(title=_("Auth Key (optional – leave empty for browser login)"))
+            self._form_group.add(self._e_authkey)
+            self._form_rows.append(self._e_authkey)
+            link = Adw.ActionRow(title=_("Get auth key"), subtitle=_("login.tailscale.com/admin/settings/keys"))
+            link.add_prefix(create_icon_widget("network-wired-symbolic", size=18))
+            btn = Gtk.Button(label=_("Open"))
+            btn.add_css_class("flat")
+            btn.set_valign(Gtk.Align.CENTER)
+            btn.connect("clicked", lambda b: os.system("xdg-open https://login.tailscale.com/admin/settings/keys"))
+            link.add_suffix(btn)
+            self._form_group.add(link)
+            self._form_rows.append(link)
 
-        self._worker_running = False
-        self._worker_thread = None
-        self._ping_executor = ThreadPoolExecutor(max_workers=10)
+        elif self.vpn_id == 'zerotier':
+            saved = ""
+            if os.path.exists(ZT_TOKEN_FILE):
+                try:
+                    saved = open(ZT_TOKEN_FILE).read().strip()
+                except Exception:
+                    pass
+            self._e_zt_token = Adw.PasswordEntryRow(title=_("ZeroTier API Token"))
+            if saved:
+                self._e_zt_token.set_text(saved)
+            self._e_zt_name = Adw.EntryRow(title=_("Network Name"))
+            self._e_zt_name.set_text("my-game-network")
+            self._form_group.add(self._e_zt_token)
+            self._form_group.add(self._e_zt_name)
+            self._form_rows.extend([self._e_zt_token, self._e_zt_name])
+            link = Adw.ActionRow(title=_("Get API Token"), subtitle=_("my.zerotier.com → Account → API Access Tokens"))
+            link.add_prefix(create_icon_widget("network-wired-symbolic", size=18))
+            btn = Gtk.Button(label=_("Open"))
+            btn.add_css_class("flat")
+            btn.set_valign(Gtk.Align.CENTER)
+            btn.connect("clicked", lambda b: os.system("xdg-open https://my.zerotier.com"))
+            link.add_suffix(btn)
+            self._form_group.add(link)
+            self._form_rows.append(link)
 
-        self.install_data = {}
+    def _on_action(self, btn):
+        self._btn_action.set_sensitive(False)
+        self._spinner.set_visible(True)
+        self._spinner.start()
+        self._progress.update(0.05, _("Starting..."))
+        self._log.clear()
 
-        self._connect_phase = 0
-        self._connect_phases = [
-            _('Preparing connection...'),
-            _('Checking dependencies...'),
-            _('Configuring Tailscale client...'),
-            _('Logging in to network...'),
-            _('Verifying connection...'),
-            _('Connection established!'),
-        ]
+        if self.vpn_id == 'headscale':
+            self._run_headscale_create()
+        elif self.vpn_id == 'tailscale':
+            self._run_tailscale_login()
+        elif self.vpn_id == 'zerotier':
+            self._run_zerotier_create()
 
-        self.setup_ui()
-        self.set_mode(mode)
-
-    def setup_ui(self):
-        self.main_stack = Gtk.Stack()
-        self.main_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self.set_child(self.main_stack)
-
-        # Create Page (Single Page)
-        self.create_page = self.setup_create_page()
-        self.main_stack.add_named(self.create_page, "create")
-
-        # Connect Page
-        self.connect_page = self.setup_connect_page()
-        self.main_stack.add_named(self.connect_page, "connect")
-
-    def set_mode(self, mode):
-        self.mode = mode
-        self.main_stack.set_visible_child_name(mode)
-
-        if mode == "connect":
-            self._start_worker()
-        else:
-            self._stop_worker()
-
-    # ─────────────────────────────────────────────
-    #  CREATE PAGE (Single Page)
-    # ─────────────────────────────────────────────
-
-    def setup_create_page(self):
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scroll.set_vexpand(True)
-
-        clamp = Adw.Clamp()
-        clamp.set_maximum_size(800)
-        for margin in ['top', 'bottom', 'start', 'end']:
-            getattr(clamp, f'set_margin_{margin}')(24)
-
-        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
-
-        # ── Header (same style as Host Server) ──
-        self.header = Adw.PreferencesGroup()
-        self.header.set_header_suffix(create_icon_widget('network-wired-symbolic', size=24))
-        self.header.set_title(_('Create Private Network'))
-        self.header.set_description(
-            _('Set up your own Headscale VPN server with automatic DNS configuration via Cloudflare. '
-              'This allows you and your friends to connect securely over the internet.')
-        )
-        content.append(self.header)
-
-        # ── Input Fields ──
-        input_group = Adw.PreferencesGroup()
-        input_group.set_title(_('Server Configuration'))
-        input_group.set_description(_('Enter your Cloudflare credentials to automate the installation'))
-
-        self.entry_domain = Adw.EntryRow(title=_("Enter your domain"))
-        self.entry_domain.set_tooltip_text(_("e.g.: myserver.us.kg"))
-
-        self.entry_zone = Adw.EntryRow(title=_("Zone ID"))
-        self.entry_zone.set_tooltip_text(_("Found in Cloudflare Overview page"))
-
-        self.entry_token = Adw.PasswordEntryRow(title=_("API Token"))
-        self.entry_token.set_tooltip_text(_("Token with DNS Edit permission"))
-
-        input_group.add(self.entry_domain)
-        input_group.add(self.entry_zone)
-        input_group.add(self.entry_token)
-        content.append(input_group)
-
-        # ── Progress Area (hidden by default) ──
-        self.create_progress_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        self.create_progress_box.set_visible(False)
-
-        self.create_progress_status = Gtk.Label(label="")
-        self.create_progress_status.add_css_class("caption")
-        self.create_progress_status.set_halign(Gtk.Align.START)
-        self.create_progress_box.append(self.create_progress_status)
-
-        # Horizontal box: LevelBar + info button
-        level_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        level_row.set_valign(Gtk.Align.CENTER)
-
-        self.create_level_bar = Gtk.LevelBar()
-        self.create_level_bar.set_min_value(0)
-        self.create_level_bar.set_max_value(1.0)
-        self.create_level_bar.set_value(0)
-        self.create_level_bar.set_hexpand(True)
-        self.create_level_bar.set_size_request(-1, 16)
-        # Remove default level offsets and add custom ones
-        self.create_level_bar.remove_offset_value(Gtk.LEVEL_BAR_OFFSET_LOW)
-        self.create_level_bar.remove_offset_value(Gtk.LEVEL_BAR_OFFSET_HIGH)
-        self.create_level_bar.remove_offset_value(Gtk.LEVEL_BAR_OFFSET_FULL)
-        self.create_level_bar.add_offset_value('install-low', 0.25)
-        self.create_level_bar.add_offset_value('install-mid', 0.50)
-        self.create_level_bar.add_offset_value('install-high', 0.75)
-        self.create_level_bar.add_offset_value('install-full', 1.0)
-
-        # Make level bar clickable to open terminal dialog
-        click_gesture = Gtk.GestureClick()
-        click_gesture.connect("pressed", lambda g, n, x, y: self._open_terminal_dialog("create"))
-        self.create_level_bar.add_controller(click_gesture)
+    def _run_script(self, script_name, inputs, phases, on_done):
+        script = _get_script(script_name)
         try:
-            self.create_level_bar.set_cursor(Gdk.Cursor.new_from_name("pointer", None))
-        except TypeError:
-            self.create_level_bar.set_cursor(Gdk.Cursor.new_from_name("pointer"))
-        level_row.append(self.create_level_bar)
+            os.chmod(script, 0o755)
+        except Exception:
+            pass
 
-        # Percentage label inside/after the bar
-        self.create_progress_percent = Gtk.Label(label='0%')
-        self.create_progress_percent.add_css_class('caption-heading')
-        self.create_progress_percent.set_size_request(40, -1)
-        level_row.append(self.create_progress_percent)
+        def run():
+            proc = subprocess.Popen(
+                ["bigsudo", script],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT, text=True, bufsize=1
+            )
+            for s in inputs:
+                try:
+                    proc.stdin.write(s)
+                    proc.stdin.flush()
+                except Exception:
+                    break
 
-        # Info button to re-open Access Information
-        self.create_btn_info = Gtk.Button()
-        self.create_btn_info.set_child(create_icon_widget('dialog-information-symbolic', size=18))
-        self.create_btn_info.add_css_class('flat')
-        self.create_btn_info.add_css_class('circular')
-        self.create_btn_info.set_tooltip_text(_('View access information'))
-        self.create_btn_info.set_visible(False)
-        self.create_btn_info.connect('clicked', lambda b: self.show_success_dialog())
-        level_row.append(self.create_btn_info)
+            captured = {}
+            for line in proc.stdout:
+                clean = re.sub(r"\x1b\[[0-9;]*[mK]", "", line).strip()
+                self._log.append(line.strip())
+                # Detect progress
+                lower = clean.lower()
+                phase = 0.1
+                for frac, keys in phases:
+                    if any(k in lower for k in keys):
+                        phase = frac
+                self._progress.update(phase, clean[:80] if clean else "")
+                # Capture key data
+                for label, key in [
+                    ("Interface Web:", "web_ui"), ("URL da API:", "api_url"),
+                    ("Seu IP Público:", "public_ip"), ("IP Local", "local_ip"),
+                    ("API Key (para UI):", "api_key"), ("Chave para Amigos:", "auth_key"),
+                    ("Network ID:", "network_id"), ("Chave para Amigos:", "auth_key"),
+                    ("✅ Rede criada! ID:", "network_id"),
+                ]:
+                    if label in clean:
+                        val = clean.split(label, 1)[-1].strip()
+                        if val:
+                            captured[key] = val
 
-        self.create_progress_box.append(level_row)
-        content.append(self.create_progress_box)
+            code = proc.wait()
+            GLib.idle_add(on_done, code, captured)
 
-        # ── Terminal TextView (lives inside the dialog, created once) ──
-        self.create_text_view = Gtk.TextView(editable=False, monospace=True)
-        self.create_text_view.add_css_class("card")
-        self.create_text_view.set_size_request(-1, 400)
-        self.create_text_view.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
+        threading.Thread(target=run, daemon=True).start()
 
-        # Setup tags for ANSI colors
-        buffer = self.create_text_view.get_buffer()
-        table = buffer.get_tag_table()
-        ansi_colors = {
-            "green": "#2ec27e",
-            "blue": "#3584e4",
-            "yellow": "#f5c211",
-            "red": "#ed333b",
-            "cyan": "#33c7de",
-            "bold": None,
-        }
-        for name, color in ansi_colors.items():
-            tag = Gtk.TextTag(name=name)
-            if color:
-                tag.set_property("foreground", color)
-            if name == "bold":
-                tag.set_property("weight", 700)
-            table.add(tag)
+    def _run_headscale_create(self):
+        d = self._e_domain.get_text().strip()
+        z = self._e_zone.get_text().strip()
+        t = self._e_token.get_text().strip()
+        if not d or not z or not t:
+            self.main_window.show_toast(_("All fields are required"))
+            self._finish_action()
+            return
 
-        self._terminal_dialog = None
-        self._install_phase = 0
-        self._install_phases = [
-            _('Preparing environment...'),
-            _('Installing Docker...'),
-            _('Configuring Headscale...'),
-            _('Setting up Caddy reverse proxy...'),
-            _('Configuring DNS records...'),
-            _('Generating access keys...'),
-            _('Finalizing installation...'),
+        phases = [
+            (0.1, ['verificando','checking','deps']),
+            (0.2, ['docker','container']),
+            (0.4, ['headscale','config']),
+            (0.6, ['caddy','proxy']),
+            (0.7, ['dns','cloudflare']),
+            (0.85, ['auth key','chave','criando usuário']),
+            (0.95, ['success','concluí','✅']),
         ]
+        inputs = ["1\n", f"{d}\n", f"{z}\n", f"{t}\n", "n\n"]
 
-        # ── Buttons ──
-        button_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        button_box.set_halign(Gtk.Align.CENTER)
-        button_box.set_margin_top(12)
-        button_box.set_margin_bottom(24)
+        def done(code, data):
+            self._finish_action()
+            if code == 0:
+                self._progress.update(1.0, _("✅ Server installed!"))
+                data.setdefault("vpn", "headscale")
+                data.setdefault("domain", d)
+                _save_history(data)
+                self.main_window.show_toast(_("Headscale server installed!"))
+                self._show_access_info(data)
+            else:
+                self._progress.update(0, _("❌ Failed"))
+                self.main_window.show_toast(_("Installation failed. Check the log."))
 
-        self.btn_install = Gtk.Button()
-        self.btn_install.add_css_class('pill')
-        self.btn_install.add_css_class('suggested-action')
-        self.btn_install.set_size_request(200, 50)
+        self._run_script('create-network_headscale.sh', inputs, phases, done)
 
-        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        btn_box.set_halign(Gtk.Align.CENTER)
-        self.install_spinner = Gtk.Spinner()
-        self.install_spinner.set_visible(False)
-        self.install_label = Gtk.Label(label=_('Install Server'))
-        btn_box.append(self.install_spinner)
-        btn_box.append(self.install_label)
-        self.btn_install.set_child(btn_box)
-        self.btn_install.connect('clicked', self.on_install_clicked)
+    def _run_tailscale_login(self):
+        key = self._e_authkey.get_text().strip() if hasattr(self, '_e_authkey') else ''
+        phases = [
+            (0.1, ['verificando','checking']),
+            (0.3, ['instaling','instalando']),
+            (0.5, ['login','auth','up']),
+            (0.8, ['conectado','connected','success']),
+        ]
+        # Script needs: 1 (Login), 2 (Auth Key), the Key, then Enter to clear prompt, then 0 to exit.
+        if key:
+            inputs = ["1\n", "2\n", f"{key}\n", "\n", "0\n"]
+        else:
+            inputs = ["1\n", "1\n", "\n", "0\n"]
 
-        self.btn_instructions = Gtk.Button(label=_('Instructions'))
-        self.btn_instructions.add_css_class('pill')
-        self.btn_instructions.set_size_request(200, 50)
-        self.btn_instructions.connect('clicked', self.show_instructions_dialog)
+        def done(code, data):
+            self._finish_action()
+            if code == 0:
+                self._progress.update(1.0, _("✅ Connected!"))
+                self._logged_in = True
+                self._btn_logout.set_visible(True)
+                _save_history({"vpn": "tailscale", "domain": "Default Login"})
+                self.main_window.show_toast(_("Tailscale connected!"))
+                self._refresh_networks()
+            else:
+                self._progress.update(0, _("❌ Failed"))
+                self.main_window.show_toast(_("Login failed"))
 
-        button_box.append(self.btn_install)
-        button_box.append(self.btn_instructions)
-        content.append(button_box)
+        self._run_script('create-network_tailscale.sh', inputs, phases, done)
 
-        clamp.set_child(content)
-        scroll.set_child(clamp)
-        return scroll
-
-    def on_install_clicked(self, btn):
-        domain = self.entry_domain.get_text().strip()
-        zone = self.entry_zone.get_text().strip()
-        token = self.entry_token.get_text().strip()
-
-        if not domain:
-            self.main_window.show_toast(_("Domain is required"))
-            return
-        if not zone:
-            self.main_window.show_toast(_("Zone ID is required"))
-            return
+    def _run_zerotier_create(self):
+        token = self._e_zt_token.get_text().strip() if hasattr(self, '_e_zt_token') else ''
+        name = self._e_zt_name.get_text().strip() if hasattr(self, '_e_zt_name') else 'my-network'
         if not token:
             self.main_window.show_toast(_("API Token is required"))
+            self._finish_action()
             return
+        # Save token
+        os.makedirs(os.path.dirname(ZT_TOKEN_FILE), exist_ok=True)
+        with open(ZT_TOKEN_FILE, 'w') as f:
+            f.write(token)
 
-        self.run_install()
+        phases = [
+            (0.1, ['verificando','checking']),
+            (0.3, ['criando','creating']),
+            (0.6, ['rede criada','network id']),
+            (0.9, ['✅','success']),
+        ]
+        inputs = ["1\n", f"{token}\n", f"{name}\n", "\n"]
 
-    # ─────────────────────────────────────────────
-    #  INSTRUCTIONS DIALOG (Adw.ToolbarView)
-    # ─────────────────────────────────────────────
+        def done(code, data):
+            self._finish_action()
+            if code == 0:
+                self._progress.update(1.0, _("✅ Network created!"))
+                self._logged_in = True
+                self._btn_logout.set_visible(True)
+                data["vpn"] = "zerotier"
+                data["name"] = name
+                _save_history(data)
+                self.main_window.show_toast(_("ZeroTier network created!"))
+                self._refresh_networks()
+                self._show_access_info(data)
+            else:
+                self._progress.update(0, _("❌ Failed"))
+                self.main_window.show_toast(_("Network creation failed"))
 
-    def show_instructions_dialog(self, btn):
+        self._run_script('create-network_zerotier.sh', inputs, phases, done)
+
+    def _finish_action(self):
+        GLib.idle_add(self._do_finish)
+
+    def _do_finish(self):
+        self._btn_action.set_sensitive(True)
+        self._spinner.stop()
+        self._spinner.set_visible(False)
+
+    def _show_headscale_instructions(self):
         """Show step-by-step instructions in a dialog using Adw.ToolbarView."""
 
         # Create the window
@@ -581,7 +567,7 @@ class PrivateNetworkView(Adw.Bin):
         r1_1 = Adw.ActionRow()
         r1_1.set_title(_("Access DigitalPlat Domain"))
         r1_1.set_subtitle(_("Register and get your free domain (e.g.: myserver.us.kg)"))
-        r1_1.add_prefix(create_icon_widget("web-browser-symbolic", size=20))
+        r1_1.add_prefix(create_icon_widget("network-wired-symbolic", size=20))
 
         btn_digitalplat = Gtk.Button(label=_("Open Site"))
         btn_digitalplat.add_css_class("pill")
@@ -601,7 +587,7 @@ class PrivateNetworkView(Adw.Bin):
               "3. Complete the simple registration\n"
               "4. Write down the domain you obtained (e.g.: myserver.us.kg)")
         )
-        r1_2.add_prefix(create_icon_widget("dialog-information-symbolic", size=20))
+        r1_2.add_prefix(create_icon_widget("preferences-other-symbolic", size=20))
         g1.add(r1_2)
 
         main_box.append(g1)
@@ -616,7 +602,7 @@ class PrivateNetworkView(Adw.Bin):
         r2_1 = Adw.ActionRow()
         r2_1.set_title(_("Access Cloudflare Dashboard"))
         r2_1.set_subtitle(_("Create a free account and add your domain"))
-        r2_1.add_prefix(create_icon_widget("web-browser-symbolic", size=20))
+        r2_1.add_prefix(create_icon_widget("network-wired-symbolic", size=20))
 
         btn_cloudflare = Gtk.Button(label=_("Open Cloudflare"))
         btn_cloudflare.add_css_class("pill")
@@ -638,7 +624,7 @@ class PrivateNetworkView(Adw.Bin):
               "5. Replace the DNS with Cloudflare's nameservers\n"
               "6. Wait for DNS propagation (may take a few minutes)")
         )
-        r2_2.add_prefix(create_icon_widget("dialog-information-symbolic", size=20))
+        r2_2.add_prefix(create_icon_widget("preferences-other-symbolic", size=20))
         g2.add(r2_2)
 
         # Button to go back to domain panel for NS update
@@ -675,7 +661,7 @@ class PrivateNetworkView(Adw.Bin):
               "2. Scroll down to the 'API' section on the right\n"
               "3. Copy the 'Zone ID' value")
         )
-        r3_1.add_prefix(create_icon_widget("dialog-password-symbolic", size=20))
+        r3_1.add_prefix(create_icon_widget("view-conceal-symbolic", size=20))
         g3.add(r3_1)
 
         r3_2 = Adw.ActionRow()
@@ -691,7 +677,7 @@ class PrivateNetworkView(Adw.Bin):
               "5. Click 'Continue to summary' → 'Create Token'\n"
               "6. Copy token IMMEDIATELY (shown only once!)")
         )
-        r3_2.add_prefix(create_icon_widget("key-symbolic", size=20))
+        r3_2.add_prefix(create_icon_widget("view-reveal-symbolic", size=20))
         g3.add(r3_2)
 
         main_box.append(g3)
@@ -713,14 +699,17 @@ class PrivateNetworkView(Adw.Bin):
         self.instructions_ip_label.add_css_class("title-4")
         self.instructions_ip_label.set_selectable(True)
 
+        def copy_ip(b):
+            txt = self.instructions_ip_label.get_label()
+            Gdk.Display.get_default().get_clipboard().set(txt)
+            self.main_window.show_toast(_("Copied!"))
+
         btn_copy_ip = Gtk.Button()
         btn_copy_ip.set_child(create_icon_widget("edit-copy-symbolic", size=16))
         btn_copy_ip.add_css_class("flat")
         btn_copy_ip.set_valign(Gtk.Align.CENTER)
         btn_copy_ip.set_tooltip_text(_("Copy IP"))
-        btn_copy_ip.connect(
-            "clicked", lambda b: self._copy_to_clipboard(self.public_ip)
-        )
+        btn_copy_ip.connect("clicked", copy_ip)
 
         ip_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         ip_box.append(self.instructions_ip_label)
@@ -734,10 +723,8 @@ class PrivateNetworkView(Adw.Bin):
                 ip = subprocess.check_output(
                     ["curl", "-s", "ipinfo.io/ip"], timeout=10
                 ).decode().strip()
-                self.public_ip = ip
                 GLib.idle_add(self.instructions_ip_label.set_label, ip)
             except:
-                self.public_ip = _("Error")
                 GLib.idle_add(self.instructions_ip_label.set_label, _("Error"))
 
         threading.Thread(target=fetch_ip, daemon=True).start()
@@ -771,9 +758,9 @@ class PrivateNetworkView(Adw.Bin):
         # ════════════════════════════════════════════
         #  STEP 5: Configure Router
         # ════════════════════════════════════════════
-        g5 = Adw.PreferencesGroup()
-        g5.set_title(_("5. Configure Router (Port Forwarding)"))
-        g5.set_description(_("Open the required ports on your router"))
+        group5 = Adw.PreferencesGroup()
+        group5.set_title(_("5. Configure Router (Port Forwarding)"))
+        group5.set_description(_("Open ports 8080, 9443, 41641. Note: The installation script will attempt to configure these automatically via UPnP."))
 
         r5_1 = Adw.ActionRow()
         r5_1.set_title(_("Access Your Router"))
@@ -782,7 +769,7 @@ class PrivateNetworkView(Adw.Bin):
               "2. Find 'Port Forwarding' or 'NAT' settings")
         )
         r5_1.add_prefix(create_icon_widget("network-wired-symbolic", size=20))
-        g5.add(r5_1)
+        group5.add(r5_1)
 
         ports_data = [
             ("8080/TCP", _("Web Interface and API")),
@@ -794,37 +781,15 @@ class PrivateNetworkView(Adw.Bin):
             pr.set_title(f"Port {port}")
             pr.set_subtitle(f"{desc_text} → {_('Forward to your local IP')}")
             pr.add_prefix(create_icon_widget("network-transmit-receive-symbolic", size=20))
-            g5.add(pr)
+            group5.add(pr)
 
         r5_tip = Adw.ActionRow()
         r5_tip.set_title(_("Find your local IP"))
         r5_tip.set_subtitle(_("Run 'hostname -I' in a terminal to find your local IP address"))
-        r5_tip.add_prefix(create_icon_widget("utilities-terminal-symbolic", size=20))
-        g5.add(r5_tip)
+        r5_tip.add_prefix(create_icon_widget("preferences-system-symbolic", size=20))
+        group5.add(r5_tip)
 
-        main_box.append(g5)
-
-        # ════════════════════════════════════════════
-        #  QUICK SUMMARY
-        # ════════════════════════════════════════════
-        g_summary = Adw.PreferencesGroup()
-        g_summary.set_title(_("✅ Quick Summary"))
-        g_summary.set_description(_("Checklist before clicking 'Install Server'"))
-
-        summary_steps = [
-            _("1. Register free domain at DigitalPlat"),
-            _("2. Change DNS to Cloudflare nameservers"),
-            _("3. Get Zone ID + Create API Token"),
-            _("4. Create A record with your IP (proxy OFF)"),
-            _("5. Open ports 8080, 9443, 41641 on router"),
-        ]
-        for step in summary_steps:
-            sr = Adw.ActionRow()
-            sr.set_title(step)
-            sr.add_prefix(create_icon_widget("emblem-ok-symbolic", size=16))
-            g_summary.add(sr)
-
-        main_box.append(g_summary)
+        main_box.append(group5)
 
         # Set content
         clamp.set_child(main_box)
@@ -834,1081 +799,1095 @@ class PrivateNetworkView(Adw.Bin):
         dialog.set_content(toolbar_view)
         dialog.present()
 
-    # ─────────────────────────────────────────────
-    #  CONNECT PAGE
-    # ─────────────────────────────────────────────
+    def _show_tailscale_instructions(self):
+        self._show_simple_instructions(_("Tailscale Instructions"), [
+            (_("1. Criar Conta"), _("Registro no Tailscale"), _("Crie sua conta gratuita para começar a gerenciar sua malha VPN."), "network-wired-symbolic", _("Abrir Site"), "https://login.tailscale.com"),
+            (_("2. Login no Host"), _("Vincular este dispositivo"), _("Utilize o botão 'Login / Connect' na aba anterior para autorizar este PC."), "network-wired-symbolic", None, None),
+            (_("3. Painel Admin"), _("Gerenciar Máquinas"), _("Visualize e autorize as máquinas conectadas à sua rede no painel oficial."), "preferences-system-symbolic", _("Abrir Painel"), "https://login.tailscale.com/admin/machines")
+        ])
 
-    def setup_connect_page(self):
-        self.connect_toolbar_view = Adw.ToolbarView()
-        self.connect_stack = Adw.ViewStack()
+    def _show_zerotier_instructions(self):
+        self._show_simple_instructions(_("ZeroTier Instructions"), [
+            (_("1. Criar Conta"), _("Acessar ZeroTier Central"), _("Registre-se para criar e gerenciar suas redes virtuais."), "network-wired-symbolic", _("Abrir Portal"), "https://my.zerotier.com"),
+            (_("2. Autenticação"), _("Gerar Token de API"), _("Vá em 'Account Settings' e crie um novo 'API Access Token'."), "view-reveal-symbolic", _("Gerar Token"), "https://my.zerotier.com/account"),
+            (_("3. Configuração"), _("Vincular Rede"), _("Cole o Token no campo correspondente e clique em 'Save Token &amp; Create Network'."), "edit-copy-symbolic", None, None),
+            (_("4. Administração"), _("Autorizar Membros"), _("Clique no Network ID da sua rede para gerenciar e autorizar novos dispositivos."), "network-server-symbolic", _("Minhas Redes"), "https://my.zerotier.com/network")
+        ])
 
-        # Connection Form Tab
-        conn_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
-        conn_box.set_margin_top(30)
-        conn_box.set_margin_bottom(30)
-        conn_box.set_margin_start(40)
-        conn_box.set_margin_end(40)
+    def _show_simple_instructions(self, title_text, items):
+        """Show instructions using the premium Adwaita style."""
+        dialog = Adw.Window(transient_for=self.main_window)
+        dialog.set_modal(True)
+        dialog.set_title(title_text)
+        dialog.set_default_size(680, 600)
 
-        # ── Header ──
-        conn_header = Adw.PreferencesGroup()
-        conn_header.set_header_suffix(create_icon_widget('network-vpn-symbolic', size=24))
-        conn_header.set_title(_("Connect to Private Network"))
-        conn_header.set_description(
-            _("Join an existing Headscale private network. You need a Server Domain and an Auth Key provided by the network administrator.")
-        )
-        conn_box.append(conn_header)
+        # ToolbarView
+        toolbar_view = Adw.ToolbarView()
 
-        # ── Group ──
-        group = Adw.PreferencesGroup()
-        group.set_title(_("Connection Details"))
-        self.entry_connect_domain = Adw.EntryRow(title=_("Server Domain"))
-        self.entry_auth_key = Adw.PasswordEntryRow(title=_("Auth Key"))
+        # Header bar
+        hb = Adw.HeaderBar()
+        hb.set_title_widget(Adw.WindowTitle.new(
+            title_text,
+            _("Step-by-step guide")
+        ))
+        toolbar_view.add_top_bar(hb)
 
-        # Load saved values
-        app = self.main_window.get_application()
-        if hasattr(app, "config"):
-            saved_domain = app.config.get("private_network_domain", "")
-            saved_key = app.config.get("private_network_key", "")
-            self.entry_connect_domain.set_text(saved_domain)
-            self.entry_auth_key.set_text(saved_key)
+        # Scrollable content
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_vexpand(True)
 
-        # Connect signals to save on change
-        self.entry_connect_domain.connect("changed", self._on_domain_changed)
-        self.entry_auth_key.connect("changed", self._on_key_changed)
+        clamp = Adw.Clamp()
+        clamp.set_maximum_size(600)
+        for m in ['top', 'bottom', 'start', 'end']:
+            getattr(clamp, f'set_margin_{m}')(24)
 
-        group.add(self.entry_connect_domain)
-        group.add(self.entry_auth_key)
-        conn_box.append(group)
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
 
-        # ── Progress Area (Connect) ──
-        self.connect_progress_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        self.connect_progress_box.set_visible(False)
+        for item in items:
+            # item tuple: (group_title, row_title, row_subtitle, icon, btn_label, btn_url)
+            g_title = item[0]
+            r_title = item[1]
+            r_subtitle = item[2] if len(item) > 2 else ""
+            icon = item[3] if len(item) > 3 else "dialog-information-symbolic"
+            btn_label = item[4] if len(item) > 4 else None
+            btn_url = item[5] if len(item) > 5 else None
 
-        self.connect_progress_status = Gtk.Label(label="")
-        self.connect_progress_status.add_css_class("caption")
-        self.connect_progress_status.set_halign(Gtk.Align.START)
-        self.connect_progress_box.append(self.connect_progress_status)
+            group = Adw.PreferencesGroup()
+            group.set_title(g_title)
+            
+            row = Adw.ActionRow()
+            row.set_title(r_title)
+            row.set_subtitle(r_subtitle)
+            row.add_prefix(create_icon_widget(icon, size=22))
+            
+            if btn_label and btn_url:
+                btn = Gtk.Button(label=btn_label)
+                btn.add_css_class("pill")
+                btn.add_css_class("suggested-action")
+                btn.set_valign(Gtk.Align.CENTER)
+                btn.connect("clicked", lambda b, u=btn_url: os.system(f"xdg-open {u}"))
+                row.add_suffix(btn)
+            
+            group.add(row)
+            main_box.append(group)
 
-        level_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        level_row.set_valign(Gtk.Align.CENTER)
+        clamp.set_child(main_box)
+        scroll.set_child(clamp)
+        toolbar_view.set_content(scroll)
 
-        self.connect_level_bar = Gtk.LevelBar()
-        self.connect_level_bar.set_min_value(0)
-        self.connect_level_bar.set_max_value(1.0)
-        self.connect_level_bar.set_value(0)
-        self.connect_level_bar.set_hexpand(True)
-        self.connect_level_bar.set_size_request(-1, 16)
-        self.connect_level_bar.remove_offset_value(Gtk.LEVEL_BAR_OFFSET_LOW)
-        self.connect_level_bar.remove_offset_value(Gtk.LEVEL_BAR_OFFSET_HIGH)
-        self.connect_level_bar.remove_offset_value(Gtk.LEVEL_BAR_OFFSET_FULL)
-        self.connect_level_bar.add_offset_value('install-low', 0.25)
-        self.connect_level_bar.add_offset_value('install-mid', 0.50)
-        self.connect_level_bar.add_offset_value('install-high', 0.75)
-        self.connect_level_bar.add_offset_value('install-full', 1.0)
+        dialog.set_content(toolbar_view)
+        dialog.present()
 
-        click_gesture = Gtk.GestureClick()
-        click_gesture.connect("pressed", lambda g, n, x, y: self._open_terminal_dialog("connect"))
-        self.connect_level_bar.add_controller(click_gesture)
-        try:
-            self.connect_level_bar.set_cursor(Gdk.Cursor.new_from_name("pointer", None))
-        except TypeError:
-            self.connect_level_bar.set_cursor(Gdk.Cursor.new_from_name("pointer"))
-        level_row.append(self.connect_level_bar)
+    def _on_logout(self, btn):
+        self.main_window.show_toast(_("Disconnecting..."))
+        if self.vpn_id == 'tailscale':
+            def do_logout():
+                subprocess.run(["bigsudo", "tailscale", "logout"])
+                GLib.idle_add(lambda: (
+                    self.main_window.show_toast(_("Tailscale disconnected")),
+                    self._btn_logout.set_visible(False),
+                    self._networks_group.set_visible(False),
+                    self._refresh_networks()
+                ))
+            threading.Thread(target=do_logout, daemon=True).start()
+        elif self.vpn_id == 'zerotier':
+            if os.path.exists(ZT_TOKEN_FILE):
+                os.remove(ZT_TOKEN_FILE)
+            self._logged_in = False
+            self._btn_logout.set_visible(False)
+            self._networks_group.set_visible(False)
+            self.main_window.show_toast(_("ZeroTier token removed"))
+            def do_stop():
+                subprocess.run(["bigsudo", "systemctl", "stop", "zerotier-one"])
+                GLib.idle_add(self._refresh_networks)
+            threading.Thread(target=do_stop, daemon=True).start()
+        elif self.vpn_id == 'headscale':
+            def do_logout():
+                subprocess.run(["bigsudo", "tailscale", "logout"])
+                GLib.idle_add(lambda: (
+                    self.main_window.show_toast(_("Disconnected from Headscale")),
+                    self._btn_logout.set_visible(False),
+                    self._networks_group.set_visible(False),
+                    self._refresh_networks()
+                ))
+            threading.Thread(target=do_logout, daemon=True).start()
 
-        self.connect_progress_percent = Gtk.Label(label='0%')
-        self.connect_progress_percent.add_css_class('caption-heading')
-        self.connect_progress_percent.set_size_request(40, -1)
-        level_row.append(self.connect_progress_percent)
+    def _refresh_networks(self):
+        threading.Thread(target=self._fetch_networks, daemon=True).start()
 
-        self.connect_progress_box.append(level_row)
-        conn_box.append(self.connect_progress_box)
+    def _fetch_networks(self):
+        rows = []
+        if self.vpn_id == 'tailscale':
+            try:
+                r = subprocess.run(["tailscale", "status", "--json"], capture_output=True, text=True)
+                if r.returncode == 0:
+                    data = json.loads(r.stdout)
+                    self_node = data.get("Self", {})
+                    rows.append({
+                        "title": self_node.get("DNSName", "This device").split(".")[0],
+                        "subtitle": ", ".join(self_node.get("TailscaleIPs", [])),
+                        "icon": "computer-symbolic", "is_self": True
+                    })
+                    for k, peer in data.get("Peer", {}).items():
+                        rows.append({
+                            "title": peer.get("DNSName", k).split(".")[0],
+                            "subtitle": ", ".join(peer.get("TailscaleIPs", [])),
+                            "icon": "network-workgroup-symbolic",
+                            "online": peer.get("Online", False)
+                        })
+            except Exception:
+                pass
 
-        # ── Buttons ──
-        self.btn_connect = Gtk.Button()
-        self.btn_connect.add_css_class("pill")
-        self.btn_connect.add_css_class("suggested-action")
-        self.btn_connect.set_halign(Gtk.Align.CENTER)
-        self.btn_connect.set_size_request(240, 50)
+            try:
+                if not os.path.exists(ZT_TOKEN_FILE): return
+                token = open(ZT_TOKEN_FILE).read().strip()
+                if not token: return
+                r = subprocess.run(["curl", "-sL", "-H", f"Authorization: token {token}",
+                                    "https://api.zerotier.com/api/v1/network"],
+                                   capture_output=True, text=True)
+                stdout = r.stdout.strip()
+                networks = json.loads(stdout) if (stdout and stdout.startswith('[')) else []
+                for net in (networks if isinstance(networks, list) else []):
+                    nid = net.get("id", "")
+                    nname = net.get("config", {}).get("name", nid)
+                    rows.append({
+                        "title": nname,
+                        "subtitle": f"ID: {nid}",
+                        "icon": "network-wired-symbolic",
+                        "network_id": nid
+                    })
+            except Exception:
+                pass
+
+        GLib.idle_add(self._populate_networks, rows)
+
+    def _populate_networks(self, rows):
+        # Remove only the rows we explicitly added (avoids touching internal layout children)
+        for r in self._network_rows:
+            self._networks_group.remove(r)
+        self._network_rows.clear()
+
+        if not rows:
+            row = Adw.ActionRow(title=_("No networks found"), subtitle=_("Connect or create a network first"))
+            row.add_prefix(create_icon_widget("preferences-other-symbolic", size=18))
+            self._networks_group.add(row)
+            self._network_rows.append(row)
+        else:
+            for r in rows:
+                row = Adw.ActionRow(title=r["title"], subtitle=r.get("subtitle", ""))
+                icon_name = r.get("icon", "network-wired-symbolic")
+                row.add_prefix(create_icon_widget("preferences-other-symbolic", size=18))
+                if r.get("is_self"):
+                    badge = Gtk.Label(label=_("This device"))
+                    badge.add_css_class("caption")
+                    badge.add_css_class("dim-label")
+                    row.add_suffix(badge)
+                elif "online" in r:
+                    dot = create_icon_widget("media-record-symbolic", size=10)
+                    dot.add_css_class("status-online" if r["online"] else "status-offline")
+                    row.add_suffix(dot)
+                self._networks_group.add(row)
+                self._network_rows.append(row)
+
+        self._networks_group.set_visible(True)
+
+    def _show_log(self):
+        dialog = Adw.Window(transient_for=self.main_window)
+        dialog.set_modal(False)
+        dialog.set_title(_("Installation Log"))
+        dialog.set_default_size(700, 500)
+        tv = Adw.ToolbarView()
+        hb = Adw.HeaderBar()
+        tv.add_top_bar(hb)
+        tv.set_content(self._log)
+        dialog.set_content(tv)
+        dialog.present()
+
+    def _show_access_info(self, data):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        tv = Adw.ToolbarView()
+        hb = Adw.HeaderBar()
+        tv.add_top_bar(hb)
+        scroll = Gtk.ScrolledWindow(vexpand=True)
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        clamp = Adw.Clamp(maximum_size=560)
+        for m in ['top','bottom','start','end']:
+            getattr(clamp, f'set_margin_{m}')(16)
+        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+
+        grp = Adw.PreferencesGroup()
+        grp.set_title(_("🎉 Success! Share with friends:"))
+        for key, label, icon in [
+            ("domain", _("Domain"), "network-server-symbolic"),
+            ("network_id", _("Network ID"), "network-wired-symbolic"),
+            ("auth_key", _("Auth Key (Friends)"), "key-symbolic"),
+            ("api_key", _("API Key (Admin)"), "dialog-password-symbolic"),
+            ("web_ui", _("Web Interface"), "web-browser-symbolic"),
+        ]:
+            val = data.get(key, "")
+            if not val: continue
+            row = Adw.ActionRow(title=label, subtitle=val)
+            row.add_prefix(create_icon_widget(icon, size=16))
+            btn = Gtk.Button()
+            btn.set_child(create_icon_widget("edit-copy-symbolic", size=14))
+            btn.add_css_class("flat")
+            btn.set_valign(Gtk.Align.CENTER)
+            btn.connect("clicked", lambda b, v=val: self._copy(v))
+            row.add_suffix(btn)
+            grp.add(row)
+        content.append(grp)
+
+        clamp.set_child(content)
+        scroll.set_child(clamp)
+        tv.set_content(scroll)
+
+        # Action Buttons at bottom
+        actions_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12, halign=Gtk.Align.CENTER)
+        actions_box.set_margin_top(16)
+        actions_box.set_margin_bottom(16)
+
+        def on_save_file(b):
+            msg = "\n".join([f"{k}: {data.get(k)}" for k in data if data.get(k)])
+            dialog_file = Gtk.FileDialog(title=_("Save Network Information"))
+            dialog_file.set_initial_name("network_info.txt")
+            def on_save_finish(source, result):
+                try:
+                    file_handle = dialog_file.save_finish(result)
+                    if file_handle:
+                        path = file_handle.get_path()
+                        with open(path, "w") as f:
+                            f.write(msg)
+                        self.main_window.show_toast(_("Saved to file!"))
+                except Exception as e:
+                    print(f"Error saving: {e}")
+
+            dialog_file.save(dialog, None, on_save_finish)
+
+        def on_share(b):
+            msg = _("VPN Network Details:\n\n")
+            for k, l, _icon in [("domain", _("Domain"), ""), ("network_id", _("Network ID"), ""), ("auth_key", _("Auth Key"), "")]:
+                if data.get(k): msg += f"{l}: {data.get(k)}\n"
+            
+            import urllib.parse
+            body = urllib.parse.quote(msg)
+            os.system(f"xdg-open 'mailto:?subject=VPN Network Info&body={body}'")
+            self.main_window.show_toast(_("Opening mail client..."))
+
+        btn_save = Gtk.Button(label=_("Save"))
+        btn_save.add_css_class("pill")
+        btn_save.add_css_class("suggested-action")
+        btn_save.connect("clicked", lambda b: self.main_window.show_toast(_("Saved to history!")))
         
-        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        btn_box.set_halign(Gtk.Align.CENTER)
-        self.connect_spinner = Gtk.Spinner()
-        self.connect_spinner.set_visible(False)
-        self.connect_label = Gtk.Label(label=_("Establish Connection"))
-        btn_box.append(self.connect_spinner)
-        btn_box.append(self.connect_label)
-        self.btn_connect.set_child(btn_box)
-        self.btn_connect.connect("clicked", self.on_connect_clicked)
-        conn_box.append(self.btn_connect)
+        btn_file = Gtk.Button()
+        btn_file.set_child(Gtk.Box(spacing=8))
+        btn_file.get_child().append(create_icon_widget("folder-open-symbolic", size=16))
+        btn_file.get_child().append(Gtk.Label(label=_("Save to File")))
+        btn_file.add_css_class("pill")
+        btn_file.connect("clicked", on_save_file)
 
-        # Terminal view for connect (dialog use)
-        self.connect_log_view = Gtk.TextView(editable=False, monospace=True)
-        self.connect_log_view.add_css_class("card")
-        self.connect_log_view.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
-        # Use existing tags table if possible, or new one
-        conn_buffer = self.connect_log_view.get_buffer()
-        # Tags are shared if we use the same table, but here it's separate text views.
-        # I'll just repeat the tags setup later or ensure they are present.
-        conn_table = conn_buffer.get_tag_table()
-        ansi_colors = {
-            "green": "#2ec27e", "blue": "#3584e4", "yellow": "#f5c211", "red": "#ed333b", "cyan": "#33c7de", "bold": None,
-        }
-        for name, color in ansi_colors.items():
-            tag = Gtk.TextTag(name=name)
-            if color: tag.set_property("foreground", color)
-            if name == "bold": tag.set_property("weight", 700)
-            conn_table.add(tag)
+        btn_share = Gtk.Button()
+        btn_share.set_child(Gtk.Box(spacing=8))
+        btn_share.get_child().append(create_icon_widget("open-menu-symbolic", size=16))
+        btn_share.get_child().append(Gtk.Label(label=_("Share")))
+        btn_share.add_css_class("pill")
+        btn_share.connect("clicked", on_share)
 
-        page_conn = self.connect_stack.add_titled(conn_box, "connection", _("Connect"))
-        page_conn.set_icon_name("network-server-symbolic")
+        actions_box.append(btn_save)
+        actions_box.append(btn_file)
+        actions_box.append(btn_share)
 
-        # Network Status Tab
-        net_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        net_box.set_margin_top(12)
-        net_box.set_margin_bottom(12)
-        net_box.set_margin_start(12)
-        net_box.set_margin_end(12)
+        # Add actions to bottom bar of ToolbarView
+        tv.add_bottom_bar(actions_box)
+        box.append(tv)
 
-        net_header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        net_title = Gtk.Label(label=_("Network Devices"))
-        net_title.add_css_class("title-4")
-        net_header.append(net_title)
+        dialog = Adw.Window(transient_for=self.main_window)
+        dialog.set_modal(True)
+        dialog.set_title(_("Network Information"))
+        dialog.set_default_size(540, 500)
+        dialog.set_content(box)
+        dialog.present()
 
-        btn_refresh = Gtk.Button()
-        btn_refresh.set_child(create_icon_widget("view-refresh-symbolic", size=16))
-        btn_refresh.add_css_class("flat")
-        btn_refresh.connect("clicked", lambda b: self.refresh_peers())
-        btn_refresh.set_halign(Gtk.Align.END)
-        btn_refresh.set_hexpand(True)
-        net_header.append(btn_refresh)
-        net_box.append(net_header)
+    def _copy(self, text):
+        clipboard = Gdk.Display.get_default().get_clipboard()
+        clipboard.set(text)
+        self.main_window.show_toast(_("Copied!"))
 
-        # Columns: IP, Host, User, OS, Connection/Relay, Stats (Tx/Rx), Ping
-        self.peers_model = Gtk.ListStore(str, str, str, str, str, str, str)
-        self.peers_tree = Gtk.TreeView(model=self.peers_model)
 
+# ─── CONNECT PAGE ─────────────────────────────────────────────────────────────
+class ConnectPage(Adw.Bin):
+    """
+    Tabbed page: Connect | Status | Previous Networks
+    Works for all 3 VPN providers independently.
+    """
+
+    def __init__(self, vpn_id, main_window):
+        super().__init__()
+        self.vpn_id = vpn_id
+        self.vpn = VPN_META[vpn_id]
+        self.main_window = main_window
+        self._fetching = False
+        self._build()
+
+    def _build(self):
+        toolbar = Adw.ToolbarView()
+        stack = Adw.ViewStack()
+
+        # ── Tab 1: Connect ──
+        conn_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
+        conn_box.set_margin_top(24)
+        conn_box.set_margin_bottom(24)
+        conn_box.set_margin_start(32)
+        conn_box.set_margin_end(32)
+
+        hdr = Adw.PreferencesGroup()
+        hdr.set_title(self.vpn['connect_title'])
+        hdr.set_description(self.vpn['connect_desc'])
+        hdr.set_header_suffix(create_icon_widget(self.vpn['icon'], size=24))
+        conn_box.append(hdr)
+
+        fields_group = Adw.PreferencesGroup()
+        fields_group.set_title(_("Connection Details"))
+        conn_box.append(fields_group)
+        self._build_connect_fields(fields_group)
+
+        self._c_progress = ProgressRow(on_show_log=self._show_connect_log)
+        conn_box.append(self._c_progress)
+        self._c_log = LogView()
+
+        btn_row = Gtk.Box(spacing=12, halign=Gtk.Align.CENTER, margin_top=8)
+        self._c_spinner = Gtk.Spinner()
+        self._c_spinner.set_visible(False)
+        self._c_lbl = Gtk.Label(label=_("Establish Connection"))
+        inner = Gtk.Box(spacing=8, halign=Gtk.Align.CENTER)
+        inner.append(self._c_spinner)
+        inner.append(self._c_lbl)
+        self._btn_connect = Gtk.Button()
+        self._btn_connect.add_css_class("pill")
+        self._btn_connect.add_css_class("suggested-action")
+        self._btn_connect.set_size_request(220, 48)
+        self._btn_connect.set_child(inner)
+        self._btn_connect.connect("clicked", self._on_connect)
+        btn_row.append(self._btn_connect)
+
+        self._btn_instr = Gtk.Button(label=_("Instructions"))
+        self._btn_instr.add_css_class("pill")
+        self._btn_instr.set_size_request(180, 48)
+        self._btn_instr.connect("clicked", self._on_instructions_clicked)
+        btn_row.append(self._btn_instr)
+
+        conn_box.append(btn_row)
+
+        p1 = stack.add_titled(conn_box, "connect", _("Connect"))
+        p1.set_icon_name("network-server-symbolic")
+
+        # ── Tab 2: Status ──
+        status_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        status_box.set_margin_top(12)
+        status_box.set_margin_bottom(12)
+        status_box.set_margin_start(12)
+        status_box.set_margin_end(12)
+
+        hdr2 = Gtk.Box()
+        t2 = Gtk.Label(label=_("Network Devices"))
+        t2.add_css_class("title-4")
+        hdr2.append(t2)
+        btn_ref = Gtk.Button()
+        btn_ref.set_child(create_icon_widget("view-refresh-symbolic", size=16))
+        btn_ref.add_css_class("flat")
+        btn_ref.set_halign(Gtk.Align.END)
+        btn_ref.set_hexpand(True)
+        btn_ref.connect("clicked", lambda b: self._refresh_status())
+        
+        hdr2.append(btn_ref)
+        status_box.append(hdr2)
+
+        self._status_banner = Adw.Banner(title=_("Set API Token to see all network devices"))
+        self._status_banner.set_revealed(False)
+        self._status_banner.set_button_label(_("Set Token"))
+        self._status_banner.connect("button-clicked", lambda b: self._prompt_api_token())
+        status_box.append(self._status_banner)
+
+        self._peers_store = Gtk.ListStore(str, str, str, str, str, str, str)
+        self._peers_tree = Gtk.TreeView(model=self._peers_store)
         cols = [
-            _("IP"),
-            _("Host"),
-            _("User"),
-            _("System"),
-            _("Connection"),
-            _("Traffic (Tx/Rx)"),
-            _("Ping"),
+            _("Auth"), _("ID"), _("Name"), 
+            _("Managed IP"), _("Last Seen"), 
+            _("Version"), _("Physical IP")
         ]
-        for i, col_title in enumerate(cols):
-            renderer = Gtk.CellRendererText()
-            column = Gtk.TreeViewColumn(col_title, renderer, text=i)
-            if i == 6:
-                renderer.set_property("xalign", 0.5)
-            column.set_resizable(True)
-            column.set_expand(True if i in [1, 4] else False)
-            self.peers_tree.append_column(column)
+        for i, col in enumerate(cols):
+            rend = Gtk.CellRendererText()
+            c = Gtk.TreeViewColumn(col, rend, text=i)
+            c.set_resizable(True)
+            c.set_expand(i in [2, 3]) # Expand Name and IP
+            self._peers_tree.append_column(c)
 
         scroll_tree = Gtk.ScrolledWindow(vexpand=True)
-        scroll_tree.set_child(self.peers_tree)
+        scroll_tree.set_child(self._peers_tree)
         scroll_tree.add_css_class("card")
-        net_box.append(scroll_tree)
+        status_box.append(scroll_tree)
 
-        page_net = self.connect_stack.add_titled(net_box, "network", _("Status"))
-        page_net.set_icon_name("network-transmit-receive-symbolic")
+        # Prominent API Token button
+        self._btn_api_token = Gtk.Button(label=_("Set ZeroTier API Token"))
+        self._btn_api_token.add_css_class("suggested-action")
+        self._btn_api_token.add_css_class("pill")
+        self._btn_api_token.set_margin_top(12)
+        self._btn_api_token.connect("clicked", self._prompt_api_token)
+        self._btn_api_token.set_visible(self.vpn_id == 'zerotier')
+        status_box.append(self._btn_api_token)
 
-        # Previous Networks Tab
-        self.history_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
-        self.history_box.set_margin_top(30)
-        self.history_box.set_margin_bottom(30)
-        self.history_box.set_margin_start(40)
-        self.history_box.set_margin_end(40)
+        p2 = stack.add_titled(status_box, "status", _("Status"))
+        p2.set_icon_name("network-transmit-receive-symbolic")
 
-        history_scroll = Gtk.ScrolledWindow(vexpand=True)
-        self.history_list_box = Gtk.Box(
-            orientation=Gtk.Orientation.VERTICAL, spacing=12
-        )
-        history_scroll.set_child(self.history_list_box)
-        self.history_box.append(history_scroll)
+        # ── Tab 3: Previous Networks ──
+        self._hist_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        hist_scroll = Gtk.ScrolledWindow(vexpand=True)
+        self._hist_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        self._hist_list.set_margin_top(16)
+        self._hist_list.set_margin_bottom(16)
+        self._hist_list.set_margin_start(24)
+        self._hist_list.set_margin_end(24)
+        hist_scroll.set_child(self._hist_list)
+        self._hist_box.append(hist_scroll)
 
-        page_hist = self.connect_stack.add_titled(
-            self.history_box, "history", _("Previous Networks")
-        )
-        page_hist.set_icon_name("document-open-recent-symbolic")
+        p3 = stack.add_titled(self._hist_box, "history", _("Previous Networks"))
+        p3.set_icon_name("document-open-recent-symbolic")
+
+        stack.connect("notify::visible-child-name", self._on_tab_changed)
 
         header = Adw.HeaderBar()
         header.set_show_start_title_buttons(False)
         header.set_show_end_title_buttons(False)
-        switcher = Adw.ViewSwitcher(stack=self.connect_stack)
+        switcher = Adw.ViewSwitcher(stack=stack)
         header.set_title_widget(switcher)
-        self.connect_toolbar_view.add_top_bar(header)
-        self.connect_toolbar_view.set_content(self.connect_stack)
+        toolbar.add_top_bar(header)
+        toolbar.set_content(stack)
+        self._stack = stack
+        self.set_child(toolbar)
 
-        self.connect_stack.connect(
-            "notify::visible-child-name", self.on_connect_stack_changed
-        )
+    def _on_instructions_clicked(self, btn):
+        if self.vpn_id == 'headscale':
+            self._show_headscale_instructions()
+        elif self.vpn_id == 'tailscale':
+            self._show_tailscale_instructions()
+        elif self.vpn_id == 'zerotier':
+            self._show_zerotier_instructions()
 
-        if self.mode == "connect":
-            self._start_worker()
-            self.refresh_history_ui()
+    def _build_connect_fields(self, group):
+        if self.vpn_id == 'headscale':
+            self._e_domain = Adw.EntryRow(title=_("Server Domain (e.g. vpn.ruscher.org)"))
+            self._e_key = Adw.PasswordEntryRow(title=_("Auth Key"))
+            group.add(self._e_domain)
+            group.add(self._e_key)
 
-        return self.connect_toolbar_view
+        elif self.vpn_id == 'tailscale':
+            self._e_server = Adw.EntryRow(title=_("Login Server (leave empty for tailscale.com)"))
+            self._e_key = Adw.PasswordEntryRow(title=_("Auth Key"))
+            group.add(self._e_server)
+            group.add(self._e_key)
 
-    # ─────────────────────────────────────────────
-    #  HISTORY
-    # ─────────────────────────────────────────────
+        elif self.vpn_id == 'zerotier':
+            self._e_netid = Adw.EntryRow(title=_("Network ID (16 characters)"))
+            self._e_netid.set_tooltip_text(_("e.g. a1b2c3d4e5f6a7b8"))
+            group.add(self._e_netid)
+            link = Adw.ActionRow(title=_("Find Network ID"), subtitle=_("my.zerotier.com → Networks"))
+            link.add_prefix(create_icon_widget("network-wired-symbolic", size=18))
+            btn = Gtk.Button(label=_("Open"))
+            btn.add_css_class("flat")
+            btn.set_valign(Gtk.Align.CENTER)
+            btn.connect("clicked", lambda b: os.system("xdg-open https://my.zerotier.com/network"))
+            link.add_suffix(btn)
+            group.add(link)
 
-    def refresh_history_ui(self):
-        """Load history from JSON and populate the list box"""
-        while child := self.history_list_box.get_first_child():
-            self.history_list_box.remove(child)
+        self._prefill_from_history()
 
-        config_dir = os.path.expanduser("~/.config/big-remoteplay/private_network")
-        history_file = os.path.join(config_dir, "private_network.json")
+    def _prefill_from_history(self):
+        """Pre-fill fields with the last successful connection for this VPN."""
+        history = _load_history()
+        # Find the latest entry for this vpn
+        last_entry = next((h for h in reversed(history) if h.get("vpn") == self.vpn_id), None)
+        if not last_entry: return
 
-        if not os.path.exists(history_file):
-            status = Adw.StatusPage(
-                title=_("No History"),
-                icon_name="document-open-recent-symbolic",
-                description=_("Your created networks will appear here."),
+        if self.vpn_id == 'headscale':
+            if hasattr(self, '_e_domain'): self._e_domain.set_text(last_entry.get("domain", ""))
+            if hasattr(self, '_e_key'): self._e_key.set_text(last_entry.get("auth_key", ""))
+        elif self.vpn_id == 'tailscale':
+            if hasattr(self, '_e_server'): self._e_server.set_text(last_entry.get("domain", "") if last_entry.get("domain") != "tailscale.com" else "")
+            if hasattr(self, '_e_key'): self._e_key.set_text(last_entry.get("auth_key", ""))
+        elif self.vpn_id == 'zerotier':
+            if hasattr(self, '_e_netid'): self._e_netid.set_text(last_entry.get("network_id", ""))
+
+    def _prompt_api_token(self, btn=None):
+        dialog = Adw.Window(transient_for=self.main_window)
+        dialog.set_modal(True)
+        dialog.set_title(_("ZeroTier API Token"))
+        dialog.set_default_size(400, 250)
+        
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+        box.set_margin_top(24)
+        box.set_margin_bottom(24)
+        box.set_margin_start(24)
+        box.set_margin_end(24)
+        
+        lbl = Gtk.Label(label=_("Enter your API Token to view managed devices."))
+        lbl.set_wrap(True)
+        box.append(lbl)
+        
+        entry = Adw.PasswordEntryRow(title=_("API Token"))
+        if os.path.exists(ZT_TOKEN_FILE):
+             try: entry.set_text(open(ZT_TOKEN_FILE).read().strip())
+             except: pass
+        
+        grp = Adw.PreferencesGroup()
+        grp.add(entry)
+        box.append(grp)
+        
+        btn_box = Gtk.Box(spacing=12)
+        btn_box.set_halign(Gtk.Align.CENTER)
+        
+        btn_save = Gtk.Button(label=_("Save & Refresh"))
+        btn_save.add_css_class("suggested-action")
+        btn_save.add_css_class("pill")
+        
+        btn_close = Gtk.Button(label=_("Close"))
+        btn_close.add_css_class("pill")
+        
+        def on_save(btn):
+            token = entry.get_text().strip()
+            if token:
+                os.makedirs(os.path.dirname(ZT_TOKEN_FILE), exist_ok=True)
+                with open(ZT_TOKEN_FILE, 'w') as f:
+                    f.write(token)
+                self.main_window.show_toast(_("Token saved"))
+                self._refresh_status()
+            dialog.close()
+            
+        btn_save.connect("clicked", on_save)
+        btn_close.connect("clicked", lambda b: dialog.close())
+        
+        btn_box.append(btn_save)
+        btn_box.append(btn_close)
+        box.append(btn_box)
+        
+        dialog.set_content(box)
+        dialog.present()
+
+    def _on_connect(self, btn):
+        self._btn_connect.set_sensitive(False)
+        self._c_spinner.set_visible(True)
+        self._c_spinner.start()
+        self._c_lbl.set_label(_("Connecting..."))
+        self._c_progress.update(0.05, _("Starting..."))
+        self._c_log.clear()
+
+        if self.vpn_id == 'headscale':
+            domain = self._e_domain.get_text().strip()
+            key = self._e_key.get_text().strip()
+            if not domain or not key:
+                self.main_window.show_toast(_("Domain and Auth Key required"))
+                self._c_done(False)
+                return
+            inputs = ["2\n", f"{domain}\n", f"{key}\n", "n\n"]
+            script = 'create-network_headscale.sh'
+
+        elif self.vpn_id == 'tailscale':
+            server = self._e_server.get_text().strip() if hasattr(self, '_e_server') else ''
+            key = self._e_key.get_text().strip() if hasattr(self, '_e_key') else ''
+            if not key:
+                self.main_window.show_toast(_("Auth Key is required"))
+                self._c_done(False)
+                return
+            # Using Login option (1) then Auth Key option (2)
+            # Future: support custom server in script
+            inputs = ["1\n", "2\n", f"{key}\n", "\n", "0\n"]
+            script = 'create-network_tailscale.sh'
+
+        elif self.vpn_id == 'zerotier':
+            nid = self._e_netid.get_text().strip() if hasattr(self, '_e_netid') else ''
+            if not nid:
+                self.main_window.show_toast(_("Network ID is required"))
+                self._c_done(False)
+                return
+            inputs = ["2\n", f"{nid}\n"]
+            script = 'create-network_zerotier.sh'
+
+        phases = [
+            (0.1, ['preparando','checking']),
+            (0.3, ['instalando','tailscale']),
+            (0.6, ['conectando','connecting','login','up','join']),
+            (0.85, ['verificando','verif','status']),
+            (0.95, ['✅','success','concluí','established']),
+        ]
+
+        def run():
+            spath = _get_script(script)
+            try:
+                os.chmod(spath, 0o755)
+            except Exception:
+                pass
+            proc = subprocess.Popen(
+                ["bigsudo", spath],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT, text=True, bufsize=1
             )
-            self.history_list_box.append(status)
+            for s in inputs:
+                try:
+                    proc.stdin.write(s)
+                    proc.stdin.flush()
+                except Exception:
+                    break
+            for line in proc.stdout:
+                clean = re.sub(r"\x1b\[[0-9;]*[mK]", "", line).strip()
+                self._c_log.append(line.strip())
+                lower = clean.lower()
+                for frac, keys in phases:
+                    if any(k in lower for k in keys):
+                        self._c_progress.update(frac, clean[:80])
+            code = proc.wait()
+            GLib.idle_add(lambda: self._c_done(code == 0))
+
+        threading.Thread(target=run, daemon=True).start()
+
+    def _c_done(self, success):
+        self._btn_connect.set_sensitive(True)
+        self._c_spinner.stop()
+        self._c_spinner.set_visible(False)
+        if success:
+            self._c_progress.update(1.0, _("✅ Connected!"))
+            self._c_lbl.set_label(_("Establish Connection"))
+            
+            # Save to history
+            entry = {"vpn": self.vpn_id}
+            if self.vpn_id == 'headscale':
+                entry["domain"] = self._e_domain.get_text().strip()
+            elif self.vpn_id == 'tailscale':
+                entry["domain"] = self._e_server.get_text().strip() or "tailscale.com"
+            elif self.vpn_id == 'zerotier':
+                entry["network_id"] = self._e_netid.get_text().strip()
+            _save_history(entry)
+
+            self.main_window.show_toast(_("Connected successfully!"))
+            GLib.timeout_add(1200, lambda: self._stack.set_visible_child_name("status"))
+        else:
+            self._c_progress.update(0, _("❌ Failed"))
+            self._c_lbl.set_label(_("Try Again"))
+            self.main_window.show_toast(_("Connection failed"))
+
+    def _on_tab_changed(self, stack, pspec):
+        name = stack.get_visible_child_name()
+        if name == "status":
+            self._refresh_status()
+        elif name == "history":
+            self._refresh_history()
+
+    def _refresh_status(self):
+        if self._fetching:
             return
+        
+        # Show banner if ZeroTier and no token
+        if self.vpn_id == 'zerotier':
+            self._status_banner.set_revealed(not os.path.exists(ZT_TOKEN_FILE))
+        else:
+            self._status_banner.set_revealed(False)
 
+        self._fetching = True
+        threading.Thread(target=self._fetch_status, daemon=True).start()
+
+    def _fetch_status(self):
+        rows = []
         try:
-            with open(history_file, "r") as f:
-                data = json.load(f)
-                history = data.get("history", [])
-        except:
-            history = []
+            now = time.time() * 1000
 
+            def fmt_time(ts):
+                if not ts: return ""
+                try:
+                    ts = float(ts)
+                except (ValueError, TypeError):
+                    return str(ts)
+                diff = (now - ts) / 1000
+                if diff < 60: return _("Just now")
+                if diff < 3600: return f"{int(diff/60)} min"
+                if diff < 86400: return f"{int(diff/3600)} hr"
+                return f"{int(diff/86400)} days"
+
+            if self.vpn_id in ('headscale', 'tailscale'):
+                r = subprocess.run(["tailscale", "status", "--json"], capture_output=True, text=True)
+                if r.returncode == 0:
+                    data = json.loads(r.stdout)
+                    self_node = data.get("Self", {})
+                    ips = ", ".join(self_node.get("TailscaleIPs", []))
+                    name = self_node.get("DNSName", "").split(".")[0] or "This device"
+                    # Auth, ID, Name, IP, LastSeen, Ver, Phys
+                    rows.append(("✅", _("Self"), name, ips, _("Online"), "", ""))
+                    
+                    for peer in data.get("Peer", {}).values():
+                        ip = ", ".join(peer.get("TailscaleIPs", []))
+                        h = peer.get("DNSName", "").split(".")[0]
+                        uid = str(peer.get("UserID", ""))
+                        # Tailscale JSON LastHandshake is ISO str, complex to parse without datetime. 
+                        # Simplifying for now:
+                        last = _("Online") if peer.get("Online") else _("Offline")
+                        rows.append(("✅", uid, h, ip, last, "", ""))
+
+            elif self.vpn_id == 'zerotier':
+                token_path = ZT_TOKEN_FILE
+                if os.path.exists(token_path):
+                    token = open(token_path).read().strip()
+                    if token:
+                        net_id_input = self._e_netid.get_text().strip()
+                        if net_id_input:
+                            # Se temos um ID manual, focamos apenas nele
+                            networks = [{"id": net_id_input}]
+                        else:
+                            # Senão, listamos todas as redes deste token
+                            nets_r = subprocess.run(
+                                ["curl", "-sL", "-m", "10", "-H", f"Authorization: token {token}", "https://api.zerotier.com/api/v1/network"],
+                                capture_output=True, text=True)
+                            nets_stdout = nets_r.stdout.strip()
+                            networks = json.loads(nets_stdout) if (nets_stdout and nets_stdout.startswith('[')) else []
+                        
+                        for net in (networks if isinstance(networks, list) else []):
+                            nid = net.get("id", "")
+                            mem_r = subprocess.run(
+                                ["curl", "-sL", "-m", "10", "-H", f"Authorization: token {token}",
+                                 f"https://api.zerotier.com/api/v1/network/{nid}/member"],
+                                capture_output=True, text=True)
+                            mem_stdout = mem_r.stdout.strip()
+                            members = []
+                            if mem_stdout and mem_stdout.startswith('['):
+                                try: members = json.loads(mem_stdout)
+                                except: pass
+                            
+                            for m in (members if isinstance(members, list) else []):
+                                cfg = m.get("config", {})
+                                mid = m.get("nodeId", "")
+                                name = m.get("name") or m.get("description") or mid
+                                ip_list = cfg.get("ipAssignments") or []
+                                ip = ip_list[0] if ip_list else ""
+                                authorized = cfg.get("authorized", False)
+                                auth_icon = "✅" if authorized else "❌"
+                                last_seen = m.get("lastSeen", 0)
+                                seen_str = fmt_time(last_seen) if last_seen else ""
+                                if m.get("online", False):
+                                    seen_str = _("Online")
+                                ver = m.get("clientVersion", "")
+                                phys = m.get("physicalAddress", "")
+                                rows.append((auth_icon, mid, name, ip, seen_str, ver, phys))
+                
+                # If rows still empty, try CLI fallbacks
+                if not rows:
+                    r = subprocess.run(["zerotier-cli", "-j", "listnetworks"], capture_output=True, text=True)
+                    if r.returncode == 0 and r.stdout.strip():
+                        try:
+                            nets = json.loads(r.stdout)
+                            for net in nets:
+                                n_id = net.get("id", "")
+                                n_name = net.get("name", "")
+                                n_status = net.get("status", "")
+                                n_ips = ", ".join(net.get("assignedAddresses", []))
+                                rows.append(("❓", n_id, n_name, n_ips, n_status, "", ""))
+                        except: pass
+                
+                # If STILL empty, show peers (last resort)
+                if not rows:
+                    rp = subprocess.run(["zerotier-cli", "listpeers"], capture_output=True, text=True)
+                    if rp.returncode == 0:
+                        for line in rp.stdout.splitlines()[1:]:
+                            p = line.split()
+                            if len(p) >= 3:
+                                # <ztaddr> <ver> <role> <lat> <link> <lastTX> <lastRX> <path>
+                                rows.append(("🌐", p[0], _("Peer"), p[7] if len(p)>7 else "", p[4], p[1], ""))
+        except Exception as e:
+            print(f"Status fetch error: {e}")
+        finally:
+            self._fetching = False
+
+        GLib.idle_add(self._update_status_ui, rows)
+
+    def _update_status_ui(self, rows):
+        self._peers_store.clear()
+        if not rows:
+            if self.vpn_id == 'zerotier' and not os.path.exists(ZT_TOKEN_FILE):
+                self._peers_store.append(("ℹ️", _("API Token Missing"), _("See banner above"), "", "", "", ""))
+            else:
+                self._peers_store.append(("ℹ️", _("No devices found"), _("Try refreshing..."), "", "", "", ""))
+        else:
+            for r in rows:
+                self._peers_store.append(r)
+
+    def _refresh_history(self):
+        # Clear all children from the hist_list (Gtk.Box — safe to iterate directly)
+        child = self._hist_list.get_first_child()
+        while child:
+            next_child = child.get_next_sibling()
+            self._hist_list.remove(child)
+            child = next_child
+
+        history = _load_history()
         if not history:
-            status = Adw.StatusPage(
-                title=_("History is Empty"), icon_name="document-open-recent-symbolic"
+            sp = Adw.StatusPage(
+                title=_("No previous networks"),
+                icon_name="document-open-recent-symbolic",
+                description=_("Your created/connected networks will appear here.")
             )
-            self.history_list_box.append(status)
+            self._hist_list.append(sp)
             return
 
         for entry in reversed(history):
-            raw_url = entry.get("api_url") or entry.get("web_ui", "")
-            clean_domain = (
-                raw_url.replace("http://", "").replace("https://", "").strip("/")
-            )
-            entry_id = entry.get("id", "?")
-            timestamp = entry.get("timestamp", "")
+            vpn_id = entry.get("vpn", "headscale")
+            vpn_name = VPN_META.get(vpn_id, {}).get("name", vpn_id)
+            domain = entry.get("domain") or entry.get("network_id") or "?"
+            ts = entry.get("timestamp", "")
 
-            group = Adw.PreferencesGroup()
-            group.set_title(f"ID: {entry_id} - {clean_domain}")
-            group.set_description(timestamp)
+            grp = Adw.PreferencesGroup()
+            grp.set_title(f"{vpn_name} – {domain}")
+            grp.set_description(ts)
 
-            # Management Buttons in the Header Suffix
-            header_box = Gtk.Box(spacing=6)
+            # Action buttons in header
+            hbox = Gtk.Box(spacing=4)
+            btn_conn = Gtk.Button()
+            btn_conn.set_child(create_icon_widget("network-wired-symbolic", size=14))
+            btn_conn.add_css_class("flat")
+            btn_conn.set_tooltip_text(_("Reconnect"))
+            btn_conn.connect("clicked", lambda b, e=entry: self._reconnect_from_history(e))
+            hbox.append(btn_conn)
 
-            btn_reconnect = Gtk.Button()
-            btn_reconnect.set_child(
-                create_icon_widget(
-                    "network-vpn-symbolic", size=16, css_class=["blue-icon"]
-                )
-            )
-            btn_reconnect.add_css_class("flat")
-            btn_reconnect.add_css_class("suggested-action")
-            btn_reconnect.set_tooltip_text(_("Reconnect"))
-            btn_reconnect.connect(
-                "clicked", lambda b, e=entry: self.reconnect_from_history(e)
-            )
-            header_box.append(btn_reconnect)
+            btn_del = Gtk.Button()
+            btn_del.set_child(create_icon_widget("preferences-other-symbolic", size=14))
+            btn_del.add_css_class("flat")
+            btn_del.add_css_class("destructive-action")
+            btn_del.set_tooltip_text(_("Delete"))
+            btn_del.connect("clicked", lambda b, e=entry: self._delete_history_entry(e))
+            hbox.append(btn_del)
+            grp.set_header_suffix(hbox)
 
-            btn_save = Gtk.Button()
-            btn_save.set_child(create_icon_widget("document-save-symbolic", size=16))
-            btn_save.add_css_class("flat")
-            btn_save.set_tooltip_text(_("Save to TXT"))
-            btn_save.connect("clicked", lambda b, e=entry: self.save_entry_to_txt(e))
-            header_box.append(btn_save)
-
-            btn_delete = Gtk.Button()
-            btn_delete.set_child(create_icon_widget("user-trash-symbolic", size=16))
-            btn_delete.add_css_class("flat")
-            btn_delete.add_css_class("destructive-action")
-            btn_delete.set_tooltip_text(_("Delete from history"))
-            btn_delete.connect(
-                "clicked", lambda b, e=entry: self.confirm_delete_history(e)
-            )
-            header_box.append(btn_delete)
-
-            group.set_header_suffix(header_box)
-
-            # Domain Row
-            domain_row = Adw.ActionRow(title=_("Domain"), subtitle=clean_domain)
-            domain_row.add_prefix(
-                create_icon_widget("network-server-symbolic", size=16)
-            )
-
-            btn_copy_dom = Gtk.Button()
-            btn_copy_dom.set_child(create_icon_widget("edit-copy-symbolic", size=16))
-            btn_copy_dom.add_css_class("flat")
-            btn_copy_dom.set_tooltip_text(_("Copy Domain"))
-            btn_copy_dom.connect(
-                "clicked", lambda b, v=clean_domain: self._copy_to_clipboard(v)
-            )
-            domain_row.add_suffix(btn_copy_dom)
-            group.add(domain_row)
-
-            # Masked row helper
-            def add_masked_row(grp, title, value, icon):
-                masked_val = "••••••••••••••••"
-                row = Adw.ActionRow(title=title, subtitle=masked_val)
-                row.add_prefix(create_icon_widget(icon, size=16))
-
-                btn_view = Gtk.Button()
-                btn_view.set_child(create_icon_widget("view-reveal-symbolic", size=16))
-                btn_view.add_css_class("flat")
-                btn_view.set_valign(Gtk.Align.CENTER)
-
-                def toggle_view(btn, r, val):
-                    is_masked = r.get_subtitle() == "••••••••••••••••"
-                    r.set_subtitle(val if is_masked else "••••••••••••••••")
-                    btn.set_child(
-                        create_icon_widget(
-                            "view-reveal-symbolic"
-                            if not is_masked
-                            else "view-conceal-symbolic",
-                            size=16,
-                        )
-                    )
-
-                btn_view.connect("clicked", toggle_view, row, value)
-                row.add_suffix(btn_view)
-
-                btn_copy = Gtk.Button()
-                btn_copy.set_child(create_icon_widget("edit-copy-symbolic", size=16))
-                btn_copy.add_css_class("flat")
-                btn_copy.set_valign(Gtk.Align.CENTER)
-                btn_copy.connect(
-                    "clicked", lambda b, v=value: self._copy_to_clipboard(v)
-                )
-                row.add_suffix(btn_copy)
-
+            for label, key, icon in [
+                (_("Domain"), "domain", "network-wired-symbolic"),
+                (_("Network ID"), "network_id", "network-wired-symbolic"),
+                (_("Auth Key"), "auth_key", "view-reveal-symbolic"),
+                (_("Web UI"), "web_ui", "network-wired-symbolic"),
+                (_("VPN"), "vpn", "network-wired-symbolic"),
+            ]:
+                val = entry.get(key, "")
+                if not val:
+                    continue
+                row = Adw.ActionRow(title=label, subtitle=val)
+                row.add_prefix(create_icon_widget(icon, size=14))
+                btn_c = Gtk.Button()
+                btn_c.set_child(create_icon_widget("edit-copy-symbolic", size=12))
+                btn_c.add_css_class("flat")
+                btn_c.set_valign(Gtk.Align.CENTER)
+                btn_c.connect("clicked", lambda b, v=val: self._copy(v))
+                row.add_suffix(btn_c)
                 grp.add(row)
 
-            add_masked_row(
-                group,
-                _("API Key"),
-                entry.get("api_key", ""),
-                "dialog-password-symbolic",
-            )
-            add_masked_row(
-                group,
-                _("Auth Key (Friends)"),
-                entry.get("auth_key", ""),
-                "key-symbolic",
-            )
+            self._hist_list.append(grp)
 
-            self.history_list_box.append(group)
+    def _reconnect_from_history(self, entry):
+        vpn_id = entry.get("vpn", self.vpn_id)
+        # Switch to connect tab and fill form
+        self._stack.set_visible_child_name("connect")
+        if vpn_id == 'headscale' and hasattr(self, '_e_domain'):
+            self._e_domain.set_text(entry.get("domain", ""))
+            if hasattr(self, '_e_key'):
+                self._e_key.set_text(entry.get("auth_key", ""))
+        elif vpn_id == 'zerotier' and hasattr(self, '_e_netid'):
+            self._e_netid.set_text(entry.get("network_id", ""))
+        self.main_window.show_toast(_(f"Form filled for {VPN_META.get(vpn_id, {}).get('name', vpn_id)}"))
 
-    def reconnect_from_history(self, entry):
-        """Auto-fill connection form and trigger connection"""
-        domain = (
-            entry.get("api_url", "")
-            .replace("http://", "")
-            .replace("https://", "")
-            .split("/")[0]
-        )
-        auth_key = entry.get("auth_key", "")
-
-        if not domain or not auth_key:
-            self.main_window.show_toast(_("Incomplete data in history"))
-            return
-
-        self.entry_connect_domain.set_text(domain)
-        self.entry_auth_key.set_text(auth_key)
-        self.connect_stack.set_visible_child_name("connection")
-        self.on_connect_clicked(None)
-
-    def save_entry_to_txt(self, entry):
-        """Save access info to a .txt file for sharing"""
-        dialog = Gtk.FileDialog(title=_("Save Network Information"))
-        dialog.set_initial_name(f"network_info_{entry.get('id')}.txt")
-
-        def on_save_response(dialog, result):
-            try:
-                file = dialog.save_finish(result)
-                if file:
-                    path = file.get_path()
-                    content = (
-                        f"ACCESS INFORMATION (ID: {entry.get('id')})\n"
-                        f"Date: {entry.get('timestamp')}\n"
-                        f"-----------------------------------\n"
-                        f"Web Interface: {entry.get('web_ui')}\n"
-                        f"API URL: {entry.get('api_url')}\n"
-                        f"Public IP: {entry.get('public_ip')}\n"
-                        f"Local IP: {entry.get('local_ip')}\n\n"
-                        f"CREDENTIALS\n"
-                        f"API Key: {entry.get('api_key')}\n"
-                        f"Auth Key (Friends): {entry.get('auth_key')}\n"
-                    )
-                    with open(path, "w") as f:
-                        f.write(content)
-                    self.main_window.show_toast(_("File saved!"))
-            except Exception as e:
-                self.main_window.show_toast(_("Error saving: {}").format(e))
-
-        dialog.save(self.main_window, None, on_save_response)
-
-    def confirm_delete_history(self, entry):
-        """Confirm before removing history entry"""
-        dialog = Adw.MessageDialog(
+    def _delete_history_entry(self, entry):
+        d = Adw.MessageDialog(
             transient_for=self.main_window,
-            heading=_("Delete History?"),
-            body=_("Are you sure you want to remove ID {} from history?").format(
-                entry.get("id")
-            ),
+            heading=_("Delete entry?"),
+            body=_("Remove this network from history?")
         )
-        dialog.add_response("cancel", _("Cancel"))
-        dialog.add_response("delete", _("Delete"))
-        dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE)
+        d.add_response("cancel", _("Cancel"))
+        d.add_response("delete", _("Delete"))
+        d.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE)
+        def on_resp(dlg, resp):
+            if resp == "delete":
+                _delete_history(entry.get("id"))
+                self._refresh_history()
+        d.connect("response", on_resp)
+        d.present()
 
-        def on_response(dlg, response):
-            if response == "delete":
-                self.delete_history_id(entry.get("id"))
-
-        dialog.connect("response", on_response)
+    def _show_connect_log(self):
+        dialog = Adw.Window(transient_for=self.main_window)
+        dialog.set_modal(False)
+        dialog.set_title(_("Connection Log"))
+        dialog.set_default_size(700, 500)
+        tv = Adw.ToolbarView()
+        hb = Adw.HeaderBar()
+        tv.add_top_bar(hb)
+        tv.set_content(self._c_log)
+        dialog.set_content(tv)
         dialog.present()
 
-    def delete_history_id(self, entry_id):
-        """Remove entry from JSON history"""
-        config_dir = os.path.expanduser("~/.config/big-remoteplay/private_network")
-        history_file = os.path.join(config_dir, "private_network.json")
+    def _show_headscale_instructions(self):
+        """Show step-by-step instructions in a dialog using Adw.ToolbarView."""
 
-        try:
-            with open(history_file, "r") as f:
-                data = json.load(f)
-                history = data.get("history", [])
+        # Create the window
+        dialog = Adw.Window(transient_for=self.main_window)
+        dialog.set_modal(True)
+        dialog.set_title(_("Setup Instructions"))
+        dialog.set_default_size(700, 650)
 
-            new_history = [e for e in history if e.get("id") != entry_id]
+        # ToolbarView
+        toolbar_view = Adw.ToolbarView()
 
-            with open(history_file, "w") as f:
-                json.dump({"history": new_history}, f, indent=4)
-
-            self.refresh_history_ui()
-            self.main_window.show_toast(_("Deleted from history"))
-        except Exception as e:
-            self.main_window.show_toast(_("Error deleting: {}").format(e))
-
-    # ─────────────────────────────────────────────
-    #  CALLBACKS & HELPERS
-    # ─────────────────────────────────────────────
-
-    def on_connect_stack_changed(self, stack, param):
-        name = stack.get_visible_child_name()
-        if name == "network":
-            self.refresh_peers()
-        elif name == "history":
-            self.refresh_history_ui()
-
-    def _on_domain_changed(self, entry):
-        domain = entry.get_text()
-        app = self.main_window.get_application()
-        if hasattr(app, "config"):
-            app.config.set("private_network_domain", domain)
-
-    def _copy_to_clipboard(self, text):
-        clipboard = Gdk.Display.get_default().get_clipboard()
-        clipboard.set(text)
-        self.main_window.show_toast(_("Copied: {}").format(text))
-
-    def _on_key_changed(self, entry):
-        app = self.main_window.get_application()
-        if hasattr(app, "config"):
-            app.config.set("private_network_key", entry.get_text())
-
-    def _start_worker(self):
-        if self._worker_running:
-            return
-        self._worker_running = True
-        self._worker_thread = threading.Thread(target=self._status_worker, daemon=True)
-        self._worker_thread.start()
-
-    def _stop_worker(self):
-        self._worker_running = False
-
-    def _status_worker(self):
-        while self._worker_running:
-            if self.mode == "connect":
-                if (
-                    hasattr(self, "connect_stack")
-                    and self.connect_stack.get_visible_child_name() == "network"
-                ):
-                    self._get_tailscale_status()
-
-            for _ in range(30):
-                if not self._worker_running:
-                    break
-                time.sleep(0.1)
-
-    def refresh_peers(self):
-        threading.Thread(target=self._get_tailscale_status, daemon=True).start()
-        return True
-
-    def _get_tailscale_status(self):
-        if hasattr(self, "_fetching_status") and self._fetching_status:
-            return
-        self._fetching_status = True
-
-        try:
-            ts_path = shutil.which("tailscale") or "/usr/bin/tailscale"
-            if not os.path.exists(ts_path):
-                self._fetching_status = False
-                return
-
-            result = subprocess.run([ts_path, "status"], capture_output=True, text=True)
-            if result.returncode != 0:
-                self._fetching_status = False
-                return
-
-            nodes = []
-            for line in result.stdout.splitlines():
-                if not line or line.startswith("IP"):
-                    continue
-
-                parts = line.split()
-                if len(parts) >= 4:
-                    ip = parts[0]
-                    host = parts[1]
-                    user = parts[2]
-                    os_sys = parts[3]
-                    status_raw = " ".join(parts[4:]) if len(parts) > 4 else "-"
-
-                    conn_type = "inactive"
-                    conn_detail = "-"
-                    online_status = "offline"
-
-                    if "active" in status_raw.lower():
-                        online_status = "online"
-                    if "offline" in status_raw.lower():
-                        online_status = "offline"
-
-                    if "direct" in status_raw.lower():
-                        conn_type = "direct"
-                        match_addr = re.search(r"direct ([\d\.:]*)", status_raw)
-                        conn_detail = match_addr.group(1) if match_addr else "direct"
-                    elif "relay" in status_raw.lower():
-                        conn_type = "relay"
-                        match_relay = re.search(r'relay "([^"]*)"', status_raw)
-                        conn_detail = match_relay.group(1) if match_relay else "relay"
-
-                    tx_match = re.search(r"tx (\d+)", status_raw)
-                    rx_match = re.search(r"rx (\d+)", status_raw)
-                    tx = tx_match.group(1) if tx_match else "0"
-                    rx = rx_match.group(1) if rx_match else "0"
-
-                    traffic = f"↑{tx} ↓{rx}"
-                    connection = f"{online_status} ({conn_type}: {conn_detail})"
-
-                    nodes.append(
-                        {
-                            "ip": ip,
-                            "host": host,
-                            "user": user,
-                            "os": os_sys,
-                            "connection": connection,
-                            "traffic": traffic,
-                            "ping": "...",
-                        }
-                    )
-
-            ui_data = []
-            for n in nodes:
-                ui_data.append(
-                    (
-                        n["ip"],
-                        n["host"],
-                        n["user"],
-                        n["os"],
-                        n["connection"],
-                        n["traffic"],
-                        n["ping"],
-                    )
-                )
-
-            GLib.idle_add(self._update_peers_ui, ui_data)
-
-            def do_ping_and_update(idx, node):
-                ip = node["ip"]
-                if not ip or ip == "-":
-                    return
-
-                ping_val = "-"
-                try:
-                    res = subprocess.run(
-                        ["ping", "-c", "2", "-W", "1", "-n", ip],
-                        capture_output=True,
-                        text=True,
-                    )
-                    if res.returncode == 0:
-                        summary_match = re.search(
-                            r"min/avg/max/mdev\s*=\s*[\d.]+/([\d.]+)/", res.stdout
-                        )
-                        if summary_match:
-                            ping_val = f"{summary_match.group(1)} ms"
-                        else:
-                            time_match = re.search(r"time=([\d.,]+)\s*ms", res.stdout)
-                            if time_match:
-                                ping_val = f"{time_match.group(1).replace(',', '.')} ms"
-                except:
-                    pass
-
-                GLib.idle_add(self._update_single_ping, idx, ping_val)
-
-            for i, node in enumerate(nodes):
-                self._ping_executor.submit(do_ping_and_update, i, node)
-
-        except:
-            pass
-        finally:
-            self._fetching_status = False
-
-    def _update_single_ping(self, idx, ping_val):
-        try:
-            if idx < self.peers_model.iter_n_children():
-                it = self.peers_model.get_iter_from_string(str(idx))
-                if it:
-                    self.peers_model.set_value(it, 6, ping_val)
-        except:
-            pass
-
-    def _update_peers_ui(self, peers):
-        self.peers_model.clear()
-        for p in peers:
-            self.peers_model.append(p)
-
-    # ─────────────────────────────────────────────
-    #  TERMINAL DIALOG & LOGGING
-    # ─────────────────────────────────────────────
-
-    def _open_terminal_dialog(self, context="create"):
-        """Open Adw.Dialog (bottom-sheet) with live terminal output."""
-        if self._terminal_dialog is not None:
-            # Dialog already open, just present it
-            try:
-                self._terminal_dialog.present(self.main_window)
-                return
-            except:
-                self._terminal_dialog = None
-
-        # Build the dialog content
-        tv = Adw.ToolbarView()
-
+        # Header bar
         hb = Adw.HeaderBar()
-        title = _('Installation Log') if context == "create" else _('Connection Log')
-        phases = self._install_phases if context == "create" else self._connect_phases
-        phase_idx = self._install_phase if context == "create" else self._connect_phase
-        
         hb.set_title_widget(Adw.WindowTitle.new(
-            title,
-            phases[min(phase_idx, len(phases) - 1)]
+            _("Setup Instructions"),
+            _("Step-by-step guide to join a private network")
         ))
-        tv.add_top_bar(hb)
+        toolbar_view.add_top_bar(hb)
 
-        # Scrollable terminal
+        # Scrollable content
         scroll = Gtk.ScrolledWindow()
-        scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scroll.set_vexpand(True)
-        scroll.set_min_content_height(400)
 
-        # Re-parent text_view: remove from old parent if any
-        log_view = self.create_text_view if context == "create" else self.connect_log_view
-        old_parent = log_view.get_parent()
-        if old_parent is not None:
-            if hasattr(old_parent, 'set_child'):
-                old_parent.set_child(None)
-            elif hasattr(old_parent, 'remove'):
-                old_parent.remove(log_view)
-        scroll.set_child(log_view)
+        clamp = Adw.Clamp()
+        clamp.set_maximum_size(650)
+        for m in ['top', 'bottom', 'start', 'end']:
+            getattr(clamp, f'set_margin_{m}')(16)
 
-        tv.set_content(scroll)
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
 
-        # Use Adw.Dialog if available (libadwaita 1.5+), otherwise fallback to Adw.Window
-        if hasattr(Adw, 'Dialog'):
-            dialog = Adw.Dialog()
-            dialog.set_title(_('Installation Log'))
-            dialog.set_content_width(700)
-            dialog.set_content_height(500)
-            # Set bottom-sheet presentation if available
-            if hasattr(dialog, 'set_presentation_mode'):
-                dialog.set_presentation_mode(Adw.DialogPresentationMode.BOTTOM_SHEET)
-            dialog.set_child(tv)
-            dialog.connect('closed', self._on_terminal_dialog_closed)
-            dialog.present(self.main_window)
-            self._terminal_dialog = dialog
-        else:
-            dialog = Adw.Window(transient_for=self.main_window)
-            dialog.set_modal(False)
-            dialog.set_title(_('Installation Log'))
-            dialog.set_default_size(700, 500)
-            dialog.set_content(tv)
-            dialog.connect('close-request', lambda w: self._on_terminal_dialog_closed_win(w))
-            dialog.present()
-            self._terminal_dialog = dialog
+        # ════════════════════════════════════════════
+        #  HOW TO CONNECT
+        # ════════════════════════════════════════════
+        g1 = Adw.PreferencesGroup()
+        g1.set_title(_("Steps to join Headscale"))
+        
+        r1_1 = Adw.ActionRow()
+        r1_1.set_title(_("Step 1: Get credentials"))
+        r1_1.set_subtitle(_("Ask the network administrator for the Server Domain and Auth Key."))
+        r1_1.add_prefix(create_icon_widget("view-reveal-symbolic", size=20))
+        g1.add(r1_1)
 
-    def _on_terminal_dialog_closed(self, dialog):
-        """Handle Adw.Dialog closed."""
-        self._terminal_dialog = None
+        r1_2 = Adw.ActionRow()
+        r1_2.set_title(_("Step 2: Enter details"))
+        r1_2.set_subtitle(_("Paste the Domain and Key in the fields on the previous tab."))
+        r1_2.add_prefix(create_icon_widget("edit-copy-symbolic", size=20))
+        g1.add(r1_2)
 
-    def _on_terminal_dialog_closed_win(self, window):
-        """Handle Adw.Window close."""
-        self._terminal_dialog = None
-        return False
+        r1_3 = Adw.ActionRow()
+        r1_3.set_title(_("Step 3: Connect"))
+        r1_3.set_subtitle(_("Click 'Establish Connection' and wait for the success message."))
+        r1_3.add_prefix(create_icon_widget("view-refresh-symbolic", size=20))
+        g1.add(r1_3)
 
-    def _update_progress(self, phase_idx, text=None, context="create"):
-        """Update progress bar fraction and status text."""
-        if context == "create":
-            self._install_phase = phase_idx
-            total = len(self._install_phases)
-            phase_text = text or self._install_phases[min(phase_idx, total - 1)]
-        else:
-            self._connect_phase = phase_idx
-            total = len(self._connect_phases)
-            phase_text = text or self._connect_phases[min(phase_idx, total - 1)]
+        main_box.append(g1)
+
+        # Set content
+        clamp.set_child(main_box)
+        scroll.set_child(clamp)
+        toolbar_view.set_content(scroll)
+
+        dialog.set_content(toolbar_view)
+        dialog.present()
+
+    def _show_tailscale_instructions(self):
+        self._show_simple_instructions(_("Tailscale Instructions"), [
+            (_("1. Criar Conta"), _("Acessar Tailscale"), _("Todos os participantes precisam de uma conta (Google, GitHub, etc)."), "network-wired-symbolic", _("Criar Conta"), "https://login.tailscale.com"),
+            (_("2. Convite"), _("Solicitar Acesso"), _("O administrador deve compartilhar o nó ou convidar seu e-mail para a rede."), "text-x-generic-symbolic", None, None),
+            (_("3. Conectar"), _("Estabelecer Ligação"), _("Com o convite aceito, use a aba anterior para se conectar."), "view-refresh-symbolic", None, None)
+        ])
+
+    def _show_zerotier_instructions(self):
+        self._show_simple_instructions(_("ZeroTier Instructions"), [
+            (_("1. Identificação"), _("Obter Network ID"), _("Solicite o ID de 16 caracteres ao dono da rede."), "preferences-other-symbolic", None, None),
+            (_("2. Ingressar"), _("Digitar ID"), _("Insira o ID na aba 'Connect' e clique em 'Establish Connection'."), "edit-copy-symbolic", None, None),
+            (_("3. Autorização"), _("Aguardar Aprovação"), _("O administrador precisa marcar a opção 'Auth' para o seu PC no painel dele."), "network-idle-symbolic", _("Painel ZT"), "https://my.zerotier.com")
+        ])
+
+    def _show_simple_instructions(self, title_text, items):
+        """Show instructions using the premium Adwaita style."""
+        dialog = Adw.Window(transient_for=self.main_window)
+        dialog.set_modal(True)
+        dialog.set_title(title_text)
+        dialog.set_default_size(680, 600)
+
+        # ToolbarView
+        toolbar_view = Adw.ToolbarView()
+
+        # Header bar
+        hb = Adw.HeaderBar()
+        hb.set_title_widget(Adw.WindowTitle.new(
+            title_text,
+            _("Step-by-step guide")
+        ))
+        toolbar_view.add_top_bar(hb)
+
+        # Scrollable content
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_vexpand(True)
+
+        clamp = Adw.Clamp()
+        clamp.set_maximum_size(600)
+        for m in ['top', 'bottom', 'start', 'end']:
+            getattr(clamp, f'set_margin_{m}')(24)
+
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
+
+        for item in items:
+            # item tuple: (group_title, row_title, row_subtitle, icon, btn_label, btn_url)
+            g_title = item[0]
+            r_title = item[1]
+            r_subtitle = item[2] if len(item) > 2 else ""
+            icon = item[3] if len(item) > 3 else "dialog-information-symbolic"
+            btn_label = item[4] if len(item) > 4 else None
+            btn_url = item[5] if len(item) > 5 else None
+
+            group = Adw.PreferencesGroup()
+            group.set_title(g_title)
             
-        fraction = min(phase_idx / total, 1.0)
-        GLib.idle_add(self._set_progress_ui, fraction, phase_text, context)
-
-    def _set_progress_ui(self, fraction, status_text, context="create"):
-        if context == "create":
-            self.create_level_bar.set_value(fraction)
-            self.create_progress_status.set_text(status_text)
-            self.create_progress_percent.set_text(f'{int(fraction * 100)}%')
-        else:
-            self.connect_level_bar.set_value(fraction)
-            self.connect_progress_status.set_text(status_text)
-            self.connect_progress_percent.set_text(f'{int(fraction * 100)}%')
-        # Also update dialog header if open
-        if self._terminal_dialog is not None:
-            try:
-                if hasattr(Adw, 'Dialog') and isinstance(self._terminal_dialog, Adw.Dialog):
-                    child = self._terminal_dialog.get_child()
-                else:
-                    child = self._terminal_dialog.get_content()
-                if child and hasattr(child, 'get_top_bars'):
-                    pass  # HeaderBar title updates are complex here
-            except:
-                pass
-
-    def _detect_install_phase(self, clean_line):
-        """Detect current installation phase from script output."""
-        lower = clean_line.lower()
-        if any(k in lower for k in ['docker', 'container', 'pulling']):
-            return 1
-        elif any(k in lower for k in ['headscale', 'headplane']):
-            return 2
-        elif any(k in lower for k in ['caddy', 'reverse proxy', 'caddyfile']):
-            return 3
-        elif any(k in lower for k in ['dns', 'cloudflare', 'zone', 'record']):
-            return 4
-        elif any(k in lower for k in ['api key', 'auth key', 'preauthkey', 'chave']):
-            return 5
-        elif any(k in lower for k in ['finaliz', 'concluí', 'success', 'complete', 'pronto']):
-            return 6
-        return None
-
-    def _detect_connect_phase(self, clean_line):
-        """Detect current connection phase from script output."""
-        lower = clean_line.lower()
-        if any(k in lower for k in ['tailscale', 'dnf', 'apt', 'install']):
-            return 2
-        elif any(k in lower for k in ['login', 'up', 'auth']):
-            return 3
-        elif any(k in lower for k in ['verif', 'ping', 'status']):
-            return 4
-        elif any(k in lower for k in ['success', 'concluí', 'pronto', 'established']):
-            return 5
-        return None
-
-    def log(self, text, view=None):
-        if view is None:
-            view = self.create_text_view
-        GLib.idle_add(self._log_idle, text, view)
-
-    def _apply_ansi_tags(self, buffer, text):
-        ansi_escape = re.compile(r"(\x1b\[[0-9;]*[mK])")
-        parts = ansi_escape.split(text)
-
-        current_tags = []
-        for part in parts:
-            if part.startswith("\x1b["):
-                if part == "\x1b[0m":
-                    current_tags = []
-                elif "0;32" in part:
-                    current_tags = ["green"]
-                elif "0;34" in part:
-                    current_tags = ["blue"]
-                elif "1;33" in part:
-                    current_tags = ["yellow"]
-                elif "0;31" in part:
-                    current_tags = ["red"]
-                elif "0;36" in part:
-                    current_tags = ["cyan"]
-                elif "1;" in part:
-                    current_tags.append("bold")
-            else:
-                if part:
-                    buffer.insert_with_tags_by_name(
-                        buffer.get_end_iter(), part, *current_tags
-                    )
-
-    def _log_idle(self, text, view):
-        buf = view.get_buffer()
-        self._apply_ansi_tags(buf, text + "\n")
-        mark = buf.get_insert()
-        view.scroll_to_mark(mark, 0.0, True, 0.5, 1.0)
-
-    # ─────────────────────────────────────────────
-    #  INSTALLATION
-    # ─────────────────────────────────────────────
-
-    def run_install(self):
-        self.btn_install.set_sensitive(False)
-        self.install_spinner.set_visible(True)
-        self.install_spinner.start()
-        self.install_label.set_label(_("Installing..."))
-
-        # Show progress area and reset
-        self.create_progress_box.set_visible(True)
-        self.create_btn_info.set_visible(False)
-        self._install_phase = 0
-        self.create_level_bar.set_value(0.0)
-        self.create_progress_status.set_text(self._install_phases[0])
-        self.create_progress_percent.set_text('0%')
-        self.create_text_view.get_buffer().set_text("")
-
-        domain = self.entry_domain.get_text().strip()
-        zone = self.entry_zone.get_text().strip()
-        token = self.entry_token.get_text().strip()
-
-        def thread_func():
-            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            script_path = os.path.join(
-                base_dir, "scripts", "create-network_headscale.sh"
-            )
-            if not os.path.exists(script_path):
-                script_path = "/usr/share/big-remote-play/scripts/create-network_headscale.sh"
-
-            cmd = ["bigsudo", script_path]
-            process = subprocess.Popen(
-                cmd,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1,
-            )
-            inputs = ["1\n", f"{domain}\n", f"{zone}\n", f"{token}\n", "n\n"]
-            for s in inputs:
-                process.stdin.write(s)
-                process.stdin.flush()
-
-            self.install_data = {}
-            while True:
-                line = process.stdout.readline()
-                if not line:
-                    break
-                clean_line = re.sub(r"\x1b\[[0-9;]*[mK]", "", line).strip()
-
-                # Detect phase and update progress
-                detected = self._detect_install_phase(clean_line)
-                if detected is not None and detected > self._install_phase:
-                    self._update_progress(detected)
-
-                # Capture information (support both PT-BR and EN script output)
-                if "Interface Web:" in clean_line or "Web Interface:" in clean_line:
-                    self.install_data["web_ui"] = clean_line.split(":", 1)[1].strip()
-                elif "URL da API:" in clean_line or "API URL:" in clean_line:
-                    self.install_data["api_url"] = clean_line.split(":", 1)[1].strip()
-                elif (
-                    "Seu IP Público:" in clean_line
-                    or "Public IP:" in clean_line
-                    or "Your Public IP:" in clean_line
-                ):
-                    self.install_data["public_ip"] = clean_line.split(":", 1)[1].strip()
-                elif (
-                    "IP Local do Servidor:" in clean_line
-                    or "Local IP:" in clean_line
-                    or "Server Local IP:" in clean_line
-                ):
-                    self.install_data["local_ip"] = clean_line.split(":", 1)[1].strip()
-                elif (
-                    "API Key (para UI):" in clean_line
-                    or "API Key (UI):" in clean_line
-                    or "API Key:" in clean_line
-                ):
-                    self.install_data["api_key"] = clean_line.split(":", 1)[1].strip()
-                elif (
-                    "Chave para Amigos:" in clean_line
-                    or "Auth Key (Friends):" in clean_line
-                    or "Friends Key:" in clean_line
-                ):
-                    self.install_data["auth_key"] = clean_line.split(":", 1)[1].strip()
-
-                self.log(line.strip())
-            process.wait()
-            GLib.idle_add(self.on_install_finished, process.returncode)
-
-        threading.Thread(target=thread_func, daemon=True).start()
-
-    def on_install_finished(self, code):
-        self.install_spinner.stop()
-        self.install_spinner.set_visible(False)
-
-        if code == 0:
-            self._update_progress(len(self._install_phases), _('✅ Installation complete!'), "create")
-            self.create_level_bar.set_value(1.0)
-            self.create_progress_percent.set_text('100%')
-            self.create_btn_info.set_visible(True)
-            self.main_window.show_toast(_("Success!"))
-            self.install_label.set_label(_("Install Server"))
-            self.show_success_dialog()
-        else:
-            self._update_progress(self._install_phase, _('❌ Installation failed'), "create")
-            self.main_window.show_toast(_("Installation failed"))
-            self.install_label.set_label(_("Try Again"))
-
-        self.btn_install.set_sensitive(True)
-
-    def show_success_dialog(self):
-        """Show the access information dialog with proper sizing."""
-        content = AccessInfoWidget(self.install_data, self.save_history, self.main_window)
-
-        if hasattr(Adw, 'Dialog'):
-            dialog = Adw.Dialog()
-            dialog.set_title(_('Network Established'))
-            dialog.set_content_width(550)
-            dialog.set_content_height(600)
-            dialog.set_child(content)
-            dialog.present(self.main_window)
-            self.current_dialog = dialog
-        else:
-            dialog = Adw.Window(transient_for=self.main_window)
-            dialog.set_modal(True)
-            dialog.set_title(_('Network Established'))
-            dialog.set_default_size(550, 600)
-
-            tv = Adw.ToolbarView()
-            hb = Adw.HeaderBar()
-            tv.add_top_bar(hb)
-            tv.set_content(content)
-            dialog.set_content(tv)
-            dialog.present()
-            self.current_dialog = dialog
-
-    def save_history(self, data):
-        """Save installation to private_network.json"""
-        if hasattr(self, "current_dialog"):
-            if hasattr(self.current_dialog, "close"):
-                self.current_dialog.close()
-            else:
-                self.current_dialog.destroy()
-
-        config_dir = os.path.expanduser("~/.config/big-remoteplay/private_network")
-        os.makedirs(config_dir, exist_ok=True)
-        history_file = os.path.join(config_dir, "private_network.json")
-
-        history = []
-        if os.path.exists(history_file):
-            try:
-                with open(history_file, "r") as f:
-                    content = json.load(f)
-                    history = content.get("history", [])
-            except:
-                pass
-
-        new_id = 1
-        if history:
-            ids = [h.get("id", 0) for h in history]
-            new_id = max(ids) + 1
-
-        entry = data.copy()
-        entry["id"] = new_id
-        entry["timestamp"] = time.strftime("%Y-%m-%d %H:%M:%S")
-        history.append(entry)
-
-        try:
-            with open(history_file, "w") as f:
-                json.dump({"history": history}, f, indent=4)
-            self.main_window.show_toast(_("Configuration saved to history"))
-            self.refresh_history_ui()
-        except Exception as e:
-            self.main_window.show_toast(_("Error saving history: {}").format(e))
-
-    def on_connect_clicked(self, btn):
-        domain = self.entry_connect_domain.get_text().strip()
-        key = self.entry_auth_key.get_text().strip()
-        if not domain or not key:
-            self.main_window.show_toast(_("Fill all fields"))
-            return
-
-        self.btn_connect.set_sensitive(False)
-        self.connect_spinner.set_visible(True)
-        self.connect_spinner.start()
-        self.connect_label.set_label(_("Connecting..."))
-
-        # Reset Progress UI
-        self.connect_progress_box.set_visible(True)
-        self._connect_phase = 0
-        self.connect_level_bar.set_value(0.0)
-        self.connect_progress_status.set_text(self._connect_phases[0])
-        self.connect_progress_percent.set_text('0%')
-        self.connect_log_view.get_buffer().set_text("")
-
-        def thread_func():
-            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            script_path = os.path.join(base_dir, "scripts", "create-network_headscale.sh")
-            if not os.path.exists(script_path):
-                script_path = "/usr/share/big-remote-play/scripts/create-network_headscale.sh"
+            row = Adw.ActionRow()
+            row.set_title(r_title)
+            row.set_subtitle(r_subtitle)
+            row.add_prefix(create_icon_widget(icon, size=22))
             
-            cmd = ["bigsudo", script_path]
-            process = subprocess.Popen(
-                cmd,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1,
-            )
+            if btn_label and btn_url:
+                btn = Gtk.Button(label=btn_label)
+                btn.add_css_class("pill")
+                btn.add_css_class("suggested-action")
+                btn.set_valign(Gtk.Align.CENTER)
+                btn.connect("clicked", lambda b, u=btn_url: os.system(f"xdg-open {u}"))
+                row.add_suffix(btn)
             
-            # Send inputs: option 2 (connect), domain, key, and 'n' for any further prompt
-            inputs = ["2\n", f"{domain}\n", f"{key}\n", "n\n"]
-            for s in inputs:
-                process.stdin.write(s)
-                process.stdin.flush()
+            group.add(row)
+            main_box.append(group)
 
-            while True:
-                line = process.stdout.readline()
-                if not line:
-                    break
-                clean_line = line.strip()
-                if clean_line:
-                    self.log(clean_line, view=self.connect_log_view)
-                    
-                    # Detect phase
-                    new_phase = self._detect_connect_phase(clean_line)
-                    if new_phase is not None and new_phase > self._connect_phase:
-                        self._update_progress(new_phase, context="connect")
+        clamp.set_child(main_box)
+        scroll.set_child(clamp)
+        toolbar_view.set_content(scroll)
 
-            code = process.wait()
-            GLib.idle_add(self._on_connect_finished, code)
+        dialog.set_content(toolbar_view)
+        dialog.present()
 
-        threading.Thread(target=thread_func, daemon=True).start()
+    def _copy(self, text):
+        Gdk.Display.get_default().get_clipboard().set(text)
+        self.main_window.show_toast(_("Copied!"))
 
-    def _on_connect_finished(self, code):
-        self.connect_spinner.stop()
-        self.connect_spinner.set_visible(False)
-        self.btn_connect.set_sensitive(True)
 
-        if code == 0:
-            self._update_progress(len(self._connect_phases), _('✅ Connection established!'), "connect")
-            self.connect_level_bar.set_value(1.0)
-            self.connect_progress_percent.set_text('100%')
-            self.main_window.show_toast(_("Connected successfully!"))
-            self.connect_label.set_label(_("Establish Connection"))
-            # Switch to status tab after a small delay
-            GLib.timeout_add(1500, lambda: self.connect_stack.set_visible_child_name("network"))
+# ─── MAIN VIEW (Wraps Create + Connect in a Stack) ────────────────────────────
+class PrivateNetworkView(Adw.Bin):
+    """
+    Entry point. Shows either the CreatePage or ConnectPage based on `mode`.
+    """
+
+    def __init__(self, main_window, mode="create", vpn_provider="headscale"):
+        super().__init__()
+        self.main_window = main_window
+        self.mode = mode
+        self.vpn_provider = vpn_provider if vpn_provider in VPN_META else "headscale"
+
+        if mode == "create":
+            page = CreatePage(self.vpn_provider, main_window)
         else:
-            self._update_progress(self._connect_phase, _('❌ Connection failed'), "connect")
-            self.main_window.show_toast(_("Connection failed"))
-            self.connect_label.set_label(_("Try Again"))
+            page = ConnectPage(self.vpn_provider, main_window)
+
+        self.set_child(page)

@@ -257,10 +257,10 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
             # Check if file exists
             if not path.exists():
                 row.add_css_class("error")
-                row.add_prefix(create_icon_widget("dialog-warning-symbolic", size=16))
+                row.add_prefix(create_icon_widget("preferences-other-symbolic", size=16))
             
             btn = Gtk.Button()
-            btn.set_child(create_icon_widget("document-open-symbolic", size=16))
+            btn.set_child(create_icon_widget("folder-open-symbolic", size=16))
             btn.set_valign(Gtk.Align.CENTER)
             btn.add_css_class("flat")
             btn.connect('clicked', lambda _, p=path: self.open_file(p))
@@ -297,7 +297,7 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
             row.set_title(_("Missing Libraries Detected"))
             row.set_subtitle(_("Sunshine requires older ICU libraries ({}) which are missing.").format(", ".join(missing_icu)))
             row.add_css_class("error")
-            row.add_prefix(create_icon_widget("dialog-error-symbolic", size=24))
+            row.add_prefix(create_icon_widget("network-offline-symbolic", size=24))
             
             fix_btn = Gtk.Button(label=_("Fix Dependencies"))
             fix_btn.add_css_class("suggested-action")
@@ -310,7 +310,7 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
             row = Adw.ActionRow()
             row.set_title(_("System Status"))
             row.set_subtitle(_("All required libraries appear to be present."))
-            row.add_prefix(create_icon_widget("emblem-ok-symbolic", size=24))
+            row.add_prefix(create_icon_widget("network-wired-symbolic", size=24))
             group.add(row)
             
             # Force Fix button (advanced)

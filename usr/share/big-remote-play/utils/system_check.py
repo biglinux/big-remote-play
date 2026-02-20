@@ -33,6 +33,10 @@ class SystemCheck:
         """Checks if Docker is installed"""
         return shutil.which('docker') is not None
 
+    def has_zerotier(self) -> bool:
+        """Checks if ZeroTier is installed"""
+        return shutil.which('zerotier-cli') is not None
+
     def has_tailscale(self) -> bool:
         """Checks if Tailscale is installed"""
         return shutil.which('tailscale') is not None
@@ -45,6 +49,7 @@ class SystemCheck:
             'avahi': self.has_avahi(),
             'docker': self.has_docker(),
             'tailscale': self.has_tailscale(),
+            'zerotier': self.has_zerotier(),
         }
     
     def is_sunshine_running(self) -> bool:
@@ -86,6 +91,13 @@ class SystemCheck:
         """Checks if Tailscale daemon is running"""
         try:
             return subprocess.run(['systemctl', 'is-active', '--quiet', 'tailscaled']).returncode == 0
+        except:
+            return False
+
+    def is_zerotier_running(self) -> bool:
+        """Checks if ZeroTier daemon is running"""
+        try:
+            return subprocess.run(['systemctl', 'is-active', '--quiet', 'zerotier-one']).returncode == 0
         except:
             return False
     

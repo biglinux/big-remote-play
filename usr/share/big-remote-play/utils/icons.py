@@ -5,14 +5,16 @@ from gi.repository import Gtk, Gio
 # src/utils/icons.py -> src/icons
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ICONS_DIR = os.path.join(BASE_DIR, "icons")
+IMG_DIR = os.path.join(BASE_DIR, "img")
 
 def get_icon_file_path(icon_name):
-    """Returns absolute path to icon file if it exists in icons dir."""
-    # Check known extensions
-    for ext in [".svg", ".png"]:
-        path = os.path.join(ICONS_DIR, f"{icon_name}{ext}")
-        if os.path.exists(path):
-            return path
+    """Returns absolute path to icon file if it exists in icons or img dir."""
+    # Check icons (symbolic) first, then img (non-symbolic)
+    for folder in [ICONS_DIR, IMG_DIR]:
+        for ext in [".svg", ".png", ".jpg"]:
+            path = os.path.join(folder, f"{icon_name}{ext}")
+            if os.path.exists(path):
+                return path
     return None
 
 def get_gicon(icon_name):

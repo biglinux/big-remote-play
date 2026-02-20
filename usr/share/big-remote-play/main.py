@@ -14,6 +14,7 @@ print(f"DEBUG: BASE_DIR: {BASE_DIR}")
 sys.path.insert(0, BASE_DIR)
 print(f"DEBUG: sys.path[0]: {sys.path[0]}")
 ICONS_DIR = os.path.join(BASE_DIR, "icons")
+IMG_DIR = os.path.join(BASE_DIR, "img")
 
 class BigRemotePlayApp(Adw.Application):
     def __init__(self):
@@ -45,10 +46,12 @@ class BigRemotePlayApp(Adw.Application):
         self.load_custom_css()
     
     def setup_icon(self):
+        it = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
         if os.path.exists(ICONS_DIR):
-            it = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
             it.add_search_path(ICONS_DIR)
-            self.logger.info(_("Icon loaded"))
+        if os.path.exists(IMG_DIR):
+            it.add_search_path(IMG_DIR)
+        self.logger.info(_("Icons and images paths added"))
             
     def load_custom_css(self):
         cp = Gtk.CssProvider(); cp_path = Path(__file__).parent / 'ui' / 'style.css'

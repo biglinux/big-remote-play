@@ -817,7 +817,7 @@ class HostView(Gtk.Box):
     def create_summary_box(self):
         self.summary_box = Adw.PreferencesGroup()
         self.summary_box.set_title(_("Server Information"))
-        self.summary_box.set_header_suffix(create_icon_widget('dialog-information-symbolic', size=24))
+        self.summary_box.set_header_suffix(create_icon_widget('preferences-other-symbolic', size=24))
         self.summary_box.set_visible(False); self.field_widgets = {}
         for l, k, i, r in [('Host', 'hostname', 'computer-symbolic', True), ('IPv4', 'ipv4', 'network-wired-symbolic', False), ('IPv6', 'ipv6', 'network-wired-symbolic', False), ('IPv4 Global', 'ipv4_global', 'network-transmit-receive-symbolic', False), ('IPv6 Global', 'ipv6_global', 'network-transmit-receive-symbolic', False)]: self.create_masked_row(l, k, i, r)
 
