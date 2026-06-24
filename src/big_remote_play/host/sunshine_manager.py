@@ -25,7 +25,7 @@ def _cert_fingerprint(cert_der: bytes) -> str:
 
 
 class SunshineHost:
-    def __init__(self, cdir: Path = None):
+    def __init__(self, cdir: Path | None = None):
         self.config_dir = cdir or (Path.home() / ".config" / "big-remoteplay" / "sunshine")
         self.config_dir.mkdir(parents=True, exist_ok=True)
         # TOFU store for Sunshine's self-signed API certificate fingerprint.
@@ -312,7 +312,7 @@ class SunshineHost:
             _log.error(_("Certificate trust error: {}").format(exc))
             return False
 
-    def _api_request(self, method: str, path: str, payload: dict = None, auth: tuple[str, str] | None = None, timeout: float = 5.0) -> tuple[int, bytes]:
+    def _api_request(self, method: str, path: str, payload: dict | None = None, auth: tuple[str, str] | None = None, timeout: float = 5.0) -> tuple[int, bytes]:
         """Calls the Sunshine config API over TLS with TOFU cert pinning.
 
         Returns (status_code, body_bytes). status 0 means the connection failed

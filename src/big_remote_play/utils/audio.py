@@ -210,7 +210,7 @@ class AudioManager:
         except Exception:
              return f"{sink_name}.monitor"
 
-    def disable_streaming_audio(self, host_sink: str):
+    def disable_streaming_audio(self, host_sink: Optional[str]) -> None:
         """
         Disables Streaming mode.
         Restores default sink and removes virtual modules.

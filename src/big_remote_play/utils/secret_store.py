@@ -8,7 +8,7 @@ through GObject Introspection at runtime; tests inject the in-memory backend.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Any, Protocol
 import uuid
 
 
@@ -48,13 +48,13 @@ class LibsecretBackend:
 
     def __init__(self) -> None:
         self._error: Exception | None = None
-        self._secret = None
-        self._schema = None
+        self._secret: Any | None = None
+        self._schema: Any | None = None
         try:
             import gi
 
             gi.require_version("Secret", "1")
-            from gi.repository import Secret
+            from gi.repository import Secret  # type: ignore[reportMissingModuleSource]
 
             self._secret = Secret
             self._schema = Secret.Schema.new(
@@ -72,7 +72,7 @@ class LibsecretBackend:
     def is_available(self) -> bool:
         return self._secret is not None and self._schema is not None
 
-    def _require_secret(self):
+    def _require_secret(self) -> Any:
         if not self.is_available():
             raise SecretStoreUnavailable(str(self._error) if self._error else "Secret Service unavailable")
         return self._secret

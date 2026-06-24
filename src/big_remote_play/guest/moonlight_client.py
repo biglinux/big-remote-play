@@ -1,7 +1,16 @@
-import subprocess, shutil
+from __future__ import annotations
+
+from collections.abc import Callable
+from typing import Any, TextIO
+import shutil
+import subprocess
+
+
 class MoonlightClient:
-    def __init__(self, logger=None):
-        self.process = None; self.connected_host = None; self.logger = logger
+    def __init__(self, logger: Any | None = None) -> None:
+        self.process: subprocess.Popen[str] | None = None
+        self.connected_host: str | None = None
+        self.logger = logger
         self.moonlight_cmd = next((c for c in ['moonlight-qt', 'moonlight'] if shutil.which(c)), None)
     
     def _prepare_ip(self, ip):
@@ -37,13 +46,14 @@ class MoonlightClient:
             
         return clean_ip
 
-    def connect(self, ip, **kw):
+    def connect(self, ip: str, **kw: Any) -> bool:
         if not self.moonlight_cmd or self.is_connected(): return False
+        moonlight_cmd = self.moonlight_cmd
         
         try:
             target_ip = self._prepare_ip(ip)
             
-            cmd = [self.moonlight_cmd, 'stream', target_ip, 'Desktop']
+            cmd = [moonlight_cmd, 'stream', target_ip, 'Desktop']
             if kw.get('width') and kw.get('height') and kw.get('width') != 'custom': cmd.extend(['--resolution', f"{kw['width']}x{kw['height']}"])
             if kw.get('fps') and kw.get('fps') != 'custom': cmd.extend(['--fps', str(kw['fps'])])
             if kw.get('bitrate'): cmd.extend(['--bitrate', str(kw['bitrate'])])
@@ -63,11 +73,12 @@ class MoonlightClient:
             self.process = subprocess.Popen(cmd, stdout=stdout_target, stderr=stderr_target, text=True)
             self.connected_host = ip
             
-            if self.logger:
+            logger = self.logger
+            if logger:
                 import threading
-                def log_output(pipe, level):
+                def log_output(pipe: TextIO, level: str) -> None:
                     for line in iter(pipe.readline, ''):
-                        if line: getattr(self.logger, level, self.logger.info)(f"[Moonlight] {line.strip()}")
+                        if line: getattr(logger, level, logger.info)(f"[Moonlight] {line.strip()}")
                     pipe.close()
                 if self.process.stdout: threading.Thread(target=log_output, args=(self.process.stdout, 'info'), daemon=True).start()
                 if self.process.stderr: threading.Thread(target=log_output, args=(self.process.stderr, 'error'), daemon=True).start()
@@ -84,7 +95,7 @@ class MoonlightClient:
             if self.logger: self.logger.error(f"Error connecting: {e}")
             return False
 
-    def is_connected(self): return self.process and self.process.poll() is None
+    def is_connected(self) -> bool: return bool(self.process and self.process.poll() is None)
 
     def disconnect(self):
         if not self.is_connected(): return False
@@ -95,7 +106,9 @@ class MoonlightClient:
             if self.process: self.process.kill(); self.process = None; self.connected_host = None
             return False
 
-    def probe_host(self, host_ip):
+    def probe_host(self, host_ip: str) -> bool:
+        if not self.moonlight_cmd:
+            return False
         try: 
             target_ip = self._prepare_ip(host_ip)
             # Aggressive timeout for probe
@@ -105,17 +118,22 @@ class MoonlightClient:
             if self.logger: self.logger.error(f"Probe error: {e}")
             return False
 
-    def pair(self, host_ip, on_pin_callback=None):
+    def pair(self, host_ip: str, on_pin_callback: Callable[[str], None] | None = None) -> bool:
+        if not self.moonlight_cmd:
+            return False
         try:
             target_ip = self._prepare_ip(host_ip)
             cmd = [self.moonlight_cmd, 'pair', target_ip]
             if self.logger: self.logger.info(f"Starting pair with {host_ip} (target: {target_ip}): {' '.join(cmd)}")
             
             self.process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+            stdout = self.process.stdout
+            if stdout is None:
+                return False
             success = False
             
             while True:
-                line = self.process.stdout.readline()
+                line = stdout.readline()
                 # If no line and process ended, break
                 if not line and self.process.poll() is not None: break
                 if not line: continue
