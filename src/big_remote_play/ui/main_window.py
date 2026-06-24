@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import gi
 gi.require_version('Gtk', '4.0'); gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, GLib, Gio
+from gi.repository import Gtk, Adw, GLib, Gio  # type: ignore
 import threading
 import json
 import os
@@ -152,6 +154,10 @@ class MainWindow(Adw.ApplicationWindow):
         # Current State
         self.current_page = 'welcome'
         self._vpn_choice = load_vpn_choice()  # None if not yet chosen
+        self._nav_page_by_row = {}
+        self._service_by_row = {}
+        self._status_dots = {}
+        self._status_labels = {}
 
         self.setup_ui()
         self.check_system()
@@ -223,6 +229,7 @@ class MainWindow(Adw.ApplicationWindow):
         # Clear existing rows
         while child := self.nav_list.get_first_child():
             self.nav_list.remove(child)
+        self._nav_page_by_row.clear()
 
         nav_pages = self._build_navigation_pages()
         for pid, info in nav_pages.items():
@@ -252,7 +259,7 @@ class MainWindow(Adw.ApplicationWindow):
     def create_nav_row(self, page_id: str, page_info: dict) -> Gtk.ListBoxRow:
         """Creates navigation row in sidebar"""
         row = Gtk.ListBoxRow()
-        row.page_id = page_id
+        self._nav_page_by_row[row] = page_id
         row.add_css_class('category-row')
 
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
@@ -313,13 +320,14 @@ class MainWindow(Adw.ApplicationWindow):
             row = Gtk.Button()
             row.add_css_class("info-row")
             row.add_css_class("flat")
-            row.service_id = service_id
+            self._service_by_row[row] = service_id
             row.connect("clicked", lambda b, sid=service_id: self.on_service_clicked(sid))
 
             content = Gtk.Box(spacing=10)
             box_key = Gtk.Box(spacing=8)
             box_key.set_hexpand(True)
             dot = create_icon_widget('media-record-symbolic', size=10, css_class=['status-dot', 'status-offline'])
+            self._status_dots[service_id] = dot
             setattr(self, dot_attr, dot)
             box_key.append(dot)
             lbl_key = Gtk.Label(label=label_text)
@@ -329,6 +337,7 @@ class MainWindow(Adw.ApplicationWindow):
             lbl_status = Gtk.Label(label=_('Checking...'))
             lbl_status.add_css_class('info-value')
             lbl_status.set_halign(Gtk.Align.END)
+            self._status_labels[service_id] = lbl_status
             setattr(self, lbl_attr, lbl_status)
             content.append(lbl_status)
             row.set_child(content)
@@ -368,19 +377,20 @@ class MainWindow(Adw.ApplicationWindow):
             
         child = self.status_card.get_first_child()
         while child:
-            sid = getattr(child, 'service_id', None)
+            sid = self._service_by_row.get(child)
             if sid:
                 child.set_visible(sid in visible_services)
             child = child.get_next_sibling()
 
     def update_server_status(self, has_sun, has_moon, has_docker, has_tailscale, has_zt=False):
-        for dot, has in [
-            (self.sunshine_dot, has_sun),
-            (self.moonlight_dot, has_moon),
-            (self.docker_dot, has_docker),
-            (self.tailscale_dot, has_tailscale),
-            (getattr(self, 'zerotier_dot', None), has_zt)
+        for service_id, has in [
+            ('sunshine', has_sun),
+            ('moonlight', has_moon),
+            ('docker', has_docker),
+            ('tailscale', has_tailscale),
+            ('zerotier', has_zt)
         ]:
+            dot = self._status_dots.get(service_id)
             if not dot: continue
             dot.remove_css_class('status-online')
             dot.remove_css_class('status-offline')
@@ -388,14 +398,17 @@ class MainWindow(Adw.ApplicationWindow):
 
     def update_dependency_ui(self, has_sun, has_moon, has_docker, has_tailscale, has_zt=False):
         status_items = [
-            (self.lbl_sunshine_status, self.host_card, has_sun, 'Sunshine'),
-            (self.lbl_moonlight_status, self.guest_card, has_moon, 'Moonlight'),
-            (self.lbl_docker_status, None, has_docker, 'Docker'),
-            (self.lbl_tailscale_status, None, has_tailscale, 'Tailscale'),
-            (getattr(self, 'lbl_zerotier_status', None), None, has_zt, 'ZeroTier')
+            ('sunshine', self.host_card, has_sun, 'Sunshine'),
+            ('moonlight', self.guest_card, has_moon, 'Moonlight'),
+            ('docker', None, has_docker, 'Docker'),
+            ('tailscale', None, has_tailscale, 'Tailscale'),
+            ('zerotier', None, has_zt, 'ZeroTier')
         ]
 
-        for lbl, card, has, name in status_items:
+        for service_id, card, has, name in status_items:
+            lbl = self._status_labels.get(service_id)
+            if not lbl:
+                continue
             status_text = _("Installed") if has else _("Missing")
             lbl.set_markup(f'<span color="{"#2ec27e" if has else "#e01b24"}">{status_text}</span>')
 
@@ -804,7 +817,7 @@ class MainWindow(Adw.ApplicationWindow):
 
     def on_nav_selected(self, lb, row):
         if not row: return
-        pid = getattr(row, 'page_id', None)
+        pid = self._nav_page_by_row.get(row)
         if not pid: return
 
         # Update visual style active state
@@ -846,7 +859,7 @@ class MainWindow(Adw.ApplicationWindow):
         """Programmatic navigation: find row and select it"""
         r = self.nav_list.get_first_child()
         while r:
-            if getattr(r, 'page_id', None) == pid:
+            if isinstance(r, Gtk.ListBoxRow) and self._nav_page_by_row.get(r) == pid:
                 self.nav_list.select_row(r)
                 break
             r = r.get_next_sibling()
