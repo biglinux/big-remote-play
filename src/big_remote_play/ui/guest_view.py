@@ -584,10 +584,21 @@ class GuestView(Gtk.Box):
                 'hw_decode': hw_decode_active
             }
             
-            if self.moonlight.connect(host['ip'], **opts): 
-                GLib.idle_add(lambda: (self.show_loading(False), self.perf_monitor.set_connection_status(host['name'], _("Active Stream"), True), self.perf_monitor.start_monitoring()))
-            else: 
-                GLib.idle_add(lambda: (self.show_loading(False), self.show_error_dialog(_('Error'), _('Failed to connect. Verify if Moonlight is paired.'))))
+            if self.moonlight.connect(host['ip'], **opts):
+                def finish_connect_success():
+                    self.show_loading(False)
+                    self.perf_monitor.set_connection_status(host['name'], _("Active Stream"), True)
+                    self.perf_monitor.start_monitoring()
+                    return False
+
+                GLib.idle_add(finish_connect_success)
+            else:
+                def finish_connect_error():
+                    self.show_loading(False)
+                    self.show_error_dialog(_('Error'), _('Failed to connect. Verify if Moonlight is paired.'))
+                    return False
+
+                GLib.idle_add(finish_connect_error)
         
         # Insert automatic resolution logic BEFORE thread for total safety
         if scale_active:
@@ -621,10 +632,21 @@ class GuestView(Gtk.Box):
                  # Check for cancellation
                  if not getattr(self, 'is_connecting', False): return
 
-                 if self.moonlight.connect(host['ip'], **opts): 
-                    GLib.idle_add(lambda: (self.show_loading(False), self.perf_monitor.set_connection_status(host['name'], _("Active Stream"), True), self.perf_monitor.start_monitoring()))
-                 else: 
-                    GLib.idle_add(lambda: (self.show_loading(False), self.show_error_dialog(_('Error'), _('Failed to connect'))))
+                 if self.moonlight.connect(host['ip'], **opts):
+                     def finish_auto_connect_success():
+                         self.show_loading(False)
+                         self.perf_monitor.set_connection_status(host['name'], _("Active Stream"), True)
+                         self.perf_monitor.start_monitoring()
+                         return False
+
+                     GLib.idle_add(finish_auto_connect_success)
+                 else:
+                     def finish_auto_connect_error():
+                         self.show_loading(False)
+                         self.show_error_dialog(_('Error'), _('Failed to connect'))
+                         return False
+
+                     GLib.idle_add(finish_auto_connect_error)
              
              threading.Thread(target=run_patched, daemon=True).start()
         else:
@@ -672,7 +694,12 @@ class GuestView(Gtk.Box):
                     success = True
 
             if success:
-                GLib.idle_add(lambda: (self.show_toast(_("Paired successfully!")), self.connect_to_host(host, paired_retry=True)))
+                def finish_pair_success():
+                    self.show_toast(_("Paired successfully!"))
+                    self.connect_to_host(host, paired_retry=True)
+                    return False
+
+                GLib.idle_add(finish_pair_success)
             else:
                  GLib.idle_add(lambda: self.show_error_dialog(_("Pairing Error"), _("Could not pair with host.\nVerify the PIN was entered correctly.")))
 

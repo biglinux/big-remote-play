@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import sys, os, gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, Gio, Gdk, GLib
+from gi.repository import Gtk, Adw, Gio, Gdk, GLib  # type: ignore
 from big_remote_play.ui.main_window import MainWindow
 from big_remote_play.utils.config import Config
 from big_remote_play.utils.logger import Logger
@@ -42,7 +44,11 @@ class BigRemotePlayApp(Adw.Application):
         self.load_custom_css()
     
     def setup_icon(self):
-        it = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
+        display = Gdk.Display.get_default()
+        if display is None:
+            self.logger.error(_("Could not load icon theme: no GTK display"))
+            return
+        it = Gtk.IconTheme.get_for_display(display)
         if os.path.exists(ICONS_DIR):
             it.add_search_path(ICONS_DIR)
         if os.path.exists(IMG_DIR):
@@ -51,7 +57,10 @@ class BigRemotePlayApp(Adw.Application):
             
     def load_custom_css(self):
         cp = Gtk.CssProvider(); cp_path = paths.STYLE_CSS
-        if cp_path.exists(): cp.load_from_path(str(cp_path)); Gtk.StyleContext.add_provider_for_display(self.window.get_display() if self.window else Gdk.Display.get_default(), cp, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        display = self.window.get_display() if self.window else Gdk.Display.get_default()
+        if cp_path.exists() and display is not None:
+            cp.load_from_path(str(cp_path))
+            Gtk.StyleContext.add_provider_for_display(display, cp, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     def show_about(self, *args):
         story = _("The Story Behind the Project\n\n"
@@ -80,19 +89,22 @@ class BigRemotePlayApp(Adw.Application):
         about.present()
         
     def show_preferences(self, *args, tab=None):
+        window = self.window
+        if window is None:
+            return
         from big_remote_play.ui.preferences import PreferencesWindow
-        pref_win = PreferencesWindow(transient_for=self.window, config=self.config, initial_tab=tab)
+        pref_win = PreferencesWindow(transient_for=window, config=self.config, initial_tab=tab)
         
         # Reload GuestView settings when preferences close
         def on_close(*_):
-            if hasattr(self.window, 'guest_view') and hasattr(self.window.guest_view, 'load_guest_settings'):
-                self.window.guest_view.load_guest_settings()
-            
-            if hasattr(self.window, 'host_view') and hasattr(self.window.host_view, 'load_settings'):
+            if hasattr(window, 'guest_view') and hasattr(window.guest_view, 'load_guest_settings'):
+                window.guest_view.load_guest_settings()
+
+            if hasattr(window, 'host_view') and hasattr(window.host_view, 'load_settings'):
                 # Reload config from file first if needed
-                if hasattr(self.window.host_view, 'config') and hasattr(self.window.host_view.config, 'load'):
-                    self.window.host_view.config.load()
-                self.window.host_view.load_settings()
+                if hasattr(window.host_view, 'config') and hasattr(window.host_view.config, 'load'):
+                    window.host_view.config.load()
+                window.host_view.load_settings()
         
         pref_win.connect('close-request', on_close)
         pref_win.present()

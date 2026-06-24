@@ -869,11 +869,13 @@ class MainWindow(Adw.ApplicationWindow):
             r_tail = self.system_check.is_tailscale_running()
             r_zt = self.system_check.is_zerotier_running()
 
-            GLib.idle_add(lambda: (
-                self.update_status(h_sun, h_moon),
-                self.update_server_status(r_sun, r_moon, r_docker, r_tail, r_zt),
+            def finish_system_check():
+                self.update_status(h_sun, h_moon)
+                self.update_server_status(r_sun, r_moon, r_docker, r_tail, r_zt)
                 self.update_dependency_ui(h_sun, h_moon, h_docker, h_tail, h_zt)
-            ))
+                return False
+
+            GLib.idle_add(finish_system_check)
         threading.Thread(target=check, daemon=True).start()
         GLib.timeout_add_seconds(3, self.p_check)
 
