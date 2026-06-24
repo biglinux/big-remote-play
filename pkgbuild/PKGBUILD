@@ -1,42 +1,48 @@
 # Maintainer: Rafael Ruscher <rruscher@gmail.com>
 pkgname=big-remote-play
 pkgdesc="Integrated remote cooperative gaming system"
-depends=('python' 'gtk4' 'libadwaita' 'python-gobject' 'python-cairo' 'avahi' 'curl' 'iproute2' 'sunshine-bin' 'moonlight-qt' 'icu' 'docker' 'docker-compose' 'jq' 'miniupnpc')
-# makedepends=('')
+depends=('python' 'gtk4' 'libadwaita' 'vte4' 'python-gobject' 'python-cairo' 'libsecret' 'avahi' 'curl' 'iproute2' 'sunshine-bin' 'moonlight-qt' 'docker' 'docker-compose' 'jq' 'miniupnpc')
+makedepends=('python-build' 'python-installer' 'python-uv-build' 'python-wheel' 'gettext')
 replaces=('big-remote-play-together')
 conflicts=('big-remote-play-together')
 pkgver=$(date +%y.%m.%d)
 pkgrel=$(date +%H%M)
 arch=('any')
-license=('GPL3')
+license=('GPL-3.0-or-later')
 url="https://github.com/biglinux/$pkgname"
 provides=("$pkgname")
-source=("git+${url}.git")
-md5sums=('SKIP')
-if [ -e "${pkgname}.install" ];then
+source=()
+md5sums=()
+if [ -e "${pkgname}.install" ]; then
     install=${pkgname}.install
-elif [ -e "pkgbuild.install" ];then
+elif [ -e "pkgbuild.install" ]; then
     install=pkgbuild.install
 fi
 
+# Repository working tree (PKGBUILD lives in pkgbuild/, so the root is one up).
+_repo="${startdir}/.."
+
+prepare() {
+    # Stage only what the build needs, avoiding .git and build artifacts.
+    rm -rf "${srcdir}/tree"
+    install -dm755 "${srcdir}/tree"
+    cp -a "${_repo}/src" "${_repo}/usr" "${_repo}/pyproject.toml" "${srcdir}/tree/"
+}
+
+build() {
+    cd "${srcdir}/tree" || return 1
+    python -m build --wheel --no-isolation --skip-dependency-check
+}
+
 package() {
-    # Verify default folder
-    if [ -d "${srcdir}/${pkgname}/${pkgname}" ]; then
-        InternalDir="${srcdir}/${pkgname}/${pkgname}"
-    else
-        InternalDir="${srcdir}/${pkgname}"
-    fi
+    cd "${srcdir}/tree" || return 1
 
-    # Copy files
-    if [ -d "${InternalDir}/usr" ]; then
-        cp -r "${InternalDir}/usr" "${pkgdir}/"
-    fi
+    # 1. Python code -> /usr/lib/pythonX.Y/site-packages/big_remote_play
+    python -m installer --destdir="${pkgdir}" dist/*.whl
 
-    if [ -d "${InternalDir}/etc" ]; then
-        cp -r "${InternalDir}/etc" "${pkgdir}/"
-    fi
-
-    if [ -d "${InternalDir}/opt" ]; then
-        cp -r "${InternalDir}/opt" "${pkgdir}/"
-    fi
+    # 2. Data, desktop entry, icons, locale catalogs, and the resilient launcher.
+    #    Copied after the wheel so usr/bin/big-remote-play overwrites the wheel's
+    #    version-pinned console script.
+    cp -a usr/. "${pkgdir}/usr/"
+    chmod 755 "${pkgdir}/usr/bin/${pkgname}"
 }

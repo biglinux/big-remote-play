@@ -202,51 +202,59 @@ Big Remote Play acts as a **unified interface** that orchestrates multiple open-
 
 ```
 big-remote-play/
+├── 📁 src/
+│   └── 📁 big_remote_play/                    # Python package (built as a wheel)
+│       ├── app.py                             # Application entry point (Adw.Application)
+│       ├── __main__.py                        # `python -m big_remote_play`
+│       ├── paths.py                           # Data/locale path resolution
+│       ├── 📁 ui/                             # User Interface (GTK4/libadwaita)
+│       │   ├── main_window.py                 # Main window with sidebar nav
+│       │   ├── host_view.py                   # Host server configuration
+│       │   ├── guest_view.py                  # Guest client connection
+│       │   ├── private_network_view.py        # VPN/Private network setup
+│       │   ├── performance_monitor.py         # Real-time performance dashboard
+│       │   ├── sunshine_preferences.py        # Sunshine advanced settings
+│       │   ├── moonlight_preferences.py       # Moonlight advanced settings
+│       │   ├── preferences.py                 # General app preferences
+│       │   └── installer_window.py            # Dependency installer
+│       ├── 📁 host/                           # Host module
+│       │   └── sunshine_manager.py            # Sunshine server management
+│       ├── 📁 guest/                          # Guest module
+│       │   └── moonlight_client.py            # Moonlight client wrapper
+│       └── 📁 utils/                          # Utility modules
+│           ├── audio.py                       # PulseAudio management
+│           ├── config.py                      # Configuration management (atomic)
+│           ├── game_detector.py               # Game detection (Steam/Lutris/Heroic)
+│           ├── i18n.py                        # Internationalization
+│           ├── icons.py                       # Icon utilities
+│           ├── logger.py                      # Logging system
+│           ├── network.py                     # Network discovery & tools
+│           ├── script_protocol.py             # Network-script marker parser
+│           ├── secure_io.py                   # Owner-only secret writes
+│           └── system_check.py                # System dependency checker
+├── 📁 tests/                                  # pytest suite
 ├── 📁 usr/
 │   ├── 📁 bin/
-│   │   └── big-remote-play          # Shell launcher script
+│   │   └── big-remote-play                    # Resilient launcher (survives Python upgrades)
 │   └── 📁 share/
 │       ├── 📁 applications/
-│       │   └── big-remote-play.desktop  # Desktop entry
-│       ├── 📁 big-remote-play/
-│       │   ├── main.py                        # Application entry point
-│       │   ├── 📁 ui/                         # User Interface
-│       │   │   ├── main_window.py             # Main window with sidebar nav
-│       │   │   ├── host_view.py               # Host server configuration
-│       │   │   ├── guest_view.py              # Guest client connection
-│       │   │   ├── private_network_view.py    # VPN/Private network setup
-│       │   │   ├── performance_monitor.py     # Real-time performance dashboard
-│       │   │   ├── sunshine_preferences.py    # Sunshine advanced settings
-│       │   │   ├── moonlight_preferences.py   # Moonlight advanced settings
-│       │   │   ├── preferences.py             # General app preferences
-│       │   │   ├── installer_window.py        # Dependency installer
+│       │   └── big-remote-play.desktop        # Desktop entry
+│       ├── 📁 big-remote-play/                # Data assets (shipped under /usr/share, not code)
+│       │   ├── 📁 ui/
 │       │   │   └── style.css                  # Custom GTK4 styles
-│       │   ├── 📁 host/                       # Host module
-│       │   │   └── sunshine_manager.py        # Sunshine server management
-│       │   ├── 📁 guest/                      # Guest module
-│       │   │   └── moonlight_client.py        # Moonlight client wrapper
-│       │   ├── 📁 utils/                      # Utility modules
-│       │   │   ├── audio.py                   # PulseAudio management
-│       │   │   ├── config.py                  # Configuration management
-│       │   │   ├── game_detector.py           # Game detection (Steam/Lutris/Heroic)
-│       │   │   ├── i18n.py                    # Internationalization
-│       │   │   ├── icons.py                   # Icon utilities
-│       │   │   ├── logger.py                  # Logging system
-│       │   │   ├── network.py                 # Network discovery & tools
-│       │   │   └── system_check.py            # System dependency checker
-│       │   ├── 📁 scripts/                    # Shell scripts
-│       │   │   ├── big-remoteplay-configure.sh
-│       │   │   ├── big-remoteplay-firewall.sh
-│       │   │   ├── big-remoteplay-install.sh
-│       │   │   ├── big-remoteplay-service.sh
+│       │   ├── 📁 scripts/                    # Shell scripts (gettext-localized)
 │       │   │   ├── configure_firewall.sh
 │       │   │   ├── create-network_headscale.sh
-│       │   │   ├── fix_sunshine_libs.sh
-│       │   │   └── headscale_master.sh
-│       │   └── 📁 icons/                      # SVG/PNG icons
-│       ├── 📁 icons/                          # System icon theme
-│       └── 📁 locale/                         # Compiled translations
+│       │   │   ├── create-network_tailscale.sh
+│       │   │   ├── create-network_zerotier.sh
+│       │   │   └── drop_guest.sh
+│       │   ├── 📁 icons/                      # App SVG icons
+│       │   └── 📁 img/                        # App images
+│       └── 📁 locale/                         # Compiled translations (.mo)
 ├── 📁 locale/                                 # Translation source files (.po/.pot)
+├── pyproject.toml                             # Wheel build + ruff/pytest/pyright config
+├── flake.nix                                  # Nix build
+├── default.nix                                # Nix package definition
 ├── 📁 pkgbuild/                               # Arch Linux packaging
 │   ├── PKGBUILD
 │   └── pkgbuild.install

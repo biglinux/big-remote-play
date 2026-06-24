@@ -179,6 +179,32 @@ entry:focus {
         0 0 0 1px alpha(@accent_bg_color, 0.1);
 }
 
+/* Primary card: accent border + faint tint, but readable window foreground
+   (NOT .suggested-action, which forces white text on a near-white tint). */
+.action-card.card-accent {
+    background: alpha(@accent_bg_color, 0.08);
+    border: 2px solid alpha(@accent_bg_color, 0.55);
+    color: @window_fg_color;
+    box-shadow: 0 4px 16px alpha(@accent_bg_color, 0.08);
+}
+
+.action-card.card-accent:hover {
+    background: alpha(@accent_bg_color, 0.14);
+    border: 2px solid @accent_bg_color;
+    box-shadow: 0 12px 40px alpha(@accent_bg_color, 0.22);
+    transform: translateY(-2px);
+}
+
+/* Small "recommended/primary" pill on a card. */
+.card-badge {
+    font-size: 0.75em;
+    font-weight: 700;
+    color: @accent_fg_color;
+    background: @accent_bg_color;
+    border-radius: 9px;
+    padding: 1px 8px;
+}
+
 /* Animations */
 @keyframes fadeIn {
     from {
@@ -398,4 +424,164 @@ levelbar block.filled {
 .action-card.suggested-action button.flat {
     opacity: 0.7;
     font-size: 0.85em;
+}
+
+/* ─── Shared explanatory components (widgets.py) ─────────────────────────── */
+
+/* "How it works" step strip */
+.steps-strip {
+    background: alpha(@card_bg_color, 0.55);
+    border-radius: 16px;
+    padding: 16px 20px;
+    border: 1px solid alpha(@borders, 0.06);
+    border-top: 1px solid alpha(white, 0.1);
+    box-shadow: 0 4px 20px alpha(black, 0.03),
+        0 1px 3px alpha(black, 0.02);
+}
+
+/* Numbered circle used by steps strip and wizard stepper */
+.step-number {
+    min-width: 24px;
+    min-height: 24px;
+    border-radius: 50%;
+    font-size: 0.8em;
+    font-weight: 700;
+    color: @accent_fg_color;
+    background: @accent_bg_color;
+    box-shadow: 0 2px 8px alpha(@accent_bg_color, 0.3);
+}
+
+.step-number.completed {
+    background: alpha(@accent_bg_color, 0.45);
+}
+
+.step-number.active {
+    background: @accent_bg_color;
+    box-shadow: 0 2px 10px alpha(@accent_bg_color, 0.45);
+}
+
+/* In the "how it works" strip the numbers are subtle (mockup 02), not the solid
+   accent circles the wizard stepper uses. */
+.steps-strip .step-number {
+    color: @accent_color;
+    background: alpha(@accent_bg_color, 0.15);
+    box-shadow: none;
+}
+
+/* Wizard stepper (top 1-2-3) */
+.wizard-stepper {
+    padding: 6px 0 14px 0;
+}
+
+.wizard-stepper .step-connector {
+    background: alpha(@theme_fg_color, 0.15);
+    min-height: 2px;
+}
+
+/* Side helper card ("what you'll need" / "if you can't find it") */
+.helper-card {
+    background: alpha(@accent_bg_color, 0.05);
+    border-radius: 16px;
+    padding: 18px 20px;
+    border: 1px solid alpha(@accent_bg_color, 0.18);
+    box-shadow: 0 2px 12px alpha(@accent_bg_color, 0.05);
+}
+
+.helper-row {
+    padding: 4px 0;
+}
+
+/* Difficulty pills on the VPN cards */
+.difficulty-pill {
+    font-size: 0.78em;
+    font-weight: 700;
+    border-radius: 9999px;
+    padding: 2px 12px;
+}
+
+.difficulty-pill.easy {
+    color: #1a7f4b;
+    background: alpha(#26a269, 0.18);
+}
+
+.difficulty-pill.medium {
+    color: #9a6a00;
+    background: alpha(#e5a50a, 0.2);
+}
+
+.difficulty-pill.hard {
+    color: #1c5fb4;
+    background: alpha(#3584e4, 0.18);
+}
+
+/* VPN comparison table */
+.comparison-table {
+    background: alpha(@card_bg_color, 0.55);
+    border-radius: 16px;
+    padding: 8px;
+    border: 1px solid alpha(@borders, 0.06);
+    box-shadow: 0 4px 20px alpha(black, 0.03);
+}
+
+.comparison-header {
+    font-weight: 700;
+    color: @accent_color;
+    padding: 12px 10px;
+}
+
+.comparison-cell {
+    padding: 12px 10px;
+    border-top: 1px solid alpha(@borders, 0.5);
+}
+
+.comparison-rowlabel {
+    font-weight: 600;
+    opacity: 0.85;
+}
+
+/* Inline metric chip (host status card) */
+.metric-chip {
+    background: alpha(@theme_fg_color, 0.05);
+    border-radius: 10px;
+    padding: 8px 14px;
+}
+
+/* Server status card: circular Sunshine icon (mockup 05) */
+.status-icon-circle {
+    background: alpha(@accent_bg_color, 0.15);
+    border-radius: 9999px;
+    padding: 14px;
+}
+
+.status-icon-circle image {
+    color: @accent_color;
+}
+
+/* Live metric tiles (Latency / FPS / Bandwidth) */
+.metric-tile {
+    padding: 2px 4px;
+}
+
+/* Compact rows for the Server info / management lists */
+.compact-rows row {
+    min-height: 0;
+}
+
+.compact-rows row > box {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.metric-orange { color: #e66100; }
+.metric-green  { color: #1a9b54; }
+.metric-blue   { color: #3584e4; }
+
+/* "Generate PIN" button: light accent tint (mockup 05) */
+button.pin-action {
+    background: alpha(@accent_bg_color, 0.15);
+    color: @accent_color;
+}
+
+button.pin-action:hover {
+    background: alpha(@accent_bg_color, 0.25);
 }

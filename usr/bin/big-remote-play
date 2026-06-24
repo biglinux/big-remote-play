@@ -1,28 +1,33 @@
-#!/bin/bash
-# Wrapper to launch Big Remote Play
+#!/usr/bin/env bash
+# Resilient launcher: survives a system Python upgrade without repackaging.
+# The wheel installs under /usr/lib/pythonX.Y/site-packages, a path bound to the
+# Python minor version at build time. A bare `python3 -m big_remote_play` wrapper
+# would break with ModuleNotFoundError after a 3.X -> 3.Y upgrade; this scans for
+# the installed tree and runs it with the current interpreter.
+set -euo pipefail
+module="big_remote_play"
 
-APP_DIR=""
+# 1. Fast path: importable under the current python3.
+if python3 -c "import ${module}" 2>/dev/null; then
+	exec python3 -m "${module}" "$@"
+fi
 
-# Detect installation directory
-# Check Python site-packages (newest to oldest supported versions)
-# Then fallback to /usr/share/big-remote-play
-for i in /usr/lib/python3.{25..6}/site-packages/big-remote-play /usr/share/big-remote-play; do
-    if [[ -d "$i" ]]; then
-        APP_DIR="$i"
-        break
-    fi
+# 2. Fallback: locate the tree under any site-packages and run it explicitly.
+for dir in /usr/lib/python3.*/site-packages \
+	/usr/lib/python3/dist-packages \
+	/usr/lib64/python3.*/site-packages; do
+	if [ -d "${dir}/${module}" ]; then
+		exec env PYTHONPATH="${dir}${PYTHONPATH:+:${PYTHONPATH}}" python3 -m "${module}" "$@"
+	fi
 done
 
-# If not found, try local directory (development) relative to script
-if [[ -z "$APP_DIR" ]]; then
-    SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-    APP_DIR="$SCRIPT_DIR/../share/big-remote-play"
-fi
+# 3. Development fallback: run from a source checkout relative to this script.
+script_dir="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+for src in "${script_dir}/../../src" "${script_dir}/../src"; do
+	if [ -d "${src}/${module}" ]; then
+		exec env PYTHONPATH="${src}${PYTHONPATH:+:${PYTHONPATH}}" python3 -m "${module}" "$@"
+	fi
+done
 
-if [[ ! -f "$APP_DIR/main.py" ]]; then
-    echo "Error: Application not found in $APP_DIR"
-    exit 1
-fi
-
-# Execute main.py
-exec python3 "$APP_DIR/main.py" "$@"
+printf 'big-remote-play: cannot locate the %s package in any site-packages\n' "${module}" >&2
+exit 1
