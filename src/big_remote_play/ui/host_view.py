@@ -2,6 +2,7 @@ import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
+from collections.abc import Callable
 from gi.repository import Gtk, Gdk, Adw, GLib  # type: ignore
 import subprocess, random, string, json, socket, os, time
 from pathlib import Path
@@ -438,45 +439,80 @@ class HostView(Gtk.Box):
         manage_group.set_title(_("Management"))
         manage_group.add_css_class('compact-rows')
 
-        devices_row = Adw.ActionRow(title=_("Paired Devices"),
-                                    subtitle=_("View, disable or remove paired clients"))
-        devices_row.set_activatable(True)
-        devices_row.add_prefix(create_icon_widget("network-workgroup-symbolic", size=20))
-        devices_row.add_suffix(create_icon_widget("go-next-symbolic", size=16))
-        devices_row.connect("activated", self.open_paired_devices_dialog)
-        manage_group.add(devices_row)
+        def _add_management_button(title: str, subtitle: str, icon_name: str, callback: Callable[[Gtk.Widget], None]) -> None:
+            button = Gtk.Button()
+            button.add_css_class("flat")
+            button.add_css_class("management-row-button")
+            button.set_halign(Gtk.Align.FILL)
+            button.set_hexpand(True)
+            button.connect("clicked", callback)
+            button.update_property(
+                [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
+                [title, subtitle],
+            )
 
-        logs_row = Adw.ActionRow(title=_("Sunshine Logs"),
-                                 subtitle=_("View the Sunshine server log"))
-        logs_row.set_activatable(True)
-        logs_row.add_prefix(create_icon_widget("text-x-generic-symbolic", size=20))
-        logs_row.add_suffix(create_icon_widget("go-next-symbolic", size=16))
-        logs_row.connect("activated", self.open_logs_dialog)
-        manage_group.add(logs_row)
+            row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+            row.set_margin_top(10)
+            row.set_margin_bottom(10)
+            row.set_margin_start(14)
+            row.set_margin_end(14)
 
-        library_row = Adw.ActionRow(title=_("Game Library"),
-                                    subtitle=_("Manage games shown to guests in Moonlight"))
-        library_row.set_activatable(True)
-        library_row.add_prefix(create_icon_widget("applications-games-symbolic", size=20))
-        library_row.add_suffix(create_icon_widget("go-next-symbolic", size=16))
-        library_row.connect("activated", self.open_game_library_dialog)
-        manage_group.add(library_row)
+            icon = create_icon_widget(icon_name, size=20)
+            icon.set_valign(Gtk.Align.CENTER)
+            row.append(icon)
 
-        password_row = Adw.ActionRow(title=_("Server Password"),
-                                     subtitle=_("Change or reset the Sunshine login (if you forgot it)"))
-        password_row.set_activatable(True)
-        password_row.add_prefix(create_icon_widget("dialog-password-symbolic", size=20))
-        password_row.add_suffix(create_icon_widget("go-next-symbolic", size=16))
-        password_row.connect("activated", self.open_password_dialog)
-        manage_group.add(password_row)
+            text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+            text.set_hexpand(True)
+            title_label = Gtk.Label(label=title)
+            title_label.add_css_class("management-row-title")
+            title_label.set_halign(Gtk.Align.START)
+            title_label.set_xalign(0)
+            text.append(title_label)
+            subtitle_label = Gtk.Label(label=subtitle)
+            subtitle_label.add_css_class("management-row-subtitle")
+            subtitle_label.set_halign(Gtk.Align.START)
+            subtitle_label.set_xalign(0)
+            subtitle_label.set_wrap(True)
+            text.append(subtitle_label)
+            row.append(text)
 
-        advanced_row = Adw.ActionRow(title=_("Advanced server settings"),
-                                     subtitle=_("Server tuning, codecs, network and library fix"))
-        advanced_row.set_activatable(True)
-        advanced_row.add_prefix(create_icon_widget("preferences-system-symbolic", size=20))
-        advanced_row.add_suffix(create_icon_widget("go-next-symbolic", size=16))
-        advanced_row.connect("activated", self.open_advanced_settings)
-        manage_group.add(advanced_row)
+            arrow = create_icon_widget("go-next-symbolic", size=16)
+            arrow.set_valign(Gtk.Align.CENTER)
+            row.append(arrow)
+
+            button.set_child(row)
+            manage_group.add(button)
+
+        _add_management_button(
+            _("Paired Devices"),
+            _("View, disable or remove paired clients"),
+            "network-workgroup-symbolic",
+            self.open_paired_devices_dialog,
+        )
+        _add_management_button(
+            _("Sunshine Logs"),
+            _("View the Sunshine server log"),
+            "text-x-generic-symbolic",
+            self.open_logs_dialog,
+        )
+        _add_management_button(
+            _("Game Library"),
+            _("Manage games shown to guests in Moonlight"),
+            "applications-games-symbolic",
+            self.open_game_library_dialog,
+        )
+        _add_management_button(
+            _("Server Password"),
+            _("Change or reset the Sunshine login (if you forgot it)"),
+            "dialog-password-symbolic",
+            self.open_password_dialog,
+        )
+        _add_management_button(
+            _("Advanced server settings"),
+            _("Server tuning, codecs, network and library fix"),
+            "preferences-system-symbolic",
+            self.open_advanced_settings,
+        )
 
         # Getting-started tips, two side by side (no heading).
         def _tip(icon_name, title, desc):
