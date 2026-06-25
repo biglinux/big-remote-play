@@ -159,6 +159,7 @@ class MainWindow(Adw.ApplicationWindow):
         self._status_dots = {}
         self._status_labels = {}
 
+        self._install_window_actions()
         self.setup_ui()
         self.check_system()
 
@@ -177,6 +178,16 @@ class MainWindow(Adw.ApplicationWindow):
         self.split_view = Adw.NavigationSplitView(); self.toast_overlay.set_child(self.split_view)
         self.setup_sidebar(); self.setup_content()
         self.split_view.set_min_sidebar_width(220); self.split_view.set_max_sidebar_width(280)
+
+    def _install_window_actions(self):
+        nav_action = Gio.SimpleAction.new("navigate", GLib.VariantType.new("s"))
+        nav_action.connect("activate", self._on_navigate_action)
+        self.add_action(nav_action)
+
+    def _on_navigate_action(self, _action, parameter):
+        if parameter is None:
+            return
+        self.navigate_to(parameter.get_string())
 
     def _build_navigation_pages(self):
         """Build the navigation page list based on current VPN choice."""
@@ -285,9 +296,19 @@ class MainWindow(Adw.ApplicationWindow):
             badge.set_halign(Gtk.Align.END)
             box.append(badge)
 
-        row.set_child(box)
-        # ListBoxRow has no auto name from its custom child; expose one for AT-SPI.
-        row.update_property([Gtk.AccessibleProperty.LABEL], [page_info['name']])
+        button = Gtk.Button()
+        button.add_css_class('flat')
+        button.set_hexpand(True)
+        button.set_halign(Gtk.Align.FILL)
+        button.set_action_name("win.navigate")
+        button.set_action_target_value(GLib.Variant("s", page_id))
+        button.set_child(box)
+        button.update_property(
+            [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
+            [page_info['name'], page_info.get('description', '')],
+        )
+
+        row.set_child(button)
         return row
 
     def create_status_footer(self):
@@ -421,9 +442,8 @@ class MainWindow(Adw.ApplicationWindow):
                 card.set_tooltip_text(tooltip)
 
     def setup_content(self):
-        ct = Adw.ToolbarView(); hb = Adw.HeaderBar(); m = Gio.Menu()
-        m.append(_('Preferences'), 'app.preferences'); m.append(_('About'), 'app.about')
-        hb.pack_end(Gtk.MenuButton(icon_name='open-menu-symbolic', menu_model=m))
+        ct = Adw.ToolbarView(); hb = Adw.HeaderBar()
+        hb.pack_end(self._create_header_menu_button())
 
         # Dynamic title reflecting the current section (filled in on_nav_selected).
         self.content_headerbar = hb
@@ -451,6 +471,42 @@ class MainWindow(Adw.ApplicationWindow):
 
         ct.set_content(self.content_stack)
         self.split_view.set_content(Adw.NavigationPage.new(ct, 'Big Remote Play'))
+
+    def _create_header_menu_button(self):
+        menu_button = Gtk.MenuButton(icon_name='open-menu-symbolic')
+        menu_button.update_property([Gtk.AccessibleProperty.LABEL], [_('Application menu')])
+
+        popover = Gtk.Popover()
+        menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        menu_box.set_margin_top(6)
+        menu_box.set_margin_bottom(6)
+        menu_box.set_margin_start(6)
+        menu_box.set_margin_end(6)
+
+        for label, action_name in (
+            (_('Preferences'), 'preferences'),
+            (_('About'), 'about'),
+        ):
+            button = Gtk.Button(label=label)
+            button.add_css_class('flat')
+            button.set_hexpand(True)
+            button.set_halign(Gtk.Align.FILL)
+            button.connect(
+                'clicked',
+                lambda _button, menu_popover=popover, name=action_name: self._activate_app_menu_action(menu_popover, name),
+            )
+            button.update_property([Gtk.AccessibleProperty.LABEL], [label])
+            menu_box.append(button)
+
+        popover.set_child(menu_box)
+        menu_button.set_popover(popover)
+        return menu_button
+
+    def _activate_app_menu_action(self, popover, action_name):
+        popover.popdown()
+        app = self.get_application()
+        if app is not None:
+            app.activate_action(action_name, None)
 
     # ─────────────────────────────────────────────────────────────────────────
     #  VPN SELECTOR PAGE
