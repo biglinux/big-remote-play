@@ -59,18 +59,8 @@ check_dependencies() {
 	if ! command -v tailscale &>/dev/null; then
 		echo -e "${RED}$(gettext 'Tailscale not found. Installing...')${NC}"
 
-		# Add AUR repository (yay required)
-		if ! command -v yay &>/dev/null; then
-			echo -e "${YELLOW}$(gettext 'Installing yay (AUR helper)...')${NC}"
-			sudo pacman -S --needed git base-devel --noconfirm
-			git clone https://aur.archlinux.org/yay.git /tmp/yay
-			cd /tmp/yay || exit 1
-			makepkg -si --noconfirm
-			cd - || exit 1
-		fi
-
-		# Install tailscale from AUR
-		yay -S tailscale-bin --noconfirm
+		# Install tailscale from the official repos (pacman, not AUR).
+		sudo pacman -S --needed --noconfirm tailscale
 
 		# Enable and start service
 		sudo systemctl enable tailscaled
