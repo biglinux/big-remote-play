@@ -25,6 +25,11 @@ class HostView(Gtk.Box):
         self.process = None # Initialize to avoid AttributeError
         self.pin_code = None
         self.private_audio_apps = set()
+        self.audio_devices = []
+        self.active_host_sink = ""
+        self.stop_pin_listener = None
+        self._uptime_timer_id = None
+        self._hosting_started_at = None
         
         from big_remote_play.host.sunshine_manager import SunshineHost
         self.sunshine = SunshineHost(Path.home() / '.config' / 'big-remoteplay' / 'sunshine')
@@ -47,6 +52,10 @@ class HostView(Gtk.Box):
              self._ensure_sunshine_config()
              
         self.sync_ui_state()
+
+    def _root_window(self):
+        root = self.get_root()
+        return root if isinstance(root, Gtk.Window) else None
         
     def detect_monitors(self):
         monitors = [(_('Automatic'), 'auto')]
@@ -60,6 +69,8 @@ class HostView(Gtk.Box):
                 monitor_list = display.get_monitors()
                 for i in range(monitor_list.get_n_items()):
                     monitor = monitor_list.get_item(i)
+                    if monitor is None:
+                        continue
                     conn = monitor.get_connector()
                     if conn:
                         manufacturer = monitor.get_manufacturer() or ""
@@ -813,7 +824,7 @@ class HostView(Gtk.Box):
             heading=_("Insert PIN"), 
             body=_("Enter the PIN displayed on the client device (Moonlight).")
         )
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
         
         # Preferences group holding the fields
         grp = Adw.PreferencesGroup()
@@ -881,7 +892,7 @@ class HostView(Gtk.Box):
             heading=_("User Not Found"), 
             body=_("No user has been created in Sunshine. It is necessary to configure a user through the browser.")
         )
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
         dialog.add_response("cancel", _("Cancel"))
         dialog.add_response("open", _("Open Configuration"))
         dialog.set_response_appearance("open", Adw.ResponseAppearance.SUGGESTED)
@@ -899,7 +910,7 @@ class HostView(Gtk.Box):
             heading=_("Create Sunshine User"), 
             body=_("Define a username and password for Sunshine.")
         )
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
         
         grp = Adw.PreferencesGroup()
         user_row = Adw.EntryRow(title=_("New User"))
@@ -934,7 +945,7 @@ class HostView(Gtk.Box):
         dialog.connect("response", on_create)
         dialog.present()
         
-    def open_sunshine_auth_dialog(self, pin_to_retry: str, device_name: str = None):
+    def open_sunshine_auth_dialog(self, pin_to_retry: str, device_name: str | None = None):
         # Prefill with existing if available (for correction)
         creds = self._get_sunshine_creds()
         curr_user = creds[0] if creds else "admin"
@@ -943,7 +954,7 @@ class HostView(Gtk.Box):
             heading=_("Sunshine Authentication"), 
             body=_("Sunshine requires login. Enter your credentials (default: admin / password created during installation).")
         )
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
         
         grp = Adw.PreferencesGroup()
         user_row = Adw.EntryRow(title=_("Username"))
@@ -1015,6 +1026,8 @@ class HostView(Gtk.Box):
             self.audio_output_row.set_model(model)
             # Try to keep selection if possible, or use config
             h = self.config.get('host', {})
+            if not isinstance(h, dict):
+                h = {}
             self.audio_output_row.set_selected(h.get('audio_output_idx', 0))
             
         except Exception as e:
@@ -1031,6 +1044,9 @@ class HostView(Gtk.Box):
             new_sink = self.audio_devices[idx]['name']
         else:
             new_sink = self.audio_manager.get_default_sink()
+        if not new_sink:
+            self.save_host_settings()
+            return
         
         # If hosting and audio active, need to reconfigure loopback
         if self.is_hosting and self.audio_mode_row.get_selected() in [0, 1, 3]:
@@ -1108,7 +1124,10 @@ class HostView(Gtk.Box):
             
     def copy_field_value(self, key):
         if val := self.field_widgets[key]['real_value']:
-             self.get_root().get_clipboard().set(val); self.show_toast(_("Copied!"))
+             display = Gdk.Display.get_default()
+             if display is not None:
+                 display.get_clipboard().set(val)
+             self.show_toast(_("Copied!"))
 
     def toggle_hosting(self, button):
         self.show_toast(_("Clicked Start Server..."))
@@ -1178,8 +1197,9 @@ class HostView(Gtk.Box):
                 self.host_status_subtitle.set_label(_('Start the server to stream.'))
 
             self._hosting_started_at = None
-            if getattr(self, '_uptime_timer_id', None) is not None:
-                GLib.source_remove(self._uptime_timer_id)
+            uptime_timer_id = self._uptime_timer_id
+            if uptime_timer_id is not None:
+                GLib.source_remove(uptime_timer_id)
                 self._uptime_timer_id = None
             if hasattr(self, 'host_status_label'):
                 self.host_status_label.set_label(_('Sunshine offline'))
@@ -1465,7 +1485,7 @@ class HostView(Gtk.Box):
                 host_sink = self.audio_manager.get_default_sink()
             
             # PROTECT AGAINST SELF-LOOP IF DEFAULT SINK IS STILL VIRTUAL
-            if host_sink == "SunshineGameSink" or self.audio_manager.is_virtual(host_sink):
+            if host_sink and (host_sink == "SunshineGameSink" or self.audio_manager.is_virtual(host_sink)):
                 print(f"WARNING: Host sink '{host_sink}' is virtual. finding fallback hardware sink.")
                 hw_sinks = self.audio_manager.get_passive_sinks()
                 if hw_sinks:
@@ -1473,11 +1493,15 @@ class HostView(Gtk.Box):
                     # usually get_passive_sinks returns dict with 'name' (id) and description
                     # wait, check utils/audio.py get_passive_sinks returns dict with 'name' -> PA Name
                     
-            # Store it for the enforcer
-            self.active_host_sink = host_sink
+            if not host_sink:
+                print("WARNING: No hardware audio sink found, disabling audio streaming.")
+                sunshine_config['audio'] = 'none'
+            else:
+                # Store it for the enforcer
+                self.active_host_sink = host_sink
 
             # Enable Host+Guest Streaming (Create Sink)
-            if self.audio_manager:
+            if host_sink and self.audio_manager:
                 # Determine loopback based on Mode
                 mode_idx = self.audio_mode_row.get_selected()
                 # If mode is Guest (1), guest_only is True
@@ -1753,10 +1777,11 @@ class HostView(Gtk.Box):
 
         if not self.is_hosting: return True
 
-        if hasattr(self, 'sunshine_val'):
+        sunshine_val = getattr(self, 'sunshine_val', None)
+        if sunshine_val is not None:
             status_text = _("Online") if sunshine_running else _("Stopped")
             color = "#2ec27e" if sunshine_running else "#e01b24"
-            self.sunshine_val.set_markup(f'<span color="{color}">{status_text}</span>')
+            sunshine_val.set_markup(f'<span color="{color}">{status_text}</span>')
         ipv4, ipv6 = self.get_ip_addresses()
         self.update_field('ipv4', ipv4); self.update_field('ipv6', ipv6)
         return True
@@ -1807,7 +1832,7 @@ class HostView(Gtk.Box):
         # Use simple MessageDialog constructor for custom response handling if needed, 
         # or simplified new() if we connect signal later.
         dialog = Adw.MessageDialog(heading=_("Server Failed to Start"), body=body)
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
         dialog.add_response("cancel", _("Close"))
         dialog.add_response("logs", _("View Logs"))
         dialog.add_response("fix", _("Fix Dependencies"))
@@ -1827,13 +1852,13 @@ class HostView(Gtk.Box):
         dialog.present()
 
     def show_error_dialog(self, title, message):
-        dialog = Adw.MessageDialog.new(self.get_root(), title, message)
+        dialog = Adw.MessageDialog.new(self._root_window(), title, message)
         dialog.add_response('ok', 'OK')
         dialog.present()
     
     def show_toast(self, message):
-        window = self.get_root()
-        if hasattr(window, 'show_toast'): window.show_toast(message)
+        show_toast = getattr(self.get_root(), 'show_toast', None)
+        if callable(show_toast): show_toast(message)
         else: print(f"Toast: {message}")
         
     def open_sunshine_config(self, button):
@@ -1848,7 +1873,7 @@ class HostView(Gtk.Box):
             body=_("Devices paired with Sunshine. Disable to block access without "
                    "re-pairing; remove to revoke (a new PIN will be required)."),
         )
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
         dialog.add_response("close", _("Close"))
         dialog.add_response("unpair_all", _("Remove All"))
         dialog.set_response_appearance("unpair_all", Adw.ResponseAppearance.DESTRUCTIVE)
@@ -1942,7 +1967,7 @@ class HostView(Gtk.Box):
             heading=_("Remove Device"),
             body=_("Remove “{}”? It will need to pair again with a new PIN.").format(name),
         )
-        confirm.set_transient_for(self.get_root())
+        confirm.set_transient_for(self._root_window())
         confirm.add_response("cancel", _("Cancel"))
         confirm.add_response("remove", _("Remove"))
         confirm.set_response_appearance("remove", Adw.ResponseAppearance.DESTRUCTIVE)
@@ -1981,7 +2006,7 @@ class HostView(Gtk.Box):
 
     def open_logs_dialog(self, _widget):
         dialog = Adw.MessageDialog(heading=_("Sunshine Logs"), body="")
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
         dialog.add_response("close", _("Close"))
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
@@ -2051,7 +2076,9 @@ class HostView(Gtk.Box):
             return
         buf = tv.get_buffer()
         text = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), False)
-        self.get_root().get_clipboard().set(text)
+        display = Gdk.Display.get_default()
+        if display is not None:
+            display.get_clipboard().set(text)
         self.show_toast(_("Copied!"))
 
     # --- Game library (Sunshine apps API) --------------------------------
@@ -2068,7 +2095,7 @@ class HostView(Gtk.Box):
             body=_("Games offered to guests in Moonlight. Add your detected games "
                    "or remove entries."),
         )
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
         dialog.add_response("close", _("Close"))
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
@@ -2202,7 +2229,7 @@ class HostView(Gtk.Box):
             return
 
         dialog = Adw.MessageDialog(heading=_("Select Executable"), body="")
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
         dialog.add_response("close", _("Close"))
         self._browse_dialog = dialog
 
@@ -2285,9 +2312,7 @@ class HostView(Gtk.Box):
         """Full Sunshine server tuning + library fix, opened from the task itself."""
         from big_remote_play.ui.sunshine_preferences import SunshinePreferencesPage
         win = Adw.PreferencesWindow()
-        root = self.get_root()
-        if root:
-            win.set_transient_for(root)
+        win.set_transient_for(self._root_window())
         win.set_modal(True)
         win.set_title(_("Advanced server settings"))
         win.add(SunshinePreferencesPage(main_config=self.config))
@@ -2300,7 +2325,7 @@ class HostView(Gtk.Box):
                    "server. If you forgot the current password, switch on "
                    "“I forgot the current password” to reset it."),
         )
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
 
         creds = self._get_sunshine_creds()
         default_user = creds[0] if creds else "sunshine"
@@ -2403,6 +2428,8 @@ class HostView(Gtk.Box):
     def save_host_settings(self, *args):
         if getattr(self, 'loading_settings', False): return
         h = self.config.get('host', {})
+        if not isinstance(h, dict):
+            h = {}
         h.update({
             'mode_idx': self.game_mode_row.get_selected(),
             'game_list_idx': self.game_list_row.get_selected(),
@@ -2497,6 +2524,8 @@ class HostView(Gtk.Box):
                 
                 # Update Host Config based on Sunshine Config (Source of Truth for these fields)
                 h = self.config.get('host', {})
+                if not isinstance(h, dict):
+                    h = {}
                 h['upnp'] = scm.get('upnp', 'enabled') == 'enabled'
                 h['ipv6'] = scm.get('address_family', 'both') == 'both'
                 h['webui_anyone'] = scm.get('origin_web_ui_allowed', 'lan') == 'wan'
@@ -2530,6 +2559,8 @@ class HostView(Gtk.Box):
 
 
             h = self.config.get('host', {})
+            if not isinstance(h, dict):
+                h = {}
             if not h: return
             self.game_mode_row.set_selected(h.get('mode_idx', 0))
             # Restore game list selection after populating
@@ -2607,9 +2638,12 @@ class HostView(Gtk.Box):
 
     def cleanup(self):
         if hasattr(self, 'perf_monitor'): self.perf_monitor.stop_monitoring()
-        if hasattr(self, 'stop_pin_listener'): self.stop_pin_listener()
-        if getattr(self, '_uptime_timer_id', None) is not None:
-            GLib.source_remove(self._uptime_timer_id)
+        stop_pin_listener = self.stop_pin_listener
+        if callable(stop_pin_listener):
+            stop_pin_listener()
+        uptime_timer_id = self._uptime_timer_id
+        if uptime_timer_id is not None:
+            GLib.source_remove(uptime_timer_id)
             self._uptime_timer_id = None
         
         # Only cleanup audio if we are NOT hosting, because Sunshine depends on these sinks.
