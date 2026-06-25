@@ -122,12 +122,12 @@ login_tailscale() {
 		echo -e "${GREEN}$(gettext 'Starting browser login...')${NC}"
 		echo -e "${YELLOW}$(gettext 'A URL will open in your browser. Log in with your account.')${NC}"
 
-		# `tailscale up` (run as root via bigsudo) prints the auth URL then blocks
+		# `tailscale up` (run as root via pkexec) prints the auth URL then blocks
 		# waiting for authentication; opening a browser as root does not work on a
 		# desktop. So run it in the background, capture the URL, and emit it as a
 		# BRP_DATA marker — the app opens it in the *user's* browser.
 		TS_OUT=$(mktemp "${TMPDIR:-/tmp}/brp-tailscale-up.XXXXXX")
-		# Script already runs as root (bigsudo); no inner sudo so the redirect is root-owned.
+		# Script already runs as root (pkexec); no inner sudo so the redirect is root-owned.
 		tailscale up --reset >"$TS_OUT" 2>&1 &
 		url=""
 		for _ in {1..40}; do

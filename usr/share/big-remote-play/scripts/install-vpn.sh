@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Install a VPN provider's package via pacman and enable its service.
-# Invoked with elevated privilege (bigsudo). Argument: provider id.
+# Invoked with elevated privilege (pkexec). Argument: provider id.
 #
 # Emits machine-readable markers (see script_protocol.py):
 #   BRP_PHASE <fraction>          progress 0..1
