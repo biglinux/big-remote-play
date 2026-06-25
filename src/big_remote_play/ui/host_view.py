@@ -2284,19 +2284,57 @@ class HostView(Gtk.Box):
         self._browse_load(os.path.expanduser("~"))
         dialog.present()
 
-    def _browse_load(self, path):
+    def _browse_load(self, path: str) -> None:
         if getattr(self, "_browse_group", None) is None:
             return
         import threading
         auth = self._get_sunshine_creds()
 
-        def work():
+        def work() -> None:
             data = self.sunshine.browse(path, "any", auth=auth)
             GLib.idle_add(self._browse_populate, data)
 
         threading.Thread(target=work, daemon=True).start()
 
-    def _browse_populate(self, data):
+    def _create_browse_button(
+        self,
+        title: str,
+        icon_name: str,
+        description: str,
+        callback: Callable[[Gtk.Widget], None],
+    ) -> Gtk.Button:
+        button = Gtk.Button()
+        button.add_css_class("flat")
+        button.add_css_class("file-browser-row-button")
+        button.set_halign(Gtk.Align.FILL)
+        button.set_hexpand(True)
+        button.connect("clicked", callback)
+        button.update_property(
+            [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
+            [title, description],
+        )
+
+        row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        row.set_margin_top(10)
+        row.set_margin_bottom(10)
+        row.set_margin_start(14)
+        row.set_margin_end(14)
+
+        icon = create_icon_widget(icon_name, size=16)
+        icon.set_valign(Gtk.Align.CENTER)
+        row.append(icon)
+
+        label = Gtk.Label(label=title)
+        label.set_halign(Gtk.Align.START)
+        label.set_xalign(0)
+        label.set_hexpand(True)
+        label.set_wrap(True)
+        row.append(label)
+
+        button.set_child(row)
+        return button
+
+    def _browse_populate(self, data: dict | None) -> bool:
         group = getattr(self, "_browse_group", None)
         if group is None:
             return False
@@ -2313,10 +2351,12 @@ class HostView(Gtk.Box):
         group.set_title(data.get("path", ""))
         parent = data.get("parent")
         if parent:
-            up = Adw.ActionRow(title=_("Up one level"))
-            up.set_activatable(True)
-            up.add_prefix(create_icon_widget("go-up-symbolic", size=16))
-            up.connect("activated", lambda r, p=parent: self._browse_load(p))
+            up = self._create_browse_button(
+                _("Up one level"),
+                "go-up-symbolic",
+                _("Open parent folder"),
+                lambda _button, p=parent: self._browse_load(p),
+            )
             group.add(up)
             self._browse_rows.append(up)
 
@@ -2324,19 +2364,25 @@ class HostView(Gtk.Box):
             name = entry.get("name", "")
             etype = entry.get("type", "")
             epath = entry.get("path", "")
-            row = Adw.ActionRow(title=name)
-            row.set_activatable(True)
             if etype == "directory":
-                row.add_prefix(create_icon_widget("folder-symbolic", size=16))
-                row.connect("activated", lambda r, p=epath: self._browse_load(p))
+                row = self._create_browse_button(
+                    name,
+                    "folder-symbolic",
+                    _("Open folder"),
+                    lambda _button, p=epath: self._browse_load(p),
+                )
             else:
-                row.add_prefix(create_icon_widget("application-x-executable-symbolic", size=16))
-                row.connect("activated", lambda r, p=epath: self._browse_pick(p))
+                row = self._create_browse_button(
+                    name,
+                    "application-x-executable-symbolic",
+                    _("Select executable"),
+                    lambda _button, p=epath: self._browse_pick(p),
+                )
             group.add(row)
             self._browse_rows.append(row)
         return False
 
-    def _browse_pick(self, path):
+    def _browse_pick(self, path: str) -> None:
         self.custom_cmd_entry.set_text(path)
         if getattr(self, "_browse_dialog", None) is not None:
             self._browse_dialog.close()
