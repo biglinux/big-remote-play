@@ -4,7 +4,7 @@ import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw, GLib, Gio  # type: ignore
+from gi.repository import Gtk, Adw, GLib, Gio, Pango  # type: ignore
 import threading
 import json
 import os
@@ -224,7 +224,6 @@ class MainWindow(Adw.ApplicationWindow):
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         main.set_vexpand(True)
         main.set_margin_top(12)
-        main.append(self._create_sidebar_identity())
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scroll.set_vexpand(True)
@@ -240,29 +239,31 @@ class MainWindow(Adw.ApplicationWindow):
         tb.set_content(main)
         self.split_view.set_sidebar(Adw.NavigationPage.new(tb, "Navigation"))
 
-    def _create_sidebar_identity(self) -> Gtk.Widget:
-        identity = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        identity.add_css_class("sidebar-identity")
-        identity.set_margin_start(14)
-        identity.set_margin_end(14)
-        identity.set_margin_bottom(16)
+    def _create_home_header_identity(self) -> Gtk.Widget:
+        identity = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        identity.add_css_class("header-identity")
+        identity.set_valign(Gtk.Align.CENTER)
+        identity.update_property(
+            [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
+            ["Big Remote Play", _("Play together, from anywhere")],
+        )
 
-        logo = create_logo_widget("big-remote-play", 48)
-        logo.add_css_class("sidebar-logo")
+        logo = create_logo_widget("big-remote-play", 28)
+        logo.add_css_class("header-logo")
         logo.set_valign(Gtk.Align.CENTER)
         identity.append(logo)
 
-        text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         text.set_valign(Gtk.Align.CENTER)
         title = Gtk.Label(label="Big Remote Play")
-        title.add_css_class("sidebar-title")
+        title.add_css_class("header-title")
         title.set_halign(Gtk.Align.START)
         text.append(title)
 
         subtitle = Gtk.Label(label=_("Play together, from anywhere"))
-        subtitle.add_css_class("sidebar-subtitle")
+        subtitle.add_css_class("header-subtitle")
         subtitle.set_halign(Gtk.Align.START)
-        subtitle.set_wrap(True)
+        subtitle.set_ellipsize(Pango.EllipsizeMode.END)
         text.append(subtitle)
         identity.append(text)
 
@@ -495,7 +496,8 @@ class MainWindow(Adw.ApplicationWindow):
 
         self.content_headerbar = hb
         self.header_blank_title = Gtk.Box()
-        hb.set_title_widget(self.header_blank_title)
+        self.home_header_identity = self._create_home_header_identity()
+        hb.set_title_widget(self.home_header_identity)
 
         ct.add_top_bar(hb)
         self.content_stack = Gtk.Stack()
@@ -940,7 +942,7 @@ class MainWindow(Adw.ApplicationWindow):
             if actual_pid == "host" and hasattr(self.host_view, "header_action_box"):
                 self.content_headerbar.set_title_widget(self.host_view.header_action_box)
             elif actual_pid == "welcome":
-                self.content_headerbar.set_title_widget(self.header_blank_title)
+                self.content_headerbar.set_title_widget(self.home_header_identity)
             else:
                 info = self._build_navigation_pages().get(actual_pid) or self._build_navigation_pages().get(pid)
                 if info:
