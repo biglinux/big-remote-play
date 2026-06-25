@@ -13,6 +13,43 @@ class SystemCheck:
     def __init__(self):
         pass
 
+    def has_pacman(self) -> bool:
+        """True on Arch-family distros where we install VPN packages via pacman."""
+        return shutil.which("pacman") is not None
+
+    def flatpak_app_id(self, keyword: str) -> str | None:
+        """First installed Flatpak app id whose id contains `keyword`, or None.
+
+        Lets us recognise (and later run via `flatpak run`) a VPN tool the user
+        already installed as a Flatpak, without hardcoding a guessed app id."""
+        if shutil.which("flatpak") is None:
+            return None
+        try:
+            r = subprocess.run(
+                ["flatpak", "list", "--app", "--columns=application"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            if r.returncode == 0:
+                key = keyword.lower()
+                for line in r.stdout.splitlines():
+                    app = line.strip()
+                    if key in app.lower():
+                        return app
+        except Exception:
+            pass
+        return None
+
+    def tailscale_cmd(self) -> list[str]:
+        """Argv prefix to invoke the tailscale CLI (native or Flatpak)."""
+        if shutil.which("tailscale") is not None:
+            return ["tailscale"]
+        fid = self.flatpak_app_id("tailscale")
+        if fid is not None:
+            return ["flatpak", "run", "--command=tailscale", fid]
+        return ["tailscale"]
+
     def has_sunshine(self) -> bool:
         """Checks if Sunshine is installed"""
         return shutil.which("sunshine") is not None
@@ -31,12 +68,12 @@ class SystemCheck:
         return shutil.which("docker") is not None
 
     def has_zerotier(self) -> bool:
-        """Checks if ZeroTier is installed"""
-        return shutil.which("zerotier-cli") is not None
+        """Checks if ZeroTier is installed (native or Flatpak)"""
+        return shutil.which("zerotier-cli") is not None or self.flatpak_app_id("zerotier") is not None
 
     def has_tailscale(self) -> bool:
-        """Checks if Tailscale is installed"""
-        return shutil.which("tailscale") is not None
+        """Checks if Tailscale is installed (native or Flatpak)"""
+        return shutil.which("tailscale") is not None or self.flatpak_app_id("tailscale") is not None
 
     def check_all(self) -> dict:
         """Checks all components"""
