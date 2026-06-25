@@ -14,3 +14,20 @@ def test_host_scroll_has_breathing_room_and_no_tall_min() -> None:
     assert "host_scroll.set_min_content_height(120)" in src
     assert "self.hosts_list.set_margin_top(6)" in src
     assert "self.hosts_list.set_margin_bottom(6)" in src
+
+
+def test_empty_state_routes_novice_to_real_unlocks() -> None:
+    src = GUEST.read_text()
+    assert "_build_discover_empty_state" in src
+    # Re-scan, Private Network, PIN, Manual all reachable from the empty state.
+    assert 'navigate_to("vpn_selector")' in src
+    assert 'self.method_stack.set_visible_child_name("pin")' in src
+    assert 'self.method_stack.set_visible_child_name("manual")' in src
+
+
+def test_empty_state_buttons_have_accessible_labels() -> None:
+    src = GUEST.read_text()
+    # The empty-state builder must give its action buttons accessible names
+    # (icon/short-label buttons have no inferable AT-SPI name).
+    block = src.split("def _build_discover_empty_state", 1)[1].split("def create_discover_page", 1)[0]
+    assert "update_property([Gtk.AccessibleProperty.LABEL]" in block
