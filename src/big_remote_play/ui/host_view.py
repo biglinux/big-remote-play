@@ -5,6 +5,7 @@ gi.require_version('Adw', '1')
 from collections.abc import Callable
 from gi.repository import Gtk, Gdk, Adw, GLib  # type: ignore
 import subprocess, random, string, json, socket, os, time
+import shlex
 from pathlib import Path
 from big_remote_play.utils.game_detector import GameDetector
 
@@ -17,6 +18,24 @@ from big_remote_play import paths
 from big_remote_play.utils.secret_store import SecretStoreUnavailable
 from big_remote_play.utils.sunshine_credentials import ensure_sunshine_api_config, load_sunshine_credentials, save_sunshine_credentials
 from big_remote_play.utils.uri import open_uri, open_path
+
+
+def _parse_xrandr_monitor_names(output: str) -> list[str]:
+    names: list[str] = []
+    for line in output.splitlines()[1:]:
+        parts = line.split()
+        if parts:
+            names.append(parts[-1])
+    return names
+
+
+def _split_launch_command(command: str) -> list[str]:
+    try:
+        return shlex.split(command)
+    except ValueError:
+        return []
+
+
 class HostView(Gtk.Box):
     def __init__(self):
         self.loading_settings = True
@@ -93,10 +112,8 @@ class HostView(Gtk.Box):
         if not is_wayland:
             # Xrandr (Reinforcement for X11)
             try:
-                cmd = "xrandr --listmonitors | tail -n +2 | awk '{print $NF}'"
-                res = subprocess.check_output(cmd, shell=True, text=True, timeout=5)
-                for n in res.splitlines():
-                    n = n.strip()
+                res = subprocess.check_output(["xrandr", "--listmonitors"], text=True, timeout=5)
+                for n in _parse_xrandr_monitor_names(res):
                     if n and n not in names:
                         monitors.append((f"Display ({n})", n))
                         names.append(n)
@@ -1547,9 +1564,13 @@ class HostView(Gtk.Box):
                 cmd = info['cmd']
                 game_name = info['name']
                 print(f"DIRECT LAUNCH: Lutris - {game_name} ({cmd})")
+                argv = _split_launch_command(cmd)
+                if not argv:
+                    self.show_toast(_("Invalid launch command"))
+                    return
                 
                 p = subprocess.Popen(
-                    cmd.split(),
+                    argv,
                     env=env, start_new_session=True,
                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
                 )
@@ -1560,9 +1581,13 @@ class HostView(Gtk.Box):
                 cmd = info['cmd']
                 game_name = info['name']
                 print(f"DIRECT LAUNCH: Custom - {game_name} ({cmd})")
+                argv = _split_launch_command(cmd)
+                if not argv:
+                    self.show_toast(_("Invalid launch command"))
+                    return
                 
                 p = subprocess.Popen(
-                    cmd, shell=True,
+                    argv,
                     env=env, start_new_session=True,
                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
                 )
