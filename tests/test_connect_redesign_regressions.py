@@ -31,3 +31,11 @@ def test_empty_state_buttons_have_accessible_labels() -> None:
     # (icon/short-label buttons have no inferable AT-SPI name).
     block = src.split("def _build_discover_empty_state", 1)[1].split("def create_discover_page", 1)[0]
     assert "update_property([Gtk.AccessibleProperty.LABEL]" in block
+
+
+def test_discover_is_single_column_with_guidance() -> None:
+    src = GUEST.read_text()
+    # Side helper-card column removed from the discover page.
+    assert "create_helper_card(" not in src
+    # Fixed automatic-discovery guidance subtitle present.
+    assert "appears here automatically" in src
