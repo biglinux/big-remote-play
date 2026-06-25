@@ -55,6 +55,16 @@ class GuestView(Gtk.Box):
 
         threading.Thread(target=run_detect, daemon=True).start()
 
+    def _quality_summary(self) -> str:
+        """One-line summary for the collapsed quality expander, e.g.
+        '1080p · 60 FPS · Áudio'. Reads the current row selections."""
+        res_item = self.resolution_row.get_selected_item()
+        res = res_item.get_string() if res_item is not None else "1080p"
+        fps_item = self.fps_row.get_selected_item()
+        fps = fps_item.get_string() if fps_item is not None else "60 FPS"
+        audio = _("Audio") if self.audio_row.get_active() else _("No audio")
+        return f"{res} · {fps} · {audio}"
+
     def setup_ui(self):
         clamp = Adw.Clamp()
         clamp.set_maximum_size(1040)
@@ -104,6 +114,12 @@ class GuestView(Gtk.Box):
         reset_btn.set_tooltip_text(_("Reset to Defaults"))
         reset_btn.connect("clicked", self.on_reset_clicked)
         settings_group.set_header_suffix(reset_btn)
+        # Collapse the client settings so they don't compete on first load; the
+        # summary shows the current quality at a glance.
+        self.quality_expander = Adw.ExpanderRow()
+        self.quality_expander.set_title(_("Adjust quality"))
+        self.quality_expander.set_expanded(False)
+        settings_group.add(self.quality_expander)
         self.resolution_row = Adw.ComboRow()
         self.resolution_row.set_title(_("Resolution"))
         self.resolution_row.set_subtitle(_("Stream resolution"))
@@ -112,14 +128,14 @@ class GuestView(Gtk.Box):
             res_model.append(r)
         self.resolution_row.set_model(res_model)
         self.resolution_row.set_selected(1)
-        settings_group.add(self.resolution_row)
+        self.quality_expander.add_row(self.resolution_row)
 
         self.scale_row = Adw.SwitchRow()
         self.scale_row.set_title(_("Native Resolution (Adaptive)"))
         self.scale_row.set_subtitle(_("Use screen/window resolution"))
         self.scale_row.set_active(False)
         self.scale_row.connect("notify::active", self.on_scale_changed)
-        settings_group.add(self.scale_row)
+        self.quality_expander.add_row(self.scale_row)
 
         self.fps_row = Adw.ComboRow()
         self.fps_row.set_title(_("Frame Rate (FPS)"))
@@ -129,7 +145,7 @@ class GuestView(Gtk.Box):
             fps_model.append(f)
         self.fps_row.set_model(fps_model)
         self.fps_row.set_selected(1)
-        settings_group.add(self.fps_row)
+        self.quality_expander.add_row(self.fps_row)
 
         # Connect signals for Custom handling
         self.custom_resolution_val = None
@@ -145,7 +161,7 @@ class GuestView(Gtk.Box):
         self.apply_settings_btn.set_margin_top(24)
         self.apply_settings_btn.set_visible(False)
         self.apply_settings_btn.connect("clicked", lambda b: self.check_reconnect())
-        settings_group.add(self.apply_settings_btn)
+        self.quality_expander.add_row(self.apply_settings_btn)
 
         bitrate_row = Adw.ActionRow()
         bitrate_row.set_title(_("Bitrate (Quality)"))
@@ -161,7 +177,7 @@ class GuestView(Gtk.Box):
         bitrate_box.append(self.bitrate_scale)
         bitrate_box.append(detect_btn)
         bitrate_row.add_suffix(bitrate_box)
-        settings_group.add(bitrate_row)
+        self.quality_expander.add_row(bitrate_row)
 
         self.display_mode_row = Adw.ComboRow()
         self.display_mode_row.set_title(_("Display Mode"))
@@ -171,18 +187,18 @@ class GuestView(Gtk.Box):
             disp_model.append(d)
         self.display_mode_row.set_model(disp_model)
         self.display_mode_row.set_selected(0)
-        settings_group.add(self.display_mode_row)
+        self.quality_expander.add_row(self.display_mode_row)
 
         self.audio_row = Adw.SwitchRow()
         self.audio_row.set_title(_("Audio"))
         self.audio_row.set_subtitle(_("Receive audio streaming"))
         self.audio_row.set_active(True)
-        settings_group.add(self.audio_row)
+        self.quality_expander.add_row(self.audio_row)
         self.hw_decode_row = Adw.SwitchRow()
         self.hw_decode_row.set_title(_("Hardware Decoding"))
         self.hw_decode_row.set_subtitle(_("Use GPU for decoding"))
         self.hw_decode_row.set_active(True)
-        settings_group.add(self.hw_decode_row)
+        self.quality_expander.add_row(self.hw_decode_row)
 
         advanced_title = _("Advanced client settings")
         advanced_subtitle = _("Input, controller, codec and more")
@@ -226,12 +242,17 @@ class GuestView(Gtk.Box):
         advanced_box.append(advanced_arrow)
 
         advanced_button.set_child(advanced_box)
-        settings_group.add(advanced_button)
+        self.quality_expander.add_row(advanced_button)
 
         content.append(self.switcher_box)
         content.append(settings_group)
         self.load_guest_settings()
         self.connect_settings_signals()
+        # Keep the collapsed expander's summary in sync with the live values.
+        self.quality_expander.set_subtitle(self._quality_summary())
+        for _row in (self.resolution_row, self.fps_row):
+            _row.connect("notify::selected-item", lambda *_a: self.quality_expander.set_subtitle(self._quality_summary()))
+        self.audio_row.connect("notify::active", lambda *_a: self.quality_expander.set_subtitle(self._quality_summary()))
         clamp.set_child(content)
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -496,17 +517,24 @@ class GuestView(Gtk.Box):
 
         buttons_box.append(self.main_connect_btn)
 
-        host_scroll = Gtk.ScrolledWindow()
-        host_scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        host_scroll.set_max_content_height(400)
-        host_scroll.set_min_content_height(120)
-        host_scroll.set_vexpand(False)
-        host_scroll.set_propagate_natural_height(True)
-        host_scroll.set_child(self.hosts_list)
+        self._host_scroll = Gtk.ScrolledWindow()
+        self._host_scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self._host_scroll.set_max_content_height(400)
+        self._host_scroll.set_min_content_height(120)
+        self._host_scroll.set_vexpand(False)
+        self._host_scroll.set_propagate_natural_height(True)
+        self._host_scroll.set_child(self.hosts_list)
+
+        # Empty state lives OUTSIDE the height-capped scroller, so its taller
+        # guidance card is never clipped (the scroller is only for host rows).
+        self._empty_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._empty_container.set_visible(False)
 
         action.append(buttons_box)
+        self._discover_action = action
         box.append(header)
-        box.append(host_scroll)
+        box.append(self._host_scroll)
+        box.append(self._empty_container)
         box.append(action)
         box.set_hexpand(True)
 
@@ -531,6 +559,7 @@ class GuestView(Gtk.Box):
         pin_link.update_property([Gtk.AccessibleProperty.LABEL], [_("Switch to PIN connection")])
         pin_link.connect("clicked", lambda _b: self.method_stack.set_visible_child_name("pin"))
         footer.append(pin_link)
+        self._discover_footer = footer
         box.append(footer)
         box.set_hexpand(True)
         return box
@@ -540,6 +569,11 @@ class GuestView(Gtk.Box):
 
         self.first_radio_in_list = self.selected_host_card_data = None
         self._update_all_buttons_state()
+        # Scanning shows the spinner in the list scroller, not the empty state.
+        if hasattr(self, "_empty_container"):
+            self._empty_container.set_visible(False)
+            self._host_scroll.set_visible(True)
+            self._discover_action.set_visible(True)
         while row := self.hosts_list.get_row_at_index(0):
             self.hosts_list.remove(row)
         self.loading_row = Gtk.ListBoxRow()
@@ -582,13 +616,21 @@ class GuestView(Gtk.Box):
             self.hosts_list.remove(row)
 
         if not hosts:
-            placeholder = Gtk.ListBoxRow()
-            placeholder.set_selectable(False)
-            placeholder.set_activatable(False)
-            placeholder.set_child(self._build_discover_empty_state())
-            self.hosts_list.append(placeholder)
+            # Show the uncapped guidance card; hide the list scroller, the
+            # connect button and the footer (which only make sense with hosts).
+            while child := self._empty_container.get_first_child():
+                self._empty_container.remove(child)
+            self._empty_container.append(self._build_discover_empty_state())
+            self._empty_container.set_visible(True)
+            self._host_scroll.set_visible(False)
+            self._discover_action.set_visible(False)
+            self._discover_footer.set_visible(False)
             return
 
+        self._empty_container.set_visible(False)
+        self._host_scroll.set_visible(True)
+        self._discover_action.set_visible(True)
+        self._discover_footer.set_visible(True)
         for host in hosts:
             self.hosts_list.append(self.create_host_row_custom(host))
 
