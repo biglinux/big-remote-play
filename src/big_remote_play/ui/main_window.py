@@ -688,6 +688,23 @@ class MainWindow(Adw.ApplicationWindow):
         levels = {"tailscale": "beginner", "zerotier": "intermediate", "headscale": "advanced"}
         box.append(create_difficulty_pill(levels.get(provider_id, "intermediate")))
 
+        # Install status so the user knows before choosing whether the package is
+        # present (headscale is container-based, so it depends on Docker).
+        dep_checks = {
+            "tailscale": self.system_check.has_tailscale,
+            "zerotier": self.system_check.has_zerotier,
+            "headscale": self.system_check.has_docker,
+        }
+        try:
+            is_installed = bool(dep_checks.get(provider_id, lambda: True)())
+        except Exception:
+            is_installed = True
+        install_lbl = Gtk.Label(label=_("Installed") if is_installed else _("Will be installed"))
+        install_lbl.add_css_class("caption")
+        install_lbl.add_css_class("success" if is_installed else "dim-label")
+        install_lbl.set_halign(Gtk.Align.CENTER)
+        box.append(install_lbl)
+
         # "Choose" label
         choose_lbl = Gtk.Label(label=_("Choose →"))
         choose_lbl.add_css_class("caption-heading")
