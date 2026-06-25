@@ -390,6 +390,10 @@ class GuestView(Gtk.Box):
         self.hosts_list.set_selection_mode(Gtk.SelectionMode.NONE)
         for m in ["start", "end"]:
             getattr(self.hosts_list, f"set_margin_{m}")(12)
+        # Top/bottom margin so the boxed-list card's rounded corners and the
+        # first/last rows are not clipped by the ScrolledWindow viewport edge.
+        self.hosts_list.set_margin_top(6)
+        self.hosts_list.set_margin_bottom(6)
         action = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         for m in ["top", "bottom", "start", "end"]:
             getattr(action, f"set_margin_{m}")(12)
@@ -419,8 +423,8 @@ class GuestView(Gtk.Box):
         host_scroll = Gtk.ScrolledWindow()
         host_scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         host_scroll.set_max_content_height(400)
-        host_scroll.set_min_content_height(200)
-        host_scroll.set_vexpand(True)
+        host_scroll.set_min_content_height(120)
+        host_scroll.set_vexpand(False)
         host_scroll.set_propagate_natural_height(True)
         host_scroll.set_child(self.hosts_list)
 
