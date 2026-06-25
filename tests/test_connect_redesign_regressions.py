@@ -52,3 +52,9 @@ def test_vpn_selector_has_role_framing_and_collapsed_comparison() -> None:
     src = MAIN.read_text()
     assert "Gtk.Expander" in src  # comparison table is collapsible
     assert "the one with the game creates" in src
+
+
+def test_tailscale_browser_login_prominent_and_key_advanced() -> None:
+    src = PNV.read_text()
+    assert "Adw.ExpanderRow" in src  # auth key behind an advanced disclosure
+    assert "Sign in with browser" in src

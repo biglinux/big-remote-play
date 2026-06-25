@@ -385,9 +385,24 @@ class CreatePage(Gtk.Box):
         btn_inner.append(self._spinner)
         btn_inner.append(self._action_lbl)
 
+        # Tailscale: browser login is the prominent, no-typing primary action.
+        # _on_action with an empty auth key (now behind the advanced disclosure)
+        # triggers the browser login flow.
+        if self.vpn_id == "tailscale":
+            self._btn_browser = Gtk.Button(label=_("Sign in with browser"))
+            self._btn_browser.add_css_class("pill")
+            self._btn_browser.add_css_class("suggested-action")
+            self._btn_browser.set_size_request(220, 48)
+            self._btn_browser.update_property([Gtk.AccessibleProperty.LABEL], [_("Sign in with browser")])
+            self._btn_browser.connect("clicked", self._on_action)
+            btn_box.append(self._btn_browser)
+
         self._btn_action = Gtk.Button()
         self._btn_action.add_css_class("pill")
-        self._btn_action.add_css_class("suggested-action")
+        # On Tailscale the browser button is the single visual primary; keep the
+        # generic action button as a neutral secondary.
+        if self.vpn_id != "tailscale":
+            self._btn_action.add_css_class("suggested-action")
         self._btn_action.set_size_request(200, 48)
         self._btn_action.set_child(btn_inner)
         self._btn_action.connect("clicked", self._on_action)
@@ -454,9 +469,9 @@ class CreatePage(Gtk.Box):
             self._form_rows.extend([self._e_domain, self._e_zone, self._e_token])
 
         elif self.vpn_id == "tailscale":
-            self._e_authkey = Adw.PasswordEntryRow(title=_("Auth Key (optional – leave empty for browser login)"))
-            self._form_group.add(self._e_authkey)
-            self._form_rows.append(self._e_authkey)
+            # Browser login is the primary path (button in _build); the auth key
+            # is for advanced users, tucked behind a collapsed disclosure.
+            self._e_authkey = Adw.PasswordEntryRow(title=_("Auth Key"))
             link = Adw.ActionRow(title=_("Get auth key"), subtitle=_("login.tailscale.com/admin/settings/keys"))
             link.add_prefix(create_icon_widget("network-wired-symbolic", size=18))
             btn = Gtk.Button(label=_("Open"))
@@ -464,8 +479,13 @@ class CreatePage(Gtk.Box):
             btn.set_valign(Gtk.Align.CENTER)
             btn.connect("clicked", lambda b: open_uri("https://login.tailscale.com/admin/settings/keys"))
             link.add_suffix(btn)
-            self._form_group.add(link)
-            self._form_rows.append(link)
+            adv = Adw.ExpanderRow()
+            adv.set_title(_("I have an auth key"))
+            adv.set_expanded(False)
+            adv.add_row(self._e_authkey)
+            adv.add_row(link)
+            self._form_group.add(adv)
+            self._form_rows.append(adv)
 
         elif self.vpn_id == "zerotier":
             saved = _get_zerotier_api_token()
@@ -1341,6 +1361,8 @@ class ConnectPage(Adw.Bin):
         btn_ref.add_css_class("flat")
         btn_ref.set_halign(Gtk.Align.END)
         btn_ref.set_hexpand(True)
+        btn_ref.set_tooltip_text(_("Refresh device list"))
+        btn_ref.update_property([Gtk.AccessibleProperty.LABEL], [_("Refresh device list")])
         btn_ref.connect("clicked", lambda b: self._refresh_status())
 
         hdr2.append(btn_ref)
@@ -1352,19 +1374,14 @@ class ConnectPage(Adw.Bin):
         self._status_banner.connect("button-clicked", lambda b: self._prompt_api_token())
         status_box.append(self._status_banner)
 
-        self._peers_store = Gtk.ListStore(str, str, str, str, str, str, str)
-        self._peers_tree = Gtk.TreeView(model=self._peers_store)
-        cols = [_("Auth"), _("ID"), _("Name"), _("Managed IP"), _("Last Seen"), _("Version"), _("Physical IP")]
-        for i, col in enumerate(cols):
-            rend = Gtk.CellRendererText()
-            c = Gtk.TreeViewColumn(col, rend, text=i)
-            c.set_resizable(True)
-            c.set_expand(i in [2, 3])  # Expand Name and IP
-            self._peers_tree.append_column(c)
-
+        # Device list as libadwaita rows (GtkTreeView is deprecated in GTK4 and
+        # rendered raw, with no status colour and emoji cells). Each device is an
+        # AdwActionRow: auth icon prefix, name + managed IP, online/offline pill.
+        self._peers_list = Gtk.ListBox()
+        self._peers_list.add_css_class("boxed-list")
+        self._peers_list.set_selection_mode(Gtk.SelectionMode.NONE)
         scroll_tree = Gtk.ScrolledWindow(vexpand=True)
-        scroll_tree.set_child(self._peers_tree)
-        scroll_tree.add_css_class("card")
+        scroll_tree.set_child(self._peers_list)
         status_box.append(scroll_tree)
 
         # Prominent API Token buttons
@@ -1768,15 +1785,59 @@ class ConnectPage(Adw.Bin):
         GLib.idle_add(self._update_status_ui, rows)
 
     def _update_status_ui(self, rows):
-        self._peers_store.clear()
+        while child := self._peers_list.get_first_child():
+            self._peers_list.remove(child)
+
         if not rows:
             if self.vpn_id == "zerotier" and not _has_zerotier_api_token():
-                self._peers_store.append(("ℹ️", _("API Token Missing"), _("See banner above"), "", "", "", ""))
+                title, desc, icon = _("API Token Missing"), _("See banner above"), "dialog-information-symbolic"
             else:
-                self._peers_store.append(("ℹ️", _("No devices found"), _("Try refreshing..."), "", "", "", ""))
-        else:
-            for r in rows:
-                self._peers_store.append(r)
+                title, desc, icon = _("No devices found"), _("Try refreshing..."), "network-offline-symbolic"
+            empty_row = Adw.ActionRow(title=title, subtitle=desc)
+            empty_prefix = create_icon_widget(icon, size=16)
+            empty_prefix.add_css_class("dim-label")
+            empty_row.add_prefix(empty_prefix)
+            self._peers_list.append(empty_row)
+            return
+
+        for auth, dev_id, name, ip, last_seen, ver, phys in rows:
+            self._peers_list.append(self._build_peer_row(auth, dev_id, name, ip, last_seen, ver, phys))
+
+    def _build_peer_row(self, auth, dev_id, name, ip, last_seen, ver, phys):
+        row = Adw.ActionRow()
+        row.set_title(name or dev_id or _("Unknown device"))
+
+        # Subtitle: managed IP, then optional ID / version / physical address.
+        details = [d for d in (ip, _("ID: {}").format(dev_id) if dev_id else "", _("v{}").format(ver) if ver else "", phys) if d]
+        row.set_subtitle("  •  ".join(details))
+
+        # Auth state as a coloured symbolic icon, replacing the ✅/❌ emoji cells.
+        auth_map = {
+            "✅": ("emblem-ok-symbolic", "success", _("Authorized")),
+            "❌": ("action-unavailable-symbolic", "error", _("Not authorized")),
+            "🌐": ("network-workgroup-symbolic", "accent", _("Peer")),
+        }
+        auth_icon, auth_css, auth_label = auth_map.get(auth, ("dialog-question-symbolic", "dim-label", _("Unknown")))
+        prefix = create_icon_widget(auth_icon, size=16)
+        prefix.add_css_class(auth_css)
+        prefix.set_valign(Gtk.Align.CENTER)
+        prefix.set_tooltip_text(auth_label)
+        prefix.update_property([Gtk.AccessibleProperty.LABEL], [auth_label])
+        row.add_prefix(prefix)
+
+        # Online/offline as icon + label (not colour-only); time text otherwise.
+        is_online = last_seen == _("Online")
+        is_offline = last_seen == _("Offline")
+        status_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6, valign=Gtk.Align.CENTER)
+        if is_online or is_offline:
+            dot = create_icon_widget("media-record-symbolic", size=10)
+            dot.add_css_class("success" if is_online else "dim-label")
+            status_box.append(dot)
+        status_lbl = Gtk.Label(label=last_seen or _("—"))
+        status_lbl.add_css_class("success" if is_online else "dim-label")
+        status_box.append(status_lbl)
+        row.add_suffix(status_box)
+        return row
 
     def _refresh_history(self):
         # Clear all children from the hist_list (Gtk.Box — safe to iterate directly)
