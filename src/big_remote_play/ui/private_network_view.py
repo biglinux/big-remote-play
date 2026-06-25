@@ -335,7 +335,8 @@ class CreatePage(Gtk.Box):
     def _check_logged_in(self):
         if self.vpn_id in ("tailscale", "headscale"):
             try:
-                r = subprocess.run(["tailscale", "status"], capture_output=True, text=True, timeout=10)
+                cmd = self.main_window.system_check.tailscale_cmd() + ["status"]
+                r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
                 # If logged in and has a valid IP/DNS
                 return r.returncode == 0 and "Logged out" not in r.stdout
             except Exception:
@@ -361,12 +362,15 @@ class CreatePage(Gtk.Box):
         # Install status (above the form): is the VPN package present?
         content.append(self._build_install_status())
 
-        # Form group
+        installed = self._is_vpn_installed()
+
+        # Form group — only meaningful once the package exists.
         self._form_group = Adw.PreferencesGroup()
         self._form_group.set_title(_("Configuration"))
         self._form_rows = []
-        self._build_form()
-        content.append(self._form_group)
+        if installed:
+            self._build_form()
+            content.append(self._form_group)
 
         # Progress
         self._progress = ProgressRow(on_show_log=self._show_log)
@@ -383,48 +387,51 @@ class CreatePage(Gtk.Box):
 
         self._spinner = Gtk.Spinner()
         self._spinner.set_visible(False)
-        self._action_lbl = Gtk.Label(label=self._action_label())
-        btn_inner = Gtk.Box(spacing=8, halign=Gtk.Align.CENTER)
-        btn_inner.append(self._spinner)
-        btn_inner.append(self._action_lbl)
 
-        # Tailscale: browser login is the prominent, no-typing primary action.
-        # _on_action with an empty auth key (now behind the advanced disclosure)
-        # triggers the browser login flow.
-        if self.vpn_id == "tailscale":
-            browser_label = _("Install and sign in") if not self._is_vpn_installed() else _("Sign in with browser")
-            self._btn_browser = Gtk.Button(label=browser_label)
-            self._btn_browser.add_css_class("pill")
-            self._btn_browser.add_css_class("suggested-action")
-            self._btn_browser.set_size_request(220, 48)
-            self._btn_browser.update_property([Gtk.AccessibleProperty.LABEL], [browser_label])
-            self._btn_browser.connect("clicked", self._on_action)
-            btn_box.append(self._btn_browser)
+        if not installed:
+            # Missing package: the only action is an explicit install (pacman) or
+            # manual guidance. Connect options appear only after it is installed.
+            self._build_install_buttons(btn_box)
+        else:
+            self._action_lbl = Gtk.Label(label=self._action_label())
+            btn_inner = Gtk.Box(spacing=8, halign=Gtk.Align.CENTER)
+            btn_inner.append(self._spinner)
+            btn_inner.append(self._action_lbl)
 
-        self._btn_action = Gtk.Button()
-        self._btn_action.add_css_class("pill")
-        # On Tailscale the browser button is the single visual primary; keep the
-        # generic action button as a neutral secondary.
-        if self.vpn_id != "tailscale":
-            self._btn_action.add_css_class("suggested-action")
-        self._btn_action.set_size_request(200, 48)
-        self._btn_action.set_child(btn_inner)
-        self._btn_action.connect("clicked", self._on_action)
-        btn_box.append(self._btn_action)
+            # Tailscale: browser login is the prominent, no-typing primary action.
+            if self.vpn_id == "tailscale":
+                self._btn_browser = Gtk.Button(label=_("Sign in with browser"))
+                self._btn_browser.add_css_class("pill")
+                self._btn_browser.add_css_class("suggested-action")
+                self._btn_browser.set_size_request(220, 48)
+                self._btn_browser.update_property([Gtk.AccessibleProperty.LABEL], [_("Sign in with browser")])
+                self._btn_browser.connect("clicked", self._on_action)
+                btn_box.append(self._btn_browser)
 
-        self._btn_instr = Gtk.Button(label=_("Instructions"))
-        self._btn_instr.add_css_class("pill")
-        self._btn_instr.set_size_request(180, 48)
-        self._btn_instr.connect("clicked", self._on_instructions_clicked)
-        btn_box.append(self._btn_instr)
+            self._btn_action = Gtk.Button()
+            self._btn_action.add_css_class("pill")
+            # On Tailscale the browser button is the single visual primary; keep the
+            # generic action button as a neutral secondary.
+            if self.vpn_id != "tailscale":
+                self._btn_action.add_css_class("suggested-action")
+            self._btn_action.set_size_request(200, 48)
+            self._btn_action.set_child(btn_inner)
+            self._btn_action.connect("clicked", self._on_action)
+            btn_box.append(self._btn_action)
 
-        self._btn_logout = Gtk.Button(label=_("Logout / Disconnect"))
-        self._btn_logout.add_css_class("pill")
-        self._btn_logout.add_css_class("destructive-action")
-        self._btn_logout.set_size_request(180, 48)
-        self._btn_logout.connect("clicked", self._on_logout)
-        self._btn_logout.set_visible(self._logged_in)
-        btn_box.append(self._btn_logout)
+            self._btn_instr = Gtk.Button(label=_("Instructions"))
+            self._btn_instr.add_css_class("pill")
+            self._btn_instr.set_size_request(180, 48)
+            self._btn_instr.connect("clicked", self._on_instructions_clicked)
+            btn_box.append(self._btn_instr)
+
+            self._btn_logout = Gtk.Button(label=_("Logout / Disconnect"))
+            self._btn_logout.add_css_class("pill")
+            self._btn_logout.add_css_class("destructive-action")
+            self._btn_logout.set_size_request(180, 48)
+            self._btn_logout.connect("clicked", self._on_logout)
+            self._btn_logout.set_visible(self._logged_in)
+            btn_box.append(self._btn_logout)
 
         content.append(btn_box)
 
@@ -474,7 +481,7 @@ class CreatePage(Gtk.Box):
         else:
             icon = create_icon_widget("dialog-warning-symbolic", size=18)
             icon.add_css_class("warning")
-            text = _("{} is not installed yet. It will be installed when you continue (asks for your password).").format(name)
+            text = _("{} is not installed yet. Install it below to continue (asks for your password).").format(name)
         icon.set_valign(Gtk.Align.CENTER)
         row.append(icon)
         lbl = Gtk.Label(label=text)
@@ -486,9 +493,78 @@ class CreatePage(Gtk.Box):
         row.append(lbl)
         return row
 
+    def _install_help_url(self) -> str:
+        return {
+            "tailscale": "https://tailscale.com/download",
+            "zerotier": "https://www.zerotier.com/download/",
+            "headscale": "https://docs.docker.com/engine/install/",
+        }.get(self.vpn_id, "https://tailscale.com/download")
+
+    def _build_install_buttons(self, btn_box) -> None:
+        """When the package is missing: a single explicit Install action (pacman),
+        or — where pacman is unavailable and no Flatpak exists — a link to the
+        provider's official install page. No connect options are shown yet."""
+        _check, name = self._vpn_dependency()
+        if self.main_window.system_check.has_pacman():
+            self._btn_install = Gtk.Button()
+            self._btn_install.add_css_class("pill")
+            self._btn_install.add_css_class("suggested-action")
+            self._btn_install.set_size_request(220, 48)
+            inner = Gtk.Box(spacing=8, halign=Gtk.Align.CENTER)
+            inner.append(self._spinner)
+            inner.append(Gtk.Label(label=_("Install {}").format(name)))
+            self._btn_install.set_child(inner)
+            self._btn_install.update_property([Gtk.AccessibleProperty.LABEL], [_("Install {}").format(name)])
+            self._btn_install.connect("clicked", self._on_install_clicked)
+        else:
+            self._btn_install = Gtk.Button(label=_("How to install {}").format(name))
+            self._btn_install.add_css_class("pill")
+            self._btn_install.add_css_class("suggested-action")
+            self._btn_install.set_size_request(220, 48)
+            self._btn_install.update_property([Gtk.AccessibleProperty.LABEL], [_("How to install {}").format(name)])
+            self._btn_install.connect("clicked", lambda b: open_uri(self._install_help_url()))
+        btn_box.append(self._btn_install)
+
+        self._btn_instr = Gtk.Button(label=_("Instructions"))
+        self._btn_instr.add_css_class("pill")
+        self._btn_instr.set_size_request(180, 48)
+        self._btn_instr.connect("clicked", self._on_instructions_clicked)
+        btn_box.append(self._btn_instr)
+
+    def _on_install_clicked(self, btn) -> None:
+        self._btn_install.set_sensitive(False)
+        self._spinner.set_visible(True)
+        self._spinner.start()
+        self._progress.update(0.05, _("Installing..."))
+        self._log.clear()
+        _check, name = self._vpn_dependency()
+
+        def done(code, captured):
+            if captured.get("INSTALL_RESULT") == "ok" and code == 0:
+                self.main_window.show_toast(_("{} installed").format(name))
+                if hasattr(self.main_window, "check_system"):
+                    self.main_window.check_system()
+                self._rebuild()
+            else:
+                self._spinner.stop()
+                self._spinner.set_visible(False)
+                self._btn_install.set_sensitive(True)
+                self.main_window.show_toast(_("Installation failed. Check the log."))
+
+        self._run_script("install-vpn.sh", [self.vpn_id + "\n"], done)
+
+    def _rebuild(self) -> None:
+        """Tear down and rebuild the page (e.g. after a successful install, to
+        switch from the install-only view to the connect view)."""
+        child = self.get_first_child()
+        while child is not None:
+            nxt = child.get_next_sibling()
+            self.remove(child)
+            child = nxt
+        self._logged_in = self._check_logged_in()
+        self._build()
+
     def _action_label(self):
-        if not self._is_vpn_installed() and self.vpn_id != "headscale":
-            return _("Install and connect")
         if self.vpn_id == "tailscale":
             return _("Login / Connect")
         if self.vpn_id == "zerotier":

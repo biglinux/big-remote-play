@@ -60,12 +60,26 @@ def test_tailscale_browser_login_prominent_and_key_advanced() -> None:
     assert "Sign in with browser" in src
 
 
-def test_vpn_form_checks_install_status_and_adapts_label() -> None:
+def test_vpn_form_install_only_when_missing() -> None:
     src = PNV.read_text()
     assert "_is_vpn_installed" in src
-    assert "system_check" in src
-    assert "Install and connect" in src
-    assert "Install and sign in" in src
+    assert "_build_install_buttons" in src
+    # Explicit install action (pacman) gated on pacman availability; manual link otherwise.
+    assert "has_pacman" in src
+    assert "_on_install_clicked" in src
+    assert "install-vpn.sh" in src
+    # Rebuild to the connect view after a successful install.
+    assert "_rebuild" in src
+
+
+def test_install_supports_pacman_and_flatpak_detection() -> None:
+    sc = Path("src/big_remote_play/utils/system_check.py").read_text()
+    assert "def has_pacman" in sc
+    assert "flatpak_app_id" in sc
+    assert "def tailscale_cmd" in sc
+    # has_tailscale / has_zerotier recognise a Flatpak install too.
+    assert "flatpak_app_id(\"tailscale\")" in sc
+    assert "flatpak_app_id(\"zerotier\")" in sc
 
 
 def test_vpn_selector_cards_show_install_badge() -> None:
