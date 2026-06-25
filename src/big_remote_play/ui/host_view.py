@@ -937,10 +937,12 @@ class HostView(Gtk.Box):
         self.summary_box.add_css_class("compact-rows")
         self.summary_box.set_visible(True)
         self.field_widgets = {}
+        # Local LAN addresses are low-sensitivity and need sharing to connect, so
+        # they show in clear; global (public) addresses stay masked behind the eye.
         for l, k, i, r in [
             ("Host", "hostname", "computer-symbolic", True),
-            ("IPv4", "ipv4", "network-wired-symbolic", False),
-            ("IPv6", "ipv6", "network-wired-symbolic", False),
+            ("IPv4", "ipv4", "network-wired-symbolic", True),
+            ("IPv6", "ipv6", "network-wired-symbolic", True),
             ("IPv4 Global", "ipv4_global", "network-transmit-receive-symbolic", False),
             ("IPv6 Global", "ipv6_global", "network-transmit-receive-symbolic", False),
         ]:
@@ -2356,8 +2358,25 @@ class HostView(Gtk.Box):
         win.set_transient_for(self._root_window())
         win.set_modal(True)
         win.set_title(_("Advanced server settings"))
+        # Wider than the stock 600px preferences width: encoder rows carry long
+        # combo labels + values that get squeezed at the default clamp.
+        win.set_default_size(980, 720)
         win.add(SunshinePreferencesPage(main_config=self.config))
         win.present()
+        # AdwPreferencesPage hardcodes its internal AdwClamp to 600px with no API;
+        # widen it after the tree is built so the extra window width is usable.
+        GLib.idle_add(self._widen_preferences_clamp, win, 900)
+
+    def _widen_preferences_clamp(self, widget: Gtk.Widget, max_width: int) -> bool:
+        """Walk the widget tree and relax every AdwClamp's maximum size once."""
+        if isinstance(widget, Adw.Clamp):
+            widget.set_maximum_size(max_width)
+            widget.set_tightening_threshold(max_width)
+        child = widget.get_first_child()
+        while child is not None:
+            self._widen_preferences_clamp(child, max_width)
+            child = child.get_next_sibling()
+        return False
 
     def open_password_dialog(self, _widget):
         dialog = Adw.MessageDialog(
