@@ -86,3 +86,13 @@ def test_vpn_selector_cards_show_install_badge() -> None:
     src = MAIN.read_text()
     assert "has_tailscale" in src and "has_docker" in src
     assert "Will be installed" in src
+
+
+def test_tailscale_browser_login_opens_url_as_user_not_root() -> None:
+    script = Path("usr/share/big-remote-play/scripts/create-network_tailscale.sh").read_text()
+    # Script must emit the auth URL as a marker, not try to open a root browser.
+    assert "BRP_DATA LOGIN_URL=" in script
+    pnv = PNV.read_text()
+    # App opens the captured URL in the user's session.
+    assert 'kind[1] == "LOGIN_URL"' in pnv
+    assert "open_uri" in pnv
