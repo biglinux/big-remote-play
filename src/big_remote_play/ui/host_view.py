@@ -139,9 +139,9 @@ class HostView(Gtk.Box):
 
         clamp = Adw.Clamp()
         clamp.set_maximum_size(1040)
-        clamp.set_valign(Gtk.Align.CENTER)
+        clamp.set_valign(Gtk.Align.START)
         for margin in ['top', 'bottom', 'start', 'end']:
-            getattr(clamp, f'set_margin_{margin}')(24)
+            getattr(clamp, f'set_margin_{margin}')(20)
 
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
 
@@ -427,7 +427,7 @@ class HostView(Gtk.Box):
         
         # View Switcher and Stack
         self.view_stack = Adw.ViewStack()
-        self.view_stack.set_vexpand(True)
+        self.view_stack.set_vexpand(False)
         
         # 1. Information Page — two columns (mockup 05): info + helper | management.
         info_left = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
