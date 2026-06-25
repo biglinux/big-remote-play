@@ -142,13 +142,49 @@ class GuestView(Gtk.Box):
         self.hw_decode_row = Adw.SwitchRow(); self.hw_decode_row.set_title(_('Hardware Decoding')); self.hw_decode_row.set_subtitle(_('Use GPU for decoding'))
         self.hw_decode_row.set_active(True); settings_group.add(self.hw_decode_row)
 
-        advanced_row = Adw.ActionRow(title=_('Advanced client settings'),
-                                     subtitle=_('Input, controller, codec and more'))
-        advanced_row.set_activatable(True)
-        advanced_row.add_prefix(create_icon_widget('preferences-system-symbolic', size=20))
-        advanced_row.add_suffix(create_icon_widget('go-next-symbolic', size=16))
-        advanced_row.connect('activated', self.open_advanced_client_settings)
-        settings_group.add(advanced_row)
+        advanced_title = _('Advanced client settings')
+        advanced_subtitle = _('Input, controller, codec and more')
+        advanced_button = Gtk.Button()
+        advanced_button.add_css_class("flat")
+        advanced_button.add_css_class("settings-action-row-button")
+        advanced_button.set_halign(Gtk.Align.FILL)
+        advanced_button.set_hexpand(True)
+        advanced_button.connect("clicked", self.open_advanced_client_settings)
+        advanced_button.update_property(
+            [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
+            [advanced_title, advanced_subtitle],
+        )
+
+        advanced_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        advanced_box.set_margin_top(10)
+        advanced_box.set_margin_bottom(10)
+        advanced_box.set_margin_start(14)
+        advanced_box.set_margin_end(14)
+        advanced_icon = create_icon_widget('preferences-system-symbolic', size=20)
+        advanced_icon.set_valign(Gtk.Align.CENTER)
+        advanced_box.append(advanced_icon)
+
+        advanced_text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        advanced_text.set_hexpand(True)
+        advanced_title_label = Gtk.Label(label=advanced_title)
+        advanced_title_label.add_css_class("settings-action-row-title")
+        advanced_title_label.set_halign(Gtk.Align.START)
+        advanced_title_label.set_xalign(0)
+        advanced_text.append(advanced_title_label)
+        advanced_subtitle_label = Gtk.Label(label=advanced_subtitle)
+        advanced_subtitle_label.add_css_class("settings-action-row-subtitle")
+        advanced_subtitle_label.set_halign(Gtk.Align.START)
+        advanced_subtitle_label.set_xalign(0)
+        advanced_subtitle_label.set_wrap(True)
+        advanced_text.append(advanced_subtitle_label)
+        advanced_box.append(advanced_text)
+
+        advanced_arrow = create_icon_widget('go-next-symbolic', size=16)
+        advanced_arrow.set_valign(Gtk.Align.CENTER)
+        advanced_box.append(advanced_arrow)
+
+        advanced_button.set_child(advanced_box)
+        settings_group.add(advanced_button)
 
         content.append(self.switcher_box); content.append(settings_group)
         self.load_guest_settings(); self.connect_settings_signals(); clamp.set_child(content)
