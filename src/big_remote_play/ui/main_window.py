@@ -494,10 +494,8 @@ class MainWindow(Adw.ApplicationWindow):
         hb = Adw.HeaderBar()
         hb.pack_end(self._create_header_menu_button())
 
-        # Dynamic title reflecting the current section (filled in on_nav_selected).
         self.content_headerbar = hb
-        self.content_title = Adw.WindowTitle.new(_("Home"), _("Play together, from anywhere"))
-        hb.set_title_widget(self.content_title)
+        hb.set_title_widget(None)
 
         ct.add_top_bar(hb)
         self.content_stack = Gtk.Stack()
@@ -581,8 +579,8 @@ class MainWindow(Adw.ApplicationWindow):
 
         box.append(
             create_page_header(
-                _("Choose Your VPN Provider"),
-                _("Select a VPN solution to create or join a Private Network. Your choice will be saved and shown in the sidebar menu."),
+                _("Select VPN"),
+                _("Choose the private network provider for remote play."),
                 "network-private-symbolic",
             )
         )
@@ -942,16 +940,12 @@ class MainWindow(Adw.ApplicationWindow):
             self.current_page = actual_pid
 
         # Server page: drop the header title, show the host action buttons there.
-        # Every other page keeps the dynamic section title.
+        # Every other page keeps the title inside its own content header.
         if hasattr(self, "content_headerbar"):
             if actual_pid == "host" and hasattr(self.host_view, "header_action_box"):
                 self.content_headerbar.set_title_widget(self.host_view.header_action_box)
             else:
-                self.content_headerbar.set_title_widget(self.content_title)
-                info = self._build_navigation_pages().get(actual_pid) or self._build_navigation_pages().get(pid)
-                if info:
-                    self.content_title.set_title(info.get("name", "Big Remote Play"))
-                    self.content_title.set_subtitle(info.get("description", ""))
+                self.content_headerbar.set_title_widget(None)
 
     def navigate_to(self, pid):
         """Programmatic navigation: find row and select it"""

@@ -37,3 +37,22 @@ def test_home_does_not_repeat_sidebar_branding() -> None:
     assert "Play cooperatively over the local network or the internet" not in welcome_page
     assert ".hero-title" not in stylesheet
     assert ".hero-subtitle" not in stylesheet
+
+
+def test_content_headerbar_does_not_duplicate_page_titles() -> None:
+    source = Path("src/big_remote_play/ui/main_window.py").read_text()
+
+    assert "self.content_title" not in source
+    assert "Adw.WindowTitle.new" not in source
+    assert "set_title_widget(None)" in source
+
+
+def test_operational_pages_use_compact_headers_without_trivial_subtitles() -> None:
+    host_source = Path("src/big_remote_play/ui/host_view.py").read_text()
+    guest_source = Path("src/big_remote_play/ui/guest_view.py").read_text()
+    widget_source = Path("src/big_remote_play/utils/widgets.py").read_text()
+
+    assert "subtitle: str | None = None" in widget_source
+    assert "create_icon_widget(icon_name, size=24)" in widget_source
+    assert "_('Share your games')" not in host_source
+    assert "_('Connect to a host')" not in guest_source

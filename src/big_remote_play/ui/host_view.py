@@ -168,11 +168,7 @@ class HostView(Gtk.Box):
         self.loading_bar.set_visible(False)
         content.append(self.loading_bar)
 
-        content.append(create_page_header(
-            _('Server'),
-            _('Share your games'),
-            'network-server-symbolic',
-        ))
+        content.append(create_page_header(_('Server'), icon_name='network-server-symbolic'))
 
         from .performance_monitor import PerformanceMonitor
         self.perf_monitor = PerformanceMonitor(sunshine=self.sunshine)

@@ -58,11 +58,7 @@ class GuestView(Gtk.Box):
         self.perf_monitor = PerformanceMonitor(); self.perf_monitor.set_visible(False)
         content.append(self.perf_monitor)
 
-        content.append(create_page_header(
-            _('Connect to Server'),
-            _('Connect to a host'),
-            'network-workgroup-symbolic',
-        ))
+        content.append(create_page_header(_('Connect to Server'), icon_name='network-workgroup-symbolic'))
 
         self.method_stack = Adw.ViewStack()
 
