@@ -18,7 +18,6 @@ from big_remote_play.utils.widgets import (
     create_steps_strip,
     create_difficulty_pill,
     create_comparison_table,
-    create_page_header,
 )
 from big_remote_play.utils.i18n import _
 import subprocess
@@ -560,6 +559,9 @@ class MainWindow(Adw.ApplicationWindow):
         if app is not None:
             app.activate_action(action_name, None)
 
+    def _set_header_title(self, title: str) -> None:
+        self.content_headerbar.set_title_widget(Adw.WindowTitle.new(title, ""))
+
     # ─────────────────────────────────────────────────────────────────────────
     #  VPN SELECTOR PAGE
     # ─────────────────────────────────────────────────────────────────────────
@@ -577,14 +579,6 @@ class MainWindow(Adw.ApplicationWindow):
             getattr(clamp, f"set_margin_{m}")(24)
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
-
-        box.append(
-            create_page_header(
-                _("Select VPN"),
-                _("Select a VPN solution to create or join a Private Network. Your choice will be saved and shown in the sidebar menu."),
-                "network-private-symbolic",
-            )
-        )
 
         # Cards row
         cards_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
@@ -940,13 +934,19 @@ class MainWindow(Adw.ApplicationWindow):
             self.content_stack.set_visible_child_name(actual_pid)
             self.current_page = actual_pid
 
-        # Server page: drop the header title, show the host action buttons there.
-        # Every other page keeps the title inside its own content header.
+        # Server uses header actions as the title widget; other sections use
+        # compact headerbar titles so the content can start directly with work.
         if hasattr(self, "content_headerbar"):
             if actual_pid == "host" and hasattr(self.host_view, "header_action_box"):
                 self.content_headerbar.set_title_widget(self.host_view.header_action_box)
-            else:
+            elif actual_pid == "welcome":
                 self.content_headerbar.set_title_widget(self.header_blank_title)
+            else:
+                info = self._build_navigation_pages().get(actual_pid) or self._build_navigation_pages().get(pid)
+                if info:
+                    self._set_header_title(info.get("name", "Big Remote Play"))
+                else:
+                    self.content_headerbar.set_title_widget(self.header_blank_title)
 
     def navigate_to(self, pid):
         """Programmatic navigation: find row and select it"""

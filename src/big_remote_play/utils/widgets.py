@@ -26,37 +26,6 @@ _DIFFICULTY_LEVELS: dict[str, tuple[str, str]] = {
 }
 
 
-def create_page_header(title: str, subtitle: str | None = None, icon_name: str | None = None) -> Gtk.Widget:
-    """Compact page heading used by the main content pages."""
-    header = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-    header.add_css_class("page-header")
-
-    title_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-    title_row.set_halign(Gtk.Align.START)
-
-    title_label = Gtk.Label(label=title)
-    title_label.add_css_class("page-title")
-    title_label.set_halign(Gtk.Align.START)
-    title_label.set_wrap(True)
-    title_row.append(title_label)
-
-    if icon_name:
-        icon = create_icon_widget(icon_name, size=24)
-        icon.add_css_class("page-title-icon")
-        icon.set_valign(Gtk.Align.CENTER)
-        title_row.append(icon)
-
-    header.append(title_row)
-    if subtitle:
-        subtitle_label = Gtk.Label(label=subtitle)
-        subtitle_label.add_css_class("page-subtitle")
-        subtitle_label.set_halign(Gtk.Align.START)
-        subtitle_label.set_wrap(True)
-        subtitle_label.set_max_width_chars(80)
-        header.append(subtitle_label)
-    return header
-
-
 def create_stack_tab_strip(stack: Adw.ViewStack, accessible_label: str) -> Gtk.Widget:
     """Framed view switcher that reads visually as tabs and stays AT-SPI actionable."""
     switcher = Adw.InlineViewSwitcher()

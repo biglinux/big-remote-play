@@ -4,16 +4,6 @@ import re
 from pathlib import Path
 
 
-def test_main_content_pages_use_shared_page_headers() -> None:
-    for path in [
-        Path("src/big_remote_play/ui/host_view.py"),
-        Path("src/big_remote_play/ui/guest_view.py"),
-        Path("src/big_remote_play/ui/main_window.py"),
-        Path("src/big_remote_play/ui/private_network_view.py"),
-    ]:
-        assert "create_page_header(" in path.read_text()
-
-
 def test_sidebar_keeps_brand_identity_and_richer_service_rows() -> None:
     source = Path("src/big_remote_play/ui/main_window.py").read_text()
 
@@ -43,22 +33,33 @@ def test_content_headerbar_does_not_duplicate_page_titles() -> None:
     source = Path("src/big_remote_play/ui/main_window.py").read_text()
 
     assert "self.content_title" not in source
-    assert "Adw.WindowTitle.new" not in source
     assert "set_title_widget(None)" not in source
     assert "self.header_blank_title = Gtk.Box()" in source
     assert "set_title_widget(self.header_blank_title)" in source
+    assert "def _set_header_title(self, title: str)" in source
+    assert 'Adw.WindowTitle.new(title, "")' in source
     assert "Choose the private network provider for remote play." not in source
+    assert 'actual_pid == "host"' in source
+    assert 'actual_pid == "welcome"' in source
+    assert 'self._set_header_title(info.get("name", "Big Remote Play"))' in source
 
 
-def test_operational_pages_use_compact_headers_without_trivial_subtitles() -> None:
-    host_source = Path("src/big_remote_play/ui/host_view.py").read_text()
-    guest_source = Path("src/big_remote_play/ui/guest_view.py").read_text()
-    widget_source = Path("src/big_remote_play/utils/widgets.py").read_text()
+def test_primary_sections_do_not_repeat_titles_inside_content() -> None:
+    stylesheet = Path("usr/share/big-remote-play/ui/style.css").read_text()
 
-    assert "subtitle: str | None = None" in widget_source
-    assert "create_icon_widget(icon_name, size=24)" in widget_source
-    assert "_('Share your games')" not in host_source
-    assert "_('Connect to a host')" not in guest_source
+    assert "def create_page_header(" not in Path("src/big_remote_play/utils/widgets.py").read_text()
+    assert ".page-header" not in stylesheet
+    assert ".page-title" not in stylesheet
+    assert ".page-subtitle" not in stylesheet
+
+    for path in [
+        Path("src/big_remote_play/ui/host_view.py"),
+        Path("src/big_remote_play/ui/guest_view.py"),
+        Path("src/big_remote_play/ui/main_window.py"),
+        Path("src/big_remote_play/ui/private_network_view.py"),
+    ]:
+        source = path.read_text()
+        assert "create_page_header" not in source
 
 
 def test_stack_tabs_use_shared_accessible_tab_strip() -> None:

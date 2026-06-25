@@ -11,7 +11,7 @@ from big_remote_play.utils.config import Config
 from big_remote_play.guest.moonlight_client import MoonlightClient
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget
-from big_remote_play.utils.widgets import create_helper_card, create_page_header, create_stack_tab_strip
+from big_remote_play.utils.widgets import create_helper_card, create_stack_tab_strip
 from big_remote_play.utils.moonlight_config import MoonlightConfigManager
 
 
@@ -68,8 +68,6 @@ class GuestView(Gtk.Box):
         self.perf_monitor = PerformanceMonitor()
         self.perf_monitor.set_visible(False)
         content.append(self.perf_monitor)
-
-        content.append(create_page_header(_("Connect to Server"), icon_name="network-workgroup-symbolic"))
 
         self.method_stack = Adw.ViewStack()
 
