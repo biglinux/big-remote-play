@@ -746,12 +746,12 @@ class MainWindow(Adw.ApplicationWindow):
 
         def run():
             if vpn_id in ("headscale", "tailscale"):
-                subprocess.run(["bigsudo", "tailscale", "logout"], timeout=30)
+                subprocess.run(["pkexec", "/usr/bin/tailscale", "logout"], timeout=30)
             elif vpn_id == "zerotier":
                 # Local ZT disconnection is a bit trickier,
                 # usually means leaving all networks or stopping the service
                 # For simplicity, we can try to leave networks found in history or just stop service
-                subprocess.run(["bigsudo", "systemctl", "stop", "zerotier-one"], timeout=30)
+                subprocess.run(["pkexec", "/usr/bin/systemctl", "stop", "zerotier-one"], timeout=30)
             GLib.idle_add(lambda: self.show_toast(_("{} disconnected").format(VPN_PROVIDERS[vpn_id]["name"])))
 
         threading.Thread(target=run, daemon=True).start()
@@ -1124,7 +1124,7 @@ class MainWindow(Adw.ApplicationWindow):
             current_type = force_type or m["type"]
 
             if current_type == "service":
-                cmd = ["bigsudo", "systemctl"]
+                cmd = ["pkexec", "/usr/bin/systemctl"]
                 if m.get("user"):
                     cmd = ["systemctl", "--user"]
                 cmd.append(action)

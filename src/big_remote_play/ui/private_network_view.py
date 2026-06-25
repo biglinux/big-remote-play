@@ -657,8 +657,9 @@ class CreatePage(Gtk.Box):
         def run():
             # LC_ALL=C / LANGUAGE= force the script's gettext prose back to its
             # English msgid; data is parsed from locale-independent BRP_* markers.
-            # `env` is passed through bigsudo so it survives privilege elevation.
-            proc = subprocess.Popen(["bigsudo", "env", "LC_ALL=C", "LANGUAGE=", script], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+            # pkexec (polkit) elevates on any distro; /usr/bin/env applies the vars
+            # in the elevated child (pkexec sanitises the environment).
+            proc = subprocess.Popen(["pkexec", "/usr/bin/env", "LC_ALL=C", "LANGUAGE=", script], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
             proc_stdin = proc.stdin
             if proc_stdin is not None:
                 for s in inputs:
@@ -678,7 +679,7 @@ class CreatePage(Gtk.Box):
                 if kind[0] == "data":
                     if kind[2]:
                         captured[kind[1]] = kind[2]
-                        # The script runs as root (bigsudo) and cannot open a
+                        # The script runs as root (pkexec) and cannot open a
                         # browser; open the auth URL in the user's session here.
                         if kind[1] == "LOGIN_URL":
                             GLib.idle_add(open_uri, kind[2])
@@ -1146,7 +1147,7 @@ class CreatePage(Gtk.Box):
         if self.vpn_id == "tailscale":
 
             def do_logout():
-                subprocess.run(["bigsudo", "tailscale", "logout"], timeout=30)
+                subprocess.run(["pkexec", "/usr/bin/tailscale", "logout"], timeout=30)
 
                 def finish_logout():
                     self.main_window.show_toast(_("Tailscale disconnected"))
@@ -1166,14 +1167,14 @@ class CreatePage(Gtk.Box):
             self.main_window.show_toast(_("ZeroTier token removed"))
 
             def do_stop():
-                subprocess.run(["bigsudo", "systemctl", "stop", "zerotier-one"], timeout=30)
+                subprocess.run(["pkexec", "/usr/bin/systemctl", "stop", "zerotier-one"], timeout=30)
                 GLib.idle_add(self._refresh_networks)
 
             threading.Thread(target=do_stop, daemon=True).start()
         elif self.vpn_id == "headscale":
 
             def do_logout():
-                subprocess.run(["bigsudo", "tailscale", "logout"], timeout=30)
+                subprocess.run(["pkexec", "/usr/bin/tailscale", "logout"], timeout=30)
 
                 def finish_logout():
                     self.main_window.show_toast(_("Disconnected from Headscale"))
@@ -1718,7 +1719,7 @@ class ConnectPage(Adw.Bin):
             except Exception:
                 pass
             # LC_ALL=C: parse locale-independent BRP_* markers, not localized prose.
-            proc = subprocess.Popen(["bigsudo", "env", "LC_ALL=C", "LANGUAGE=", spath], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+            proc = subprocess.Popen(["pkexec", "/usr/bin/env", "LC_ALL=C", "LANGUAGE=", spath], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
             proc_stdin = proc.stdin
             if proc_stdin is not None:
                 for s in inputs:

@@ -96,3 +96,13 @@ def test_tailscale_browser_login_opens_url_as_user_not_root() -> None:
     # App opens the captured URL in the user's session.
     assert 'kind[1] == "LOGIN_URL"' in pnv
     assert "open_uri" in pnv
+
+
+def test_no_bigsudo_uses_pkexec_for_cross_distro() -> None:
+    for p in (MAIN, PNV):
+        src = p.read_text()
+        assert "bigsudo" not in src, f"{p} still uses bigsudo"
+    assert "pkexec" in PNV.read_text()
+    # Privilege-elevation scripts no longer reference the BigLinux-only helper.
+    for s in ("install-vpn.sh", "create-network_tailscale.sh"):
+        assert "bigsudo" not in Path(f"usr/share/big-remote-play/scripts/{s}").read_text()
