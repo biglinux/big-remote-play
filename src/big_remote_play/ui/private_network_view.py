@@ -358,6 +358,9 @@ class CreatePage(Gtk.Box):
             getattr(clamp, f"set_margin_{m}")(24)
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
 
+        # Install status (above the form): is the VPN package present?
+        content.append(self._build_install_status())
+
         # Form group
         self._form_group = Adw.PreferencesGroup()
         self._form_group.set_title(_("Configuration"))
@@ -389,11 +392,12 @@ class CreatePage(Gtk.Box):
         # _on_action with an empty auth key (now behind the advanced disclosure)
         # triggers the browser login flow.
         if self.vpn_id == "tailscale":
-            self._btn_browser = Gtk.Button(label=_("Sign in with browser"))
+            browser_label = _("Install and sign in") if not self._is_vpn_installed() else _("Sign in with browser")
+            self._btn_browser = Gtk.Button(label=browser_label)
             self._btn_browser.add_css_class("pill")
             self._btn_browser.add_css_class("suggested-action")
             self._btn_browser.set_size_request(220, 48)
-            self._btn_browser.update_property([Gtk.AccessibleProperty.LABEL], [_("Sign in with browser")])
+            self._btn_browser.update_property([Gtk.AccessibleProperty.LABEL], [browser_label])
             self._btn_browser.connect("clicked", self._on_action)
             btn_box.append(self._btn_browser)
 
@@ -438,7 +442,53 @@ class CreatePage(Gtk.Box):
         if self._logged_in:
             GLib.idle_add(self._refresh_networks)
 
+    def _vpn_dependency(self):
+        """(check_callable, friendly_name) for this provider's required package."""
+        sc = self.main_window.system_check
+        deps = {
+            "tailscale": (sc.has_tailscale, "Tailscale"),
+            "zerotier": (sc.has_zerotier, "ZeroTier"),
+            "headscale": (sc.has_docker, "Docker"),
+        }
+        return deps.get(self.vpn_id, (lambda: True, self.vpn_id))
+
+    def _is_vpn_installed(self) -> bool:
+        check, _name = self._vpn_dependency()
+        try:
+            return bool(check())
+        except Exception:
+            # Detection failed; don't block the user (the script is idempotent).
+            return True
+
+    def _build_install_status(self) -> Gtk.Widget:
+        """Row above the form telling the user whether the VPN package is
+        installed; if not, that continuing will install it (asks for password)."""
+        _check, name = self._vpn_dependency()
+        installed = self._is_vpn_installed()
+        row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        row.add_css_class("helper-row")
+        if installed:
+            icon = create_icon_widget("emblem-ok-symbolic", size=18)
+            icon.add_css_class("success")
+            text = _("{} is installed.").format(name)
+        else:
+            icon = create_icon_widget("dialog-warning-symbolic", size=18)
+            icon.add_css_class("warning")
+            text = _("{} is not installed yet. It will be installed when you continue (asks for your password).").format(name)
+        icon.set_valign(Gtk.Align.CENTER)
+        row.append(icon)
+        lbl = Gtk.Label(label=text)
+        lbl.set_wrap(True)
+        lbl.set_xalign(0)
+        lbl.set_hexpand(True)
+        if installed:
+            lbl.add_css_class("dim-label")
+        row.append(lbl)
+        return row
+
     def _action_label(self):
+        if not self._is_vpn_installed() and self.vpn_id != "headscale":
+            return _("Install and connect")
         if self.vpn_id == "tailscale":
             return _("Login / Connect")
         if self.vpn_id == "zerotier":

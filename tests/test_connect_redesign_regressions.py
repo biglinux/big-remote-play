@@ -58,3 +58,17 @@ def test_tailscale_browser_login_prominent_and_key_advanced() -> None:
     src = PNV.read_text()
     assert "Adw.ExpanderRow" in src  # auth key behind an advanced disclosure
     assert "Sign in with browser" in src
+
+
+def test_vpn_form_checks_install_status_and_adapts_label() -> None:
+    src = PNV.read_text()
+    assert "_is_vpn_installed" in src
+    assert "system_check" in src
+    assert "Install and connect" in src
+    assert "Install and sign in" in src
+
+
+def test_vpn_selector_cards_show_install_badge() -> None:
+    src = MAIN.read_text()
+    assert "has_tailscale" in src and "has_docker" in src
+    assert "Will be installed" in src
