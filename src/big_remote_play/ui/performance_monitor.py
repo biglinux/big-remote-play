@@ -794,8 +794,12 @@ class PerformanceMonitor(Gtk.Box):
                 return
             sessions, device_latencies = sessions or [], device_latencies or {}
 
-            # The chart receives device_latencies, containing ALL that answered the ping
-            self.chart.add_data_point(latency, fps, bandwidth, users=len(sessions), device_latencies=device_latencies, bw_text_override=bw_text)
+            # Only chart real activity. With no connected guest, latency/fps/bw are
+            # synthetic (target values, dummy "Unlimited" bandwidth); plotting them
+            # paints a flat fake graph that looks like a live 60 FPS session. Skip so
+            # the chart keeps its "Waiting for data..." idle state instead.
+            if sessions or device_latencies:
+                self.chart.add_data_point(latency, fps, bandwidth, users=len(sessions), device_latencies=device_latencies, bw_text_override=bw_text)
 
             if len(sessions) > 0:
                 if len(sessions) == 1:
