@@ -39,3 +39,10 @@ def test_discover_is_single_column_with_guidance() -> None:
     assert "create_helper_card(" not in src
     # Fixed automatic-discovery guidance subtitle present.
     assert "appears here automatically" in src
+
+
+def test_client_settings_collapsed_behind_quality_expander() -> None:
+    src = GUEST.read_text()
+    assert "Adw.ExpanderRow" in src
+    assert "_quality_summary" in src
+    assert "Adjust quality" in src
