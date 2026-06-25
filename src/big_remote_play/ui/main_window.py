@@ -581,7 +581,7 @@ class MainWindow(Adw.ApplicationWindow):
         box.append(
             create_page_header(
                 _("Select VPN"),
-                _("Choose the private network provider for remote play."),
+                _("Select a VPN solution to create or join a Private Network. Your choice will be saved and shown in the sidebar menu."),
                 "network-private-symbolic",
             )
         )
