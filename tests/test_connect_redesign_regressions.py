@@ -46,3 +46,9 @@ def test_client_settings_collapsed_behind_quality_expander() -> None:
     assert "Adw.ExpanderRow" in src
     assert "_quality_summary" in src
     assert "Adjust quality" in src
+
+
+def test_vpn_selector_has_role_framing_and_collapsed_comparison() -> None:
+    src = MAIN.read_text()
+    assert "Gtk.Expander" in src  # comparison table is collapsible
+    assert "the one with the game creates" in src

@@ -582,6 +582,16 @@ class MainWindow(Adw.ApplicationWindow):
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
 
+        # Plain-language role framing so a non-technical user understands what a
+        # Private Network is for and who does what.
+        intro = Gtk.Label(
+            label=_("To play over the internet, you set up a Private Network once: the one with the game creates it, the friend joins. After that, the PC appears automatically under Connect.")
+        )
+        intro.add_css_class("dim-label")
+        intro.set_wrap(True)
+        intro.set_xalign(0)
+        box.append(intro)
+
         # Cards row
         cards_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
         cards_box.set_halign(Gtk.Align.CENTER)
@@ -594,12 +604,12 @@ class MainWindow(Adw.ApplicationWindow):
 
         box.append(cards_box)
 
-        # Comparison table (real grid, mockup 04)
-        compare_group = Adw.PreferencesGroup()
-        compare_group.set_title(_("Quick Comparison"))
-        compare_group.set_header_suffix(create_icon_widget("preferences-other-symbolic", size=18))
+        # Comparison table collapsed behind a disclosure — it invites analysis a
+        # novice doesn't need; the recommended card already guides them.
+        comparison_expander = Gtk.Expander(label=_("Compare the options"))
+        comparison_expander.set_expanded(False)
         # Brand names (column headers) are not translated.
-        compare_group.add(
+        comparison_expander.set_child(
             create_comparison_table(
                 ["Tailscale", "ZeroTier", "Headscale"],
                 [
@@ -609,7 +619,7 @@ class MainWindow(Adw.ApplicationWindow):
                 ],
             )
         )
-        box.append(compare_group)
+        box.append(comparison_expander)
 
         # "How it works" strip: Install → Authenticate → Play.
         steps_group = Adw.PreferencesGroup()
