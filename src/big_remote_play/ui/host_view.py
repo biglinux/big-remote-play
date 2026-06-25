@@ -13,7 +13,7 @@ from big_remote_play.utils.config import Config
 import threading
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget, set_icon
-from big_remote_play.utils.widgets import MetricTile
+from big_remote_play.utils.widgets import MetricTile, create_page_header
 from big_remote_play import paths
 from big_remote_play.utils.secret_store import SecretStoreUnavailable
 from big_remote_play.utils.sunshine_credentials import ensure_sunshine_api_config, load_sunshine_credentials, save_sunshine_credentials
@@ -167,6 +167,12 @@ class HostView(Gtk.Box):
         self.loading_bar.add_css_class('osd')
         self.loading_bar.set_visible(False)
         content.append(self.loading_bar)
+
+        content.append(create_page_header(
+            _('Server'),
+            _('Share your games'),
+            'network-server-symbolic',
+        ))
 
         from .performance_monitor import PerformanceMonitor
         self.perf_monitor = PerformanceMonitor(sunshine=self.sunshine)

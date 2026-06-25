@@ -10,7 +10,7 @@ from big_remote_play.utils.config import Config
 from big_remote_play.guest.moonlight_client import MoonlightClient
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget
-from big_remote_play.utils.widgets import create_helper_card
+from big_remote_play.utils.widgets import create_helper_card, create_page_header
 from big_remote_play.utils.moonlight_config import MoonlightConfigManager
 
 class GuestView(Gtk.Box):
@@ -50,13 +50,19 @@ class GuestView(Gtk.Box):
         threading.Thread(target=run_detect, daemon=True).start()
         
     def setup_ui(self):
-        clamp = Adw.Clamp(); clamp.set_maximum_size(1040); clamp.set_valign(Gtk.Align.CENTER)
+        clamp = Adw.Clamp(); clamp.set_maximum_size(1040); clamp.set_valign(Gtk.Align.START)
         for m in ['top', 'bottom', 'start', 'end']: getattr(clamp, f'set_margin_{m}')(24)
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
 
         from .performance_monitor import PerformanceMonitor
         self.perf_monitor = PerformanceMonitor(); self.perf_monitor.set_visible(False)
         content.append(self.perf_monitor)
+
+        content.append(create_page_header(
+            _('Connect to Server'),
+            _('Connect to a host'),
+            'network-workgroup-symbolic',
+        ))
 
         self.method_stack = Adw.ViewStack()
 

@@ -16,6 +16,7 @@ from big_remote_play.utils.widgets import (
     create_steps_strip,
     create_difficulty_pill,
     create_comparison_table,
+    create_page_header,
 )
 from big_remote_play.utils.i18n import _
 import subprocess
@@ -57,6 +58,7 @@ SERVICE_METADATA = {
         'name': 'SUNSHINE',
         'full_name': _('Sunshine Game Stream Host'),
         'description': _('High-performance game stream host. Required to share your games.'),
+        'icon': 'network-server-symbolic',
         'type': 'service',
         'unit': 'sunshine.service',
         'user': True
@@ -65,6 +67,7 @@ SERVICE_METADATA = {
         'name': 'MOONLIGHT',
         'full_name': _('Moonlight Game Stream Client'),
         'description': _('Game stream client. Required to connect to other hosts.'),
+        'icon': 'network-workgroup-symbolic',
         'type': 'app',
         'bin': 'moonlight-qt'
     },
@@ -72,6 +75,7 @@ SERVICE_METADATA = {
         'name': 'DOCKER',
         'full_name': _('Docker Engine'),
         'description': _('Container platform. Required for the private network server.'),
+        'icon': 'preferences-system-symbolic',
         'type': 'service',
         'unit': 'docker.service',
         'user': False
@@ -80,6 +84,7 @@ SERVICE_METADATA = {
         'name': 'TAILSCALE',
         'full_name': _('Tailscale'),
         'description': _('Mesh VPN service. Required for Tailscale connectivity.'),
+        'icon': 'tailscale-symbolic',
         'type': 'service',
         'unit': 'tailscaled.service',
         'user': False
@@ -88,6 +93,7 @@ SERVICE_METADATA = {
         'name': 'ZEROTIER',
         'full_name': _('ZeroTier'),
         'description': _('Virtual network service. Required for ZeroTier connectivity.'),
+        'icon': 'zerotier-symbolic',
         'type': 'service',
         'unit': 'zerotier-one.service',
         'user': False
@@ -177,7 +183,7 @@ class MainWindow(Adw.ApplicationWindow):
         self.toast_overlay = Adw.ToastOverlay(); self.set_content(self.toast_overlay)
         self.split_view = Adw.NavigationSplitView(); self.toast_overlay.set_child(self.split_view)
         self.setup_sidebar(); self.setup_content()
-        self.split_view.set_min_sidebar_width(220); self.split_view.set_max_sidebar_width(280)
+        self.split_view.set_min_sidebar_width(260); self.split_view.set_max_sidebar_width(320)
 
     def _install_window_actions(self):
         nav_action = Gio.SimpleAction.new("navigate", GLib.VariantType.new("s"))
@@ -221,11 +227,10 @@ class MainWindow(Adw.ApplicationWindow):
         return pages
 
     def setup_sidebar(self):
-        # No sidebar header bar — the navigation list starts at the very top.
-        # (About stays reachable from the content header menu.)
         tb = Adw.ToolbarView()
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL); main.set_vexpand(True)
-        main.set_margin_top(8)
+        main.set_margin_top(12)
+        main.append(self._create_sidebar_identity())
         scroll = Gtk.ScrolledWindow(); scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC); scroll.set_vexpand(True)
         self.nav_list = Gtk.ListBox(); self.nav_list.add_css_class('navigation-sidebar')
         self.nav_list.connect('row-selected', self.on_nav_selected)
@@ -234,6 +239,34 @@ class MainWindow(Adw.ApplicationWindow):
 
         scroll.set_child(self.nav_list); main.append(scroll); main.append(self.create_status_footer())
         tb.set_content(main); self.split_view.set_sidebar(Adw.NavigationPage.new(tb, 'Navigation'))
+
+    def _create_sidebar_identity(self) -> Gtk.Widget:
+        identity = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        identity.add_css_class("sidebar-identity")
+        identity.set_margin_start(14)
+        identity.set_margin_end(14)
+        identity.set_margin_bottom(16)
+
+        logo = create_logo_widget('big-remote-play', 48)
+        logo.add_css_class("sidebar-logo")
+        logo.set_valign(Gtk.Align.CENTER)
+        identity.append(logo)
+
+        text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        text.set_valign(Gtk.Align.CENTER)
+        title = Gtk.Label(label='Big Remote Play')
+        title.add_css_class("sidebar-title")
+        title.set_halign(Gtk.Align.START)
+        text.append(title)
+
+        subtitle = Gtk.Label(label=_('Play together, from anywhere'))
+        subtitle.add_css_class("sidebar-subtitle")
+        subtitle.set_halign(Gtk.Align.START)
+        subtitle.set_wrap(True)
+        text.append(subtitle)
+        identity.append(text)
+
+        return identity
 
     def _refresh_nav_list(self):
         """Rebuild the navigation list based on VPN choice."""
@@ -264,8 +297,12 @@ class MainWindow(Adw.ApplicationWindow):
             else:
                 self.nav_list.append(self.create_nav_row(pid, info))
 
-        if r := self.nav_list.get_row_at_index(0):
-            self.nav_list.select_row(r)
+        child = self.nav_list.get_first_child()
+        while child:
+            if isinstance(child, Gtk.ListBoxRow) and child in self._nav_page_by_row:
+                self.nav_list.select_row(child)
+                break
+            child = child.get_next_sibling()
 
     def create_nav_row(self, page_id: str, page_info: dict) -> Gtk.ListBoxRow:
         """Creates navigation row in sidebar"""
@@ -333,6 +370,7 @@ class MainWindow(Adw.ApplicationWindow):
 
         card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         card.add_css_class("info-card")
+        card.add_css_class("service-card")
         self.status_card = card
 
         def add_status_row(container, label_text, dot_attr, lbl_attr, service_id):
@@ -340,30 +378,45 @@ class MainWindow(Adw.ApplicationWindow):
             # to AT-SPI (the old Gtk.Box + GestureClick exposed none).
             row = Gtk.Button()
             row.add_css_class("info-row")
+            row.add_css_class("service-status-button")
             row.add_css_class("flat")
+            row.set_size_request(-1, 48)
             self._service_by_row[row] = service_id
             row.connect("clicked", lambda b, sid=service_id: self.on_service_clicked(sid))
 
             content = Gtk.Box(spacing=10)
-            box_key = Gtk.Box(spacing=8)
+            content.add_css_class("service-status-row")
+            meta = SERVICE_METADATA.get(service_id, {})
+
+            icon_frame = Gtk.Box()
+            icon_frame.add_css_class("service-icon-frame")
+            service_icon = create_icon_widget(meta.get('icon', 'preferences-system-symbolic'), size=20)
+            service_icon.set_valign(Gtk.Align.CENTER)
+            for margin in ['top', 'bottom', 'start', 'end']:
+                getattr(service_icon, f'set_margin_{margin}')(6)
+            icon_frame.append(service_icon)
+            content.append(icon_frame)
+
+            box_key = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
             box_key.set_hexpand(True)
             dot = create_icon_widget('media-record-symbolic', size=10, css_class=['status-dot', 'status-offline'])
             self._status_dots[service_id] = dot
             setattr(self, dot_attr, dot)
-            box_key.append(dot)
             lbl_key = Gtk.Label(label=label_text)
-            lbl_key.add_css_class('info-key')
+            lbl_key.add_css_class('service-name')
+            lbl_key.set_halign(Gtk.Align.START)
             box_key.append(lbl_key)
-            content.append(box_key)
             lbl_status = Gtk.Label(label=_('Checking...'))
-            lbl_status.add_css_class('info-value')
-            lbl_status.set_halign(Gtk.Align.END)
+            lbl_status.add_css_class('service-status')
+            lbl_status.set_halign(Gtk.Align.START)
             self._status_labels[service_id] = lbl_status
             setattr(self, lbl_attr, lbl_status)
-            content.append(lbl_status)
+            box_key.append(lbl_status)
+            content.append(box_key)
+            dot.set_valign(Gtk.Align.CENTER)
+            content.append(dot)
             row.set_child(content)
             # Plain-language explanation of each engine for new users.
-            meta = SERVICE_METADATA.get(service_id, {})
             desc = meta.get('description', '')
             if desc:
                 row.set_tooltip_text(desc)
@@ -387,7 +440,7 @@ class MainWindow(Adw.ApplicationWindow):
         if not hasattr(self, 'status_card'): return
         
         vpn = self._vpn_choice
-        visible_services = ['sunshine', 'moonlight']
+        visible_services = ['sunshine', 'moonlight', 'docker', 'tailscale'] if vpn is None else ['sunshine', 'moonlight']
         
         if vpn == 'headscale':
             visible_services.extend(['docker', 'tailscale'])
@@ -526,22 +579,20 @@ class MainWindow(Adw.ApplicationWindow):
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
 
-        # Header
-        header_group = Adw.PreferencesGroup()
-        header_group.set_title(_('Choose Your VPN Provider'))
-        header_group.set_header_suffix(create_icon_widget('network-private-symbolic', size=18))
-        header_group.set_description(
+        box.append(create_page_header(
+            _('Choose Your VPN Provider'),
             _('Select a VPN solution to create or join a Private Network. '
-              'Your choice will be saved and shown in the sidebar menu.')
-        )
-        box.append(header_group)
+              'Your choice will be saved and shown in the sidebar menu.'),
+            'network-private-symbolic',
+        ))
 
         # Cards row
         cards_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
         cards_box.set_halign(Gtk.Align.CENTER)
         cards_box.set_homogeneous(True)
 
-        for pid, info in VPN_PROVIDERS.items():
+        for pid in ('tailscale', 'zerotier', 'headscale'):
+            info = VPN_PROVIDERS[pid]
             card = self._create_vpn_card(pid, info)
             cards_box.append(card)
 
@@ -586,8 +637,9 @@ class MainWindow(Adw.ApplicationWindow):
         btn.add_css_class('action-card')
         # 'card-accent' keeps readable dark text (unlike 'suggested-action',
         # which forces white text on the near-white tint).
-        btn.add_css_class('card-accent')
-        btn.set_size_request(220, 190)
+        if provider_id == 'tailscale':
+            btn.add_css_class('card-accent')
+        btn.set_size_request(220, 210)
         btn.connect('clicked', lambda b, pid=provider_id: self._on_vpn_selected(pid))
         btn.update_property(
             [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
@@ -599,6 +651,12 @@ class MainWindow(Adw.ApplicationWindow):
         box.set_halign(Gtk.Align.CENTER)
         for m in ['top', 'bottom', 'start', 'end']:
             getattr(box, f'set_margin_{m}')(16)
+
+        if provider_id == 'tailscale':
+            badge = Gtk.Label(label=_('Recommended'))
+            badge.add_css_class('card-badge')
+            badge.set_halign(Gtk.Align.CENTER)
+            box.append(badge)
 
         # Icon
         icon = create_icon_widget(info['icon'], size=44)

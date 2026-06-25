@@ -8,3 +8,9 @@ def test_stylesheet_does_not_pad_libadwaita_bottom_bar_revealer() -> None:
 
     assert ".network-info-actions" in stylesheet
     assert ".bottom-bar" not in stylesheet
+
+
+def test_stylesheet_does_not_use_negative_letter_spacing() -> None:
+    stylesheet = Path("usr/share/big-remote-play/ui/style.css").read_text()
+
+    assert "letter-spacing: -" not in stylesheet

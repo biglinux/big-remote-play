@@ -6,7 +6,7 @@ import json, os, re, subprocess, threading, time, shutil
 from gi.repository import Adw, Gdk, GLib, Gtk  # type: ignore
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget
-from big_remote_play.utils.widgets import create_helper_card, create_wizard_stepper
+from big_remote_play.utils.widgets import create_helper_card, create_page_header, create_wizard_stepper
 from big_remote_play import paths
 from big_remote_play.utils.secure_io import secure_write_text
 from big_remote_play.utils.secret_store import SecretKey, SecretStore, SecretStoreUnavailable, new_secret_id
@@ -358,12 +358,11 @@ class CreatePage(Gtk.Box):
             getattr(clamp, f"set_margin_{m}")(24)
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
 
-        # Header
-        hdr = Adw.PreferencesGroup()
-        hdr.set_title(self.vpn["create_title"])
-        hdr.set_description(self.vpn["create_desc"])
-        hdr.set_header_suffix(create_icon_widget(self.vpn["icon"], size=24))
-        content.append(hdr)
+        content.append(create_page_header(
+            self.vpn["create_title"],
+            self.vpn["create_desc"],
+            self.vpn["icon"],
+        ))
 
         # Form group
         self._form_group = Adw.PreferencesGroup()
@@ -1270,14 +1269,14 @@ class ConnectPage(Adw.Bin):
         conn_box.set_margin_start(32)
         conn_box.set_margin_end(32)
 
+        conn_box.append(create_page_header(
+            self.vpn["connect_title"],
+            self.vpn["connect_desc"],
+            self.vpn["icon"],
+        ))
+
         # Wizard stepper mirroring the Connect / Status / Previous Networks flow.
         conn_box.append(create_wizard_stepper([_("Connect"), _("Status"), _("Previous Networks")], 0))
-
-        hdr = Adw.PreferencesGroup()
-        hdr.set_title(self.vpn["connect_title"])
-        hdr.set_description(self.vpn["connect_desc"])
-        hdr.set_header_suffix(create_icon_widget(self.vpn["icon"], size=24))
-        conn_box.append(hdr)
 
         # Two columns: connection fields (left) + "what you'll need" helper (right).
         fields_group = Adw.PreferencesGroup()
