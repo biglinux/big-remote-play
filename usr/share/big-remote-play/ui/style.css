@@ -536,6 +536,20 @@ levelbar block.filled {
     min-height: 2px;
 }
 
+/* Explicit stack tabs */
+.tab-strip {
+    padding: 4px;
+    border-radius: 10px;
+    background: alpha(@card_bg_color, 0.72);
+    border: 1px solid alpha(@borders, 0.42);
+    box-shadow: 0 2px 8px alpha(black, 0.04);
+}
+
+.tab-strip:focus-within {
+    border-color: alpha(@accent_bg_color, 0.72);
+    box-shadow: 0 0 0 2px alpha(@accent_bg_color, 0.16);
+}
+
 /* Side helper card ("what you'll need" / "if you can't find it") */
 .helper-card {
     background: alpha(@accent_bg_color, 0.05);

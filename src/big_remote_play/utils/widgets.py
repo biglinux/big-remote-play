@@ -12,7 +12,8 @@ exposes it (icon-only widgets have no inferable name).
 import gi
 
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gtk  # type: ignore  # noqa: E402
+gi.require_version("Adw", "1")
+from gi.repository import Adw, Gtk  # type: ignore  # noqa: E402
 
 from big_remote_play.utils.icons import create_icon_widget  # noqa: E402
 from big_remote_play.utils.i18n import _  # noqa: E402
@@ -54,6 +55,22 @@ def create_page_header(title: str, subtitle: str | None = None, icon_name: str |
         subtitle_label.set_max_width_chars(80)
         header.append(subtitle_label)
     return header
+
+
+def create_stack_tab_strip(stack: Adw.ViewStack, accessible_label: str) -> Gtk.Widget:
+    """Framed view switcher that reads visually as tabs and stays AT-SPI actionable."""
+    switcher = Adw.InlineViewSwitcher()
+    switcher.set_stack(stack)
+    switcher.set_display_mode(Adw.InlineViewSwitcherDisplayMode.BOTH)
+    switcher.add_css_class("round")
+    switcher.update_property([Gtk.AccessibleProperty.LABEL], [accessible_label])
+
+    strip = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+    strip.add_css_class("tab-strip")
+    strip.set_halign(Gtk.Align.CENTER)
+    strip.update_property([Gtk.AccessibleProperty.LABEL], [accessible_label])
+    strip.append(switcher)
+    return strip
 
 
 def create_steps_strip(steps: list[tuple[str, str, str]]) -> Gtk.Widget:

@@ -13,7 +13,7 @@ from big_remote_play.utils.config import Config
 import threading
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget, set_icon
-from big_remote_play.utils.widgets import MetricTile, create_page_header
+from big_remote_play.utils.widgets import MetricTile, create_page_header, create_stack_tab_strip
 from big_remote_play import paths
 from big_remote_play.utils.secret_store import SecretStoreUnavailable
 from big_remote_play.utils.sunshine_credentials import ensure_sunshine_api_config, load_sunshine_credentials, save_sunshine_credentials
@@ -639,11 +639,7 @@ class HostView(Gtk.Box):
             'revealed': True
         }
 
-        # Switcher setup
-        view_switcher = Adw.InlineViewSwitcher()
-        view_switcher.set_stack(self.view_stack)
-        view_switcher.set_display_mode(Adw.InlineViewSwitcherDisplayMode.BOTH)
-        view_switcher.set_halign(Gtk.Align.CENTER)
+        view_switcher = create_stack_tab_strip(self.view_stack, _("Server sections"))
         view_switcher.set_margin_top(12)
         view_switcher.set_margin_bottom(12)
         

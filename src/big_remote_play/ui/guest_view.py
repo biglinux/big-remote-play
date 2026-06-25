@@ -10,7 +10,7 @@ from big_remote_play.utils.config import Config
 from big_remote_play.guest.moonlight_client import MoonlightClient
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget
-from big_remote_play.utils.widgets import create_helper_card, create_page_header
+from big_remote_play.utils.widgets import create_helper_card, create_page_header, create_stack_tab_strip
 from big_remote_play.utils.moonlight_config import MoonlightConfigManager
 
 class GuestView(Gtk.Box):
@@ -71,14 +71,8 @@ class GuestView(Gtk.Box):
         page_pin = self.method_stack.add_titled(self.create_pin_page(), 'pin', _('PIN Code'))
         page_pin.set_icon_name('dialog-password-symbolic')
 
-        # Segmented inline switcher (mockup 01): icon + label pill, not the wide bar.
-        switcher = Adw.InlineViewSwitcher()
-        switcher.set_stack(self.method_stack)
-        switcher.set_display_mode(Adw.InlineViewSwitcherDisplayMode.BOTH)
-        switcher.set_halign(Gtk.Align.CENTER)
+        switcher = create_stack_tab_strip(self.method_stack, _("Connection methods"))
 
-        # Title is carried by the window header; keep only the contextual help
-        # action here, right-aligned, with the segmented switcher centered.
         help_btn = Gtk.Button(icon_name="help-about-symbolic")
         help_btn.add_css_class("flat")
         help_btn.set_tooltip_text(_("Shortcuts & Instructions"))

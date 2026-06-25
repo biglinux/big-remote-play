@@ -6,7 +6,7 @@ import json, os, re, subprocess, threading, time, shutil
 from gi.repository import Adw, Gdk, GLib, Gtk  # type: ignore
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget
-from big_remote_play.utils.widgets import create_helper_card, create_page_header, create_wizard_stepper
+from big_remote_play.utils.widgets import create_helper_card, create_page_header, create_stack_tab_strip
 from big_remote_play import paths
 from big_remote_play.utils.secure_io import secure_write_text
 from big_remote_play.utils.secret_store import SecretKey, SecretStore, SecretStoreUnavailable, new_secret_id
@@ -1261,6 +1261,7 @@ class ConnectPage(Adw.Bin):
     def _build(self):
         toolbar = Adw.ToolbarView()
         stack = Adw.ViewStack()
+        stack.set_vexpand(True)
 
         # ── Tab 1: Connect ──
         conn_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
@@ -1274,9 +1275,6 @@ class ConnectPage(Adw.Bin):
             self.vpn["connect_desc"],
             self.vpn["icon"],
         ))
-
-        # Wizard stepper mirroring the Connect / Status / Previous Networks flow.
-        conn_box.append(create_wizard_stepper([_("Connect"), _("Status"), _("Previous Networks")], 0))
 
         # Two columns: connection fields (left) + "what you'll need" helper (right).
         fields_group = Adw.PreferencesGroup()
@@ -1417,15 +1415,12 @@ class ConnectPage(Adw.Bin):
 
         stack.connect("notify::visible-child-name", self._on_tab_changed)
 
-        header = Adw.HeaderBar()
-        header.set_show_start_title_buttons(False)
-        header.set_show_end_title_buttons(False)
-        switcher = Adw.InlineViewSwitcher()
-        switcher.set_stack(stack)
-        switcher.set_display_mode(Adw.InlineViewSwitcherDisplayMode.BOTH)
-        header.set_title_widget(switcher)
-        toolbar.add_top_bar(header)
-        toolbar.set_content(stack)
+        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+        content.set_margin_top(16)
+        content.set_vexpand(True)
+        content.append(create_stack_tab_strip(stack, _("Private network sections")))
+        content.append(stack)
+        toolbar.set_content(content)
         self._stack = stack
         self.set_child(toolbar)
 
