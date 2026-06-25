@@ -44,7 +44,9 @@ def test_content_headerbar_does_not_duplicate_page_titles() -> None:
 
     assert "self.content_title" not in source
     assert "Adw.WindowTitle.new" not in source
-    assert "set_title_widget(None)" in source
+    assert "set_title_widget(None)" not in source
+    assert "self.header_blank_title = Gtk.Box()" in source
+    assert "set_title_widget(self.header_blank_title)" in source
 
 
 def test_operational_pages_use_compact_headers_without_trivial_subtitles() -> None:

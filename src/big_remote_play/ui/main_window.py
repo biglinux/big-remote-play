@@ -495,7 +495,8 @@ class MainWindow(Adw.ApplicationWindow):
         hb.pack_end(self._create_header_menu_button())
 
         self.content_headerbar = hb
-        hb.set_title_widget(None)
+        self.header_blank_title = Gtk.Box()
+        hb.set_title_widget(self.header_blank_title)
 
         ct.add_top_bar(hb)
         self.content_stack = Gtk.Stack()
@@ -945,7 +946,7 @@ class MainWindow(Adw.ApplicationWindow):
             if actual_pid == "host" and hasattr(self.host_view, "header_action_box"):
                 self.content_headerbar.set_title_widget(self.host_view.header_action_box)
             else:
-                self.content_headerbar.set_title_widget(None)
+                self.content_headerbar.set_title_widget(self.header_blank_title)
 
     def navigate_to(self, pid):
         """Programmatic navigation: find row and select it"""
