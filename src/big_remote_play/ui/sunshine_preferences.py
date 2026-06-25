@@ -9,6 +9,7 @@ import os
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget
 from big_remote_play.utils.secure_io import secure_write_text
+from big_remote_play.utils.sunshine_credentials import LEGACY_SECRET_KEYS, load_sunshine_credentials
 import socket
 from big_remote_play.utils.system_check import SystemCheck
 from big_remote_play.host.sunshine_manager import SunshineHost
@@ -39,10 +40,10 @@ class SunshineConfigManager:
             except Exception as e:
                 print(f"Error loading Sunshine config: {e}")
 
-    def save(self):
+    def save(self) -> None:
         try:
-            # sunshine.conf holds credentials: owner-only file/dir.
-            body = "".join(f"{key} = {value}\n" for key, value in self.config.items())
+            settings = {key: value for key, value in self.config.items() if key not in LEGACY_SECRET_KEYS}
+            body = "".join(f"{key} = {value}\n" for key, value in settings.items())
             secure_write_text(str(self.config_file), body)
         except Exception as e:
             print(f"Error saving Sunshine config: {e}")
@@ -335,10 +336,8 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
         # NOTE: server password change/reset lives in the body (Server →
         # Management → Server Password). Not duplicated here.
 
-    def _api_auth(self):
-        user = self.config.get("sunshine_user", "")
-        password = self.config.get("sunshine_password", "")
-        return (user, password) if user and password else None
+    def _api_auth(self) -> tuple[str, str] | None:
+        return load_sunshine_credentials(conf_path=self.config.config_file)
 
     def _toast(self, widget, message):
         root = widget.get_root()
@@ -348,7 +347,7 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
             root.show_toast(message)
         return False
 
-    def on_apply_live_clicked(self, btn):
+    def on_apply_live_clicked(self, btn: Gtk.Widget) -> None:
         if not self.sunshine.is_running():
             self._toast(btn, _("Sunshine is not running. Settings are saved to file."))
             return
@@ -356,9 +355,9 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
 
         auth = self._api_auth()
         # Credentials are managed separately; do not push them as config keys.
-        settings = {k: v for k, v in self.config.config.items() if k not in ("sunshine_user", "sunshine_password", "credentials")}
+        settings = {k: v for k, v in self.config.config.items() if k not in LEGACY_SECRET_KEYS}
 
-        def work():
+        def work() -> None:
             ok = self.sunshine.save_config(settings, auth=auth)
             if ok:
                 self.sunshine.restart_via_api(auth=auth)
@@ -403,8 +402,6 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
                 _("The locale used for Sunshine's user interface."),
             ),
             ("sunshine_name", _("Sunshine Name"), "entry", socket.gethostname(), None, _("The name of the Sunshine instance as seen by clients.")),
-            ("sunshine_user", _("Sunshine User"), "entry", "", None, _("Username for API access (Monitoring)")),
-            ("sunshine_password", _("Sunshine Password"), "password", "", None, _("Password for API access (Monitoring)")),
             (
                 "min_log_level",
                 _("Log Level"),

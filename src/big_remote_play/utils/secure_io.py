@@ -1,6 +1,6 @@
 """Filesystem helpers for writing secrets and config with owner-only permissions.
 
-Auth tokens, VPN history (contains auth keys) and sunshine.conf (credentials)
+Auth tokens, VPN history (contains secret references), and Sunshine config files
 must not be world-readable. These helpers create the file mode 0o600 and tighten
 the containing directory to 0o700.
 """

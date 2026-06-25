@@ -472,26 +472,11 @@ class PerformanceMonitor(Gtk.Box):
             self.hostname_cache[ip] = None
             return None
             
-    def _sunshine_auth(self):
-        """Reads Sunshine admin credentials saved in sunshine.conf, or None."""
-        from pathlib import Path
-        conf = Path.home() / '.config' / 'big-remoteplay' / 'sunshine' / 'sunshine.conf'
-        if not conf.exists():
-            return None
-        user = password = None
-        try:
-            with open(conf) as f:
-                for line in f:
-                    if '=' in line:
-                        key, val = line.split('=', 1)
-                        key, val = key.strip(), val.strip()
-                        if key == 'sunshine_user':
-                            user = val
-                        elif key == 'sunshine_password':
-                            password = val
-        except Exception:
-            return None
-        return (user, password) if user and password else None
+    def _sunshine_auth(self) -> tuple[str, str] | None:
+        """Reads Sunshine admin credentials from the system keyring, or None."""
+        from big_remote_play.utils.sunshine_credentials import load_sunshine_credentials
+
+        return load_sunshine_credentials()
 
     def _prompt_disconnect(self, session_id, ip):
         """Offers a gentle app close vs a forceful IP eviction."""

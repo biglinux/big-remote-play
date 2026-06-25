@@ -14,9 +14,9 @@ from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget, set_icon
 from big_remote_play.utils.widgets import MetricTile
 from big_remote_play import paths
-from big_remote_play.utils.secure_io import secure_write_text
+from big_remote_play.utils.secret_store import SecretStoreUnavailable
+from big_remote_play.utils.sunshine_credentials import ensure_sunshine_api_config, load_sunshine_credentials, save_sunshine_credentials
 from big_remote_play.utils.uri import open_uri, open_path
-from big_remote_play.ui.sunshine_preferences import SunshineConfigManager
 class HostView(Gtk.Box):
     def __init__(self):
         self.loading_settings = True
@@ -710,151 +710,37 @@ class HostView(Gtk.Box):
     def _check_audio_state(self):
         return True
 
-    def _get_sunshine_conf_path(self):
+    def _get_sunshine_conf_path(self) -> Path:
         from pathlib import Path
         return Path.home() / '.config' / 'big-remoteplay' / 'sunshine' / 'sunshine.conf'
 
-    def _get_sunshine_creds(self):
-        conf_file = self._get_sunshine_conf_path()
-        if not conf_file.exists(): return None
-        
-        user = None
-        password = None
-        
-        try:
-            with open(conf_file, 'r') as f:
-                for line in f:
-                    if '=' in line:
-                        key, val = line.strip().split('=', 1)
-                        key = key.strip()
-                        val = val.strip()
-                        if key == 'sunshine_user': user = val
-                        elif key == 'sunshine_password': password = val
-            
-            if user and password:
-                return (user, password)
-        except Exception: pass
-        return None
+    def _get_sunshine_creds(self) -> tuple[str, str] | None:
+        return load_sunshine_credentials(conf_path=self._get_sunshine_conf_path())
 
-    def _save_sunshine_creds(self, user, password):
-        conf_file = self._get_sunshine_conf_path()
-        lines = []
-        if conf_file.exists():
-            try:
-                with open(conf_file, 'r') as f:
-                    lines = f.readlines()
-            except Exception: pass
-        
-        new_lines = []
-        found_user = False
-        found_pass = False
-        
-        for line in lines:
-            if '=' in line:
-                key, _ = line.split('=', 1)
-                key = key.strip()
-                if key == 'sunshine_user':
-                    new_lines.append(f"sunshine_user = {user}\n")
-                    found_user = True
-                    continue
-                elif key == 'sunshine_password':
-                    new_lines.append(f"sunshine_password = {password}\n")
-                    found_pass = True
-                    continue
-            new_lines.append(line)
-            
-        if not found_user: new_lines.append(f"sunshine_user = {user}\n")
-        if not found_pass: new_lines.append(f"sunshine_password = {password}\n")
-
-        # Configs required for API and operation
-        required = {
-            "credentials": f"sunshine:{password}",
-            "log_level": "2",
-            "port": "47989",
-            "webserver": "0.0.0.0",
-            "enable_api_endpoints": "true"
-        }
-        
-        final_lines = []
-        existing_keys = set()
-        
-        # Process existing + updated user/pass lines
-        for line in new_lines:
-            if '=' in line:
-                key = line.split('=')[0].strip()
-                if key in required:
-                    final_lines.append(f"{key} = {required[key]}\n")
-                    existing_keys.add(key)
-                    continue
-            final_lines.append(line)
-            
-        # Append missing required configs
-        for k, v in required.items():
-            if k not in existing_keys:
-                final_lines.append(f"{k} = {v}\n")
-        
+    def _save_sunshine_creds(self, user: str, password: str) -> bool:
         try:
-            # sunshine.conf holds credentials: owner-only file/dir.
-            secure_write_text(str(conf_file), "".join(final_lines))
+            save_sunshine_credentials(user, password, conf_path=self._get_sunshine_conf_path())
+            return True
+        except SecretStoreUnavailable:
+            self.show_toast(_("System keyring is unavailable. Password was not saved."))
         except Exception as e:
-            print(f"Error saving Sunshine creds: {e}")
+            print(f"Error saving Sunshine credentials: {e}")
+        return False
 
-    def _ensure_sunshine_config(self):
+    def _ensure_sunshine_config(self) -> None:
         """Ensures sunshine.conf has required API settings"""
-        conf_file = self._get_sunshine_conf_path()
-        if not conf_file.exists(): return
-        
         try:
-            lines = []
-            with open(conf_file, 'r') as f:
-                lines = f.readlines()
-            
-            config_map = {}
-            for line in lines:
-                if '=' in line:
-                    k, v = line.split('=', 1)
-                    config_map[k.strip()] = v.strip()
-            
-            pwd = config_map.get('sunshine_password', '')
-            
-            # If we have a password but no credentials line or missing API config
-            updates_needed = False
-            required = {
-                "log_level": "2",
-                "port": "47989",
-                "webserver": "0.0.0.0",
-                "enable_api_endpoints": "true"
-            }
-            if pwd and 'credentials' not in config_map:
-                 required['credentials'] = f"sunshine:{pwd}"
-            
-            for k, v in required.items():
-                if k not in config_map:
-                    updates_needed = True
-            
-            if updates_needed:
-                final_lines = lines.copy()
-                if final_lines and not final_lines[-1].endswith('\n'):
-                    final_lines[-1] += '\n'
-                    
-                for k, v in required.items():
-                    if k not in config_map:
-                        final_lines.append(f"{k} = {v}\n")
-
-                secure_write_text(str(conf_file), "".join(final_lines))
-
+            ensure_sunshine_api_config(conf_path=self._get_sunshine_conf_path())
         except Exception as e:
             print(f"Error ensuring sunshine config: {e}")
 
-    def open_pin_dialog(self, _widget):
+    def open_pin_dialog(self, _widget: Gtk.Widget) -> None:
         self._ensure_sunshine_config() # Ensure config before trying to use API
         
-        # Load saved credentials
-        conf = SunshineConfigManager()
-        saved_user = conf.get('sunshine_user', '')
-        saved_pass = conf.get('sunshine_password', '')
-        if saved_user == 'None': saved_user = ''
-        if saved_pass == 'None': saved_pass = ''
+        # Load saved credentials from the system keyring when available.
+        saved_creds = self._get_sunshine_creds()
+        saved_user = saved_creds[0] if saved_creds else ''
+        saved_pass = saved_creds[1] if saved_creds else ''
         
         dialog = Adw.MessageDialog(
             heading=_("Insert PIN"), 
@@ -877,7 +763,7 @@ class HostView(Gtk.Box):
         if saved_pass: pass_row.set_text(saved_pass)
         
         save_chk = Adw.SwitchRow(title=_("Save Password"))
-        save_chk.set_subtitle(_("Save credentials to Sunshine preferences"))
+        save_chk.set_subtitle(_("Save credentials to the system keyring"))
         save_chk.set_active(bool(saved_user and saved_pass))
         
         grp.add(pin_row)
@@ -904,8 +790,7 @@ class HostView(Gtk.Box):
                 
                 # Update saved credentials if requested
                 if save and u and p:
-                    conf.set('sunshine_user', u)
-                    conf.set('sunshine_password', p)
+                    self._save_sunshine_creds(u, p)
                 
                 auth = (u, p) if (u and p) else None
                 success, msg = self.sunshine.send_pin(pin, name=device_name, auth=auth)
