@@ -1,4 +1,4 @@
-
+from __future__ import annotations
 
 import gi
 gi.require_version('Gtk', '4.0')
@@ -34,6 +34,10 @@ class GuestView(Gtk.Box):
         self.setup_ui()
         self.discover_hosts()
         GLib.timeout_add(1000, self.monitor_connection)
+
+    def _root_window(self):
+        root = self.get_root()
+        return root if isinstance(root, Gtk.Window) else None
         
     def detect_bitrate(self, button=None):
         self.show_toast(_("Detecting bandwidth..."))
@@ -227,9 +231,10 @@ class GuestView(Gtk.Box):
 
         # Update Discover Button
         # Logic specific for discover: only sensitive if host selected (when disconnected)
-        has_host = self.selected_host_card_data is not None
+        selected_host = self.selected_host_card_data
+        has_host = selected_host is not None
         update_btn('main_connect_btn', 'connect_btn_label', 'connect_btn_spinner', 
-                   _("Connect to {}").format(self.selected_host_card_data['name']) if has_host else _("Connect to Selected"),
+                   _("Connect to {}").format(selected_host['name']) if selected_host is not None else _("Connect to Selected"),
                    default_sensitive=has_host)
 
         # Update Manual Button
@@ -397,7 +402,9 @@ class GuestView(Gtk.Box):
         copy_btn.set_child(create_icon_widget("edit-copy-symbolic", size=16))
         copy_btn.add_css_class("flat"); copy_btn.set_valign(Gtk.Align.CENTER); copy_btn.set_tooltip_text(_("Copy IP"))
         def copy_ip(btn):
-            Gdk.Display.get_default().get_clipboard().set(host['ip'])
+            display = Gdk.Display.get_default()
+            if display is not None:
+                display.get_clipboard().set(host['ip'])
             self.show_toast(_("IP Copied: {}").format(host['ip']))
         copy_btn.connect("clicked", copy_ip)
         box.append(copy_btn)
@@ -746,10 +753,12 @@ class GuestView(Gtk.Box):
 
     def get_auto_resolution(self):
         try:
-            display = Gdk.Display.get_default(); monitor = None
-            if root := self.get_root():
-                if native := root.get_native():
-                    if surface := native.get_surface(): monitor = display.get_monitor_at_surface(surface)
+            display = Gdk.Display.get_default()
+            if display is None:
+                return "1920x1080"
+            monitor = None
+            if native := self.get_native():
+                if surface := native.get_surface(): monitor = display.get_monitor_at_surface(surface)
             if not monitor:
                 monitors = display.get_monitors()
                 if monitors.get_n_items() > 0: monitor = monitors.get_item(0)
@@ -796,7 +805,7 @@ class GuestView(Gtk.Box):
         self.show_error_dialog(_("Host Not Found"), _("Could not find a host with this PIN on the local network..."))
     
     def show_error_dialog(self, title, message):
-        dialog = Adw.MessageDialog.new(self.get_root())
+        dialog = Adw.MessageDialog.new(self._root_window())
         dialog.set_heading(title); dialog.set_body(message)
         dialog.add_response('ok', _('OK')); dialog.present()
     
@@ -825,7 +834,7 @@ class GuestView(Gtk.Box):
 
     def show_custom_input_dialog(self, title, subtitle, callback):
         dialog = Adw.MessageDialog(heading=title, body=subtitle)
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
         
         grp = Adw.PreferencesGroup()
         entry = Adw.EntryRow(title=_("Value"))
@@ -897,6 +906,8 @@ class GuestView(Gtk.Box):
         
         # 2. Save Local Settings (Not in Moonlight.conf or specific to GuestView)
         s = self.config.get('guest', {})
+        if not isinstance(s, dict):
+            s = {}
         s['scale_native'] = self.scale_row.get_active()
         s['audio'] = self.audio_row.get_active()
         self.config.set('guest', s)
@@ -949,12 +960,14 @@ class GuestView(Gtk.Box):
         # 2. Load Local Settings
         try:
             s = self.config.get('guest', {})
-            self.scale_row.set_active(s.get('scale_native', False))
-            self.audio_row.set_active(s.get('audio', True))
+            if not isinstance(s, dict):
+                s = {}
+            self.scale_row.set_active(bool(s.get('scale_native', False)))
+            self.audio_row.set_active(bool(s.get('audio', True)))
         except Exception: pass
     def on_reset_clicked(self, _widget):
         dialog = Adw.MessageDialog(heading=_("Reset defaults?"), body=_("All client settings will be restored."))
-        dialog.set_transient_for(self.get_root())
+        dialog.set_transient_for(self._root_window())
         dialog.add_response("cancel", _("No"))
         dialog.add_response("ok", _("Yes"))
         dialog.set_response_appearance("ok", Adw.ResponseAppearance.DESTRUCTIVE)
@@ -973,17 +986,15 @@ class GuestView(Gtk.Box):
         self.scale_row.set_active(False); self.resolution_row.set_selected(1); self.fps_row.set_selected(1); self.bitrate_scale.set_value(20.0); self.display_mode_row.set_selected(0); self.audio_row.set_active(True); self.hw_decode_row.set_active(True)
         self.custom_resolution_val = self.custom_fps_val = ''; self.show_toast(_("Restored")); self.save_guest_settings()
     def show_toast(self, m):
-        w = self.get_root()
-        if hasattr(w, 'show_toast'): w.show_toast(m)
+        show_toast = getattr(self.get_root(), 'show_toast', None)
+        if callable(show_toast): show_toast(m)
         else: print(f"Toast: {m}")
 
     def open_advanced_client_settings(self, _widget=None):
         """Full Moonlight client tuning, opened from the Connect task itself."""
         from big_remote_play.ui.moonlight_preferences import MoonlightPreferencesPage
         win = Adw.PreferencesWindow()
-        root = self.get_root()
-        if root:
-            win.set_transient_for(root)
+        win.set_transient_for(self._root_window())
         win.set_modal(True)
         win.set_title(_('Advanced client settings'))
         win.add(MoonlightPreferencesPage())
@@ -992,7 +1003,7 @@ class GuestView(Gtk.Box):
         win.present()
 
     def show_shortcuts_dialog(self):
-        dialog = Adw.Window(transient_for=self.get_root())
+        dialog = Adw.Window(transient_for=self._root_window())
         dialog.set_modal(True)
         dialog.set_title(_("Shortcuts & Instructions"))
         dialog.set_default_size(500, 600)
