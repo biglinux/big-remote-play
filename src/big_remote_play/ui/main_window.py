@@ -520,11 +520,11 @@ class MainWindow(Adw.ApplicationWindow):
 
         clamp = Adw.Clamp()
         clamp.set_maximum_size(900)
-        clamp.set_valign(Gtk.Align.CENTER)
+        clamp.set_valign(Gtk.Align.START)
         for m in ['top', 'bottom', 'start', 'end']:
-            getattr(clamp, f'set_margin_{m}')(32)
+            getattr(clamp, f'set_margin_{m}')(24)
 
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=32)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
 
         # Header
         header_group = Adw.PreferencesGroup()
@@ -537,7 +537,7 @@ class MainWindow(Adw.ApplicationWindow):
         box.append(header_group)
 
         # Cards row
-        cards_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
+        cards_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
         cards_box.set_halign(Gtk.Align.CENTER)
         cards_box.set_homogeneous(True)
 
@@ -587,27 +587,27 @@ class MainWindow(Adw.ApplicationWindow):
         # 'card-accent' keeps readable dark text (unlike 'suggested-action',
         # which forces white text on the near-white tint).
         btn.add_css_class('card-accent')
-        btn.set_size_request(240, 220)
+        btn.set_size_request(220, 190)
         btn.connect('clicked', lambda b, pid=provider_id: self._on_vpn_selected(pid))
         btn.update_property(
             [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
             [info['name'], info['description']],
         )
 
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         box.set_valign(Gtk.Align.CENTER)
         box.set_halign(Gtk.Align.CENTER)
         for m in ['top', 'bottom', 'start', 'end']:
-            getattr(box, f'set_margin_{m}')(20)
+            getattr(box, f'set_margin_{m}')(16)
 
         # Icon
-        icon = create_icon_widget(info['icon'], size=52)
+        icon = create_icon_widget(info['icon'], size=44)
         icon.add_css_class('accent')
         box.append(icon)
 
         # Name
         name_lbl = Gtk.Label(label=info['name'])
-        name_lbl.add_css_class('title-2')
+        name_lbl.add_css_class('title-3')
         box.append(name_lbl)
 
         # Description
@@ -615,7 +615,7 @@ class MainWindow(Adw.ApplicationWindow):
         desc_lbl.add_css_class('caption')
         desc_lbl.add_css_class('dim-label')
         desc_lbl.set_wrap(True)
-        desc_lbl.set_max_width_chars(28)
+        desc_lbl.set_max_width_chars(24)
         desc_lbl.set_justify(Gtk.Justification.CENTER)
         box.append(desc_lbl)
 

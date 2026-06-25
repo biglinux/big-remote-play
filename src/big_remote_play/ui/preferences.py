@@ -78,7 +78,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
         restore_row.set_title(_('Restore Defaults'))
         restore_row.set_subtitle(_('Reset all settings to default'))
         
-        restore_btn = Gtk.Button(label=_('Restaurar'))
+        restore_btn = Gtk.Button(label=_('Restore'))
         restore_btn.set_valign(Gtk.Align.CENTER)
         restore_btn.connect('clicked', self.on_restore_defaults_clicked)
         restore_row.add_suffix(restore_btn)
@@ -89,7 +89,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
         clear_all_row.set_title(_('Clear Everything'))
         clear_all_row.set_subtitle(_('Remove logs, settings, servers and saved data'))
         
-        clear_all_btn = Gtk.Button(label=_('Limpar Tudo'))
+        clear_all_btn = Gtk.Button(label=_('Clear Everything'))
         clear_all_btn.add_css_class('destructive-action')
         clear_all_btn.set_valign(Gtk.Align.CENTER)
         clear_all_btn.connect('clicked', self.on_clear_all_clicked)
@@ -116,7 +116,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
         copy_config_btn.set_child(create_icon_widget('edit-copy-symbolic'))
         copy_config_btn.add_css_class('flat')
         copy_config_btn.set_valign(Gtk.Align.CENTER)
-        copy_config_btn.set_tooltip_text(_("Copiar Caminho"))
+        copy_config_btn.set_tooltip_text(_("Copy Path"))
         copy_config_btn.connect('clicked', self.copy_config_path)
         config_row.add_suffix(copy_config_btn)
         config_row.set_activatable_widget(copy_config_btn)
@@ -137,7 +137,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
         clear_logs_row.set_title(_('Clear Logs'))
         clear_logs_row.set_subtitle(_('Remove old log files'))
         
-        clear_btn = Gtk.Button(label=_('Limpar'))
+        clear_btn = Gtk.Button(label=_('Clear'))
         clear_btn.add_css_class('destructive-action')
         clear_btn.set_valign(Gtk.Align.CENTER)
         clear_logs_row.add_suffix(clear_btn)
