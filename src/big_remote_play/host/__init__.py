@@ -2,4 +2,4 @@
 
 from .sunshine_manager import SunshineHost
 
-__all__ = ['SunshineHost']
+__all__ = ["SunshineHost"]

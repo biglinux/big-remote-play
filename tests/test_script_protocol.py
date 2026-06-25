@@ -9,7 +9,9 @@ def test_data_marker() -> None:
 
 def test_data_marker_value_with_url() -> None:
     assert parse_script_line("BRP_DATA api_url=https://api.zerotier.com/api/v1") == (
-        "data", "api_url", "https://api.zerotier.com/api/v1",
+        "data",
+        "api_url",
+        "https://api.zerotier.com/api/v1",
     )
 
 
@@ -20,12 +22,14 @@ def test_phase_marker_and_clamp() -> None:
 
 def test_text_strips_ansi() -> None:
     assert parse_script_line("\x1b[0;32mChecking dependencies...\x1b[0m") == (
-        "text", "Checking dependencies...",
+        "text",
+        "Checking dependencies...",
     )
 
 
 def test_capture_is_locale_independent() -> None:
     """Same data captured whether prose is English or Portuguese."""
+
     def capture(lines):
         captured, phase = {}, 0.1
         for ln in lines:

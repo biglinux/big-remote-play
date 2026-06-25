@@ -5,9 +5,9 @@ from pathlib import Path
 from big_remote_play.utils.network import NetworkDiscovery
 
 # avahi-browse -p fields: =;iface;proto;name;type;domain;hostname;ip;port;txt
-_IPV4_LINE = "=;eth0;IPv4;MyHost;_nvstream._tcp;local;myhost.local;192.168.1.50;47989;\"x\""
+_IPV4_LINE = '=;eth0;IPv4;MyHost;_nvstream._tcp;local;myhost.local;192.168.1.50;47989;"x"'
 # Empty hostname avoids the IPv4-enrichment DNS lookup, keeping the test offline.
-_IPV6_LL_LINE = "=;eth0;IPv6;V6Host;_nvstream._tcp;local;;fe80::1;47989;\"x\""
+_IPV6_LL_LINE = '=;eth0;IPv6;V6Host;_nvstream._tcp;local;;fe80::1;47989;"x"'
 
 
 def test_parse_ipv4(fake_home: Path) -> None:

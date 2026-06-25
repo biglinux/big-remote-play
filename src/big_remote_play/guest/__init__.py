@@ -2,4 +2,4 @@
 
 from .moonlight_client import MoonlightClient
 
-__all__ = ['MoonlightClient']
+__all__ = ["MoonlightClient"]

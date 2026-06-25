@@ -1,29 +1,31 @@
 import logging
 import configparser
 from pathlib import Path
+
 _log = logging.getLogger("big-remoteplay")
+
 
 class MoonlightConfigManager:
     _shared_state = {}
-    
+
     def __init__(self) -> None:
         self.__dict__ = self._shared_state
-        
-        if hasattr(self, 'cp'):
+
+        if hasattr(self, "cp"):
             return
 
         # Possible paths for Moonlight.conf
         paths = [
-            Path.home() / '.config' / 'Moonlight Game Streaming Project' / 'Moonlight.conf',
-            Path.home() / '.var' / 'app' / 'com.moonlight_stream.Moonlight' / 'config' / 'Moonlight Game Streaming Project' / 'Moonlight.conf'
+            Path.home() / ".config" / "Moonlight Game Streaming Project" / "Moonlight.conf",
+            Path.home() / ".var" / "app" / "com.moonlight_stream.Moonlight" / "config" / "Moonlight Game Streaming Project" / "Moonlight.conf",
         ]
-        
+
         self.config_file: Path | None = None
         for p in paths:
             if p.exists():
                 self.config_file = p
                 break
-        
+
         # If none exist, default to the standard path
         if not self.config_file:
             self.config_file = paths[0]
@@ -38,10 +40,10 @@ class MoonlightConfigManager:
                 self.cp.read(self.config_file)
             except Exception as e:
                 _log.error(f"Error loading Moonlight config: {e}")
-        
-        if 'General' not in self.cp:
-            self.cp.add_section('General')
-        
+
+        if "General" not in self.cp:
+            self.cp.add_section("General")
+
     def reload(self) -> None:
         """Force reload from file"""
         self.cp = configparser.ConfigParser()
@@ -51,14 +53,14 @@ class MoonlightConfigManager:
         try:
             if self.config_file is None:
                 return
-            with open(self.config_file, 'w') as f:
+            with open(self.config_file, "w") as f:
                 self.cp.write(f)
         except Exception as e:
             _log.error(f"Error saving Moonlight config: {e}")
 
     def get(self, key: str, default: object = None) -> str:
-        return self.cp.get('General', key, fallback=str(default))
+        return self.cp.get("General", key, fallback=str(default))
 
     def set(self, key: str, value: object) -> None:
-        self.cp.set('General', key, str(value))
+        self.cp.set("General", key, str(value))
         self.save()

@@ -1,7 +1,8 @@
 import os
 import gi
-gi.require_version('Gtk', '4.0')
-gi.require_version('GdkPixbuf', '2.0')
+
+gi.require_version("Gtk", "4.0")
+gi.require_version("GdkPixbuf", "2.0")
 from gi.repository import Gtk, Gio, Gdk, GdkPixbuf  # type: ignore
 
 from big_remote_play import paths
@@ -13,6 +14,7 @@ _LOGO_OVERSAMPLE = 2
 ICONS_DIR = str(paths.ICONS_DIR)
 IMG_DIR = str(paths.IMG_DIR)
 
+
 def get_icon_file_path(icon_name):
     """Returns absolute path to icon file if it exists in icons or img dir."""
     # Check icons (symbolic) first, then img (non-symbolic)
@@ -23,6 +25,7 @@ def get_icon_file_path(icon_name):
                 return path
     return None
 
+
 def get_gicon(icon_name):
     """Returns a Gio.FileIcon for the local icon, or None if not found."""
     path = get_icon_file_path(icon_name)
@@ -31,30 +34,33 @@ def get_gicon(icon_name):
         return Gio.FileIcon.new(gfile)
     return None
 
+
 def create_icon_widget(icon_name, size=None, css_class=None):
     """
     Creates a Gtk.Image using the local icon file.
     Falls back to theme icon_name if local file not found.
     """
     gicon = get_gicon(icon_name)
-    
+
     if gicon:
         img = Gtk.Image.new_from_gicon(gicon)
     else:
-        # Fallback to system theme if local not found (though user wants only local, 
+        # Fallback to system theme if local not found (though user wants only local,
         # this prevents empty space if something is missing)
         img = Gtk.Image.new_from_icon_name(icon_name)
-        
+
     if size:
         img.set_pixel_size(size)
-    
+
     if css_class:
         if isinstance(css_class, list):
-            for c in css_class: img.add_css_class(c)
+            for c in css_class:
+                img.add_css_class(c)
         else:
             img.add_css_class(css_class)
-            
+
     return img
+
 
 def create_logo_widget(icon_name, size, css_class=None):
     """Crisp full-color logo from an SVG/PNG, rasterized at the target size.
@@ -85,7 +91,7 @@ def create_logo_widget(icon_name, size, css_class=None):
 
     img.set_pixel_size(size)
     if css_class:
-        for c in ([css_class] if isinstance(css_class, str) else css_class):
+        for c in [css_class] if isinstance(css_class, str) else css_class:
             img.add_css_class(c)
     return img
 

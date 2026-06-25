@@ -1,19 +1,20 @@
 import gi
 
-gi.require_version('Gtk', '4.0')
-gi.require_version('Adw', '1')
+gi.require_version("Gtk", "4.0")
+gi.require_version("Adw", "1")
 from gi.repository import Gtk, Adw  # type: ignore
 
 from big_remote_play.utils.i18n import _
 
 from big_remote_play.utils.moonlight_config import MoonlightConfigManager
 
+
 class MoonlightPreferencesPage(Adw.PreferencesPage):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.set_title("Moonlight")  # product name — never translated
         self.set_icon_name("preferences-desktop-remote-desktop-symbolic")
-        
+
         self.config = MoonlightConfigManager()
         self.config.reload()
         self.setup_ui()
@@ -31,7 +32,8 @@ class MoonlightPreferencesPage(Adw.PreferencesPage):
         res_model = Gtk.StringList()
         # Use simple labels to match screenshot style
         resolutions = [("720", "720p"), ("1080", "1080p"), ("1440", "1440p"), ("2160", "4K")]
-        for __, label in resolutions: res_model.append(label)
+        for __, label in resolutions:
+            res_model.append(label)
         res_row.set_model(res_model)
         curr_h = self.config.get("height", "1080")
         res_row.set_selected(next((i for i, (h, _) in enumerate(resolutions) if h == curr_h), 1))
@@ -42,7 +44,8 @@ class MoonlightPreferencesPage(Adw.PreferencesPage):
         fps_row.set_title(_("Frame Rate (FPS)"))
         fps_model = Gtk.StringList()
         fps_options = ["30", "60", "90", "120"]
-        for f in fps_options: fps_model.append(f + " FPS")
+        for f in fps_options:
+            fps_model.append(f + " FPS")
         fps_row.set_model(fps_model)
         curr_fps = self.config.get("fps", "60")
         fps_row.set_selected(next((i for i, f in enumerate(fps_options) if f == curr_fps), 1))
@@ -66,7 +69,8 @@ class MoonlightPreferencesPage(Adw.PreferencesPage):
         mode_row.set_title(_("Display Mode"))
         mode_model = Gtk.StringList()
         modes = [("3", _("Borderless Window")), ("1", _("Fullscreen")), ("2", _("Windowed"))]
-        for __, label in modes: mode_model.append(label)
+        for __, label in modes:
+            mode_model.append(label)
         mode_row.set_model(mode_model)
         curr_mode = self.config.get("windowMode", "3")
         mode_row.set_selected(next((i for i, (m, _) in enumerate(modes) if m == curr_mode), 0))
@@ -95,7 +99,8 @@ class MoonlightPreferencesPage(Adw.PreferencesPage):
         audio_cfg_row.set_title(_("Audio Configuration"))
         audio_cfg_model = Gtk.StringList()
         audio_cfgs = [("0", _("Stereo")), ("1", "5.1 Surround"), ("2", "7.1 Surround")]
-        for __, label in audio_cfgs: audio_cfg_model.append(label)
+        for __, label in audio_cfgs:
+            audio_cfg_model.append(label)
         audio_cfg_row.set_model(audio_cfg_model)
         curr_audio = self.config.get("audioConfig", "0")
         audio_cfg_row.set_selected(next((i for i, (c, _) in enumerate(audio_cfgs) if c == curr_audio), 0))
@@ -130,7 +135,8 @@ class MoonlightPreferencesPage(Adw.PreferencesPage):
         decoder_row.set_title(_("Video Decoder"))
         dec_model = Gtk.StringList()
         decs = [("0", _("Automatic (Recommended)")), ("1", _("Hardware")), ("2", _("Software"))]
-        for __, l in decs: dec_model.append(l)
+        for __, l in decs:
+            dec_model.append(l)
         decoder_row.set_model(dec_model)
         curr_dec = self.config.get("videoDecoder", "0")
         decoder_row.set_selected(next((i for i, (d, _) in enumerate(decs) if d == curr_dec), 0))
@@ -141,7 +147,8 @@ class MoonlightPreferencesPage(Adw.PreferencesPage):
         codec_row.set_title(_("Video Codec"))
         codec_model = Gtk.StringList()
         codecs = [("0", _("Automatic (Recommended)")), ("1", "H.264"), ("2", "HEVC"), ("3", "AV1")]
-        for __, l in codecs: codec_model.append(l)
+        for __, l in codecs:
+            codec_model.append(l)
         codec_row.set_model(codec_model)
         curr_codec = self.config.get("videoCodec", "0")
         codec_row.set_selected(next((i for i, (c, _) in enumerate(codecs) if c == curr_codec), 0))
@@ -165,7 +172,8 @@ class MoonlightPreferencesPage(Adw.PreferencesPage):
     def add_boolean_option(self, group, key, title, subtitle, default):
         row = Adw.SwitchRow()
         row.set_title(title)
-        if subtitle: row.set_subtitle(subtitle)
+        if subtitle:
+            row.set_subtitle(subtitle)
         val = self.config.get(key, default).lower() == "true"
         row.set_active(val)
         row.connect("notify::active", lambda w, p: self.config.set(key, str(w.get_active()).lower()))

@@ -8,9 +8,7 @@ _SCRIPT = paths.script_path("drop_guest.sh")
 
 
 def _run(arg: str) -> subprocess.CompletedProcess:
-    return subprocess.run(
-        ["bash", _SCRIPT, arg], capture_output=True, text=True, timeout=10
-    )
+    return subprocess.run(["bash", _SCRIPT, arg], capture_output=True, text=True, timeout=10)
 
 
 def test_rejects_empty() -> None:

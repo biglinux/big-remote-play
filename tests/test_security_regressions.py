@@ -66,7 +66,7 @@ def test_network_scripts_match_current_provider_docs() -> None:
     assert "https://api.zerotier.com/api/v1" in zerotier
     assert "Authorization: token $API_TOKEN" in zerotier
     assert "Authorization: bearer $API_TOKEN" not in zerotier
-    assert "HEADSCALE_VERSION=\"${HEADSCALE_VERSION:-0.29.1}\"" in headscale
+    assert 'HEADSCALE_VERSION="${HEADSCALE_VERSION:-0.29.1}"' in headscale
     assert "raw.githubusercontent.com/juanfont/headscale/v$HEADSCALE_VERSION/config-example.yaml" in headscale
     assert "ip_prefixes:" not in headscale
     assert "0.0.0.0/0" not in headscale
@@ -75,7 +75,7 @@ def test_network_scripts_match_current_provider_docs() -> None:
     assert "./caddy_config:/config" in headscale
     assert '"443:443/udp"' in headscale
     assert "handle /generate_204" in headscale
-    assert "$HEADSCALE_IMAGE\" configtest" in headscale
+    assert '$HEADSCALE_IMAGE" configtest' in headscale
 
 
 def test_sunshine_network_options_cover_current_docs() -> None:

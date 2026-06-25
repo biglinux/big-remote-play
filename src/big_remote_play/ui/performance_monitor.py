@@ -31,9 +31,11 @@ CHART_MAX_HISTORY = 60
 
 from big_remote_play.utils.icons import create_icon_widget, set_icon
 
+
 @dataclass
 class PerformanceDataPoint:
     """Single data point for performance chart."""
+
     latency: float
     fps: float
     bandwidth: float
@@ -42,6 +44,7 @@ class PerformanceDataPoint:
     fps_text: str
     bandwidth_text: str
     users_count: int = 0
+
 
 class PerformanceChartWidget(Gtk.DrawingArea):
     """
@@ -76,15 +79,15 @@ class PerformanceChartWidget(Gtk.DrawingArea):
         motion_controller.connect("motion", self._on_motion)
         motion_controller.connect("leave", self._on_leave)
         self.add_controller(motion_controller)
-        
+
     def _get_device_color(self, name):
         # Strip state suffixes to keep the color consistent
-        base_name = name.split('(')[0].strip()
+        base_name = name.split("(")[0].strip()
         if base_name not in self.device_colors:
             idx = len(self.device_colors) % len(self.color_palette)
             self.device_colors[base_name] = self.color_palette[idx]
         return self.device_colors[base_name]
-        
+
     def add_data_point(
         self,
         latency: float,
@@ -94,15 +97,19 @@ class PerformanceChartWidget(Gtk.DrawingArea):
         device_latencies: dict[str, float] | None = None,
         bw_text_override: str | None = None,
     ):
-        if latency > self.max_latency: self.max_latency = latency * 1.2
-        if fps > self.max_fps: self.max_fps = fps * 1.2
-        if bandwidth > self.max_bandwidth: self.max_bandwidth = bandwidth * 1.2
+        if latency > self.max_latency:
+            self.max_latency = latency * 1.2
+        if fps > self.max_fps:
+            self.max_fps = fps * 1.2
+        if bandwidth > self.max_bandwidth:
+            self.max_bandwidth = bandwidth * 1.2
         if device_latencies:
             for lat in device_latencies.values():
-                if lat > self.max_latency: self.max_latency = lat * 1.2
-        
+                if lat > self.max_latency:
+                    self.max_latency = lat * 1.2
+
         bw_txt = bw_text_override if bw_text_override else f"{bandwidth:.1f} Mbps"
-        
+
         point = PerformanceDataPoint(
             latency=latency,
             fps=fps,
@@ -111,7 +118,7 @@ class PerformanceChartWidget(Gtk.DrawingArea):
             latency_text=f"{latency:.0f} ms",
             fps_text=f"{fps:.0f} FPS",
             bandwidth_text=bw_txt,
-            users_count=users
+            users_count=users,
         )
         self._history.append(point)
         self._cur_latency_text = point.latency_text
@@ -162,7 +169,8 @@ class PerformanceChartWidget(Gtk.DrawingArea):
             margin_bottom = 30
             chart_width = width - margin_left - margin_right
             chart_height = height - margin_top - margin_bottom
-            if chart_width <= 0 or chart_height <= 0: return
+            if chart_width <= 0 or chart_height <= 0:
+                return
             cr.set_source_rgba(0.3, 0.3, 0.3, 0.3)
             cr.set_line_width(1)
             for i in range(4):
@@ -175,7 +183,7 @@ class PerformanceChartWidget(Gtk.DrawingArea):
                 cr.set_font_size(14)
                 text = _("Waiting for data...")
                 extents = cr.text_extents(text)
-                cr.move_to(margin_left + (chart_width - extents.width)/2, margin_top + chart_height/2)
+                cr.move_to(margin_left + (chart_width - extents.width) / 2, margin_top + chart_height / 2)
                 cr.show_text(text)
                 return
             lat_vals = [p.latency for p in self._history]
@@ -195,7 +203,7 @@ class PerformanceChartWidget(Gtk.DrawingArea):
                 for dev_name in active_devices:
                     dev_vals = []
                     for p in self._history:
-                        val = p.device_latencies.get(dev_name, 0) 
+                        val = p.device_latencies.get(dev_name, 0)
                         dev_vals.append(val / max(1, self.max_latency))
                     color = self._get_device_color(dev_name)
                     self._draw_line(cr, chart_width, chart_height, margin_left, margin_top, dev_vals, color, fill=False)
@@ -220,12 +228,13 @@ class PerformanceChartWidget(Gtk.DrawingArea):
             pass
 
     def _draw_line(self, cr, w, h, mx, my, vals, color, fill=False):
-        if not vals: return
+        if not vals:
+            return
         cr.set_source_rgba(*color)
         cr.set_line_width(2)
         x_step = w / max(CHART_MAX_HISTORY - 1, 1)
         sx = mx + w - (len(vals) - 1) * x_step
-        for i, v in enumerate(vals): 
+        for i, v in enumerate(vals):
             if i == 0:
                 cr.move_to(sx + i * x_step, my + h * (1 - v))
             else:
@@ -233,7 +242,7 @@ class PerformanceChartWidget(Gtk.DrawingArea):
         cr.stroke()
         if fill:
             cr.set_source_rgba(color[0], color[1], color[2], 0.15)
-            for i, v in enumerate(vals): 
+            for i, v in enumerate(vals):
                 if i == 0:
                     cr.move_to(sx + i * x_step, my + h * (1 - v))
                 else:
@@ -245,18 +254,20 @@ class PerformanceChartWidget(Gtk.DrawingArea):
 
     def _draw_legend(self, cr, w, h, margin_left, active_devices=None):
         legend_y = h - 10
+
         def draw_item(label, val_text, color, x_offset):
             cr.set_source_rgba(*color)
-            cr.arc(margin_left + x_offset, legend_y - 4, 4, 0, 2*3.14159)
+            cr.arc(margin_left + x_offset, legend_y - 4, 4, 0, 2 * 3.14159)
             cr.fill()
             cr.set_source_rgba(0.9, 0.9, 0.9, 1)
             cr.set_font_size(11)
             cr.move_to(margin_left + x_offset + 10, legend_y)
             # Clean name for the legend
-            clean_label = label.split('(')[0].strip()
+            clean_label = label.split("(")[0].strip()
             text = f"{clean_label}: {val_text}"
             cr.show_text(text)
             return cr.text_extents(text).width + 30
+
         offset = 0
         if not active_devices:
             offset += draw_item(_("Latency"), self._cur_latency_text, (1.0, 0.4, 0.0, 1.0), offset)
@@ -267,7 +278,7 @@ class PerformanceChartWidget(Gtk.DrawingArea):
                 color = self._get_device_color(dev)
                 offset += draw_item(dev, f"{val:.0f}ms", color, offset)
         offset += draw_item("FPS", self._cur_fps_text, (0.0, 0.8, 0.2, 1.0), offset)
-        if offset > w - 100: 
+        if offset > w - 100:
             legend_y -= 15
             offset = 0
         draw_item("BW", self._cur_bw_text, (0.0, 0.6, 1.0, 1.0), offset)
@@ -309,17 +320,18 @@ class PerformanceChartWidget(Gtk.DrawingArea):
             cr.show_text(line)
             y_off += 14
 
+
 class PerformanceMonitor(Gtk.Box):
     """
     Wrapper for performance chart.
     Replaces old text box.
     """
-    
+
     def __init__(self, sunshine=None):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.sunshine = sunshine
         self.hostname_cache = {}
-        self.add_css_class('card')
+        self.add_css_class("card")
         self.set_margin_top(12)
         self.set_margin_bottom(12)
         self.set_margin_start(12)
@@ -349,27 +361,27 @@ class PerformanceMonitor(Gtk.Box):
         self._details_frame.set_margin_end(12)
         self._details_frame.set_visible(False)
         self._details_list = Gtk.ListBox()
-        self._details_list.add_css_class('boxed-list')
+        self._details_list.add_css_class("boxed-list")
         self._details_frame.set_child(self._details_list)
         self.append(self._details_frame)
         self.chart = PerformanceChartWidget()
         self.append(self.chart)
-        
+
         self.update_timer_active = False
         self._target_fps = 60.0
         self._target_bw = 10.0
         self._last_fps = 60.0
         self._last_bandwidth = 10.0
-        
+
         # Cache for device persistence
         # Key: IP, Value: {'name': str, 'last_seen': float, 'last_latency': float}
-        self._known_devices = {} 
-        
+        self._known_devices = {}
+
         self._data_queue = queue.Queue()
         self._worker_thread = None
         self._worker_running = False
         self._worker_event = threading.Event()
-        
+
     def set_target_fps(self, fps):
         """Sets the expected FPS for idle display"""
         try:
@@ -379,7 +391,8 @@ class PerformanceMonitor(Gtk.Box):
                 # Update current view if idle (fps == 0 or default 60)
                 if self._last_fps == 60.0 or self._last_fps == 0:
                     self._last_fps = val
-        except Exception: pass
+        except Exception:
+            pass
 
     def set_target_bandwidth(self, mbps):
         try:
@@ -388,29 +401,29 @@ class PerformanceMonitor(Gtk.Box):
             # If idle (default 10), update
             if self._last_bandwidth == 10.0 or self._last_bandwidth == 0:
                 self._last_bandwidth = val
-        except Exception: pass
+        except Exception:
+            pass
 
     def start_monitoring(self):
-        if self.update_timer_active: return
+        if self.update_timer_active:
+            return
         self.update_timer_active = True
         GLib.timeout_add(100, self._process_data_queue)
         self._start_worker_thread()
         self.update_stats(0, 0, 0, [])
 
-    def stop_monitoring(self): 
-        if not self.update_timer_active: return
+    def stop_monitoring(self):
+        if not self.update_timer_active:
+            return
         self.update_timer_active = False
         self._stop_worker_thread()
 
     def _start_worker_thread(self):
-        if self._worker_running: return
+        if self._worker_running:
+            return
         self._worker_running = True
         self._worker_event.clear()
-        self._worker_thread = threading.Thread(
-            target=self._worker_loop,
-            name="PerformanceMonitor-Worker",
-            daemon=True
-        )
+        self._worker_thread = threading.Thread(target=self._worker_loop, name="PerformanceMonitor-Worker", daemon=True)
         self._worker_thread.start()
 
     def _stop_worker_thread(self):
@@ -423,16 +436,18 @@ class PerformanceMonitor(Gtk.Box):
         time.sleep(1)
         while self._worker_running:
             try:
-                if not self._worker_running: break
+                if not self._worker_running:
+                    break
                 self._fetch_and_process_data()
-                for _ in range(10): # ~1 segundo de pausa
+                for _ in range(10):  # ~1 segundo de pausa
                     if not self._worker_running or self._worker_event.wait(timeout=0.1):
                         break
             except Exception:
                 time.sleep(2)
 
     def _process_data_queue(self):
-        if not self.update_timer_active: return False
+        if not self.update_timer_active:
+            return False
         try:
             processed_count = 0
             while not self._data_queue.empty() and processed_count < 10:
@@ -443,7 +458,7 @@ class PerformanceMonitor(Gtk.Box):
                     else:
                         latency, fps, bandwidth, sessions, device_latencies = data
                         bw_text = None
-                        
+
                     self.update_stats(latency, fps, bandwidth, sessions, device_latencies, bw_text)
                     processed_count += 1
                 except queue.Empty:
@@ -454,24 +469,27 @@ class PerformanceMonitor(Gtk.Box):
 
     def _resolve_hostname(self, ip):
         """Resolves hostname with caching to avoid lag"""
-        if not ip or ip in ['0.0.0.0']: return None
-        if ip in ['127.0.0.1', '::1', 'localhost']: return "Localhost"
+        if not ip or ip in ["0.0.0.0"]:
+            return None
+        if ip in ["127.0.0.1", "::1", "localhost"]:
+            return "Localhost"
         if ip in self.hostname_cache:
             return self.hostname_cache[ip]
-            
+
         try:
             # Short timeout
             socket.setdefaulttimeout(0.5)
             hostname = socket.gethostbyaddr(ip)[0]
             # Remove domain part if looks like a local domain
-            if '.local' in hostname: hostname = hostname.split('.')[0]
+            if ".local" in hostname:
+                hostname = hostname.split(".")[0]
             self.hostname_cache[ip] = hostname
             return hostname
         except Exception:
             # Cache failure too to avoid retrying constantly
             self.hostname_cache[ip] = None
             return None
-            
+
     def _sunshine_auth(self) -> tuple[str, str] | None:
         """Reads Sunshine admin credentials from the system keyring, or None."""
         from big_remote_play.utils.sunshine_credentials import load_sunshine_credentials
@@ -482,8 +500,7 @@ class PerformanceMonitor(Gtk.Box):
         """Offers a gentle app close vs a forceful IP eviction."""
         dialog = Adw.MessageDialog(
             heading=_("Disconnect Guest"),
-            body=_("End the running game gently, or forcefully evict the network "
-                   "address? Ending the game keeps the device paired."),
+            body=_("End the running game gently, or forcefully evict the network address? Ending the game keeps the device paired."),
         )
         root = self.get_root()
         if isinstance(root, Gtk.Window):
@@ -521,9 +538,11 @@ class PerformanceMonitor(Gtk.Box):
 
     def _disconnect_session(self, session_id, ip):
         # We need at least an IP or session_id to try something
-        if not ip and not session_id: return
-        
+        if not ip and not session_id:
+            return
+
         self.set_sensitive(False)
+
         def do_disconnect():
             success = False
 
@@ -532,7 +551,7 @@ class PerformanceMonitor(Gtk.Box):
             # client would not end an in-progress stream.
             if ip:
                 try:
-                    script_path = paths.script_path('drop_guest.sh')
+                    script_path = paths.script_path("drop_guest.sh")
 
                     if os.path.exists(script_path):
                         cmd = ["pkexec", script_path, ip]
@@ -544,45 +563,51 @@ class PerformanceMonitor(Gtk.Box):
                     pass
 
             GLib.idle_add(self._on_disconnect_done, success)
-            
+
         threading.Thread(target=do_disconnect, daemon=True).start()
-        
+
     def _on_disconnect_done(self, success):
         self.set_sensitive(True)
         if success:
-             # Force immediate update
-             self._process_data_queue()
+            # Force immediate update
+            self._process_data_queue()
         else:
-             # Show error (optional, toast would be better but we are inside widget)
-             pass
+            # Show error (optional, toast would be better but we are inside widget)
+            pass
 
     def _ping_host(self, ip):
         # Allow pinging localhost or ::1 for local testing
-        if not ip or ip in ['', 'Unknown IP', '0.0.0.0']: return 0.0
+        if not ip or ip in ["", "Unknown IP", "0.0.0.0"]:
+            return 0.0
         try:
             import platform
+
             system = platform.system()
             # Force LOCALE C to ensure a decimal point and English message
             env = os.environ.copy()
             env["LC_ALL"] = "C"
-            
-            if system == "Linux": cmd = ["ping", "-c", "1", "-W", "1", "-n", ip]
-            elif system == "Darwin": cmd = ["ping", "-c", "1", "-t", "1", "-n", ip]
-            elif system == "Windows": cmd = ["ping", "-n", "1", "-w", "1000", ip]
-            else: cmd = ["ping", "-c", "1", "-n", ip]
-            
+
+            if system == "Linux":
+                cmd = ["ping", "-c", "1", "-W", "1", "-n", ip]
+            elif system == "Darwin":
+                cmd = ["ping", "-c", "1", "-t", "1", "-n", ip]
+            elif system == "Windows":
+                cmd = ["ping", "-n", "1", "-w", "1000", ip]
+            else:
+                cmd = ["ping", "-c", "1", "-n", ip]
+
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=1.5, env=env)
-            
+
             if result.returncode == 0:
                 # Robust regex for tempo=1.23, time=1.23, ttl... time=1.23
-                match = re.search(r'(?:time|tempo|ttl)[=<]([\d\.,]+)\s*ms', result.stdout, re.IGNORECASE)
+                match = re.search(r"(?:time|tempo|ttl)[=<]([\d\.,]+)\s*ms", result.stdout, re.IGNORECASE)
                 if match:
-                    val_str = match.group(1).replace(',', '.')
+                    val_str = match.group(1).replace(",", ".")
                     return float(val_str)
                 # Simple fallback
-                match_fallback = re.search(r'([\d\.,]+)\s*ms', result.stdout)
+                match_fallback = re.search(r"([\d\.,]+)\s*ms", result.stdout)
                 if match_fallback:
-                    val_str = match_fallback.group(1).replace(',', '.')
+                    val_str = match_fallback.group(1).replace(",", ".")
                     return float(val_str)
             return 0.0
         except Exception:
@@ -592,27 +617,29 @@ class PerformanceMonitor(Gtk.Box):
         """Return a dict {ip: data} for easy lookup."""
         found_sessions = {}
         try:
-            sunshine_ports = ['47984', '47989', '48010', '47998', '47999', '48000', '48002', '47990', '48001']
+            sunshine_ports = ["47984", "47989", "48010", "47998", "47999", "48000", "48002", "47990", "48001"]
             cmd = ["ss", "-tun", "-a"]
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
-            if result.returncode != 0: return {}
-            
+            if result.returncode != 0:
+                return {}
+
             for line in result.stdout.splitlines():
-                if 'ESTAB' in line or 'UNCONN' in line:
+                if "ESTAB" in line or "UNCONN" in line:
                     for port in sunshine_ports:
                         if f":{port}" in line:
                             parts = line.split()
                             if len(parts) >= 5:
                                 last_part = parts[-1]
                                 # More permissive regex to capture the IP
-                                ip_match = re.search(r'(\d+\.\d+\.\d+\.\d+)', last_part)
+                                ip_match = re.search(r"(\d+\.\d+\.\d+\.\d+)", last_part)
                                 if ip_match:
                                     ip = ip_match.group(1)
-                                    if ip == '0.0.0.0': continue
+                                    if ip == "0.0.0.0":
+                                        continue
                                     # Allow localhost for testing (127.0.0.1)
-                                    
+
                                     if ip not in found_sessions:
-                                        found_sessions[ip] = {'ip': ip, 'name': _('Guest'), 'latency': 0, 'fps': 60}
+                                        found_sessions[ip] = {"ip": ip, "name": _("Guest"), "latency": 0, "fps": 60}
                             break
         except Exception:
             pass
@@ -632,100 +659,91 @@ class PerformanceMonitor(Gtk.Box):
             normalized_api_sessions = []
             current_cycle_ips = set()
             for ip, data in ss_sessions_dict.items():
-                hname = self._resolve_hostname(ip) or _('Guest')
-                normalized_api_sessions.append({'ip': ip, 'name': hname, 'source': 'ss', 'id': None})
+                hname = self._resolve_hostname(ip) or _("Guest")
+                normalized_api_sessions.append({"ip": ip, "name": hname, "source": "ss", "id": None})
                 current_cycle_ips.add(ip)
 
             # 4. UPDATE THE KNOWN DEVICES LIST (persistence)
             # If an IP showed up now, update the timestamp.
             # If it didn't show up now, keep it in the list if it answers ping.
-            
+
             now = time.time()
-            
+
             # Insert new ones or update existing ones detected now
             for s in normalized_api_sessions:
-                ip = s['ip']
-                name = s['name']
-                if not ip: continue
-                
+                ip = s["ip"]
+                name = s["name"]
+                if not ip:
+                    continue
+
                 # If already known, preserve the name if it is "Guest" now
                 if ip in self._known_devices:
-                    if name == _('Guest') and self._known_devices[ip]['name'] != _('Guest'):
-                        name = self._known_devices[ip]['name']
-                
-                self._known_devices[ip] = {
-                    'ip': ip,
-                    'name': name,
-                    'last_seen': now,
-                    'status': 'active'
-                }
+                    if name == _("Guest") and self._known_devices[ip]["name"] != _("Guest"):
+                        name = self._known_devices[ip]["name"]
+
+                self._known_devices[ip] = {"ip": ip, "name": name, "last_seen": now, "status": "active"}
 
             # 5. PING AND CLEANUP
             # Iterate over ALL known devices, not only the active ones
             final_display_list = []
             device_latencies = {}
-            
+
             active_sessions_count = 0
-            
+
             ips_to_remove = []
-            
+
             for ip, data in self._known_devices.items():
                 # Check whether it is "active" this cycle (came from API or SS)
                 is_active_cycle = ip in current_cycle_ips
-                
+
                 # ALWAYS PING to have data in the chart
                 # This fixes the missing-data problem
                 lat = self._ping_host(ip)
-                
+
                 # Persistence logic:
                 # If ping > 0: keep it in the list as 'Online'
                 # If ping == 0:
                 #    If it was active this cycle (API said it's there), keep it (could be a firewall blocking ping)
                 #    If it was NOT active this cycle, mark it for removal (timeout)
-                
+
                 if lat > 0:
-                    data['last_latency'] = lat
-                    data['last_seen'] = now # Renovamos "visto" se ping responde
+                    data["last_latency"] = lat
+                    data["last_seen"] = now  # Renovamos "visto" se ping responde
                 else:
                     # If ping failed, use the last known value or 0
-                    lat = data.get('last_latency', 0)
-                
+                    lat = data.get("last_latency", 0)
+
                 # Set the display name
-                display_name = data['name']
+                display_name = data["name"]
                 if ip not in display_name:
                     display_name = f"{display_name} ({ip})"
-                
+
                 # Add a suffix if only in "ping mode" (no active stream)
                 if not is_active_cycle and lat > 0:
                     # Optional: indicate idle, but the user asked for PERPETUAL
-                    pass 
-                
+                    pass
+
                 # If there is no sign of life (no API, no SS, no Ping) for X time, remove it
-                if not is_active_cycle and lat == 0 and (now - data['last_seen'] > 30): # 30 seconds tolerance
+                if not is_active_cycle and lat == 0 and (now - data["last_seen"] > 30):  # 30 seconds tolerance
                     ips_to_remove.append(ip)
                     continue
 
                 # Preparar objeto para a UI
-                session_obj = {
-                    'ip': ip,
-                    'name': display_name,
-                    'latency': lat,
-                    'id': None 
-                }
-                
+                session_obj = {"ip": ip, "name": display_name, "latency": lat, "id": None}
+
                 # Find matching session to get ID
                 for s in normalized_api_sessions:
-                    if s['ip'] == ip:
-                        session_obj['id'] = s.get('id')
+                    if s["ip"] == ip:
+                        session_obj["id"] = s.get("id")
                         break
-                
+
                 # Find ID from api list if ip matches
-                
+
                 if is_active_cycle:
                     active_sessions_count += 1
-                
+
                 final_display_list.append(session_obj)
-                
+
                 # Add to the chart if it has latency
                 if lat > 0:
                     device_latencies[display_name] = lat
@@ -739,23 +757,26 @@ class PerformanceMonitor(Gtk.Box):
                 latency_avg = sum(device_latencies.values()) / len(device_latencies)
 
             # Keep FPS/BW stable
-            if fps == 0: fps = self._last_fps if self._last_fps > 0 else self._target_fps 
-            else: self._last_fps = fps
-            
+            if fps == 0:
+                fps = self._last_fps if self._last_fps > 0 else self._target_fps
+            else:
+                self._last_fps = fps
+
             bw_txt_override = None
-            if bandwidth == 0: 
+            if bandwidth == 0:
                 bandwidth = self._last_bandwidth if self._last_bandwidth > 0 else (self._target_bw if self._target_bw > 0 else 1.0)
-                if self._target_bw == 0: 
-                     bw_txt_override = "Unlimited"
-                     if bandwidth < 100: bandwidth = 100.0 # Dummy value for visual scale
-            else: 
+                if self._target_bw == 0:
+                    bw_txt_override = "Unlimited"
+                    if bandwidth < 100:
+                        bandwidth = 100.0  # Dummy value for visual scale
+            else:
                 self._last_bandwidth = bandwidth
                 if self._target_bw == 0:
-                     bw_txt_override = f"{bandwidth:.1f} Mbps (Unlim)"
+                    bw_txt_override = f"{bandwidth:.1f} Mbps (Unlim)"
 
             # Send to the UI
             self._data_queue.put((latency_avg, fps, bandwidth, final_display_list, device_latencies, bw_txt_override))
-            
+
         except Exception:
             pass
 
@@ -769,17 +790,19 @@ class PerformanceMonitor(Gtk.Box):
         bw_text: str | None = None,
     ):
         try:
-            if not self.update_timer_active: return
+            if not self.update_timer_active:
+                return
             sessions, device_latencies = sessions or [], device_latencies or {}
-            
+
             # The chart receives device_latencies, containing ALL that answered the ping
             self.chart.add_data_point(latency, fps, bandwidth, users=len(sessions), device_latencies=device_latencies, bw_text_override=bw_text)
-            
+
             if len(sessions) > 0:
                 if len(sessions) == 1:
-                    guest_name = sessions[0].get('name', 'Sunshine')
+                    guest_name = sessions[0].get("name", "Sunshine")
                     # Clean name for title
-                    if '(' in guest_name: guest_name = guest_name.split('(')[0].strip()
+                    if "(" in guest_name:
+                        guest_name = guest_name.split("(")[0].strip()
                     self.set_connection_status(guest_name, _("Active Connection"), True)
                 else:
                     self.set_connection_status("Sunshine", _("{} devices monitoring").format(len(sessions)), True)
@@ -787,7 +810,7 @@ class PerformanceMonitor(Gtk.Box):
             else:
                 self.set_connection_status("Sunshine", _("Active - No devices"), True)
                 self._details_frame.set_visible(False)
-            
+
             self._update_guest_list(sessions)
         except Exception:
             pass
@@ -797,28 +820,31 @@ class PerformanceMonitor(Gtk.Box):
             self._details_list.remove(child)
         for s in sessions:
             row = Adw.ActionRow()
-            full_name = s.get('name', _('Guest'))
-            ip = s.get('ip', 'Unknown IP')
-            latency = s.get('latency', 0)
-            
+            full_name = s.get("name", _("Guest"))
+            ip = s.get("ip", "Unknown IP")
+            latency = s.get("latency", 0)
+
             # Split Name and IP for a cleaner look
-            if '(' in full_name:
-                name_part = full_name.split('(')[0].strip()
+            if "(" in full_name:
+                name_part = full_name.split("(")[0].strip()
             else:
                 name_part = full_name
-                
+
             row.set_title(name_part)
             row.set_subtitle(f"IP: {ip}")
-            
+
             ping_lbl = Gtk.Label(label=f"{latency:.0f} ms")
             if latency <= 0:
                 ping_lbl.set_label("-- ms")
-                ping_lbl.add_css_class('error')
-            elif latency < 15: ping_lbl.add_css_class('success')
-            elif latency < 50: ping_lbl.add_css_class('warning')
-            else: ping_lbl.add_css_class('error')
-            
-            if hasattr(self.chart, '_get_device_color'):
+                ping_lbl.add_css_class("error")
+            elif latency < 15:
+                ping_lbl.add_css_class("success")
+            elif latency < 50:
+                ping_lbl.add_css_class("warning")
+            else:
+                ping_lbl.add_css_class("error")
+
+            if hasattr(self.chart, "_get_device_color"):
                 try:
                     # Use the full name to keep the same color as the chart
                     color = self.chart._get_device_color(full_name)
@@ -826,33 +852,38 @@ class PerformanceMonitor(Gtk.Box):
                     da.set_content_width(24)
                     da.set_content_height(24)
                     da.set_valign(Gtk.Align.CENTER)
+
                     def draw_indicator(area, cr, width, height, color=color):
                         cr.set_source_rgba(*color)
-                        cr.arc(width/2, height/2, 5, 0, 2 * 3.14159)
+                        cr.arc(width / 2, height / 2, 5, 0, 2 * 3.14159)
                         cr.fill()
+
                     da.set_draw_func(draw_indicator)
                     row.add_prefix(da)
-                except Exception: pass
-            
+                except Exception:
+                    pass
+
             row.add_suffix(ping_lbl)
-            
+
             # Disconnect button (If we have an ID or IP)
-            if s.get('id') or s.get('ip'):
+            if s.get("id") or s.get("ip"):
                 disc_btn = Gtk.Button()
-                disc_btn.set_icon_name("network-offline-symbolic") 
+                disc_btn.set_icon_name("network-offline-symbolic")
                 disc_btn.add_css_class("flat")
                 disc_btn.add_css_class("destructive-action")
                 disc_btn.set_tooltip_text(_("Disconnect this specific guest (Admin)"))
                 disc_btn.set_valign(Gtk.Align.CENTER)
                 disc_btn.update_property([Gtk.AccessibleProperty.LABEL], [_("Disconnect guest")])
-                disc_btn.connect("clicked", lambda b, sid=s.get('id'), sip=s.get('ip'): self._prompt_disconnect(sid, sip))
+                disc_btn.connect("clicked", lambda b, sid=s.get("id"), sip=s.get("ip"): self._prompt_disconnect(sid, sip))
                 row.add_suffix(disc_btn)
-                
+
             self._details_list.append(row)
 
     def set_connection_status(self, name, status, conn=True):
-        if conn: self._title_label.set_label(_("Connected to {}").format(name))
-        else: self._title_label.set_label(_("Real-time Monitoring"))
+        if conn:
+            self._title_label.set_label(_("Connected to {}").format(name))
+        else:
+            self._title_label.set_label(_("Real-time Monitoring"))
         self._status_label.set_label(status)
         if conn:
             set_icon(self._status_icon, "network-transmit-receive-symbolic")
