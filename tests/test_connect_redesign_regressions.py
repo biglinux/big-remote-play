@@ -1,0 +1,108 @@
+"""Static source guards for the Connect page + Rede Privada novice redesign."""
+
+from pathlib import Path
+
+GUEST = Path("src/big_remote_play/ui/guest_view.py")
+MAIN = Path("src/big_remote_play/ui/main_window.py")
+PNV = Path("src/big_remote_play/ui/private_network_view.py")
+
+
+def test_host_scroll_has_breathing_room_and_no_tall_min() -> None:
+    src = GUEST.read_text()
+    # The host list scroller must not force a tall empty box, and the list must
+    # have vertical margins so the boxed-list card corners are not clipped.
+    assert "host_scroll.set_min_content_height(120)" in src
+    assert "self.hosts_list.set_margin_top(6)" in src
+    assert "self.hosts_list.set_margin_bottom(6)" in src
+
+
+def test_empty_state_routes_novice_to_real_unlocks() -> None:
+    src = GUEST.read_text()
+    assert "_build_discover_empty_state" in src
+    # Re-scan, Private Network, PIN, Manual all reachable from the empty state.
+    assert 'navigate_to("vpn_selector")' in src
+    assert 'self.method_stack.set_visible_child_name("pin")' in src
+    assert 'self.method_stack.set_visible_child_name("manual")' in src
+
+
+def test_empty_state_buttons_have_accessible_labels() -> None:
+    src = GUEST.read_text()
+    # The empty-state builder must give its action buttons accessible names
+    # (icon/short-label buttons have no inferable AT-SPI name).
+    block = src.split("def _build_discover_empty_state", 1)[1].split("def create_discover_page", 1)[0]
+    assert "update_property([Gtk.AccessibleProperty.LABEL]" in block
+
+
+def test_discover_is_single_column_with_guidance() -> None:
+    src = GUEST.read_text()
+    # Side helper-card column removed from the discover page.
+    assert "create_helper_card(" not in src
+    # Fixed automatic-discovery guidance subtitle present.
+    assert "appears here automatically" in src
+
+
+def test_client_settings_collapsed_behind_quality_expander() -> None:
+    src = GUEST.read_text()
+    assert "Adw.ExpanderRow" in src
+    assert "_quality_summary" in src
+    assert "Adjust quality" in src
+
+
+def test_vpn_selector_has_role_framing_and_collapsed_comparison() -> None:
+    src = MAIN.read_text()
+    assert "Gtk.Expander" in src  # comparison table is collapsible
+    assert "the one with the game creates" in src
+
+
+def test_tailscale_browser_login_prominent_and_key_advanced() -> None:
+    src = PNV.read_text()
+    assert "Adw.ExpanderRow" in src  # auth key behind an advanced disclosure
+    assert "Sign in with browser" in src
+
+
+def test_vpn_form_install_only_when_missing() -> None:
+    src = PNV.read_text()
+    assert "_is_vpn_installed" in src
+    assert "_build_install_buttons" in src
+    # Explicit install action (pacman) gated on pacman availability; manual link otherwise.
+    assert "has_pacman" in src
+    assert "_on_install_clicked" in src
+    assert "install-vpn.sh" in src
+    # Rebuild to the connect view after a successful install.
+    assert "_rebuild" in src
+
+
+def test_install_supports_pacman_and_flatpak_detection() -> None:
+    sc = Path("src/big_remote_play/utils/system_check.py").read_text()
+    assert "def has_pacman" in sc
+    assert "flatpak_app_id" in sc
+    assert "def tailscale_cmd" in sc
+    # has_tailscale / has_zerotier recognise a Flatpak install too.
+    assert "flatpak_app_id(\"tailscale\")" in sc
+    assert "flatpak_app_id(\"zerotier\")" in sc
+
+
+def test_vpn_selector_cards_show_install_badge() -> None:
+    src = MAIN.read_text()
+    assert "has_tailscale" in src and "has_docker" in src
+    assert "Will be installed" in src
+
+
+def test_tailscale_browser_login_opens_url_as_user_not_root() -> None:
+    script = Path("usr/share/big-remote-play/scripts/create-network_tailscale.sh").read_text()
+    # Script must emit the auth URL as a marker, not try to open a root browser.
+    assert "BRP_DATA LOGIN_URL=" in script
+    pnv = PNV.read_text()
+    # App opens the captured URL in the user's session.
+    assert 'kind[1] == "LOGIN_URL"' in pnv
+    assert "open_uri" in pnv
+
+
+def test_no_bigsudo_uses_pkexec_for_cross_distro() -> None:
+    for p in (MAIN, PNV):
+        src = p.read_text()
+        assert "bigsudo" not in src, f"{p} still uses bigsudo"
+    assert "pkexec" in PNV.read_text()
+    # Privilege-elevation scripts no longer reference the BigLinux-only helper.
+    for s in ("install-vpn.sh", "create-network_tailscale.sh"):
+        assert "bigsudo" not in Path(f"usr/share/big-remote-play/scripts/{s}").read_text()
