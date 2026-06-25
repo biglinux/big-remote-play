@@ -520,16 +520,21 @@ class CreatePage(Gtk.Box):
             # English msgid; data is parsed from locale-independent BRP_* markers.
             # `env` is passed through bigsudo so it survives privilege elevation.
             proc = subprocess.Popen(["bigsudo", "env", "LC_ALL=C", "LANGUAGE=", script], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-            for s in inputs:
-                try:
-                    proc.stdin.write(s)
-                    proc.stdin.flush()
-                except Exception:
-                    break
+            proc_stdin = proc.stdin
+            if proc_stdin is not None:
+                for s in inputs:
+                    try:
+                        proc_stdin.write(s)
+                        proc_stdin.flush()
+                    except Exception:
+                        break
 
             captured = {}
             phase = 0.1
-            for line in proc.stdout:
+            proc_stdout = proc.stdout
+            if proc_stdout is None:
+                return
+            for line in proc_stdout:
                 kind = parse_script_line(line)
                 if kind[0] == "data":
                     if kind[2]:
@@ -799,7 +804,9 @@ class CreatePage(Gtk.Box):
 
         def copy_ip(b):
             txt = self.instructions_ip_label.get_label()
-            Gdk.Display.get_default().get_clipboard().set(txt)
+            display = Gdk.Display.get_default()
+            if display is not None:
+                display.get_clipboard().set(txt)
             self.main_window.show_toast(_("Copied!"))
 
         btn_copy_ip = Gtk.Button()
@@ -997,9 +1004,15 @@ class CreatePage(Gtk.Box):
 
             def do_logout():
                 subprocess.run(["bigsudo", "tailscale", "logout"], timeout=30)
-                GLib.idle_add(
-                    lambda: (self.main_window.show_toast(_("Tailscale disconnected")), self._btn_logout.set_visible(False), self._networks_group.set_visible(False), self._refresh_networks())
-                )
+
+                def finish_logout():
+                    self.main_window.show_toast(_("Tailscale disconnected"))
+                    self._btn_logout.set_visible(False)
+                    self._networks_group.set_visible(False)
+                    self._refresh_networks()
+                    return False
+
+                GLib.idle_add(finish_logout)
 
             threading.Thread(target=do_logout, daemon=True).start()
         elif self.vpn_id == "zerotier":
@@ -1018,9 +1031,15 @@ class CreatePage(Gtk.Box):
 
             def do_logout():
                 subprocess.run(["bigsudo", "tailscale", "logout"], timeout=30)
-                GLib.idle_add(
-                    lambda: (self.main_window.show_toast(_("Disconnected from Headscale")), self._btn_logout.set_visible(False), self._networks_group.set_visible(False), self._refresh_networks())
-                )
+
+                def finish_logout():
+                    self.main_window.show_toast(_("Disconnected from Headscale"))
+                    self._btn_logout.set_visible(False)
+                    self._networks_group.set_visible(False)
+                    self._refresh_networks()
+                    return False
+
+                GLib.idle_add(finish_logout)
 
             threading.Thread(target=do_logout, daemon=True).start()
 
@@ -1160,9 +1179,10 @@ class CreatePage(Gtk.Box):
                     file_handle = dialog_file.save_finish(result)
                     if file_handle:
                         path = file_handle.get_path()
-                        with open(path, "w") as f:
-                            f.write(msg)
-                        self.main_window.show_toast(_("Saved to file!"))
+                        if path:
+                            with open(path, "w") as f:
+                                f.write(msg)
+                            self.main_window.show_toast(_("Saved to file!"))
                 except Exception as e:
                     print(f"Error saving: {e}")
 
@@ -1186,16 +1206,18 @@ class CreatePage(Gtk.Box):
         btn_save.connect("clicked", lambda b: self.main_window.show_toast(_("Saved to history!")))
 
         btn_file = Gtk.Button()
-        btn_file.set_child(Gtk.Box(spacing=8))
-        btn_file.get_child().append(create_icon_widget("folder-open-symbolic", size=16))
-        btn_file.get_child().append(Gtk.Label(label=_("Save to File")))
+        btn_file_box = Gtk.Box(spacing=8)
+        btn_file_box.append(create_icon_widget("folder-open-symbolic", size=16))
+        btn_file_box.append(Gtk.Label(label=_("Save to File")))
+        btn_file.set_child(btn_file_box)
         btn_file.add_css_class("pill")
         btn_file.connect("clicked", on_save_file)
 
         btn_share = Gtk.Button()
-        btn_share.set_child(Gtk.Box(spacing=8))
-        btn_share.get_child().append(create_icon_widget("open-menu-symbolic", size=16))
-        btn_share.get_child().append(Gtk.Label(label=_("Share")))
+        btn_share_box = Gtk.Box(spacing=8)
+        btn_share_box.append(create_icon_widget("open-menu-symbolic", size=16))
+        btn_share_box.append(Gtk.Label(label=_("Share")))
+        btn_share.set_child(btn_share_box)
         btn_share.add_css_class("pill")
         btn_share.connect("clicked", on_share)
 
@@ -1215,8 +1237,9 @@ class CreatePage(Gtk.Box):
         dialog.present()
 
     def _copy(self, text):
-        clipboard = Gdk.Display.get_default().get_clipboard()
-        clipboard.set(text)
+        display = Gdk.Display.get_default()
+        if display is not None:
+            display.get_clipboard().set(text)
         self.main_window.show_toast(_("Copied!"))
 
 
@@ -1566,14 +1589,19 @@ class ConnectPage(Adw.Bin):
                 pass
             # LC_ALL=C: parse locale-independent BRP_* markers, not localized prose.
             proc = subprocess.Popen(["bigsudo", "env", "LC_ALL=C", "LANGUAGE=", spath], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-            for s in inputs:
-                try:
-                    proc.stdin.write(s)
-                    proc.stdin.flush()
-                except Exception:
-                    break
+            proc_stdin = proc.stdin
+            if proc_stdin is not None:
+                for s in inputs:
+                    try:
+                        proc_stdin.write(s)
+                        proc_stdin.flush()
+                    except Exception:
+                        break
             phase = 0.1
-            for line in proc.stdout:
+            proc_stdout = proc.stdout
+            if proc_stdout is None:
+                return
+            for line in proc_stdout:
                 kind = parse_script_line(line)
                 if kind[0] == "data":
                     continue
@@ -1908,8 +1936,8 @@ class ConnectPage(Adw.Bin):
 
     def _edit_history_entry(self, entry):
         """Open a dialog to edit the fields of a history entry."""
-        vpn_id = entry.get("vpn", "headscale")
-        vpn_name = VPN_META.get(vpn_id, {}).get("name", vpn_id)
+        vpn_id = str(entry.get("vpn") or "headscale")
+        vpn_name = str(VPN_META.get(vpn_id, {}).get("name") or vpn_id)
 
         dialog = Adw.Window(transient_for=self.main_window)
         dialog.set_modal(True)
@@ -2192,7 +2220,9 @@ class ConnectPage(Adw.Bin):
         dialog.present()
 
     def _copy(self, text):
-        Gdk.Display.get_default().get_clipboard().set(text)
+        display = Gdk.Display.get_default()
+        if display is not None:
+            display.get_clipboard().set(text)
         self.main_window.show_toast(_("Copied!"))
 
 
