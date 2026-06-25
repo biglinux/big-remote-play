@@ -37,7 +37,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
         """Configures interface"""
         # General page
         general_page = Adw.PreferencesPage()
-        general_page.set_title(_('Geral'))
+        general_page.set_title(_('General'))
         general_page.set_icon_name('preferences-system-symbolic')
         
         # Appearance group
@@ -46,13 +46,13 @@ class PreferencesWindow(Adw.PreferencesWindow):
         
         # Theme
         theme_row = Adw.ComboRow()
-        theme_row.set_title(_('Tema'))
-        theme_row.set_subtitle(_('Escolha o esquema de cores'))
+        theme_row.set_title(_('Theme'))
+        theme_row.set_subtitle(_('Choose the color scheme'))
         
         theme_model = Gtk.StringList()
         theme_model.append(_('Automatic'))
-        theme_model.append(_('Claro'))
-        theme_model.append(_('Escuro'))
+        theme_model.append(_('Light'))
+        theme_model.append(_('Dark'))
         
         theme_row.set_model(theme_model)
         theme_row.set_model(theme_model)
@@ -71,7 +71,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
         
         # Restore group
         restore_group = Adw.PreferencesGroup()
-        restore_group.set_title(_('Restaurar'))
+        restore_group.set_title(_('Restore'))
         
         # Restore Defaults
         restore_row = Adw.ActionRow()
@@ -86,7 +86,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
         
         # Clear All
         clear_all_row = Adw.ActionRow()
-        clear_all_row.set_title(_('Limpar Tudo'))
+        clear_all_row.set_title(_('Clear Everything'))
         clear_all_row.set_subtitle(_('Remove logs, settings, servers and saved data'))
         
         clear_all_btn = Gtk.Button(label=_('Limpar Tudo'))
@@ -128,13 +128,13 @@ class PreferencesWindow(Adw.PreferencesWindow):
         logs_group.set_title(_('Logs and Debugging'))
         
         verbose_row = Adw.SwitchRow()
-        verbose_row.set_title(_('Logs Detalhados'))
+        verbose_row.set_title(_('Detailed Logs'))
         verbose_row.set_subtitle(_('Enable verbose logging for debugging'))
         verbose_row.set_active(False)
         logs_group.add(verbose_row)
         
         clear_logs_row = Adw.ActionRow()
-        clear_logs_row.set_title(_('Limpar Logs'))
+        clear_logs_row.set_title(_('Clear Logs'))
         clear_logs_row.set_subtitle(_('Remove old log files'))
         
         clear_btn = Gtk.Button(label=_('Limpar'))
