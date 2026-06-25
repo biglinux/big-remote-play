@@ -87,6 +87,14 @@ def test_sunshine_network_options_cover_current_docs() -> None:
     assert '"ping_timeout", _("Ping Timeout (ms)"), "spin", "10000"' in source
 
 
+def test_stop_hosting_does_not_broad_kill_sunshine() -> None:
+    source = (ROOT / "src/big_remote_play/ui/host_view.py").read_text()
+    stop_hosting = source.split("def stop_hosting(", 1)[1].split("def _show_share_hint", 1)[0]
+
+    assert "pkill" not in stop_hosting
+    assert "self.sunshine.stop()" in stop_hosting
+
+
 def test_history_saves_secret_refs_not_plaintext(tmp_path: Path, monkeypatch) -> None:
     private_network_view = _import_private_network_view(tmp_path, monkeypatch)
 

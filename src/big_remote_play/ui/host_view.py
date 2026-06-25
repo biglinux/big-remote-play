@@ -1643,7 +1643,7 @@ class HostView(Gtk.Box):
         self._game_processes = []
         self._game_launch_info = None
 
-    def stop_hosting(self, b=None):
+    def stop_hosting(self, b=None) -> None:
         self.show_toast(_("Stopping server..."))
         self.loading_bar.set_visible(True); self.loading_bar.pulse()
         
@@ -1669,9 +1669,6 @@ class HostView(Gtk.Box):
             self.sunshine.stop()
         except Exception as e:
             print(f"Error stopping Sunshine: {e}")
-        
-        # Hard kill fallback
-        subprocess.run(['pkill', '-9', 'sunshine'], stderr=subprocess.DEVNULL, timeout=10)
             
         self.is_hosting = False
         self.sync_ui_state()
