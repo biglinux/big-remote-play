@@ -11,7 +11,7 @@ from big_remote_play.utils.config import Config
 from big_remote_play.guest.moonlight_client import MoonlightClient
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget
-from big_remote_play.utils.widgets import create_helper_card, create_stack_tab_strip
+from big_remote_play.utils.widgets import create_stack_tab_strip
 from big_remote_play.utils.moonlight_config import MoonlightConfigManager
 
 
@@ -446,9 +446,11 @@ class GuestView(Gtk.Box):
         lbl = Gtk.Label(label=_("Discovered Hosts"))
         lbl.add_css_class("heading")
         lbl.set_halign(Gtk.Align.START)
-        desc = Gtk.Label(label=_("Scroll to list all found devices."))
+        desc = Gtk.Label(label=_("On the local network or with a Private Network set up, the host appears here automatically."))
         desc.add_css_class("dim-label")
         desc.set_halign(Gtk.Align.START)
+        desc.set_wrap(True)
+        desc.set_xalign(0)
 
         text_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         text_box.set_hexpand(True)
@@ -508,23 +510,30 @@ class GuestView(Gtk.Box):
         box.append(action)
         box.set_hexpand(True)
 
-        # Side helper card: what to try if the host doesn't show up (mockup 01).
-        helper = create_helper_card(
-            _("If you can't find the host"),
-            "dialog-question-symbolic",
-            [
-                ("network-wireless-symbolic", _("Check your local network"), _("Make sure the host and this device are on the same Wi-Fi or wired network.")),
-                ("network-wired-symbolic", _("Use the manual connection"), _("Enter the host IP address or hostname and port to connect directly.")),
-                ("dialog-password-symbolic", _("Use the PIN code"), _("Ask the host for the PIN code and connect quickly and securely.")),
-            ],
-        )
-        helper.set_valign(Gtk.Align.START)
-        helper.set_size_request(280, -1)
-
-        columns = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=18)
-        columns.append(box)
-        columns.append(helper)
-        return columns
+        # Quiet footer (shown alongside a populated list): the same two real
+        # fallbacks the empty state offers, without promoting Manual/IP.
+        footer = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        footer.set_halign(Gtk.Align.CENTER)
+        footer.set_margin_top(4)
+        hint = Gtk.Label(label=_("Can't find your friend's PC?"))
+        hint.add_css_class("dim-label")
+        hint.add_css_class("caption")
+        footer.append(hint)
+        pn_link = Gtk.Button(label=_("Set up Private Network"))
+        pn_link.add_css_class("flat")
+        pn_link.add_css_class("caption")
+        pn_link.update_property([Gtk.AccessibleProperty.LABEL], [_("Open Private Network setup")])
+        pn_link.connect("clicked", lambda _b: self._go_to_private_network())
+        footer.append(pn_link)
+        pin_link = Gtk.Button(label=_("PIN code"))
+        pin_link.add_css_class("flat")
+        pin_link.add_css_class("caption")
+        pin_link.update_property([Gtk.AccessibleProperty.LABEL], [_("Switch to PIN connection")])
+        pin_link.connect("clicked", lambda _b: self.method_stack.set_visible_child_name("pin"))
+        footer.append(pin_link)
+        box.append(footer)
+        box.set_hexpand(True)
+        return box
 
     def discover_hosts(self):
         from big_remote_play.utils.network import NetworkDiscovery
