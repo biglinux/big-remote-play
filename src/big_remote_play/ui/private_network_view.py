@@ -1221,6 +1221,7 @@ class CreatePage(Gtk.Box):
         btn_share.add_css_class("pill")
         btn_share.connect("clicked", on_share)
 
+        actions_box.add_css_class("network-info-actions")
         actions_box.append(btn_save)
         actions_box.append(btn_file)
         actions_box.append(btn_share)
