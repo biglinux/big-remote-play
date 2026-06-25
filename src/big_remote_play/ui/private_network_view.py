@@ -358,11 +358,13 @@ class CreatePage(Gtk.Box):
             getattr(clamp, f"set_margin_{m}")(24)
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
 
-        content.append(create_page_header(
-            self.vpn["create_title"],
-            self.vpn["create_desc"],
-            self.vpn["icon"],
-        ))
+        content.append(
+            create_page_header(
+                self.vpn["create_title"],
+                self.vpn["create_desc"],
+                self.vpn["icon"],
+            )
+        )
 
         # Form group
         self._form_group = Adw.PreferencesGroup()
@@ -1270,11 +1272,13 @@ class ConnectPage(Adw.Bin):
         conn_box.set_margin_start(32)
         conn_box.set_margin_end(32)
 
-        conn_box.append(create_page_header(
-            self.vpn["connect_title"],
-            self.vpn["connect_desc"],
-            self.vpn["icon"],
-        ))
+        conn_box.append(
+            create_page_header(
+                self.vpn["connect_title"],
+                self.vpn["connect_desc"],
+                self.vpn["icon"],
+            )
+        )
 
         # Two columns: connection fields (left) + "what you'll need" helper (right).
         fields_group = Adw.PreferencesGroup()
