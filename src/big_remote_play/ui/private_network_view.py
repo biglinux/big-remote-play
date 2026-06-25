@@ -678,6 +678,10 @@ class CreatePage(Gtk.Box):
                 if kind[0] == "data":
                     if kind[2]:
                         captured[kind[1]] = kind[2]
+                        # The script runs as root (bigsudo) and cannot open a
+                        # browser; open the auth URL in the user's session here.
+                        if kind[1] == "LOGIN_URL":
+                            GLib.idle_add(open_uri, kind[2])
                 elif kind[0] == "phase":
                     phase = kind[1]
                     self._progress.update(phase, "")

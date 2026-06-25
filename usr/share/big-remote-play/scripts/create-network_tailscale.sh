@@ -122,22 +122,35 @@ login_tailscale() {
 		echo -e "${GREEN}$(gettext 'Starting browser login...')${NC}"
 		echo -e "${YELLOW}$(gettext 'A URL will open in your browser. Log in with your account.')${NC}"
 
-		if sudo tailscale up --reset 2>&1 | grep -q "https://"; then
+		# `tailscale up` (run as root via bigsudo) prints the auth URL then blocks
+		# waiting for authentication; opening a browser as root does not work on a
+		# desktop. So run it in the background, capture the URL, and emit it as a
+		# BRP_DATA marker — the app opens it in the *user's* browser.
+		TS_OUT=$(mktemp "${TMPDIR:-/tmp}/brp-tailscale-up.XXXXXX")
+		# Script already runs as root (bigsudo); no inner sudo so the redirect is root-owned.
+		tailscale up --reset >"$TS_OUT" 2>&1 &
+		url=""
+		for _ in {1..40}; do
+			url=$(grep -oE 'https://login\.tailscale\.com/[A-Za-z0-9/_.-]+' "$TS_OUT" | head -1)
+			[ -n "$url" ] && break
+			sleep 0.5
+		done
+		if [ -n "$url" ]; then
+			echo "BRP_DATA LOGIN_URL=$url"
 			echo -e "${GREEN}$(gettext 'Login URL generated. Follow the instructions in the browser.')${NC}"
-		else
-			sudo tailscale login
 		fi
 
 		echo -e "${YELLOW}$(gettext 'Waiting for authentication...')${NC}"
-		for _ in {1..15}; do
+		for _ in {1..60}; do
 			sleep 2
-			if sudo tailscale status &>/dev/null; then
+			if sudo tailscale status 2>/dev/null | grep -qv "Logged out" && sudo tailscale status &>/dev/null; then
 				echo -e "${GREEN}✓ $(gettext 'Login confirmed!')${NC}"
 				break
 			fi
 			echo -n "."
 		done
 		echo ""
+		rm -f "$TS_OUT" 2>/dev/null || true
 		;;
 	2)
 		echo -e "${CYAN}$(gettext 'Enter your auth key:')${NC}"
