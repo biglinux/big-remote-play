@@ -9,6 +9,26 @@ from big_remote_play.utils.i18n import _
 
 from big_remote_play.utils.logger import Logger
 
+# Virtual/container interface prefixes that pollute discovery: a host running
+# Docker (or VPN/bridges) exposes its Sunshine service over every one of these
+# link-local interfaces, producing a duplicate entry per veth. Real LAN peers
+# are reachable over physical interfaces, so these are dropped from discovery.
+_VIRTUAL_IFACE_PREFIXES = (
+    "veth",
+    "docker",
+    "br-",
+    "virbr",
+    "vnet",
+    "vmnet",
+    "lo",
+)
+
+
+def _is_virtual_iface(iface: str) -> bool:
+    """True for container/bridge/loopback interfaces that flood discovery."""
+    name = iface.strip().lower()
+    return name.startswith(_VIRTUAL_IFACE_PREFIXES)
+
 
 class NetworkDiscovery:
     """Sunshine host discovery on network"""
@@ -41,7 +61,7 @@ class NetworkDiscovery:
         """
         Parses avahi output prioritizing Global IPv6 > IPv4 > Link-Local IPv6
         """
-        host_map = {}
+        host_map: Dict[str, dict] = {}
 
         for line in output.split("\n"):
             p = line.split(";")
@@ -51,6 +71,11 @@ class NetworkDiscovery:
                 ip = p[7]
                 interface = p[1]
                 port = int(p[8])
+
+                # Skip container/bridge interfaces: the same host is announced
+                # over every veth/docker iface, otherwise flooding the list.
+                if _is_virtual_iface(interface):
+                    continue
 
                 # Create entry if not exists
                 if service_name not in host_map:
@@ -89,8 +114,18 @@ class NetworkDiscovery:
 
         final_hosts = []
         for name, data in host_map.items():
-            # Add all discovered IPs to the list so user can choose
-            for ip_info in data["ips"]:
+            # Order: prefer routable addresses; keep at most one link-local so a
+            # single host never shows up as several near-identical entries.
+            type_rank = {"ipv4": 0, "ipv6_global": 1, "ipv6_link_local": 2}
+            ordered = sorted(data["ips"], key=lambda i: type_rank.get(i["type"], 3))
+
+            link_local_added = False
+            for ip_info in ordered:
+                if ip_info["type"] == "ipv6_link_local":
+                    if link_local_added:
+                        continue
+                    link_local_added = True
+
                 display_name = data["name"]
                 # Append protocol info to distinguish in UI if needed,
                 # although the subtitle in UI showing the IP is usually enough.
@@ -130,7 +165,9 @@ class NetworkDiscovery:
                             try:
                                 dev_idx = parts.index("dev")
                                 if dev_idx + 1 < len(parts):
-                                    targets.append(f"{ip}%{parts[dev_idx + 1]}")
+                                    dev = parts[dev_idx + 1]
+                                    if not _is_virtual_iface(dev):
+                                        targets.append(f"{ip}%{dev}")
                             except Exception:
                                 pass
                         else:
