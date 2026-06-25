@@ -611,6 +611,10 @@ class HostView(Gtk.Box):
         copy_btn.add_css_class("flat")
         copy_btn.set_valign(Gtk.Align.CENTER)
         copy_btn.set_tooltip_text(_("Copy PIN"))
+        copy_btn.update_property(
+            [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
+            [_("Copy PIN"), _("Copy PIN code to clipboard")],
+        )
         copy_btn.connect("clicked", lambda b: self.copy_field_value('pin'))
         
         pin_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
@@ -1028,7 +1032,7 @@ class HostView(Gtk.Box):
         except Exception as e:
             self.show_toast(_("Error executing script: {}").format(e))
 
-    def create_masked_row(self, title, key, icon_name='text-x-generic-symbolic', default_revealed=False):
+    def create_masked_row(self, title: str, key: str, icon_name: str = 'text-x-generic-symbolic', default_revealed: bool = False) -> None:
         row = Adw.ActionRow()
         row.set_title(title)
         row.add_prefix(create_icon_widget(icon_name, size=16))
@@ -1042,22 +1046,38 @@ class HostView(Gtk.Box):
         eye_btn = Gtk.Button()
         eye_btn.set_child(create_icon_widget('view-reveal-symbolic' if not default_revealed else 'view-conceal-symbolic', size=16))
         eye_btn.add_css_class('flat')
+        eye_btn.update_property(
+            [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
+            [
+                _("Hide {}").format(title) if default_revealed else _("Reveal {}").format(title),
+                _("Show or hide the {} value").format(title),
+            ],
+        )
         copy_btn = Gtk.Button()
         copy_btn.set_child(create_icon_widget('edit-copy-symbolic', size=16))
         copy_btn.add_css_class('flat')
+        copy_btn.update_property(
+            [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
+            [_("Copy {}").format(title), _("Copy the {} value to clipboard").format(title)],
+        )
         
         box.append(value_lbl); box.append(eye_btn); box.append(copy_btn)
         row.add_suffix(box)
         self.summary_box.add(row)
         
-        self.field_widgets[key] = {'label': value_lbl, 'real_value': '', 'revealed': default_revealed, 'btn_eye': eye_btn}
+        self.field_widgets[key] = {'label': value_lbl, 'real_value': '', 'revealed': default_revealed, 'btn_eye': eye_btn, 'title': title}
         eye_btn.connect('clicked', lambda b: self.toggle_field_visibility(key))
         copy_btn.connect('clicked', lambda b: self.copy_field_value(key))
         
-    def toggle_field_visibility(self, key):
+    def toggle_field_visibility(self, key: str) -> None:
         field = self.field_widgets[key]
         field['revealed'] = not field['revealed']
+        title = field.get('title', _("value"))
         field['btn_eye'].set_child(create_icon_widget('view-conceal-symbolic' if field['revealed'] else 'view-reveal-symbolic', size=16))
+        field['btn_eye'].update_property(
+            [Gtk.AccessibleProperty.LABEL],
+            [_("Hide {}").format(title) if field['revealed'] else _("Reveal {}").format(title)],
+        )
         field['label'].set_text(field['real_value'] if field['revealed'] else '••••••')
             
     def copy_field_value(self, key):
