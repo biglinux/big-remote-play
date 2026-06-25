@@ -363,6 +363,80 @@ class GuestView(Gtk.Box):
         self.check_reconnect()
         return False
 
+    def _go_to_private_network(self) -> None:
+        root = self._root_window()
+        if hasattr(root, "navigate_to"):
+            root.navigate_to("vpn_selector")
+
+    def _build_discover_empty_state(self) -> Gtk.Widget:
+        """Compact, plain-language empty state that routes a non-technical user to
+        the path that actually unlocks their case: same-network rescan, Private
+        Network for internet play (the real enabler), or a friend-dictated PIN.
+        Manual/IP is the de-emphasized advanced fallback."""
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
+        box.add_css_class("helper-card")
+        box.set_halign(Gtk.Align.CENTER)
+        box.set_margin_top(8)
+        box.set_margin_bottom(8)
+
+        title = Gtk.Label(label=_("No host found yet"))
+        title.add_css_class("title-4")
+        title.set_halign(Gtk.Align.CENTER)
+        box.append(title)
+
+        def option(icon_name, text, button_label, accessible, on_click, highlight=False):
+            row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+            row.add_css_class("helper-row")
+            icon = create_icon_widget(icon_name, size=18)
+            icon.add_css_class("accent" if highlight else "dim-label")
+            icon.set_valign(Gtk.Align.CENTER)
+            row.append(icon)
+            lbl = Gtk.Label(label=text)
+            lbl.set_halign(Gtk.Align.START)
+            lbl.set_wrap(True)
+            lbl.set_hexpand(True)
+            lbl.set_xalign(0)
+            row.append(lbl)
+            btn = Gtk.Button(label=button_label)
+            btn.add_css_class("pill")
+            btn.add_css_class("suggested-action" if highlight else "flat")
+            btn.set_valign(Gtk.Align.CENTER)
+            btn.update_property([Gtk.AccessibleProperty.LABEL], [accessible])
+            btn.connect("clicked", lambda _b: on_click())
+            row.append(btn)
+            box.append(row)
+
+        option(
+            "view-refresh-symbolic",
+            _("Same house or network? Search again."),
+            _("Search"),
+            _("Search the local network again"),
+            self.discover_hosts,
+        )
+        option(
+            "network-vpn-symbolic",
+            _("Playing with a friend over the internet? You need a Private Network (just once)."),
+            _("Set up Private Network"),
+            _("Open Private Network setup"),
+            self._go_to_private_network,
+            highlight=True,
+        )
+        option(
+            "dialog-password-symbolic",
+            _("Did the host give you a 6-digit code?"),
+            _("Connect with PIN"),
+            _("Switch to PIN connection"),
+            lambda: self.method_stack.set_visible_child_name("pin"),
+        )
+        option(
+            "network-wired-symbolic",
+            _("I know the IP address"),
+            _("Manual"),
+            _("Switch to manual connection"),
+            lambda: self.method_stack.set_visible_child_name("manual"),
+        )
+        return box
+
     def create_discover_page(self):
         self.selected_host_card_data = self.first_radio_in_list = None
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
@@ -481,25 +555,7 @@ class GuestView(Gtk.Box):
             if self.loading_row.get_parent():
                 self.hosts_list.remove(self.loading_row)
             self.first_radio_in_list = None
-            if not hosts:
-                row = Gtk.ListBoxRow()
-                row.set_selectable(False)
-                box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-                box.set_halign(Gtk.Align.CENTER)
-                box.set_valign(Gtk.Align.CENTER)
-                box.set_size_request(-1, 150)  # Match host_scroll min height
-                for m in ["top", "bottom"]:
-                    getattr(box, f"set_margin_{m}")(24)
-                icon = create_icon_widget("network-offline-symbolic", size=48, css_class="dim-label")
-                lbl = Gtk.Label(label=_("No hosts found"))
-                lbl.add_css_class("title-2")
-                box.append(icon)
-                box.append(lbl)
-                row.set_child(box)
-                self.hosts_list.append(row)
-            else:
-                for h in hosts:
-                    self.hosts_list.append(self.create_host_row_custom(h))
+            self.update_hosts_list(hosts)
             return False
 
         NetworkDiscovery().discover_hosts(callback=on_hosts_discovered)
@@ -508,7 +564,6 @@ class GuestView(Gtk.Box):
         # Clear
         self.first_radio_in_list = None
         self.selected_host_card_data = None
-        self.selected_host_card_data = None
         self._update_all_buttons_state()
 
         while True:
@@ -516,6 +571,14 @@ class GuestView(Gtk.Box):
             if row is None:
                 break
             self.hosts_list.remove(row)
+
+        if not hosts:
+            placeholder = Gtk.ListBoxRow()
+            placeholder.set_selectable(False)
+            placeholder.set_activatable(False)
+            placeholder.set_child(self._build_discover_empty_state())
+            self.hosts_list.append(placeholder)
+            return
 
         for host in hosts:
             self.hosts_list.append(self.create_host_row_custom(host))
