@@ -91,8 +91,14 @@ class InstallerWindow(Adw.Window):
         
     def start_installation(self):
         self.status_label.set_text(_('Installing...'))
+
+        def on_spawn_done(terminal, pid, error, user_data):
+            if error:
+                GLib.idle_add(lambda: self.status_label.set_text(_("Error: {}").format(error)))
+                GLib.idle_add(self.start_external_installation)
+
         try:
-            self.terminal.spawn_async(Vte.PtyFlags.DEFAULT, None, ['yay', '-S', '--noconfirm', '--needed', 'sunshine', 'moonlight-qt'], None, GLib.SpawnFlags.SEARCH_PATH, None, -1, Gio.Cancellable(), lambda t, p, e, u: (GLib.idle_add(lambda: self.status_label.set_text(_("Error: {}").format(e))) if e else None, GLib.idle_add(self.start_external_installation) if e else None), None)
+            self.terminal.spawn_async(Vte.PtyFlags.DEFAULT, None, ['yay', '-S', '--noconfirm', '--needed', 'sunshine', 'moonlight-qt'], None, GLib.SpawnFlags.SEARCH_PATH, None, -1, Gio.Cancellable(), on_spawn_done, None)
         except Exception as e: self.status_label.set_text(_('Embedded terminal error: {}. Trying external...').format(e)); GLib.idle_add(self.start_external_installation)
 
     def on_process_exit(self, terminal, status):

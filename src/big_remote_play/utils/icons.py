@@ -70,7 +70,12 @@ def create_logo_widget(icon_name, size, css_class=None):
         try:
             target = max(1, int(size)) * _LOGO_OVERSAMPLE
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path, target, target)
-            img.set_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
+            if pixbuf is not None:
+                img.set_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
+            else:
+                gicon = get_gicon(icon_name)
+                if gicon:
+                    img.set_from_gicon(gicon)
         except Exception:
             gicon = get_gicon(icon_name)
             if gicon:

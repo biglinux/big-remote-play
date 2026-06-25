@@ -37,7 +37,7 @@ class PerformanceDataPoint:
     latency: float
     fps: float
     bandwidth: float
-    device_latencies: dict
+    device_latencies: dict[str, float]
     latency_text: str
     fps_text: str
     bandwidth_text: str
@@ -85,7 +85,15 @@ class PerformanceChartWidget(Gtk.DrawingArea):
             self.device_colors[base_name] = self.color_palette[idx]
         return self.device_colors[base_name]
         
-    def add_data_point(self, latency: float, fps: float, bandwidth: float, users: int = 0, device_latencies: dict = None, bw_text_override: str = None):
+    def add_data_point(
+        self,
+        latency: float,
+        fps: float,
+        bandwidth: float,
+        users: int = 0,
+        device_latencies: dict[str, float] | None = None,
+        bw_text_override: str | None = None,
+    ):
         if latency > self.max_latency: self.max_latency = latency * 1.2
         if fps > self.max_fps: self.max_fps = fps * 1.2
         if bandwidth > self.max_bandwidth: self.max_bandwidth = bandwidth * 1.2
@@ -265,11 +273,14 @@ class PerformanceChartWidget(Gtk.DrawingArea):
         draw_item("BW", self._cur_bw_text, (0.0, 0.6, 1.0, 1.0), offset)
 
     def _draw_tooltip(self, cr, w, h, mx, my, cw, ch):
-        point = list(self._history)[self._hover_index]
+        hover_index = self._hover_index
+        if hover_index is None:
+            return
+        point = list(self._history)[hover_index]
         num_points = len(self._history)
         x_step = cw / max(CHART_MAX_HISTORY - 1, 1)
         start_x = mx + cw - (num_points - 1) * x_step
-        hover_x = start_x + self._hover_index * x_step
+        hover_x = start_x + hover_index * x_step
         cr.set_source_rgba(1, 1, 1, 0.4)
         cr.set_line_width(1)
         cr.move_to(hover_x, my)
@@ -490,7 +501,7 @@ class PerformanceMonitor(Gtk.Box):
                    "address? Ending the game keeps the device paired."),
         )
         root = self.get_root()
-        if root:
+        if isinstance(root, Gtk.Window):
             dialog.set_transient_for(root)
         dialog.add_response("cancel", _("Cancel"))
         if self.sunshine:
@@ -513,11 +524,12 @@ class PerformanceMonitor(Gtk.Box):
         """Gentle stop via Sunshine API (POST /api/apps/close), no root."""
         if not self.sunshine:
             return
+        sunshine = self.sunshine
         self.set_sensitive(False)
         auth = self._sunshine_auth()
 
         def work():
-            ok = self.sunshine.close_app(auth=auth)
+            ok = sunshine.close_app(auth=auth)
             GLib.idle_add(self._on_disconnect_done, ok)
 
         threading.Thread(target=work, daemon=True).start()
@@ -762,7 +774,15 @@ class PerformanceMonitor(Gtk.Box):
         except Exception:
             pass
 
-    def update_stats(self, latency, fps, bandwidth, sessions=None, device_latencies=None, bw_text=None):
+    def update_stats(
+        self,
+        latency,
+        fps,
+        bandwidth,
+        sessions=None,
+        device_latencies: dict[str, float] | None = None,
+        bw_text: str | None = None,
+    ):
         try:
             if not self.update_timer_active: return
             sessions, device_latencies = sessions or [], device_latencies or {}

@@ -506,6 +506,8 @@ class SunshinePreferencesPage(Adw.PreferencesPage):
                 monitor_list = display.get_monitors()
                 for i in range(monitor_list.get_n_items()):
                     monitor = monitor_list.get_item(i)
+                    if monitor is None:
+                        continue
                     name = monitor.get_connector()
                     if name:
                         manufacturer = monitor.get_manufacturer() or ""

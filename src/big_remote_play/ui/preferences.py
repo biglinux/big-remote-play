@@ -33,9 +33,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
             
         self.setup_ui()
         
-        if self.initial_tab == 'sunshine' and hasattr(self, 'sunshine_page'):
-             self.set_visible_page(self.sunshine_page)
-        
     def setup_ui(self):
         """Configures interface"""
         # General page
@@ -148,7 +145,7 @@ class PreferencesWindow(Adw.PreferencesWindow):
         logs_group.add(clear_logs_row)
         
         # Connect signals
-        verbose_row.set_active(self.config.get('verbose_logging', False))
+        verbose_row.set_active(bool(self.config.get('verbose_logging', False)))
         verbose_row.connect('notify::active', self.on_verbose_toggled)
         clear_btn.connect('clicked', self.on_clear_logs_clicked)
         
@@ -226,10 +223,6 @@ class PreferencesWindow(Adw.PreferencesWindow):
                         os.remove(sunshine_conf)
                         print("Sunshine config deleted (reset)")
                         
-                    # Reload UI config manager if active
-                    if hasattr(self, 'sunshine_page') and hasattr(self.sunshine_page, 'config'):
-                         self.sunshine_page.config.load()
-                    
                     # 3. Reset Moonlight Config
                     from big_remote_play.utils.moonlight_config import MoonlightConfigManager
                     mc = MoonlightConfigManager()
