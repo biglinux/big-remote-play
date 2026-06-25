@@ -2,7 +2,7 @@ import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
-from gi.repository import Gtk, Gdk, Adw, GLib
+from gi.repository import Gtk, Gdk, Adw, GLib  # type: ignore
 import subprocess, random, string, json, socket, os, time
 from pathlib import Path
 from big_remote_play.utils.game_detector import GameDetector
@@ -2617,4 +2617,3 @@ class HostView(Gtk.Box):
         # This also avoids the feedback loop (microfonia) when the app is closed while Moonlight/Sunshine are active.
         if not self.is_hosting:
             if hasattr(self, 'audio_manager'): self.audio_manager.cleanup()
-

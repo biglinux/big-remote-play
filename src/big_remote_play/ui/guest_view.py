@@ -4,7 +4,7 @@ import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
-from gi.repository import Gtk, Adw, GLib, Gdk
+from gi.repository import Gtk, Adw, GLib, Gdk  # type: ignore
 import threading, time
 from big_remote_play.utils.config import Config
 from big_remote_play.guest.moonlight_client import MoonlightClient

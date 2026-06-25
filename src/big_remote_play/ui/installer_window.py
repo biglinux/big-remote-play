@@ -1,8 +1,12 @@
 import gi
 gi.require_version('Gtk', '4.0'); gi.require_version('Adw', '1')
-try: gi.require_version('Vte', '3.91'); from gi.repository import Vte; HAS_VTE = True
-except Exception: HAS_VTE = False
-from gi.repository import Gtk, Adw, GLib, Gio
+try:
+    gi.require_version('Vte', '3.91')
+    from gi.repository import Vte  # type: ignore
+    HAS_VTE = True
+except Exception:
+    HAS_VTE = False
+from gi.repository import Gtk, Adw, GLib, Gio  # type: ignore
 import subprocess, os, shutil
 from big_remote_play.utils.i18n import _
 

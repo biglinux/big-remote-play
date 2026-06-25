@@ -3,7 +3,7 @@ import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 import json, os, re, subprocess, threading, time, shutil
-from gi.repository import Adw, Gdk, GLib, Gtk
+from gi.repository import Adw, Gdk, GLib, Gtk  # type: ignore
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget
 from big_remote_play.utils.widgets import create_helper_card, create_wizard_stepper

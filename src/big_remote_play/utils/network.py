@@ -26,7 +26,7 @@ class NetworkDiscovery:
                 if not hosts: hosts = self.manual_scan()
             except Exception: hosts = self.manual_scan()
             if callback:
-                from gi.repository import GLib
+                from gi.repository import GLib  # type: ignore
                 GLib.idle_add(callback, hosts)
         threading.Thread(target=run, daemon=True).start()
         

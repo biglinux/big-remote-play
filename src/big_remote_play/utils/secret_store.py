@@ -54,7 +54,7 @@ class LibsecretBackend:
             import gi
 
             gi.require_version("Secret", "1")
-            from gi.repository import Secret  # type: ignore[reportMissingModuleSource]
+            from gi.repository import Secret  # type: ignore
 
             self._secret = Secret
             self._schema = Secret.Schema.new(

@@ -19,7 +19,7 @@ import socket
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, GLib, Adw
+from gi.repository import Gtk, GLib, Adw  # type: ignore
 from big_remote_play.utils.i18n import _
 
 try:

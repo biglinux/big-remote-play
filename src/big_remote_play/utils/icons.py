@@ -2,7 +2,7 @@ import os
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('GdkPixbuf', '2.0')
-from gi.repository import Gtk, Gio, Gdk, GdkPixbuf
+from gi.repository import Gtk, Gio, Gdk, GdkPixbuf  # type: ignore
 
 from big_remote_play import paths
 
