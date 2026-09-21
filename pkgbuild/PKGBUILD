@@ -1,42 +1,151 @@
-# Maintainer: Rafael Ruscher <rruscher@gmail.com>
+# Maintainer: BigLinux Team <biglinux@biglinux.com.br>
+# shellcheck shell=bash disable=SC2034,SC2154
+
 pkgname=big-remote-play
 pkgdesc="Integrated remote cooperative gaming system"
-depends=('python' 'gtk4' 'libadwaita' 'python-gobject' 'python-cairo' 'avahi' 'curl' 'iproute2' 'sunshine-bin' 'moonlight-qt' 'icu' 'docker' 'docker-compose' 'jq' 'miniupnpc')
-# makedepends=('')
+
+depends=(
+	'bash'
+	'python>=3.11'
+	'gtk4'
+	'libadwaita>=1.7'
+	'python-gobject'
+	'libsecret'
+	'avahi'
+	'curl'
+	'iproute2'
+	'iputils'
+	'jq'
+	'polkit'
+	'hicolor-icon-theme'
+)
+makedepends=(
+	'git'
+	'python-build'
+	'python-uv-build'
+	'python-wheel'
+	'gettext'
+)
+optdepends=(
+	'sunshine: share games from this computer'
+	'moonlight-qt: connect to a shared game'
+	'vte4: embedded dependency installer terminal'
+	'docker: self-hosted Headscale private network'
+	'docker-compose: self-hosted Headscale orchestration'
+	'miniupnpc: automatic Headscale port mapping'
+	'tailscale: Tailscale or Headscale private network client'
+	'zerotier-one: ZeroTier private network client'
+	'pciutils: graphics adapter detection'
+	'flatpak: detect supported VPN clients installed as Flatpaks'
+)
+
+# Dated at build time, never hand-pinned. BRP_BUILD_VERSION and
+# SOURCE_DATE_EPOCH are the same inputs tools/release/build_version.py uses for
+# the wheel, so both halves of one build carry the same version.
+_brp_epoch=${SOURCE_DATE_EPOCH:-$(date -u +%s)}
+pkgver=${BRP_BUILD_VERSION:-$(date -u -d "@${_brp_epoch}" +%y.%m.%d)}
+pkgrel=$(date -u -d "@${_brp_epoch}" +%H%M)
+
+arch=('any')
+license=('GPL-3.0-or-later')
+url="https://github.com/biglinux/${pkgname}"
 replaces=('big-remote-play-together')
 conflicts=('big-remote-play-together')
-pkgver=$(date +%y.%m.%d)
-pkgrel=$(date +%H%M)
-arch=('any')
-license=('GPL3')
-url="https://github.com/biglinux/$pkgname"
-provides=("$pkgname")
-source=("git+${url}.git")
-md5sums=('SKIP')
-if [ -e "${pkgname}.install" ];then
-    install=${pkgname}.install
-elif [ -e "pkgbuild.install" ];then
-    install=pkgbuild.install
+provides=('big-remote-play-together')
+
+if [ -n "${BIGREMOTEPLAY_LOCAL_ROOT:-}" ]; then
+	_local_root=$(realpath -e -- "${BIGREMOTEPLAY_LOCAL_ROOT}") || {
+		printf 'BIGREMOTEPLAY_LOCAL_ROOT does not exist: %s\n' \
+			"${BIGREMOTEPLAY_LOCAL_ROOT}" >&2
+		return 1
+	}
+	if [ ! -f "${_local_root}/pyproject.toml" ] || [ ! -d "${_local_root}/src/big_remote_play" ]; then
+		printf 'BIGREMOTEPLAY_LOCAL_ROOT is not a big-remote-play checkout: %s\n' \
+			"${_local_root}" >&2
+		return 1
+	fi
+	_use_local_source=1
+	source=()
+	sha256sums=()
+else
+	_use_local_source=0
+	source=("git+${url}.git#branch=main")
+	sha256sums=('SKIP')
 fi
 
+# No pkgver() function on purpose: makepkg rewrites the pkgver= line in place
+# whenever one exists, which mangles the command substitution above.
+
+prepare() {
+	if [ "${_use_local_source}" = 1 ]; then
+		rm -rf "${srcdir:?}/${pkgname}"
+		mkdir -p "${srcdir}/${pkgname}"
+		local item
+		for item in src usr locale tools pyproject.toml README.md COPYING; do
+			cp -a "${_local_root}/${item}" "${srcdir}/${pkgname}/"
+		done
+		find "${srcdir}/${pkgname}" \
+			\( -type d -name __pycache__ -o \
+			   -type d -name .mypy_cache -o \
+			   -type d -name .pytest_cache -o \
+			   -type d -name .ruff_cache -o \
+			   -type d -name '*.egg-info' -o \
+			   -type f -name '*.pyc' \) -prune -exec rm -rf {} +
+		printf 'Building %s from local checkout: %s\n' "${pkgname}" "${_local_root}"
+	else
+		printf 'Building %s from upstream branch main\n' "${pkgname}"
+	fi
+}
+
+build() {
+	cd "${srcdir}/${pkgname}" || return 1
+	python -m build --wheel --no-isolation --skip-dependency-check
+}
+
 package() {
-    # Verify default folder
-    if [ -d "${srcdir}/${pkgname}/${pkgname}" ]; then
-        InternalDir="${srcdir}/${pkgname}/${pkgname}"
-    else
-        InternalDir="${srcdir}/${pkgname}"
-    fi
+	cd "${srcdir}/${pkgname}" || return 1
 
-    # Copy files
-    if [ -d "${InternalDir}/usr" ]; then
-        cp -r "${InternalDir}/usr" "${pkgdir}/"
-    fi
+	# Keep the pure-Python application outside python3.X/site-packages. The
+	# direct Python launcher imports this private root with the active system
+	# interpreter, so a rolling Python minor upgrade does not orphan the app.
+	local wheel wheels=()
+	while IFS= read -r -d '' wheel; do
+		wheels+=("${wheel}")
+	done < <(find dist -maxdepth 1 -type f -name '*.whl' -print0)
+	if [ "${#wheels[@]}" -ne 1 ]; then
+		printf 'Expected exactly one wheel, found %s\n' "${#wheels[@]}" >&2
+		return 1
+	fi
+	python tools/release/install_private_wheel.py \
+		"${wheels[0]}" "${pkgdir}/usr/lib/${pkgname}"
 
-    if [ -d "${InternalDir}/etc" ]; then
-        cp -r "${InternalDir}/etc" "${pkgdir}/"
-    fi
+	install -Dm755 usr/bin/${pkgname} "${pkgdir}/usr/bin/${pkgname}"
+	cp -a usr/share/. "${pkgdir}/usr/share/"
+	# Catalogs are compiled below from locale/LINGUAS. Never package stale or
+	# unlisted .mo files copied from the development tree.
+	rm -rf "${pkgdir}/usr/share/locale"
 
-    if [ -d "${InternalDir}/opt" ]; then
-        cp -r "${InternalDir}/opt" "${pkgdir}/"
-    fi
+	install -Dm644 usr/share/big-remote-play/icons/big-remote-play.svg \
+		"${pkgdir}/usr/share/icons/hicolor/scalable/apps/br.com.biglinux.remoteplay.svg"
+
+	local lang po
+	while IFS= read -r lang || [ -n "${lang}" ]; do
+		lang=${lang%%#*}
+		lang=${lang//[[:space:]]/}
+		[ -n "${lang}" ] || continue
+		po="locale/${lang}.po"
+		[ -f "${po}" ] || {
+			printf 'Missing catalog listed in locale/LINGUAS: %s\n' "${po}" >&2
+			return 1
+		}
+		install -dm755 "${pkgdir}/usr/share/locale/${lang}/LC_MESSAGES"
+		msgfmt --check --check-format "${po}" \
+			-o "${pkgdir}/usr/share/locale/${lang}/LC_MESSAGES/big-remote-play.mo"
+	done < locale/LINGUAS
+
+	if find "${pkgdir}/usr/lib" -mindepth 1 -maxdepth 3 \
+		-type d -name 'python3.*' -print -quit | grep -q .; then
+		printf 'Versioned Python installation path leaked into the native package\n' >&2
+		return 1
+	fi
 }

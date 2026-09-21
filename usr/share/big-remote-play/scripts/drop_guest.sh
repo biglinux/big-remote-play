@@ -1,27 +1,50 @@
-#!/bin/bash
-# Disconnects a specific IP by killing TCP sockets
-# Usage: drop_guest.sh <IP>
+#!/usr/bin/env bash
+# Disconnect a specific guest by closing Sunshine TCP sockets.
+# Usage: drop_guest.sh <ip-address>
+# eval_gettext expands the variables in these deliberately single-quoted templates.
+# shellcheck disable=SC2034,SC2016
+set -u
 
-IP="$1"
-
-if [ -z "$IP" ]; then
-    echo "Usage: $0 <IP>"
-    exit 1
+export TEXTDOMAIN=big-remote-play
+export TEXTDOMAINDIR="${TEXTDOMAINDIR:-/usr/share/locale}"
+if [ -f /usr/bin/gettext.sh ]; then
+	# shellcheck source=/dev/null
+	. /usr/bin/gettext.sh
+else
+	# Invoked indirectly through command substitutions below.
+	# shellcheck disable=SC2317
+	gettext() { printf '%s' "$1"; }
+	eval_gettext() { printf '%s' "$1"; }
 fi
 
-# Kill TCP connections to this IP
-# This requires root privileges (cap_net_admin) which is why this script runs via pkexec
-# Kill TCP connections to this IP on specific Sunshine ports
-# Using a loop for explicit port targeting to avoid collateral damage (especially on localhost)
-PORTS=("47984" "47989" "48010")
+if [[ $# -ne 1 || -z ${1:-} ]]; then
+	script_name=$0; printf '%s\n' "$(eval_gettext 'Usage: ${script_name} <IP address>')"
+	exit 1
+fi
 
-for PORT in "${PORTS[@]}"; do
-    # We use 'sport' because on the Host, these are the Local ports (Source Port)
-    # The 'dst' confirms we are only killing connections TO the specific guest IP.
-    ss -K dst "$IP" sport = :$PORT
+ip=$1
+
+# This script runs through pkexec. Parse the input as an IP address before it is
+# passed to the privileged `ss` command; a permissive regex would accept values
+# such as 999.999.999.999 or malformed IPv6 strings.
+if ! /usr/bin/python3 - "$ip" <<'PY'; then
+import ipaddress
+import sys
+
+try:
+    ipaddress.ip_address(sys.argv[1])
+except ValueError:
+    raise SystemExit(1)
+PY
+	printf '%s\n' "$(eval_gettext 'Invalid IP address: ${ip}')"
+	exit 1
+fi
+
+# Sunshine listens on these host-side TCP ports. Restrict each deletion to the
+# selected destination to avoid terminating unrelated connections.
+ports=(47984 47989 48010)
+for port in "${ports[@]}"; do
+	/usr/bin/ss -K dst "$ip" sport = :"$port"
 done
-
-# If we want to be extra thorough and kill UDP states (conntrack), we could use conntrack tool
-# conntrack -D -d "$IP" 2>/dev/null
 
 exit 0

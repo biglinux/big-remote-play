@@ -1,0 +1,82 @@
+### Flatpak build for Big Remote Play.
+###
+###   flatpak-builder --user --install --force-clean \
+###       build-aux/flatpak/.build build-aux/flatpak/br.com.biglinux.remoteplay.yaml
+###
+### The application is pure Python on top of the GNOME runtime's GTK 4,
+### libadwaita and PyGObject, so nothing is compiled here. It is installed in the
+### same private layout the native package uses: code in <prefix>/lib, data in
+### <prefix>/share, and the direct launcher deriving both from its own location.
+id: br.com.biglinux.remoteplay
+runtime: org.gnome.Platform
+runtime-version: '49'
+sdk: org.gnome.Sdk
+command: big-remote-play
+
+finish-args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=ipc
+  - --device=dri
+  # Discovery, the Sunshine web API and the VPN providers all need the network.
+  - --share=network
+  # Auth keys and API tokens stay in the keyring, never in plain settings.
+  - --talk-name=org.freedesktop.secrets
+  # This application manages host services (tailscale, systemctl, sunshine,
+  # moonlight-qt, pacman): it runs them on the host through flatpak-spawn.
+  # That is a deliberate, wide sandbox hole — inside this sandbox the app can do
+  # what the logged-in user can do outside it. A stricter policy would leave the
+  # program unable to perform the task it exists for.
+  - --talk-name=org.freedesktop.Flatpak
+  # Moonlight's own settings, native and Flatpak, are edited in place.
+  - --filesystem=xdg-config/Moonlight Game Streaming Project:create
+  - --filesystem=~/.var/app/com.moonlight_stream.Moonlight:create
+  - --env=PATH=/app/libexec/host-tools:/app/bin:/usr/bin
+  - --env=BIG_REMOTE_PLAY_DATADIR=/app/share/big-remote-play
+  - --env=BIG_REMOTE_PLAY_LOCALEDIR=/app/share/locale
+
+modules:
+  - name: big-remote-play
+    buildsystem: simple
+    sources:
+      - type: dir
+        path: ../..
+    build-commands:
+      - install -d /app/lib/big-remote-play
+      - cp -r src/big_remote_play /app/lib/big-remote-play/
+      - install -Dm755 usr/bin/big-remote-play /app/bin/big-remote-play
+      # Sources are copied, not wheel-built, so the build date is stamped here
+      # from the same helper the wheel and the native package use.
+      - |
+        set -eu
+        version=$(python3 tools/release/build_version.py)
+        sed -i "s/^__version__ = \"0\.0\.0\"$/__version__ = \"${version}\"/" \
+            /app/lib/big-remote-play/big_remote_play/__init__.py
+        grep -q "^__version__ = \"${version}\"$" /app/lib/big-remote-play/big_remote_play/__init__.py
+      - install -d /app/share/big-remote-play
+      - cp -r usr/share/big-remote-play/. /app/share/big-remote-play/
+      - install -Dm644 usr/share/metainfo/br.com.biglinux.remoteplay.metainfo.xml -t /app/share/metainfo/
+      - install -Dm644 usr/share/applications/br.com.biglinux.remoteplay.desktop -t /app/share/applications/
+      - desktop-file-edit --set-key=Exec --set-value=big-remote-play /app/share/applications/br.com.biglinux.remoteplay.desktop
+      - install -Dm644 usr/share/big-remote-play/icons/big-remote-play.svg /app/share/icons/hicolor/scalable/apps/br.com.biglinux.remoteplay.svg
+      # Catalogs are compiled from locale/LINGUAS, never copied from the tree,
+      # so an unlisted or stale .mo cannot reach the bundle.
+      - |
+        set -eu
+        while IFS= read -r language || [ -n "$language" ]; do
+            language=${language%%#*}
+            language=$(printf '%s' "$language" | tr -d '[:space:]')
+            [ -n "$language" ] || continue
+            install -d "/app/share/locale/${language}/LC_MESSAGES"
+            msgfmt --check --check-format "locale/${language}.po" \
+                -o "/app/share/locale/${language}/LC_MESSAGES/big-remote-play.mo"
+        done < locale/LINGUAS
+      # One wrapper per host program the application invokes by name.
+      - |
+        set -eu
+        install -Dm755 build-aux/flatpak/host-tool /app/libexec/host-tools/host-tool
+        for tool in tailscale zerotier-cli systemctl pkexec sunshine moonlight-qt \
+            moonlight pactl docker docker-compose pacman flatpak ip ping pkill \
+            avahi-browse lspci; do
+            ln -sf host-tool "/app/libexec/host-tools/${tool}"
+        done

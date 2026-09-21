@@ -1,0 +1,26 @@
+#!/bin/sh
+# Run one host program from inside the Flatpak sandbox.
+#
+# Big Remote Play exists to drive programs that live on the host — tailscale,
+# systemctl, sunshine, moonlight-qt, pacman. None of them are in the runtime, so
+# /app/libexec/host-tools holds one symlink per program pointing here, and that
+# directory comes first in PATH. The Python code keeps calling `tailscale …`
+# unchanged.
+#
+# Arguments under /app are rewritten to the deploy directory the host can see
+# (/.flatpak-info's app-path), so a privileged helper started with pkexec can
+# actually read the bundled script it is given.
+set -eu
+
+tool=${0##*/}
+app_path=$(sed -n 's/^app-path=//p' /.flatpak-info)
+
+for argument do
+	case $argument in
+	/app/*) set -- "$@" "${app_path}${argument#/app}" ;;
+	*) set -- "$@" "$argument" ;;
+	esac
+	shift
+done
+
+exec flatpak-spawn --host "$tool" "$@"

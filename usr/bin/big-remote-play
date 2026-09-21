@@ -1,28 +1,68 @@
-#!/bin/bash
-# Wrapper to launch Big Remote Play
+#!/usr/bin/python3 -I
+"""Start the native Big Remote Play installation with the system Python.
 
-APP_DIR=""
+The BigLinux/Manjaro package keeps the application's pure-Python code in a
+version-independent private directory. This launcher derives that directory
+from its own installed prefix, adds only that directory to ``sys.path`` and
+runs the application in this same interpreter process.
+"""
 
-# Detect installation directory
-# Check Python site-packages (newest to oldest supported versions)
-# Then fallback to /usr/share/big-remote-play
-for i in /usr/lib/python3.{25..6}/site-packages/big-remote-play /usr/share/big-remote-play; do
-    if [[ -d "$i" ]]; then
-        APP_DIR="$i"
-        break
-    fi
-done
+from __future__ import annotations
 
-# If not found, try local directory (development) relative to script
-if [[ -z "$APP_DIR" ]]; then
-    SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-    APP_DIR="$SCRIPT_DIR/../share/big-remote-play"
-fi
+from pathlib import Path
+import sys
 
-if [[ ! -f "$APP_DIR/main.py" ]]; then
-    echo "Error: Application not found in $APP_DIR"
-    exit 1
-fi
+_MINIMUM_PYTHON = (3, 11)
+_PRIVATE_DIRECTORY = "big-remote-play"
+_PACKAGE_DIRECTORY = "big_remote_play"
 
-# Execute main.py
-exec python3 "$APP_DIR/main.py" "$@"
+
+def _application_root() -> Path:
+    """Return ``<prefix>/lib/big-remote-play`` for this installed launcher."""
+
+    prefix = Path(__file__).resolve().parent.parent
+    return prefix / "lib" / _PRIVATE_DIRECTORY
+
+
+def _run() -> int:
+    if sys.version_info < _MINIMUM_PYTHON:
+        required = ".".join(str(part) for part in _MINIMUM_PYTHON)
+        current = f"{sys.version_info.major}.{sys.version_info.minor}"
+        print(
+            f"big-remote-play: Python {required} or newer is required; found {current}",
+            file=sys.stderr,
+        )
+        return 1
+
+    application_root = _application_root()
+    package_init = application_root / _PACKAGE_DIRECTORY / "__init__.py"
+    if not package_init.is_file():
+        print(
+            f"big-remote-play: native application files are missing; expected {package_init}",
+            file=sys.stderr,
+        )
+        return 1
+
+    # The shebang uses isolated mode, so PYTHONPATH, the current directory and
+    # the user's site-packages cannot shadow the packaged application. Add only
+    # the package-owned private root; current system dependencies such as
+    # PyGObject remain available from the active Python installation.
+    sys.path.insert(0, str(application_root))
+    sys.dont_write_bytecode = True
+
+    try:
+        from big_remote_play.app import main
+    except ModuleNotFoundError as exc:
+        dependency = exc.name or "an unknown Python module"
+        print(
+            f"big-remote-play: required Python module is unavailable: {dependency}",
+            file=sys.stderr,
+        )
+        return 1
+
+    result = main()
+    return 0 if result is None else int(result)
+
+
+if __name__ == "__main__":
+    raise SystemExit(_run())

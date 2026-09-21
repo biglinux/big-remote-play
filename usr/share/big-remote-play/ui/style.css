@@ -1,401 +1,113 @@
-/* Big Remote Play - Modern Adwaita Styles */
-
-/* Navigation Sidebar */
-.navigation-sidebar {
-    background-color: transparent;
-    padding: 4px;
+/* Big Remote Play. Native focus, text scale and controls remain with libadwaita.
+ * A small radius/spacing vocabulary, not gradients behind every piece of prose.
+ */
+.welcome-page {
+    background-image: linear-gradient(145deg, alpha(@accent_bg_color, 0.045), transparent 62%);
 }
-
-.navigation-sidebar row {
-    border-radius: 8px;
-    margin: 2px 4px;
+.welcome-hero {
+    padding: 26px 28px;
+    border: 1px solid alpha(@accent_bg_color, 0.18);
+    border-radius: 24px;
+    background-image: linear-gradient(120deg, alpha(#7759d9, 0.16), alpha(@accent_bg_color, 0.055) 70%, transparent);
 }
-
-.navigation-sidebar row:hover {
-    background-color: rgba(128, 128, 128, 0.1);
+.role-card {
+    padding: 22px;
+    border-radius: 20px;
+    border: 1px solid alpha(@borders, 0.7);
+    background: @card_bg_color;
+    box-shadow: 0 4px 16px alpha(#000000, 0.05);
 }
-
-.navigation-sidebar row.active-category {
-    background-color: alpha(@accent_bg_color, 0.15);
+.role-card:hover {
+    border-color: alpha(@accent_bg_color, 0.55);
+    background: mix(@card_bg_color, @accent_bg_color, 0.055);
+}
+.role-card:active { background: mix(@card_bg_color, @accent_bg_color, 0.12); }
+.role-card:focus-visible { outline: 3px solid @accent_color; outline-offset: 3px; }
+.brp-icon-tile, .hero-icon-chip, .service-icon-frame, .icon-chip {
+    border-radius: 14px;
     color: @accent_color;
-    border: 1px solid alpha(@accent_bg_color, 0.4);
-    box-shadow: 0 4px 12px alpha(@accent_bg_color, 0.15);
-    font-weight: 700;
+    background-image: linear-gradient(135deg, alpha(@accent_bg_color, 0.17), alpha(@accent_bg_color, 0.07));
+    box-shadow: inset 0 0 0 1px alpha(@accent_bg_color, 0.15);
 }
-
-.category-icon {
-    opacity: 0.85;
+.brp-icon-tile.guest { color: @success_color; background: alpha(@success_bg_color, 0.14); box-shadow: inset 0 0 0 1px alpha(@success_bg_color, 0.16); }
+.hero-icon-chip { min-width: 48px; min-height: 48px; }
+.service-icon-frame { min-width: 28px; min-height: 28px; border-radius: 10px; }
+.icon-chip { min-width: 32px; min-height: 32px; }
+.brp-intro { padding: 8px 0; }
+.session-hero, .network-hero {
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid alpha(@borders, 0.5);
+    background-image: linear-gradient(110deg, alpha(@accent_bg_color, 0.09), alpha(@card_bg_color, 0.4));
 }
-
-.category-label {
-    font-weight: 500;
-}
-
-/* Action Cards */
-button.card {
-    border-radius: 12px;
-    padding: 0;
-}
-
-button.card:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-}
-
-button.card:active {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-button.card.suggested-action {
-    background: rgba(53, 132, 228, 0.15);
-}
-
-button.card.suggested-action:hover {
-    background: rgba(53, 132, 228, 0.25);
-}
-
-/* Status Labels */
-.success {
-    color: @success_color;
-}
-
-.warning {
-    color: @warning_color;
-}
-
-.error {
-    color: @error_color;
-}
-
-/* Accent Elements */
-.accent {
-    color: @accent_bg_color;
-}
-
-/* Buttons */
-button.pill {
-    border-radius: 9999px;
-    padding: 8px 24px;
-    font-weight: 600;
-}
-
-/* Green Button for PIN */
-button.success-action {
-    background-color: #26a269;
-    color: white;
-}
-
-button.success-action:hover {
-    background-color: #33d17a;
-    color: white;
-}
-
-button.success-action:active {
-    background-color: #1f7f56;
-    color: white;
-}
-
-/* Entry Fields */
-entry {
-    border-radius: 8px;
-}
-
-entry:focus {
-    box-shadow: 0 0 0 2px rgba(53, 132, 228, 0.3);
-}
-
-/* Labels */
-.title-1 {
-    font-size: 1.8em;
-    font-weight: 800;
-}
-
-.title-2 {
-    font-size: 1.5em;
-    font-weight: 700;
-}
-
-.title-3 {
-    font-size: 1.25em;
-    font-weight: 600;
-}
-
-.title-4 {
-    font-size: 1.1em;
-    font-weight: 600;
-}
-
-.caption {
-    font-size: 0.9em;
-}
-
-.dim-label {
-    opacity: 0.65;
-}
-
-/* Status Dots */
-.status-dot {
-    opacity: 1;
-}
-
-.status-dot.status-online {
-    color: #26a269;
-}
-
-.status-dot.status-offline {
-    color: #c01c28;
-}
-
-/* Action Cards - Modern elevated style with subtle shine */
-.action-card {
+.brp-session-panel {
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid alpha(@borders, 0.6);
     background: alpha(@card_bg_color, 0.5);
-    border-radius: 18px;
-    border: 1px solid alpha(@borders, 0.06);
-    border-top: 1px solid alpha(white, 0.08);
-    padding: 18px 14px;
-    box-shadow: 0 2px 12px alpha(black, 0.02),
-        0 1px 3px alpha(black, 0.03);
-    transition: all 0.3s ease;
 }
-
-.action-card:hover {
-    background: alpha(@card_bg_color, 0.85);
-    border: 1px solid alpha(@accent_bg_color, 0.3);
-    border-top: 1px solid alpha(white, 0.15);
-    box-shadow: 0 8px 32px alpha(@accent_bg_color, 0.15),
-        0 2px 8px alpha(@accent_bg_color, 0.1);
-    transform: translateY(-2px);
+.brp-primary { min-height: 44px; border-radius: 12px; }
+.brp-empty { padding: 24px 20px; border-radius: 20px; background: alpha(@card_bg_color, 0.55); border: 1px solid alpha(@borders, 0.55); }
+.brp-note { padding: 14px 16px; border-radius: 14px; background: alpha(@accent_bg_color, 0.065); border: 1px solid alpha(@accent_bg_color, 0.14); }
+.brp-progress { padding: 14px 16px; border-radius: 14px; background: @card_bg_color; }
+.brp-slider-control { padding: 0 12px 12px; }
+.brp-terminal { border-radius: 12px; padding: 8px; background: @view_bg_color; }
+.brp-code-entry text { font-family: monospace; }
+/* Rounded backing AND row corners. Native lists still own focus/hover behavior. */
+.brp-boxed, .brp-window list.boxed-list, .brp-dialog list.boxed-list { border-radius: 16px; }
+.brp-boxed > row:first-child, .brp-window list.boxed-list > row:first-child, .brp-dialog list.boxed-list > row:first-child { border-top-left-radius: 16px; border-top-right-radius: 16px; }
+.brp-boxed > row:last-child, .brp-window list.boxed-list > row:last-child, .brp-dialog list.boxed-list > row:last-child { border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+.context-bar { padding: 5px 12px 8px; }
+.sidebar-content { padding-bottom: 2px; }
+.navigation-sidebar > row { border-radius: 12px; margin-bottom: 4px; }
+.readiness-pill, .state-pill { padding: 4px 10px; border-radius: 9999px; }
+.readiness-pill { color: @window_fg_color; background: alpha(@window_fg_color, 0.06); }
+.readiness-pill.ready, .state-pill.online { color: @success_color; background: alpha(@success_bg_color, 0.13); }
+.readiness-pill.needs-setup { color: @warning_color; background: alpha(@warning_bg_color, 0.14); }
+/* Stopped is a normal state, not an error or a warning. */
+.state-pill.offline { color: @window_fg_color; background: alpha(@window_fg_color, 0.07); }
+.status-dot { opacity: 0.55; }
+.status-dot.status-online { color: @success_color; opacity: 1; }
+.status-dot.status-idle { color: @window_fg_color; opacity: 0.65; }
+.status-dot.status-offline { color: @warning_color; opacity: 1; }
+.card.padded { padding: 18px 20px; }
+.brp-metric { padding: 12px; border-radius: 12px; background: alpha(@window_fg_color, 0.035); }
+.brp-monitor { padding: 12px; border-radius: 16px; }
+/* Do not make users trade accessibility for the custom visual treatment. */
+.high-contrast .role-card, .high-contrast .welcome-hero, .high-contrast .session-hero,
+.high-contrast .brp-empty, .high-contrast .brp-session-panel, .high-contrast .brp-note {
+    background-image: none;
+    background-color: @window_bg_color;
+    border: 2px solid @window_fg_color;
+    box-shadow: none;
 }
+.high-contrast .dim-label { opacity: 1; }
 
-.action-card.suggested-action {
-    background: alpha(@accent_bg_color, 0.1);
-    border: 1px solid alpha(@accent_bg_color, 0.2);
-    box-shadow: 0 4px 16px alpha(@accent_bg_color, 0.05);
-}
+.role-card label.dim-label { font-weight: 400; }
 
-.action-card.suggested-action:hover {
-    background: alpha(@accent_bg_color, 0.15);
-    border: 1px solid @accent_bg_color;
-    box-shadow: 0 12px 40px alpha(@accent_bg_color, 0.25),
-        0 0 0 1px alpha(@accent_bg_color, 0.1);
-}
+/* Content minimum, separate from the CSD window borders. */
+.brp-window { min-width: 360px; }
 
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-fade {
-    animation: fadeIn 0.6s ease-out forwards;
-}
-
-.delay-1 {
-    animation-delay: 0.1s;
-}
-
-.delay-2 {
-    animation-delay: 0.2s;
-}
-
-.delay-3 {
-    animation-delay: 0.3s;
-}
-
-/* Typography */
-.hero-title {
-    font-size: 32px;
-    font-weight: 800;
-    letter-spacing: -0.8px;
-    color: @theme_fg_color;
-}
-
-.hero-subtitle {
-    font-size: 15px;
-    font-weight: 400;
-    opacity: 0.55;
-    letter-spacing: 0.1px;
-}
-
-
-/* System Info Card - Refined glassmorphism with subtle shine */
-.info-card {
-    background: alpha(@card_bg_color, 0.55);
+/* Support and maintenance groups must keep the same rounded language as every
+ * other boxed list, including themes that flatten the native backing node. */
+.brp-rounded-group list.boxed-list {
     border-radius: 16px;
-    padding: 14px 28px;
-    border: 1px solid alpha(@borders, 0.06);
-    border-top: 1px solid alpha(white, 0.1);
-    box-shadow: 0 4px 20px alpha(black, 0.03),
-        0 1px 3px alpha(black, 0.02);
+}
+.brp-rounded-group list.boxed-list > row:first-child {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+.brp-rounded-group list.boxed-list > row:last-child {
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
 }
 
-.info-row {
-    padding: 8px 12px;
-    margin: 2px -12px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+/* Icon hierarchy: native list/tab glyphs are monochrome and inherit the
+ * foreground. Accent tiles are reserved for heroes and explicit major choices. */
+.brp-row-icon {
+    color: inherit;
 }
 
-.info-row:hover {
-    background: alpha(@theme_fg_color, 0.08);
-}
-
-.blue-text,
-.blue-icon {
-    color: #3584e4;
-}
-
-.info-key {
-    font-size: 10px;
-    font-weight: 700;
-    opacity: 0.4;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.info-value {
-    font-size: 13px;
-    font-weight: 500;
-}
-
-/* Progress Indicator - iOS-inspired pills */
-.progress-container {
-    padding: 6px 0;
-}
-
-.progress-dot {
-    min-width: 10px;
-    min-height: 10px;
-    border-radius: 50%;
-    background: alpha(@theme_fg_color, 0.12);
-}
-
-.progress-dot.active {
-    min-width: 32px;
-    border-radius: 100px;
-    background: @accent_bg_color;
-    box-shadow: 0 2px 8px alpha(@accent_bg_color, 0.3);
-}
-
-.progress-dot.completed {
-    background: alpha(@accent_bg_color, 0.4);
-}
-
-/* Navigation Buttons - Minimal and elegant */
-.nav-button {
-    min-width: 44px;
-    min-height: 44px;
-    border-radius: 50%;
-}
-
-.nav-button.back {
-    background: alpha(@theme_fg_color, 0.05);
-    color: alpha(@theme_fg_color, 0.6);
-}
-
-.nav-button.back:hover {
-    background: alpha(@theme_fg_color, 0.1);
-    color: alpha(@theme_fg_color, 0.8);
-}
-
-.nav-button.next {
-    background: @accent_bg_color;
-    color: white;
-    box-shadow: 0 4px 16px alpha(@accent_bg_color, 0.3);
-}
-
-.nav-button.next:hover {
-    box-shadow: 0 6px 20px alpha(@accent_bg_color, 0.4);
-}
-
-.finish-button {
-    padding: 12px 32px;
-    border-radius: 100px;
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0.3px;
-    background: @accent_bg_color;
-    color: white;
-    box-shadow: 0 4px 16px alpha(@accent_bg_color, 0.3);
-}
-
-.finish-button:hover {
-    box-shadow: 0 6px 24px alpha(@accent_bg_color, 0.4);
-}
-
-.bottom-bar {
-    padding: 14px 28px 14px 28px;
-}
-
-/* ─── Installation LevelBar ─── */
-levelbar block {
-    border-radius: 6px;
-    min-height: 14px;
-}
-
-levelbar trough {
-    border-radius: 8px;
-    min-height: 14px;
-    background: alpha(@theme_fg_color, 0.08);
-    border: 1px solid alpha(@borders, 0.1);
-}
-
-levelbar block.install-low {
-    background: linear-gradient(to right, #3584e4, #62a0ea);
-    box-shadow: 0 0 8px alpha(#3584e4, 0.3);
-}
-
-levelbar block.install-mid {
-    background: linear-gradient(to right, #3584e4, #33c7de);
-    box-shadow: 0 0 8px alpha(#33c7de, 0.3);
-}
-
-levelbar block.install-high {
-    background: linear-gradient(to right, #33c7de, #2ec27e);
-    box-shadow: 0 0 8px alpha(#2ec27e, 0.3);
-}
-
-levelbar block.install-full {
-    background: linear-gradient(to right, #2ec27e, @accent_bg_color);
-    box-shadow: 0 0 12px alpha(@accent_bg_color, 0.4);
-}
-
-levelbar block.filled {
-    background: @accent_bg_color;
-}
-
-.caption-heading {
-    font-size: 0.85em;
-    font-weight: 700;
-    color: @accent_color;
-}
-
-/* VPN Selector Cards */
-.action-card.suggested-action.vpn-card {
-    min-width: 230px;
-    min-height: 210px;
-}
-
-.action-card.suggested-action.vpn-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 16px 48px alpha(@accent_bg_color, 0.3),
-        0 0 0 2px @accent_bg_color;
-}
-
-/* Sidebar VPN badge text */
-.navigation-sidebar .dim-label {
-    font-size: 0.78em;
-    opacity: 0.5;
-}
-
-/* Change VPN button in private network header */
-.action-card.suggested-action button.flat {
-    opacity: 0.7;
-    font-size: 0.85em;
+.role-card:checked {
+    box-shadow: inset 0 0 0 2px @accent_bg_color;
 }
