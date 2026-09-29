@@ -62,7 +62,7 @@ def test_server_page_explains_network_requirement_for_guests() -> None:
     assert "Playing over the internet?" in source
     assert "Same home network? Skip this step." in source
     assert "For different networks, set up internet play." in source
-    assert "Open Private Network setup" in source
+    assert "Play over the internet: connect your devices" in source
 
 
 def test_server_network_details_are_collapsed_diagnostics() -> None:
