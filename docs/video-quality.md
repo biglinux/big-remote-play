@@ -100,6 +100,8 @@ No frames were dropped by the network. Sunshine chose its Vulkan encoder automat
 
 A phone, a TV and a car multimedia unit (2.4 GHz Wi-Fi only) streamed at the same time from the 3440×1440 HDR screen after the colour fix. Colours were correct on all three; the phone (its own 20:9 resolution, HEVC, 26 Mbps) looked very good. The TV and the car unit requested the Moonlight default of about 10 Mbps (7.3 Mbps of video after error correction), H.264 on the car unit, and showed jagged, hard-to-read text: the scaling measured above. The car unit's link had 12–25 ms of ping variation (Wi-Fi), which Moonlight shows as stutter.
 
+Later the same day six devices streamed at once — a phone, three LG webOS TVs (Moonlight TV 1.6.36), an Xbox Series X and a PC running Big Remote Play — over the local network (RTT 1.7–6.8 ms, no loss), with the HDR screen shared in SDR for all of them. With three devices streaming, Sunshine used about 11 % CPU and the RX 9060 XT about 7 %.
+
 ## Still to verify on other hardware
 
 NVIDIA (NVENC, 4:4:4), Intel (VAAPI/QSV), X11 sessions, GNOME (no `kscreen-doctor`), a real two-computer session over Wi-Fi and over the internet, fast motion and games, and resolution matching on a screen someone is using.
