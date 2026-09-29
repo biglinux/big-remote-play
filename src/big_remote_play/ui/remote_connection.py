@@ -23,8 +23,9 @@ from big_remote_play.integration_contracts import SUNSHINE_DEFAULT_BASE_PORT
 from big_remote_play.private_network.devices import DevicePreferences, device_key
 from big_remote_play.private_network.models import ConnectionState, HostCandidate, PeerDevice, ProviderId
 from big_remote_play.private_network.plan import ConnectionPlan, PlanKind, plan_connection
+from big_remote_play.utils.connection_health import SAMPLE_INTERVAL_SECONDS, LatencyWindow, LinkSample, read_interface_bytes, traffic_mbps
 from big_remote_play.utils.i18n import _
-from big_remote_play.utils.icons import create_icon_widget
+from big_remote_play.utils.icons import create_icon_widget, set_icon
 
 from .components import action_row, content_dialog, icon_tile, intro
 
@@ -158,11 +159,18 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
         self._status_worker = Worker()
         self._action_worker = Worker()
         self._recent_worker = Worker()
+        self._link_worker = Worker()
+        self._link_timer = 0
+        self._link_busy = False
+        self._link_provider: ProviderId | None = None
+        self._link_window = LatencyWindow()
+        self._traffic: tuple[float, int, int] | None = None
         self._busy = False
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self._build()
         self._render_plan()
         self.connect("map", lambda *_args: self.refresh())
+        self.connect("unmap", lambda *_args: self._stop_link())
         self.connect("unrealize", lambda *_args: self._cancel())
 
     # ── layout ──────────────────────────────────────────────────────────────
@@ -199,7 +207,9 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
         self.primary.add_css_class("brp-primary")
         inner = Gtk.Box(spacing=8, halign=Gtk.Align.CENTER)
         self.primary_spinner = Adw.Spinner(visible=False)
-        self.primary_label = Gtk.Label()
+        # Long translations wrap inside the button instead of widening the page.
+        self.primary_label = Gtk.Label(wrap=True, justify=Gtk.Justification.CENTER)
+        self.primary_label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
         inner.append(self.primary_spinner)
         inner.append(self.primary_label)
         self.primary.set_child(inner)
@@ -225,6 +235,7 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
         # Live region: a screen reader hears the new status when it changes.
         self.card.set_accessible_role(Gtk.AccessibleRole.STATUS)
         box.append(self.card)
+        box.append(self._build_link_card())
 
         self.tasks = Adw.PreferencesGroup(title=_("What do you want to do?"))
         self.share_row = action_row(_("Share this computer"), _("Let another device play on this computer."), "brp-host-symbolic", lambda: self.main_window.navigate_to("host"))
@@ -276,9 +287,55 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
         clamp.set_child(box)
         self.set_child(clamp)
 
+    def _build_link_card(self) -> Gtk.Widget:
+        """The connection in use: provider, state, traffic now and stability."""
+        card = self.link_card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12, visible=False)
+        card.add_css_class("card")
+        card.add_css_class("padded")
+        card.set_accessible_role(Gtk.AccessibleRole.STATUS)
+        top = Gtk.Box(spacing=12)
+        self.link_icon = create_icon_widget("brp-network-private-symbolic", size=24)
+        self.link_icon.set_valign(Gtk.Align.CENTER)
+        top.append(self.link_icon)
+        names = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, hexpand=True, valign=Gtk.Align.CENTER)
+        self.link_title = Gtk.Label(xalign=0, wrap=True)
+        self.link_title.add_css_class("heading")
+        self.link_network = Gtk.Label(xalign=0, wrap=True)
+        self.link_network.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        self.link_network.add_css_class("caption")
+        self.link_network.add_css_class("dim-label")
+        names.append(self.link_title)
+        names.append(self.link_network)
+        top.append(names)
+        self.link_state = Gtk.Box()
+        self.link_state.set_valign(Gtk.Align.CENTER)
+        top.append(self.link_state)
+        card.append(top)
+        self.link_values: dict[str, Gtk.Label] = {}
+        for key, title in (("traffic", _("In use now")), ("stability", _("Network")), ("path", _("Path"))):
+            line = Gtk.Box(spacing=12)
+            name = Gtk.Label(label=title, xalign=0)
+            name.add_css_class("dim-label")
+            name.set_size_request(110, -1)
+            value = Gtk.Label(xalign=0, wrap=True, hexpand=True)
+            value.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+            value.add_css_class("numeric")
+            line.append(name)
+            line.append(value)
+            card.append(line)
+            self.link_values[key] = value
+            value._brp_line = line  # type: ignore[attr-defined]
+        note = Gtk.Label(label=_("Traffic is what this computer sends and receives through the secure connection now, not its maximum speed."), xalign=0, wrap=True)
+        note.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        note.add_css_class("caption")
+        note.add_css_class("dim-label")
+        card.append(note)
+        return card
+
     # ── data ───────────────────────────────────────────────────────────────
     def _cancel(self) -> None:
-        for worker in (self._status_worker, self._recent_worker):
+        self._stop_link()
+        for worker in (self._status_worker, self._recent_worker, self._link_worker):
             worker.cancel()
 
     def refresh(self) -> None:
@@ -339,6 +396,7 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
         self._render_install()
         self._render_devices()
         self._render_advanced()
+        self._render_link()
 
     def _render_install(self) -> None:
         child = self.install_slot.get_first_child()
@@ -478,6 +536,95 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
         self.advanced_box.set_visible(self.advanced_row.get_active())
 
     # ── actions ────────────────────────────────────────────────────────────
+    # ── the connection in use ──────────────────────────────────────────────
+    def _render_link(self) -> None:
+        status = self.plan.status if self.plan.kind is PlanKind.READY else None
+        self.link_card.set_visible(status is not None)
+        if status is None:
+            self._stop_link()
+            return
+        if status.provider is not self._link_provider:
+            self._link_provider = status.provider
+            self._link_window.clear()
+            self._traffic = None
+            for value in self.link_values.values():
+                value.set_label(_("Measuring…"))
+            self.link_values["path"]._brp_line.set_visible(False)  # type: ignore[attr-defined]
+        set_icon(self.link_icon, PROVIDER_ICONS[status.provider])
+        self.link_title.set_label(status.provider.display_name)
+        network = status.network_name or status.account
+        self.link_network.set_label(network)
+        self.link_network.set_visible(bool(network))
+        child = self.link_state.get_first_child()
+        if child is not None:
+            self.link_state.remove(child)
+        self.link_state.append(state_pill(ConnectionState.CONNECTED))
+        if self.get_mapped() and not self._link_timer:
+            self._sample_link()
+            self._link_timer = GLib.timeout_add_seconds(SAMPLE_INTERVAL_SECONDS, self._link_tick)
+
+    def _link_tick(self) -> bool:
+        if not self.get_mapped() or self.plan.kind is not PlanKind.READY:
+            self._link_timer = 0
+            return False
+        self._sample_link()
+        return True
+
+    def _stop_link(self) -> None:
+        if self._link_timer:
+            GLib.source_remove(self._link_timer)
+            self._link_timer = 0
+        self._link_worker.cancel()
+        self._link_busy = False
+
+    def _sample_link(self) -> None:
+        status = self.plan.status
+        if status is None or self._link_busy:
+            return
+        self._link_busy = True
+        prefixes = ("zt",) if status.provider is ProviderId.ZEROTIER else ("tailscale",)
+
+        def work():
+            sample = self.service_factory().link_sample(status)
+            counters = read_interface_bytes(prefixes)
+            return sample, (time.monotonic(), *counters) if counters is not None else None
+
+        def done(result) -> None:
+            self._link_busy = False
+            sample, traffic = result
+            self._show_link(sample, traffic)
+
+        def failed(_error) -> None:
+            self._link_busy = False
+
+        self._link_worker.submit(work, done, failed=failed)
+
+    def _show_link(self, sample: LinkSample, traffic: tuple[float, int, int] | None) -> None:
+        values = self.link_values
+        if traffic is not None:
+            rates = traffic_mbps(self._traffic, traffic)
+            self._traffic = traffic
+            if rates is not None:
+                values["traffic"].set_label(_("↓ {down} Mbps · ↑ {up} Mbps").format(down=f"{rates[0]:.1f}", up=f"{rates[1]:.1f}"))
+        else:
+            values["traffic"].set_label(_("Not available"))
+        if sample.path == "none":
+            values["stability"].set_label(_("No other device online to measure"))
+            values["path"]._brp_line.set_visible(False)  # type: ignore[attr-defined]
+            return
+        health = self._link_window.add(sample.latency_ms)
+        if health.stable is None:
+            text = _("Measuring…")
+        else:
+            text = _("Stable") if health.stable else _("Unstable")
+        if health.latency_ms is not None:
+            text = _("{state} · {ms} ms").format(state=text, ms=f"{health.latency_ms:.0f}")
+        values["stability"].set_label(text)
+        path = {"direct": _("Direct connection"), "relay": _("Through a relay server, which can be slower")}.get(sample.path, "")
+        values["path"].set_label(path)
+        values["path"]._brp_line.set_visible(bool(path))  # type: ignore[attr-defined]
+        self.link_card.update_property([Gtk.AccessibleProperty.DESCRIPTION], [f"{values['traffic'].get_label()}. {text}. {path}"])
+
     def _set_busy(self, busy: bool, label: str = "") -> None:
         self._busy = busy
         self.primary.set_sensitive(not busy)

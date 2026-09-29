@@ -363,6 +363,7 @@ class MainWindow(Adw.ApplicationWindow):
         self.nav_list.set_margin_end(8)
         self.nav_list.add_css_class("navigation-sidebar")
         self.nav_list.connect("row-selected", self.on_nav_selected)
+        self.nav_list.set_header_func(self._nav_header)
         self._refresh_nav_list()
 
         # Navigation and status scroll as one resilient column. The expanding
@@ -375,6 +376,19 @@ class MainWindow(Adw.ApplicationWindow):
         scroll.set_child(main)
         toolbar.set_content(scroll)
         self.split_view.set_sidebar(Adw.NavigationPage.new(toolbar, _("Navigation")))
+
+    # Home · Share, Connect · Play over the internet: three kinds of place.
+    _NAV_SECTION_STARTS = frozenset({"host", "vpn_selector"})
+
+    def _nav_header(self, row: Gtk.ListBoxRow, before: Gtk.ListBoxRow | None) -> None:
+        """A thin separator before each group; no extra words, no tree."""
+        if before is None or self._nav_page_by_row.get(row) not in self._NAV_SECTION_STARTS:
+            row.set_header(None)
+            return
+        if row.get_header() is None:
+            separator = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
+            separator.add_css_class("brp-nav-separator")
+            row.set_header(separator)
 
     def _navigation_pages(self) -> dict[str, dict]:
         """Keep Home reachable for beginners and returning users alike."""
@@ -585,7 +599,7 @@ class MainWindow(Adw.ApplicationWindow):
         header.set_centering_policy(Adw.CenteringPolicy.STRICT)
         header.pack_end(self._create_header_menu_button())
         self.home_back_button = Gtk.Button(icon_name="go-previous-symbolic", visible=False)
-        name_icon_button(self.home_back_button, _("Back to Home"))
+        name_icon_button(self.home_back_button, _("Back"), _("Back to the previous question"))
         self.home_back_button.add_css_class("flat")
         self.home_back_button.connect("clicked", lambda _button: self.home_navigation.pop())
         header.pack_start(self.home_back_button)
@@ -946,6 +960,18 @@ class MainWindow(Adw.ApplicationWindow):
         hero.append(benefits)
         main_box.append(hero)
 
+        # The easiest way to begin: two questions, then the right page.
+        from .guided_setup import choice_card
+
+        self.guided_setup_button = choice_card(
+            _("Guided setup"),
+            _("Not sure where to start? Answer a few questions and Big Remote Play sets up the way for you."),
+            "brp-guided-setup-symbolic",
+            self.start_guided_setup,
+        )
+        self.guided_setup_button.add_css_class("brp-guided-banner")
+        main_box.append(self.guided_setup_button)
+
         self.home_question_label = Gtk.Label(label=_("What do you want to do?"), xalign=0, wrap=True)
         self.home_question_label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
         self.home_question_label.add_css_class("title-2")
@@ -989,16 +1015,33 @@ class MainWindow(Adw.ApplicationWindow):
         # A single landing page: each action goes straight to its task.
         self.home_navigation = Adw.NavigationView(hhomogeneous=False, vhomogeneous=False)
         self.home_navigation.add(Adw.NavigationPage(child=scroll, title=_("Home"), tag="choices"))
+        self.home_navigation.connect("notify::visible-page", self._on_home_page_changed)
         return self.home_navigation
+
+    def start_guided_setup(self) -> None:
+        """Ask two questions on Home, then open the task that fits."""
+        from .guided_setup import GuidedSetup
+
+        if self.current_page != "welcome":
+            self.navigate_to("welcome")
+        self.guided_setup = GuidedSetup(self)
+        self.guided_setup.start()
 
     def _on_home_page_changed(self, *_args) -> None:
         if not hasattr(self, "content_title"):
             return
-        self.home_back_button.set_visible(False)
-        self.content_headerbar.set_show_back_button(True)
-        if self.current_page == "welcome":
-            self._set_header_title(_("Home"), "Big Remote Play")
-            (self.guest_card if getattr(self, "_home_role", "host") == "guest" else self.host_card).grab_focus()
+        page = self.home_navigation.get_visible_page()
+        guided = page is not None and page.get_tag() != "choices"
+        self.home_back_button.set_visible(guided and self.current_page == "welcome")
+        # One back arrow at a time: inside the guide it means "previous question".
+        self.content_headerbar.set_show_back_button(not (guided and self.current_page == "welcome"))
+        if self.current_page != "welcome":
+            return
+        if guided and page is not None:
+            self._set_header_title(page.get_title(), _("Home"))
+            return
+        self._set_header_title(_("Home"), "Big Remote Play")
+        (self.guest_card if getattr(self, "_home_role", "host") == "guest" else self.host_card).grab_focus()
 
     def create_action_card(
         self,
@@ -1121,8 +1164,6 @@ class MainWindow(Adw.ApplicationWindow):
             if pid:
                 if pid == "welcome":
                     self.home_navigation.pop_to_tag("choices")
-                if pid == "vpn_selector" and self._vpn_choice:
-                    pid = "create_private"
                 # The home cards offered to install what a task needs; reaching
                 # the same task from the sidebar must offer it too.
                 component = self._ROLE_COMPONENTS.get(pid)

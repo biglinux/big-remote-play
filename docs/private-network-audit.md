@@ -58,6 +58,20 @@ The Sunshine configuration used for daily play on the test machine had `upnp = e
 | 30 | The sidebar started five service probes every 3 s on every page. | Only the rows the page shows are probed; none on Home and network pages. |
 | 31 | "Turn on" with PolicyKit ran `tailscale up` as root, waiting on a password prompt. | Found in the real test: the documented one-time `tailscale set --operator` is asked instead, and `up` runs as the user. |
 
+## ZeroTier join, guided setup and connection status (2026-09-29)
+
+| # | Problem | Resolution |
+|---|---|---|
+| 32 | Joining with `zerotier-one` stopped printed `0 join connection failed`, shown as “Connection failed”. The service had been stopped by **Disconnect**, and the join did not start it. | `ZeroTierJoiner` starts the service first; failures are classified by exit code and the CLI's `<status> <command>` line. |
+| 33 | A computer already on one ZeroTier network saw “Already connected” and no form: joining a second network was impossible. | The form always stays for ZeroTier. |
+| 34 | Waiting for configuration, waiting for authorization, not found and a stopped service were reduced to connected/failed. | `JoinPhase` state machine; the panel keeps checking while waiting and picks up a later authorization. |
+| 35 | A mistyped code left a dead membership forever. | `NOT_FOUND` memberships created by the attempt are left; an unanswered one offers **Cancel the request**. |
+| 36 | Without the user token, joining used `pkexec zerotier-cli`, but every later status read failed silently and ended as “status: unknown”. | The one-time permission is asked before joining; every read then runs as the user. |
+| 37 | With several memberships, the first listed decided ZeroTier's state; a deleted network could hide one awaiting approval. | The most advanced membership decides. |
+| 38 | Share's monitor counted any TCP connection on Sunshine's ports (Moonlight's `/serverinfo` polling) as a guest, pinged every known device every second and kept devices that only answered pings. | Sunshine's session markers plus the RTSP handshake; one ping per connected device every 5 s. |
+| 39 | ZeroTier peer statistics included the network controllers (listed as `LEAF`), reporting 175 ms and “3 direct peers” with no device online. | Controllers are excluded by node ID. |
+| 40 | The sidebar's internet item opened **Network details** instead of **Connect your devices** once a method was chosen. | It always opens the internet page. |
+
 ## New structure
 
 - `private_network/` (no GTK): `models.py`, `service.py`, `tailscale.py`, `zerotier.py`, `tailscale_api.py`, `zerotier_api.py` (Legacy and New Central), `headscale_api.py`, `http.py`, `credentials.py`, `history.py`, `diagnostics.py`, `redaction.py`, `legacy.py`.

@@ -15,6 +15,23 @@ from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget, set_icon
 
 
+def physical_size(monitor) -> tuple[int, int]:
+    """The panel's real pixels, not its logical size.
+
+    GDK reports the geometry in logical pixels. ``get_scale_factor()`` is an
+    integer (2 at 125 %, 150 % and 175 %), so multiplying by it asked for
+    4096x2304 from a 2560x1440 panel at 125 %. The fractional ``get_scale()``
+    (GTK 4.14) gives the real size; the integer factor is only a fallback.
+    """
+    area = monitor.get_geometry()
+    scale_getter = getattr(monitor, "get_scale", None)
+    raw = scale_getter() if callable(scale_getter) else monitor.get_scale_factor()
+    scale = float(raw) if isinstance(raw, (int, float)) else 1.0
+    scale = scale if scale > 0 else 1.0
+    # Physical sizes are even numbers; rounding removes 1706.67 × 1.5 noise.
+    return round(area.width * scale / 2) * 2, round(area.height * scale / 2) * 2
+
+
 def name_icon_button(button: Gtk.Button, label: str, description: str = "") -> Gtk.Button:
     """Give an icon-only button one concise visible and accessible name."""
     button.set_tooltip_text(label)

@@ -23,6 +23,15 @@ _STATE = {
 }
 
 
+_PRIORITY = {
+    ConnectionState.CONNECTED: 0,
+    ConnectionState.NEEDS_AUTHORIZATION: 1,
+    ConnectionState.CONNECTING: 2,
+    ConnectionState.NEEDS_AUTHENTICATION: 3,
+    ConnectionState.ERROR: 4,
+}
+
+
 def network_state(network: ZeroTierNetwork) -> ConnectionState:
     state = _STATE.get(network.status.upper(), ConnectionState.ERROR)
     if state is ConnectionState.CONNECTED and not network.assigned_addresses:
@@ -77,8 +86,9 @@ def status(manager: VPNAccountManager, *, installed: bool = True, service_runnin
     )
     if not networks:
         return ProviderStatus(ProviderId.ZEROTIER, ConnectionState.DISCONNECTED, recovery=Recovery.JOIN_NETWORK, self_device=_self(node.address, ()), technical_detail=_detail(node.address, ()))
-    ready = [network for network in networks if network.state is ConnectionState.CONNECTED]
-    primary = ready[0] if ready else networks[0]
+    # The most advanced membership speaks for ZeroTier: a network waiting for
+    # approval matters more than an old one whose controller is gone.
+    primary = min(networks, key=lambda network: _PRIORITY.get(network.state, len(_PRIORITY)))
     state = primary.state
     recovery = Recovery.AUTHORIZE_DEVICE if state is ConnectionState.NEEDS_AUTHORIZATION else None
     return ProviderStatus(

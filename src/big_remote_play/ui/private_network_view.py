@@ -476,8 +476,6 @@ class InstallSection(Gtk.Box):
 class ConnectPage(Adw.Bin):
     """Join a network with one provider: browser sign-in, key or Network ID."""
 
-    ZEROTIER_JOIN_WAIT = 20.0
-
     def __init__(self, vpn_id, main_window, add_account=False):
         super().__init__()
         self.vpn_id = vpn_id
@@ -507,11 +505,16 @@ class ConnectPage(Adw.Bin):
         The heading states it and the existing "Ready to play?" row is the only
         thing left to do, so no extra banner is added to say the same twice.
         """
-        self._connect_form.set_visible(not connected)
         self._return_to_game.set_visible(connected)
         self._open_dashboard.set_visible(connected)
+        if self.vpn_id == "zerotier":
+            # One computer can be on several ZeroTier networks: being on one
+            # never hides the way to join another.
+            if connected:
+                self._c_description.set_label(_("This computer is already on a ZeroTier network. To join another one, type its code."))
+            return False
+        self._connect_form.set_visible(not connected)
         if connected:
-            self._approval_group.set_visible(False)
             self._c_title.set_label(_("Already connected"))
             self._c_description.set_label(_("This PC is on the {} private network.").format(self.vpn["name"]))
         return False
@@ -547,11 +550,14 @@ class ConnectPage(Adw.Bin):
         fields_group = Adw.PreferencesGroup()
         fields_group.set_title(_("Connection Details") if self.advanced else _("What you need"))
         self._build_connect_fields(fields_group)
-        if self.vpn_id != "tailscale":
-            self._connect_form.append(fields_group)
         self._c_progress = ProgressRow(on_show_log=self._show_connect_log, log_label=_("Connection Log"))
-        self._connect_form.append(self._c_progress)
         self._c_log = LogView()
+        if self.vpn_id == "zerotier":
+            self._connect_form.append(self._zt_panel)
+        else:
+            if self.vpn_id != "tailscale":
+                self._connect_form.append(fields_group)
+            self._connect_form.append(self._c_progress)
 
         btn_row = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8, halign=Gtk.Align.CENTER, margin_top=8)
         self._c_spinner = Gtk.Spinner()
@@ -570,17 +576,14 @@ class ConnectPage(Adw.Bin):
         self._btn_connect.connect("clicked", self._on_connect)
         btn_row.append(self._btn_connect)
 
-        self._connect_form.append(btn_row)
+        if self.vpn_id == "zerotier":
+            # The panel owns its button, state and technical details.
+            self._btn_connect = self._zt_panel.button
+        else:
+            self._connect_form.append(btn_row)
         if self.vpn_id == "tailscale":
             # The novice path is browser sign-in, not an empty technical field.
             self._connect_form.append(fields_group)
-
-        # ZeroTier: joined, but the network owner has not approved this PC yet.
-        self._approval_group = Adw.PreferencesGroup(title=_("Waiting for approval"))
-        self._approval_group.set_description(_("This computer joined the network. The network owner must approve it before it can reach the other computers."))
-        self._approval_rows = []
-        self._approval_group.set_visible(False)
-        self._connect_form.append(self._approval_group)
 
         if self.advanced:
             self._connect_form.append(
@@ -675,9 +678,11 @@ class ConnectPage(Adw.Bin):
             group.add(self._auth_key_expander)
 
         elif self.vpn_id == "zerotier":
-            self._e_netid = Adw.EntryRow(title=_("Network ID (16 characters)") if self.advanced else _("Network code"))
-            self._e_netid.set_tooltip_text(_("e.g. a1b2c3d4e5f6a7b8"))
-            group.add(self._e_netid)
+            from .zerotier_join import ZeroTierJoinPanel
+
+            self._zt_panel = ZeroTierJoinPanel(self.main_window, advanced=self.advanced, on_connected=self._zerotier_connected)
+            self._e_netid = self._zt_panel.entry
+            group = self._zt_panel.group
             if self.advanced:
                 link = Adw.ActionRow(
                     title=_("Find Network ID"),
@@ -718,6 +723,10 @@ class ConnectPage(Adw.Bin):
             page._e_netid.set_text(entry.get("network_id", ""))
 
     def _on_connect(self, btn):
+        if self.vpn_id == "zerotier":
+            # People copy the code in groups ("a1b2 c3d4 …" or with dashes).
+            self._join_zerotier("".join(self._e_netid.get_text().split()).replace("-", "").lower())
+            return
         self._return_to_game.set_visible(False)
         self._btn_connect.set_sensitive(False)
         self._c_spinner.set_visible(True)
@@ -745,81 +754,17 @@ class ConnectPage(Adw.Bin):
             self._connect_tailnet(login_server=self._e_server.get_text(), auth_key=self._e_key.get_text())
             return
 
-        if self.vpn_id == "zerotier":
-            # People copy the code in groups ("a1b2 c3d4 …" or with dashes).
-            nid = "".join(self._e_netid.get_text().split()).replace("-", "") if hasattr(self, "_e_netid") else ""
-            if not valid_zerotier_network_id(nid):
-                self._e_netid.add_css_class("error")
-                self._e_netid.grab_focus()
-                self.main_window.show_toast(_("Enter a 16-character hexadecimal Network ID.") if self.advanced else _("This code is not complete. Check it and try again."))
-                self._c_done(False)
-                return
-            self._e_netid.remove_css_class("error")
-            self._join_zerotier(nid.lower())
-            return
-
         self._c_done(False)
         self.main_window.show_toast(_("Select a network service and try again."))
 
     def _join_zerotier(self, network_id: str) -> None:
-        """Join with zerotier-cli, then wait for the service's own verdict."""
-        manager = VPNAccountManager(self.main_window.system_check)
-        wait = self.ZEROTIER_JOIN_WAIT
+        self._zt_panel.join(network_id)
 
-        def run():
-            result = manager.join_zerotier_network(network_id, allow_privileged=True)
-            if result.returncode != 0:
-                GLib.idle_add(self._report_connect_output, redact(result.stderr or result.stdout or _("Could not join the network.")))
-                GLib.idle_add(self._c_done, False)
-                return
-            GLib.idle_add(self._report_connect_output, _("Joined. Waiting for the network to confirm this computer…"))
-            deadline = time.monotonic() + wait
-            status = ""
-            while time.monotonic() < deadline:
-                listing = manager.list_zerotier_networks(allow_privileged=False)
-                network = next((item for item in listing.networks if item.network_id == network_id), None)
-                status = network.status.upper() if network else status
-                if network is not None and network.ready and network.assigned_addresses:
-                    GLib.idle_add(self._c_done, True)
-                    return
-                if status == "ACCESS_DENIED":
-                    break
-                time.sleep(2)
-            node = manager.zerotier_info()
-            if status in ("ACCESS_DENIED", "REQUESTING_CONFIGURATION", "OK"):
-                GLib.idle_add(self._awaiting_approval, network_id, node.address)
-            else:
-                GLib.idle_add(self._report_connect_output, f"ZeroTier status: {status or 'unknown'}")
-                GLib.idle_add(self._c_done, False)
-
-        threading.Thread(target=run, daemon=True).start()
-
-    def _awaiting_approval(self, network_id: str, node_id: str) -> bool:
-        """Joined, not yet approved: not a failure, and not a connection either."""
-        self._btn_connect.set_sensitive(True)
-        self._c_spinner.stop()
-        self._c_spinner.set_visible(False)
-        self._c_lbl.set_label(_("Check again"))
-        self._c_progress.update(0.8, _("Waiting for the network owner to approve this computer."))
-        for row in self._approval_rows:
-            self._approval_group.remove(row)
-        self._approval_rows = []
-        if node_id:
-            self._approval_rows.append(
-                copy_row(
-                    _("Node ID of this computer") if self.advanced else _("Code for this computer"),
-                    node_id,
-                    icon="brp-dialog-password-symbolic",
-                    toast=self.main_window.show_toast,
-                )
-            )
-        self._approval_rows.append(copy_row(_("Network ID") if self.advanced else _("Network code"), network_id, icon="brp-zerotier-symbolic", toast=self.main_window.show_toast))
-        for row in self._approval_rows:
-            self._approval_group.add(row)
-        self._approval_group.set_visible(True)
-        _save_history({"vpn": "zerotier", "network_id": network_id})
-        self.main_window.show_toast(_("Waiting for approval"))
-        return False
+    def _zerotier_connected(self, _snapshot) -> None:
+        """The network confirmed this computer: say so and offer the next step."""
+        self._return_to_game.set_visible(True)
+        self._open_dashboard.set_visible(True)
+        self.main_window.show_toast(_("Connected successfully!"))
 
     def _connect_tailnet(self, *, login_server: str, auth_key: str) -> None:
         """Join a Tailscale/Headscale tailnet and report the daemon's verdict."""

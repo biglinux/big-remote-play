@@ -77,6 +77,6 @@ modules:
         install -Dm755 build-aux/flatpak/host-tool /app/libexec/host-tools/host-tool
         for tool in tailscale zerotier-cli systemctl pkexec sunshine moonlight-qt \
             moonlight pactl docker docker-compose pacman flatpak ip ping pkill \
-            avahi-browse lspci; do
+            avahi-browse lspci kscreen-doctor; do
             ln -sf host-tool "/app/libexec/host-tools/${tool}"
         done
