@@ -156,15 +156,20 @@ def plan_session(outputs: Sequence[Output], request: Request, *, target: str | N
     plan = Plan()
     chosen = [output for output in outputs if output.enabled and (target is None or output.name == target)]
     for output in chosen:
-        if sdr_for_sdr_clients and output.hdr and not request.hdr:
+        # Always SDR, even when this first device asked for HDR: Sunshine runs
+        # this once per app launch, and every device that joins later shares
+        # the same capture. From an SDR screen Sunshine serves SDR devices
+        # correctly and HDR requests as SDR in a BT.2020 container; from an
+        # HDR screen only HDR devices look right (seen for real: an HDR TV
+        # launched the session and three SDR devices got washed-out colours).
+        if sdr_for_sdr_clients and output.hdr:
             plan.apply += [f"output.{output.name}.hdr.disable"]
             plan.undo += [f"output.{output.name}.hdr.enable"]
             if output.wcg:
                 plan.apply += [f"output.{output.name}.wcg.disable"]
                 plan.undo += [f"output.{output.name}.wcg.enable"]
-            plan.notes.append(f"{output.name}: HDR on, client asked for SDR -> SDR for this session")
-        elif output.hdr and request.hdr:
-            plan.notes.append(f"{output.name}: HDR on, client asked for HDR -> kept")
+            asked = "HDR" if request.hdr else "SDR"
+            plan.notes.append(f"{output.name}: HDR on, first device asked for {asked} -> SDR for this session")
     size = (request.width, request.height) if resolution == CLIENT_RESOLUTION else parse_resolution(resolution)
     if size is not None and target is not None and all(size):
         output = next((item for item in chosen if item.name == target), None)
