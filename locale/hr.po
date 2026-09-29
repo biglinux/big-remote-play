@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-09-29 22:15+0000\n"
+"POT-Creation-Date: 2026-09-29 22:34+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Croatian\n"
@@ -25,6 +25,10 @@ msgstr ""
 "Vrijednost 0 slijedi zahtjev drugog računala. Time se ograničava video, a ne "
 "sav mrežni promet."
 
+#: src/big_remote_play/ui/private_network_view.py:93
+msgid "1. Account"
+msgstr "1. Račun"
+
 #: src/big_remote_play/ui/connection_guides.py:48
 msgid "1. Check internet reachability"
 msgstr "1. Provjerite dostupnost interneta"
@@ -37,13 +41,13 @@ msgstr "1. Odaberite što želite dijeliti"
 # line: 804
 # line: 811
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1045
+#: src/big_remote_play/ui/private_network_view.py:1074
 msgid "1. Create Account"
 msgstr "1. Kreiraj račun"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1801
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "1. Identification"
 msgstr "1. Identifikacija"
 
@@ -77,13 +81,17 @@ msgstr "2. Domena i HTTPS"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1795
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "2. Invitation"
 msgstr "2. Poziv"
 
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "2. Join"
 msgstr "2. Pridruži se"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "2. Network"
+msgstr "2. Mreža"
 
 #: src/big_remote_play/ui/host_view.py:869
 msgid "2. Start sharing"
@@ -91,19 +99,23 @@ msgstr "2. Pokrenite dijeljenje"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1803
-#: src/big_remote_play/ui/private_network_view.py:1064
+#: src/big_remote_play/ui/private_network_view.py:1093
 msgid "3. Authorization"
 msgstr "3. Autorizacija"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "3. Connect"
 msgstr "3. Poveži"
 
 #: src/big_remote_play/ui/host_view.py:733
 msgid "3. Connect the other PC"
 msgstr "3. Povežite drugo računalo"
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "3. Join"
+msgstr "3. Pridruživanje"
 
 #: src/big_remote_play/ui/connection_guides.py:118
 msgid "3. Open only the server's ports"
@@ -120,6 +132,10 @@ msgstr "30 dana"
 #: src/big_remote_play/ui/connection_guides.py:68
 msgid "4. Allow only the streaming ports"
 msgstr "4. Dopustite samo priključke za prijenos"
+
+#: src/big_remote_play/ui/private_network_view.py:103
+msgid "4. Approve"
+msgstr "4. Odobrenje"
 
 #: src/big_remote_play/ui/connection_guides.py:124
 msgid "4. Connect Big Remote Play"
@@ -258,7 +274,7 @@ msgstr "API pogreška: {}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:71
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "API access"
 msgstr "API pristup"
@@ -282,13 +298,13 @@ msgstr "Token za API"
 msgid "About"
 msgstr "O aplikaciji"
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "About this VPN"
 msgstr "O ovom VPN-u"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1046
+#: src/big_remote_play/ui/private_network_view.py:1075
 msgid "Access Tailscale"
 msgstr "Pristupite Tailscale"
 
@@ -525,8 +541,8 @@ msgstr "Napredni način"
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 79
 #: src/big_remote_play/ui/guided_setup.py:246
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:702
 #: src/big_remote_play/ui/sunshine_preferences.py:104
 msgid "Advanced options"
 msgstr "Napredne opcije"
@@ -555,7 +571,7 @@ msgstr ""
 msgid "After step 2, the other PC appears here."
 msgstr "Nakon koraka 2 ovdje se pojavljuje drugo računalo."
 
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1076
 msgid ""
 "All participants need to sign in so their PCs join the same Private Network."
 msgstr ""
@@ -702,7 +718,7 @@ msgstr ""
 msgid "Almost there"
 msgstr "Još malo"
 
-#: src/big_remote_play/ui/private_network_view.py:518
+#: src/big_remote_play/ui/private_network_view.py:546
 msgid "Already connected"
 msgstr "Već povezano"
 
@@ -832,7 +848,11 @@ msgstr "Odobri"
 msgid "Approve a waiting computer"
 msgstr "Odobri računalo na čekanju"
 
-#: src/big_remote_play/ui/private_network_view.py:1031
+#: src/big_remote_play/ui/private_network_view.py:104
+msgid "Approve each computer"
+msgstr "Odobrite svako računalo"
+
+#: src/big_remote_play/ui/private_network_view.py:1060
 msgid "Approve if needed"
 msgstr "Odobri ako je potrebno"
 
@@ -880,7 +900,7 @@ msgstr "Jeste li potpuno sigurni?"
 msgid "Ask the game PC to optimize the game for streaming"
 msgstr "Zatraži od računala za igranje da optimizira igru za prijenos"
 
-#: src/big_remote_play/ui/private_network_view.py:1023
+#: src/big_remote_play/ui/private_network_view.py:1052
 msgid ""
 "Ask the network administrator for the server address and, optionally, a one-"
 "time auth key."
@@ -888,17 +908,19 @@ msgstr ""
 "Zatražite od administratora mreže adresu poslužitelja i, po želji, "
 "jednokratni ključ za autentifikaciju."
 
-#: src/big_remote_play/ui/private_network_view.py:689
+#: src/big_remote_play/ui/private_network_view.py:717
 msgid "Ask the network owner, or look in ZeroTier Central → Networks"
 msgstr "Pitajte vlasnika mreže ili pogledajte u ZeroTier Central → Networks"
 
-#: src/big_remote_play/ui/guided_setup.py:301
+#: src/big_remote_play/ui/guided_setup.py:302
 msgid ""
 "Ask the person who created the ZeroTier network to send it. If nobody has a "
-"network yet, Tailscale is the simplest way to start."
+"network yet, one of you creates it for free in ZeroTier Central, or you use "
+"Tailscale, the simplest way to start."
 msgstr ""
-"Zamolite osobu koja je stvorila ZeroTier mrežu da vam ga pošalje. Ako još "
-"nitko nema mrežu, Tailscale je najjednostavniji način za početak."
+"Zamolite osobu koja je stvorila ZeroTier mrežu da vam pošalje kod. Ako još "
+"nitko nema mrežu, jedno od vas je besplatno stvara u ZeroTier Centralu – ili "
+"koristite Tailscale, najjednostavniji način za početak."
 
 #: src/big_remote_play/ui/network_dashboard.py:346
 #: src/big_remote_play/ui/zerotier_join.py:51
@@ -947,10 +969,10 @@ msgstr "Zvuk/video"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 537
-#: src/big_remote_play/ui/private_network_view.py:656
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:673
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:684
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:701
+#: src/big_remote_play/ui/private_network_view.py:702
 msgid "Auth Key"
 msgstr "Ključ za autentifikaciju"
 
@@ -1284,8 +1306,8 @@ msgstr "Može se povezati bez novog PIN-a"
 #: src/big_remote_play/ui/preferences.py:261
 #: src/big_remote_play/ui/preferences.py:308
 #: src/big_remote_play/ui/preferences.py:318
-#: src/big_remote_play/ui/private_network_view.py:971
-#: src/big_remote_play/ui/private_network_view.py:999
+#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:1028
 #: src/big_remote_play/ui/remote_connection.py:753
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:246
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:266
@@ -1552,7 +1574,7 @@ msgstr "Očistiti povijest veza?"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1233
 #: src/big_remote_play/ui/guest_view.py:1780
 #: src/big_remote_play/ui/guest_view.py:1836
-#: src/big_remote_play/ui/guided_setup.py:303
+#: src/big_remote_play/ui/guided_setup.py:305
 #: src/big_remote_play/ui/host_view.py:1269
 #: src/big_remote_play/ui/host_view.py:2576
 #: src/big_remote_play/ui/installer_window.py:76
@@ -1618,7 +1640,7 @@ msgstr "Uobičajeni prečaci koji se koriste tijekom prijenosa"
 msgid "Complete the installation in the external terminal, then check again."
 msgstr "Dovršite instalaciju u vanjskom terminalu i ponovno provjerite."
 
-#: src/big_remote_play/ui/private_network_view.py:788
+#: src/big_remote_play/ui/private_network_view.py:817
 msgid "Complete the sign-in in your browser."
 msgstr "Dovršite prijavu u pregledniku."
 
@@ -1728,8 +1750,8 @@ msgstr "Potvrdite novu lozinku"
 #: src/big_remote_play/ui/main_window.py:827
 #: src/big_remote_play/ui/main_window.py:992
 #: src/big_remote_play/ui/main_window.py:1218
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 #: src/big_remote_play/ui/remote_connection.py:453
 #: src/big_remote_play/ui/remote_connection.py:481
 msgid "Connect"
@@ -1747,19 +1769,19 @@ msgstr "Poveži putem adrese"
 
 #: src/big_remote_play/ui/network_common.py:164
 #: src/big_remote_play/ui/network_dashboard.py:217
-#: src/big_remote_play/ui/private_network_view.py:535
+#: src/big_remote_play/ui/private_network_view.py:563
 msgid "Connect this computer"
 msgstr "Poveži ovo računalo"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 26
-#: src/big_remote_play/ui/private_network_view.py:103
+#: src/big_remote_play/ui/private_network_view.py:131
 msgid "Connect to Headscale Network"
 msgstr "Poveži se na Headscale mrežu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 36
-#: src/big_remote_play/ui/private_network_view.py:109
+#: src/big_remote_play/ui/private_network_view.py:137
 msgid "Connect to Tailscale Network"
 msgstr "Poveži se na Tailscale mrežu"
 
@@ -1769,7 +1791,7 @@ msgstr "Spojite se na Wi-Fi ili mrežni kabel, a zatim ponovno provjerite."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 46
-#: src/big_remote_play/ui/private_network_view.py:115
+#: src/big_remote_play/ui/private_network_view.py:143
 msgid "Connect to ZeroTier Network"
 msgstr "Poveži se na ZeroTier mrežu"
 
@@ -1830,9 +1852,9 @@ msgstr "Trenutačno povezani"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1907
-#: src/big_remote_play/ui/private_network_view.py:767
-#: src/big_remote_play/ui/private_network_view.py:804
-#: src/big_remote_play/ui/private_network_view.py:839
+#: src/big_remote_play/ui/private_network_view.py:796
+#: src/big_remote_play/ui/private_network_view.py:833
+#: src/big_remote_play/ui/private_network_view.py:868
 msgid "Connected successfully!"
 msgstr "Uspješno povezano!"
 
@@ -1849,21 +1871,21 @@ msgstr "Povezivanje s mrežom…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1848
-#: src/big_remote_play/ui/private_network_view.py:734
+#: src/big_remote_play/ui/private_network_view.py:763
 msgid "Connecting..."
 msgstr "Povezivanje..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
-#: src/big_remote_play/ui/private_network_view.py:551
-#: src/big_remote_play/ui/private_network_view.py:949
+#: src/big_remote_play/ui/private_network_view.py:579
+#: src/big_remote_play/ui/private_network_view.py:978
 msgid "Connection Details"
 msgstr "Pojedinosti o vezi"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
-#: src/big_remote_play/ui/private_network_view.py:553
-#: src/big_remote_play/ui/private_network_view.py:1014
+#: src/big_remote_play/ui/private_network_view.py:581
+#: src/big_remote_play/ui/private_network_view.py:1043
 msgid "Connection Log"
 msgstr "Zapis veze"
 
@@ -1879,7 +1901,7 @@ msgstr "Pogreška veze: Sunshine nije dostupan ili se certifikat ne podudara"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Connection failed"
 msgstr "Povezivanje nije uspjelo"
 
@@ -1902,7 +1924,7 @@ msgstr "Način povezivanja"
 msgid "Connection methods"
 msgstr "Načini povezivanja"
 
-#: src/big_remote_play/ui/private_network_view.py:361
+#: src/big_remote_play/ui/private_network_view.py:389
 msgid "Connection progress"
 msgstr "Napredak povezivanja"
 
@@ -1971,7 +1993,7 @@ msgstr "Upravlja prečacima kao što su Alt+Tab i tipka Super."
 
 #: src/big_remote_play/ui/network_common.py:213
 #: src/big_remote_play/ui/network_common.py:224
-#: src/big_remote_play/ui/private_network_view.py:1081
+#: src/big_remote_play/ui/private_network_view.py:1110
 msgid "Copied"
 msgstr "Kopirano"
 
@@ -2102,11 +2124,13 @@ msgstr "Biblioteku igara nije moguće ažurirati. Postojeće igre su sačuvane."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1255
-#: src/big_remote_play/ui/private_network_view.py:1049
+#: src/big_remote_play/ui/private_network_view.py:1078
 msgid "Create Account"
 msgstr "Stvori račun"
 
+#: src/big_remote_play/ui/guided_setup.py:306
 #: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "Stvori ZeroTier mrežu"
 
@@ -2115,8 +2139,15 @@ msgstr "Stvori ZeroTier mrežu"
 msgid "Create a backup"
 msgstr "Stvori sigurnosnu kopiju"
 
+#: src/big_remote_play/ui/private_network_view.py:95
+msgid ""
+"Create a free account or sign in. Only the person who owns the network does "
+"this."
+msgstr "Stvorite besplatan račun ili se prijavite. To radi samo vlasnik mreže."
+
 #: src/big_remote_play/ui/network_dashboard.py:226
 #: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "Stvori mrežu"
 
@@ -2177,7 +2208,7 @@ msgid "Credentials reset successfully"
 msgstr "Podaci za prijavu uspješno su resetirani"
 
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr ""
 "Podaci za prijavu koji Big Remote Playu omogućuju upravljanje ovom mrežom."
@@ -2252,8 +2283,8 @@ msgstr "Zadani mikrofon"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 815
-#: src/big_remote_play/ui/private_network_view.py:902
-#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:931
+#: src/big_remote_play/ui/private_network_view.py:1029
 msgid "Delete"
 msgstr "Izbriši"
 
@@ -2265,11 +2296,11 @@ msgstr "Izbriši sve"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1701
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Delete entry?"
 msgstr "Izbriši unos?"
 
-#: src/big_remote_play/ui/private_network_view.py:902
+#: src/big_remote_play/ui/private_network_view.py:931
 msgid "Delete this saved network"
 msgstr "Izbriši ovu spremljenu mrežu"
 
@@ -2349,7 +2380,7 @@ msgstr "Uređaji koji upravo igraju na ovom računalu."
 msgid "Devices updated"
 msgstr "Uređaji ažurirani"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "Devices, private address and how to add another computer."
 msgstr "Uređaji, privatna adresa i kako dodati još jedno računalo."
 
@@ -2487,8 +2518,8 @@ msgstr "Docker Engine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 714
-#: src/big_remote_play/ui/private_network_view.py:909
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:938
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Domain"
 msgstr "Domena"
 
@@ -2525,7 +2556,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1704
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit"
 msgstr "Uredi"
 
@@ -2537,13 +2568,13 @@ msgstr "Uredi prilagođenu brzinu kadrova"
 msgid "Edit custom resolution"
 msgstr "Uredi prilagođenu razlučivost"
 
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit this saved network"
 msgstr "Uredi ovu spremljenu mrežu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:969
+#: src/big_remote_play/ui/private_network_view.py:998
 #, python-brace-format
 msgid "Edit – {}"
 msgstr "Uredi – {}"
@@ -2656,7 +2687,7 @@ msgid "End the stream for everyone?"
 msgstr "Zaustaviti prijenos za sve?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 325
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter ID"
 msgstr "Unesite ID"
 
@@ -2664,7 +2695,7 @@ msgstr "Unesite ID"
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Unesite ŠIRINAxVISINA (npr. 1920x1080):"
 
-#: src/big_remote_play/ui/private_network_view.py:984
+#: src/big_remote_play/ui/private_network_view.py:1013
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "Unesite heksadekadski ID mreže od 16 znakova."
 
@@ -2698,22 +2729,26 @@ msgstr "Unesite broj sličica u sekundi (npr. 75):"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:116
+#: src/big_remote_play/ui/private_network_view.py:144
 msgid "Enter the 16-character Network ID to join a ZeroTier network."
 msgstr "Unesite ID mreže od 16 znakova za pridruživanje ZeroTier mreži."
 
-#: src/big_remote_play/ui/private_network_view.py:746
+#: src/big_remote_play/ui/private_network_view.py:775
 msgid "Enter the Headscale server address."
 msgstr "Unesite adresu Headscale poslužitelja."
 
 #: src/big_remote_play/ui/network_devices.py:442
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter the ID on this page and choose Connect."
 msgstr "Unesite ID na ovoj stranici i odaberite Poveži."
 
 #: src/big_remote_play/ui/host_view.py:1467
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr "Unesite PIN koji Moonlight prikazuje na drugom računalu."
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "Enter the code here"
+msgstr "Ovdje unesite kod"
 
 #: src/big_remote_play/ui/host_view.py:779
 #: src/big_remote_play/ui/host_view.py:1479
@@ -2726,7 +2761,7 @@ msgstr "Unesite punu https adresu Headscale poslužitelja."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 27
-#: src/big_remote_play/ui/private_network_view.py:104
+#: src/big_remote_play/ui/private_network_view.py:132
 msgid "Enter the server domain and auth key provided by the administrator."
 msgstr ""
 "Unesite domenu poslužitelja i ključ za autentifikaciju koji je pružio "
@@ -2742,7 +2777,7 @@ msgstr "Način kodiranja entropije"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/private_network_view.py:992
+#: src/big_remote_play/ui/private_network_view.py:1021
 msgid "Entry updated"
 msgstr "Unos ažuriran"
 
@@ -2809,7 +2844,7 @@ msgstr "Greška: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 555
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "Establish Connection"
 msgstr "Uspostavi vezu"
 
@@ -2914,14 +2949,14 @@ msgstr "Brži odziv ili bolja slika"
 msgid "Favorite"
 msgstr "Favorit"
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Fill in the form"
 msgstr "Ispunite obrazac"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1291
 # line: 1293
-#: src/big_remote_play/ui/private_network_view.py:688
+#: src/big_remote_play/ui/private_network_view.py:716
 msgid "Find Network ID"
 msgstr "Pronađi ID mreže"
 
@@ -3036,8 +3071,8 @@ msgstr "Prisiljen"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1772
 # line: 1787
-#: src/big_remote_play/ui/private_network_view.py:935
-#: src/big_remote_play/ui/private_network_view.py:941
+#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:970
 #, python-brace-format
 msgid "Form filled for {}"
 msgstr "Obrazac ispunjen za {}"
@@ -3132,7 +3167,7 @@ msgstr "Općenito"
 # line: 1023
 # line: 1069
 # line: 1666
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Get Network ID"
 msgstr "Dohvati ID mreže"
 
@@ -3316,17 +3351,21 @@ msgstr ""
 msgid "How to approve"
 msgstr "Kako odobriti"
 
+#: src/big_remote_play/ui/private_network_view.py:730
+msgid "How to create a free network, step by step."
+msgstr "Kako stvoriti besplatnu mrežu, korak po korak."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 266
-#: src/big_remote_play/ui/private_network_view.py:435
+#: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
 msgid "How to install {}"
 msgstr "Kako instalirati {}"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "How to run Headscale on your own server, step by step."
 msgstr "Kako korak po korak pokrenuti Headscale na vlastitom poslužitelju."
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "How to use the selected private network service."
 msgstr "Kako koristiti odabranu uslugu privatne mreže."
 
@@ -3335,10 +3374,11 @@ msgid "I already use ZeroTier"
 msgstr "Već koristim ZeroTier"
 
 #: src/big_remote_play/ui/guided_setup.py:278
+#: src/big_remote_play/ui/private_network_view.py:730
 msgid "I don't have a code"
 msgstr "Nemam kod"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "I don't have a server yet"
 msgstr "Još nemam poslužitelj"
 
@@ -3465,6 +3505,14 @@ msgid "In Big Remote Play, choose Play over the internet and type this code."
 msgstr ""
 "U Big Remote Playu odaberite Igranje preko interneta i upišite ovaj kod."
 
+#: src/big_remote_play/ui/private_network_view.py:105
+msgid ""
+"In ZeroTier Central, open the network and allow each computer under Members. "
+"Until then it waits for approval."
+msgstr ""
+"U ZeroTier Centralu otvorite mrežu i dopustite svako računalo pod Members. "
+"Do tada čeka odobrenje."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 337
 #: src/big_remote_play/ui/sunshine_preferences.py:523
@@ -3568,8 +3616,8 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 464
 #: src/big_remote_play/ui/main_window.py:1129
 #: src/big_remote_play/ui/main_window.py:1138
-#: src/big_remote_play/ui/private_network_view.py:430
-#: src/big_remote_play/ui/private_network_view.py:432
+#: src/big_remote_play/ui/private_network_view.py:458
+#: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
 msgid "Install {}"
 msgstr "Instaliraj {}"
@@ -3578,8 +3626,8 @@ msgstr "Instaliraj {}"
 # line: 1498
 # line: 1529
 # line: 1542
-#: src/big_remote_play/ui/private_network_view.py:373
-#: src/big_remote_play/ui/private_network_view.py:421
+#: src/big_remote_play/ui/private_network_view.py:401
+#: src/big_remote_play/ui/private_network_view.py:449
 msgid "Installation Log"
 msgstr "Zapisnik instalacije"
 
@@ -3591,7 +3639,7 @@ msgstr "Instalacija je uspješno završena!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 449
-#: src/big_remote_play/ui/private_network_view.py:456
+#: src/big_remote_play/ui/private_network_view.py:484
 msgid "Installation failed. Check the log."
 msgstr "Instalacija nije uspjela. Provjerite zapisnik."
 
@@ -3635,7 +3683,7 @@ msgstr "Instaliranje {}..."
 # line: 89
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1077
-#: src/big_remote_play/ui/private_network_view.py:444
+#: src/big_remote_play/ui/private_network_view.py:472
 msgid "Installing..."
 msgstr "Instaliranje..."
 
@@ -3753,7 +3801,7 @@ msgstr ""
 "Njezin vlasnik koristi stranicu za prijavu. Prijavite se u aplikaciji "
 "ZeroTier, a zatim ponovno provjerite."
 
-#: src/big_remote_play/ui/private_network_view.py:110
+#: src/big_remote_play/ui/private_network_view.py:138
 msgid ""
 "Join Tailscale with browser login, or use an auth key if someone gave you "
 "one."
@@ -3761,7 +3809,7 @@ msgstr ""
 "Pridružite se Tailscaleu prijavom u pregledniku ili upotrijebite ključ za "
 "autentifikaciju ako vam ga je netko dao."
 
-#: src/big_remote_play/ui/private_network_view.py:1018
+#: src/big_remote_play/ui/private_network_view.py:1047
 msgid "Join a Headscale VPN"
 msgstr "Pridruži se Headscale VPN-u"
 
@@ -4045,13 +4093,13 @@ msgstr "Putanja dnevnika"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1831
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Login Server"
 msgstr "Prijavni poslužitelj"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1284
-#: src/big_remote_play/ui/private_network_view.py:672
+#: src/big_remote_play/ui/private_network_view.py:700
 msgid "Login Server (leave empty for tailscale.com)"
 msgstr "Poslužitelj za prijavu (ostavite prazno za tailscale.com)"
 
@@ -4101,7 +4149,7 @@ msgstr "Prilagođava pokret pokazivača radu na radnoj površini, umjesto igrama
 msgid "Manage"
 msgstr "Upravljaj"
 
-#: src/big_remote_play/ui/private_network_view.py:612
+#: src/big_remote_play/ui/private_network_view.py:640
 msgid "Manage accounts and networks"
 msgstr "Upravljaj računima i mrežama"
 
@@ -4244,7 +4292,7 @@ msgid "More exposed than a private VPN"
 msgstr "Izloženije od privatnog VPN-a"
 
 #: src/big_remote_play/ui/network_dashboard.py:95
-#: src/big_remote_play/ui/private_network_view.py:601
+#: src/big_remote_play/ui/private_network_view.py:629
 msgid "More options"
 msgstr "Više mogućnosti"
 
@@ -4275,7 +4323,7 @@ msgstr "Utišaj kada Moonlight nije aktivni prozor"
 msgid "My devices"
 msgstr "Moji uređaji"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "My network"
 msgstr "Moja mreža"
 
@@ -4345,8 +4393,8 @@ msgstr "Mreža"
 #: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
-#: src/big_remote_play/ui/private_network_view.py:910
-#: src/big_remote_play/ui/private_network_view.py:959
+#: src/big_remote_play/ui/private_network_view.py:939
+#: src/big_remote_play/ui/private_network_view.py:988
 msgid "Network ID"
 msgstr "ID mreže"
 
@@ -4397,7 +4445,7 @@ msgstr "Naziv mreže"
 msgid "Network not found"
 msgstr "Mreža nije pronađena"
 
-#: src/big_remote_play/ui/private_network_view.py:606
+#: src/big_remote_play/ui/private_network_view.py:634
 msgid "Networks this PC joined before."
 msgstr "Mreže kojima se ovo računalo već pridružilo."
 
@@ -4560,7 +4608,7 @@ msgstr "Još nema uparenih uređaja"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1629
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "No previous networks"
 msgstr "Nema prethodnih mreža"
 
@@ -4778,7 +4826,7 @@ msgstr "Na ovom računalu"
 msgid "On your {provider} private network at {address}"
 msgstr "Na vašoj {provider} privatnoj mreži na adresi {address}"
 
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid ""
 "Once both computers are on the same private network, return to Connect to "
 "find the game PC."
@@ -4857,7 +4905,7 @@ msgstr "Novi naziv koristi samo ovo računalo."
 # line: 347
 # line: 1295
 #: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/private_network_view.py:692
+#: src/big_remote_play/ui/private_network_view.py:720
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "Otvori"
@@ -4893,6 +4941,7 @@ msgid "Open Tailscale admin console"
 msgstr "Otvori Tailscale administratorsku konzolu"
 
 #: src/big_remote_play/ui/network_devices.py:471
+#: src/big_remote_play/ui/private_network_view.py:97
 msgid "Open ZeroTier Central"
 msgstr "Otvori ZeroTier Central"
 
@@ -5095,11 +5144,19 @@ msgid "Pass through high resolution scroll events from Moonlight clients"
 msgstr ""
 "Prosljeđuj događaje pomicanja visoke razlučivosti s Moonlight klijenata"
 
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid ""
+"Paste the code on this page and join the network. Send the same code to the "
+"other person."
+msgstr ""
+"Zalijepite kod na ovu stranicu i pridružite se mreži. Pošaljite isti kod "
+"drugoj osobi."
+
 #: src/big_remote_play/ui/api_access_dialog.py:37
 msgid "Paste the credential first."
 msgstr "Najprije zalijepite podatke za prijavu."
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Zalijepite adresu poslužitelja i ključ u polja na ovoj stranici."
 
@@ -5295,8 +5352,8 @@ msgstr "Sprječava isključivanje zaslona ovog računala tijekom sesije."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 618
-#: src/big_remote_play/ui/private_network_view.py:604
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:632
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Previous Networks"
 msgstr "Prethodne mreže"
 
@@ -5428,7 +5485,7 @@ msgid "Ready to play over the internet"
 msgstr "Spremno za igranje preko interneta"
 
 #: src/big_remote_play/ui/network_dashboard.py:91
-#: src/big_remote_play/ui/private_network_view.py:592
+#: src/big_remote_play/ui/private_network_view.py:620
 msgid "Ready to play?"
 msgstr "Spremni za igru?"
 
@@ -5495,12 +5552,12 @@ msgstr "Preporučeno: privatna mreža"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 688
 #: src/big_remote_play/ui/network_common.py:163
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect"
 msgstr "Ponovno se poveži"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 78
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect using this saved network"
 msgstr "Ponovno se poveži ovom spremljenom mrežom"
 
@@ -5609,7 +5666,7 @@ msgstr "Ukloniti ovaj uređaj?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1702
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Remove this network from history?"
 msgstr "Ukloniti ovu mrežu iz povijesti?"
 
@@ -5670,7 +5727,7 @@ msgstr "Zamijeni trenutne postavke spremljenom datotekom"
 msgid "Replace the current settings?"
 msgstr "Zamijeniti trenutne postavke?"
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "Request Access"
 msgstr "Zatraži pristup"
 
@@ -5680,7 +5737,7 @@ msgstr "Zahtjev je otkazan"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Request the 16-character ID from the network owner."
 msgstr "Zatražite ID od 16 znakova od vlasnika mreže."
 
@@ -5808,7 +5865,7 @@ msgstr "Vratiti zadane postavke?"
 msgid "Restore a backup"
 msgstr "Vrati sigurnosnu kopiju"
 
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Ponovno upotrijebi podatke veze koje je spremio Big Remote Play"
 
@@ -5903,7 +5960,7 @@ msgstr ""
 # line: 1077
 #: src/big_remote_play/ui/api_access_dialog.py:86
 #: src/big_remote_play/ui/host_view.py:3136
-#: src/big_remote_play/ui/private_network_view.py:972
+#: src/big_remote_play/ui/private_network_view.py:1001
 #: src/big_remote_play/ui/remote_connection.py:754
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:306
 msgid "Save"
@@ -6006,7 +6063,7 @@ msgstr ""
 "Odaberite igru ili unesite naziv aplikacije i naredbu. Za dijeljenje cijelog "
 "zaslona odaberite Cijela radna površina."
 
-#: src/big_remote_play/ui/private_network_view.py:758
+#: src/big_remote_play/ui/private_network_view.py:787
 msgid "Select a network service and try again."
 msgstr "Odaberite mrežnu uslugu i pokušajte ponovno."
 
@@ -6074,7 +6131,7 @@ msgstr "Slanje zahtjeva mreži."
 msgid "Sends your game to the other PC."
 msgstr "Šalje vašu igru na drugo računalo."
 
-#: src/big_remote_play/ui/private_network_view.py:655
+#: src/big_remote_play/ui/private_network_view.py:683
 msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Domena poslužitelja (npr. vpn.example.com)"
 
@@ -6091,8 +6148,8 @@ msgstr "Lozinka poslužitelja"
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
 #: src/big_remote_play/ui/network_devices.py:692
-#: src/big_remote_play/ui/private_network_view.py:655
-#: src/big_remote_play/ui/private_network_view.py:1022
+#: src/big_remote_play/ui/private_network_view.py:683
+#: src/big_remote_play/ui/private_network_view.py:1051
 msgid "Server address"
 msgstr "Adresa poslužitelja"
 
@@ -6298,6 +6355,10 @@ msgstr "Prijavi se"
 msgid "Sign in on that computer with your own account."
 msgstr "Na tom se računalu prijavite vlastitim računom."
 
+#: src/big_remote_play/ui/private_network_view.py:94
+msgid "Sign in to ZeroTier Central"
+msgstr "Prijavite se u ZeroTier Central"
+
 #: src/big_remote_play/ui/remote_connection.py:65
 msgid "Sign in to connect this computer"
 msgstr "Prijavite se kako biste povezali ovo računalo"
@@ -6311,8 +6372,8 @@ msgstr "Prijavite se u {name} za nastavak."
 msgid "Sign in with another Tailscale account"
 msgstr "Prijavi se drugim Tailscale računom"
 
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 msgid "Sign in with browser"
 msgstr "Prijava u pregledniku"
 
@@ -6324,7 +6385,7 @@ msgstr "Prijavite se istim računom"
 msgid "Sign in with your account and connect your devices."
 msgstr "Prijavite se svojim računom i povežite svoje uređaje."
 
-#: src/big_remote_play/ui/private_network_view.py:538
+#: src/big_remote_play/ui/private_network_view.py:566
 msgid "Sign in with your browser. Use the same account on all your devices."
 msgstr ""
 "Prijavite se putem preglednika. Na svim uređajima koristite isti račun."
@@ -6341,7 +6402,7 @@ msgstr "Poveznica za prijavu prikazana na tom računalu"
 msgid "Sign-in needed"
 msgstr "Potrebna je prijava"
 
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Sign-in was not completed in the browser."
 msgstr "Prijava u pregledniku nije dovršena."
 
@@ -6504,7 +6565,7 @@ msgstr "Pokretanje jednom traži vašu lozinku."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 67
-#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "Starting..."
 msgstr "Pokretanje..."
 
@@ -6541,19 +6602,19 @@ msgstr "Steam ne snima zvuk"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1765
-#: src/big_remote_play/ui/private_network_view.py:1021
+#: src/big_remote_play/ui/private_network_view.py:1050
 msgid "Step 1: Get credentials"
 msgstr "Korak 1: Dobijte vjerodajnice"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1771
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Step 2: Enter details"
 msgstr "Korak 2: Unesite pojedinosti"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1777
-#: src/big_remote_play/ui/private_network_view.py:1030
+#: src/big_remote_play/ui/private_network_view.py:1059
 msgid "Step 3: Connect"
 msgstr "Korak 3: Poveži"
 
@@ -6871,7 +6932,7 @@ msgid "Switch Tailscale or Headscale accounts, and see every ZeroTier network."
 msgstr ""
 "Mijenjajte Tailscale ili Headscale račune i pregledajte sve ZeroTier mreže."
 
-#: src/big_remote_play/ui/private_network_view.py:613
+#: src/big_remote_play/ui/private_network_view.py:641
 msgid ""
 "Switch saved accounts or leave networks without deleting online accounts."
 msgstr ""
@@ -6929,7 +6990,7 @@ msgstr "Tailscale"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 803
 # line: 1793
-#: src/big_remote_play/ui/private_network_view.py:1042
+#: src/big_remote_play/ui/private_network_view.py:1071
 msgid "Tailscale Instructions"
 msgstr "Upute za Tailscale"
 
@@ -7085,7 +7146,7 @@ msgstr ""
 "Aktivna VPN veza bit će zaustavljena. Spremljeni računi ostaju kako biste se "
 "kasnije mogli ponovno povezati."
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr "Administrator mora podijeliti čvor ili pozvati vašu e-adresu u mrežu."
@@ -7251,7 +7312,7 @@ msgstr ""
 "Mreža je privatna: svaki novi uređaj mora biti odobren. Ovo se računalo "
 "pridružuje i odobrava automatski."
 
-#: src/big_remote_play/ui/private_network_view.py:1066
+#: src/big_remote_play/ui/private_network_view.py:1095
 msgid ""
 "The network owner must approve this computer, in Big Remote Play or in "
 "ZeroTier Central."
@@ -7325,7 +7386,7 @@ msgstr ""
 "Osoba se pridružuje vašoj privatnoj mreži i može vidjeti uređaje koje "
 "dopustite."
 
-#: src/big_remote_play/ui/private_network_view.py:698
+#: src/big_remote_play/ui/private_network_view.py:726
 msgid "The person who created the network gives you this code."
 msgstr "Ovaj kod dobivate od osobe koja je stvorila mrežu."
 
@@ -7368,7 +7429,7 @@ msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr ""
 "Odabrani izlaz nije povezan. Ponovno ga povežite ili odaberite Automatski."
 
-#: src/big_remote_play/ui/private_network_view.py:665
+#: src/big_remote_play/ui/private_network_view.py:693
 msgid "The server administrator then approves this computer."
 msgstr "Administrator poslužitelja zatim odobrava ovo računalo."
 
@@ -7494,7 +7555,7 @@ msgstr ""
 msgid "This PC did not appear in the list?"
 msgstr "Ovo se računalo nije pojavilo na popisu?"
 
-#: src/big_remote_play/ui/private_network_view.py:519
+#: src/big_remote_play/ui/private_network_view.py:547
 #, python-brace-format
 msgid "This PC is on the {} private network."
 msgstr "Ovo računalo je na privatnoj mreži {}."
@@ -7556,7 +7617,7 @@ msgstr ""
 msgid "This computer has not joined a ZeroTier network yet."
 msgstr "Ovo računalo još se nije pridružilo nijednoj ZeroTier mreži."
 
-#: src/big_remote_play/ui/private_network_view.py:514
+#: src/big_remote_play/ui/private_network_view.py:542
 msgid ""
 "This computer is already on a ZeroTier network. To join another one, type "
 "its code."
@@ -7906,7 +7967,7 @@ msgstr "Pouzdani izvori web-sučelja"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1118
 #: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:849
+#: src/big_remote_play/ui/private_network_view.py:878
 msgid "Try Again"
 msgstr "Pokušajte ponovo"
 
@@ -7950,13 +8011,13 @@ msgstr "Uključivanje…"
 msgid "Type"
 msgstr "Vrsta"
 
-#: src/big_remote_play/ui/private_network_view.py:539
+#: src/big_remote_play/ui/private_network_view.py:567
 msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr ""
 "Upišite adresu svog poslužitelja. Njegov administrator odobrava ovo računalo."
 
-#: src/big_remote_play/ui/private_network_view.py:537
+#: src/big_remote_play/ui/private_network_view.py:565
 msgid "Type the network code you received."
 msgstr "Upišite mrežni kod koji ste dobili."
 
@@ -8100,7 +8161,7 @@ msgstr ""
 "samo pokušaj, a ne dokaz da pristup radi. Nemojte izložiti Sunshineovu "
 "administracijsku ploču (zadano 47990) i nemojte isključivati vatrozid."
 
-#: src/big_remote_play/ui/guided_setup.py:304
+#: src/big_remote_play/ui/guided_setup.py:307
 msgid "Use Tailscale"
 msgstr "Koristi Tailscale"
 
@@ -8318,7 +8379,7 @@ msgstr ""
 "mrežnu autentifikaciju) iz privjeska ključeva sustava. Aplikacija će se "
 "zatvoriti."
 
-#: src/big_remote_play/ui/private_network_view.py:1065
+#: src/big_remote_play/ui/private_network_view.py:1094
 msgid "Wait for Approval"
 msgstr "Pričekaj odobrenje"
 
@@ -8373,8 +8434,8 @@ msgstr "Treba popraviti jednu postavku"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1668
-#: src/big_remote_play/ui/private_network_view.py:911
-#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:940
+#: src/big_remote_play/ui/private_network_view.py:993
 msgid "Web UI"
 msgstr "Web korisničko sučelje"
 
@@ -8401,7 +8462,7 @@ msgid "What this computer shows"
 msgstr "Što prikazuje ovo računalo"
 
 #: src/big_remote_play/ui/connection_guides.py:100
-#: src/big_remote_play/ui/private_network_view.py:551
+#: src/big_remote_play/ui/private_network_view.py:579
 msgid "What you need"
 msgstr "Što vam je potrebno"
 
@@ -8501,7 +8562,7 @@ msgstr ""
 msgid "Without a browser (advanced)"
 msgstr "Bez preglednika (napredno)"
 
-#: src/big_remote_play/ui/private_network_view.py:1032
+#: src/big_remote_play/ui/private_network_view.py:1061
 msgid ""
 "Without a key, a sign-in link opens; the administrator approves this "
 "computer on the server."
@@ -8513,7 +8574,7 @@ msgstr ""
 msgid "Without a private network"
 msgstr "Bez privatne mreže"
 
-#: src/big_remote_play/ui/private_network_view.py:664
+#: src/big_remote_play/ui/private_network_view.py:692
 msgid "Without an auth key, a sign-in link opens"
 msgstr "Bez ključa za autentifikaciju otvara se poveznica za prijavu"
 
@@ -8571,7 +8632,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1631
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "Your created/connected networks will appear here."
 msgstr "Vaše stvorene/povezane mreže će se ovdje prikazati."
 
@@ -8617,7 +8678,7 @@ msgstr "Vaše postavke, uparene mreže i preferencije u jednoj datoteci."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 650
-#: src/big_remote_play/ui/private_network_view.py:1068
+#: src/big_remote_play/ui/private_network_view.py:1097
 msgid "ZT Panel"
 msgstr "ZT ploča"
 
@@ -8633,7 +8694,7 @@ msgstr "ZeroTier token za API"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 810
 # line: 1800
-#: src/big_remote_play/ui/private_network_view.py:1059
+#: src/big_remote_play/ui/private_network_view.py:1088
 msgid "ZeroTier Instructions"
 msgstr "Upute za ZeroTier"
 
@@ -8684,6 +8745,10 @@ msgstr "ZeroTier mreže"
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:228
 msgid "ZeroTier service error"
 msgstr "Pogreška usluge ZeroTier"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "ZeroTier shows its 16-character network code. Copy it."
+msgstr "ZeroTier prikazuje mrežni kod od 16 znakova. Kopirajte ga."
 
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
@@ -8808,12 +8873,12 @@ msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 259
-#: src/big_remote_play/ui/private_network_view.py:449
+#: src/big_remote_play/ui/private_network_view.py:477
 #, python-brace-format
 msgid "{} installed"
 msgstr "{} instaliran"
 
-#: src/big_remote_play/ui/private_network_view.py:420
+#: src/big_remote_play/ui/private_network_view.py:448
 #, python-brace-format
 msgid ""
 "{} is not installed yet. Install it below to continue (asks for your "

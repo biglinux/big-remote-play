@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-09-29 22:15+0000\n"
+"POT-Creation-Date: 2026-09-29 22:34+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Danish\n"
@@ -24,6 +24,10 @@ msgstr ""
 "0 følger den anden computers anmodning. Det begrænser videoen, ikke al "
 "netværkstrafik."
 
+#: src/big_remote_play/ui/private_network_view.py:93
+msgid "1. Account"
+msgstr "1. Konto"
+
 #: src/big_remote_play/ui/connection_guides.py:48
 msgid "1. Check internet reachability"
 msgstr "1. Kontrollér internetforbindelsen"
@@ -36,13 +40,13 @@ msgstr "1. Vælg, hvad du vil dele"
 # line: 804
 # line: 811
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1045
+#: src/big_remote_play/ui/private_network_view.py:1074
 msgid "1. Create Account"
 msgstr "1. Opret konto"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1801
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "1. Identification"
 msgstr "1. Identifikation"
 
@@ -76,13 +80,17 @@ msgstr "2. Domæne og HTTPS"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1795
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "2. Invitation"
 msgstr "2. Invitation"
 
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "2. Join"
 msgstr "2. Tilslut"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "2. Network"
+msgstr "2. Netværk"
 
 #: src/big_remote_play/ui/host_view.py:869
 msgid "2. Start sharing"
@@ -90,19 +98,23 @@ msgstr "2. Start deling"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1803
-#: src/big_remote_play/ui/private_network_view.py:1064
+#: src/big_remote_play/ui/private_network_view.py:1093
 msgid "3. Authorization"
 msgstr "3. Godkendelse"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "3. Connect"
 msgstr "3. Forbind"
 
 #: src/big_remote_play/ui/host_view.py:733
 msgid "3. Connect the other PC"
 msgstr "3. Forbind den anden pc"
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "3. Join"
+msgstr "3. Deltag"
 
 #: src/big_remote_play/ui/connection_guides.py:118
 msgid "3. Open only the server's ports"
@@ -119,6 +131,10 @@ msgstr "30 dage"
 #: src/big_remote_play/ui/connection_guides.py:68
 msgid "4. Allow only the streaming ports"
 msgstr "4. Tillad kun streamingportene"
+
+#: src/big_remote_play/ui/private_network_view.py:103
+msgid "4. Approve"
+msgstr "4. Godkend"
 
 #: src/big_remote_play/ui/connection_guides.py:124
 msgid "4. Connect Big Remote Play"
@@ -258,7 +274,7 @@ msgstr "API-fejl: {}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:71
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "API access"
 msgstr "API-adgang"
@@ -282,13 +298,13 @@ msgstr "API-token"
 msgid "About"
 msgstr "Om"
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "About this VPN"
 msgstr "Om denne VPN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1046
+#: src/big_remote_play/ui/private_network_view.py:1075
 msgid "Access Tailscale"
 msgstr "Adgang til Tailscale"
 
@@ -524,8 +540,8 @@ msgstr "Avanceret tilstand"
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 78
 #: src/big_remote_play/ui/guided_setup.py:246
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:702
 #: src/big_remote_play/ui/sunshine_preferences.py:104
 msgid "Advanced options"
 msgstr "Avancerede valg"
@@ -554,7 +570,7 @@ msgstr ""
 msgid "After step 2, the other PC appears here."
 msgstr "Efter trin 2 vises den anden pc her."
 
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1076
 msgid ""
 "All participants need to sign in so their PCs join the same Private Network."
 msgstr ""
@@ -702,7 +718,7 @@ msgstr ""
 msgid "Almost there"
 msgstr "Næsten færdig"
 
-#: src/big_remote_play/ui/private_network_view.py:518
+#: src/big_remote_play/ui/private_network_view.py:546
 msgid "Already connected"
 msgstr "Allerede forbundet"
 
@@ -832,7 +848,11 @@ msgstr "Godkend"
 msgid "Approve a waiting computer"
 msgstr "Godkend en ventende computer"
 
-#: src/big_remote_play/ui/private_network_view.py:1031
+#: src/big_remote_play/ui/private_network_view.py:104
+msgid "Approve each computer"
+msgstr "Godkend hver computer"
+
+#: src/big_remote_play/ui/private_network_view.py:1060
 msgid "Approve if needed"
 msgstr "Godkend om nødvendigt"
 
@@ -880,7 +900,7 @@ msgstr "Er du helt sikker?"
 msgid "Ask the game PC to optimize the game for streaming"
 msgstr "Bed spil-pc'en om at optimere spillet til streaming"
 
-#: src/big_remote_play/ui/private_network_view.py:1023
+#: src/big_remote_play/ui/private_network_view.py:1052
 msgid ""
 "Ask the network administrator for the server address and, optionally, a one-"
 "time auth key."
@@ -888,18 +908,19 @@ msgstr ""
 "Bed netværksadministratoren om serveradressen og eventuelt en "
 "engangsgodkendelsesnøgle."
 
-#: src/big_remote_play/ui/private_network_view.py:689
+#: src/big_remote_play/ui/private_network_view.py:717
 msgid "Ask the network owner, or look in ZeroTier Central → Networks"
 msgstr "Spørg ejeren af netværket, eller se i ZeroTier Central → Networks"
 
-#: src/big_remote_play/ui/guided_setup.py:301
+#: src/big_remote_play/ui/guided_setup.py:302
 msgid ""
 "Ask the person who created the ZeroTier network to send it. If nobody has a "
-"network yet, Tailscale is the simplest way to start."
+"network yet, one of you creates it for free in ZeroTier Central, or you use "
+"Tailscale, the simplest way to start."
 msgstr ""
-"Bed den person, der oprettede ZeroTier-netværket, om at sende koden. Hvis "
-"ingen har et netværk endnu, er Tailscale den nemmeste måde at komme i gang "
-"på."
+"Bed den person, der oprettede ZeroTier-netværket, om koden. Hvis ingen har "
+"et netværk endnu, opretter en af jer det gratis i ZeroTier Central, eller I "
+"bruger Tailscale, den nemmeste måde at komme i gang på."
 
 #: src/big_remote_play/ui/network_dashboard.py:346
 #: src/big_remote_play/ui/zerotier_join.py:51
@@ -948,10 +969,10 @@ msgstr "Lyd/Video"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 385
-#: src/big_remote_play/ui/private_network_view.py:656
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:673
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:684
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:701
+#: src/big_remote_play/ui/private_network_view.py:702
 msgid "Auth Key"
 msgstr "Godkendelsesnøgle"
 
@@ -1285,8 +1306,8 @@ msgstr "Kan forbinde uden ny PIN-kode"
 #: src/big_remote_play/ui/preferences.py:261
 #: src/big_remote_play/ui/preferences.py:308
 #: src/big_remote_play/ui/preferences.py:318
-#: src/big_remote_play/ui/private_network_view.py:971
-#: src/big_remote_play/ui/private_network_view.py:999
+#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:1028
 #: src/big_remote_play/ui/remote_connection.py:753
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:246
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:266
@@ -1553,7 +1574,7 @@ msgstr "Ryd forbindelseshistorikken?"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1225
 #: src/big_remote_play/ui/guest_view.py:1780
 #: src/big_remote_play/ui/guest_view.py:1836
-#: src/big_remote_play/ui/guided_setup.py:303
+#: src/big_remote_play/ui/guided_setup.py:305
 #: src/big_remote_play/ui/host_view.py:1269
 #: src/big_remote_play/ui/host_view.py:2576
 #: src/big_remote_play/ui/installer_window.py:76
@@ -1618,7 +1639,7 @@ msgstr "Almindelige genveje, der bruges under streaming"
 msgid "Complete the installation in the external terminal, then check again."
 msgstr "Afslut installationen i den eksterne terminal, og kontrollér igen."
 
-#: src/big_remote_play/ui/private_network_view.py:788
+#: src/big_remote_play/ui/private_network_view.py:817
 msgid "Complete the sign-in in your browser."
 msgstr "Fuldfør login i browseren."
 
@@ -1724,8 +1745,8 @@ msgstr "Bekræft den nye adgangskode"
 #: src/big_remote_play/ui/main_window.py:827
 #: src/big_remote_play/ui/main_window.py:992
 #: src/big_remote_play/ui/main_window.py:1218
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 #: src/big_remote_play/ui/remote_connection.py:453
 #: src/big_remote_play/ui/remote_connection.py:481
 msgid "Connect"
@@ -1743,19 +1764,19 @@ msgstr "Forbind via adresse"
 
 #: src/big_remote_play/ui/network_common.py:164
 #: src/big_remote_play/ui/network_dashboard.py:217
-#: src/big_remote_play/ui/private_network_view.py:535
+#: src/big_remote_play/ui/private_network_view.py:563
 msgid "Connect this computer"
 msgstr "Forbind denne computer"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 26
-#: src/big_remote_play/ui/private_network_view.py:103
+#: src/big_remote_play/ui/private_network_view.py:131
 msgid "Connect to Headscale Network"
 msgstr "Forbind til Headscale-netværk"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 36
-#: src/big_remote_play/ui/private_network_view.py:109
+#: src/big_remote_play/ui/private_network_view.py:137
 msgid "Connect to Tailscale Network"
 msgstr "Forbind til Tailscale-netværket"
 
@@ -1766,7 +1787,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 46
-#: src/big_remote_play/ui/private_network_view.py:115
+#: src/big_remote_play/ui/private_network_view.py:143
 msgid "Connect to ZeroTier Network"
 msgstr "Forbind til ZeroTier-netværk"
 
@@ -1827,9 +1848,9 @@ msgstr "Forbundet nu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1907
-#: src/big_remote_play/ui/private_network_view.py:767
-#: src/big_remote_play/ui/private_network_view.py:804
-#: src/big_remote_play/ui/private_network_view.py:839
+#: src/big_remote_play/ui/private_network_view.py:796
+#: src/big_remote_play/ui/private_network_view.py:833
+#: src/big_remote_play/ui/private_network_view.py:868
 msgid "Connected successfully!"
 msgstr "Forbindelsen lykkedes!"
 
@@ -1846,21 +1867,21 @@ msgstr "Forbinder til netværket…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1848
-#: src/big_remote_play/ui/private_network_view.py:734
+#: src/big_remote_play/ui/private_network_view.py:763
 msgid "Connecting..."
 msgstr "Forbinder..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
-#: src/big_remote_play/ui/private_network_view.py:551
-#: src/big_remote_play/ui/private_network_view.py:949
+#: src/big_remote_play/ui/private_network_view.py:579
+#: src/big_remote_play/ui/private_network_view.py:978
 msgid "Connection Details"
 msgstr "Forbindelsesdetaljer"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
-#: src/big_remote_play/ui/private_network_view.py:553
-#: src/big_remote_play/ui/private_network_view.py:1014
+#: src/big_remote_play/ui/private_network_view.py:581
+#: src/big_remote_play/ui/private_network_view.py:1043
 msgid "Connection Log"
 msgstr "Forbindelseslog"
 
@@ -1877,7 +1898,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Connection failed"
 msgstr "Forbindelsen mislykkedes"
 
@@ -1900,7 +1921,7 @@ msgstr "Forbindelsesmetode"
 msgid "Connection methods"
 msgstr "Forbindelsesmetoder"
 
-#: src/big_remote_play/ui/private_network_view.py:361
+#: src/big_remote_play/ui/private_network_view.py:389
 msgid "Connection progress"
 msgstr "Forbindelsens fremskridt"
 
@@ -1971,7 +1992,7 @@ msgstr "Styrer genveje som Alt+Tab og Super-tasten."
 
 #: src/big_remote_play/ui/network_common.py:213
 #: src/big_remote_play/ui/network_common.py:224
-#: src/big_remote_play/ui/private_network_view.py:1081
+#: src/big_remote_play/ui/private_network_view.py:1110
 msgid "Copied"
 msgstr "Kopieret"
 
@@ -2105,11 +2126,13 @@ msgstr "Kunne ikke opdatere spilbiblioteket. Eksisterende spil er bevaret."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1255
-#: src/big_remote_play/ui/private_network_view.py:1049
+#: src/big_remote_play/ui/private_network_view.py:1078
 msgid "Create Account"
 msgstr "Opret konto"
 
+#: src/big_remote_play/ui/guided_setup.py:306
 #: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "Opret et ZeroTier-netværk"
 
@@ -2118,8 +2141,16 @@ msgstr "Opret et ZeroTier-netværk"
 msgid "Create a backup"
 msgstr "Opret en sikkerhedskopi"
 
+#: src/big_remote_play/ui/private_network_view.py:95
+msgid ""
+"Create a free account or sign in. Only the person who owns the network does "
+"this."
+msgstr ""
+"Opret en gratis konto, eller log ind. Det gør kun den, der ejer netværket."
+
 #: src/big_remote_play/ui/network_dashboard.py:226
 #: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "Opret et netværk"
 
@@ -2180,7 +2211,7 @@ msgid "Credentials reset successfully"
 msgstr "Loginoplysningerne blev nulstillet"
 
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr ""
 "Adgangsoplysninger, der lader Big Remote Play administrere dette netværk."
@@ -2255,8 +2286,8 @@ msgstr "Standardmikrofon"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 815
-#: src/big_remote_play/ui/private_network_view.py:902
-#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:931
+#: src/big_remote_play/ui/private_network_view.py:1029
 msgid "Delete"
 msgstr "Slet"
 
@@ -2268,11 +2299,11 @@ msgstr "Slet alt"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1701
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Delete entry?"
 msgstr "Slet post?"
 
-#: src/big_remote_play/ui/private_network_view.py:902
+#: src/big_remote_play/ui/private_network_view.py:931
 msgid "Delete this saved network"
 msgstr "Slet dette gemte netværk"
 
@@ -2351,7 +2382,7 @@ msgstr "Enheder, der spiller på denne computer lige nu."
 msgid "Devices updated"
 msgstr "Enhederne blev opdateret"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "Devices, private address and how to add another computer."
 msgstr "Enheder, privat adresse, og hvordan du tilføjer en anden computer."
 
@@ -2491,8 +2522,8 @@ msgstr "Docker Engine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 714
-#: src/big_remote_play/ui/private_network_view.py:909
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:938
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Domain"
 msgstr "Domæne"
 
@@ -2528,7 +2559,7 @@ msgstr "Nem at opsætte og god til at forbinde dine egne enheder."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1704
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit"
 msgstr "Rediger"
 
@@ -2540,13 +2571,13 @@ msgstr "Redigér brugerdefineret billedhastighed"
 msgid "Edit custom resolution"
 msgstr "Redigér brugerdefineret opløsning"
 
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit this saved network"
 msgstr "Rediger dette gemte netværk"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:969
+#: src/big_remote_play/ui/private_network_view.py:998
 #, python-brace-format
 msgid "Edit – {}"
 msgstr "Redigér – {}"
@@ -2659,7 +2690,7 @@ msgid "End the stream for everyone?"
 msgstr "Vil du afslutte streamen for alle?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 320
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter ID"
 msgstr "Indtast ID"
 
@@ -2667,7 +2698,7 @@ msgstr "Indtast ID"
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Indtast BREDDExHØJDE (for eksempel 1920x1080):"
 
-#: src/big_remote_play/ui/private_network_view.py:984
+#: src/big_remote_play/ui/private_network_view.py:1013
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "Indtast et hexadecimalt netværks-ID på 16 tegn."
 
@@ -2701,24 +2732,28 @@ msgstr "Indtast billeder i sekundet (for eksempel 75):"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:116
+#: src/big_remote_play/ui/private_network_view.py:144
 msgid "Enter the 16-character Network ID to join a ZeroTier network."
 msgstr ""
 "Indtast det 16 tegn lange Network ID for at tilslutte dig et ZeroTier-"
 "netværk."
 
-#: src/big_remote_play/ui/private_network_view.py:746
+#: src/big_remote_play/ui/private_network_view.py:775
 msgid "Enter the Headscale server address."
 msgstr "Indtast adressen på Headscale-serveren."
 
 #: src/big_remote_play/ui/network_devices.py:442
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter the ID on this page and choose Connect."
 msgstr "Indtast id’et på denne side, og vælg Forbind."
 
 #: src/big_remote_play/ui/host_view.py:1467
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr "Indtast pinkoden, som Moonlight viser på den anden computer."
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "Enter the code here"
+msgstr "Indtast koden her"
 
 #: src/big_remote_play/ui/host_view.py:779
 #: src/big_remote_play/ui/host_view.py:1479
@@ -2731,7 +2766,7 @@ msgstr "Indtast den fulde https-adresse på Headscale-serveren."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 27
-#: src/big_remote_play/ui/private_network_view.py:104
+#: src/big_remote_play/ui/private_network_view.py:132
 msgid "Enter the server domain and auth key provided by the administrator."
 msgstr ""
 "Indtast serverdomænet og godkendelsesnøglen, som er givet af administratoren."
@@ -2746,7 +2781,7 @@ msgstr "Entropikodningsmetode"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/private_network_view.py:992
+#: src/big_remote_play/ui/private_network_view.py:1021
 msgid "Entry updated"
 msgstr "Posten blev opdateret"
 
@@ -2814,7 +2849,7 @@ msgstr "Fejl: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 403
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "Establish Connection"
 msgstr "Etabler forbindelse"
 
@@ -2919,13 +2954,13 @@ msgstr "Hurtigere respons eller bedre billede"
 msgid "Favorite"
 msgstr "Favorit"
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Fill in the form"
 msgstr "Udfyld formularen"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1293
-#: src/big_remote_play/ui/private_network_view.py:688
+#: src/big_remote_play/ui/private_network_view.py:716
 msgid "Find Network ID"
 msgstr "Find netværks-id"
 
@@ -3040,8 +3075,8 @@ msgstr "Tvangt"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1772
 # line: 1787
-#: src/big_remote_play/ui/private_network_view.py:935
-#: src/big_remote_play/ui/private_network_view.py:941
+#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:970
 #, python-brace-format
 msgid "Form filled for {}"
 msgstr "Formular udfyldt for {}"
@@ -3136,7 +3171,7 @@ msgstr "Generelt"
 # line: 1023
 # line: 1069
 # line: 1666
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Get Network ID"
 msgstr "Hent Network ID"
 
@@ -3317,17 +3352,21 @@ msgstr ""
 msgid "How to approve"
 msgstr "Sådan godkender du"
 
+#: src/big_remote_play/ui/private_network_view.py:730
+msgid "How to create a free network, step by step."
+msgstr "Sådan opretter du et gratis netværk, trin for trin."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 196
-#: src/big_remote_play/ui/private_network_view.py:435
+#: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
 msgid "How to install {}"
 msgstr "Sådan installerer du {}"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "How to run Headscale on your own server, step by step."
 msgstr "Sådan kører du Headscale på din egen server, trin for trin."
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "How to use the selected private network service."
 msgstr "Sådan bruger du den valgte private netværkstjeneste."
 
@@ -3336,10 +3375,11 @@ msgid "I already use ZeroTier"
 msgstr "Jeg bruger allerede ZeroTier"
 
 #: src/big_remote_play/ui/guided_setup.py:278
+#: src/big_remote_play/ui/private_network_view.py:730
 msgid "I don't have a code"
 msgstr "Jeg har ikke en kode"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "I don't have a server yet"
 msgstr "Jeg har ikke en server endnu"
 
@@ -3465,6 +3505,14 @@ msgstr ""
 msgid "In Big Remote Play, choose Play over the internet and type this code."
 msgstr "Vælg Spille over internettet i Big Remote Play, og indtast denne kode."
 
+#: src/big_remote_play/ui/private_network_view.py:105
+msgid ""
+"In ZeroTier Central, open the network and allow each computer under Members. "
+"Until then it waits for approval."
+msgstr ""
+"Åbn netværket i ZeroTier Central, og tillad hver computer under Members. "
+"Indtil da venter den på godkendelse."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 335
 #: src/big_remote_play/ui/sunshine_preferences.py:523
@@ -3568,8 +3616,8 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 366
 #: src/big_remote_play/ui/main_window.py:1129
 #: src/big_remote_play/ui/main_window.py:1138
-#: src/big_remote_play/ui/private_network_view.py:430
-#: src/big_remote_play/ui/private_network_view.py:432
+#: src/big_remote_play/ui/private_network_view.py:458
+#: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
 msgid "Install {}"
 msgstr "Installér {}"
@@ -3578,8 +3626,8 @@ msgstr "Installér {}"
 # line: 1498
 # line: 1529
 # line: 1542
-#: src/big_remote_play/ui/private_network_view.py:373
-#: src/big_remote_play/ui/private_network_view.py:421
+#: src/big_remote_play/ui/private_network_view.py:401
+#: src/big_remote_play/ui/private_network_view.py:449
 msgid "Installation Log"
 msgstr "Installationslog"
 
@@ -3591,7 +3639,7 @@ msgstr "Installation gennemført med succes!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 449
-#: src/big_remote_play/ui/private_network_view.py:456
+#: src/big_remote_play/ui/private_network_view.py:484
 msgid "Installation failed. Check the log."
 msgstr "Installation mislykkedes. Tjek loggen."
 
@@ -3630,7 +3678,7 @@ msgstr "Installerer {}..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 89
-#: src/big_remote_play/ui/private_network_view.py:444
+#: src/big_remote_play/ui/private_network_view.py:472
 msgid "Installing..."
 msgstr "Installerer..."
 
@@ -3749,7 +3797,7 @@ msgstr ""
 "Ejeren bruger en loginside. Log ind med ZeroTier-appen, og kontrollér "
 "derefter igen."
 
-#: src/big_remote_play/ui/private_network_view.py:110
+#: src/big_remote_play/ui/private_network_view.py:138
 msgid ""
 "Join Tailscale with browser login, or use an auth key if someone gave you "
 "one."
@@ -3757,7 +3805,7 @@ msgstr ""
 "Tilslut dig Tailscale med login i browseren, eller brug en "
 "godkendelsesnøgle, hvis nogen har givet dig en."
 
-#: src/big_remote_play/ui/private_network_view.py:1018
+#: src/big_remote_play/ui/private_network_view.py:1047
 msgid "Join a Headscale VPN"
 msgstr "Tilslut en Headscale-VPN"
 
@@ -4039,13 +4087,13 @@ msgstr "Logfilsti"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1831
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Login Server"
 msgstr "Login-server"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1284
-#: src/big_remote_play/ui/private_network_view.py:672
+#: src/big_remote_play/ui/private_network_view.py:700
 msgid "Login Server (leave empty for tailscale.com)"
 msgstr "Login-server (lad tom for tailscale.com)"
 
@@ -4095,7 +4143,7 @@ msgstr "Gør markørbevægelser mere egnede til skrivebordsbrug end til spil."
 msgid "Manage"
 msgstr "Administrér"
 
-#: src/big_remote_play/ui/private_network_view.py:612
+#: src/big_remote_play/ui/private_network_view.py:640
 msgid "Manage accounts and networks"
 msgstr "Administrér konti og netværk"
 
@@ -4238,7 +4286,7 @@ msgid "More exposed than a private VPN"
 msgstr "Mere eksponeret end en privat VPN"
 
 #: src/big_remote_play/ui/network_dashboard.py:95
-#: src/big_remote_play/ui/private_network_view.py:601
+#: src/big_remote_play/ui/private_network_view.py:629
 msgid "More options"
 msgstr "Flere valg"
 
@@ -4269,7 +4317,7 @@ msgstr "Slå lyden fra, når Moonlight ikke er det aktive vindue"
 msgid "My devices"
 msgstr "Mine enheder"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "My network"
 msgstr "Mit netværk"
 
@@ -4339,8 +4387,8 @@ msgstr "Netværk"
 #: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
-#: src/big_remote_play/ui/private_network_view.py:910
-#: src/big_remote_play/ui/private_network_view.py:959
+#: src/big_remote_play/ui/private_network_view.py:939
+#: src/big_remote_play/ui/private_network_view.py:988
 msgid "Network ID"
 msgstr "Netværks-id"
 
@@ -4391,7 +4439,7 @@ msgstr "Netværksnavn"
 msgid "Network not found"
 msgstr "Netværk ikke fundet"
 
-#: src/big_remote_play/ui/private_network_view.py:606
+#: src/big_remote_play/ui/private_network_view.py:634
 msgid "Networks this PC joined before."
 msgstr "Netværk som denne pc har været med i før."
 
@@ -4556,7 +4604,7 @@ msgstr "Ingen parrede enheder endnu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1629
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "No previous networks"
 msgstr "Ingen tidligere netværk"
 
@@ -4772,7 +4820,7 @@ msgstr "På denne computer"
 msgid "On your {provider} private network at {address}"
 msgstr "På dit private {provider}-netværk på {address}"
 
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid ""
 "Once both computers are on the same private network, return to Connect to "
 "find the game PC."
@@ -4850,7 +4898,7 @@ msgstr "Kun denne computer bruger det nye navn."
 # line: 347
 # line: 1295
 #: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/private_network_view.py:692
+#: src/big_remote_play/ui/private_network_view.py:720
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "Åbn"
@@ -4886,6 +4934,7 @@ msgid "Open Tailscale admin console"
 msgstr "Åbn Tailscales administrationskonsol"
 
 #: src/big_remote_play/ui/network_devices.py:471
+#: src/big_remote_play/ui/private_network_view.py:97
 msgid "Open ZeroTier Central"
 msgstr "Åbn ZeroTier Central"
 
@@ -5088,11 +5137,19 @@ msgstr "Parring mislykkedes"
 msgid "Pass through high resolution scroll events from Moonlight clients"
 msgstr "Videresend højopløselige rullehændelser fra Moonlight-klienter"
 
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid ""
+"Paste the code on this page and join the network. Send the same code to the "
+"other person."
+msgstr ""
+"Indsæt koden på denne side, og deltag i netværket. Send den samme kode til "
+"den anden person."
+
 #: src/big_remote_play/ui/api_access_dialog.py:37
 msgid "Paste the credential first."
 msgstr "Indsæt adgangsoplysningerne først."
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Indsæt serveradressen og nøglen i felterne på denne side."
 
@@ -5294,8 +5351,8 @@ msgstr "Forhindrer, at denne computers skærm slukkes under en session."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 618
-#: src/big_remote_play/ui/private_network_view.py:604
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:632
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Previous Networks"
 msgstr "Tidligere netværk"
 
@@ -5427,7 +5484,7 @@ msgid "Ready to play over the internet"
 msgstr "Klar til at spille over internettet"
 
 #: src/big_remote_play/ui/network_dashboard.py:91
-#: src/big_remote_play/ui/private_network_view.py:592
+#: src/big_remote_play/ui/private_network_view.py:620
 msgid "Ready to play?"
 msgstr "Klar til at spille?"
 
@@ -5494,12 +5551,12 @@ msgstr "Anbefalet: et privat netværk"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 688
 #: src/big_remote_play/ui/network_common.py:163
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect"
 msgstr "Genopret forbindelse"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 40
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect using this saved network"
 msgstr "Opret forbindelse igen med dette gemte netværk"
 
@@ -5608,7 +5665,7 @@ msgstr "Fjern denne enhed?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1702
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Remove this network from history?"
 msgstr "Fjern dette netværk fra historikken?"
 
@@ -5669,7 +5726,7 @@ msgstr "Erstat de nuværende indstillinger med en gemt fil"
 msgid "Replace the current settings?"
 msgstr "Erstat de nuværende indstillinger?"
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "Request Access"
 msgstr "Anmod om adgang"
 
@@ -5679,7 +5736,7 @@ msgstr "Anmodning annulleret"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Request the 16-character ID from the network owner."
 msgstr "Bed netværkets ejer om det 16 tegn lange ID."
 
@@ -5807,7 +5864,7 @@ msgstr "Gendan standardværdier?"
 msgid "Restore a backup"
 msgstr "Gendan en sikkerhedskopi"
 
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Genbrug forbindelsesoplysninger gemt af Big Remote Play"
 
@@ -5902,7 +5959,7 @@ msgstr ""
 # line: 1077
 #: src/big_remote_play/ui/api_access_dialog.py:86
 #: src/big_remote_play/ui/host_view.py:3136
-#: src/big_remote_play/ui/private_network_view.py:972
+#: src/big_remote_play/ui/private_network_view.py:1001
 #: src/big_remote_play/ui/remote_connection.py:754
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:306
 msgid "Save"
@@ -6005,7 +6062,7 @@ msgstr ""
 "Vælg et spil, eller udfyld appnavn og kommando. Vælg Hele skrivebordet for "
 "at dele hele skærmen."
 
-#: src/big_remote_play/ui/private_network_view.py:758
+#: src/big_remote_play/ui/private_network_view.py:787
 msgid "Select a network service and try again."
 msgstr "Vælg en netværkstjeneste, og prøv igen."
 
@@ -6073,7 +6130,7 @@ msgstr "Sender anmodningen til netværket."
 msgid "Sends your game to the other PC."
 msgstr "Sender dit spil til den anden pc."
 
-#: src/big_remote_play/ui/private_network_view.py:655
+#: src/big_remote_play/ui/private_network_view.py:683
 msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Serverdomæne (f.eks. vpn.example.com)"
 
@@ -6090,8 +6147,8 @@ msgstr "Serveradgangskode"
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
 #: src/big_remote_play/ui/network_devices.py:692
-#: src/big_remote_play/ui/private_network_view.py:655
-#: src/big_remote_play/ui/private_network_view.py:1022
+#: src/big_remote_play/ui/private_network_view.py:683
+#: src/big_remote_play/ui/private_network_view.py:1051
 msgid "Server address"
 msgstr "Serveradresse"
 
@@ -6296,6 +6353,10 @@ msgstr "Log ind"
 msgid "Sign in on that computer with your own account."
 msgstr "Log ind på den computer med din egen konto."
 
+#: src/big_remote_play/ui/private_network_view.py:94
+msgid "Sign in to ZeroTier Central"
+msgstr "Log ind på ZeroTier Central"
+
 #: src/big_remote_play/ui/remote_connection.py:65
 msgid "Sign in to connect this computer"
 msgstr "Log ind for at forbinde denne computer"
@@ -6309,8 +6370,8 @@ msgstr "Log ind på {name} for at fortsætte."
 msgid "Sign in with another Tailscale account"
 msgstr "Log ind med en anden Tailscale-konto"
 
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 msgid "Sign in with browser"
 msgstr "Log ind med browseren"
 
@@ -6322,7 +6383,7 @@ msgstr "Log ind med den samme konto"
 msgid "Sign in with your account and connect your devices."
 msgstr "Log ind med din konto, og forbind dine enheder."
 
-#: src/big_remote_play/ui/private_network_view.py:538
+#: src/big_remote_play/ui/private_network_view.py:566
 msgid "Sign in with your browser. Use the same account on all your devices."
 msgstr "Log ind med din browser. Brug den samme konto på alle dine enheder."
 
@@ -6338,7 +6399,7 @@ msgstr "Loginlink, der vises på den computer"
 msgid "Sign-in needed"
 msgstr "Login kræves"
 
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Sign-in was not completed in the browser."
 msgstr "Login blev ikke fuldført i browseren."
 
@@ -6502,7 +6563,7 @@ msgstr "Når den startes, bliver du bedt om din adgangskode én gang."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 67
-#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "Starting..."
 msgstr "Starter..."
 
@@ -6539,19 +6600,19 @@ msgstr "Steam optager ikke lyd"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1765
-#: src/big_remote_play/ui/private_network_view.py:1021
+#: src/big_remote_play/ui/private_network_view.py:1050
 msgid "Step 1: Get credentials"
 msgstr "Trin 1: Få legitimationsoplysninger"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1771
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Step 2: Enter details"
 msgstr "Trin 2: Indtast oplysninger"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1777
-#: src/big_remote_play/ui/private_network_view.py:1030
+#: src/big_remote_play/ui/private_network_view.py:1059
 msgid "Step 3: Connect"
 msgstr "Trin 3: Forbind"
 
@@ -6864,7 +6925,7 @@ msgstr ""
 msgid "Switch Tailscale or Headscale accounts, and see every ZeroTier network."
 msgstr "Skift Tailscale- eller Headscale-konto, og se alle ZeroTier-netværk."
 
-#: src/big_remote_play/ui/private_network_view.py:613
+#: src/big_remote_play/ui/private_network_view.py:641
 msgid ""
 "Switch saved accounts or leave networks without deleting online accounts."
 msgstr ""
@@ -6922,7 +6983,7 @@ msgstr "Tailscale"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 803
 # line: 1793
-#: src/big_remote_play/ui/private_network_view.py:1042
+#: src/big_remote_play/ui/private_network_view.py:1071
 msgid "Tailscale Instructions"
 msgstr "Vejledning til Tailscale"
 
@@ -7076,7 +7137,7 @@ msgstr ""
 "Den aktive VPN-forbindelse stoppes. Gemte konti bevares, så du kan oprette "
 "forbindelse igen senere."
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr ""
@@ -7244,7 +7305,7 @@ msgstr ""
 "Netværket er privat: hver ny enhed skal godkendes. Denne computer deltager "
 "og godkendes automatisk."
 
-#: src/big_remote_play/ui/private_network_view.py:1066
+#: src/big_remote_play/ui/private_network_view.py:1095
 msgid ""
 "The network owner must approve this computer, in Big Remote Play or in "
 "ZeroTier Central."
@@ -7319,7 +7380,7 @@ msgid ""
 msgstr ""
 "Personen deltager i dit private netværk og kan se de enheder, du tillader."
 
-#: src/big_remote_play/ui/private_network_view.py:698
+#: src/big_remote_play/ui/private_network_view.py:726
 msgid "The person who created the network gives you this code."
 msgstr "Den person, der oprettede netværket, giver dig denne kode."
 
@@ -7364,7 +7425,7 @@ msgstr ""
 "Det valgte output er ikke tilsluttet. Tilslut det igen, eller vælg "
 "Automatisk."
 
-#: src/big_remote_play/ui/private_network_view.py:665
+#: src/big_remote_play/ui/private_network_view.py:693
 msgid "The server administrator then approves this computer."
 msgstr "Serveradministratoren godkender derefter denne computer."
 
@@ -7485,7 +7546,7 @@ msgstr ""
 msgid "This PC did not appear in the list?"
 msgstr "Kom denne pc ikke frem på listen?"
 
-#: src/big_remote_play/ui/private_network_view.py:519
+#: src/big_remote_play/ui/private_network_view.py:547
 #, python-brace-format
 msgid "This PC is on the {} private network."
 msgstr "Denne pc er på det private netværk {}."
@@ -7547,7 +7608,7 @@ msgstr ""
 msgid "This computer has not joined a ZeroTier network yet."
 msgstr "Denne computer har endnu ikke tilsluttet sig et ZeroTier-netværk."
 
-#: src/big_remote_play/ui/private_network_view.py:514
+#: src/big_remote_play/ui/private_network_view.py:542
 msgid ""
 "This computer is already on a ZeroTier network. To join another one, type "
 "its code."
@@ -7901,7 +7962,7 @@ msgstr "Betroede oprindelser for webgrænsefladen"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 601
 #: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:849
+#: src/big_remote_play/ui/private_network_view.py:878
 msgid "Try Again"
 msgstr "Prøv igen"
 
@@ -7944,13 +8005,13 @@ msgstr "Slår til…"
 msgid "Type"
 msgstr "Type"
 
-#: src/big_remote_play/ui/private_network_view.py:539
+#: src/big_remote_play/ui/private_network_view.py:567
 msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr ""
 "Indtast adressen på din server. Dens administrator godkender denne computer."
 
-#: src/big_remote_play/ui/private_network_view.py:537
+#: src/big_remote_play/ui/private_network_view.py:565
 msgid "Type the network code you received."
 msgstr "Indtast den netværkskode, du har fået."
 
@@ -8091,7 +8152,7 @@ msgstr ""
 "beviser ikke, at adgangen virker. Eksponér ikke Sunshines "
 "administrationspanel (som standard 47990), og deaktivér ikke firewallen."
 
-#: src/big_remote_play/ui/guided_setup.py:304
+#: src/big_remote_play/ui/guided_setup.py:307
 msgid "Use Tailscale"
 msgstr "Brug Tailscale"
 
@@ -8309,7 +8370,7 @@ msgstr ""
 "og fjerner gemte adgangskoder (Sunshine, ZeroTier, netværksnøgler til "
 "godkendelse) fra systemets nøglering. Programmet lukkes."
 
-#: src/big_remote_play/ui/private_network_view.py:1065
+#: src/big_remote_play/ui/private_network_view.py:1094
 msgid "Wait for Approval"
 msgstr "Vent på godkendelse"
 
@@ -8365,8 +8426,8 @@ msgstr "En indstilling skal rettes"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1668
-#: src/big_remote_play/ui/private_network_view.py:911
-#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:940
+#: src/big_remote_play/ui/private_network_view.py:993
 msgid "Web UI"
 msgstr "Webgrænseflade"
 
@@ -8393,7 +8454,7 @@ msgid "What this computer shows"
 msgstr "Hvad denne computer viser"
 
 #: src/big_remote_play/ui/connection_guides.py:100
-#: src/big_remote_play/ui/private_network_view.py:551
+#: src/big_remote_play/ui/private_network_view.py:579
 msgid "What you need"
 msgstr "Det skal du bruge"
 
@@ -8496,7 +8557,7 @@ msgstr ""
 msgid "Without a browser (advanced)"
 msgstr "Uden browser (avanceret)"
 
-#: src/big_remote_play/ui/private_network_view.py:1032
+#: src/big_remote_play/ui/private_network_view.py:1061
 msgid ""
 "Without a key, a sign-in link opens; the administrator approves this "
 "computer on the server."
@@ -8508,7 +8569,7 @@ msgstr ""
 msgid "Without a private network"
 msgstr "Uden et privat netværk"
 
-#: src/big_remote_play/ui/private_network_view.py:664
+#: src/big_remote_play/ui/private_network_view.py:692
 msgid "Without an auth key, a sign-in link opens"
 msgstr "Uden en godkendelsesnøgle åbnes et loginlink"
 
@@ -8565,7 +8626,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1631
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "Your created/connected networks will appear here."
 msgstr "Dine oprettede/forbundne netværk vises her."
 
@@ -8611,7 +8672,7 @@ msgstr "Dine indstillinger, parrede netværk og præferencer i én fil."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 650
-#: src/big_remote_play/ui/private_network_view.py:1068
+#: src/big_remote_play/ui/private_network_view.py:1097
 msgid "ZT Panel"
 msgstr "ZT-panel"
 
@@ -8627,7 +8688,7 @@ msgstr "ZeroTier-API-token"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 810
 # line: 1800
-#: src/big_remote_play/ui/private_network_view.py:1059
+#: src/big_remote_play/ui/private_network_view.py:1088
 msgid "ZeroTier Instructions"
 msgstr "Vejledning til ZeroTier"
 
@@ -8678,6 +8739,10 @@ msgstr "ZeroTier-netværk"
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:228
 msgid "ZeroTier service error"
 msgstr "Fejl i ZeroTier-tjenesten"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "ZeroTier shows its 16-character network code. Copy it."
+msgstr "ZeroTier viser netværkskoden på 16 tegn. Kopiér den."
 
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
@@ -8801,12 +8866,12 @@ msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 190
-#: src/big_remote_play/ui/private_network_view.py:449
+#: src/big_remote_play/ui/private_network_view.py:477
 #, python-brace-format
 msgid "{} installed"
 msgstr "{} installeret"
 
-#: src/big_remote_play/ui/private_network_view.py:420
+#: src/big_remote_play/ui/private_network_view.py:448
 #, python-brace-format
 msgid ""
 "{} is not installed yet. Install it below to continue (asks for your "

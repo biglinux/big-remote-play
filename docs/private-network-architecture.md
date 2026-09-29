@@ -123,10 +123,12 @@ Recent sessions from the history are offered as “Connect again”. Manual addr
 
 ## Joining a ZeroTier network
 
+**Play over the internet** starts a stopped client the same way (`PrivateNetworkService.start_service`, for `zerotier-one` and `tailscaled`) and then waits up to 15 s for its client to answer — `zerotier-cli -j info` (an address, or a refusal that needs **Allow**) or `tailscale status` (anything but *tailscaled is not running*) — so the next screen shows the real next step (sign in, **Allow**, join) instead of a service still starting.
+
 `zerotier-cli join` only *asks*: the network's controller then sends a configuration, refuses the computer until its owner authorizes it, or says the network does not exist, seconds or minutes later. `private_network/zerotier_join.py` models this as one `JoinPhase` at a time; `ui/zerotier_join.py` (`ZeroTierJoinPanel`) renders it on the ZeroTier connection page and in the guided setup, so both say the same thing.
 
 1. Validate the code (16 hex digits; spaces and dashes removed) before any command → `INVALID_ID`.
-2. Not installed → `NOT_INSTALLED`. Service not active → `STARTING_SERVICE`: the one privileged step, `pkexec systemctl enable --now zerotier-one`, then wait for `zerotier-cli -j info` → `SERVICE_STOPPED` if it cannot start.
+2. Not installed → `NOT_INSTALLED`. Service not active → `STARTING_SERVICE`: the one privileged step, `pkexec systemctl enable --now zerotier-one`, then wait up to 15 s until `zerotier-cli -j info` answers. A refusal for lack of the user token counts as an answer when systemd reports the unit active (on a first start the token has never been copied; step 3 asks for it). `SERVICE_STOPPED` only when systemctl failed or the unit is not active; a unit that is active but never answers is `FAILED` with that detail.
 3. The user cannot talk to the service (401) → `ASKING_PERMISSION`: the one-time token copy (below), so every later check runs without a password → `NEEDS_PERMISSION` if refused.
 4. `zerotier-cli -j join <id>`: on success the service answers with the network object, which gives the first status. A failure is classified by the CLI's protocol line `<HTTP status> <command> <body>` — `0` means the service could not be reached (`SERVICE_STOPPED`), `401/403` permission, `400` a bad id — never by reading prose.
 5. Follow `-j listnetworks` every 1.5 s for up to 45 s: `OK` with an address → `CONNECTED`; `OK` without one → `WAITING_ADDRESS`; `REQUESTING_CONFIGURATION` → `WAITING_CONFIGURATION` (`NODE_OFFLINE` when `info` says the node itself is offline); `ACCESS_DENIED` → `WAITING_AUTHORIZATION` (stop following: the owner decides); `NOT_FOUND`, `PORT_ERROR`, `CLIENT_TOO_OLD`, `AUTHENTICATION_REQUIRED` → their own states.
