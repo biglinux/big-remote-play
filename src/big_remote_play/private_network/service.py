@@ -10,6 +10,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
 import logging
+import time
 from types import SimpleNamespace
 
 from big_remote_play.integration_contracts import SUNSHINE_DEFAULT_BASE_PORT
@@ -27,9 +28,12 @@ from .history import SessionHistory
 from .http import ApiErrorKind, ApiResult, Transport, normalize_base_url
 from .tailscale_api import TailscaleApi
 from .zerotier_api import ZeroTierCentral
-from .models import ConnectionState, HostCandidate, HostDiagnosis, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus
+from .models import ConnectionState, HostCandidate, HostDiagnosis, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus, Recovery
 
 _log = logging.getLogger("big-remoteplay")
+
+# systemctl returns once the unit runs; the client answers a moment later.
+SERVICE_ANSWER_SECONDS = 15.0
 
 
 def _installed(check: Callable[[], bool]) -> bool:
@@ -91,6 +95,8 @@ class PrivateNetworkService:
         self._transport = transport
         self._probe_sunshine = sunshine_probe
         self._network_facts = network_facts
+        self._sleep: Callable[[float], None] = time.sleep
+        self._clock: Callable[[], float] = time.monotonic
 
     # ── credentials ────────────────────────────────────────────────────────
     def has_credential(self, kind: CredentialKind, scope: str = "default") -> bool:
@@ -310,9 +316,32 @@ class PrivateNetworkService:
         return self.manager.resume_tailscale().connected
 
     def start_service(self, provider: ProviderId) -> bool:
-        """Start the provider's background service (PolicyKit asks once)."""
+        """Start the provider's background service (PolicyKit asks once).
+
+        True once its client answers, so the next reading shows the real next
+        step (sign in, allow access, join) instead of a service still starting.
+        """
         unit = "zerotier-one" if provider is ProviderId.ZEROTIER else "tailscaled"
-        return self.manager.start_service(unit).returncode == 0
+        started = self.manager.start_service(unit)
+        if started.returncode != 0:
+            return False
+        deadline = self._clock() + SERVICE_ANSWER_SECONDS
+        while not self._service_answers(provider):
+            if self._clock() >= deadline:
+                _log.warning("%s started but its client did not answer", unit)
+                return False
+            self._sleep(0.5)
+        return True
+
+    def _service_answers(self, provider: ProviderId) -> bool:
+        try:
+            if provider is ProviderId.ZEROTIER:
+                node = self.manager.zerotier_info()
+                # Refusing this user proves the service answers; access is the next step.
+                return bool(node.address) or node.needs_privilege
+            return self._tailscale_cli().status(provider).recovery is not Recovery.START_SERVICE
+        except Exception:
+            return False
 
     # ── ZeroTier local actions ─────────────────────────────────────────────
     def link_sample(self, status: ProviderStatus) -> LinkSample:

@@ -83,6 +83,34 @@ def show_simple_instructions(parent, title_text, items):
     dialog.present()
 
 
+def show_create_zerotier_steps(parent) -> None:
+    """How to create the ZeroTier network whose code the join page asks for."""
+    show_simple_instructions(
+        parent,
+        _("Create a ZeroTier network"),
+        [
+            (
+                _("1. Account"),
+                _("Sign in to ZeroTier Central"),
+                _("Create a free account or sign in. Only the person who owns the network does this."),
+                "brp-zerotier-symbolic",
+                _("Open ZeroTier Central"),
+                "https://my.zerotier.com",
+            ),
+            (_("2. Network"), _("Create a network"), _("ZeroTier shows its 16-character network code. Copy it."), "brp-network-setup-symbolic", None, None),
+            (_("3. Join"), _("Enter the code here"), _("Paste the code on this page and join the network. Send the same code to the other person."), "brp-edit-copy-symbolic", None, None),
+            (
+                _("4. Approve"),
+                _("Approve each computer"),
+                _("In ZeroTier Central, open the network and allow each computer under Members. Until then it waits for approval."),
+                "brp-network-idle-symbolic",
+                None,
+                None,
+            ),
+        ],
+    )
+
+
 # ─── Config ───────────────────────────────────────────────────────────────────
 # "Previous networks" remembers how this PC joined a network (server address or
 # Network ID) so the form can be filled again. It never stores a credential:
@@ -699,6 +727,7 @@ class ConnectPage(Adw.Bin):
                 hint.set_title_lines(0)
                 hint.add_prefix(create_icon_widget("brp-dialog-information-symbolic", size=18))
                 group.add(hint)
+                group.add(action_row(_("I don't have a code"), _("How to create a free network, step by step."), "brp-network-setup-symbolic", lambda: show_create_zerotier_steps(self.main_window)))
 
         self._prefill_from_history()
         if self.vpn_id == "tailscale":

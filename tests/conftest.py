@@ -49,6 +49,10 @@ def _isolated_user_config(tmp_path_factory, monkeypatch):
     from big_remote_play.host import stream_display
 
     monkeypatch.setattr(stream_display.StreamDisplay, "__init__", _offline_display_init(stream_display.StreamDisplay.__init__))
+    # Nor a Sunshine that may be running on the developer machine.
+    from big_remote_play.host.sunshine_manager import SunshineHost
+
+    monkeypatch.setattr(SunshineHost, "running_app_id", lambda self, timeout=2.0: None)
 
 
 def _offline_audio_init(original):
