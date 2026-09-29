@@ -13,6 +13,9 @@ Contract (see docs/audio-architecture.md):
   JamesDSP) cannot pull them into a feedback loop. Application streams are
   never moved, so per-process capture by other programs (Steam Remote Play,
   OBS, recorders) keeps working.
+- After Sunshine exits, another program's output that played into a Sunshine
+  output and is left linked to nothing is linked to the default device again,
+  as that program would have done itself.
 - Object ids are never persisted except the ids of links this app created,
   always re-verified against their exact ports before removal.
 """
@@ -361,6 +364,49 @@ def bridge_port_pairs(bridge: Bridge, outputs: Iterable[str], inputs: Iterable[s
     return [(prefix_out + ch, prefix_in + ch) for ch in out_channels if ch in in_channels]
 
 
+def _node_of(port: str) -> str:
+    return port.rsplit(":", 1)[0]
+
+
+def _is_sunshine_node(node: str) -> bool:
+    return node.startswith(SUNSHINE_SINK_PREFIX) or node in LEGACY_SINKS
+
+
+def feeder_ports(links: Mapping[str, tuple[str, str]], owned: Iterable[tuple[str, str]] = ()) -> set[str]:
+    """Output ports of other programs that play into a Sunshine virtual output.
+
+    Typically an effects program (JamesDSP, EasyEffects) that follows the
+    default output with its own links. When Sunshine removes its outputs on
+    exit, such a program can miss the change and keep its output unlinked.
+    """
+    skip = set(owned)
+    found = set()
+    for out_port, in_port in links.values():
+        if (out_port, in_port) in skip or _is_sunshine_node(_node_of(out_port)):
+            continue
+        if _is_sunshine_node(_node_of(in_port)) and in_port.rsplit(":", 1)[-1].startswith("playback_"):
+            found.add(out_port)
+    return found
+
+
+def relink_pairs(ports: Iterable[str], target_sink: str, inputs: Iterable[str]) -> list[tuple[str, str]]:
+    """``(output port, playback port)`` of ``target_sink``, by channel name.
+
+    ``output_FL`` goes to ``playback_FL``; a mono device takes the front
+    channels. Ports whose channel the device lacks are left alone.
+    """
+    prefix = f"{target_sink}:playback_"
+    channels = {port[len(prefix) :] for port in inputs if port.startswith(prefix)}
+    pairs = []
+    for port in sorted(ports):
+        channel = port.rsplit(":", 1)[-1].rsplit("_", 1)[-1]
+        if channels == {"MONO"} and channel in ("FL", "FR", "MONO"):
+            pairs.append((port, prefix + "MONO"))
+        elif channel in channels:
+            pairs.append((port, prefix + channel))
+    return pairs
+
+
 def parse_pw_links(text: str) -> dict[str, tuple[str, str]]:
     """``pw-link -l -I`` → ``{link id: (output port, input port)}``."""
     links: dict[str, tuple[str, str]] = {}
@@ -561,6 +607,30 @@ class AudioManager:
             if current.get(str(link.get("id"))) == (link.get("out"), link.get("in")):
                 self._pw_link("-d", str(link["out"]), str(link["in"]))
 
+    def unlinked_ports(self, ports: Iterable[str]) -> set[str] | None:
+        """Those of ``ports`` that exist and have no outgoing link; ``None`` if unknown."""
+        outputs, current = self._pw_link("-o"), self.links()
+        if outputs is None or outputs.returncode != 0 or current is None:
+            return None
+        existing = {line.strip() for line in outputs.stdout.split("\n")}
+        linked = {out_port for out_port, _in_port in current.values()}
+        return {port for port in ports if port in existing and port not in linked}
+
+    def relink(self, ports: Iterable[str], target_sink: str) -> list[tuple[str, str]]:
+        """Link unlinked ``ports`` into ``target_sink``; returns the pairs now linked.
+
+        These links restore the person's own chain, so they are not tagged as
+        ours and are never removed by Big Remote Play.
+        """
+        inputs = self._pw_link("-i")
+        if inputs is None or inputs.returncode != 0:
+            return []
+        pairs = relink_pairs(ports, target_sink, inputs.stdout.split("\n"))
+        for out_port, in_port in pairs:
+            self._pw_link(out_port, in_port)
+        current = set((self.links() or {}).values())
+        return [pair for pair in pairs if pair in current]
+
     def unload_legacy(self, graph: AudioGraph) -> list[str]:
         """Remove null sinks/loopbacks left by a crashed Big Remote Play 2.x."""
         removed = []
@@ -680,7 +750,14 @@ class AudioRoutingSession:
     moves Sunshine back to a monitor if it were ever recording a microphone.
     ``end`` removes only this session's bridges and, after Sunshine exited,
     puts back the output Sunshine switched away from if Sunshine could not.
+    It also reconnects other programs' outputs that played into a Sunshine
+    output and were left linked to nothing when Sunshine removed it.
     """
+
+    # How long the person's own programs get to follow the default output
+    # themselves before a port left without a link is reconnected.
+    RELINK_SETTLE_SECONDS = 2.0
+    _MAX_FEEDERS = 64
 
     def __init__(self, manager: AudioManager, *, manual_output: str = "", play_on_host: bool = True, state_path: Path | None = None) -> None:
         self.manager = manager
@@ -690,6 +767,7 @@ class AudioRoutingSession:
         self.token = secrets.token_hex(8)
         self.original_sink = ""
         self.links: dict[Bridge, list[dict[str, str]]] = {}
+        self.feeders: set[str] = set()  # port names only, re-checked before use
         self.notes: tuple[str, ...] = ()
         self._owner_pid = os.getpid()
         self._lock = threading.Lock()
@@ -705,6 +783,7 @@ class AudioRoutingSession:
             "manual_output": self.manual_output,
             "play_on_host": self.play_on_host,
             "bridges": [{"source": b.source_sink, "target": b.target_sink, "reason": b.reason, "links": links} for b, links in self.links.items()],
+            "feeders": sorted(self.feeders),
         }
         try:
             secure_write_text(str(self.state_path), json.dumps(state))
@@ -741,6 +820,10 @@ class AudioRoutingSession:
             ]
             if links:
                 session.links[Bridge(str(entry.get("source", "")), str(entry.get("target", "")), str(entry.get("reason", "")))] = links
+        feeders = state.get("feeders")
+        if isinstance(feeders, list):
+            session.feeders = {port for port in feeders if isinstance(port, str) and ":" in port and len(port) <= 256}
+            session.feeders = set(sorted(session.feeders)[: cls._MAX_FEEDERS])
         try:
             session._owner_pid = int(state.get("owner_pid") or 0)
         except (TypeError, ValueError):
@@ -794,11 +877,30 @@ class AudioRoutingSession:
                             self.links[bridge] = links
                         else:
                             notes.append("bridge-failed")
+            if any(o.kind == SUNSHINE for o in graph.outputs):
+                self._note_feeders()
             self.notes = tuple(dict.fromkeys(notes))
             self._save()
             return replace(audio_status(graph, self.manual_output, tuple(self.links)), notes=self.notes)
 
-    def end(self, *, sunshine_stopped: bool = True) -> None:
+    def remember_feeders(self) -> None:
+        """Record who plays into Sunshine's outputs; call right before stopping Sunshine."""
+        with self._lock:
+            if self._note_feeders():
+                self._save()
+
+    def _note_feeders(self) -> bool:
+        current = self.manager.links()
+        if current is None:
+            return False
+        owned = [(link["out"], link["in"]) for links in self.links.values() for link in links]
+        found = feeder_ports(current, owned) - self.feeders
+        if not found:
+            return False
+        self.feeders |= set(sorted(found)[: max(0, self._MAX_FEEDERS - len(self.feeders))])
+        return True
+
+    def end(self, *, sunshine_stopped: bool = True, settle: float | None = None) -> None:
         with self._lock:
             if self.links:
                 current = self.manager.links()
@@ -809,6 +911,8 @@ class AudioRoutingSession:
             graph = self.manager.snapshot()
             if graph is not None:
                 self._restore_output(graph, sunshine_stopped)
+            if sunshine_stopped and self.feeders:
+                self._relink_feeders(self.RELINK_SETTLE_SECONDS if settle is None else settle)
             self._clear()
 
     def _restore_output(self, graph: AudioGraph, sunshine_stopped: bool) -> None:
@@ -821,6 +925,35 @@ class AudioRoutingSession:
         if self.original_sink and graph.output(self.original_sink) is not None:
             if self.manager.set_default_sink(self.original_sink):
                 _log.info("Restored the audio output Sunshine left on its virtual output.")
+
+    def _relink_feeders(self, settle: float) -> None:
+        """Reconnect ports Sunshine's exit left linked to nothing, into the default device.
+
+        A program that follows the default output (JamesDSP) can fail to
+        relink when the default changes and Sunshine's output disappears at
+        the same moment; then everything played through it is silent.
+        """
+        deadline = time.monotonic() + settle
+        while True:
+            orphans = self.manager.unlinked_ports(self.feeders)
+            if not orphans:
+                return  # every program followed the output by itself
+            if time.monotonic() >= deadline:
+                break
+            time.sleep(0.25)
+        graph = self.manager.snapshot(streams=False)
+        default = graph.output(graph.default_sink) if graph is not None else None
+        if default is None or default.kind not in (HARDWARE, BLUETOOTH):
+            # A virtual default usually forwards to the program itself.
+            _log.warning("Audio ports left without an output after Sunshine stopped: %s", ", ".join(sorted(orphans)))
+            return
+        orphans = {port for port in orphans if _node_of(port) != default.name}
+        linked = self.manager.relink(orphans, default.name)
+        if linked:
+            _log.info("Reconnected audio left without an output after Sunshine stopped: %s -> %s", ", ".join(sorted({_node_of(o) for o, _i in linked})), default.name)
+        missing = orphans - {o for o, _i in linked}
+        if missing:
+            _log.warning("Could not reconnect audio ports after Sunshine stopped: %s", ", ".join(sorted(missing)))
 
     @classmethod
     def recover(cls, manager: AudioManager, *, sunshine_running: bool, state_path: Path | None = None) -> AudioRoutingSession | None:

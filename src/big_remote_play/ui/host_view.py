@@ -2379,6 +2379,12 @@ class HostView(Gtk.Box):
 
     def _run_stop_hosting(self) -> None:
         session, self.audio_session = self.audio_session, None
+        if session is not None:
+            try:
+                # Who plays into Sunshine's outputs, to reconnect after they go.
+                session.remember_feeders()
+            except Exception as exc:
+                _log.warning("Could not read the audio links: %s", exc)
         try:
             self.sunshine.stop()
         except Exception as exc:
