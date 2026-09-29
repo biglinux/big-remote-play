@@ -18,6 +18,8 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Architecture](architecture.md) — component boundaries, data ownership and external integrations.
 - [Private-network architecture](private-network-architecture.md) — providers, capabilities, state model and upstream contracts.
 - [Private-network security](private-network-security.md) — credentials, privileges, legacy-file migration and validation.
+- [Video quality](video-quality.md) — the Sunshine → Moonlight pipeline, HDR screens, scaling, codecs and measured results.
+- [Connection status](connection-status.md) — who is connected now, quality thresholds, the real route and the internet-page measurements.
 - [Audio architecture](audio-architecture.md) — what Sunshine records, the bridges Big Remote Play owns, recovery and Steam coexistence.
 - [Translations](translations.md) — gettext workflow and regional catalog requirements.
 - [Iconography](iconography.md) — native, symbolic and project icon rules.

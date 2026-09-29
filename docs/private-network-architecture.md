@@ -119,7 +119,24 @@ Recent sessions from the history are offered as “Connect again”. Manual addr
 
 ## History
 
-`history.py` writes `$XDG_CONFIG_HOME/big-remote-play/history/sessions.json` (0600). A session starts when Moonlight's stream process is running and is dropped if it ends with an error within ten seconds. Fields are an allowlist (host, address, port, provider, requested resolution/FPS/bitrate/codec, start/end). Retention is 30 days, 90 days (default) or always. The host side does not record sessions: Sunshine does not expose a reliable per-client session log, so “computers that connected before” on Share is the Sunshine paired-device list.
+`history.py` writes `$XDG_CONFIG_HOME/big-remote-play/history/sessions.json` (0600). A session starts when Moonlight's stream process is running and is dropped if it ends with an error within ten seconds. Fields are an allowlist (host, address, port, provider, requested resolution/FPS/bitrate/codec, start/end). Retention is 30 days, 90 days (default) or always. The host side does not record sessions in this history: Sunshine logs when a session starts and ends but not which client it was, so “computers that connected before” on Share is the Sunshine paired-device list. The live **Connected now** list combines those log markers with the stream's RTSP handshake; see [connection status](connection-status.md).
+
+## Joining a ZeroTier network
+
+`zerotier-cli join` only *asks*: the network's controller then sends a configuration, refuses the computer until its owner authorizes it, or says the network does not exist, seconds or minutes later. `private_network/zerotier_join.py` models this as one `JoinPhase` at a time; `ui/zerotier_join.py` (`ZeroTierJoinPanel`) renders it on the ZeroTier connection page and in the guided setup, so both say the same thing.
+
+1. Validate the code (16 hex digits; spaces and dashes removed) before any command → `INVALID_ID`.
+2. Not installed → `NOT_INSTALLED`. Service not active → `STARTING_SERVICE`: the one privileged step, `pkexec systemctl enable --now zerotier-one`, then wait for `zerotier-cli -j info` → `SERVICE_STOPPED` if it cannot start.
+3. The user cannot talk to the service (401) → `ASKING_PERMISSION`: the one-time token copy (below), so every later check runs without a password → `NEEDS_PERMISSION` if refused.
+4. `zerotier-cli -j join <id>`: on success the service answers with the network object, which gives the first status. A failure is classified by the CLI's protocol line `<HTTP status> <command> <body>` — `0` means the service could not be reached (`SERVICE_STOPPED`), `401/403` permission, `400` a bad id — never by reading prose.
+5. Follow `-j listnetworks` every 1.5 s for up to 45 s: `OK` with an address → `CONNECTED`; `OK` without one → `WAITING_ADDRESS`; `REQUESTING_CONFIGURATION` → `WAITING_CONFIGURATION` (`NODE_OFFLINE` when `info` says the node itself is offline); `ACCESS_DENIED` → `WAITING_AUTHORIZATION` (stop following: the owner decides); `NOT_FOUND`, `PORT_ERROR`, `CLIENT_TOO_OLD`, `AUTHENTICATION_REQUIRED` → their own states.
+6. While a waiting state is on screen the panel checks again (read-only `check()`, no join) every 5 s for two minutes, then every 15 s; the timer stops when the panel is unmapped or the network is decided. Authorization given later becomes `CONNECTED` without joining again.
+
+A `NOT_FOUND` for a membership this attempt created is left again, so a typo leaves nothing behind. A code whose controller does not exist never gets any answer and stays `REQUESTING_CONFIGURATION`; after the first wait it is shown as *has not answered yet* with **Cancel the request** (`leave`). Being on one ZeroTier network never hides the join form. With several memberships, the provider status reports the most advanced one (connected, then awaiting authorization, then configuring, then errors), so a stale `NOT_FOUND` membership no longer hides one awaiting approval.
+
+Technical details (`JoinSnapshot.technical_lines()`) list provider, network, node, service, daemon, join result, state, addresses, interface and peers (direct/relayed). Peers exclude ZeroTier roots and the networks' controllers, which `listpeers` also reports as `LEAF`. No key or token appears.
+
+The previous join reused an interactive menu script run through `pkexec` with `sudo` calls inside it (already root there; `pkexec` also resets `HOME`, so the user's token file was irrelevant) and fed it `2` and the id on stdin; its successor treated every non-`OK` status as a failure. Both are gone. The failure seen on 2026-09-29 (“0 join connection failed”) was the service stopped by **Disconnect** and the join not starting it.
 
 ## ZeroTier without a password
 

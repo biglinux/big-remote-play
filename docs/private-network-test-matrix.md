@@ -52,6 +52,34 @@ Automated tests live in `tests/test_private_network_backend.py`, `tests/test_pri
 | Layout at 400, 720 and 1024 px, 150 % text, RTL (Hebrew), Japanese | Rendered offscreen (Broadway) 2026-09-29 |
 | Two physical computers finishing an invitation (link, QR, ZeroTier approval) | **Pending** |
 
+## Joining ZeroTier (2026-09-29)
+
+Real service: ZeroTier One 1.16.2 on the development machine, with three existing memberships (A, B, C; their ids are not published).
+
+| Scenario | Status |
+|---|---|
+| Service stopped: `zerotier-cli join` prints `0 join connection failed` (exit 1) — the reported bug | **Real reproduced**; the old code showed it as “Connection failed” |
+| Service stopped → join in the app: starts the service, joins, **Connected** | **Real verified** (the privileged start was run with `sudo` instead of the desktop PolicyKit prompt) |
+| Network A (the owner's own): CLI `join` exit 0, `-j join` status `OK`, address and `zt…` interface | **Real verified**; the app shows **Connected** with the network name, in the GUI |
+| Network B: `ACCESS_DENIED` | **Real verified**: **Waiting for authorization** with the computer name, Node ID and Copy; never “failed” |
+| Network C: `NOT_FOUND` (deleted network) | **Real verified** read-only |
+| Typo of a real code (last digit changed): controller answers `NOT_FOUND` | **Real verified**: **Network code not found**, membership removed automatically |
+| Code of a controller that does not exist | **Real verified**: stays `REQUESTING_CONFIGURATION`; after 45 s **The network has not answered yet**; **Cancel the request** left the network |
+| Memberships afterwards | **Real verified**: the same three as before |
+| Authorization given later, permission, port error, old client, SSO networks, cancellation | Unit tested (`tests/test_zerotier_join.py`), UI tested (`tests/test_zerotier_join_ui.py`) |
+
+## Guided setup and connection cards (2026-09-29)
+
+| Scenario | Status |
+|---|---|
+| Share/Connect + same network → the task, no VPN; somewhere else → detection; ready connection → **Use this connection**; one step missing → the internet page; nothing → method choice; ZeroTier code; Back; restart | UI tested (`tests/test_guided_setup.py`); detection **real**: found the connected ZeroTier network |
+| Sidebar groups; the internet item always opens the internet page | UI tested |
+| Sunshine session → **Connected now** with the handshake address; gone at disconnect | **Real verified** with an isolated Sunshine 2026.914 + Moonlight Qt 6.1 lab instance (own port, state and credentials; sound output checked unchanged) |
+| Quality thresholds 10/45/120 ms, no answer, jitter, loss, LAN/ZeroTier/Tailscale/Headscale/internet route | Unit tested (`tests/test_connection_health.py`); routes **real** on this machine (`zt…`, `lo`, default gateway) |
+| Internet page card: traffic from interface counters, stability, direct/relay, no device online | UI tested; **real**: ZeroTier with no other device online → “No other device online to measure” (controllers excluded) |
+| Layout: 400, 720, 1100 px, 150 % text, RTL + light theme | Rendered offscreen (Broadway) 2026-09-29 |
+| Connect card during a real stream between two computers | **Pending** (simulated data only) |
+
 ## Network conditions
 
 | Condition | Status |
