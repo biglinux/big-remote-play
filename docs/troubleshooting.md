@@ -11,7 +11,7 @@ The card on **Play over the internet** names the problem and its fix:
 
 ## Colors look grey or washed out on the other computer
 
-The shared screen is almost certainly in HDR (KDE: **System Settings → Display** shows HDR on). Sunshine captures HDR pixels and sends them as SDR, without converting them. Keep **Share → Image and capture → Correct colors of HDR screens** on and start sharing again: the screen uses SDR during the session and HDR afterwards. On desktops other than KDE Plasma, turn HDR off on that screen by hand before sharing. If the other device supports HDR, choose HDR in its Moonlight settings instead. Measurements and details: [video quality](video-quality.md).
+The shared screen is almost certainly in HDR (KDE: **System Settings → Display** shows HDR on). Sunshine captures HDR pixels and sends them as SDR, without converting them. Keep **Share → Image and capture → Correct colors of HDR screens** on and start sharing again: the screen uses SDR during the session and HDR afterwards. On desktops other than KDE Plasma, turn HDR off on that screen by hand before sharing. Measurements and details: [video quality](video-quality.md).
 
 ## Small text is blurry on the other computer
 
