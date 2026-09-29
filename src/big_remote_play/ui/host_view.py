@@ -22,9 +22,10 @@ from big_remote_play.utils.icons import create_icon_widget, set_icon
 from big_remote_play.integration_contracts import MOONLIGHT_PAIRING_PIN_LENGTH, BRP_DISCOVERY_CODE_LENGTH
 from big_remote_play import paths
 from big_remote_play.utils.secret_store import SecretStoreUnavailable
+from big_remote_play.host.sunshine_manager import PIN_CHOOSE, PIN_NONE_WAITING
 from big_remote_play.utils.sunshine_credentials import ensure_sunshine_api_config, load_sunshine_credentials, save_sunshine_credentials
 from big_remote_play.utils.uri import open_uri, open_path
-from .components import action_row, boxed_rows, intro, preferences_dialog, set_row_icon, content_dialog, name_icon_button
+from .components import physical_size, action_row, boxed_rows, intro, preferences_dialog, set_row_icon, content_dialog, name_icon_button
 
 
 # Host FPS combo index -> value (index 4 "Custom" falls back to 60).
@@ -48,6 +49,11 @@ def _split_launch_command(command: str) -> list[str]:
         return []
 
 
+def _monitor_choice_label(number: int, name: str, connector: str) -> str:
+    """Give identical displays a visible identity shared with the overlay."""
+    return f"{number:02d} · {name} · {connector}"
+
+
 class HostView(Gtk.Box):
     def __init__(self):
         self.loading_settings = True
@@ -58,15 +64,17 @@ class HostView(Gtk.Box):
         self.is_hosting = False
         self.process = None  # Initialize to avoid AttributeError
         self.pin_code = None
-        self.private_audio_apps = set()
         self.audio_devices = []
-        self.active_host_sink = ""
-        self._audio_routing_active = False
-        self._active_audio_mode = 0
+        self.audio_session = None
+        self.audio_watcher = None
+        self._audio_generation = 0
+        self._audio_status = None
         self.stop_pin_listener = None
         self._uptime_timer_id = None
         self._save_timer_id = None
         self._hosting_started_at = None
+        self._monitor_identifier_windows: list[Gtk.Window] = []
+        self._monitor_identifier_timeout_id = None
 
         from big_remote_play.host.sunshine_manager import SunshineHost
 
@@ -82,18 +90,48 @@ class HostView(Gtk.Box):
         self.game_detector = GameDetector()
         self.detected_games = {"Steam": [], "Lutris": []}
         self._auto_signature = ""
+        self._hdr_outputs: set[str] = set()
         self.load_settings()
         self.connect_settings_signals()
         self.loading_settings = False
         # Detection runs after the saved values are in place, so it only writes
         # when the user wants automatic settings and the hardware moved.
         self._apply_auto_quality()
+        self._probe_hdr_outputs()
 
         # Ensure config is correct (API enabled)
         if hasattr(self, "_ensure_sunshine_config"):
             self._ensure_sunshine_config()
 
         self.sync_ui_state()
+        self._recover_audio_session()
+
+    def _recover_audio_session(self) -> None:
+        """Adopt the audio session of a sharing that is still running, or undo
+        what a crashed window left (only resources carrying our token)."""
+        from big_remote_play.utils.audio import AudioRoutingSession
+
+        sharing = self.is_hosting
+
+        def work() -> None:
+            try:
+                session = AudioRoutingSession.recover(self.audio_manager, sunshine_running=sharing)
+            except Exception as exc:  # pragma: no cover - defensive
+                _log.error("Audio recovery failed: %s", exc)
+                session = None
+            GLib.idle_add(self._adopt_audio_session, session)
+
+        threading.Thread(target=work, daemon=True).start()
+
+    def _adopt_audio_session(self, session) -> bool:
+        if self._closed:
+            return False
+        if session is not None and self.is_hosting and self.audio_session is None:
+            self.audio_session = session
+            self._start_audio_watch()
+        else:
+            self.refresh_audio_status()
+        return False
 
     def _root_window(self):
         root = self.get_root()
@@ -128,12 +166,12 @@ class HostView(Gtk.Box):
                             label_parts.append(manufacturer)
                         if model:
                             label_parts.append(model)
-                        label = " ".join(label_parts) if label_parts else "Monitor"
+                        label = " ".join(label_parts) if label_parts else _("Unknown")
 
                         # Connector names are stable across reorderings; GDK indices
                         # need not match Sunshine's capture backend indices.
                         val = conn
-                        full_label = f"{label} ({conn})"
+                        full_label = _monitor_choice_label(len(monitors), label, conn)
                         monitors.append((full_label, val))
                         names.append(conn)
         except Exception as e:
@@ -146,7 +184,7 @@ class HostView(Gtk.Box):
                 res = subprocess.check_output(["xrandr", "--listmonitors"], text=True, timeout=5)
                 for n in _parse_xrandr_monitor_names(res):
                     if n and n not in names:
-                        monitors.append((f"Display ({n})", n))
+                        monitors.append((_monitor_choice_label(len(monitors), _("Monitor / Display"), n), n))
                         names.append(n)
             except Exception:
                 pass
@@ -159,7 +197,7 @@ class HostView(Gtk.Box):
                     if (p / "status").exists() and (p / "status").read_text().strip() == "connected":
                         name = p.name.split("-", 1)[1]
                         if name not in names:
-                            monitors.append((f"DRM Display ({name})", name))
+                            monitors.append((_monitor_choice_label(len(monitors), _("Monitor / Display"), name), name))
                             names.append(name)
             except Exception:
                 pass
@@ -333,6 +371,21 @@ class HostView(Gtk.Box):
         self.monitor_row.set_selected(0)
         self.hardware_group.add(self.monitor_row)
 
+        self.identify_monitors_row = Adw.ActionRow(
+            title=_("Identify monitors"),
+            subtitle=_("Show a number on every connected screen"),
+            use_markup=False,
+        )
+        self.identify_monitors_button = Gtk.Button(label=_("Open"), valign=Gtk.Align.CENTER)
+        self.identify_monitors_button.update_property(
+            [Gtk.AccessibleProperty.LABEL],
+            [_("Identify monitors")],
+        )
+        self.identify_monitors_button.connect("clicked", self.identify_monitors)
+        self.identify_monitors_row.add_suffix(self.identify_monitors_button)
+        self.identify_monitors_row.set_activatable_widget(self.identify_monitors_button)
+        self.hardware_group.add(self.identify_monitors_row)
+
         self.gpu_row = Adw.ComboRow()
         self.gpu_row.set_title(_("Graphics Card / Encoder"))
         self.gpu_row.set_subtitle(_("Choose hardware for video encoding"))
@@ -353,6 +406,37 @@ class HostView(Gtk.Box):
         self.platform_row.set_model(platform_model)
         self.platform_row.set_selected(0)
         self.hardware_group.add(self.platform_row)
+
+        # The picture the other computer sees, before any compression.
+        self.hdr_sdr_row = Adw.SwitchRow(use_markup=False)
+        self.hdr_sdr_row.set_title(_("Correct colors of HDR screens"))
+        self.hdr_sdr_row.set_subtitle(_("While sharing with a device that does not use HDR, the shared screen switches to SDR and back afterwards. Without it, colors look grey and washed out there."))
+        self.hdr_sdr_row.set_active(True)
+        self.hardware_group.add(self.hdr_sdr_row)
+        # Scaling a large screen down to a TV or car screen blurs small text
+        # (measured: text SSIM 0.89 → 0.99 when a 3440x1440 screen used
+        # 1920x1080 for a 1080p TV). One mode serves every device at once.
+        self.share_resolution_values = ("", "client", "1920x1080", "2560x1440", "1280x720")
+        self.share_resolution_row = Adw.ComboRow(use_markup=False)
+        self.share_resolution_row.set_title(_("Screen resolution while sharing"))
+        self.share_resolution_row.set_subtitle(
+            _(
+                "A screen larger than the other device is scaled down, which blurs small text. For TVs and car screens, 1920 × 1080 is sharpest. The chosen screen returns to normal afterwards. Choose a screen above first."
+            )
+        )
+        self.share_resolution_row.set_model(
+            Gtk.StringList.new(
+                [
+                    _("Keep this screen's resolution"),
+                    _("Same as the first device that connects"),
+                    _("1920 × 1080 — best for TVs"),
+                    "2560 × 1440",
+                    _("1280 × 720 — slow connections"),
+                ]
+            )
+        )
+        self.share_resolution_row.set_selected(0)
+        self.hardware_group.add(self.share_resolution_row)
 
         # New "Performance" settings as requested
         self.codecs_row = Adw.SwitchRow()
@@ -382,45 +466,59 @@ class HostView(Gtk.Box):
         # --- Audio Group ---
         audio_group = Adw.PreferencesGroup()
         audio_group.set_title(_("Audio"))
-        audio_group.set_description(_("By default, share the sound you already hear without changing this computer’s output. A connecting client can still request that Sunshine mute the game PC."))
+        audio_group.set_description(_("The other computer hears the sound this computer plays. The microphone is not sent."))
 
-        # 1. Host Output (Always visible, serves as the "Host" part of Host+Guest)
         self.audio_output_row = Adw.ComboRow()
-        self.audio_output_row.set_title(_("Audio output"))
-        self.audio_output_row.set_tooltip_text(_("Keep the current output, or explicitly select a device to enable audio routing."))
-        self.audio_output_row.set_use_subtitle(True)
+        self.audio_output_row.set_title(_("Server output"))
+        self.audio_output_row.set_tooltip_text(_("Automatic shares the output you are using now, including effects such as EasyEffects. Choose a device only to always share that one."))
+        self.audio_output_row.set_use_subtitle(False)
         self.audio_output_row.set_subtitle_lines(0)
         set_row_icon(self.audio_output_row, "brp-audio-speakers-symbolic")
         self.audio_output_row.connect("notify::selected", self.on_audio_output_changed)
         audio_group.add(self.audio_output_row)
 
-        # 2. Audio Mode ComboRow
-        self.audio_mode_row = Adw.ComboRow()
-        self.audio_mode_row.set_title(_("Where the sound plays"))
-        self.audio_mode_row.set_tooltip_text(_("Available only after choosing an output device. Changes apply the next time you start sharing."))
-        self.audio_mode_row.set_use_subtitle(True)
-        self.audio_mode_row.set_subtitle_lines(0)
-        set_row_icon(self.audio_mode_row, "brp-audio-volume-medium-symbolic")
+        self.audio_play_here_row = Adw.SwitchRow(title=_("Also play sound on this computer"))
+        self.audio_play_here_row.set_subtitle(_("When off, only the other computer hears the game."))
+        self.audio_play_here_row.set_subtitle_lines(0)
+        self.audio_play_here_row.set_active(True)
+        set_row_icon(self.audio_play_here_row, "brp-audio-volume-medium-symbolic")
+        self.audio_play_here_row.connect("notify::active", self.on_audio_mode_changed)
+        audio_group.add(self.audio_play_here_row)
 
-        mode_model = Gtk.StringList()
-        mode_model.append(_("Keep local playback"))  # Index 0
-        mode_model.append(_("Other computer"))  # Index 1
-        mode_model.append(_("This computer"))  # Index 2
-        mode_model.append(_("Both computers"))  # Index 3
+        microphone_row = Adw.ActionRow(title=_("Microphone"), subtitle=_("Not sent by Big Remote Play. Voice chat apps keep using it normally."), use_markup=False)
+        microphone_row.set_subtitle_lines(0)
+        set_row_icon(microphone_row, "brp-media-record-symbolic")
+        audio_group.add(microphone_row)
 
-        self.audio_mode_row.set_model(mode_model)
-        self.audio_mode_row.connect("notify::selected", self.on_audio_mode_changed)
-        audio_group.add(self.audio_mode_row)
+        self.audio_test_row = Adw.ActionRow(title=_("Test audio"), subtitle=_("Plays a short tone and checks that it reaches the shared sound."), use_markup=False)
+        self.audio_test_row.set_subtitle_lines(0)
+        set_row_icon(self.audio_test_row, "brp-audio-volume-high-symbolic")
+        self.audio_test_button = Gtk.Button(label=_("Test"), valign=Gtk.Align.CENTER)
+        self.audio_test_button.update_property([Gtk.AccessibleProperty.LABEL], [_("Test audio")])
+        self.audio_test_button.connect("clicked", self.on_test_audio_clicked)
+        self.audio_test_row.add_suffix(self.audio_test_button)
+        self.audio_test_row.set_activatable_widget(self.audio_test_button)
+        audio_group.add(self.audio_test_row)
 
-        # 3. Mixer (Only if Streaming is Enabled)
-        self.audio_mixer_group = Adw.PreferencesGroup(title=_("Audio Mixer (Sources)"), description=_("Manage audio sources"))
-        self.mixer_empty_row = Adw.ActionRow(
-            title=_("No audio sources yet"),
-            subtitle=_("Start sharing and play sound in an app to see it here."),
-            use_markup=False,
-        )
-        self.mixer_empty_row.set_subtitle_lines(0)
-        self.audio_mixer_group.add(self.mixer_empty_row)
+        self.audio_details_row = Adw.ExpanderRow(title=_("Technical audio details"), subtitle=_("Read from the sound server when opened."))
+        set_row_icon(self.audio_details_row, "brp-dialog-information-symbolic")
+        self.audio_detail_rows: dict[str, Adw.ActionRow] = {}
+        for key, title in (
+            ("output", _("Current output")),
+            ("monitor", _("Recorded source")),
+            ("sunshine", _("Sunshine records now")),
+            ("microphone", _("Default microphone")),
+            ("mic_sent", _("Microphone sent to Sunshine")),
+            ("steam", _("Steam Remote Play")),
+            ("bridges", _("Routing added by Big Remote Play")),
+        ):
+            row = Adw.ActionRow(title=title, subtitle="…", use_markup=False)
+            row.set_subtitle_lines(0)
+            row.set_subtitle_selectable(True)
+            self.audio_details_row.add_row(row)
+            self.audio_detail_rows[key] = row
+        self.audio_details_row.connect("notify::expanded", lambda row, _pspec: self.refresh_audio_status() if row.get_expanded() else None)
+        audio_group.add(self.audio_details_row)
 
         self.load_audio_outputs()
 
@@ -558,10 +656,10 @@ class HostView(Gtk.Box):
             [_("Start sharing"), _("Start sharing the game from this PC")],
         )
 
-        self.private_network_button = _create_overview_action_button(_("Set up Private Network"), lambda _b: self._go_to_private_network())
+        self.private_network_button = _create_overview_action_button(_("Play over the internet"), lambda _b: self._go_to_private_network())
         self.private_network_button.set_child(create_icon_widget("go-next-symbolic", size=16))
-        self.private_network_button.set_tooltip_text(_("Set up Private Network"))
-        self.private_network_button.update_property([Gtk.AccessibleProperty.LABEL], [_("Open Private Network setup")])
+        self.private_network_button.set_tooltip_text(_("Play over the internet"))
+        self.private_network_button.update_property([Gtk.AccessibleProperty.LABEL], [_("Play over the internet: connect your devices")])
 
         # A single premium session surface keeps the role, live state and primary
         # action together. It becomes vertical through the window breakpoint,
@@ -699,6 +797,14 @@ class HostView(Gtk.Box):
         network_row.set_activatable_widget(self.private_network_button)
         network_group = Adw.PreferencesGroup()
         network_group.add(network_row)
+        # While sharing: the private addresses another computer can really use,
+        # read from the VPN clients (never a guessed or public address).
+        from .network_common import RowGroup, Worker
+
+        self.internet_access_group = RowGroup(title=_("Available over the internet"))
+        self.internet_access_group.set_description(_("Send one of these to the other person, or let them pick this computer under Connect."))
+        self.internet_access_group.set_visible(False)
+        self._internet_worker = Worker()
 
         # Register PIN for updates.
         self.field_widgets["pin"] = {"label": self.pin_display_label, "real_value": "", "revealed": True}
@@ -736,6 +842,11 @@ class HostView(Gtk.Box):
         self.share_controls.append(start_heading)
         self.share_controls.append(self.overview_start_button)
         overview_body.append(self.share_controls)
+        # Right under the running session: who is playing now, then where the
+        # other person can reach it. "Connected now" is live sessions only;
+        # pairings are listed separately below.
+        overview_body.append(self._create_connected_devices_group())
+        overview_body.append(self.internet_access_group)
         overview_body.append(pin_group)
         overview_body.append(self._create_paired_devices_overview())
         overview_body.append(network_group)
@@ -763,7 +874,6 @@ class HostView(Gtk.Box):
         self.hardware_group.set_description(_("Automatic options below are chosen by Sunshine when sharing starts, not measurements of an active stream."))
         self.settings_dialogs = {_("Image and capture"): self.quality_sheet}
         sections = (
-            (self.audio_mixer_group, _("Audio Mixer (Sources)"), _("Optional per-app routing. Requires an explicitly chosen output and a new sharing session."), "brp-audio-speakers-symbolic", 400),
             (self.advanced_group, _("Network and access"), _("Keep router port forwarding off when using a VPN. Changes apply when sharing starts again."), "brp-network-private-symbolic", 600),
         )
         for group, title, description, icon, height in sections:
@@ -772,8 +882,6 @@ class HostView(Gtk.Box):
             sheet = preferences_dialog(title, [group], description=description, height=height)
             self.settings_dialogs[title] = sheet
             link = action_row(title, description, icon, lambda d=sheet: d.present(self))
-            if group is self.audio_mixer_group:
-                self.audio_mixer_link = link
             settings_links.add(link)
         config_page.append(settings_links)
         self.view_stack.add_titled_with_icon(config_page, "config", _("Preferences"), "brp-preferences-symbolic")
@@ -860,10 +968,9 @@ class HostView(Gtk.Box):
             monitors = display.get_monitors() if display is not None else None
             monitor = monitors.get_item(0) if monitors is not None and monitors.get_n_items() else None
             if monitor is not None:
-                area = monitor.get_geometry()
-                scale = monitor.get_scale_factor() or 1
+                width, height = physical_size(monitor)
                 # get_refresh_rate() is in milli-Hz.
-                return area.width * scale, area.height * scale, round((monitor.get_refresh_rate() or 60000) / 1000)
+                return width, height, round((monitor.get_refresh_rate() or 60000) / 1000)
         except Exception as exc:
             _log.debug(f"Cannot read monitor metrics: {exc}")
         return 1920, 1080, 60
@@ -907,7 +1014,58 @@ class HostView(Gtk.Box):
         limit = self.bandwidth_row.get_value()
         cap = _("No video bitrate ceiling") if limit <= 0 else _("Video limit: {mbps:g} Mbps").format(mbps=limit)
         mode = _("Automatic capture and encoding") if self.auto_quality_row.get_active() else _("Manual capture and encoding")
-        return _("{mode} · {limit}").format(mode=mode, limit=cap)
+        screen = _("Screen: {value}").format(value=self._choice_text(self.monitor_row))
+        quality = _("{mode} · {limit}").format(mode=mode, limit=cap)
+        hdr = self._hdr_summary()
+        return f"{screen} · {quality}" + (f" · {hdr}" if hdr else "")
+
+    def _none_waiting_message(self, message: str) -> str:
+        """Moonlight refuses to pair while the computer is "in a game": say why."""
+        if getattr(self.perf_monitor, "connections", None):
+            return _(
+                "Another device is playing now, and Moonlight pairs only when nobody is playing: the new device shows “The computer is currently in a game”. End the stream on the other devices, pair the new one, then connect them again. Pairing is needed only once."
+            )
+        return message
+
+    def _share_resolution(self) -> str:
+        index = self.share_resolution_row.get_selected()
+        return self.share_resolution_values[index] if 0 <= index < len(self.share_resolution_values) else ""
+
+    def _shared_output(self) -> str | None:
+        index = self.monitor_row.get_selected()
+        monitors = getattr(self, "available_monitors", [])
+        return monitors[index][1] if 0 < index < len(monitors) and monitors[index][1] != "auto" else None
+
+    def _hdr_summary(self) -> str:
+        """One phrase when the shared screen is in HDR, from the last probe."""
+        hdr_outputs = getattr(self, "_hdr_outputs", set())
+        target = self._shared_output()
+        if not hdr_outputs or (target is not None and target not in hdr_outputs):
+            return ""
+        if self.hdr_sdr_row.get_active():
+            return _("HDR screen: shared in SDR for devices without HDR")
+        return _("HDR screen: colors will look washed out on devices without HDR")
+
+    def _probe_hdr_outputs(self) -> None:
+        """Which screens use HDR now (kscreen-doctor, off the GTK thread)."""
+
+        def work() -> None:
+            from big_remote_play.host.stream_display import StreamDisplay
+
+            display = StreamDisplay()
+            # A session that ended without Sunshine's "undo" is put back first.
+            if not self.sunshine.is_running():
+                display.restore()
+            names = {output.name for output in display.outputs() if output.enabled and output.hdr}
+
+            def apply() -> bool:
+                self._hdr_outputs = names
+                self._sync_quality_controls()
+                return False
+
+            GLib.idle_add(apply)
+
+        threading.Thread(target=work, daemon=True).start()
 
     @staticmethod
     def _choice_text(row) -> str:
@@ -920,6 +1078,8 @@ class HostView(Gtk.Box):
         for row in (self.fps_row, self.gpu_row, self.platform_row, self.codecs_row, self.wifi_row, self.optimization_row):
             row.set_sensitive(not automatic)
         self.bandwidth_row.set_sensitive(True)
+        # Matching needs one known screen; Automatic lets Sunshine pick it.
+        self.share_resolution_row.set_sensitive(self.monitor_row.get_selected() > 0)
         self.redetect_row.set_visible(automatic)
         self.auto_quality_row.set_subtitle(_("Sunshine chooses compatible capture and encoding at startup. You can still set a video bitrate ceiling."))
         configured = [
@@ -932,6 +1092,111 @@ class HostView(Gtk.Box):
         ]
         self.auto_status_row.set_subtitle("\n".join(configured))
         self.quality_summary_row.set_subtitle(self._quality_summary())
+
+    def _monitor_identifier_specs(self) -> list[tuple[object, str, str, str]]:
+        """Return connected GDK monitors with the numbers shown in the selector."""
+        specs: list[tuple[object, str, str, str]] = []
+        try:
+            display = Gdk.Display.get_default()
+            monitor_list = display.get_monitors() if display is not None else None
+            if monitor_list is None:
+                return specs
+            for position in range(monitor_list.get_n_items()):
+                monitor = monitor_list.get_item(position)
+                if monitor is None:
+                    continue
+                connector = monitor.get_connector() or _("Unknown")
+                number = next(
+                    (index for index, (_label, value) in enumerate(self.available_monitors) if value == connector),
+                    position + 1,
+                )
+                name = " ".join(part for part in (monitor.get_manufacturer() or "", monitor.get_model() or "") if part) or _("Unknown")
+                specs.append((monitor, f"{number:02d}", name, connector))
+        except Exception as exc:
+            _log.error("Error preparing monitor identifiers: %s", exc)
+        return specs
+
+    def _create_monitor_identifier_window(self, monitor, number: str, name: str, connector: str) -> Gtk.Window:
+        monitor_title = f"{_('Monitor / Display')} {number}"
+        window = Gtk.Window(title=monitor_title, decorated=False)
+        root = self._root_window()
+        if root is not None:
+            application = root.get_application()
+            if application is not None:
+                window.set_application(application)
+
+        content = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+            spacing=12,
+            halign=Gtk.Align.CENTER,
+            valign=Gtk.Align.CENTER,
+            hexpand=True,
+            vexpand=True,
+        )
+        content.add_css_class("brp-monitor-identifier")
+
+        number_label = Gtk.Label(label=number)
+        number_label.add_css_class("brp-monitor-identifier-number")
+        number_label.update_property(
+            [Gtk.AccessibleProperty.LABEL],
+            [monitor_title],
+        )
+        content.append(number_label)
+
+        name_label = Gtk.Label(label=name, wrap=True, justify=Gtk.Justification.CENTER)
+        name_label.add_css_class("brp-monitor-identifier-name")
+        content.append(name_label)
+
+        connector_label = Gtk.Label(label=connector)
+        connector_label.add_css_class("monospace")
+        content.append(connector_label)
+
+        close_button = Gtk.Button(label=_("Close"), halign=Gtk.Align.CENTER)
+        close_button.connect("clicked", lambda *_args: self._close_monitor_identifiers())
+        content.append(close_button)
+        window.set_child(content)
+        window.add_css_class("brp-monitor-identifier")
+
+        click = Gtk.GestureClick()
+        click.connect("released", lambda *_args: self._close_monitor_identifiers())
+        window.add_controller(click)
+
+        keys = Gtk.EventControllerKey()
+
+        def close_on_escape(_controller, keyval, _keycode, _state) -> bool:
+            if keyval == Gdk.KEY_Escape:
+                self._close_monitor_identifiers()
+                return True
+            return False
+
+        keys.connect("key-pressed", close_on_escape)
+        window.add_controller(keys)
+        window.fullscreen_on_monitor(monitor)
+        window.present()
+        return window
+
+    def identify_monitors(self, *_args) -> None:
+        self._close_monitor_identifiers()
+        specs = self._monitor_identifier_specs()
+        if not specs:
+            self.show_toast(_("No connected monitor could be identified."))
+            return
+        self._monitor_identifier_windows = [self._create_monitor_identifier_window(monitor, number, name, connector) for monitor, number, name, connector in specs]
+        self._monitor_identifier_timeout_id = GLib.timeout_add(5000, self._monitor_identifier_timeout)
+
+    def _monitor_identifier_timeout(self) -> bool:
+        self._monitor_identifier_timeout_id = None
+        self._close_monitor_identifiers()
+        return False
+
+    def _close_monitor_identifiers(self) -> None:
+        timeout_id = self._monitor_identifier_timeout_id
+        self._monitor_identifier_timeout_id = None
+        if timeout_id is not None:
+            GLib.source_remove(timeout_id)
+        windows, self._monitor_identifier_windows = self._monitor_identifier_windows, []
+        for window in windows:
+            window.close()
 
     def _show_direct_internet_guide(self) -> None:
         from .connection_guides import build_direct_internet_dialog
@@ -1007,6 +1272,10 @@ class HostView(Gtk.Box):
                 self.open_pin_dialog(None, prefill_pin=pin)
             elif result.status == 307:
                 self.prompt_create_user(pin)
+            elif result.status == PIN_CHOOSE:
+                self._choose_pending_pairing(pin, credentials, result.pending)
+            elif result.status == PIN_NONE_WAITING:
+                self.show_error_dialog(_("No computer is waiting"), self._none_waiting_message(result.message))
             else:
                 self.show_error_dialog(_("Pairing failed"), result.message)
             return False
@@ -1021,6 +1290,55 @@ class HostView(Gtk.Box):
                 GLib.idle_add(finish, None, None, str(exc))
 
         threading.Thread(target=submit, daemon=True).start()
+
+    def _choose_pending_pairing(self, pin: str, credentials, pending) -> None:
+        """Several computers are waiting: approve only the one the person picks."""
+        group = Adw.PreferencesGroup()
+        dialog = Adw.AlertDialog(heading=_("Which computer shows this code?"), body=_("Several computers are waiting to pair. Approve only the one that shows the code you entered."))
+        dialog.add_response("cancel", _("Cancel"))
+        dialog.set_close_response("cancel")
+
+        def approve(item) -> None:
+            dialog.close()
+            self._send_pin_async(pin, item.name or _("Other computer"), credentials, pairing_id=item.pairing_id)
+
+        for item in pending:
+            row = Adw.ActionRow(title=item.name or _("Unnamed device"), subtitle=item.address, use_markup=False, activatable=True)
+            button = Gtk.Button(label=_("Pair"), valign=Gtk.Align.CENTER)
+            button.add_css_class("suggested-action")
+            button.connect("clicked", lambda _button, entry=item: approve(entry))
+            row.add_suffix(button)
+            row.set_activatable_widget(button)
+            group.add(row)
+        dialog.set_extra_child(group)
+        dialog.present(self)
+
+    def _send_pin_async(self, pin: str, name: str, auth, *, pairing_id: str | None = None) -> None:
+        """Send a PIN off the GTK thread and report the outcome."""
+
+        def done(result) -> bool:
+            if getattr(self, "_closed", False):
+                return False
+            if result.ok:
+                self.pair_entry.set_text("")
+                self.show_toast(_("PIN sent successfully"))
+                self._refresh_paired_devices()
+            elif result.status == 401:
+                self.show_error_dialog(_("Authentication Failed"), _("Invalid username or password."))
+            elif result.status == 307:
+                self.prompt_create_user(pin)
+            elif result.status == PIN_CHOOSE:
+                self._choose_pending_pairing(pin, auth, result.pending)
+            elif result.status == PIN_NONE_WAITING:
+                self.show_error_dialog(_("No computer is waiting"), self._none_waiting_message(result.message))
+            else:
+                self.show_error_dialog(_("PIN Error"), result.message)
+            return False
+
+        def work() -> None:
+            GLib.idle_add(done, self.sunshine.send_pin(pin, name=name, auth=auth, pairing_id=pairing_id))
+
+        threading.Thread(target=work, daemon=True).start()
 
     def open_pin_dialog(self, _widget: Gtk.Widget | None, prefill_pin: str = "") -> None:
         self._ensure_sunshine_config()  # Ensure config before trying to use API
@@ -1091,18 +1409,7 @@ class HostView(Gtk.Box):
                     self._save_sunshine_creds(u, p)
 
                 auth = (u, p) if (u and p) else None
-                result = self.sunshine.send_pin(pin, name=device_name, auth=auth)
-
-                if result.ok:
-                    self.show_toast(_("PIN sent successfully"))
-                    self._refresh_paired_devices()
-                elif result.status == 401:
-                    self.show_error_dialog(_("Authentication Failed"), _("Invalid username or password."))
-                elif result.status == 307:
-                    # 307 Redirect: no admin user has been created yet.
-                    self.prompt_create_user(pin)
-                else:
-                    self.show_error_dialog(_("PIN Error"), result.message)
+                self._send_pin_async(pin, device_name, auth)
 
         dialog.connect("response", on_response)
         dialog.present(self)
@@ -1121,6 +1428,38 @@ class HostView(Gtk.Box):
 
         dialog.connect("response", on_resp)
         dialog.present(self)
+
+    def _create_connected_devices_group(self) -> Adw.PreferencesGroup:
+        group = Adw.PreferencesGroup(title=_("Connected now"), description=_("Devices playing on this computer at this moment."))
+        group.set_visible(False)
+        self.connected_devices_group = group
+        self.connected_devices_list = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
+        self.connected_devices_list.add_css_class("boxed-list")
+        self.connected_devices_list.add_css_class("brp-boxed")
+        self.connected_devices_list.set_accessible_role(Gtk.AccessibleRole.LIST)
+        group.add(self.connected_devices_list)
+        # The same measurements as Support → monitoring, never a second probe.
+        self.perf_monitor.add_listener(self._show_connected_devices)
+        self._show_connected_devices([])
+        return group
+
+    def _show_connected_devices(self, infos) -> None:
+        from .connection_cards import DeviceConnectionCard
+
+        box = self.connected_devices_list
+        while child := box.get_first_child():
+            box.remove(child)
+        if not infos:
+            row = Adw.ActionRow(title=_("No one is playing yet"), subtitle=_("When another device starts playing, it appears here with its connection quality."), use_markup=False)
+            row.set_subtitle_lines(0)
+            set_row_icon(row, "brp-client-symbolic")
+            box.append(row)
+            return
+        for info in infos:
+            card = DeviceConnectionCard(info)
+            for edge in ("top", "bottom", "start", "end"):
+                getattr(card, f"set_margin_{edge}")(12)
+            box.append(Gtk.ListBoxRow(activatable=False, child=card))
 
     def _create_paired_devices_overview(self) -> Adw.PreferencesGroup:
         group = Adw.PreferencesGroup()
@@ -1242,12 +1581,13 @@ class HostView(Gtk.Box):
         return names[index] if 0 <= index < len(names) else ""
 
     def _sync_audio_controls(self) -> None:
+        # A chosen device is always heard here: Sunshine makes it the output.
         explicit = bool(self._selected_audio_sink())
-        self.audio_mode_row.set_sensitive(explicit)
-        self.audio_mode_row.set_visible(explicit)
-        if hasattr(self, "audio_mixer_link"):
-            self.audio_mixer_link.set_visible(explicit)
-            self.audio_mixer_link.set_sensitive(self.is_hosting and self._audio_routing_active)
+        self.audio_play_here_row.set_sensitive(not explicit)
+        if explicit:
+            self.audio_play_here_row.set_subtitle(_("The chosen device plays the sound here too. Choose Automatic to share without playing it here."))
+        else:
+            self.audio_play_here_row.set_subtitle(_("When off, only the other computer hears the game."))
 
     def on_audio_mode_changed(self, row, _param):
         if self.loading_settings:
@@ -1271,7 +1611,7 @@ class HostView(Gtk.Box):
             if not isinstance(desired, str):
                 desired = ""
             self._audio_choice_names = [""] + [dev["name"] for dev in self.audio_devices]
-            labels = [_("Keep the current system output (recommended)")] + [dev.get("description") or dev["name"] for dev in self.audio_devices]
+            labels = [_("Automatic — use the current output")] + [dev.get("description") or dev["name"] for dev in self.audio_devices]
             if desired and desired not in self._audio_choice_names:
                 # Never silently redirect to the first remaining device.
                 self._audio_choice_names.append(desired)
@@ -1291,6 +1631,29 @@ class HostView(Gtk.Box):
         self._schedule_save_host_settings()
 
     def on_configure_firewall_clicked(self, _widget):
+        """Say exactly which ports open, and that the rule is permanent, first."""
+        from big_remote_play.integration_contracts import BRP_DISCOVERY_UDP_PORT, sunshine_stream_ports, sunshine_web_ui_port
+
+        base = self.sunshine.api_port - 1
+        try:
+            ports = sunshine_stream_ports(base)
+        except ValueError:
+            self.show_error_dialog(_("Firewall Error"), _("The Sunshine port is outside the supported range."))
+            return
+        body = _(
+            "The firewall will allow incoming TCP {tcp} and UDP {udp}, plus 5353/UDP (local discovery) and {search}/UDP (search code). The rule is permanent and applies to every network interface. The administration panel ({web}) stays closed."
+        ).format(tcp=", ".join(map(str, ports["tcp"])), udp=", ".join(map(str, ports["udp"])), search=BRP_DISCOVERY_UDP_PORT, web=sunshine_web_ui_port(base))
+        dialog = Adw.AlertDialog(heading=_("Allow Sunshine through the firewall?"), body=body)
+        dialog.set_body_use_markup(False)
+        dialog.add_response("cancel", _("Cancel"))
+        dialog.add_response("allow", _("Allow"))
+        dialog.set_response_appearance("allow", Adw.ResponseAppearance.SUGGESTED)
+        dialog.set_default_response("cancel")
+        dialog.set_close_response("cancel")
+        dialog.connect("response", lambda _dialog, response: self._configure_firewall() if response == "allow" else None)
+        dialog.present(self)
+
+    def _configure_firewall(self):
         self.show_toast(_("Configuring firewall... (Password may be requested)"))
 
         try:
@@ -1312,8 +1675,8 @@ class HostView(Gtk.Box):
 
             def run():
                 try:
-                    # No timeout: pkexec blocks on the polkit auth dialog (user-paced)
-                    res = subprocess.run(cmd, capture_output=True, text=True)
+                    # Generous bound: pkexec waits on the user's polkit dialog.
+                    res = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
                     GLib.idle_add(on_done, res.returncode == 0, res.stdout + res.stderr)
                 except Exception as e:
                     GLib.idle_add(on_done, False, str(e))
@@ -1411,6 +1774,9 @@ class HostView(Gtk.Box):
         self.start_heading.set_visible(not self.is_hosting)
         self.guest_access_group.set_visible(self.is_hosting)
         self.paired_devices_overview_group.set_visible(self.is_hosting)
+        self.connected_devices_group.set_visible(self.is_hosting)
+        if not self.is_hosting:
+            self._show_connected_devices([])
         # Running: state, not a form. Stopped: the choices that start it.
         for widget in (self.game_group, self.quality_summary_box):
             widget.set_visible(not self.is_hosting)
@@ -1449,9 +1815,13 @@ class HostView(Gtk.Box):
                 self.populate_summary_fields()
 
             self._refresh_paired_devices()
+            self._refresh_internet_access()
         else:
             self.perf_monitor.set_connection_status("Sunshine", _("Inactive"), False)
             self.perf_monitor.stop_monitoring()
+            if hasattr(self, "internet_access_group"):
+                self._internet_worker.cancel()
+                self.internet_access_group.set_visible(False)
             self.pin_code = None
             if hasattr(self, "overview_status_label"):
                 self.overview_status_label.set_label(_("Choose a source, then start sharing."))
@@ -1494,6 +1864,29 @@ class HostView(Gtk.Box):
                 _("Start sharing to show paired devices"),
                 _("Paired devices appear here."),
             )
+
+    def _refresh_internet_access(self) -> None:
+        """Show the address of this PC on each connected private network."""
+        from big_remote_play.private_network.service import default_service
+        from .network_common import copy_row
+
+        def apply(endpoints) -> None:
+            if not self.is_hosting:
+                return
+            rows = []
+            for provider, device in endpoints:
+                address = device.best_address
+                if device.dns_name and device.dns_name != address:
+                    rows.append(copy_row(provider.display_name, device.dns_name, icon="brp-network-private-symbolic", toast=self.show_toast))
+                    rows.append(copy_row(_("Private address"), address, toast=self.show_toast))
+                else:
+                    rows.append(copy_row(provider.display_name, address, icon="brp-network-private-symbolic", toast=self.show_toast))
+            self.internet_access_group.replace(rows)
+            self.internet_access_group.set_visible(bool(rows))
+            if rows:
+                self.overview_status_label.set_label(_("Ready. This computer is also reachable over your private network."))
+
+        self._internet_worker.submit(lambda: default_service().share_endpoints(), apply)
 
     def populate_summary_fields(self):
         import socket, threading
@@ -1540,155 +1933,130 @@ class HostView(Gtk.Box):
             if self.field_widgets[key]["revealed"]:
                 self.field_widgets[key]["label"].set_text(value)
 
-    def start_audio_mixer_refresh(self):
-        self.stop_audio_mixer_refresh()
-        self.private_audio_apps = set()  # Track names of private apps (unchecked in UI)
-        self.mixer_source_id = GLib.timeout_add(2000, self._refresh_audio_mixer_ui)
-        self.enforcer_source_id = GLib.timeout_add(1000, self._run_audio_enforcer)
-        self._refresh_audio_mixer_ui()
-        return True
+    # ------------------------------------------------------------------
+    # Audio: event-driven checks while sharing, status shown in words.
+    # ------------------------------------------------------------------
+    def _start_audio_watch(self) -> None:
+        """Re-check audio when the sound server reports a change (no polling)."""
+        from big_remote_play.utils.audio import AudioWatcher
 
-    def stop_audio_mixer_refresh(self):
-        if hasattr(self, "mixer_source_id"):
-            GLib.source_remove(self.mixer_source_id)
-            del self.mixer_source_id
-        if hasattr(self, "enforcer_source_id"):
-            GLib.source_remove(self.enforcer_source_id)
-            del self.enforcer_source_id
+        self._stop_audio_watch()
+        session = self.audio_session
+        if session is None:
+            return
+        self._audio_generation += 1
+        generation = self._audio_generation
 
-    def _run_audio_enforcer(self):
-        if not self.is_hosting:
-            return True
-        if not hasattr(self, "active_host_sink") or not self.active_host_sink:
-            return True
-        if not hasattr(self, "audio_manager") or not self._audio_routing_active:
-            return True
-        # A prior enforcer pass is still running its pactl calls; skip this tick.
-        if getattr(self, "_enforcer_busy", False):
-            return True
+        def check() -> None:
+            status = session.reconcile()
+            GLib.idle_add(self._apply_audio_status, status, generation)
 
-        shared_sink = "SunshineGameSink"
-        private_sink = self.active_host_sink
+        self.audio_watcher = AudioWatcher(check)
+        self.audio_watcher.start()
 
-        # GTK / cross-object reads happen on the main thread; snapshots are passed
-        # to the worker so the pactl calls never block the UI.
-        # 0: Keep local playback, 1: Guest, 2: Host, 3: Guest + Host
-        mode_idx = self._active_audio_mode
-        private_apps = set(self.private_audio_apps)
+    def _stop_audio_watch(self) -> None:
+        watcher, self.audio_watcher = self.audio_watcher, None
+        self._audio_generation += 1
+        if watcher is not None:
+            watcher.stop()
 
-        streaming_enabled = mode_idx in [0, 1, 3]
-        should_monitor = False
-        if mode_idx == 3:  # Guest + Host
-            should_monitor = True
-        elif mode_idx == 2:  # Host Only — everything moves to the private sink
-            should_monitor = True
-            streaming_enabled = False
-        elif mode_idx == 1:  # Guest Only
-            should_monitor = False
-        elif mode_idx == 0:  # Explicit routing keeps local playback unless asked otherwise.
-            should_monitor = True
+    def refresh_audio_status(self) -> None:
+        """Read the sound server off the main thread and show what it reports."""
+        if getattr(self, "_audio_status_busy", False):
+            return
+        self._audio_status_busy = True
+        manual = self._selected_audio_sink()
+        generation = self._audio_generation
 
-        self._enforcer_busy = True
+        def work() -> None:
+            from big_remote_play.utils.audio import audio_status
 
-        def work():
             try:
-                if not self._audio_routing_active or self._closed:
-                    return
-                if not hasattr(self, "_last_monitor_state") or self._last_monitor_state != should_monitor:
-                    self.audio_manager.set_host_monitoring(private_sink, should_monitor)
-                    self._last_monitor_state = should_monitor
-
-                for app in self.audio_manager.get_apps():
-                    if not self._audio_routing_active or self._closed:
-                        break
-                    app_id, name = app["id"], app.get("name", "")
-                    if "sunshine" in name.lower() or "loopback" in name.lower() or "moonlight" in name.lower():
-                        continue
-                    target = private_sink if (not streaming_enabled or name in private_apps) else shared_sink
-                    if app.get("sink_name", "") != target:
-                        self.audio_manager.move_app(app_id, target)
-            except Exception as e:
-                _log.error(f"Enforcer Error: {e}")
-            finally:
-                self._enforcer_busy = False
+                session = self.audio_session
+                graph = self.audio_manager.snapshot()
+                status = audio_status(graph, session.manual_output if session else manual, tuple(session.links) if session else ())
+            except Exception as exc:  # pragma: no cover - defensive
+                _log.error("Could not read audio status: %s", exc)
+                status = None
+            GLib.idle_add(self._apply_audio_status, status, generation, True)
 
         threading.Thread(target=work, daemon=True).start()
-        return True
 
-    def _refresh_audio_mixer_ui(self):
-        if not self.audio_mixer_link.get_sensitive():
-            return True
-        if not hasattr(self, "audio_manager"):
-            return True
-        if getattr(self, "_mixer_busy", False):
-            return True
-
-        self._mixer_busy = True
-
-        def work():
-            try:
-                apps = self.audio_manager.get_apps()
-            except Exception:
-                apps = []
-            GLib.idle_add(self._apply_mixer_apps, apps)
-
-        threading.Thread(target=work, daemon=True).start()
-        return True
-
-    def _apply_mixer_apps(self, apps) -> bool:
-        self._mixer_busy = False
-        self.mixer_empty_row.set_visible(not apps)
-        seen_ids = set()
-
-        if not hasattr(self, "mixer_rows"):
-            self.mixer_rows: dict[str, Adw.SwitchRow] = {}
-
-        for app in apps:
-            app_id = app["id"]
-            app_name = app.get("name", "App")
-            seen_ids.add(app_id)
-
-            # Default state: Active (Shared) unless explicitly set to Private
-            is_shared = app_name not in self.private_audio_apps
-
-            if app_id in self.mixer_rows:
-                row = self.mixer_rows[app_id]
-                # Avoid signal loop
-                if row.get_active() != is_shared:
-                    row.disconnect_by_func(self._on_app_toggled)
-                    row.set_active(is_shared)
-                    row.connect("notify::active", self._on_app_toggled, app_name)
-
-                row.set_subtitle(_("Both computers") if is_shared else _("This computer only"))
-            else:
-                row = Adw.SwitchRow(use_markup=False)
-                row.set_title(app_name)
-                row.set_subtitle(_("Both computers") if is_shared else _("This computer only"))
-                if app.get("icon"):
-                    set_row_icon(row, app["icon"])
-                row.set_active(is_shared)
-                row.connect("notify::active", self._on_app_toggled, app_name)
-                self.audio_mixer_group.add(row)
-                self.mixer_rows[app_id] = row
-
-        # Cleanup
-        to_remove = [aid for aid in self.mixer_rows if aid not in seen_ids]
-        for aid in to_remove:
-            self.audio_mixer_group.remove(self.mixer_rows[aid])
-            del self.mixer_rows[aid]
-
+    def _apply_audio_status(self, status, generation: int, from_refresh: bool = False) -> bool:
+        if from_refresh:
+            self._audio_status_busy = False
+        if self._closed or status is None or generation != self._audio_generation:
+            return False
+        self._audio_status = status
+        plan = status.plan
+        if plan.available and plan.output is not None:
+            now = _("Now: {output}").format(output=plan.output.description)
+        elif plan.problem == "missing-output":
+            now = _("The selected output is not connected. Reconnect it or choose Automatic.")
+        else:
+            now = _("System audio unavailable: no output device was found.")
+        self.audio_output_row.set_subtitle(now)
+        rows = self.audio_detail_rows
+        rows["output"].set_subtitle(plan.output.description if plan.output else _("None"))
+        rows["monitor"].set_subtitle(plan.monitor or _("System audio unavailable"))
+        if status.sunshine_source:
+            rows["sunshine"].set_subtitle(self._describe_source(status.sunshine_source, bool(status.sunshine_records_monitor)))
+        else:
+            rows["sunshine"].set_subtitle(_("No client is receiving sound right now"))
+        rows["microphone"].set_subtitle(status.default_source_description or status.default_source or _("None"))
+        rows["mic_sent"].set_subtitle(_("Yes — this is an error; stop sharing and report it") if status.microphone_sent else _("No"))
+        if status.steam_sources:
+            rows["steam"].set_subtitle("\n".join(self._describe_source(s, monitor) for s, monitor in status.steam_sources))
+        else:
+            rows["steam"].set_subtitle(_("Steam is not recording sound"))
+        if status.bridges:
+            rows["bridges"].set_subtitle("\n".join(_("{source} → {target}").format(source=b.source, target=b.target_sink) for b in status.bridges))
+        else:
+            rows["bridges"].set_subtitle(_("None: the sound is captured directly"))
+        if status.host_muted_by_client and not status.bridges:
+            self.audio_play_here_row.set_subtitle(_("The connected client asked Sunshine not to play sound on this computer."))
+        else:
+            self.audio_play_here_row.set_subtitle(_("When off, only the other computer hears the game."))
         return False
 
-    def _on_app_toggled(self, row, _param, app_name):
-        is_shared = row.get_active()
-        if is_shared:
-            if app_name in self.private_audio_apps:
-                self.private_audio_apps.remove(app_name)
-        else:
-            self.private_audio_apps.add(app_name)
+    @staticmethod
+    def _describe_source(source: str, is_monitor: bool) -> str:
+        if is_monitor:
+            return _("{source} (sound this computer plays)").format(source=source)
+        return _("{source} (a microphone)").format(source=source)
 
-        row.set_subtitle(_("Both computers") if is_shared else _("This computer only"))
-        self._run_audio_enforcer()
+    def on_test_audio_clicked(self, button) -> None:
+        button.set_sensitive(False)
+        self.audio_test_row.set_subtitle(_("Playing a short tone…"))
+        manual = self._selected_audio_sink()
+        generation = self._audio_generation
+
+        def work() -> None:
+            try:
+                result = self.audio_manager.test_tone(manual)
+            except Exception as exc:  # pragma: no cover - defensive
+                _log.error("Audio test failed: %s", exc)
+                result = {"played": False, "detected": False, "level_db": None, "monitor": None, "output": ""}
+            GLib.idle_add(self._apply_audio_test, button, result, generation)
+
+        threading.Thread(target=work, daemon=True).start()
+
+    def _apply_audio_test(self, button, result: dict, generation: int) -> bool:
+        if self._closed:
+            return False
+        button.set_sensitive(True)
+        if not result.get("monitor"):
+            text = _("System audio unavailable: there is no output to test.")
+        elif not result.get("played"):
+            text = _("The tone could not be played on {output}.").format(output=result.get("output") or "?")
+        elif result.get("detected"):
+            text = _("The tone reached the shared sound ({level:.0f} dB on {output}).").format(level=result["level_db"], output=result.get("output") or "?")
+        else:
+            text = _("The tone did not reach the shared sound. Check the output volume and that {output} is the output you hear.").format(output=result.get("output") or "?")
+        self.audio_test_row.set_subtitle(text)
+        if generation == self._audio_generation:
+            self.refresh_audio_status()
+        return False
 
     def start_hosting(self, b=None):
         self.loading_bar.set_visible(True)
@@ -1743,7 +2111,9 @@ class HostView(Gtk.Box):
         gpu = self.available_gpus[index] if 0 <= index < len(self.available_gpus) else {"encoder": "auto", "adapter": "auto"}
         config = {
             **self._encoding_settings(),
-            "encoder": "" if gpu["encoder"] == "auto" else gpu["encoder"],
+            # None removes the option so Sunshine performs normal automatic
+            # selection.  An empty string is an explicit, invalid encoder name.
+            "encoder": None if gpu["encoder"] == "auto" else gpu["encoder"],
             "max_bitrate": int(bw_mbps * 1000),
             "upnp": "enabled" if self.upnp_row.get_active() else "disabled",
             "address_family": "both" if self.ipv6_row.get_active() else "ipv4",
@@ -1761,6 +2131,15 @@ class HostView(Gtk.Box):
                 config["output_name"] = mon_name
 
         config["adapter_name"] = gpu["adapter"] if gpu["encoder"] == "vaapi" and gpu["adapter"] != "auto" else None
+        # Sunshine runs this before capture and after each session; merged
+        # with any global_prep_cmd the person has (see host/stream_display.py).
+        from big_remote_play.host.stream_display import prep_command
+
+        config["brp_stream_display"] = prep_command(
+            target=config["output_name"],
+            sdr_for_sdr_clients=self.hdr_sdr_row.get_active(),
+            resolution=self._share_resolution() if config["output_name"] is not None else "",
+        )
         return config
 
     def _collect_hosting_config(self) -> dict:
@@ -1776,9 +2155,7 @@ class HostView(Gtk.Box):
             "sunshine_config": self._build_sunshine_config(),
             "pin_code": self.pin_code,
             "audio_output_name": self._selected_audio_sink(),
-            "audio_devices": list(getattr(self, "audio_devices", [])),
-            "audio_mode": self.audio_mode_row.get_selected() if self._selected_audio_sink() else 0,
-            "guest_only": bool(self._selected_audio_sink()) and self.audio_mode_row.get_selected() == 1,
+            "audio_play_on_host": self.audio_play_here_row.get_active(),
         }
 
     def _run_start_hosting(self, cfg: dict) -> None:
@@ -1799,29 +2176,26 @@ class HostView(Gtk.Box):
             if not self.sunshine.ensure_desktop_app():
                 raise RuntimeError(_("Could not update the game library. Existing games were preserved."))
 
-            host_sink = cfg.get("audio_output_name", "")
-            mode = cfg.get("audio_mode", 0)
-            guest_only = bool(host_sink) and mode == 1
-            audio_ok = False
-            self.active_host_sink = ""
-            self._audio_routing_active = False
-            self._active_audio_mode = mode
-            sunshine_config["stream_audio"] = "disabled" if host_sink and mode == 2 else "enabled"
-            sunshine_config["audio_sink"] = None
-            sunshine_config["virtual_sink"] = None
-            if host_sink:
-                available = {dev["name"] for dev in cfg["audio_devices"]}
-                if host_sink not in available:
-                    raise RuntimeError(_("The selected audio output is unavailable. Choose the current system output or reconnect the device."))
-                if mode != 2:
-                    self.active_host_sink = host_sink
-                    if not self.audio_manager.enable_streaming_audio(host_sink, guest_only=guest_only):
-                        raise RuntimeError(_("Could not set up the selected audio routing. Choose the current system output to share without changing devices."))
-                    sunshine_config["audio_sink"] = "SunshineGameSink"
-                    self._audio_routing_active = True
-                    audio_ok = True
-            # Default mode makes no pactl writes, creates no virtual sink and
-            # never moves applications. Sunshine captures the system output.
+            from big_remote_play.utils.audio import AudioRoutingSession, capture_plan, sunshine_audio_sink
+
+            manual = cfg.get("audio_output_name", "")
+            play_on_host = bool(cfg.get("audio_play_on_host", True))
+            graph = self.audio_manager.snapshot()
+            plan = capture_plan(graph, manual)
+            if manual and plan.problem in ("missing-output", "not-selectable"):
+                raise RuntimeError(_("The selected audio output is unavailable. Choose Automatic or reconnect the device."))
+            if not plan.available:
+                # Sharing still starts; the interface says there is no system audio.
+                _log.warning("System audio unavailable for sharing: %s", plan.problem)
+            # Only audio_sink is managed; virtual_sink (unused by Sunshine on
+            # Linux) and every other option the person set are left as they are.
+            sunshine_config["stream_audio"] = "enabled"
+            sunshine_config["audio_sink"] = sunshine_audio_sink(manual, play_on_host)
+            # Records the output in use. Nothing is written to the sound server
+            # here; loopbacks are added later only if Sunshine mutes this computer.
+            session = AudioRoutingSession(self.audio_manager, manual_output=manual, play_on_host=play_on_host)
+            session.begin(graph)
+            self.audio_session = session
 
             if self._closed:
                 self._rollback_start()
@@ -1836,10 +2210,7 @@ class HostView(Gtk.Box):
                 return
             if not success:
                 self._rollback_start()
-            GLib.idle_add(
-                self._on_hosting_started,
-                {"success": success, "msg": msg, "host_sink": host_sink, "guest_only": guest_only, "audio_ok": audio_ok},
-            )
+            GLib.idle_add(self._on_hosting_started, {"success": success, "msg": msg})
         except Exception as e:
             self._rollback_start()
             GLib.idle_add(self._on_hosting_error, str(e))
@@ -1849,13 +2220,12 @@ class HostView(Gtk.Box):
         listener, self.stop_pin_listener = self.stop_pin_listener, None
         if callable(listener):
             listener()
-        if self._audio_routing_active:
+        session, self.audio_session = self.audio_session, None
+        if session is not None:
             try:
-                self.audio_manager.disable_streaming_audio(None)
+                session.end(sunshine_stopped=True)
             except Exception as exc:
                 _log.warning("Could not restore audio after failed start: %s", exc)
-            self._audio_routing_active = False
-            self.active_host_sink = ""
 
     def _on_hosting_started(self, result: dict) -> bool:
         if self._closed:
@@ -1871,9 +2241,7 @@ class HostView(Gtk.Box):
             return False
 
         self.is_hosting = True
-        if result["audio_ok"]:
-            self._last_monitor_state = not result["guest_only"]
-            self.start_audio_mixer_refresh()
+        self._start_audio_watch()
         self._sync_audio_controls()
 
         self.sync_ui_state()
@@ -1994,8 +2362,7 @@ class HostView(Gtk.Box):
         # Main-thread teardown: kill launched games, stop the GLib timers, drop
         # the PIN listener. The blocking audio-restore + server stop go to a worker.
         self._stop_game_direct()
-        self.audio_mixer_link.set_sensitive(False)
-        self.stop_audio_mixer_refresh()
+        self._stop_audio_watch()
 
         if hasattr(self, "stop_pin_listener") and self.stop_pin_listener:
             try:
@@ -2004,22 +2371,28 @@ class HostView(Gtk.Box):
                 pass
             self.stop_pin_listener = None
 
-        host_sink = getattr(self, "active_host_sink", "") if hasattr(self, "audio_manager") else ""
-        threading.Thread(target=self._run_stop_hosting, args=(host_sink,), daemon=True).start()
+        threading.Thread(target=self._run_stop_hosting, daemon=True).start()
 
-    def _run_stop_hosting(self, host_sink: str) -> None:
-        routing_owned = self._audio_routing_active
-        self._audio_routing_active = False
+    def _run_stop_hosting(self) -> None:
+        session, self.audio_session = self.audio_session, None
         try:
             self.sunshine.stop()
         except Exception as exc:
             _log.error("Error stopping Sunshine: %s", exc)
-        if routing_owned:
+        try:
+            # Normally Sunshine's "undo" already did this; after a crash it did not.
+            from big_remote_play.host.stream_display import StreamDisplay
+
+            StreamDisplay().restore()
+        except Exception as exc:
+            _log.error("Error restoring the shared screen: %s", exc)
+        if session is not None:
             try:
-                self.audio_manager.disable_streaming_audio(None)
+                # After Sunshine exited: remove our bridges and, if Sunshine
+                # could not, put back the output it had switched away from.
+                session.end(sunshine_stopped=not self.sunshine.is_running())
             except Exception as exc:
                 _log.error("Error restoring audio: %s", exc)
-        self.active_host_sink = ""
         GLib.idle_add(self._on_hosting_stopped)
 
     def _on_hosting_stopped(self) -> bool:
@@ -2047,7 +2420,9 @@ class HostView(Gtk.Box):
                     # Pular interfaces de loopback, desligadas ou virtuais conhecidas
                     if name == "lo" or "UP" not in iface["flags"]:
                         continue
-                    if any(x in name for x in ["docker", "veth", "virbr", "vboxnet", "tailscale", "zerotier", "br-"]):
+                    # Overlay interfaces (tailscale0, zt…) are listed under
+                    # "Available over the internet", not as the LAN address.
+                    if name.startswith("zt") or any(x in name for x in ["docker", "veth", "virbr", "vboxnet", "tailscale", "zerotier", "br-"]):
                         continue
                     for addr in iface.get("addr_info", []):
                         if addr["family"] == "inet":
@@ -2734,6 +3109,8 @@ class HostView(Gtk.Box):
         game_list_idx = self.game_list_row.get_selected()
         if game_list_idx == Gtk.INVALID_LIST_POSITION:
             game_list_idx = 0
+        monitor_idx = self.monitor_row.get_selected()
+        monitor_output_name = self.available_monitors[monitor_idx][1] if 0 <= monitor_idx < len(self.available_monitors) else "auto"
         h.update(
             {
                 "mode_idx": self.game_mode_row.get_selected(),
@@ -2746,15 +3123,18 @@ class HostView(Gtk.Box):
                 "fps_idx": self.fps_row.get_selected(),
                 "bandwidth_mbps": self.bandwidth_row.get_value(),
                 "monitor_idx": self.monitor_row.get_selected(),
+                "monitor_output_name": monitor_output_name,
                 "gpu_idx": self.gpu_row.get_selected(),
                 "platform_idx": self.platform_row.get_selected(),
-                "audio_mode": self.audio_mode_row.get_selected(),
+                "audio_play_on_host": self.audio_play_here_row.get_active(),
                 "audio_output_name": self._selected_audio_sink(),
                 "upnp": self.upnp_row.get_active(),
                 "ipv6": self.ipv6_row.get_active(),
                 "webui_anyone": self.webui_anyone_row.get_active(),
                 # New settings
                 "efficient_codecs": self.codecs_row.get_active(),
+                "hdr_to_sdr": self.hdr_sdr_row.get_active(),
+                "share_resolution": self._share_resolution(),
                 "optimization_mode": self.optimization_row.get_selected(),
                 "wifi_mode": self.wifi_row.get_active(),
             }
@@ -2780,7 +3160,7 @@ class HostView(Gtk.Box):
                 "upnp": "enabled" if self.upnp_row.get_active() else "disabled",
                 "address_family": "both" if self.ipv6_row.get_active() else "ipv4",
                 "origin_web_ui_allowed": "wan" if self.webui_anyone_row.get_active() else "lan",
-                "stream_audio": "disabled" if self._selected_audio_sink() and self.audio_mode_row.get_selected() == 2 else "enabled",
+                "stream_audio": "enabled",
                 "max_bitrate": str(bw) if bw > 0 else "0",
                 **self._encoding_settings(),
             }
@@ -2876,13 +3256,26 @@ class HostView(Gtk.Box):
             self.bandwidth_row.set_value(bw_val)
             self.perf_monitor.set_target_bandwidth(bw_val)
 
-            self._select_saved_index(self.monitor_row, h.get("monitor_idx", 0))
+            saved_monitor = h.get("monitor_output_name")
+            if isinstance(saved_monitor, str):
+                monitor_idx = next(
+                    (index for index, (_label, value) in enumerate(self.available_monitors) if value == saved_monitor),
+                    0,
+                )
+                self._select_saved_index(self.monitor_row, monitor_idx)
+            else:
+                # Older versions only stored the list position. The next save
+                # migrates it to the connector name, which survives reordering.
+                self._select_saved_index(self.monitor_row, h.get("monitor_idx", 0))
             self._select_saved_index(self.gpu_row, h.get("gpu_idx", 0))
             self._select_saved_index(self.platform_row, h.get("platform_idx", 0))
 
             # Audio Mode
-            audio_mode = h.get("audio_mode", 0)
-            self._select_saved_index(self.audio_mode_row, audio_mode)
+            play_on_host = h.get("audio_play_on_host")
+            if not isinstance(play_on_host, bool):
+                # Older versions stored "audio_mode", where 1 meant "Other computer" only.
+                play_on_host = h.get("audio_mode") != 1
+            self.audio_play_here_row.set_active(play_on_host)
             desired_output = h.get("audio_output_name", "")
             if desired_output in self._audio_choice_names:
                 self.audio_output_row.set_selected(self._audio_choice_names.index(desired_output))
@@ -2894,17 +3287,20 @@ class HostView(Gtk.Box):
 
             # New settings
             self.codecs_row.set_active(h.get("efficient_codecs", True))
+            self.hdr_sdr_row.set_active(h.get("hdr_to_sdr", True) is not False)
+            # Older versions stored an on/off "match the device" switch.
+            saved = h.get("share_resolution", "client" if h.get("match_client_resolution") is True else "")
+            self.share_resolution_row.set_selected(self.share_resolution_values.index(saved) if saved in self.share_resolution_values else 0)
             self.optimization_row.set_selected(h.get("optimization_mode", 1))
             self.wifi_row.set_active(h.get("wifi_mode", False))
         finally:
             self.loading_settings = False
 
     def connect_settings_signals(self):
-        for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row]:
+        for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row, self.audio_play_here_row, self.hdr_sdr_row]:
             r.connect("notify::active", self._schedule_save_host_settings)
 
         for r in [
-            self.audio_mode_row,
             self.game_mode_row,
             self.game_list_row,
             self.monitor_row,
@@ -2913,6 +3309,7 @@ class HostView(Gtk.Box):
             self.audio_output_row,
             self.optimization_row,
             self.fps_row,
+            self.share_resolution_row,
         ]:
             r.connect("notify::selected", self._schedule_save_host_settings)
 
@@ -2930,6 +3327,8 @@ class HostView(Gtk.Box):
             (self.optimization_row, "notify::selected"),
             (self.codecs_row, "notify::active"),
             (self.wifi_row, "notify::active"),
+            (self.hdr_sdr_row, "notify::active"),
+            (self.share_resolution_row, "notify::selected"),
         ):
             row.connect(signal, lambda *_a: self._sync_quality_controls())
         for r in [self.custom_name_entry, self.custom_cmd_entry]:
@@ -2969,6 +3368,9 @@ class HostView(Gtk.Box):
         self.show_toast(_("Settings Restored"))
 
     def cleanup(self):
+        self._close_monitor_identifiers()
+        if hasattr(self, "_internet_worker"):
+            self._internet_worker.close()
         self._closed = True
         if hasattr(self, "perf_monitor"):
             self.perf_monitor.stop_monitoring()
@@ -2986,9 +3388,6 @@ class HostView(Gtk.Box):
             self._save_timer_id = None
             self.save_host_settings()
 
-        # Only cleanup audio if we are NOT hosting, because Sunshine depends on these sinks.
-        # If we are hosting, the user expects the stream to continue working.
-        # This also avoids the feedback loop (microfonia) when the app is closed while Moonlight/Sunshine are active.
-        if not self.is_hosting:
-            if hasattr(self, "audio_manager"):
-                self.audio_manager.cleanup()
+        # Sharing continues after the window closes. The audio session keeps its
+        # ownership record, so the next start adopts or cleans up its bridges.
+        self._stop_audio_watch()

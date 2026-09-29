@@ -107,28 +107,47 @@ def test_nonobject_json_config_is_rejected(fake_home, value):
     assert Config().get("network")["upnp"] is False
 
 
-def test_sunshine_keeps_custom_port_and_library_path(tmp_path):
+def test_sunshine_keeps_custom_port_and_library_path(tmp_path, monkeypatch):
+    # Sunshine resolves a relative file_apps in its own data directory
+    # ($XDG_CONFIG_HOME/sunshine), not beside the configuration file.
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "xdg"))
+    data = tmp_path / "xdg" / "sunshine"
+    data.mkdir(parents=True)
     host = SunshineHost(cdir=tmp_path)
     (tmp_path / "sunshine.conf").write_text("port = 50000\nfile_apps = custom.json\nqp = 24\nplatform = wayland\nfps = 60\n")
     original = {"env": {"CUSTOM": "present"}, "apps": [{"name": "My game", "cmd": "game"}]}
-    (tmp_path / "custom.json").write_text(json.dumps(original))
+    (data / "custom.json").write_text(json.dumps(original))
+    (tmp_path / "custom.json").write_text("not the library Sunshine serves")
     assert host.ensure_desktop_app()
     assert host.configure({"max_bitrate": 20000, "capture": ""})
     assert host.api_port == 50001 and host.web_ui_url.endswith(":50001")
     config = (tmp_path / "sunshine.conf").read_text()
     assert "qp = 24" in config and "file_apps = custom.json" in config
     assert "fps =" not in config and "platform =" not in config
-    library = json.loads((tmp_path / "custom.json").read_text())
+    library = json.loads((data / "custom.json").read_text())
     assert library["env"] == original["env"] and library["apps"][0] == original["apps"][0]
     assert library["apps"][-1] == {"name": "Desktop", "cmd": ""}
     assert host.ensure_desktop_app()
-    assert len(json.loads((tmp_path / "custom.json").read_text())["apps"]) == 2
+    assert len(json.loads((data / "custom.json").read_text())["apps"]) == 2
+    assert (tmp_path / "custom.json").read_text() == "not the library Sunshine serves"
+
+
+def test_an_absolute_library_path_is_used_as_written(tmp_path):
+    library = tmp_path / "elsewhere" / "apps.json"
+    library.parent.mkdir()
+    library.write_text(json.dumps({"apps": []}))
+    (tmp_path / "sunshine.conf").write_text(f"file_apps = {library}\n")
+    host = SunshineHost(cdir=tmp_path)
+    assert host.apps_file() == library and host.ensure_desktop_app()
+    assert json.loads(library.read_text())["apps"] == [{"name": "Desktop", "cmd": ""}]
 
 
 @pytest.mark.parametrize("body", ["broken", "[]", '{"apps":null}', '{"apps":{}}'])
-def test_invalid_game_library_is_left_untouched(tmp_path, body):
+def test_invalid_game_library_is_left_untouched(tmp_path, body, monkeypatch):
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
+    (tmp_path / "sunshine").mkdir()
     host = SunshineHost(cdir=tmp_path)
-    file = tmp_path / "apps.json"
+    file = tmp_path / "sunshine" / "apps.json"
     file.write_text(body)
     assert not host.ensure_desktop_app()
     assert file.read_text() == body
@@ -308,3 +327,81 @@ def test_unreadable_sunshine_credentials_config_is_not_rewritten(tmp_path, monke
     with pytest.raises(PermissionError):
         _rewrite_config(conf, {"sunshine_user": "user"}, set())
     assert conf.read_bytes() == b"port = 50000\n"
+
+
+def test_pairing_is_confirmed_by_the_certificate_moonlight_stores(tmp_path, monkeypatch):
+    """Moonlight can finish pairing yet keep the ``pair`` process running.
+
+    Seen on 2026-09-28 with a real Sunshine v2026.914 and Moonlight: the PIN was
+    accepted, but ``moonlight pair`` never exited. The stored server certificate
+    is what proves the pairing.
+    """
+    import big_remote_play.guest.moonlight_client as mc
+    from big_remote_play.utils.moonlight_config import paired_host_certificate
+
+    conf = tmp_path / "Moonlight.conf"
+    conf.write_text("[hosts]\n1\\hostname=Game-PC\n1\\manualaddress=100.64.0.1\n1\\srvcert=\n")
+    assert paired_host_certificate("100.64.0.1", [conf]) == ""
+    monkeypatch.setattr(mc, "paired_host_certificate", lambda address: paired_host_certificate(address, [conf]))
+
+    class NeverExits:
+        def __init__(self, *args, **kwargs):
+            self.terminated = False
+
+        def wait(self, timeout=None):
+            if self.terminated:
+                return -15
+            raise subprocess.TimeoutExpired("moonlight", timeout)
+
+        def poll(self):
+            return -15 if self.terminated else None
+
+        def terminate(self):
+            self.terminated = True
+
+        kill = terminate
+
+    monkeypatch.setattr(mc.subprocess, "Popen", NeverExits)
+    client = MoonlightClient()
+    client.moonlight_cmd = "moonlight"
+
+    def accept_pin(_pin):
+        conf.write_text("[hosts]\n1\\hostname=Game-PC\n1\\manualaddress=100.64.0.1\n1\\srvcert=@ByteArray(CERT)\n")
+
+    assert client.pair("100.64.0.1", on_pin_callback=accept_pin) is True
+    # A different, unpaired address is never confirmed by that certificate.
+    assert paired_host_certificate("100.64.0.9", [conf]) == ""
+
+
+@pytest.mark.parametrize(
+    "lines,started",
+    [
+        (["00:00:02 - SDL Info (0): Starting video stream...\n", "00:00:02 - SDL Info (0): done\n"], True),
+        (["00:00:02 - SDL Info (0): IDR frame request sent\n"], True),
+        (["00:00:00 - SDL Info (0): Detected Wayland\n", "Computer X has not been paired\n"], False),
+    ],
+)
+def test_stream_start_is_read_from_moonlight_protocol_log(monkeypatch, lines, started):
+    """Output captured from a real session and from an unpaired attempt (2026-09-28)."""
+    import io
+
+    import big_remote_play.guest.moonlight_client as mc
+
+    class Running:
+        def __init__(self, *args, **kwargs):
+            self.stdout = io.StringIO("".join(lines))
+
+        def poll(self):
+            return None
+
+        def wait(self, timeout=None):
+            raise subprocess.TimeoutExpired("moonlight", timeout)
+
+        def terminate(self):
+            pass
+
+    monkeypatch.setattr(mc.subprocess, "Popen", Running)
+    client = MoonlightClient()
+    client.moonlight_cmd = "moonlight"
+    assert client.connect("192.0.2.10")
+    assert client.stream_confirmed.wait(1.0) is started

@@ -153,7 +153,7 @@ def test_zerotier_join_and_leave_validate_network_ids(tmp_path):
     assert mgr.leave_zerotier_network("bad").returncode == 2
     assert mgr.join_zerotier_network("8056C2E21C000001").returncode == 0
     assert mgr.leave_zerotier_network("8056c2e21c000001").returncode == 0
-    assert runner.calls[0][0] == ["zerotier-cli", "join", "8056c2e21c000001"]
+    assert runner.calls[0][0] == ["zerotier-cli", "-j", "join", "8056c2e21c000001"]
     assert runner.calls[1][0] == ["zerotier-cli", "leave", "8056c2e21c000001"]
 
 

@@ -12,6 +12,7 @@ TECHNICAL = {
     "ZeroTier",
     "Sunshine",
     "Moonlight",
+    "Steam Remote Play",
     "Big Remote Play",
     "AMD AMF",
     "Docker Engine",
@@ -24,6 +25,9 @@ TECHNICAL = {
     "VPN",
     "VideoToolbox",
     "4K",
+    # ZeroTier's own names for its two management consoles.
+    "Legacy Central",
+    "New Central",
 }
 
 PLACEHOLDER = re.compile(

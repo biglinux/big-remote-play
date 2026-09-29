@@ -1,8 +1,10 @@
 # Architecture and ownership
 
-`app.py` owns the GTK application and theme. `ui/main_window.py` owns permanent Home, role-specific instructions, task navigation and lazy private-network pages. Role selection itself does not install software, start sharing or change a network.
+`app.py` owns the GTK application and theme. `ui/main_window.py` owns permanent Home, role-specific instructions, task navigation and lazy private-network pages. Home presents Share and Connect before the secondary internet-access path; technical component names appear there only when setup is required. Role selection itself does not install software, start sharing or change a network.
 
 `HostView` gathers GTK values on the main thread, then uses a worker for Sunshine/audio/process work. `GuestView` distinguishes discovery, pairing and streaming, uses attempt generations/cancellation events, and applies UI results through the main loop. Background discovery is passive while Connect is visible; explicit Search may perform the bounded subnet scan. Home does not start that scan.
+
+Home's **Guided setup** (`ui/guided_setup.py`) only asks and hands over: it pushes question pages on Home's navigation view and ends in Share, Connect, the internet page or a provider's connection page; it implements no flow of its own. Connection cards (`ui/connection_cards.py`) render `utils/connection_health.py` values; Share's live sessions come from `host/sunshine_sessions.py` through the existing `PerformanceMonitor` worker. See [connection status](connection-status.md). `host/stream_display.py` is Sunshine's `global_prep_cmd`: it switches an HDR screen to SDR for SDR clients and optionally to the client's resolution, and restores it; see [video quality](video-quality.md).
 
 ## Settings ownership
 
@@ -17,7 +19,7 @@
 
 The Moonlight adapter writes native **QSettings serialization keys**, not C++/QML property names. It preserves key case, percent escapes, unrecognized entries and paired-device sections, and refreshes the file before each batch write. A concurrently running Moonlight instance can still write afterward: edit settings between sessions when practical. Reset removes known streaming preferences, not the identity database.
 
-The Sunshine adapter merges native settings and keeps a custom `file_apps` path. Adding the Desktop entry must not replace the existing library. Invalid or unreadable configuration is not interpreted as an empty file to overwrite.
+The Sunshine adapter merges native settings and keeps a custom `file_apps` path. Automatic capture/encoding removes the native options instead of writing empty option values. Startup watches the child for an early exit and local-API readiness for a bounded interval. The server child does not inherit session-wide vkBasalt activation, which is a game post-processing layer; games launched directly by Big Remote Play retain the user's environment. Pairing follows the current config API: `GET /api/pin` lists waiting clients and `POST /api/pin` carries the chosen `pairing_id` (older servers without the list receive `{pin, name}`). On the client, pairing success is the server certificate Moonlight stores for the address, and a stream counts as started only when Moonlight's protocol log starts the video stream; `moonlight list` is not used on the connection path because it can take about 20 seconds. Adding the Desktop entry must not replace the existing library. Sunshine resolves relative `file_apps`, `file_state` and similar paths in its own data directory (`$XDG_CONFIG_HOME/sunshine`), not beside the configuration file it is started with, so `SunshineHost.apps_file()` resolves them the same way. Invalid or unreadable configuration is not interpreted as an empty file to overwrite.
 
 ## Native resources
 
@@ -56,16 +58,17 @@ Backup restore checks size, entry types and destination paths before writing, re
 
 The app coordinates separately installed Sunshine, Moonlight, VPN clients, PolicyKit and the audio server. Hermetic UI tests substitute these adapters. They do not establish hardware compatibility, frame pacing, streaming latency or actual authorization behavior.
 
-`utils/vpn_accounts.py` owns every Tailscale/Headscale CLI call — listing and switching profiles, connecting (`tailscale up`), pausing (`down`) and reading `BackendState`. Its command runner is injectable, so the UI never builds tailscale argv itself and the flow is testable without a daemon. Privileged shell helpers remain only where a task genuinely needs root for its whole duration: the Headscale Docker server, the ZeroTier join and the dependency installer.
+`utils/vpn_accounts.py` owns every Tailscale/Headscale/ZeroTier CLI call — listing and switching profiles, connecting (`tailscale up`), pausing (`down`), reading `BackendState`, joining/leaving ZeroTier networks and the one-time ZeroTier user access. Its command runner is injectable, so the UI never builds VPN argv itself and the flow is testable without a daemon. The GTK-free `private_network/` package owns provider status, REST APIs, credentials, connection history and diagnostics; see [private-network architecture](private-network-architecture.md). The only privileged shell helpers left are the dependency installer and the firewall rule.
 
-## Default audio ownership
+## Audio ownership
 
-Opening Share, starting in the current-output mode, stopping that mode and closing
-the application do not acquire audio-routing ownership. A named output selection
-is required before `enable_streaming_audio`. Only owned streams/defaults are
-restored, and a newer output selected by the user is retained. Sunshine can still
-react to a third-party client requesting host mute; the app does not misrepresent
-that upstream policy as under unilateral host-UI control.
+`utils/audio.py` owns every sound-server call. Sunshine records the monitor of an
+output, never a microphone. Automatic mode leaves `audio_sink` unset and writes
+nothing to the sound server; application streams are never moved. The only routing
+the app adds is a PipeWire port link ("bridge") while a client makes Sunshine mute
+this computer, owned by a session token and removed only while its id still joins
+the same ports. `AudioRoutingSession` keeps a 0600 record in `$XDG_RUNTIME_DIR` so a
+later start adopts or cleans up after a crash. See [audio architecture](audio-architecture.md).
 
 See [host/network policy](host-network-policy.md) for the actual settings precedence
 and the separation between VPN, Headscale hosting and public DNS.

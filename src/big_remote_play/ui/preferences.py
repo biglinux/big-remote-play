@@ -337,16 +337,21 @@ class PreferencesWindow(Adw.Window):
         Must run BEFORE the config dir is removed, because the history file holds
         the keyring references for per-network auth keys.
         """
+        from big_remote_play.private_network.credentials import CredentialStore
+        from big_remote_play.private_network.legacy import clear_migrated_secrets
         from big_remote_play.utils.secret_store import SecretStore, SecretStoreUnavailable
         from big_remote_play.utils.sunshine_credentials import SUNSHINE_PASSWORD_KEY
-        from big_remote_play.ui.private_network_view import _ZEROTIER_TOKEN_KEY, _load_history, _clear_history_secrets
+        from big_remote_play.ui.private_network_view import _load_history, _clear_history_secrets
 
         store = SecretStore()
-        for key in (SUNSHINE_PASSWORD_KEY, _ZEROTIER_TOKEN_KEY):
-            try:
-                store.clear(key)
-            except SecretStoreUnavailable:
-                pass
+        try:
+            store.clear(SUNSHINE_PASSWORD_KEY)
+            # Every API credential (ZeroTier, Tailscale, Headscale per server) and
+            # the values moved out of older plain-text history files.
+            CredentialStore(store).remove_all()
+            clear_migrated_secrets(store)
+        except SecretStoreUnavailable:
+            pass
         try:
             for entry in _load_history():
                 _clear_history_secrets(entry)

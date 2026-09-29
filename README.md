@@ -1,8 +1,8 @@
 # Big Remote Play
 
 <p align="center">
-  <strong>Play together from anywhere, using the games and desktop you already have.</strong><br>
-  A free-software GTK application that guides Sunshine, Moonlight and private-network setup from one place.
+  <strong>Your games. Any screen. Anywhere.</strong><br>
+  Play with friends far away, or use the power of your computer on another compatible device.
 </p>
 
 <p align="center">
@@ -18,7 +18,7 @@
   <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
-![Big Remote Play home screen with VPN, Share and Connect actions](docs/screenshots/home.png)
+![Big Remote Play home screen with Share and Connect as the primary choices](docs/screenshots/home.png)
 
 ## Why Big Remote Play?
 
@@ -37,15 +37,15 @@ There is no proprietary game catalog and no requirement that the game came from 
 
 ### 1. On the computer running the game
 
-Open **Share my game**, choose a game or the desktop, then start sharing. Keep this computer running.
+Open **Share**, choose a game or the desktop, then start sharing. Keep this computer running.
 
 ### 2. On the computer that will play
 
-Open **Access shared game**, select the game computer and connect. On the first connection, Moonlight shows a four-digit pairing code. Enter that code on the sharing computer and approve the device.
+Open **Connect**, select the game computer and connect. On the first connection, Moonlight shows a four-digit pairing code. Enter that code on the sharing computer and approve the device.
 
 ### 3. When the computers are in different places
 
-Open **Play over the internet** and place both computers on the same private network. Then return to Share or Connect. If discovery is unavailable on that network, connect using the game computer's private address.
+Not sure where to start? **Guided setup** on Home asks what you want to do and where the other device is, then opens the right page. For playing across the internet, open **Play over the internet**. **Connect your devices** looks at what already works on this computer and shows one sentence with one button — **Turn on**, **Fix**, **Sign in**, **Set up** or **Add a device or invite a player**. My devices, Recent connections and favourites follow; network details and administration stay in **Advanced mode**. Put both computers on the same private network, then return to Share or Connect. If discovery is unavailable on that network, connect using the game computer's private address.
 
 > **Pairing code and search code are different.** A pairing code authorizes a device. A search code only helps locate a Big Remote Play computer on a network that permits discovery.
 
