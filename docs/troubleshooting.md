@@ -70,7 +70,7 @@ Sunshine probes every display and encoder when capture and encoder are set to au
 
 ## A device says “The computer is currently in a game” or asks to close the game
 
-Moonlight pairs only when nothing is being played, and Sunshine counts the shared **Desktop** as a game while any device is connected. Big Remote Play then answers the PIN with **No computer is waiting** and explains it. End the stream on the other devices, pair the new one (only once), then connect everyone again.
+Moonlight pairs only when Sunshine has no stream open, and Sunshine counts the shared **Desktop** as a game while it is open — also after every device disconnected, until it is closed. While a stream is open, **Share → 3. Connect the other PC** says **A stream is open on this computer** with **End for everyone**, and a PIN sent then offers the same action instead of only **No computer is waiting**. **End for everyone** asks first, closes the stream on every device (Sunshine's own close, as in its web panel) and checks that nothing is open any more; then start pairing again on the new device and enter its new code. The devices already paired reconnect afterwards without a new PIN.
 
 To pair several new devices, pair them one at a time, each while nobody is playing; the devices already paired reconnect afterwards without a new PIN. A device that never lists the computer has not found it on the network (some TV apps keep an empty computer list): add it by the sharing computer's address, shown in **Share**, then pair.
 

@@ -89,6 +89,7 @@ STARTUP_PROBE_INTERVAL = 0.1
 PIN_CHOOSE = 300
 PIN_NONE_WAITING = 409
 _PAIRING_ID_RE = re.compile(r"^[0-9a-fA-F]{32}$")
+_CURRENT_GAME_RE = re.compile(r"<currentgame>\s*(\d{1,10})\s*</currentgame>")
 
 
 class SunshineHost:
@@ -710,6 +711,29 @@ class SunshineHost:
         """
         status, _data = self._api_request("POST", "/api/apps/close", {}, auth)
         return status == 200
+
+    def running_app_id(self, timeout: float = 2.0) -> int | None:
+        """The app Sunshine streams now (0 = none), or ``None`` when unknown.
+
+        Read from ``/serverinfo`` on the GameStream HTTP port, the value
+        Moonlight checks: it refuses to pair while it is not 0 ("The computer
+        is currently in a game"), even when nobody is connected any more.
+        """
+        try:
+            port = int(self._config_value("port", "47989"))
+        except ValueError:
+            port = 47989
+        conn = http.client.HTTPConnection(API_HOST, port, timeout=timeout)
+        try:
+            conn.request("GET", "/serverinfo", headers={"User-Agent": "BigRemotePlay"})
+            response = conn.getresponse()
+            body = response.read(64 * 1024).decode("utf-8", errors="replace")
+        except (OSError, http.client.HTTPException):
+            return None
+        finally:
+            conn.close()
+        match = _CURRENT_GAME_RE.search(body)
+        return int(match.group(1)) if response.status == 200 and match else None
 
     def get_apps(self, auth: tuple[str, str] | None = None) -> list:
         """Lists configured Sunshine apps (GET /api/apps)."""
