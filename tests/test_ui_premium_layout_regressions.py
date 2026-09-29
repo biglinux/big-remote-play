@@ -1,6 +1,7 @@
 """Static guards for the adaptive premium shell and primary user journeys."""
 
 from pathlib import Path
+import re
 
 
 MAIN = Path("src/big_remote_play/ui/main_window.py")
@@ -41,8 +42,9 @@ def test_shell_has_product_identity_dynamic_context_and_system_readiness() -> No
     assert 'status_list.add_css_class("boxed-list")' in source
     assert "service-icon-frame" in source
 
-    # Typography remains owned by libadwaita instead of hard-coded pixel sizes.
-    assert "font-size" not in stylesheet
+    # Typography remains scalable: relative sizing is allowed for the temporary
+    # full-screen monitor identifier, but fixed pixel fonts are not.
+    assert re.search(r"font-size:\s*\d+px", stylesheet) is None
     assert ".sidebar-title" not in stylesheet
     assert ".header-title" not in stylesheet
 
@@ -51,10 +53,11 @@ def test_home_is_a_two_role_decision_without_repeating_the_same_instructions() -
     source = MAIN.read_text()
     welcome = source.split("def create_welcome_page", 1)[1].split("def create_action_card", 1)[0]
     factory = source.split("def _create_home_network_guide", 1)[1].split("def create_welcome_page", 1)[0]
-    assert '_("PLAY TOGETHER")' in welcome
-    assert "connect the computers to the same network" in welcome
-    assert "connect all computers to the same virtual private network" in welcome
-    assert welcome.index("main_box.append(self.home_network_action)") < welcome.index("main_box.append(cards_box)")
+    assert "Your games. Any screen. Anywhere." in welcome
+    assert "What do you want to do?" in welcome
+    assert "This computer runs the game" in welcome
+    assert "Play on this device" in welcome
+    assert welcome.index("main_box.append(cards_box)") < welcome.index("main_box.append(network_section)")
     assert 'create_logo_widget("big-remote-play", 92)' not in welcome
     assert "self.host_card" in welcome and "self.guest_card" in welcome
     assert "How it works" not in welcome
@@ -63,7 +66,8 @@ def test_home_is_a_two_role_decision_without_repeating_the_same_instructions() -
     assert '"brp-client-symbolic"' in welcome
     assert "boxed_rows(" in factory and "action_row(" in factory
     assert "Adw.Banner" not in factory
-    assert "Set up a virtual private network" in factory
+    assert "Set up a virtual private network" not in factory
+    assert "Play over the internet" in factory
     assert "border-radius: 16px" in STYLE.read_text()
     assert ".role-card:focus-visible" in STYLE.read_text()
 
@@ -101,15 +105,18 @@ def test_missing_dependencies_are_explained_without_blocking_first_use() -> None
 def test_adaptive_layout_stacks_content_and_opens_compact_windows_on_content() -> None:
     source = MAIN.read_text()
 
-    assert 'Adw.BreakpointCondition.parse("max-width: 980sp")' in source
+    assert 'Adw.BreakpointCondition.parse("max-width: 880sp")' in source
     assert 'Adw.BreakpointCondition.parse("max-width: 720sp")' in source
     assert "def add_compact_layout_setters" in source
     assert 'breakpoint.add_setter(self.welcome_cards_box, "orientation", Gtk.Orientation.VERTICAL)' in source
+    assert 'breakpoint.add_setter(self.home_hero_content, "orientation", Gtk.Orientation.VERTICAL)' in source
     assert 'breakpoint.add_setter(self.host_view.overview_hero, "orientation", Gtk.Orientation.VERTICAL)' in source
     # The compact composition is explicitly inherited by the narrower breakpoint.
     assert "add_compact_layout_setters(compact)" in source
     assert "add_compact_layout_setters(narrow)" in source
     assert 'narrow.add_setter(self.split_view, "collapsed", True)' in source
+    assert 'narrow.add_setter(self.home_device_flow, "visible", False)' in source
+    assert 'narrow.add_setter(self.home_benefits, "visible", False)' in source
     assert "self.split_view.set_show_content(True)" in source
     assert 'narrow.add_setter(self.welcome_main_box, "margin-start", 12)' in source
     assert 'narrow.add_setter(self.welcome_main_box, "margin-end", 12)' in source
@@ -149,7 +156,9 @@ def test_context_switchers_share_the_native_headerbar_and_adapt_to_a_bottom_bar(
     assert "self.header_view_switcher.set_policy(Adw.ViewSwitcherPolicy.WIDE)" in source
     assert "header.set_title_widget(self.header_title_stack)" in source
     assert '"host": self.host_view.view_stack' in source
-    assert '"network": self.network_navigation_stack' in source
+    # Network sub-pages are reached from one hub and return with Back.
+    assert "network_navigation_stack" not in source
+    assert "self.network_back_button" in source
     # Connect is a single page now, so it has a plain title instead of a
     # switcher over methods that were never parallel choices.
     assert "method_stack" not in source
@@ -160,11 +169,6 @@ def test_context_switchers_share_the_native_headerbar_and_adapt_to_a_bottom_bar(
     assert 'narrow.connect("unapply", self._on_compact_header_unapply)' in source
     assert "Adw.ViewSwitcherTitle" not in source
 
-    # Private Network has three labelled, icon-backed destinations in the same
-    # header model instead of a custom icon-only row below the headerbar.
-    assert '(_("My network"), "create_private", "brp-network-setup-symbolic")' in source
-    assert '(_("Join a network"), "connect_private", "brp-network-connect-symbolic")' in source
-    assert '(_("Change service"), "vpn_selector", "brp-provider-switch-symbolic")' in source
     assert "self.context_stack" not in source
     assert "network_toolbar" not in source
     assert "host_header_switcher" not in source

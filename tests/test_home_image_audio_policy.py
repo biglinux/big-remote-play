@@ -3,7 +3,6 @@
 GTK is real; no router, sound-device, service or network mutations are made.
 """
 
-from types import SimpleNamespace
 from unittest.mock import Mock
 
 import gi
@@ -14,12 +13,13 @@ gi.require_version("Adw", "1")
 from gi.repository import Gtk, Adw, GLib
 
 from test_ui_task_flows import ui as _ui_fixture, drain
-from big_remote_play.utils.audio import AudioManager
+from big_remote_play.utils.audio import AudioManager, SUNSHINE_STEREO_SINK
+from test_audio import FakePulse, HDMI, USB
 from big_remote_play.utils.network import NetworkDiscovery
 from big_remote_play.ui import connection_guides
+from big_remote_play.ui.host_view import _monitor_choice_label
 
 ui = _ui_fixture
-DEVICES = [{"name": "alsa.analog", "description": "Built-in Audio"}, {"name": "alsa.usb", "description": "USB Headphones"}]
 
 
 def walk(widget):
@@ -34,10 +34,12 @@ def text(widget):
     return "\n".join(w.get_text() for w in walk(widget) if isinstance(w, Gtk.Label))
 
 
-def outputs(host, monkeypatch):
-    monkeypatch.setattr(host.audio_manager, "get_passive_sinks", lambda: list(DEVICES))
-    monkeypatch.setattr(host.audio_manager, "get_default_sink", lambda: "alsa.usb")
+def outputs(host, monkeypatch, pulse=None):
+    """Give the host a fake sound server (HDMI current, USB headset, Bluetooth, EasyEffects)."""
+    pulse = pulse or FakePulse()
+    host.audio_manager = AudioManager(runner=pulse)
     host.load_audio_outputs()
+    return pulse
 
 
 def run_start(host, monkeypatch):
@@ -54,15 +56,31 @@ def run_start(host, monkeypatch):
     return cfg, configured
 
 
-def test_home_has_one_vpn_action_before_the_two_direct_roles(ui):
+def test_home_prioritizes_the_two_roles_before_optional_internet_setup(ui):
     assert isinstance(ui.home_network_action, Gtk.ListBox)
     row = ui.home_network_action.get_first_child()
-    assert row.get_title() == "Set up a virtual private network"
-    assert ui.home_network_action.get_next_sibling() is ui.welcome_cards_box
+    assert row.get_title() == "Play over the internet"
+    assert ui.welcome_cards_box.get_next_sibling() is ui.home_network_section
     labels = text(ui.home_navigation)
-    assert "PLAY TOGETHER" in labels
-    assert "same network" in labels and "virtual private network (VPN)" in labels
+    assert "Your games. Any screen. Anywhere." in labels
+    assert "What do you want to do?" in labels
+    assert labels.index("Share") < labels.index("Playing over the internet?")
+    assert labels.index("Connect") < labels.index("Playing over the internet?")
+    assert "same home network" in labels
+    assert "virtual private network" not in labels.lower()
     assert ui.home_navigation.find_page("guide") is None
+
+
+def test_home_hides_working_component_details_but_explains_missing_ones(ui):
+    ui.update_dependency_ui(True, True, True, True, True)
+    assert not ui._role_card_ui["host"]["state"].get_visible()
+    assert not ui._role_card_ui["guest"]["state"].get_visible()
+    assert not any(row.get_visible() for row in ui._status_rows.values())
+
+    ui.update_dependency_ui(False, True, True, True, True)
+    assert ui._role_card_ui["host"]["state"].get_visible()
+    assert "Sunshine" in ui._role_card_ui["host"]["label"].get_text()
+    assert ui.host_card.get_sensitive()
 
 
 @pytest.mark.parametrize("role", ["host", "guest"])
@@ -83,27 +101,105 @@ def test_host_has_one_image_dialog_with_limits_and_capture(ui):
     h.quality_summary_row.emit("activated")
     drain()
     assert ui.get_visible_dialog() is h.quality_sheet
-    for row in (h.bandwidth_row, h.auto_quality_row, h.monitor_row, h.gpu_row, h.platform_row, h.optimization_row, h.codecs_row, h.wifi_row):
+    for row in (
+        h.bandwidth_row,
+        h.auto_quality_row,
+        h.monitor_row,
+        h.identify_monitors_row,
+        h.gpu_row,
+        h.platform_row,
+        h.optimization_row,
+        h.codecs_row,
+        h.wifi_row,
+    ):
         assert row.is_ancestor(h.quality_sheet)
-    assert len(h.settings_dialogs) == 3
+    assert set(h.settings_dialogs) == {"Image and capture", "Network and access"}
     assert "higher request" in text(h.quality_sheet) or "limits a higher" in text(h.quality_sheet)
+
+
+def test_identical_monitor_names_receive_distinct_numbers_and_connectors():
+    assert _monitor_choice_label(1, "LG UltraGear", "DP-1") == "01 · LG UltraGear · DP-1"
+    assert _monitor_choice_label(2, "LG UltraGear", "DP-2") == "02 · LG UltraGear · DP-2"
 
 
 def test_automatic_mode_preserves_explicit_video_ceiling_and_screen(ui):
     h = ui.host_view
-    h.available_monitors = [("Automatic", "auto"), ("Second screen", "output2")]
-    h.monitor_row.set_model(Gtk.StringList.new(["Automatic", "Second screen"]))
-    h.monitor_row.set_selected(1)
+    monitor_labels = [
+        "Automatic",
+        "Monitor 01: LG UltraGear (DP-1)",
+        "Monitor 02: LG UltraGear (DP-2)",
+    ]
+    h.available_monitors = list(zip(monitor_labels, ("auto", "DP-1", "DP-2"), strict=True))
+    h.monitor_row.set_model(Gtk.StringList.new(monitor_labels))
+    h.monitor_row.set_selected(2)
     h.bandwidth_row.set_value(25)
     h.auto_quality_row.set_active(True)
     h._apply_auto_quality(force=True)
     assert h.bandwidth_row.get_value() == 25
     assert h.bandwidth_row.get_sensitive()
-    assert h.monitor_row.get_selected() == 1
+    assert h.monitor_row.get_selected() == 2
     assert h._build_sunshine_config()["max_bitrate"] == 25000
-    assert h._build_sunshine_config()["output_name"] == "output2"
-    assert "Second screen" in h.auto_status_row.get_subtitle()
+    assert h._build_sunshine_config()["output_name"] == "DP-2"
+    assert "Monitor 02: LG UltraGear (DP-2)" in h.auto_status_row.get_subtitle()
+    assert "Monitor 02: LG UltraGear (DP-2)" in h.quality_summary_row.get_subtitle()
     assert "25" in h.quality_summary_row.get_subtitle()
+
+
+def test_saved_monitor_follows_connector_when_display_order_changes(ui):
+    h = ui.host_view
+    h.available_monitors = [
+        ("Automatic", "auto"),
+        ("Monitor 01: Same Model (DP-1)", "DP-1"),
+        ("Monitor 02: Same Model (DP-2)", "DP-2"),
+    ]
+    h.monitor_row.set_model(Gtk.StringList.new([label for label, _value in h.available_monitors]))
+    h.monitor_row.set_selected(2)
+    h.save_host_settings()
+    assert h.config.get("host")["monitor_output_name"] == "DP-2"
+
+    h.available_monitors = [
+        ("Automatic", "auto"),
+        ("Monitor 01: Same Model (DP-2)", "DP-2"),
+        ("Monitor 02: Same Model (DP-1)", "DP-1"),
+    ]
+    h.monitor_row.set_model(Gtk.StringList.new([label for label, _value in h.available_monitors]))
+    h.load_settings()
+    assert h.monitor_row.get_selected() == 1
+    assert h._build_sunshine_config()["output_name"] == "DP-2"
+
+
+def test_identify_button_numbers_every_connected_monitor(ui, monkeypatch):
+    h = ui.host_view
+    specs = [
+        (object(), "01", "Same Model", "DP-1"),
+        (object(), "02", "Same Model", "DP-2"),
+        (object(), "03", "Same Model", "HDMI-A-1"),
+    ]
+    windows = [Mock(), Mock(), Mock()]
+    created = []
+    window_iter = iter(windows)
+    monkeypatch.setattr(h, "_monitor_identifier_specs", lambda: specs)
+    monkeypatch.setattr(
+        h,
+        "_create_monitor_identifier_window",
+        lambda monitor, number, name, connector: created.append((number, name, connector)) or next(window_iter),
+    )
+    monkeypatch.setattr(GLib, "timeout_add", lambda milliseconds, callback: 73)
+    removed = Mock()
+    monkeypatch.setattr(GLib, "source_remove", removed)
+
+    h.identify_monitors_button.emit("clicked")
+
+    assert created == [
+        ("01", "Same Model", "DP-1"),
+        ("02", "Same Model", "DP-2"),
+        ("03", "Same Model", "HDMI-A-1"),
+    ]
+    assert h._monitor_identifier_timeout_id == 73
+    h._close_monitor_identifiers()
+    removed.assert_called_once_with(73)
+    for window in windows:
+        window.close.assert_called_once_with()
 
 
 def test_automatic_summary_describes_configured_not_measured_values(ui):
@@ -118,7 +214,9 @@ def test_automatic_summary_describes_configured_not_measured_values(ui):
     assert "Error correction:" in summary
     cfg = h._build_sunshine_config()
     assert "fps" not in cfg and "resolution" not in cfg
-    assert cfg["encoder"] == "" and cfg["capture"] is None
+    # Automatic values are absent from sunshine.conf.  An empty encoder is an
+    # explicit (invalid) encoder name, not Sunshine's automatic mode.
+    assert cfg["encoder"] is None and cfg["capture"] is None
 
 
 @pytest.mark.parametrize("index,nvenc,sw", [(0, "1", "ultrafast"), (1, "4", "veryfast"), (2, "7", "medium")])
@@ -158,95 +256,160 @@ def test_default_audio_does_not_infer_consent_from_a_legacy_device_index(ui, mon
     outputs(h, monkeypatch)
     assert h._selected_audio_sink() == ""
     assert h.audio_output_row.get_selected() == 0
-    assert not h.audio_mode_row.get_sensitive()
-    assert not h.audio_mode_row.get_visible()
-    assert h.audio_output_row.get_use_subtitle()
-    assert not h.audio_mixer_link.get_sensitive()
+    assert h.audio_output_row.get_selected_item().get_string() == "Automatic — use the current output"
+    assert h.audio_play_here_row.get_sensitive()
+
+
+def test_the_old_other_computer_only_choice_becomes_client_only(ui, monkeypatch):
+    h = ui.host_view
+    h.config.set("host", dict(h.config.get("host", {}), audio_mode=1))
+    h.load_settings()
+    assert not h.audio_play_here_row.get_active()
+    h.config.set("host", {**h.config.get("host", {}), "audio_mode": 3})
+    h.config.get("host").pop("audio_play_on_host", None)
+    h.load_settings()
+    assert h.audio_play_here_row.get_active()
 
 
 def test_default_sharing_makes_no_audio_mutations(ui, monkeypatch):
     h = ui.host_view
-    outputs(h, monkeypatch)
-    enable, default, move, disable = Mock(), Mock(), Mock(), Mock()
-    monkeypatch.setattr(h.audio_manager, "enable_streaming_audio", enable)
-    monkeypatch.setattr(h.audio_manager, "set_default_sink", default)
-    monkeypatch.setattr(h.audio_manager, "move_app", move)
-    monkeypatch.setattr(h.audio_manager, "disable_streaming_audio", disable)
+    pulse = outputs(h, monkeypatch)
     cfg, configured = run_start(h, monkeypatch)
-    assert cfg["audio_output_name"] == ""
+    assert cfg["audio_output_name"] == "" and cfg["audio_play_on_host"] is True
     assert len(configured) == 1
-    assert configured[0]["audio_sink"] is None
-    assert configured[0]["virtual_sink"] is None
+    assert configured[0]["audio_sink"] is None  # Sunshine follows the current output
+    assert "virtual_sink" not in configured[0]  # the person's value is left alone
     assert configured[0]["stream_audio"] == "enabled"
-    assert not h._audio_routing_active
+    assert h.audio_session is not None and h.audio_session.original_sink == HDMI
     h._rollback_start()
-    for operation in (enable, default, move, disable):
-        operation.assert_not_called()
+    assert pulse.writes == []
+
+
+def test_client_only_points_sunshine_at_its_own_virtual_output(ui, monkeypatch):
+    h = ui.host_view
+    pulse = outputs(h, monkeypatch)
+    h.audio_play_here_row.set_active(False)
+    _cfg, configured = run_start(h, monkeypatch)
+    assert configured[0]["audio_sink"] == SUNSHINE_STEREO_SINK
+    assert pulse.writes == []  # Sunshine switches the output itself and restores it
+    h._rollback_start()
 
 
 def test_explicit_device_is_saved_by_name_and_survives_reordering(ui, monkeypatch):
     h = ui.host_view
-    outputs(h, monkeypatch)
+    pulse = outputs(h, monkeypatch)
     h.audio_output_row.set_selected(2)
     h.save_host_settings()
-    assert h.config.get("host")["audio_output_name"] == "alsa.usb"
-    monkeypatch.setattr(h.audio_manager, "get_passive_sinks", lambda: list(reversed(DEVICES)))
+    assert h.config.get("host")["audio_output_name"] == USB
+    assert not h.audio_play_here_row.get_sensitive()
+    pulse.sinks.reverse()
     h.load_audio_outputs()
-    assert h.audio_output_row.get_selected() == 1
-    assert h._selected_audio_sink() == "alsa.usb"
-    assert h.audio_mode_row.get_sensitive()
-    assert h.audio_mode_row.get_visible()
-    assert h.audio_mode_row.get_use_subtitle()
+    assert h._selected_audio_sink() == USB
+    assert h.audio_output_row.get_selected_item().get_string() == "Fone USB — Estéreo analógico"
+
+
+def test_virtual_outputs_are_not_offered_for_explicit_choice(ui, monkeypatch):
+    h = ui.host_view
+    outputs(h, monkeypatch)
+    labels = [h.audio_output_row.get_model().get_string(i) for i in range(h.audio_output_row.get_model().get_n_items())]
+    assert labels == ["Automatic — use the current output", "HDMI / DisplayPort", "Fone USB — Estéreo analógico", "Fone Bluetooth"]
 
 
 def test_missing_selected_device_fails_without_redirecting_to_first_device(ui, monkeypatch):
     h = ui.host_view
     settings = dict(h.config.get("host", {}), audio_output_name="missing.usb")
     h.config.set("host", settings)
-    outputs(h, monkeypatch)
-    enable = Mock()
-    monkeypatch.setattr(h.audio_manager, "enable_streaming_audio", enable)
+    pulse = outputs(h, monkeypatch)
     assert "Unavailable" in h.audio_output_row.get_selected_item().get_string()
     cfg, configured = run_start(h, monkeypatch)
     assert cfg["audio_output_name"] == "missing.usb"
     assert not configured
-    enable.assert_not_called()
+    assert pulse.writes == []
 
 
-def test_manual_audio_routing_only_runs_after_explicit_device_selection(ui, monkeypatch):
+def test_explicit_device_is_recorded_by_sunshine_without_moving_applications(ui, monkeypatch):
     h = ui.host_view
-    outputs(h, monkeypatch)
+    pulse = outputs(h, monkeypatch)
     h.audio_output_row.set_selected(2)
-    enable = Mock(return_value=True)
-    monkeypatch.setattr(h.audio_manager, "enable_streaming_audio", enable)
     cfg, configured = run_start(h, monkeypatch)
-    enable.assert_called_once_with("alsa.usb", guest_only=False)
-    assert cfg["audio_output_name"] == "alsa.usb"
-    assert configured[0]["audio_sink"] == "SunshineGameSink"
-    assert h._audio_routing_active
+    assert cfg["audio_output_name"] == USB
+    assert configured[0]["audio_sink"] == USB
+    assert pulse.writes == []
+    h._rollback_start()
 
 
 def test_selecting_a_device_while_sharing_only_schedules_next_session(ui, monkeypatch):
     h = ui.host_view
-    outputs(h, monkeypatch)
-    enable = Mock()
-    monkeypatch.setattr(h.audio_manager, "enable_streaming_audio", enable)
+    pulse = outputs(h, monkeypatch)
     h.is_hosting = True
     h.audio_output_row.set_selected(2)
-    h.audio_mode_row.set_selected(3)
-    enable.assert_not_called()
+    h.audio_play_here_row.set_active(False)
     h.is_hosting = False
+    assert pulse.writes == []
 
 
 def test_stopping_default_sharing_does_not_claim_audio_ownership(ui, monkeypatch):
     h = ui.host_view
-    disable = Mock()
-    monkeypatch.setattr(h.audio_manager, "disable_streaming_audio", disable)
+    pulse = outputs(h, monkeypatch)
+    _cfg, _configured = run_start(h, monkeypatch)
     monkeypatch.setattr(h.sunshine, "stop", lambda: None)
+    monkeypatch.setattr(h.sunshine, "is_running", lambda: False)
     with monkeypatch.context() as mp:
         mp.setattr(GLib, "idle_add", lambda *a, **kw: 0)
-        h._run_stop_hosting("")
-    disable.assert_not_called()
+        h._run_stop_hosting()
+    assert pulse.writes == []
+    assert h.audio_session is None
+
+
+def test_stopping_after_a_host_muting_client_removes_only_our_bridge(ui, monkeypatch):
+    h = ui.host_view
+    pulse = outputs(h, monkeypatch)
+    run_start(h, monkeypatch)
+    pulse.sunshine_starts_session(host_audio=False)
+    status = h.audio_session.reconcile()
+    assert [(b.source_sink, b.target_sink) for b in status.bridges] == [(SUNSHINE_STEREO_SINK, HDMI)]
+    pulse.sunshine_ends_session(HDMI)
+    monkeypatch.setattr(h.sunshine, "stop", lambda: None)
+    monkeypatch.setattr(h.sunshine, "is_running", lambda: False)
+    with monkeypatch.context() as mp:
+        mp.setattr(GLib, "idle_add", lambda *a, **kw: 0)
+        h._run_stop_hosting()
+    assert pulse.bridges() == []
+    assert [m[0] for m in pulse.modules] == ["7"]
+
+
+def test_audio_details_state_the_microphone_is_not_sent(ui, monkeypatch):
+    h = ui.host_view
+    pulse = outputs(h, monkeypatch)
+    from big_remote_play.utils.audio import audio_status
+
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), h._audio_generation)
+    rows = h.audio_detail_rows
+    assert rows["mic_sent"].get_subtitle() == "No"
+    assert rows["monitor"].get_subtitle() == f"{HDMI}.monitor"
+    assert rows["sunshine"].get_subtitle() == "No client is receiving sound right now"
+    assert h.audio_output_row.get_subtitle() == "Now: HDMI / DisplayPort"
+    pulse.sunshine_starts_session(host_audio=True)
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), h._audio_generation)
+    assert "sound this computer plays" in rows["sunshine"].get_subtitle()
+    stale = h._audio_generation - 1
+    pulse.sinks = []
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), stale)
+    assert h.audio_output_row.get_subtitle() == "Now: HDMI / DisplayPort"  # stale result ignored
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), h._audio_generation)
+    assert h.audio_output_row.get_subtitle().startswith("System audio unavailable")
+
+
+def test_audio_test_reports_the_measured_result_in_words(ui):
+    h = ui.host_view
+    button = h.audio_test_button
+    h._apply_audio_test(button, {"played": True, "detected": True, "level_db": -18.4, "monitor": "m", "output": "HDMI"}, h._audio_generation)
+    assert h.audio_test_row.get_subtitle() == "The tone reached the shared sound (-18 dB on HDMI)."
+    h._apply_audio_test(button, {"played": True, "detected": False, "level_db": -80, "monitor": "m", "output": "HDMI"}, h._audio_generation)
+    assert "did not reach" in h.audio_test_row.get_subtitle()
+    h._apply_audio_test(button, {"played": False, "detected": False, "level_db": None, "monitor": None, "output": ""}, h._audio_generation)
+    assert h.audio_test_row.get_subtitle().startswith("System audio unavailable")
+    assert button.get_sensitive()
 
 
 def test_new_client_keeps_host_playback_but_preserves_existing_user_choice(ui):
@@ -296,42 +459,14 @@ def test_direct_and_headscale_guides_are_distinct_and_read_only(ui, monkeypatch)
 
 def test_provider_page_keeps_non_vpn_help_optional(ui):
     ui.navigate_to("vpn_selector")
-    rows = [w for w in walk(ui.content_stack.get_visible_child()) if isinstance(w, Adw.ExpanderRow)]
-    alternatives = [r for r in rows if r.get_title() == "Without a VPN (advanced)"]
-    assert len(alternatives) == 1
-    assert not alternatives[0].get_expanded()
-
-
-def test_audio_cleanup_does_not_move_other_virtual_outputs(monkeypatch):
-    manager = AudioManager()
-    moved = Mock()
-    monkeypatch.setattr(manager, "get_default_sink", lambda: "easyeffects_sink")
-    monkeypatch.setattr(manager, "set_default_sink", moved)
-    monkeypatch.setattr(manager, "get_passive_sinks", lambda: DEVICES)
-    manager.cleanup()
-    moved.assert_not_called()
-
-
-def test_audio_restore_preserves_newer_user_output_and_moves_only_owned_streams(monkeypatch):
-    manager = AudioManager()
-    manager._user_default_sink = "alsa.analog"
-    set_default, moved = Mock(), Mock()
-    monkeypatch.setattr(manager, "get_default_sink", lambda: "easyeffects_sink")
-    monkeypatch.setattr(manager, "set_default_sink", set_default)
-    monkeypatch.setattr(manager, "move_app", moved)
-    monkeypatch.setattr(manager, "get_apps", lambda: [{"id": "1", "sink_name": "SunshineGameSink"}, {"id": "2", "sink_name": "easyeffects_sink"}])
-    monkeypatch.setattr("big_remote_play.utils.audio.subprocess.run", lambda *a, **k: SimpleNamespace(returncode=0, stdout=""))
-    manager.disable_streaming_audio(None)
-    set_default.assert_not_called()
-    moved.assert_called_once_with("1", "easyeffects_sink")
-    assert manager._user_default_sink is None
-
-
-def test_audio_sink_parser_uses_english_fields_and_rejects_unnamed_devices(monkeypatch):
-    command = Mock(return_value=SimpleNamespace(returncode=0, stdout="Sink #2\n Name: alsa.usb\n Description: USB\nSink #3\n"))
-    monkeypatch.setattr("big_remote_play.utils.audio.subprocess.run", command)
-    assert AudioManager().get_passive_sinks() == [{"id": "2", "name": "alsa.usb", "description": "USB"}]
-    assert command.call_args.kwargs["env"]["LC_ALL"] == "C"
+    page = ui.remote_connection_page
+    rows = [w for w in walk(page.advanced_box) if isinstance(w, Adw.ActionRow) and w.get_title() == "Without a private network"]
+    assert len(rows) == 1
+    assert not rows[0].get_mapped()  # only in Advanced mode
+    page.advanced_row.set_active(True)
+    drain()
+    assert rows[0].get_mapped()
+    page.advanced_row.set_active(False)
 
 
 def test_guide_links_pass_the_requesting_widget_for_wayland_activation(monkeypatch):

@@ -64,6 +64,7 @@ def action_row(
     *,
     icon_style: Literal["plain", "tile"] = "plain",
     tone: str = "accent",
+    suffix: Gtk.Widget | None = None,
 ) -> Adw.ActionRow:
     """Native action row with an explicit icon hierarchy.
 
@@ -80,6 +81,9 @@ def action_row(
         image = create_icon_widget(icon, size=18, css_class="brp-row-icon")
         image.set_valign(Gtk.Align.CENTER)
         row.add_prefix(image)
+    if suffix is not None:
+        # A state word such as "Connected" reads before the navigation arrow.
+        row.add_suffix(suffix)
     row.add_suffix(create_icon_widget("go-next-symbolic", size=16))
     row.connect("activated", lambda _row: callback())
     return row
