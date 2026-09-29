@@ -28,6 +28,26 @@ PRIVATE_REFRESH_SECONDS = 30
 _CODEC_NAMES = {"0": "", "1": "H.264", "2": "HEVC", "4": "AV1"}
 
 
+def unreachable_message(outcomes: list[tuple[str, str]], port: int, *, ping=None) -> str:
+    """Why Sunshine did not answer, from how the connections ended (worker thread).
+
+    A refused connection means the game PC answered but nothing listens: sharing
+    is off. Silence (or an ICMP rejection) from a computer that still answers a
+    ping means its firewall filters the game ports.
+    """
+    if any(outcome == "refused" for _address, outcome in outcomes):
+        return _("The game PC answered, but sharing is not running on it. Start sharing on the game PC, then connect again.")
+    filtered = [address for address, outcome in outcomes if outcome in ("timeout", "unreachable")]
+    if filtered:
+        if ping is None:
+            from big_remote_play.utils.connection_health import ping_once as ping
+        if ping(filtered[0]) is not None:
+            return _("The game PC answers on the network, but its firewall blocks the game ports ({port}). On the game PC, open Share and choose Allow in firewall, then connect again.").format(
+                port=port
+            )
+    return _("Check that sharing is running on the game PC and that both computers can reach each other.")
+
+
 class GuestView(Gtk.Box):
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
@@ -1464,21 +1484,26 @@ class GuestView(Gtk.Box):
                     # Fast, reliable signals only: `moonlight list` can take
                     # about 20 seconds with current Moonlight Qt.
                     reachable = ""
+                    identity = ""
+                    outcomes: list[tuple[str, str]] = []
                     candidates = list(dict.fromkeys([host["ip"], *host.get("addresses", [])]))
                     for address in candidates[:3]:
                         if not self._attempt_valid(attempt):
                             return
                         probe = probe_sunshine(address, int(opts["port"]))
                         if probe.answered or probe.listening:
-                            reachable = address
+                            reachable, identity = address, probe.uniqueid
                             break
+                        outcomes.append((address, probe.tcp))
                     if not self._attempt_valid(attempt):
                         return
                     if not reachable:
-                        GLib.idle_add(failed, _("Check that sharing is running on the game PC and that both computers can reach each other."))
+                        GLib.idle_add(failed, unreachable_message(outcomes, int(opts["port"])))
                         return
                     host = dict(host, ip=reachable)
-                    if not paired_host_certificate(reachable):
+                    # An entry Moonlight keeps for a host it only contacted (or
+                    # for another host at this address) is not a pairing.
+                    if not paired_host_certificate(reachable, uuid=identity):
                         GLib.idle_add(start_pairing, host)
                         return
                 if not self._attempt_valid(attempt):
@@ -1539,7 +1564,7 @@ class GuestView(Gtk.Box):
                     self.connect_to_host(host, paired_retry=True)
                 else:
                     self.show_loading(False)
-                    self.show_error_dialog(_("Pairing Error"), _("Could not pair with the game PC.\nCheck that the PIN was entered correctly."))
+                    self.show_pairing_failed_dialog(host)
                 return False
 
             GLib.idle_add(finished)
@@ -1810,6 +1835,12 @@ class GuestView(Gtk.Box):
                 check(result.host_online, _("Computer online"), _("The computer seems to be offline")),
                 check(result.sunshine_ok, _("Sunshine answers"), _("Sunshine does not answer. Start sharing on the game PC.")),
             ]
+            if result.problem == "firewall":
+                rows[-1] = message_row(
+                    _("The game PC's firewall blocks the game ports"),
+                    _("It answers on the network, but not on Sunshine's port. On the game PC, open Share and choose Allow in firewall."),
+                    "dialog-warning-symbolic",
+                )
             if result.path is not None:
                 title, subtitle = path_summary(result.path)
                 rows.append(message_row(title, subtitle, "brp-network-transmit-receive-symbolic"))
@@ -1824,6 +1855,23 @@ class GuestView(Gtk.Box):
             group.replace(rows)
 
         worker.submit(lambda: default_service().diagnose(candidate), apply, failed=lambda _error: group.replace([message_row(_("The checks could not run."), "", "dialog-warning-symbolic")]))
+        dialog.present(self)
+
+    def show_pairing_failed_dialog(self, host: dict) -> None:
+        """Pairing did not finish; the usual causes can each be fixed by trying again."""
+        dialog = Adw.AlertDialog(
+            heading=_("Pairing Error"),
+            body=_(
+                "Could not pair with the game PC. Check that the code was entered on the game PC, under Share → 3. Connect the other PC. If Moonlight said that a pairing session already exists, wait a few seconds and try again: the game PC clears the earlier attempt by itself."
+            ),
+        )
+        dialog.set_body_use_markup(False)
+        dialog.add_response("close", _("Close"))
+        dialog.add_response("retry", _("Try again"))
+        dialog.set_response_appearance("retry", Adw.ResponseAppearance.SUGGESTED)
+        dialog.set_default_response("retry")
+        dialog.set_close_response("close")
+        dialog.connect("response", lambda _dialog, response: self.start_pairing_flow(dict(host)) if response == "retry" else None)
         dialog.present(self)
 
     def show_pair_again_dialog(self, host: dict) -> None:

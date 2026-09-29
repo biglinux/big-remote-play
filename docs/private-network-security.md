@@ -42,7 +42,7 @@ Each privileged step is a single, explicit, PolicyKit-authorized command started
 | Tailscale operator | `pkexec /usr/bin/tailscale set --operator=$USER` | Only after the CLI refused an unprivileged command |
 | ZeroTier user access | `pkexec /usr/bin/cat /var/lib/zerotier-one/authtoken.secret` | The token reaches this process through a pipe; the user writes `~/.zeroTierOneAuthToken` (0600) without following links |
 | Join/leave ZeroTier before access was granted | `pkexec zerotier-cli join|leave <validated id>` | Only a 16-hex-digit Network ID reaches argv |
-| Firewall | `pkexec configure_firewall.sh <base port>` | Confirmed first, listing every port and saying the rule is permanent; the web UI port is never opened |
+| Firewall | `pkexec configure_firewall.sh <base port>` | Confirmed first, listing every port and saying the rule is permanent; the web UI port is never opened. Offered from **Share** when the read-only check (`host/firewall_check.py`: ufw's world-readable rule files, or unprivileged `firewall-cmd` zone queries) finds Sunshine's ports blocked; nothing is changed without this confirmation |
 | Install a client | `pkexec install-vpn.sh` | Only when the page says it is missing |
 
 The Docker/Caddy/Cloudflare Headscale installer that ran as root, placed the Cloudflare token on `curl`'s command line, opened firewall ports without asking and served the API with `Access-Control-Allow-Origin: *` has been removed. Self-hosting is now a guide with commands the administrator runs on their own server ([VPS and Headscale](vps-headscale.md)).
@@ -65,3 +65,7 @@ The Docker/Caddy/Cloudflare Headscale installer that ran as root, placed the Clo
 ## Reporting
 
 Report a vulnerability privately through the [security policy](https://github.com/biglinux/big-remote-play/security/policy). Never attach real tokens, keys or unredacted history files to an issue.
+
+## Pairing requests
+
+While sharing, and right before a code is sent, Big Remote Play reads Sunshine's waiting pairing requests (`GET /api/pin`) with the credentials from the keyring and cancels the abandoned ones (`DELETE /api/pin` with a validated 32-hex `pairing_id`, the same call as Sunshine's web panel). A request counts as abandoned only when its address has fewer open TCP connections to Sunshine's HTTP port (read with `ss -tan`, no privileges) than it has requests; if the connections cannot be read, nothing is cancelled. Addresses are not logged.
