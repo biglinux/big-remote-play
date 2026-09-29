@@ -13,6 +13,8 @@ import pytest
 
 from big_remote_play.host.sunshine_manager import SunshineHost, _cert_fingerprint
 
+REAL_RUNNING_APP_ID = SunshineHost.running_app_id  # conftest replaces it with an offline stub
+
 
 @pytest.fixture
 def host(tmp_path):
@@ -603,3 +605,60 @@ def test_configure_removes_encoder_for_automatic_selection(tmp_path):
     text = conf.read_text()
     assert "encoder" not in text
     assert "output_name = DP-2" in text
+
+
+# --- open stream (GET /serverinfo, what Moonlight checks before pairing) ----
+
+
+@pytest.fixture
+def serverinfo(tmp_path):
+    """A local HTTP server on a free port answering /serverinfo with a canned reply."""
+    import http.server
+    import threading
+
+    reply = {"status": 200, "body": b""}
+
+    class Handler(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(reply["status"] if self.path == "/serverinfo" else 404)
+            self.end_headers()
+            self.wfile.write(reply["body"])
+
+        def log_message(self, *args):
+            pass
+
+    server = http.server.HTTPServer(("127.0.0.1", 0), Handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    (tmp_path / "sunshine.conf").write_text(f"port = {server.server_address[1]}\n")
+    yield reply
+    server.shutdown()
+    server.server_close()
+
+
+def _xml(game: str, state: str) -> bytes:
+    # Sunshine 2026.914, unpaired client over HTTP (measured 2026-09-29).
+    return f'<?xml version="1.0" encoding="utf-8"?><root status_code="200"><hostname>lab</hostname><PairStatus>0</PairStatus><currentgame>{game}</currentgame><state>{state}</state></root>'.encode()
+
+
+def test_an_open_stream_is_read_from_serverinfo(host, serverinfo) -> None:
+    serverinfo["body"] = _xml("881448767", "SUNSHINE_SERVER_BUSY")
+    assert REAL_RUNNING_APP_ID(host) == 881448767
+    serverinfo["body"] = _xml("0", "SUNSHINE_SERVER_FREE")
+    assert REAL_RUNNING_APP_ID(host) == 0
+
+
+def test_an_unknown_stream_state_is_none_not_free(host, serverinfo) -> None:
+    serverinfo["body"] = b"<root><hostname>lab</hostname></root>"
+    assert REAL_RUNNING_APP_ID(host) is None
+    serverinfo["status"], serverinfo["body"] = 503, _xml("0", "SUNSHINE_SERVER_FREE")
+    assert REAL_RUNNING_APP_ID(host) is None
+
+
+def test_no_sunshine_listening_is_none(tmp_path) -> None:
+    import socket
+
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        port = sock.getsockname()[1]  # closed again: nothing listens there
+    (tmp_path / "sunshine.conf").write_text(f"port = {port}\n")
+    assert REAL_RUNNING_APP_ID(SunshineHost(cdir=tmp_path), timeout=0.5) is None

@@ -42,7 +42,9 @@ ZeroTier's control key is readable only by the system. Choose **Allow** once: Bi
 
 ## ZeroTier: joining failed, or showed “0 join connection failed”
 
-`0 join connection failed` is what `zerotier-cli join` prints when it cannot reach the local `zerotier-one` service — not an answer from the network. Older versions showed it as “Connection failed” when the service had been stopped (for example by **Network details → Disconnect**, which stops ZeroTier temporarily). The join now starts the service first and says **ZeroTier is not running** only if it cannot. To check by hand: `systemctl is-active zerotier-one`, then `zerotier-cli -j listnetworks`.
+`0 join connection failed` is what `zerotier-cli join` prints when it cannot reach the local `zerotier-one` service — not an answer from the network. Older versions showed it as “Connection failed” when the service had been stopped (for example by **Network details → Disconnect**, which stops ZeroTier temporarily). The join now starts the service first and says **ZeroTier is not running** only if it cannot. Right after ZeroTier is installed or enabled for the first time, the service runs but this user may not use it yet: the join then asks for the one-time permission (**Allow**) instead of reporting a stopped service, as versions up to 26.09.29 did after waiting 15 s (technical details showed only `Created symlink … zerotier-one.service`). To check by hand: `systemctl is-active zerotier-one`, then `zerotier-cli -j listnetworks`.
+
+Without a network code, choose **I don't have a code**: in the guided setup and on the ZeroTier connection page it explains how the owner creates a free network in ZeroTier Central, where the 16-character code is shown, and how each computer is approved under **Members**.
 
 ## ZeroTier shows “Waiting for authorization”
 
@@ -51,6 +53,13 @@ The network is private: its owner must authorize this computer. Send them the **
 ## ZeroTier says “Network code not found” or “The network has not answered yet”
 
 **Not found** comes from the network's controller: the network does not exist (a typo in a real owner's code, or a deleted network). **Has not answered yet** after a minute usually means the code points to no controller at all, so nobody can say “not found”; check the code, or choose **Cancel the request** so the computer stops trying.
+
+## “Could not connect” over ZeroTier, Tailscale or Headscale: the game PC's firewall
+
+The private network can work (both computers listed, pings answered) while the game PC's firewall drops Sunshine's ports; the connecting computer then sees exactly what it would see if sharing were off. Big Remote Play now tells the two apart:
+
+- **On the game PC**, while sharing, **Share → 3. Connect the other PC** says **The firewall blocks other computers**, naming the firewall (ufw or firewalld), the blocked ports and the networks affected (the local network, ZeroTier, Tailscale or Headscale). **Allow in firewall** first lists the ports it will open — TCP 47984, 47989, 48010 and UDP 47998–48000 for the default base port; never the administration page — then asks for your password. The check only reads: ufw's own rule files (`/etc/ufw/ufw.conf`, `/etc/default/ufw`, `/etc/ufw/user.rules`) or firewalld's zone queries. The first ufw rule that matches decides, as in ufw; a rule limited to the local network does not cover ZeroTier; an interface rule such as `allow in on tailscale0` covers only that interface. Plain nftables/iptables rules need root to read, so they are never reported as blocking.
+- **On the connecting computer**, a refused connection means the game PC answered but sharing is not running; silence from a game PC that still answers a ping means its firewall filters the ports, and the message and **Diagnose** say so.
 
 ## A computer shows “Sign-in expired” or “Sharing not found”
 
@@ -70,15 +79,21 @@ Sunshine probes every display and encoder when capture and encoder are set to au
 
 ## A device says “The computer is currently in a game” or asks to close the game
 
-Moonlight pairs only when nothing is being played, and Sunshine counts the shared **Desktop** as a game while any device is connected. Big Remote Play then answers the PIN with **No computer is waiting** and explains it. End the stream on the other devices, pair the new one (only once), then connect everyone again.
+Moonlight pairs only when Sunshine has no stream open, and Sunshine counts the shared **Desktop** as a game while it is open — also after every device disconnected, until it is closed. While a stream is open, **Share → 3. Connect the other PC** says **A stream is open on this computer** with **End for everyone**, and a PIN sent then offers the same action instead of only **No computer is waiting**. **End for everyone** asks first, closes the stream on every device (Sunshine's own close, as in its web panel) and checks that nothing is open any more; then start pairing again on the new device and enter its new code. The devices already paired reconnect afterwards without a new PIN.
 
 To pair several new devices, pair them one at a time, each while nobody is playing; the devices already paired reconnect afterwards without a new PIN. A device that never lists the computer has not found it on the network (some TV apps keep an empty computer list): add it by the sharing computer's address, shown in **Share**, then pair.
 
 When a device asks to close the game although nothing seems to be open, it asked for a different app than the one running for the other devices. Choose the app that is already running (usually **Desktop**) to join it; closing it ends the other devices' streams. A device that remembers an app the computer no longer offers (for example an old **Steam Big Picture** entry) fails to start it: refresh the app list on that device.
 
-## Pairing does not finish
+## Pairing does not finish, or Moonlight says “GeForce Experience returned error”
 
-The connecting PC displays Moonlight's four-digit code. Enter it on the game PC under Share, not into the search-code field. Keep the connecting window open while approving. If approval fails, check the administrative credentials or complete pairing through Sunshine's official web interface. Cancellation must end the pending attempt before retrying.
+The connecting PC displays Moonlight's four-digit code. Enter it on the game PC under Share, not into the search-code field. Keep the connecting window open while approving.
+
+A pairing that was cut before its code was entered — cancelled, dropped by the network or by a firewall — stays waiting in Sunshine until it restarts. Measured with Sunshine 2026.914: the next attempt of the same Moonlight is then refused at once with “A pairing session with this uniqueid already exists” (Moonlight shows it as *GeForce Experience returned error*), and a code entered on the game PC goes to the dead request. While sharing, Big Remote Play cancels such requests: a device that is really waiting keeps its connection to Sunshine's HTTP port open, one that gave up has none; with several requests from one address, only the newest is kept. It also does this right before sending a code. On the connecting computer, a failed pairing says where the code goes and offers **Try again**; after a refusal like this, wait a few seconds so the game PC has cleared the earlier attempt. The fix works on the game PC: the version installed there must include it.
+
+Approving a device needs Sunshine's user and password. When they are not saved, or Sunshine rejects the saved ones, Share says so as soon as sharing starts, with **Enter Sunshine password**: they are checked with Sunshine before they are kept in the system keyring, so the code is approved the moment you type it instead of while the device waits.
+
+On the connecting computer, a host that Moonlight only contacted — listed, discovered, or whose pairing failed — is recorded without a certificate (`srvcert=@ByteArray()`). Earlier versions took that record for a pairing and started the stream, which Moonlight refused with “Computer … has not been paired. Please open Moonlight to pair before streaming.” Now only a stored certificate for the same host (its Sunshine `uniqueid`) counts, and pairing starts instead.
 
 ## Incorrect resolution, frame rate or sound
 
@@ -89,7 +104,7 @@ For sound, open **Share → Preferences → Audio** on the game PC:
 1. Press **Test audio**. "The tone reached the shared sound" means the game PC side works; check the connecting computer's volume and its **Audio** settings. "System audio unavailable" means no output device was found: connect or enable one.
 2. Open **Technical audio details** while connected. **Sunshine records now** should name a source followed by "sound this computer plays". **Microphone sent to Sunshine** must say **No**; if it says otherwise, stop sharing and report it.
 3. The game PC went silent when a client connected: that client asked Sunshine to mute the game PC. Keep **Also play sound on this computer** on. If your output is an effects program (EasyEffects, JamesDSP), this computer stays silent for that client; enable **Also play sound on the game PC** on the connecting computer instead.
-4. No sound anywhere after sharing stopped unexpectedly: start Big Remote Play again; it puts back the output Sunshine left on its silent output. Otherwise choose your output in the system sound settings.
+4. No sound anywhere after sharing stopped unexpectedly: start Big Remote Play again; it puts back the output Sunshine left on its silent output and reconnects an effects program (JamesDSP, EasyEffects) left without an output. Otherwise choose your output in the system sound settings; if the right output is already chosen and there is still no sound, restart the effects program.
 5. Steam Remote Play Together has no sound while sharing: the technical details show which source Steam records. Big Remote Play no longer moves application sound, so Steam's own capture is not undone. See [audio architecture](audio-architecture.md#coexisting-with-steam-remote-play-together).
 
 A configured value in the monitor is not a measured frame rate. Network ping is not end-to-end gaming latency. Test wired networking and the actual encoder/decoder before attributing low FPS to the interface.

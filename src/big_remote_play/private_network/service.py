@@ -10,10 +10,11 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
 import logging
+import time
 from types import SimpleNamespace
 
 from big_remote_play.integration_contracts import SUNSHINE_DEFAULT_BASE_PORT
-from big_remote_play.utils.connection_health import LinkSample
+from big_remote_play.utils.connection_health import LinkSample, ping_once
 from big_remote_play.utils.secret_store import SecretStoreUnavailable
 from big_remote_play.utils.system_check import SystemCheck
 from big_remote_play.utils.vpn_accounts import CommandResult, VPNAccountManager
@@ -27,9 +28,12 @@ from .history import SessionHistory
 from .http import ApiErrorKind, ApiResult, Transport, normalize_base_url
 from .tailscale_api import TailscaleApi
 from .zerotier_api import ZeroTierCentral
-from .models import ConnectionState, HostCandidate, HostDiagnosis, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus
+from .models import ConnectionState, HostCandidate, HostDiagnosis, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus, Recovery
 
 _log = logging.getLogger("big-remoteplay")
+
+# systemctl returns once the unit runs; the client answers a moment later.
+SERVICE_ANSWER_SECONDS = 15.0
 
 
 def _installed(check: Callable[[], bool]) -> bool:
@@ -91,6 +95,9 @@ class PrivateNetworkService:
         self._transport = transport
         self._probe_sunshine = sunshine_probe
         self._network_facts = network_facts
+        self._ping: Callable[[str], float | None] = ping_once
+        self._sleep: Callable[[float], None] = time.sleep
+        self._clock: Callable[[], float] = time.monotonic
 
     # ── credentials ────────────────────────────────────────────────────────
     def has_credential(self, kind: CredentialKind, scope: str = "default") -> bool:
@@ -244,12 +251,21 @@ class PrivateNetworkService:
                     host_online = True
         probe = self._probe_sunshine(candidate.address, candidate.port)
         sunshine_ok = bool(getattr(probe, "answered", False) or getattr(probe, "listening", False))
-        details.append(f"sunshine {candidate.port}/tcp: {'answers' if sunshine_ok else 'no answer'}")
+        outcome = str(getattr(probe, "tcp", "") or "")
+        details.append(f"sunshine {candidate.port}/tcp: {'answers' if sunshine_ok else 'no answer'}" + (f" ({outcome})" if outcome and not sunshine_ok else ""))
         if sunshine_ok:
             host_online = True
         problem = ""
         if not sunshine_ok:
-            problem = "host_offline" if host_online is False else "sunshine_missing"
+            if outcome == "refused":
+                # The computer itself answered: nothing listens on the port.
+                host_online, problem = True, "sunshine_missing"
+            elif outcome in ("timeout", "unreachable") and host_online is not False and self._ping(candidate.address) is not None:
+                # It answers a ping but not the port: a firewall filters it.
+                details.append("ping: answers")
+                host_online, problem = True, "firewall"
+            else:
+                problem = "host_offline" if host_online is False else "sunshine_missing"
         return HostDiagnosis(network_ok=network_ok, host_online=host_online, sunshine_ok=sunshine_ok, path=path, problem=problem, details=tuple(details))
 
     # ── Administrative APIs (None when no credential is configured) ────────
@@ -310,9 +326,32 @@ class PrivateNetworkService:
         return self.manager.resume_tailscale().connected
 
     def start_service(self, provider: ProviderId) -> bool:
-        """Start the provider's background service (PolicyKit asks once)."""
+        """Start the provider's background service (PolicyKit asks once).
+
+        True once its client answers, so the next reading shows the real next
+        step (sign in, allow access, join) instead of a service still starting.
+        """
         unit = "zerotier-one" if provider is ProviderId.ZEROTIER else "tailscaled"
-        return self.manager.start_service(unit).returncode == 0
+        started = self.manager.start_service(unit)
+        if started.returncode != 0:
+            return False
+        deadline = self._clock() + SERVICE_ANSWER_SECONDS
+        while not self._service_answers(provider):
+            if self._clock() >= deadline:
+                _log.warning("%s started but its client did not answer", unit)
+                return False
+            self._sleep(0.5)
+        return True
+
+    def _service_answers(self, provider: ProviderId) -> bool:
+        try:
+            if provider is ProviderId.ZEROTIER:
+                node = self.manager.zerotier_info()
+                # Refusing this user proves the service answers; access is the next step.
+                return bool(node.address) or node.needs_privilege
+            return self._tailscale_cli().status(provider).recovery is not Recovery.START_SERVICE
+        except Exception:
+            return False
 
     # ── ZeroTier local actions ─────────────────────────────────────────────
     def link_sample(self, status: ProviderStatus) -> LinkSample:
@@ -372,6 +411,7 @@ class OfflinePrivateNetworkService(PrivateNetworkService):
             sunshine_probe=lambda *args, **kwargs: SimpleNamespace(listening=False, answered=False, hostname=""),
             network_facts=lambda: NetworkFacts(ipv4=("192.0.2.10",)),
         )
+        self._ping = lambda address: None
 
 
 _default_factory: Callable[[], PrivateNetworkService] = PrivateNetworkService

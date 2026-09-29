@@ -37,6 +37,14 @@ The back arrow goes one question back. After a connection is set up from the gui
 
 Opening Share does not start the server, install software or change network/firewall settings by itself.
 
+While sharing, **3. Connect the other PC** also tells you, before any device waits:
+
+- **Sunshine's password is needed to approve devices** (or **Sunshine rejected the saved password**): **Enter Sunshine password** checks it with Sunshine and keeps it in the system keyring, so a code is approved the moment you type it;
+- **The firewall blocks other computers**: this computer's firewall (ufw or firewalld) does not allow Sunshine's ports from the local network, ZeroTier, Tailscale or Headscale. **Allow in firewall** lists the ports and asks for your password;
+- **A stream is open on this computer**: new devices can pair only after **End for everyone**.
+
+Pairing requests that a device abandoned (cancelled, cut by the network or a firewall) are cleared automatically, so the device's next attempt is not refused.
+
 Two options in **Image and capture** decide how faithful the picture is:
 
 - **Correct colors of HDR screens** (on by default): if the shared screen uses HDR, it switches to SDR while sharing and back afterwards, so every connected device sees correct colors; a device that asks for HDR gets SDR. Without it, devices without HDR see grey, washed-out colors. The **Image and capture** summary says when the shared screen is in HDR.
@@ -115,7 +123,7 @@ When sharing, **Share** lists under **Available over the internet** the name and
 
 ### Joining a ZeroTier network
 
-Type the **Network code** (16 letters and numbers, sent by the owner of the network; spaces and dashes are ignored) and choose **Join network**. If ZeroTier's service is stopped, it is started first (your password may be requested). Being on one ZeroTier network never hides the field: a computer can join several.
+Type the **Network code** (16 letters and numbers, sent by the owner of the network; spaces and dashes are ignored) and choose **Join network**. If ZeroTier's service is stopped, it is started first (your password may be requested); right after a first installation this is followed by the one-time **Allow**. Being on one ZeroTier network never hides the field: a computer can join several. Nobody has a network yet? **I don't have a code** shows how to create one for free in ZeroTier Central, step by step, or offers Tailscale.
 
 | You see | What it means | Button |
 |---|---|---|

@@ -172,6 +172,30 @@ def test_zerotier_in_the_guide_asks_only_for_the_code(ui, monkeypatch):
     assert panel is not None and panel.is_ancestor(page)
 
 
+def test_without_a_zerotier_code_the_guide_explains_how_to_create_a_network(ui, monkeypatch):
+    import big_remote_play.ui.private_network_view as pnv
+
+    shown = []
+    monkeypatch.setattr(pnv, "show_simple_instructions", lambda parent, title, items: shown.append((title, items)))
+    monkeypatch.setattr(ui.system_check, "has_zerotier", lambda: True)
+    start(ui, HubService())
+    choose(ui, "Connect to another computer")
+    choose(ui, "Somewhere else")
+    buttons(ui, "Continue")[0].emit("clicked")
+    assert wait_for(lambda: visible_tag(ui) == "guided-method")
+    choose(ui, "I already use ZeroTier")
+    buttons(ui, "I don't have a code")[0].emit("clicked")
+    assert wait_for(lambda: ui.get_visible_dialog() is not None)
+    dialog = ui.get_visible_dialog()
+    assert dialog.has_response("create") and dialog.has_response("tailscale")
+    dialog.emit("response", "create")
+    dialog.close()
+    assert [title for title, _items in shown] == ["Create a ZeroTier network"]
+    steps = shown[0][1]
+    assert len(steps) == 4 and steps[0][5] == "https://my.zerotier.com"  # the one place a network is created
+    assert visible_tag(ui) == "guided-zerotier"  # the code field stays open behind the steps
+
+
 def test_back_goes_one_question_back_and_restarting_is_clean(ui):
     start(ui)
     choose(ui, "Share my game")

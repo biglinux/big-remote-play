@@ -56,6 +56,8 @@ The 2.x enforcer also moved Telegram, speech and browser streams into the shared
 | Output changed to the headset during the stream | unset | −20.0 dB (capture followed) | −19.9 dB | unchanged |
 | Only the other computer, 5.1 client mutes the host | `sink-sunshine-stereo` | −17.4 dB (bridge) | silent, as chosen | link removed |
 | Sunshine killed during a host-muting session | unset | — | output restored by Big Remote Play | no links |
+| Stop sharing after a host-muting session, JamesDSP follows the output by itself | unset | — | −22.4 dB | nothing added; `end` took 0.05 s |
+| Stop sharing, JamesDSP left linked to nothing (the incident, forced by removing its links after Sunshine exited) | unset | — | silent → −22.6 dB | JamesDSP output linked to the device after 2 s; JamesDSP moved it itself on the next output change |
 | 44.1 kHz source | unset | −19.6 dB | −19.7 dB | — |
 | Output volume at 50 % | unset | −19.8 dB (unchanged) | — | volume restored |
 
@@ -66,7 +68,7 @@ The first bridge attempt used `module-loopback`. JamesDSP captured the loopback'
 - Discovery: parser, non-ASCII descriptions, output kinds from properties, verified monitors, a microphone that carries a monitor-like name, no server, no outputs, unreadable server.
 - Configuration: `audio_sink` for each mode, never a microphone or `@DEFAULT_AUDIO_SOURCE@`; unknown `sunshine.conf` options and `virtual_sink` preserved; previous file kept.
 - Bridges: each measured Sunshine behavior, refusal into virtual outputs, no microphone source, cycle check, surround to stereo.
-- Session: no writes in Automatic, idempotent reconcile, only our links removed (id and ports re-checked), restoring the output after a Sunshine crash, never overriding a newer choice, following an output change, moving a microphone capture back, leaving Steam's capture alone, private session record, crash recovery and adoption, removal of 2.x leftovers, corrupt records.
+- Session: no writes in Automatic, idempotent reconcile, only our links removed (id and ports re-checked), restoring the output after a Sunshine crash, never overriding a newer choice, reconnecting a program left without an output when Sunshine exits (only when still unlinked after the wait, never into a virtual output, mono devices, also after a crash, recorded before **Stop sharing**), following an output change, moving a microphone capture back, leaving Steam's capture alone, private session record, crash recovery and adoption, removal of 2.x leftovers, corrupt records.
 - Watcher: reacts to default and capture events, ignores application streams.
 - Interface: labels, migration of the old "Other computer" choice, virtual outputs not offered, stale status rejected, test-tone results in words.
 - Sunshine process: a zombie no longer blocks a new start; a Sunshine that ignores SIGTERM is killed and collected.

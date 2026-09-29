@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-09-29 00:00+0000\n"
+"POT-Creation-Date: 2026-09-29 23:34+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Romanian\n"
@@ -25,6 +25,10 @@ msgstr ""
 "Valoarea 0 urmează cererea celuilalt computer. Limitează doar fluxul video, "
 "nu întregul trafic de rețea."
 
+#: src/big_remote_play/ui/private_network_view.py:93
+msgid "1. Account"
+msgstr "1. Cont"
+
 #: src/big_remote_play/ui/connection_guides.py:48
 msgid "1. Check internet reachability"
 msgstr "1. Verifică accesul la internet"
@@ -37,13 +41,13 @@ msgstr "1. Alegeți ce partajați"
 # line: 819
 # line: 826
 # line: 1988
-#: src/big_remote_play/ui/private_network_view.py:1045
+#: src/big_remote_play/ui/private_network_view.py:1074
 msgid "1. Create Account"
 msgstr "1. Creare cont"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1995
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "1. Identification"
 msgstr "1. Identificare"
 
@@ -51,7 +55,7 @@ msgstr "1. Identificare"
 msgid "1. Install Headscale on the server"
 msgstr "1. Instalați Headscale pe server"
 
-#: src/big_remote_play/ui/guest_view.py:713
+#: src/big_remote_play/ui/guest_view.py:733
 msgid "1080p · 60 FPS · 20 Mbps"
 msgstr "1080p · 60 FPS · 20 Mbps"
 
@@ -59,7 +63,7 @@ msgstr "1080p · 60 FPS · 20 Mbps"
 msgid "1280 × 720 — slow connections"
 msgstr "1280 × 720 — conexiuni lente"
 
-#: src/big_remote_play/ui/guest_view.py:715
+#: src/big_remote_play/ui/guest_view.py:735
 msgid "1440p · 60 FPS · 40 Mbps"
 msgstr "1440p · 60 FPS · 40 Mbps"
 
@@ -77,33 +81,41 @@ msgstr "2. Domeniu și HTTPS"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1989
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "2. Invitation"
 msgstr "2. Invitație"
 
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "2. Join"
 msgstr "2. Alăturare"
 
-#: src/big_remote_play/ui/host_view.py:843
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "2. Network"
+msgstr "2. Rețea"
+
+#: src/big_remote_play/ui/host_view.py:902
 msgid "2. Start sharing"
 msgstr "2. Începeți partajarea"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1997
-#: src/big_remote_play/ui/private_network_view.py:1064
+#: src/big_remote_play/ui/private_network_view.py:1093
 msgid "3. Authorization"
 msgstr "3. Autorizare"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1990
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "3. Connect"
 msgstr "3. Conectare"
 
 #: src/big_remote_play/ui/host_view.py:733
 msgid "3. Connect the other PC"
 msgstr "3. Conectați celălalt calculator"
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "3. Join"
+msgstr "3. Intrare"
 
 #: src/big_remote_play/ui/connection_guides.py:118
 msgid "3. Open only the server's ports"
@@ -121,15 +133,19 @@ msgstr "30 de zile"
 msgid "4. Allow only the streaming ports"
 msgstr "4. Permite numai porturile de streaming"
 
+#: src/big_remote_play/ui/private_network_view.py:103
+msgid "4. Approve"
+msgstr "4. Aprobare"
+
 #: src/big_remote_play/ui/connection_guides.py:124
 msgid "4. Connect Big Remote Play"
 msgstr "4. Conectați Big Remote Play"
 
-#: src/big_remote_play/ui/guest_view.py:237
+#: src/big_remote_play/ui/guest_view.py:257
 msgid "4K"
 msgstr "4K"
 
-#: src/big_remote_play/ui/guest_view.py:716
+#: src/big_remote_play/ui/guest_view.py:736
 msgid "4K · 60 FPS · 60 Mbps"
 msgstr "4K · 60 FPS · 60 Mbps"
 
@@ -141,7 +157,7 @@ msgstr "5. Intrați în rețeaua privată pe fiecare computer"
 msgid "5. Pair and test from another network"
 msgstr "5. Asociază dispozitivele și testează din altă rețea"
 
-#: src/big_remote_play/ui/guest_view.py:714
+#: src/big_remote_play/ui/guest_view.py:734
 msgid "720p · 60 FPS · 8 Mbps"
 msgstr "720p · 60 FPS · 8 Mbps"
 
@@ -197,6 +213,10 @@ msgstr ""
 "1080 este cea mai clară. Apoi ecranul ales revine la normal. Alegeți mai "
 "întâi un ecran mai sus."
 
+#: src/big_remote_play/ui/host_view.py:749
+msgid "A stream is open on this computer"
+msgstr "Pe acest computer este deschis un stream"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 84
 #: src/big_remote_play/ui/sunshine_preferences.py:109
@@ -248,15 +268,15 @@ msgstr "Cuantizare adaptivă bazată pe varianță AMF (VBAQ)"
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 313
 # line: 349
-#: src/big_remote_play/host/sunshine_manager.py:604
-#: src/big_remote_play/host/sunshine_manager.py:635
+#: src/big_remote_play/host/sunshine_manager.py:656
+#: src/big_remote_play/host/sunshine_manager.py:687
 #, python-brace-format
 msgid "API Error: {}"
 msgstr "Eroare API: {}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:71
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "API access"
 msgstr "Acces API"
@@ -280,13 +300,13 @@ msgstr "Token API"
 msgid "About"
 msgstr "Despre"
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "About this VPN"
 msgstr "Despre acest VPN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1988
-#: src/big_remote_play/ui/private_network_view.py:1046
+#: src/big_remote_play/ui/private_network_view.py:1075
 msgid "Access Tailscale"
 msgstr "Accesați Tailscale"
 
@@ -347,8 +367,8 @@ msgid "Active - No devices"
 msgstr "Activ - Niciun dispozitiv"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 864
-#: src/big_remote_play/ui/host_view.py:1790
-#: src/big_remote_play/ui/host_view.py:1806
+#: src/big_remote_play/ui/host_view.py:2049
+#: src/big_remote_play/ui/host_view.py:2065
 msgid "Active - Waiting for Connections"
 msgstr "Activ – se așteaptă conexiuni"
 
@@ -359,13 +379,13 @@ msgid "Active Connection"
 msgstr "Conexiune activă"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 149
-#: src/big_remote_play/ui/guest_view.py:786
+#: src/big_remote_play/ui/guest_view.py:806
 msgid "Active Session"
 msgstr "Sesiune activă"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 560
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 598
-#: src/big_remote_play/ui/guest_view.py:1447
+#: src/big_remote_play/ui/guest_view.py:1467
 msgid "Active Stream"
 msgstr "Flux activ"
 
@@ -377,7 +397,7 @@ msgid "Active devices: {}"
 msgstr "{} dispozitive active"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:2731
+#: src/big_remote_play/ui/host_view.py:2998
 msgid "Add Detected Games"
 msgstr "Adaugă jocurile detectate"
 
@@ -449,7 +469,7 @@ msgstr "Adaugă-ți telefonul, laptopul, televizorul sau alt computer."
 msgid "Add {name} to favorites"
 msgstr "Adaugă {name} la favorite"
 
-#: src/big_remote_play/ui/host_view.py:867
+#: src/big_remote_play/ui/host_view.py:926
 msgid "Additional settings"
 msgstr "Setări suplimentare"
 
@@ -478,7 +498,7 @@ msgstr ""
 "Adaugă date pentru corectarea erorilor (FEC). Folosește mai multă lățime de "
 "bandă și nu remediază o conexiune lentă."
 
-#: src/big_remote_play/ui/guest_view.py:529
+#: src/big_remote_play/ui/guest_view.py:549
 msgid ""
 "Adjust how the mouse, keyboard, touchscreen, and controllers behave while "
 "connected."
@@ -524,8 +544,8 @@ msgstr "Mod avansat"
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 79
 #: src/big_remote_play/ui/guided_setup.py:246
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:702
 #: src/big_remote_play/ui/sunshine_preferences.py:104
 msgid "Advanced options"
 msgstr "Opțiuni avansate"
@@ -543,18 +563,18 @@ msgstr "Setări avansate ale serverului"
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "Setări avansate în browser (Sunshine)"
 
-#: src/big_remote_play/ui/host_view.py:1563
+#: src/big_remote_play/ui/host_view.py:1821
 msgid ""
 "Advanced: IP addresses for manual connection when automatic discovery fails."
 msgstr ""
 "Avansat: adrese IP pentru conectarea manuală când descoperirea automată "
 "eșuează."
 
-#: src/big_remote_play/ui/host_view.py:1525
+#: src/big_remote_play/ui/host_view.py:1783
 msgid "After step 2, the other PC appears here."
 msgstr "După pasul 2, celălalt PC apare aici."
 
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1076
 msgid ""
 "All participants need to sign in so their PCs join the same Private Network."
 msgstr ""
@@ -569,7 +589,7 @@ msgstr ""
 "Toate modificările dumneavoastră din Big Remote Play vor fi restabilite! "
 "Aceasta include setările Sunshine și Moonlight."
 
-#: src/big_remote_play/ui/host_view.py:1653
+#: src/big_remote_play/ui/host_view.py:1911
 #: src/big_remote_play/ui/network_common.py:141
 #: src/big_remote_play/ui/network_common.py:165
 #: src/big_remote_play/ui/network_dashboard.py:291
@@ -606,7 +626,7 @@ msgstr ""
 msgid "Allow Slow HEVC Encoding"
 msgstr "Permite codarea HEVC lentă"
 
-#: src/big_remote_play/ui/host_view.py:1650
+#: src/big_remote_play/ui/host_view.py:1908
 msgid "Allow Sunshine through the firewall?"
 msgstr "Permiteți Sunshine prin firewall?"
 
@@ -615,6 +635,10 @@ msgstr "Permiteți Sunshine prin firewall?"
 #: src/big_remote_play/ui/sunshine_preferences.py:625
 msgid "Allow fallback to software encoding"
 msgstr "Permite revenirea la codificarea software."
+
+#: src/big_remote_play/ui/host_view.py:796
+msgid "Allow in firewall"
+msgstr "Permite în firewall"
 
 #: src/big_remote_play/ui/host_view.py:554
 msgid "Allow internet access to administration"
@@ -645,7 +669,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 398
-#: src/big_remote_play/ui/host_view.py:1537
+#: src/big_remote_play/ui/host_view.py:1795
 #: src/big_remote_play/ui/sunshine_preferences.py:624
 msgid "Allowed"
 msgstr "Permis"
@@ -679,11 +703,11 @@ msgstr "Permite invitaților să controleze sistemul gazdă cu tastatura."
 msgid "Allows guests to control the host system with the mouse"
 msgstr "Permite invitaților să controleze sistemul gazdă cu mouse-ul."
 
-#: src/big_remote_play/ui/guest_view.py:447
+#: src/big_remote_play/ui/guest_view.py:467
 msgid "Allows more than one controller to be sent to the game PC."
 msgstr "Permite trimiterea mai multor controlere către computerul de jocuri."
 
-#: src/big_remote_play/ui/guest_view.py:335
+#: src/big_remote_play/ui/guest_view.py:355
 msgid "Allows unusually high values. Use only on a fast, stable network."
 msgstr ""
 "Permite valori neobișnuit de mari. Folosește numai într-o rețea rapidă și "
@@ -703,11 +727,11 @@ msgstr ""
 msgid "Almost there"
 msgstr "Aproape gata"
 
-#: src/big_remote_play/ui/private_network_view.py:518
+#: src/big_remote_play/ui/private_network_view.py:546
 msgid "Already connected"
 msgstr "Deja conectat"
 
-#: src/big_remote_play/ui/guest_view.py:381
+#: src/big_remote_play/ui/guest_view.py:401
 msgid "Also play sound on the game PC"
 msgstr "Redă sunetul și pe computerul de jocuri"
 
@@ -719,7 +743,7 @@ msgstr "Redă sunetul și pe acest computer"
 msgid "Also use IPv6"
 msgstr "Folosește și IPv6"
 
-#: src/big_remote_play/ui/guest_view.py:405
+#: src/big_remote_play/ui/guest_view.py:425
 #: src/big_remote_play/ui/history_dialog.py:74
 msgid "Always"
 msgstr "Întotdeauna"
@@ -750,7 +774,7 @@ msgstr ""
 msgid "An administrator must approve this computer"
 msgstr "Un administrator trebuie să aprobe acest computer"
 
-#: src/big_remote_play/ui/host_view.py:1030
+#: src/big_remote_play/ui/host_view.py:1089
 msgid ""
 "Another device is playing now, and Moonlight pairs only when nobody is "
 "playing: the new device shows “The computer is currently in a game”. End the "
@@ -787,7 +811,7 @@ msgstr "Detalii aplicație"
 msgid "Application Name"
 msgstr "Numele aplicației"
 
-#: src/big_remote_play/ui/host_view.py:920
+#: src/big_remote_play/ui/host_view.py:979
 msgid "Application diagnostics"
 msgstr "Diagnostic aplicație"
 
@@ -798,14 +822,14 @@ msgid "Application menu"
 msgstr "Meniul aplicației"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 785
-#: src/big_remote_play/ui/guest_view.py:1934
+#: src/big_remote_play/ui/guest_view.py:1982
 #: src/big_remote_play/ui/host_view.py:328
 #: src/big_remote_play/ui/sunshine_preferences.py:317
 msgid "Apply"
 msgstr "Aplică"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 109
-#: src/big_remote_play/ui/guest_view.py:133
+#: src/big_remote_play/ui/guest_view.py:153
 msgid "Apply and Reconnect"
 msgstr "Aplică și reconectează"
 
@@ -818,7 +842,7 @@ msgid "Apply to Running Server"
 msgstr "Aplică pe serverul care rulează"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 231
-#: src/big_remote_play/ui/guest_view.py:890
+#: src/big_remote_play/ui/guest_view.py:910
 msgid "Applying settings..."
 msgstr "Aplicarea setărilor..."
 
@@ -833,7 +857,11 @@ msgstr "Aprobă"
 msgid "Approve a waiting computer"
 msgstr "Aprobă un computer în așteptare"
 
-#: src/big_remote_play/ui/private_network_view.py:1031
+#: src/big_remote_play/ui/private_network_view.py:104
+msgid "Approve each computer"
+msgstr "Aprobați fiecare computer"
+
+#: src/big_remote_play/ui/private_network_view.py:1060
 msgid "Approve if needed"
 msgstr "Aprobați, dacă este necesar"
 
@@ -850,7 +878,7 @@ msgstr ""
 msgid "Approve on the ZeroTier website"
 msgstr "Aprobă pe site-ul ZeroTier"
 
-#: src/big_remote_play/ui/guest_view.py:1584
+#: src/big_remote_play/ui/guest_view.py:1609
 msgid "Approve on the game PC"
 msgstr "Aprobați pe calculatorul cu jocul"
 
@@ -877,11 +905,11 @@ msgstr "Fișier aplicații"
 msgid "Are You Absolutely Sure?"
 msgstr "Sunteți absolut sigur?"
 
-#: src/big_remote_play/ui/guest_view.py:473
+#: src/big_remote_play/ui/guest_view.py:493
 msgid "Ask the game PC to optimize the game for streaming"
 msgstr "Cere computerului de jocuri să optimizeze jocul pentru streaming"
 
-#: src/big_remote_play/ui/private_network_view.py:1023
+#: src/big_remote_play/ui/private_network_view.py:1052
 msgid ""
 "Ask the network administrator for the server address and, optionally, a one-"
 "time auth key."
@@ -889,18 +917,20 @@ msgstr ""
 "Cereți administratorului rețelei adresa serverului și, opțional, o cheie de "
 "autentificare de unică folosință."
 
-#: src/big_remote_play/ui/private_network_view.py:689
+#: src/big_remote_play/ui/private_network_view.py:717
 msgid "Ask the network owner, or look in ZeroTier Central → Networks"
 msgstr ""
 "Întrebați proprietarul rețelei sau căutați în ZeroTier Central → Networks"
 
-#: src/big_remote_play/ui/guided_setup.py:301
+#: src/big_remote_play/ui/guided_setup.py:302
 msgid ""
 "Ask the person who created the ZeroTier network to send it. If nobody has a "
-"network yet, Tailscale is the simplest way to start."
+"network yet, one of you creates it for free in ZeroTier Central, or you use "
+"Tailscale, the simplest way to start."
 msgstr ""
-"Cere-l persoanei care a creat rețeaua ZeroTier. Dacă nimeni nu are încă o "
-"rețea, Tailscale este cel mai simplu mod de a începe."
+"Cereți codul persoanei care a creat rețeaua ZeroTier. Dacă nimeni nu are "
+"încă o rețea, unul dintre voi o creează gratuit în ZeroTier Central – sau "
+"folosiți Tailscale, cel mai simplu mod de a începe."
 
 #: src/big_remote_play/ui/network_dashboard.py:346
 #: src/big_remote_play/ui/zerotier_join.py:51
@@ -921,15 +951,15 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 224
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 352
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 128
-#: src/big_remote_play/ui/guest_view.py:390
-#: src/big_remote_play/ui/guest_view.py:520
-#: src/big_remote_play/ui/guest_view.py:547
+#: src/big_remote_play/ui/guest_view.py:410
+#: src/big_remote_play/ui/guest_view.py:540
+#: src/big_remote_play/ui/guest_view.py:567
 #: src/big_remote_play/ui/host_view.py:472
 msgid "Audio"
 msgstr "Audio"
 
-#: src/big_remote_play/ui/host_view.py:1601
-#: src/big_remote_play/ui/host_view.py:1634
+#: src/big_remote_play/ui/host_view.py:1859
+#: src/big_remote_play/ui/host_view.py:1892
 msgid ""
 "Audio changes apply the next time you start sharing. The current output is "
 "unchanged."
@@ -937,7 +967,7 @@ msgstr ""
 "Modificările audio se aplică la următoarea pornire a partajării. Ieșirea "
 "curentă rămâne neschimbată."
 
-#: src/big_remote_play/ui/guest_view.py:376
+#: src/big_remote_play/ui/guest_view.py:396
 msgid "Audio layout"
 msgstr "Configurație audio"
 
@@ -949,27 +979,28 @@ msgstr "Audio și video"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 865
-#: src/big_remote_play/ui/private_network_view.py:656
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:673
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:684
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:701
+#: src/big_remote_play/ui/private_network_view.py:702
 msgid "Auth Key"
 msgstr "Cheie de autentificare"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1331
+#: src/big_remote_play/ui/host_view.py:1224
+#: src/big_remote_play/ui/host_view.py:1585
 msgid "Authentication Failed"
 msgstr "Autentificare eșuată"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 312
-#: src/big_remote_play/host/sunshine_manager.py:627
+#: src/big_remote_play/host/sunshine_manager.py:679
 msgid "Authentication Failed. Check the current password."
 msgstr "Autentificare eșuată. Verificați parola actuală."
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 312
-#: src/big_remote_play/host/sunshine_manager.py:602
+#: src/big_remote_play/host/sunshine_manager.py:654
 msgid "Authentication Failed. Configure a user in Sunshine."
 msgstr "Autentificare eșuată. Configurați un utilizator în Sunshine."
 
@@ -1003,11 +1034,11 @@ msgstr "Detectare automată (Recomandat)"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 48
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 214
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 772
-#: src/big_remote_play/ui/guest_view.py:233
+#: src/big_remote_play/ui/guest_view.py:253
 #: src/big_remote_play/ui/host_view.py:147
 #: src/big_remote_play/ui/host_view.py:232
 #: src/big_remote_play/ui/host_view.py:404
-#: src/big_remote_play/ui/host_view.py:1077
+#: src/big_remote_play/ui/host_view.py:1328
 #: src/big_remote_play/ui/main_window.py:678
 msgid "Automatic"
 msgstr "Automat"
@@ -1015,20 +1046,20 @@ msgstr "Automat"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 180
 # line: 191
-#: src/big_remote_play/ui/guest_view.py:316
+#: src/big_remote_play/ui/guest_view.py:336
 msgid "Automatic (Recommended)"
 msgstr "Automat (recomandat)"
 
 #: src/big_remote_play/ui/host_view.py:321
-#: src/big_remote_play/ui/host_view.py:1020
+#: src/big_remote_play/ui/host_view.py:1079
 msgid "Automatic capture and encoding"
 msgstr "Captură și codare automată"
 
-#: src/big_remote_play/ui/guest_view.py:318
+#: src/big_remote_play/ui/guest_view.py:338
 msgid "Automatic mode chooses the best format supported by both computers."
 msgstr "Modul automat alege cel mai bun format acceptat de ambele computere."
 
-#: src/big_remote_play/ui/host_view.py:878
+#: src/big_remote_play/ui/host_view.py:937
 msgid ""
 "Automatic options below are chosen by Sunshine when sharing starts, not "
 "measurements of an active stream."
@@ -1044,7 +1075,7 @@ msgstr ""
 "Opțiunea Automat alege metoda care funcționează deja pe acest computer. "
 "Alege alta doar dacă ai nevoie."
 
-#: src/big_remote_play/ui/host_view.py:876
+#: src/big_remote_play/ui/host_view.py:935
 msgid "Automatic settings and video limit"
 msgstr "Setări automate și limită video"
 
@@ -1065,23 +1096,23 @@ msgstr ""
 "Modul automat funcționează în medii desktop diferite. Alegeți o metodă anume "
 "doar pentru depanare."
 
-#: src/big_remote_play/ui/guest_view.py:161
+#: src/big_remote_play/ui/guest_view.py:181
 #, python-brace-format
 msgid "Automatic · {resolution} · {frame_rate} · {bitrate}"
 msgstr "Automat · {resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:1618
+#: src/big_remote_play/ui/host_view.py:1876
 msgid "Automatic — use the current output"
 msgstr "Automat — folosește ieșirea curentă"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 112
-#: src/big_remote_play/ui/guest_view.py:1232
+#: src/big_remote_play/ui/guest_view.py:1252
 #, python-brace-format
 msgid "Available at {}"
 msgstr "Disponibil la {}"
 
-#: src/big_remote_play/ui/host_view.py:808
+#: src/big_remote_play/ui/host_view.py:867
 msgid "Available over the internet"
 msgstr "Disponibil prin internet"
 
@@ -1129,7 +1160,7 @@ msgstr "Copia de rezervă a fost salvată."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 383
-#: src/big_remote_play/ui/guest_view.py:234
+#: src/big_remote_play/ui/guest_view.py:254
 msgid "Balanced"
 msgstr "Echilibrat"
 
@@ -1179,11 +1210,11 @@ msgstr ""
 msgid "Bind Address"
 msgstr "Adresă de ascultare"
 
-#: src/big_remote_play/ui/host_view.py:1537
+#: src/big_remote_play/ui/host_view.py:1795
 msgid "Blocked"
 msgstr "Blocat"
 
-#: src/big_remote_play/ui/host_view.py:1534
+#: src/big_remote_play/ui/host_view.py:1792
 msgid "Blocked until enabled again"
 msgstr "Blocat până la reactivare"
 
@@ -1191,7 +1222,7 @@ msgstr "Blocat până la reactivare"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 116
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 125
-#: src/big_remote_play/ui/guest_view.py:289
+#: src/big_remote_play/ui/guest_view.py:309
 msgid "Borderless Window"
 msgstr "Fereastră fără margini"
 
@@ -1253,7 +1284,7 @@ msgstr "Codare CPU"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 227
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 434
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 458
-#: src/big_remote_play/ui/host_view.py:1534
+#: src/big_remote_play/ui/host_view.py:1792
 msgid "Can connect without a new PIN"
 msgstr "Se poate conecta fără un cod PIN nou"
 
@@ -1270,17 +1301,18 @@ msgstr "Se poate conecta fără un cod PIN nou"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1443
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 672
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 784
-#: src/big_remote_play/ui/guest_view.py:1590
-#: src/big_remote_play/ui/guest_view.py:1933
-#: src/big_remote_play/ui/guest_view.py:2159
-#: src/big_remote_play/ui/host_view.py:1302
-#: src/big_remote_play/ui/host_view.py:1393
-#: src/big_remote_play/ui/host_view.py:1423
-#: src/big_remote_play/ui/host_view.py:1652
-#: src/big_remote_play/ui/host_view.py:2515
-#: src/big_remote_play/ui/host_view.py:2610
-#: src/big_remote_play/ui/host_view.py:3015
-#: src/big_remote_play/ui/host_view.py:3356
+#: src/big_remote_play/ui/guest_view.py:1615
+#: src/big_remote_play/ui/guest_view.py:1981
+#: src/big_remote_play/ui/guest_view.py:2207
+#: src/big_remote_play/ui/host_view.py:1211
+#: src/big_remote_play/ui/host_view.py:1556
+#: src/big_remote_play/ui/host_view.py:1650
+#: src/big_remote_play/ui/host_view.py:1680
+#: src/big_remote_play/ui/host_view.py:1910
+#: src/big_remote_play/ui/host_view.py:2782
+#: src/big_remote_play/ui/host_view.py:2877
+#: src/big_remote_play/ui/host_view.py:3282
+#: src/big_remote_play/ui/host_view.py:3623
 #: src/big_remote_play/ui/main_window.py:1139
 #: src/big_remote_play/ui/network_common.py:310
 #: src/big_remote_play/ui/network_dashboard.py:397
@@ -1289,8 +1321,8 @@ msgstr "Se poate conecta fără un cod PIN nou"
 #: src/big_remote_play/ui/preferences.py:261
 #: src/big_remote_play/ui/preferences.py:308
 #: src/big_remote_play/ui/preferences.py:318
-#: src/big_remote_play/ui/private_network_view.py:971
-#: src/big_remote_play/ui/private_network_view.py:999
+#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:1028
 #: src/big_remote_play/ui/remote_connection.py:753
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:246
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:266
@@ -1301,7 +1333,7 @@ msgstr "Anulează"
 msgid "Cancel the request"
 msgstr "Anulează cererea"
 
-#: src/big_remote_play/ui/host_view.py:2909
+#: src/big_remote_play/ui/host_view.py:3176
 msgid "Cannot browse (no access or credentials)"
 msgstr "Nu se poate răsfoi (fără acces sau date de autentificare)"
 
@@ -1314,7 +1346,7 @@ msgstr "Metodă de captură"
 msgid "Capture, compression and stream limits"
 msgstr "Captură, compresie și limite de flux"
 
-#: src/big_remote_play/ui/host_view.py:1092
+#: src/big_remote_play/ui/host_view.py:1343
 #, python-brace-format
 msgid "Capture: {value}"
 msgstr "Captură: {value}"
@@ -1325,7 +1357,7 @@ msgstr "Captură: {value}"
 msgid "Certificate"
 msgstr "Certificat"
 
-#: src/big_remote_play/host/sunshine_manager.py:491
+#: src/big_remote_play/host/sunshine_manager.py:493
 #, python-brace-format
 msgid "Certificate trust error: {}"
 msgstr "Eroare de încredere în certificat: {}"
@@ -1338,7 +1370,7 @@ msgstr "Schimbă"
 msgid "Change method"
 msgstr "Schimbă metoda"
 
-#: src/big_remote_play/ui/guest_view.py:294
+#: src/big_remote_play/ui/guest_view.py:314
 msgid ""
 "Changes here only affect your next connection. They do not change the game "
 "PC's display."
@@ -1360,17 +1392,17 @@ msgstr "Verifică conexiunea"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 203
-#: src/big_remote_play/ui/guest_view.py:496
+#: src/big_remote_play/ui/guest_view.py:516
 msgid "Check for blocked connections automatically"
 msgstr "Verifică automat conexiunile blocate."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1202
-#: src/big_remote_play/ui/host_view.py:2452
+#: src/big_remote_play/ui/host_view.py:2719
 msgid "Check logs for details."
 msgstr "Verificați jurnalele pentru detalii."
 
-#: src/big_remote_play/ui/guest_view.py:1478
-#: src/big_remote_play/ui/guest_view.py:1506
+#: src/big_remote_play/ui/guest_view.py:48
+#: src/big_remote_play/ui/guest_view.py:1531
 msgid ""
 "Check that sharing is running on the game PC and that both computers can "
 "reach each other."
@@ -1386,7 +1418,7 @@ msgstr ""
 "Verifică codul și încearcă din nou. Dacă este corect, este posibil ca "
 "rețeaua să fi fost ștearsă."
 
-#: src/big_remote_play/ui/host_view.py:894
+#: src/big_remote_play/ui/host_view.py:953
 msgid "Check the connection first. Open server tools only when needed."
 msgstr ""
 "Verifică mai întâi conexiunea. Deschide instrumentele serverului numai când "
@@ -1404,7 +1436,7 @@ msgstr "Se verifică ZeroTier…"
 msgid "Checking the keyring…"
 msgstr "Se verifică inelul de chei…"
 
-#: src/big_remote_play/ui/guest_view.py:1797
+#: src/big_remote_play/ui/guest_view.py:1822
 msgid "Checking the network, the computer and Sunshine…"
 msgstr "Se verifică rețeaua, computerul și Sunshine…"
 
@@ -1425,15 +1457,15 @@ msgstr "Se verifică acest computer…"
 msgid "Checking what this network allows…"
 msgstr "Se verifică ce permite această rețea…"
 
-#: src/big_remote_play/ui/host_view.py:2540
+#: src/big_remote_play/ui/host_view.py:2807
 msgid "Checking which devices are already allowed."
 msgstr "Se verifică ce dispozitive sunt deja permise."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 224
-#: src/big_remote_play/ui/guest_view.py:542
+#: src/big_remote_play/ui/guest_view.py:562
 #: src/big_remote_play/ui/host_view.py:322
-#: src/big_remote_play/ui/host_view.py:825
-#: src/big_remote_play/ui/host_view.py:835
+#: src/big_remote_play/ui/host_view.py:884
+#: src/big_remote_play/ui/host_view.py:894
 #: src/big_remote_play/ui/main_window.py:487
 #: src/big_remote_play/ui/main_window.py:1086
 #: src/big_remote_play/ui/remote_connection.py:698
@@ -1451,7 +1483,7 @@ msgstr ""
 "accesa reciproc în mod privat, porniți partajarea pe computerul de jocuri și "
 "conectați-vă folosind adresa lui privată."
 
-#: src/big_remote_play/ui/guest_view.py:954
+#: src/big_remote_play/ui/guest_view.py:974
 msgid "Choose a computer"
 msgstr "Alegeți un calculator"
 
@@ -1466,7 +1498,7 @@ msgstr ""
 "dispozitive."
 
 #: src/big_remote_play/ui/host_view.py:701
-#: src/big_remote_play/ui/host_view.py:1831
+#: src/big_remote_play/ui/host_view.py:2092
 msgid "Choose a source, then start sharing."
 msgstr "Alegeți o sursă și porniți partajarea."
 
@@ -1495,17 +1527,17 @@ msgstr ""
 "chei de autentificare. Tailscale nu le permite clienților OAuth să trimită "
 "invitații sau să partajeze un singur computer."
 
-#: src/big_remote_play/ui/guest_view.py:717
+#: src/big_remote_play/ui/guest_view.py:737
 msgid "Choose resolution, frame rate and video data rate below."
 msgstr "Alege mai jos rezoluția, frecvența cadrelor și rata de date video."
 
-#: src/big_remote_play/ui/guest_view.py:379
+#: src/big_remote_play/ui/guest_view.py:399
 msgid ""
 "Choose surround sound only when the speakers on this computer support it."
 msgstr ""
 "Alege sunet surround numai dacă difuzoarele acestui computer îl acceptă."
 
-#: src/big_remote_play/ui/guest_view.py:2274
+#: src/big_remote_play/ui/guest_view.py:2322
 msgid ""
 "Choose the display on the game PC under Share → Preferences → Hardware and "
 "Capture. Reconnect after changing it."
@@ -1513,7 +1545,7 @@ msgstr ""
 "Alegeți monitorul pe calculatorul cu jocul, la Partajare → Preferințe → "
 "Hardware și captură. Reconectați-vă după modificare."
 
-#: src/big_remote_play/ui/guest_view.py:522
+#: src/big_remote_play/ui/guest_view.py:542
 msgid ""
 "Choose the sound format used on this computer and whether sound should also "
 "play on the game PC."
@@ -1525,7 +1557,7 @@ msgstr ""
 msgid "Choose this computer from the list."
 msgstr "Alegeți acest calculator din listă."
 
-#: src/big_remote_play/ui/host_view.py:936
+#: src/big_remote_play/ui/host_view.py:995
 msgid "Clear"
 msgstr "Șterge"
 
@@ -1539,7 +1571,7 @@ msgid "Clear Everything"
 msgstr "Șterge tot"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 97
-#: src/big_remote_play/ui/host_view.py:935
+#: src/big_remote_play/ui/host_view.py:994
 msgid "Clear Logs"
 msgstr "Șterge jurnalele"
 
@@ -1557,11 +1589,12 @@ msgstr "Ștergeți istoricul conexiunilor?"
 # line: 85
 # line: 126
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1232
-#: src/big_remote_play/ui/guest_view.py:1780
-#: src/big_remote_play/ui/guest_view.py:1836
-#: src/big_remote_play/ui/guided_setup.py:303
-#: src/big_remote_play/ui/host_view.py:1158
-#: src/big_remote_play/ui/host_view.py:2457
+#: src/big_remote_play/ui/guest_view.py:1805
+#: src/big_remote_play/ui/guest_view.py:1869
+#: src/big_remote_play/ui/guest_view.py:1884
+#: src/big_remote_play/ui/guided_setup.py:305
+#: src/big_remote_play/ui/host_view.py:1409
+#: src/big_remote_play/ui/host_view.py:2724
 #: src/big_remote_play/ui/installer_window.py:76
 msgid "Close"
 msgstr "Închide"
@@ -1571,9 +1604,15 @@ msgid "Close and open this window again to keep looking."
 msgstr ""
 "Închideți și redeschideți această fereastră pentru a continua căutarea."
 
-#: src/big_remote_play/ui/guest_view.py:479
+#: src/big_remote_play/ui/guest_view.py:499
 msgid "Close the game on the game PC when streaming ends"
 msgstr "Închide jocul pe computerul de jocuri când se termină streamingul"
+
+#: src/big_remote_play/ui/host_view.py:764
+msgid "Close the stream on every device so a new device can pair"
+msgstr ""
+"Închide streamul pe toate dispozitivele, ca un dispozitiv nou să se poată "
+"asocia"
 
 #: src/big_remote_play/ui/connection_guides.py:66
 #: src/big_remote_play/ui/connection_guides.py:116
@@ -1585,7 +1624,7 @@ msgstr "Documentație Cloudflare pentru modul exclusiv DNS"
 msgid "Code for this computer"
 msgstr "Codul acestui computer"
 
-#: src/big_remote_play/ui/guest_view.py:362
+#: src/big_remote_play/ui/guest_view.py:382
 msgid "Codec, HDR, data limit and connection warnings"
 msgstr "Codec, HDR, limită de date și avertismente de conexiune"
 
@@ -1612,8 +1651,8 @@ msgid "Command"
 msgstr "Comandă"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 969
-#: src/big_remote_play/ui/guest_view.py:2246
-#: src/big_remote_play/ui/guest_view.py:2251
+#: src/big_remote_play/ui/guest_view.py:2294
+#: src/big_remote_play/ui/guest_view.py:2299
 msgid "Common shortcuts used during streaming"
 msgstr "Scurtături comune utilizate în timpul streaming-ului"
 
@@ -1621,7 +1660,7 @@ msgstr "Scurtături comune utilizate în timpul streaming-ului"
 msgid "Complete the installation in the external terminal, then check again."
 msgstr "Finalizați instalarea în terminalul extern și verificați din nou."
 
-#: src/big_remote_play/ui/private_network_view.py:788
+#: src/big_remote_play/ui/private_network_view.py:817
 msgid "Complete the sign-in in your browser."
 msgstr "Finalizați autentificarea în browser."
 
@@ -1630,11 +1669,11 @@ msgid ""
 "Components are still missing. Finish the installation, then check again."
 msgstr "Încă lipsesc componente. Finalizați instalarea și verificați din nou."
 
-#: src/big_remote_play/ui/host_view.py:1093
+#: src/big_remote_play/ui/host_view.py:1344
 msgid "Compression: H.264 only"
 msgstr "Compresie: numai H.264"
 
-#: src/big_remote_play/ui/host_view.py:1093
+#: src/big_remote_play/ui/host_view.py:1344
 msgid "Compression: HEVC/AV1 when supported"
 msgstr "Compresie: HEVC/AV1 când sunt acceptate"
 
@@ -1642,11 +1681,11 @@ msgstr "Compresie: HEVC/AV1 când sunt acceptate"
 msgid "Computer name on the network"
 msgstr "Numele computerului în rețea"
 
-#: src/big_remote_play/ui/guest_view.py:1810
+#: src/big_remote_play/ui/guest_view.py:1835
 msgid "Computer online"
 msgstr "Computerul este online"
 
-#: src/big_remote_play/ui/guest_view.py:581
+#: src/big_remote_play/ui/guest_view.py:601
 msgid "Computers this PC streamed from, kept only on this computer"
 msgstr ""
 "Computerele de la care acest PC a primit streaming, păstrate doar pe acest "
@@ -1662,7 +1701,7 @@ msgstr "Fișiere de configurare"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 226
-#: src/big_remote_play/ui/host_view.py:943
+#: src/big_remote_play/ui/host_view.py:1002
 msgid "Configuration Directory"
 msgstr "Dosarul de configurare"
 
@@ -1708,12 +1747,12 @@ msgid "Configured for the next sharing session"
 msgstr "Configurat pentru următoarea sesiune de partajare"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 776
-#: src/big_remote_play/ui/host_view.py:1661
+#: src/big_remote_play/ui/host_view.py:1919
 msgid "Configuring firewall... (Password may be requested)"
 msgstr "Configurarea firewall-ului... (Este posibil să vi se ceară parola)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:2997
+#: src/big_remote_play/ui/host_view.py:3264
 msgid "Confirm New Password"
 msgstr "Confirmați parola nouă"
 
@@ -1722,47 +1761,47 @@ msgstr "Confirmați parola nouă"
 # line: 962
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 224
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 417
-#: src/big_remote_play/ui/guest_view.py:870
-#: src/big_remote_play/ui/guest_view.py:883
-#: src/big_remote_play/ui/guest_view.py:1002
-#: src/big_remote_play/ui/guest_view.py:1314
-#: src/big_remote_play/ui/guest_view.py:1757
+#: src/big_remote_play/ui/guest_view.py:890
+#: src/big_remote_play/ui/guest_view.py:903
+#: src/big_remote_play/ui/guest_view.py:1022
+#: src/big_remote_play/ui/guest_view.py:1334
+#: src/big_remote_play/ui/guest_view.py:1782
 #: src/big_remote_play/ui/main_window.py:115
 #: src/big_remote_play/ui/main_window.py:827
 #: src/big_remote_play/ui/main_window.py:992
 #: src/big_remote_play/ui/main_window.py:1218
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 #: src/big_remote_play/ui/remote_connection.py:453
 #: src/big_remote_play/ui/remote_connection.py:481
 msgid "Connect"
 msgstr "Conectare"
 
-#: src/big_remote_play/ui/guest_view.py:598
+#: src/big_remote_play/ui/guest_view.py:618
 #: src/big_remote_play/ui/history_dialog.py:126
 msgid "Connect again"
 msgstr "Conectează-te din nou"
 
-#: src/big_remote_play/ui/guest_view.py:566
-#: src/big_remote_play/ui/guest_view.py:1247
+#: src/big_remote_play/ui/guest_view.py:586
+#: src/big_remote_play/ui/guest_view.py:1267
 msgid "Connect by address"
 msgstr "Conectare prin adresă"
 
 #: src/big_remote_play/ui/network_common.py:164
 #: src/big_remote_play/ui/network_dashboard.py:217
-#: src/big_remote_play/ui/private_network_view.py:535
+#: src/big_remote_play/ui/private_network_view.py:563
 msgid "Connect this computer"
 msgstr "Conectează acest computer"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 26
-#: src/big_remote_play/ui/private_network_view.py:103
+#: src/big_remote_play/ui/private_network_view.py:131
 msgid "Connect to Headscale Network"
 msgstr "Conectează-te la rețeaua Headscale"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 36
-#: src/big_remote_play/ui/private_network_view.py:109
+#: src/big_remote_play/ui/private_network_view.py:137
 msgid "Connect to Tailscale Network"
 msgstr "Conectare la rețeaua Tailscale"
 
@@ -1773,7 +1812,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 46
-#: src/big_remote_play/ui/private_network_view.py:115
+#: src/big_remote_play/ui/private_network_view.py:143
 msgid "Connect to ZeroTier Network"
 msgstr "Conectează-te la rețeaua ZeroTier"
 
@@ -1790,7 +1829,7 @@ msgstr "Conectează-te la alt computer"
 msgid "Connect to this server"
 msgstr "Conectează-te la acest server"
 
-#: src/big_remote_play/ui/guest_view.py:1758
+#: src/big_remote_play/ui/guest_view.py:1783
 #: src/big_remote_play/ui/history_dialog.py:127
 #: src/big_remote_play/ui/remote_connection.py:482
 #, python-brace-format
@@ -1798,7 +1837,7 @@ msgid "Connect to {name} again"
 msgstr "Conectează-te din nou la {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 220
-#: src/big_remote_play/ui/guest_view.py:877
+#: src/big_remote_play/ui/guest_view.py:897
 #, python-brace-format
 msgid "Connect to {}"
 msgstr "Conectează-te la {}"
@@ -1828,15 +1867,15 @@ msgstr "Dispozitiv conectat"
 msgid "Connected devices: {}"
 msgstr "Dispozitive conectate: {}"
 
-#: src/big_remote_play/ui/host_view.py:1437
+#: src/big_remote_play/ui/host_view.py:1694
 msgid "Connected now"
 msgstr "Conectate acum"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1907
-#: src/big_remote_play/ui/private_network_view.py:767
-#: src/big_remote_play/ui/private_network_view.py:804
-#: src/big_remote_play/ui/private_network_view.py:839
+#: src/big_remote_play/ui/private_network_view.py:796
+#: src/big_remote_play/ui/private_network_view.py:833
+#: src/big_remote_play/ui/private_network_view.py:868
 msgid "Connected successfully!"
 msgstr "Conectare reușită!"
 
@@ -1853,30 +1892,30 @@ msgstr "Se conectează la rețea…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1848
-#: src/big_remote_play/ui/private_network_view.py:734
+#: src/big_remote_play/ui/private_network_view.py:763
 msgid "Connecting..."
 msgstr "Conectare..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
-#: src/big_remote_play/ui/private_network_view.py:551
-#: src/big_remote_play/ui/private_network_view.py:949
+#: src/big_remote_play/ui/private_network_view.py:579
+#: src/big_remote_play/ui/private_network_view.py:978
 msgid "Connection Details"
 msgstr "Detaliile conexiunii"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
-#: src/big_remote_play/ui/private_network_view.py:553
-#: src/big_remote_play/ui/private_network_view.py:1014
+#: src/big_remote_play/ui/private_network_view.py:581
+#: src/big_remote_play/ui/private_network_view.py:1043
 msgid "Connection Log"
 msgstr "Jurnal de conexiune"
 
-#: src/big_remote_play/ui/guest_view.py:500
+#: src/big_remote_play/ui/guest_view.py:520
 msgid "Connection checks"
 msgstr "Verificări ale conexiunii"
 
-#: src/big_remote_play/host/sunshine_manager.py:600
-#: src/big_remote_play/host/sunshine_manager.py:625
+#: src/big_remote_play/host/sunshine_manager.py:652
+#: src/big_remote_play/host/sunshine_manager.py:677
 msgid ""
 "Connection error: Sunshine is unreachable or its certificate does not match"
 msgstr ""
@@ -1884,18 +1923,18 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Connection failed"
 msgstr "Conectarea a eșuat"
 
-#: src/big_remote_play/ui/guest_view.py:580
+#: src/big_remote_play/ui/guest_view.py:600
 #: src/big_remote_play/ui/performance_monitor.py:92
 #: src/big_remote_play/ui/performance_monitor.py:421
 msgid "Connection history"
 msgstr "Istoricul conexiunii"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 381
-#: src/big_remote_play/ui/host_view.py:1562
+#: src/big_remote_play/ui/host_view.py:1820
 msgid "Connection information"
 msgstr "Informații despre conexiune"
 
@@ -1907,7 +1946,7 @@ msgstr "Metodă de conectare"
 msgid "Connection methods"
 msgstr "Metode de conectare"
 
-#: src/big_remote_play/ui/private_network_view.py:361
+#: src/big_remote_play/ui/private_network_view.py:389
 msgid "Connection progress"
 msgstr "Progresul conectării"
 
@@ -1916,7 +1955,7 @@ msgstr "Progresul conectării"
 msgid "Connection quality: {quality}"
 msgstr "Calitatea conexiunii: {quality}"
 
-#: src/big_remote_play/ui/guest_view.py:2214
+#: src/big_remote_play/ui/guest_view.py:2262
 msgid "Connection settings restored"
 msgstr "Setările conexiunii au fost restaurate"
 
@@ -1953,17 +1992,17 @@ msgstr "Containere"
 msgid "Continue"
 msgstr "Continuă"
 
-#: src/big_remote_play/ui/guest_view.py:459
+#: src/big_remote_play/ui/guest_view.py:479
 msgid ""
 "Continues processing the controller when Moonlight is not the focused window."
 msgstr ""
 "Continuă procesarea controlerului când Moonlight nu este fereastra activă."
 
-#: src/big_remote_play/ui/guest_view.py:462
+#: src/big_remote_play/ui/guest_view.py:482
 msgid "Controllers"
 msgstr "Controlere"
 
-#: src/big_remote_play/ui/guest_view.py:260
+#: src/big_remote_play/ui/guest_view.py:280
 msgid ""
 "Controls how much video data is sent each second. Higher values can look "
 "sharper but need a faster connection."
@@ -1971,19 +2010,19 @@ msgstr ""
 "Controlează câte date video sunt trimise în fiecare secundă. Valorile mai "
 "mari pot oferi o imagine mai clară, dar necesită o conexiune mai rapidă."
 
-#: src/big_remote_play/ui/guest_view.py:407
+#: src/big_remote_play/ui/guest_view.py:427
 msgid "Controls shortcuts such as Alt+Tab and the Super key."
 msgstr "Controlează combinații precum Alt+Tab și tasta Super."
 
 #: src/big_remote_play/ui/network_common.py:213
 #: src/big_remote_play/ui/network_common.py:224
-#: src/big_remote_play/ui/private_network_view.py:1081
+#: src/big_remote_play/ui/private_network_view.py:1110
 msgid "Copied"
 msgstr "Copiat"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 843
-#: src/big_remote_play/ui/host_view.py:1749
-#: src/big_remote_play/ui/host_view.py:2719
+#: src/big_remote_play/ui/host_view.py:2008
+#: src/big_remote_play/ui/host_view.py:2986
 msgid "Copied!"
 msgstr "Copiat!"
 
@@ -1991,7 +2030,7 @@ msgstr "Copiat!"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:2665
+#: src/big_remote_play/ui/host_view.py:2932
 #: src/big_remote_play/ui/network_common.py:229
 #: src/big_remote_play/ui/network_common.py:246
 msgid "Copy"
@@ -2001,7 +2040,7 @@ msgstr "Copiază"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:948
+#: src/big_remote_play/ui/host_view.py:1007
 msgid "Copy Path"
 msgstr "Copiază calea"
 
@@ -2009,8 +2048,8 @@ msgstr "Copiază calea"
 msgid "Copy address"
 msgstr "Copiază adresa"
 
-#: src/big_remote_play/ui/host_view.py:772
-#: src/big_remote_play/ui/host_view.py:775
+#: src/big_remote_play/ui/host_view.py:833
+#: src/big_remote_play/ui/host_view.py:836
 msgid "Copy code"
 msgstr "Copiază codul"
 
@@ -2018,7 +2057,7 @@ msgstr "Copiază codul"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:2666
+#: src/big_remote_play/ui/host_view.py:2933
 msgid "Copy logs"
 msgstr "Copiază jurnalele"
 
@@ -2031,12 +2070,12 @@ msgstr "Copiază detaliile tehnice"
 msgid "Copy the private address of {name}"
 msgstr "Copiază adresa privată a lui {name}"
 
-#: src/big_remote_play/ui/host_view.py:1721
+#: src/big_remote_play/ui/host_view.py:1980
 #, python-brace-format
 msgid "Copy the {} value to clipboard"
 msgstr "Copiază valoarea {} în clipboard"
 
-#: src/big_remote_play/ui/host_view.py:775
+#: src/big_remote_play/ui/host_view.py:836
 msgid "Copy this PC's discovery code to the clipboard"
 msgstr "Copiază codul de descoperire al acestui PC"
 
@@ -2049,7 +2088,7 @@ msgstr "Copiază {name} în clipboard"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:1720
+#: src/big_remote_play/ui/host_view.py:1979
 #, python-brace-format
 msgid "Copy {}"
 msgstr "Copiază {}"
@@ -2058,8 +2097,8 @@ msgstr "Copiază {}"
 msgid "Correct colors of HDR screens"
 msgstr "Corectează culorile ecranelor HDR"
 
-#: src/big_remote_play/ui/guest_view.py:1439
-#: src/big_remote_play/ui/guest_view.py:1778
+#: src/big_remote_play/ui/guest_view.py:1459
+#: src/big_remote_play/ui/guest_view.py:1803
 msgid "Could not connect"
 msgstr "Conectarea nu a reușit"
 
@@ -2076,19 +2115,24 @@ msgstr "Nu s-a putut instala ${pkg}."
 msgid "Could not load icon theme: no GTK display"
 msgstr "Nu s-a putut încărca tema de pictograme: niciun afișaj GTK"
 
-#: src/big_remote_play/ui/guest_view.py:1542
+#: src/big_remote_play/ui/guest_view.py:1865
 msgid ""
-"Could not pair with the game PC.\n"
-"Check that the PIN was entered correctly."
+"Could not pair with the game PC. Check that the code was entered on the game "
+"PC, under Share → 3. Connect the other PC. If Moonlight said that a pairing "
+"session already exists, wait a few seconds and try again: the game PC clears "
+"the earlier attempt by itself."
 msgstr ""
-"Nu s-a putut realiza asocierea cu computerul de jocuri.\n"
-"Verifică dacă PIN-ul a fost introdus corect."
+"Asocierea cu PC-ul de joc nu a reușit. Verificați că ați introdus codul pe "
+"PC-ul de joc, la Partajare → 3. Conectați celălalt calculator. Dacă "
+"Moonlight a spus că există deja o sesiune de asociere, așteptați câteva "
+"secunde și încercați din nou: PC-ul de joc șterge singur încercarea "
+"anterioară."
 
 #: src/big_remote_play/ui/sunshine_preferences.py:381
 msgid "Could not read server configuration."
 msgstr "Configurația serverului nu a putut fi citită."
 
-#: src/big_remote_play/ui/guest_view.py:2202
+#: src/big_remote_play/ui/guest_view.py:2250
 msgid "Could not reset the connection settings. Check file permissions."
 msgstr ""
 "Nu s-au putut reseta setările conexiunii. Verifică permisiunile fișierului."
@@ -2103,12 +2147,12 @@ msgstr "Nu s-a putut restaura copia de rezervă"
 msgid "Could not save the change."
 msgstr "Modificarea nu a putut fi salvată."
 
-#: src/big_remote_play/ui/guest_view.py:2038
+#: src/big_remote_play/ui/guest_view.py:2086
 msgid "Could not save the connection settings. Check file permissions."
 msgstr ""
 "Nu s-au putut salva setările conexiunii. Verifică permisiunile fișierului."
 
-#: src/big_remote_play/ui/host_view.py:2208
+#: src/big_remote_play/ui/host_view.py:2469
 msgid "Could not save the server configuration."
 msgstr "Configurația serverului nu a putut fi salvată."
 
@@ -2116,7 +2160,7 @@ msgstr "Configurația serverului nu a putut fi salvată."
 msgid "Could not turn it on. Check the connection details."
 msgstr "Conexiunea nu a putut fi pornită. Verifică detaliile conexiunii."
 
-#: src/big_remote_play/ui/host_view.py:2181
+#: src/big_remote_play/ui/host_view.py:2442
 msgid "Could not update the game library. Existing games were preserved."
 msgstr ""
 "Biblioteca de jocuri nu a putut fi actualizată. Jocurile existente au fost "
@@ -2124,11 +2168,13 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1255
-#: src/big_remote_play/ui/private_network_view.py:1049
+#: src/big_remote_play/ui/private_network_view.py:1078
 msgid "Create Account"
 msgstr "Creează cont"
 
+#: src/big_remote_play/ui/guided_setup.py:306
 #: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "Creează o rețea ZeroTier"
 
@@ -2137,8 +2183,17 @@ msgstr "Creează o rețea ZeroTier"
 msgid "Create a backup"
 msgstr "Creează o copie de rezervă"
 
+#: src/big_remote_play/ui/private_network_view.py:95
+msgid ""
+"Create a free account or sign in. Only the person who owns the network does "
+"this."
+msgstr ""
+"Creați un cont gratuit sau autentificați-vă. Doar proprietarul rețelei face "
+"asta."
+
 #: src/big_remote_play/ui/network_dashboard.py:226
 #: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "Creează o rețea"
 
@@ -2195,12 +2250,12 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 705
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 307
-#: src/big_remote_play/host/sunshine_manager.py:658
+#: src/big_remote_play/host/sunshine_manager.py:710
 msgid "Credentials reset successfully"
 msgstr "Datele de autentificare au fost resetate"
 
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr ""
 "Date de acces care îi permit lui Big Remote Play să gestioneze această rețea."
@@ -2212,17 +2267,17 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 344
-#: src/big_remote_play/host/sunshine_manager.py:634
+#: src/big_remote_play/host/sunshine_manager.py:686
 msgid "Credentials updated successfully"
 msgstr "Datele de autentificare au fost actualizate cu succes"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:2991
+#: src/big_remote_play/ui/host_view.py:3258
 msgid "Current Password"
 msgstr "Parola actuală"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 685
-#: src/big_remote_play/ui/host_view.py:2989
+#: src/big_remote_play/ui/host_view.py:3256
 msgid "Current Username"
 msgstr "Numele de utilizator actual"
 
@@ -2234,11 +2289,11 @@ msgstr "Ieșirea curentă"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 98
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 754
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 765
-#: src/big_remote_play/ui/guest_view.py:238
-#: src/big_remote_play/ui/guest_view.py:247
-#: src/big_remote_play/ui/guest_view.py:272
-#: src/big_remote_play/ui/guest_view.py:1856
-#: src/big_remote_play/ui/guest_view.py:1885
+#: src/big_remote_play/ui/guest_view.py:258
+#: src/big_remote_play/ui/guest_view.py:267
+#: src/big_remote_play/ui/guest_view.py:292
+#: src/big_remote_play/ui/guest_view.py:1904
+#: src/big_remote_play/ui/guest_view.py:1933
 #: src/big_remote_play/ui/host_view.py:344
 msgid "Custom"
 msgstr "Personalizat"
@@ -2252,16 +2307,16 @@ msgstr "Aplicație personalizată"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 90
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 96
-#: src/big_remote_play/ui/guest_view.py:1902
+#: src/big_remote_play/ui/guest_view.py:1950
 msgid "Custom Frame Rate"
 msgstr "Rată de cadre personalizată"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 759
-#: src/big_remote_play/ui/guest_view.py:1873
+#: src/big_remote_play/ui/guest_view.py:1921
 msgid "Custom Resolution"
 msgstr "Rezoluție personalizată"
 
-#: src/big_remote_play/ui/guest_view.py:293
+#: src/big_remote_play/ui/guest_view.py:313
 msgid "Custom image settings"
 msgstr "Setări de imagine personalizate"
 
@@ -2275,8 +2330,8 @@ msgstr "Microfon implicit"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1263
-#: src/big_remote_play/ui/private_network_view.py:902
-#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:931
+#: src/big_remote_play/ui/private_network_view.py:1029
 msgid "Delete"
 msgstr "Șterge"
 
@@ -2288,16 +2343,16 @@ msgstr "Șterge tot"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1895
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Delete entry?"
 msgstr "Ștergeți înregistrarea?"
 
-#: src/big_remote_play/ui/private_network_view.py:902
+#: src/big_remote_play/ui/private_network_view.py:931
 msgid "Delete this saved network"
 msgstr "Șterge această rețea salvată"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:923
+#: src/big_remote_play/ui/host_view.py:982
 msgid "Detailed Logs"
 msgstr "Jurnale detaliate"
 
@@ -2311,7 +2366,7 @@ msgid "Device ID"
 msgstr "ID dispozitiv"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:1370
+#: src/big_remote_play/ui/host_view.py:1627
 msgid "Device Name"
 msgstr "Numele dispozitivului"
 
@@ -2335,7 +2390,7 @@ msgid "Device at {address}"
 msgstr "Dispozitiv la {address}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:2574
+#: src/big_remote_play/ui/host_view.py:2841
 msgid "Device enabled"
 msgstr "Dispozitiv activat"
 
@@ -2354,7 +2409,7 @@ msgstr "Dispozitive"
 msgid "Devices online now: {count}"
 msgstr "Dispozitive online acum: {count}"
 
-#: src/big_remote_play/ui/host_view.py:2510
+#: src/big_remote_play/ui/host_view.py:2777
 msgid ""
 "Devices paired with Sunshine. Disable to block access without re-pairing; "
 "remove to revoke (a new PIN will be required)."
@@ -2362,24 +2417,24 @@ msgstr ""
 "Dispozitive asociate cu Sunshine. Dezactivarea blochează accesul fără o nouă "
 "asociere; eliminarea îl revocă (va fi nevoie de un cod PIN nou)."
 
-#: src/big_remote_play/ui/host_view.py:1437
+#: src/big_remote_play/ui/host_view.py:1694
 msgid "Devices playing on this computer at this moment."
 msgstr "Dispozitive care joacă pe acest computer în acest moment."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:2643
+#: src/big_remote_play/ui/host_view.py:2910
 msgid "Devices updated"
 msgstr "Dispozitivele au fost actualizate"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "Devices, private address and how to add another computer."
 msgstr "Dispozitive, adresa privată și cum adăugați un alt computer."
 
-#: src/big_remote_play/ui/guest_view.py:1781
+#: src/big_remote_play/ui/guest_view.py:1806
 msgid "Diagnose"
 msgstr "Diagnostichează"
 
-#: src/big_remote_play/ui/guest_view.py:1798
+#: src/big_remote_play/ui/guest_view.py:1823
 msgid "Diagnosis"
 msgstr "Diagnostic"
 
@@ -2413,7 +2468,7 @@ msgstr ""
 msgid "Disable"
 msgstr "Dezactivează"
 
-#: src/big_remote_play/ui/host_view.py:1504
+#: src/big_remote_play/ui/host_view.py:1762
 msgid "Disable or remove devices that should no longer connect."
 msgstr ""
 "Dezactivați sau eliminați dispozitivele care nu mai trebuie să se conecteze."
@@ -2473,7 +2528,7 @@ msgstr "Deconectează acest invitat (Admin)"
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 325
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 159
-#: src/big_remote_play/ui/guest_view.py:795
+#: src/big_remote_play/ui/guest_view.py:815
 #: src/big_remote_play/ui/performance_monitor.py:381
 msgid "Disconnected"
 msgstr "Deconectat"
@@ -2484,22 +2539,22 @@ msgstr "Deconectat"
 msgid "Disconnecting..."
 msgstr "Deconectare..."
 
-#: src/big_remote_play/ui/guest_view.py:490
+#: src/big_remote_play/ui/guest_view.py:510
 msgid "Discover game PCs automatically"
 msgstr "Descoperă automat computerele de jocuri"
 
-#: src/big_remote_play/ui/guest_view.py:288
+#: src/big_remote_play/ui/guest_view.py:308
 msgid "Display mode"
 msgstr "Mod de afișare"
 
-#: src/big_remote_play/ui/guest_view.py:342
+#: src/big_remote_play/ui/guest_view.py:362
 msgid "Displays latency, frame rate, and decoding information over the stream."
 msgstr ""
 "Afișează peste flux informații despre latență, frecvența cadrelor și "
 "decodare."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1442
-#: src/big_remote_play/ui/host_view.py:3355
+#: src/big_remote_play/ui/host_view.py:3622
 msgid "Do you want to restore default settings?"
 msgstr "Doriți să restaurați setările implicite?"
 
@@ -2510,8 +2565,8 @@ msgstr "Docker Engine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1137
-#: src/big_remote_play/ui/private_network_view.py:909
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:938
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Domain"
 msgstr "Domeniu"
 
@@ -2548,25 +2603,25 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1704
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit"
 msgstr "Editați"
 
-#: src/big_remote_play/ui/guest_view.py:284
+#: src/big_remote_play/ui/guest_view.py:304
 msgid "Edit custom frame rate"
 msgstr "Editează frecvența de cadre personalizată"
 
-#: src/big_remote_play/ui/guest_view.py:279
+#: src/big_remote_play/ui/guest_view.py:299
 msgid "Edit custom resolution"
 msgstr "Editează rezoluția personalizată"
 
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit this saved network"
 msgstr "Editează această rețea salvată"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:969
+#: src/big_remote_play/ui/private_network_view.py:998
 #, python-brace-format
 msgid "Edit – {}"
 msgstr "Editează – {}"
@@ -2606,7 +2661,7 @@ msgstr "Activare"
 msgid "Enable Gamepad Input"
 msgstr "Activează intrarea de gamepad"
 
-#: src/big_remote_play/ui/guest_view.py:322
+#: src/big_remote_play/ui/guest_view.py:342
 msgid "Enable HDR"
 msgstr "Activează HDR"
 
@@ -2628,7 +2683,7 @@ msgstr "Activează intrarea mouse-ului"
 msgid "Enable System Tray"
 msgstr "Activează Bara de Sistem"
 
-#: src/big_remote_play/ui/guest_view.py:328
+#: src/big_remote_play/ui/guest_view.py:348
 msgid "Enable YUV 4:4:4"
 msgstr "Activează YUV 4:4:4"
 
@@ -2637,7 +2692,7 @@ msgstr "Activează YUV 4:4:4"
 msgid "Enable simultaneous IPv4 and IPv6 support on server"
 msgstr "Activați suportul simultan pentru IPv4 și IPv6 pe server."
 
-#: src/big_remote_play/ui/host_view.py:923
+#: src/big_remote_play/ui/host_view.py:982
 msgid "Enable verbose logging for debugging"
 msgstr "Activați jurnalizarea detaliată pentru depanare"
 
@@ -2652,7 +2707,7 @@ msgstr ""
 "schimbărilor de scenă, dar calitatea video poate fi redusă în timpul "
 "mișcării."
 
-#: src/big_remote_play/ui/host_view.py:1094
+#: src/big_remote_play/ui/host_view.py:1345
 #, python-brace-format
 msgid "Encoding priority: {value}"
 msgstr "Prioritate de codare: {value}"
@@ -2662,6 +2717,11 @@ msgstr "Prioritate de codare: {value}"
 msgid "End Game"
 msgstr "Încheie jocul"
 
+#: src/big_remote_play/ui/host_view.py:760
+#: src/big_remote_play/ui/host_view.py:1245
+msgid "End for everyone"
+msgstr "Oprește pentru toți"
+
 #: src/big_remote_play/ui/performance_monitor.py:563
 msgid ""
 "End the running game gently, or forcefully evict the network address? Ending "
@@ -2670,20 +2730,28 @@ msgstr ""
 "Încheiați jocul în desfășurare în mod normal sau forțați eliminarea adresei "
 "de rețea? Încheierea jocului păstrează dispozitivul asociat."
 
+#: src/big_remote_play/ui/host_view.py:1241
+msgid "End the stream for everyone?"
+msgstr "Opriți streamul pentru toți?"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 325
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter ID"
 msgstr "Introduceți ID-ul"
 
-#: src/big_remote_play/ui/guest_view.py:1874
+#: src/big_remote_play/ui/host_view.py:783
+msgid "Enter Sunshine password"
+msgstr "Introduceți parola Sunshine"
+
+#: src/big_remote_play/ui/guest_view.py:1922
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Introduceți LĂȚIMExÎNĂLȚIME (de exemplu 1920x1080):"
 
-#: src/big_remote_play/ui/private_network_view.py:984
+#: src/big_remote_play/ui/private_network_view.py:1013
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "Introduceți un ID de rețea hexazecimal de 16 caractere."
 
-#: src/big_remote_play/ui/guest_view.py:1632
+#: src/big_remote_play/ui/guest_view.py:1657
 msgid "Enter a hostname or IP address, without a URL or spaces."
 msgstr "Introduceți un nume de gazdă sau o adresă IP, fără URL ori spații."
 
@@ -2691,7 +2759,7 @@ msgstr "Introduceți un nume de gazdă sau o adresă IP, fără URL ori spații.
 msgid "Enter a valid email address."
 msgstr "Introduceți o adresă de e-mail validă."
 
-#: src/big_remote_play/ui/guest_view.py:1893
+#: src/big_remote_play/ui/guest_view.py:1941
 msgid "Enter a whole number of frames per second (1–480)."
 msgstr "Introduceți un număr întreg de cadre pe secundă (1–480)."
 
@@ -2699,41 +2767,60 @@ msgstr "Introduceți un număr întreg de cadre pe secundă (1–480)."
 msgid "Enter another 16-character Network ID"
 msgstr "Introdu alt ID de rețea din 16 caractere"
 
-#: src/big_remote_play/ui/guest_view.py:1338
-#: src/big_remote_play/ui/guest_view.py:1650
-#: src/big_remote_play/ui/host_view.py:1252
-#: src/big_remote_play/ui/host_view.py:1407
+#: src/big_remote_play/ui/guest_view.py:1358
+#: src/big_remote_play/ui/guest_view.py:1675
+#: src/big_remote_play/ui/host_view.py:1503
+#: src/big_remote_play/ui/host_view.py:1664
 msgid "Enter exactly four digits."
 msgstr "Introdu exact patru cifre."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 182
-#: src/big_remote_play/ui/guest_view.py:1903
+#: src/big_remote_play/ui/guest_view.py:1951
 msgid "Enter frames per second (e.g. 75):"
 msgstr "Introduceți cadrele pe secundă (de exemplu 75):"
 
+#: src/big_remote_play/ui/host_view.py:1117
+msgid ""
+"Enter it now, so a device is approved the moment you type its code. "
+"Otherwise Moonlight on the device may give up while you type it."
+msgstr ""
+"Introduceți-o acum, ca un dispozitiv să fie aprobat imediat ce îi scrieți "
+"codul. Altfel, Moonlight de pe dispozitiv poate renunța cât timp o scrieți."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:116
+#: src/big_remote_play/ui/private_network_view.py:144
 msgid "Enter the 16-character Network ID to join a ZeroTier network."
 msgstr ""
 "Introduceți Network ID-ul de 16 caractere pentru a vă alătura unei rețele "
 "ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:746
+#: src/big_remote_play/ui/private_network_view.py:775
 msgid "Enter the Headscale server address."
 msgstr "Introduceți adresa serverului Headscale."
 
 #: src/big_remote_play/ui/network_devices.py:442
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter the ID on this page and choose Connect."
 msgstr "Introduceți ID-ul pe această pagină și alegeți Conectare."
 
-#: src/big_remote_play/ui/host_view.py:1355
+#: src/big_remote_play/ui/host_view.py:1612
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr "Introdu PIN-ul afișat de Moonlight pe celălalt computer."
 
-#: src/big_remote_play/ui/host_view.py:751
-#: src/big_remote_play/ui/host_view.py:1367
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "Enter the code here"
+msgstr "Introduceți codul aici"
+
+#: src/big_remote_play/ui/host_view.py:1121
+msgid ""
+"Enter the current Sunshine user and password, so devices can be approved."
+msgstr ""
+"Introduceți utilizatorul și parola actuale Sunshine, ca dispozitivele să "
+"poată fi aprobate."
+
+#: src/big_remote_play/ui/host_view.py:812
+#: src/big_remote_play/ui/host_view.py:1624
 msgid "Enter the four digits shown by Moonlight on the other computer."
 msgstr "Introdu cele patru cifre afișate de Moonlight pe celălalt computer."
 
@@ -2743,7 +2830,7 @@ msgstr "Introduceți adresa https completă a serverului Headscale."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 27
-#: src/big_remote_play/ui/private_network_view.py:104
+#: src/big_remote_play/ui/private_network_view.py:132
 msgid "Enter the server domain and auth key provided by the administrator."
 msgstr ""
 "Introduceți domeniul serverului și cheia de autentificare furnizată de "
@@ -2759,7 +2846,7 @@ msgstr "Mod de codare a entropiei"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/private_network_view.py:992
+#: src/big_remote_play/ui/private_network_view.py:1021
 msgid "Entry updated"
 msgstr "Intrarea a fost actualizată"
 
@@ -2772,8 +2859,8 @@ msgstr "Intrarea a fost actualizată"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1245
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 562
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 600
-#: src/big_remote_play/ui/host_view.py:1668
-#: src/big_remote_play/ui/host_view.py:2262
+#: src/big_remote_play/ui/host_view.py:1926
+#: src/big_remote_play/ui/host_view.py:2523
 msgid "Error"
 msgstr "Eroare"
 
@@ -2782,7 +2869,7 @@ msgstr "Eroare"
 msgid "Error Clearing"
 msgstr "Eroare la ștergere"
 
-#: src/big_remote_play/ui/host_view.py:1095
+#: src/big_remote_play/ui/host_view.py:1346
 #, python-brace-format
 msgid "Error correction: {value}%"
 msgstr "Corectarea erorilor: {value}%"
@@ -2794,15 +2881,15 @@ msgid "Error executing command: {}"
 msgstr "Eroare la executarea comenzii: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 807
-#: src/big_remote_play/ui/host_view.py:1691
+#: src/big_remote_play/ui/host_view.py:1950
 #, python-brace-format
 msgid "Error executing script: {}"
 msgstr "Eroare la executarea scriptului: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1403
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1435
-#: src/big_remote_play/ui/host_view.py:2302
-#: src/big_remote_play/ui/host_view.py:2334
+#: src/big_remote_play/ui/host_view.py:2563
+#: src/big_remote_play/ui/host_view.py:2595
 #, python-brace-format
 msgid "Error launching game: {}"
 msgstr "Eroare la lansarea jocului: {}"
@@ -2815,7 +2902,7 @@ msgstr "Eroare la restaurare: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 109
-#: src/big_remote_play/host/sunshine_manager.py:275
+#: src/big_remote_play/host/sunshine_manager.py:277
 #, python-brace-format
 msgid "Error starting Sunshine: {}"
 msgstr "Eroare la pornirea Sunshine: {}"
@@ -2830,7 +2917,7 @@ msgstr "Eroare: {}"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 937
 # line: 1908
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "Establish Connection"
 msgstr "Stabilire conexiune"
 
@@ -2845,6 +2932,16 @@ msgstr ""
 #: src/big_remote_play/ui/remote_connection.py:524
 msgid "Every device on the network, approvals and removal."
 msgstr "Toate dispozitivele din rețea, aprobări și eliminare."
+
+#: src/big_remote_play/ui/host_view.py:1242
+msgid ""
+"Every device playing now is disconnected. Then start pairing again on the "
+"new device and enter its code here. Devices already paired can reconnect "
+"right after."
+msgstr ""
+"Toate dispozitivele care joacă acum vor fi deconectate. Apoi porniți din nou "
+"asocierea pe dispozitivul nou și introduceți aici codul lui. Dispozitivele "
+"deja asociate se pot reconecta imediat după aceea."
 
 #: src/big_remote_play/ui/history_dialog.py:151
 msgid ""
@@ -2872,7 +2969,7 @@ msgid "Excellent"
 msgstr "Excelentă"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:1678
+#: src/big_remote_play/ui/host_view.py:1937
 msgid "Execution failed or cancelled."
 msgstr "Execuția a eșuat sau a fost anulată."
 
@@ -2908,12 +3005,12 @@ msgid "Failed to apply settings (check credentials)."
 msgstr "Setările nu au putut fi aplicate (verificați datele de autentificare)."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 562
-#: src/big_remote_play/ui/guest_view.py:1493
+#: src/big_remote_play/ui/guest_view.py:1518
 msgid "Failed to connect. Verify if Moonlight is paired."
 msgstr "Conexiune eșuată. Verifică dacă Moonlight este asociat."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1153
-#: src/big_remote_play/ui/host_view.py:2601
+#: src/big_remote_play/ui/host_view.py:2868
 msgid "Failed to update device"
 msgstr "Dispozitivul nu a putut fi actualizat"
 
@@ -2925,20 +3022,20 @@ msgstr "Răspuns mai rapid sau imagine mai bună"
 msgid "Favorite"
 msgstr "Favorit"
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Fill in the form"
 msgstr "Completați formularul"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1316
-#: src/big_remote_play/ui/private_network_view.py:688
+#: src/big_remote_play/ui/private_network_view.py:716
 msgid "Find Network ID"
 msgstr "Găsiți Network ID-ul"
 
-#: src/big_remote_play/ui/guest_view.py:572
-#: src/big_remote_play/ui/guest_view.py:886
-#: src/big_remote_play/ui/guest_view.py:1252
-#: src/big_remote_play/ui/guest_view.py:1360
+#: src/big_remote_play/ui/guest_view.py:592
+#: src/big_remote_play/ui/guest_view.py:906
+#: src/big_remote_play/ui/guest_view.py:1272
+#: src/big_remote_play/ui/guest_view.py:1380
 msgid "Find by code"
 msgstr "Căutare prin cod"
 
@@ -2958,8 +3055,8 @@ msgid "Finish signing in"
 msgstr "Finalizați autentificarea"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:1645
-#: src/big_remote_play/ui/host_view.py:1678
+#: src/big_remote_play/ui/host_view.py:1903
+#: src/big_remote_play/ui/host_view.py:1937
 msgid "Firewall Error"
 msgstr "Eroare de firewall"
 
@@ -2981,7 +3078,7 @@ msgstr "Repară"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 302
-#: src/big_remote_play/ui/host_view.py:2459
+#: src/big_remote_play/ui/host_view.py:2726
 msgid "Fix Dependencies"
 msgstr "Repară dependențele"
 
@@ -2999,7 +3096,7 @@ msgstr ""
 msgid "For PCs in different houses"
 msgstr "Pentru PC-uri din case diferite"
 
-#: src/big_remote_play/ui/guest_view.py:589
+#: src/big_remote_play/ui/guest_view.py:609
 msgid "For a computer in another house: connect your devices first."
 msgstr ""
 "Pentru un computer din altă casă: conectează-ți mai întâi dispozitivele."
@@ -3021,7 +3118,7 @@ msgstr ""
 msgid "For direct internet access only"
 msgstr "Numai pentru acces direct prin internet"
 
-#: src/big_remote_play/ui/guest_view.py:1280
+#: src/big_remote_play/ui/guest_view.py:1300
 msgid "For example: 192.168.1.20 or gaming-pc.local"
 msgstr "De exemplu: 192.168.1.20 sau pc-jocuri.local"
 
@@ -3048,8 +3145,8 @@ msgstr "Forțat"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1772
 # line: 1787
-#: src/big_remote_play/ui/private_network_view.py:935
-#: src/big_remote_play/ui/private_network_view.py:941
+#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:970
 #, python-brace-format
 msgid "Form filled for {}"
 msgstr "Formular completat pentru {}"
@@ -3062,11 +3159,11 @@ msgstr "Formular completat pentru {}"
 msgid "Frame Rate (FPS)"
 msgstr "Rata de cadre (FPS)"
 
-#: src/big_remote_play/ui/guest_view.py:309
+#: src/big_remote_play/ui/guest_view.py:329
 msgid "Frame pacing"
 msgstr "Sincronizarea cadrelor"
 
-#: src/big_remote_play/ui/guest_view.py:271
+#: src/big_remote_play/ui/guest_view.py:291
 msgid "Frame rate"
 msgstr "Frecvența cadrelor"
 
@@ -3077,7 +3174,7 @@ msgstr "Cadre pe secundă"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 133
 #: src/big_remote_play/ui/host_view.py:273
-#: src/big_remote_play/ui/host_view.py:1774
+#: src/big_remote_play/ui/host_view.py:2033
 msgid "Full Desktop"
 msgstr "Tot desktopul"
 
@@ -3085,30 +3182,30 @@ msgstr "Tot desktopul"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 116
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 125
-#: src/big_remote_play/ui/guest_view.py:289
+#: src/big_remote_play/ui/guest_view.py:309
 msgid "Fullscreen"
 msgstr "Ecran complet"
 
 #: src/big_remote_play/ui/host_view.py:621
-#: src/big_remote_play/ui/host_view.py:2750
+#: src/big_remote_play/ui/host_view.py:3017
 msgid "Game Library"
 msgstr "Bibliotecă de jocuri"
 
-#: src/big_remote_play/ui/guest_view.py:146
+#: src/big_remote_play/ui/guest_view.py:166
 msgid "Game PC + this computer"
 msgstr "Computerul de jocuri + acest computer"
 
-#: src/big_remote_play/ui/guest_view.py:533
-#: src/big_remote_play/ui/guest_view.py:559
+#: src/big_remote_play/ui/guest_view.py:553
+#: src/big_remote_play/ui/guest_view.py:579
 msgid "Game PC and connection"
 msgstr "Computerul de jocuri și conexiunea"
 
-#: src/big_remote_play/ui/guest_view.py:1685
+#: src/big_remote_play/ui/guest_view.py:1710
 #, python-brace-format
 msgid "Game PC found: {}"
 msgstr "Computer de jocuri găsit: {}"
 
-#: src/big_remote_play/ui/guest_view.py:1693
+#: src/big_remote_play/ui/guest_view.py:1718
 msgid "Game PC not found"
 msgstr "Computerul de jocuri nu a fost găsit"
 
@@ -3117,12 +3214,12 @@ msgstr "Computerul de jocuri nu a fost găsit"
 msgid "Game Selection"
 msgstr "Selecția jocului"
 
-#: src/big_remote_play/ui/host_view.py:2843
+#: src/big_remote_play/ui/host_view.py:3110
 #, python-brace-format
 msgid "Games added: {}"
 msgstr "S-au adăugat {} jocuri"
 
-#: src/big_remote_play/ui/host_view.py:2750
+#: src/big_remote_play/ui/host_view.py:3017
 msgid ""
 "Games shown on the other computer in Moonlight. Add detected games or remove "
 "entries."
@@ -3145,7 +3242,7 @@ msgstr "General"
 # line: 1084
 # line: 1721
 # line: 1842
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Get Network ID"
 msgstr "Obțineți Network ID-ul"
 
@@ -3170,7 +3267,7 @@ msgstr ""
 msgid "Graphics Card / Encoder"
 msgstr "Placă grafică / Encoder"
 
-#: src/big_remote_play/ui/host_view.py:1091
+#: src/big_remote_play/ui/host_view.py:1342
 #, python-brace-format
 msgid "Graphics card: {value}"
 msgstr "Placă grafică: {value}"
@@ -3185,11 +3282,11 @@ msgstr "Placă grafică: {value}"
 msgid "Guided setup"
 msgstr "Configurare ghidată"
 
-#: src/big_remote_play/ui/host_view.py:1051
+#: src/big_remote_play/ui/host_view.py:1302
 msgid "HDR screen: colors will look washed out on devices without HDR"
 msgstr "Ecran HDR: culorile vor părea spălăcite pe dispozitivele fără HDR"
 
-#: src/big_remote_play/ui/host_view.py:1050
+#: src/big_remote_play/ui/host_view.py:1301
 msgid "HDR screen: shared in SDR"
 msgstr "Ecran HDR: partajat în SDR"
 
@@ -3226,8 +3323,8 @@ msgstr "Headscale folosește clientul Tailscale obișnuit."
 msgid "Hidden. Use Copy."
 msgstr "Ascunsă. Folosiți Copiază."
 
-#: src/big_remote_play/ui/host_view.py:1712
-#: src/big_remote_play/ui/host_view.py:1739
+#: src/big_remote_play/ui/host_view.py:1971
+#: src/big_remote_play/ui/host_view.py:1998
 #, python-brace-format
 msgid "Hide {}"
 msgstr "Ascunde {}"
@@ -3247,7 +3344,7 @@ msgstr "Calitate Înaltă (Cea Mai Bună Imagine)"
 msgid "High Resolution Scrolling"
 msgstr "Derulare de Înaltă Rezoluție"
 
-#: src/big_remote_play/ui/guest_view.py:515
+#: src/big_remote_play/ui/guest_view.py:535
 msgid ""
 "Higher image quality requires more processing power, memory, and connection "
 "speed. If either computer or the network cannot keep up, the stream may "
@@ -3330,17 +3427,21 @@ msgstr ""
 msgid "How to approve"
 msgstr "Cum se aprobă"
 
+#: src/big_remote_play/ui/private_network_view.py:730
+msgid "How to create a free network, step by step."
+msgstr "Cum creați o rețea gratuită, pas cu pas."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 266
-#: src/big_remote_play/ui/private_network_view.py:435
+#: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
 msgid "How to install {}"
 msgstr "Cum se instalează {}"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "How to run Headscale on your own server, step by step."
 msgstr "Cum rulezi Headscale pe propriul server, pas cu pas."
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "How to use the selected private network service."
 msgstr "Cum se folosește serviciul de rețea privată selectat."
 
@@ -3349,22 +3450,23 @@ msgid "I already use ZeroTier"
 msgstr "Folosesc deja ZeroTier"
 
 #: src/big_remote_play/ui/guided_setup.py:278
+#: src/big_remote_play/ui/private_network_view.py:730
 msgid "I don't have a code"
 msgstr "Nu am un cod"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "I don't have a server yet"
 msgstr "Nu am încă un server"
 
-#: src/big_remote_play/ui/host_view.py:2987
+#: src/big_remote_play/ui/host_view.py:3254
 msgid "I forgot the current password"
 msgstr "Am uitat parola actuală"
 
-#: src/big_remote_play/ui/guest_view.py:571
+#: src/big_remote_play/ui/guest_view.py:591
 msgid "I have a search code"
 msgstr "Am un cod de căutare"
 
-#: src/big_remote_play/ui/guest_view.py:565
+#: src/big_remote_play/ui/guest_view.py:585
 msgid "I know the IP address"
 msgstr "Cunosc adresa IP"
 
@@ -3372,7 +3474,7 @@ msgstr "Cunosc adresa IP"
 msgid "I will play using another computer."
 msgstr "Voi juca de pe alt computer."
 
-#: src/big_remote_play/ui/guest_view.py:1279
+#: src/big_remote_play/ui/guest_view.py:1299
 msgid "IP address or computer name"
 msgstr "Adresă IP sau nume de computer"
 
@@ -3417,33 +3519,33 @@ msgstr ""
 "Dacă nu este furnizată nicio adresă IP externă, Sunshine va detecta automat "
 "adresa IP externă."
 
-#: src/big_remote_play/ui/guest_view.py:506
-#: src/big_remote_play/ui/guest_view.py:541
+#: src/big_remote_play/ui/guest_view.py:526
+#: src/big_remote_play/ui/guest_view.py:561
 msgid "Image"
 msgstr "Imagine"
 
-#: src/big_remote_play/ui/host_view.py:824
-#: src/big_remote_play/ui/host_view.py:869
-#: src/big_remote_play/ui/host_view.py:879
+#: src/big_remote_play/ui/host_view.py:883
+#: src/big_remote_play/ui/host_view.py:928
+#: src/big_remote_play/ui/host_view.py:938
 msgid "Image and capture"
 msgstr "Imagine și captură"
 
-#: src/big_remote_play/ui/host_view.py:864
+#: src/big_remote_play/ui/host_view.py:923
 msgid "Image and capture settings are on Overview, next to Start sharing."
 msgstr ""
 "Setările de imagine și captură sunt în Prezentare generală, lângă „Începe "
 "partajarea”."
 
-#: src/big_remote_play/ui/guest_view.py:229
+#: src/big_remote_play/ui/guest_view.py:249
 msgid "Image preset"
 msgstr "Presetare de imagine"
 
-#: src/big_remote_play/ui/guest_view.py:259
-#: src/big_remote_play/ui/guest_view.py:265
+#: src/big_remote_play/ui/guest_view.py:279
+#: src/big_remote_play/ui/guest_view.py:285
 msgid "Image quality / video bitrate (Mbps)"
 msgstr "Calitate imagine / rată de biți video (Mbps)"
 
-#: src/big_remote_play/ui/guest_view.py:2157
+#: src/big_remote_play/ui/guest_view.py:2205
 msgid ""
 "Image, audio, input, and connection settings will return to their "
 "recommended defaults."
@@ -3451,7 +3553,7 @@ msgstr ""
 "Setările de imagine, audio, intrare și conexiune vor reveni la valorile "
 "implicite recomandate."
 
-#: src/big_remote_play/ui/guest_view.py:329
+#: src/big_remote_play/ui/guest_view.py:349
 msgid ""
 "Improves text and fine details, but uses more bandwidth and decoding power."
 msgstr ""
@@ -3466,7 +3568,7 @@ msgstr ""
 "În Big Remote Play alegeți Headscale → Intră într-o rețea și introduceți "
 "adresa serverului sau rulați comanda de mai jos."
 
-#: src/big_remote_play/ui/host_view.py:781
+#: src/big_remote_play/ui/host_view.py:842
 msgid ""
 "In Big Remote Play on the other PC, choose Find by code. This is not the "
 "pairing code."
@@ -3477,6 +3579,14 @@ msgstr ""
 #: src/big_remote_play/ui/network_devices.py:442
 msgid "In Big Remote Play, choose Play over the internet and type this code."
 msgstr "În Big Remote Play, alege Joc prin internet și introdu acest cod."
+
+#: src/big_remote_play/ui/private_network_view.py:105
+msgid ""
+"In ZeroTier Central, open the network and allow each computer under Members. "
+"Until then it waits for approval."
+msgstr ""
+"În ZeroTier Central, deschideți rețeaua și permiteți fiecare computer la "
+"Members. Până atunci, acesta așteaptă aprobarea."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 337
@@ -3505,7 +3615,7 @@ msgid "In use now"
 msgstr "Folosit acum"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 890
-#: src/big_remote_play/ui/host_view.py:1824
+#: src/big_remote_play/ui/host_view.py:2084
 msgid "Inactive"
 msgstr "Inactivă"
 
@@ -3523,8 +3633,8 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 75
-#: src/big_remote_play/ui/guest_view.py:527
-#: src/big_remote_play/ui/guest_view.py:553
+#: src/big_remote_play/ui/guest_view.py:547
+#: src/big_remote_play/ui/guest_view.py:573
 #: src/big_remote_play/ui/sunshine_preferences.py:101
 msgid "Input"
 msgstr "Intrare"
@@ -3535,7 +3645,7 @@ msgid "Input, Network, and Access"
 msgstr "Intrare, Rețea și Acces"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 569
-#: src/big_remote_play/ui/host_view.py:1355
+#: src/big_remote_play/ui/host_view.py:1612
 msgid "Insert PIN"
 msgstr "Introduceți codul PIN"
 
@@ -3582,8 +3692,8 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 464
 #: src/big_remote_play/ui/main_window.py:1129
 #: src/big_remote_play/ui/main_window.py:1138
-#: src/big_remote_play/ui/private_network_view.py:430
-#: src/big_remote_play/ui/private_network_view.py:432
+#: src/big_remote_play/ui/private_network_view.py:458
+#: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
 msgid "Install {}"
 msgstr "Instalează {}"
@@ -3592,8 +3702,8 @@ msgstr "Instalează {}"
 # line: 1498
 # line: 1529
 # line: 1542
-#: src/big_remote_play/ui/private_network_view.py:373
-#: src/big_remote_play/ui/private_network_view.py:421
+#: src/big_remote_play/ui/private_network_view.py:401
+#: src/big_remote_play/ui/private_network_view.py:449
 msgid "Installation Log"
 msgstr "Jurnal de instalare"
 
@@ -3605,7 +3715,7 @@ msgstr "Instalarea a fost finalizată cu succes!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 464
-#: src/big_remote_play/ui/private_network_view.py:456
+#: src/big_remote_play/ui/private_network_view.py:484
 msgid "Installation failed. Check the log."
 msgstr "Instalarea a eșuat. Verificați jurnalul."
 
@@ -3650,7 +3760,7 @@ msgstr "Se instalează {}..."
 # line: 89
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1669
-#: src/big_remote_play/ui/private_network_view.py:444
+#: src/big_remote_play/ui/private_network_view.py:472
 msgid "Installing..."
 msgstr "Se instalează..."
 
@@ -3680,7 +3790,7 @@ msgstr "Protocoale de internet"
 msgid "Internet, router and firewall"
 msgstr "Internet, router și firewall"
 
-#: src/big_remote_play/ui/guest_view.py:1893
+#: src/big_remote_play/ui/guest_view.py:1941
 msgid "Invalid Frame Rate"
 msgstr "Rată de cadre nevalidă"
 
@@ -3690,35 +3800,36 @@ msgid "Invalid IP address: ${ip}"
 msgstr "Adresă IP nevalidă: ${ip}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 719
-#: src/big_remote_play/ui/host_view.py:1407
+#: src/big_remote_play/ui/host_view.py:1664
 msgid "Invalid PIN"
 msgstr "PIN invalid."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 352
-#: src/big_remote_play/ui/guest_view.py:1864
+#: src/big_remote_play/ui/guest_view.py:1912
 msgid "Invalid Resolution"
 msgstr "Rezoluție nevalidă"
 
-#: src/big_remote_play/ui/guest_view.py:1632
+#: src/big_remote_play/ui/guest_view.py:1657
 msgid "Invalid address"
 msgstr "Adresă nevalidă"
 
-#: src/big_remote_play/ui/guest_view.py:1650
+#: src/big_remote_play/ui/guest_view.py:1675
 msgid "Invalid code"
 msgstr "Cod nevalid"
 
-#: src/big_remote_play/ui/host_view.py:2312
-#: src/big_remote_play/ui/host_view.py:2325
+#: src/big_remote_play/ui/host_view.py:2573
+#: src/big_remote_play/ui/host_view.py:2586
 msgid "Invalid launch command"
 msgstr "Comandă de pornire nevalidă"
 
-#: src/big_remote_play/ui/guest_view.py:1640
+#: src/big_remote_play/ui/guest_view.py:1665
 msgid "Invalid port"
 msgstr "Port nevalid"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1331
+#: src/big_remote_play/ui/host_view.py:1224
+#: src/big_remote_play/ui/host_view.py:1585
 msgid "Invalid username or password."
 msgstr "Nume de utilizator sau parolă invalidă."
 
@@ -3736,6 +3847,14 @@ msgstr "Invitație creată"
 #: src/big_remote_play/ui/network_devices.py:570
 msgid "Invitation link"
 msgstr "Link de invitație"
+
+#: src/big_remote_play/ui/guest_view.py:1841
+msgid ""
+"It answers on the network, but not on Sunshine's port. On the game PC, open "
+"Share and choose Allow in firewall."
+msgstr ""
+"Răspunde în rețea, dar nu pe portul Sunshine. Pe PC-ul de joc, deschideți "
+"Partajare și alegeți Permite în firewall."
 
 #: src/big_remote_play/ui/remote_connection.py:782
 msgid ""
@@ -3769,7 +3888,7 @@ msgstr ""
 "Proprietarul ei folosește o pagină de autentificare. Autentifică-te cu "
 "aplicația ZeroTier, apoi verifică din nou."
 
-#: src/big_remote_play/ui/private_network_view.py:110
+#: src/big_remote_play/ui/private_network_view.py:138
 msgid ""
 "Join Tailscale with browser login, or use an auth key if someone gave you "
 "one."
@@ -3777,7 +3896,7 @@ msgstr ""
 "Alăturați-vă Tailscale cu autentificare în browser sau folosiți o cheie de "
 "autentificare dacă v-a dat cineva una."
 
-#: src/big_remote_play/ui/private_network_view.py:1018
+#: src/big_remote_play/ui/private_network_view.py:1047
 msgid "Join a Headscale VPN"
 msgstr "Alătură-te unui VPN Headscale"
 
@@ -3827,7 +3946,7 @@ msgstr "Se intră în rețea…"
 msgid "KMS (Direct)"
 msgstr "KMS (direct)"
 
-#: src/big_remote_play/ui/guest_view.py:458
+#: src/big_remote_play/ui/guest_view.py:478
 msgid "Keep controller input active in the background"
 msgstr "Menține activă intrarea controlerului în fundal"
 
@@ -3853,7 +3972,7 @@ msgstr ""
 "Lasă dezactivat pentru utilizarea normală. Dacă este activat împreună cu "
 "UPnP, Sunshine poate deschide și portul de administrare pe router."
 
-#: src/big_remote_play/ui/host_view.py:881
+#: src/big_remote_play/ui/host_view.py:940
 msgid ""
 "Keep router port forwarding off when using a VPN. Changes apply when sharing "
 "starts again."
@@ -3866,7 +3985,7 @@ msgid "Keep saved accounts so you can reconnect without signing in again"
 msgstr ""
 "Păstrează conturile salvate pentru a te reconecta fără o nouă autentificare"
 
-#: src/big_remote_play/ui/guest_view.py:353
+#: src/big_remote_play/ui/guest_view.py:373
 msgid "Keep this screen active during streaming"
 msgstr "Menține acest ecran activ în timpul streamingului"
 
@@ -3883,9 +4002,9 @@ msgid "Key created"
 msgstr "Cheie creată"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 968
-#: src/big_remote_play/ui/guest_view.py:217
-#: src/big_remote_play/ui/guest_view.py:2246
-#: src/big_remote_play/ui/guest_view.py:2250
+#: src/big_remote_play/ui/guest_view.py:237
+#: src/big_remote_play/ui/guest_view.py:2294
+#: src/big_remote_play/ui/guest_view.py:2298
 msgid "Keyboard Shortcuts"
 msgstr "Comenzi rapide de la tastatură"
 
@@ -3921,9 +4040,9 @@ msgstr "Latență {}, FPS {} (țintă), lățime de bandă {} (țintă)"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1399
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1431
-#: src/big_remote_play/ui/host_view.py:2298
-#: src/big_remote_play/ui/host_view.py:2317
-#: src/big_remote_play/ui/host_view.py:2330
+#: src/big_remote_play/ui/host_view.py:2559
+#: src/big_remote_play/ui/host_view.py:2578
+#: src/big_remote_play/ui/host_view.py:2591
 #, python-brace-format
 msgid "Launching {}..."
 msgstr "Lansare {}..."
@@ -3995,7 +4114,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/host_view.py:2848
+#: src/big_remote_play/ui/host_view.py:3115
 msgid "Library updated"
 msgstr "Biblioteca a fost actualizată"
 
@@ -4031,15 +4150,15 @@ msgstr "Se încarcă istoricul…"
 msgid "Loading networks…"
 msgstr "Se încarcă rețelele…"
 
-#: src/big_remote_play/ui/host_view.py:2539
+#: src/big_remote_play/ui/host_view.py:2806
 msgid "Loading paired devices…"
 msgstr "Se încarcă dispozitivele asociate…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 712
-#: src/big_remote_play/ui/host_view.py:2502
-#: src/big_remote_play/ui/host_view.py:2692
-#: src/big_remote_play/ui/host_view.py:2738
+#: src/big_remote_play/ui/host_view.py:2769
+#: src/big_remote_play/ui/host_view.py:2959
+#: src/big_remote_play/ui/host_view.py:3005
 msgid "Loading…"
 msgstr "Se încarcă…"
 
@@ -4062,13 +4181,13 @@ msgstr "Calea fișierului jurnal"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1831
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Login Server"
 msgstr "Server de autentificare"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1307
-#: src/big_remote_play/ui/private_network_view.py:672
+#: src/big_remote_play/ui/private_network_view.py:700
 msgid "Login Server (leave empty for tailscale.com)"
 msgstr "Server de autentificare (lăsați gol pentru tailscale.com)"
 
@@ -4104,11 +4223,11 @@ msgstr "Latență scăzută (Cea mai rapidă)"
 msgid "Make Sunshine think the Right Alt key is the Windows key"
 msgstr "Fă ca Sunshine să creadă că tasta Alt dreapta este tasta Windows."
 
-#: src/big_remote_play/ui/guest_view.py:310
+#: src/big_remote_play/ui/guest_view.py:330
 msgid "Makes motion more even when frame delivery varies."
 msgstr "Face mișcarea mai uniformă când livrarea cadrelor variază."
 
-#: src/big_remote_play/ui/guest_view.py:399
+#: src/big_remote_play/ui/guest_view.py:419
 msgid "Makes pointer movement more suitable for desktop use than for games."
 msgstr ""
 "Face mișcarea indicatorului mai potrivită pentru utilizarea desktopului "
@@ -4116,11 +4235,11 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1230
-#: src/big_remote_play/ui/host_view.py:1508
+#: src/big_remote_play/ui/host_view.py:1766
 msgid "Manage"
 msgstr "Gestionează"
 
-#: src/big_remote_play/ui/private_network_view.py:612
+#: src/big_remote_play/ui/private_network_view.py:640
 msgid "Manage accounts and networks"
 msgstr "Gestionează conturile și rețelele"
 
@@ -4136,12 +4255,12 @@ msgid "Manage network"
 msgstr "Gestionează rețeaua"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 246
-#: src/big_remote_play/ui/host_view.py:1503
-#: src/big_remote_play/ui/host_view.py:1512
+#: src/big_remote_play/ui/host_view.py:1761
+#: src/big_remote_play/ui/host_view.py:1770
 msgid "Manage paired devices"
 msgstr "Gestionați dispozitivele asociate"
 
-#: src/big_remote_play/ui/host_view.py:1020
+#: src/big_remote_play/ui/host_view.py:1079
 msgid "Manual capture and encoding"
 msgstr "Captură și codare manuală"
 
@@ -4151,7 +4270,7 @@ msgstr "Captură și codare manuală"
 msgid "Map Right Alt to Windows"
 msgstr "Mapează Alt dreapta ca Windows"
 
-#: src/big_remote_play/ui/guest_view.py:255
+#: src/big_remote_play/ui/guest_view.py:275
 msgid ""
 "Matches the stream to the physical resolution of the screen used for "
 "playback."
@@ -4224,7 +4343,7 @@ msgstr "Modul 2"
 #: src/big_remote_play/ui/host_view.py:187
 #: src/big_remote_play/ui/host_view.py:200
 #: src/big_remote_play/ui/host_view.py:365
-#: src/big_remote_play/ui/host_view.py:1124
+#: src/big_remote_play/ui/host_view.py:1375
 msgid "Monitor / Display"
 msgstr "Monitor / Ecran"
 
@@ -4239,7 +4358,7 @@ msgid "Moonlight Game Stream Client"
 msgstr "Moonlight, client pentru streamingul jocurilor"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 163
-#: src/big_remote_play/ui/guest_view.py:800
+#: src/big_remote_play/ui/guest_view.py:820
 msgid "Moonlight closed"
 msgstr "Moonlight s-a închis"
 
@@ -4262,7 +4381,7 @@ msgid "More exposed than a private VPN"
 msgstr "Mai expus decât un VPN privat"
 
 #: src/big_remote_play/ui/network_dashboard.py:95
-#: src/big_remote_play/ui/private_network_view.py:601
+#: src/big_remote_play/ui/private_network_view.py:629
 msgid "More options"
 msgstr "Mai multe opțiuni"
 
@@ -4272,20 +4391,20 @@ msgstr "Mai multe opțiuni"
 msgid "Motion as DS4"
 msgstr "Mișcare ca DS4"
 
-#: src/big_remote_play/ui/guest_view.py:428
+#: src/big_remote_play/ui/guest_view.py:448
 msgid "Mouse, keyboard, and touchscreen"
 msgstr "Mouse, tastatură și ecran tactil"
 
-#: src/big_remote_play/ui/guest_view.py:554
+#: src/big_remote_play/ui/guest_view.py:574
 msgid "Mouse, keyboard, touchscreen, and controllers"
 msgstr "Mouse, tastatură, ecran tactil și controlere"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 992
-#: src/big_remote_play/ui/guest_view.py:2271
+#: src/big_remote_play/ui/guest_view.py:2319
 msgid "Multi-Monitor Support"
 msgstr "Suport pentru mai multe monitoare"
 
-#: src/big_remote_play/ui/guest_view.py:386
+#: src/big_remote_play/ui/guest_view.py:406
 msgid "Mute when Moonlight is not the active window"
 msgstr "Dezactivează sunetul când Moonlight nu este fereastra activă"
 
@@ -4293,7 +4412,7 @@ msgstr "Dezactivează sunetul când Moonlight nu este fereastra activă"
 msgid "My devices"
 msgstr "Dispozitivele mele"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "My network"
 msgstr "Rețeaua mea"
 
@@ -4364,8 +4483,8 @@ msgstr "Rețea"
 #: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
-#: src/big_remote_play/ui/private_network_view.py:910
-#: src/big_remote_play/ui/private_network_view.py:959
+#: src/big_remote_play/ui/private_network_view.py:939
+#: src/big_remote_play/ui/private_network_view.py:988
 msgid "Network ID"
 msgstr "ID rețea"
 
@@ -4375,7 +4494,7 @@ msgstr "ID rețea"
 msgid "Network ID (16 characters)"
 msgstr "Network ID (16 caractere)"
 
-#: src/big_remote_play/ui/host_view.py:881
+#: src/big_remote_play/ui/host_view.py:940
 msgid "Network and access"
 msgstr "Rețea și acces"
 
@@ -4416,11 +4535,11 @@ msgstr "Numele rețelei"
 msgid "Network not found"
 msgstr "Rețeaua nu a fost găsită"
 
-#: src/big_remote_play/ui/private_network_view.py:606
+#: src/big_remote_play/ui/private_network_view.py:634
 msgid "Networks this PC joined before."
 msgstr "Rețele la care acest PC s-a conectat anterior."
 
-#: src/big_remote_play/ui/guest_view.py:405
+#: src/big_remote_play/ui/guest_view.py:425
 msgid "Never"
 msgstr "Niciodată"
 
@@ -4429,12 +4548,12 @@ msgid "New Central"
 msgstr "Central nou (New Central)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:2996
+#: src/big_remote_play/ui/host_view.py:3263
 msgid "New Password"
 msgstr "Parolă nouă"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 641
-#: src/big_remote_play/ui/host_view.py:2994
+#: src/big_remote_play/ui/host_view.py:3261
 msgid "New Username"
 msgstr "Utilizator nou"
 
@@ -4446,16 +4565,27 @@ msgstr "Computerele noi aparțin de"
 msgid "New devices appear here while this window is open."
 msgstr "Dispozitivele noi apar aici cât timp această fereastră este deschisă."
 
-#: src/big_remote_play/ui/host_view.py:3038
+#: src/big_remote_play/ui/host_view.py:751
+msgid ""
+"New devices can pair only when no stream is open: they show “The computer is "
+"currently in a game”. End the stream for everyone, then start pairing again "
+"on the new device. Devices already paired can reconnect right after."
+msgstr ""
+"Dispozitivele noi se pot asocia doar când nu este deschis niciun stream: ele "
+"afișează „The computer is currently in a game”. Opriți streamul pentru toți, "
+"apoi porniți din nou asocierea pe dispozitivul nou. Dispozitivele deja "
+"asociate se pot reconecta imediat după aceea."
+
+#: src/big_remote_play/ui/host_view.py:3305
 msgid "New passwords do not match."
 msgstr "Parolele noi nu coincid."
 
-#: src/big_remote_play/ui/host_view.py:2011
+#: src/big_remote_play/ui/host_view.py:2272
 msgid "No"
 msgstr "Nu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 617
-#: src/big_remote_play/ui/host_view.py:1422
+#: src/big_remote_play/ui/host_view.py:1679
 msgid "No Sunshine user exists. Configure one in the browser."
 msgstr ""
 "Nu a fost creat niciun utilizator în Sunshine. Este necesar să configurați "
@@ -4469,15 +4599,15 @@ msgstr "Nu s-a găsit niciun cont"
 msgid "No active connection found"
 msgstr "Nu s-a găsit nicio conexiune activă"
 
-#: src/big_remote_play/ui/host_view.py:2777
+#: src/big_remote_play/ui/host_view.py:3044
 msgid "No apps configured"
 msgstr "Nicio aplicație configurată"
 
-#: src/big_remote_play/ui/host_view.py:2009
+#: src/big_remote_play/ui/host_view.py:2270
 msgid "No client is receiving sound right now"
 msgstr "Niciun client nu primește sunet acum"
 
-#: src/big_remote_play/ui/guest_view.py:1694
+#: src/big_remote_play/ui/guest_view.py:1719
 msgid ""
 "No computer answered this search code. Check the code or connect using its "
 "address."
@@ -4485,12 +4615,11 @@ msgstr ""
 "Niciun calculator nu a răspuns la acest cod de căutare. Verificați codul sau "
 "conectați-vă folosind adresa."
 
-#: src/big_remote_play/ui/host_view.py:1282
-#: src/big_remote_play/ui/host_view.py:1337
+#: src/big_remote_play/ui/host_view.py:1099
 msgid "No computer is waiting"
 msgstr "Niciun computer nu așteaptă"
 
-#: src/big_remote_play/host/sunshine_manager.py:571
+#: src/big_remote_play/host/sunshine_manager.py:623
 msgid ""
 "No computer is waiting to pair. Choose this computer under Connect on the "
 "other PC, then enter the code it shows."
@@ -4498,7 +4627,7 @@ msgstr ""
 "Niciun computer nu așteaptă asocierea. Pe celălalt calculator, alegeți acest "
 "computer în Conectare, apoi introduceți codul pe care îl afișează."
 
-#: src/big_remote_play/ui/host_view.py:1186
+#: src/big_remote_play/ui/host_view.py:1437
 msgid "No connected monitor could be identified."
 msgstr "Nu a putut fi identificat niciun monitor conectat."
 
@@ -4507,20 +4636,32 @@ msgstr "Nu a putut fi identificat niciun monitor conectat."
 msgid "No connections yet"
 msgstr "Încă nu există conexiuni"
 
-#: src/big_remote_play/ui/guest_view.py:1819
+#: src/big_remote_play/ui/guest_view.py:1850
 #: src/big_remote_play/ui/network_dashboard.py:161
 msgid "No details reported."
 msgstr "Nu au fost raportate detalii."
+
+#: src/big_remote_play/ui/host_view.py:1104
+msgid ""
+"No device is waiting for this code because a stream is open on this "
+"computer: the new device shows “The computer is currently in a game”. End "
+"the stream for everyone, then start pairing again on the new device and "
+"enter its new code here."
+msgstr ""
+"Niciun dispozitiv nu așteaptă acest cod, deoarece pe acest computer este "
+"deschis un stream: dispozitivul nou afișează „The computer is currently in a "
+"game”. Opriți streamul pentru toți, porniți din nou asocierea pe "
+"dispozitivul nou și introduceți aici noul lui cod."
 
 #: src/big_remote_play/ui/network_devices.py:495
 msgid "No device is waiting yet…"
 msgstr "Încă nu așteaptă niciun dispozitiv…"
 
-#: src/big_remote_play/ui/guest_view.py:934
+#: src/big_remote_play/ui/guest_view.py:954
 msgid "No game PC found yet"
 msgstr "Nu s-a găsit încă niciun computer de jocuri"
 
-#: src/big_remote_play/ui/host_view.py:2707
+#: src/big_remote_play/ui/host_view.py:2974
 msgid "No logs available (Sunshine not running or no credentials)."
 msgstr ""
 "Nu există jurnale disponibile (Sunshine nu rulează sau lipsesc datele de "
@@ -4534,7 +4675,7 @@ msgstr "Nu ai un cod de rețea?"
 msgid "No network found"
 msgstr "Nu s-a găsit nicio rețea"
 
-#: src/big_remote_play/ui/host_view.py:1457
+#: src/big_remote_play/ui/host_view.py:1715
 msgid "No one is playing yet"
 msgstr "Nimeni nu joacă încă"
 
@@ -4549,17 +4690,17 @@ msgstr "Încă niciun alt dispozitiv"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 973
-#: src/big_remote_play/ui/host_view.py:2559
+#: src/big_remote_play/ui/host_view.py:2826
 msgid "No paired devices"
 msgstr "Niciun dispozitiv asociat"
 
-#: src/big_remote_play/ui/host_view.py:1524
+#: src/big_remote_play/ui/host_view.py:1782
 msgid "No paired devices yet"
 msgstr "Încă nu există dispozitive asociate"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1660
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "No previous networks"
 msgstr "Nicio rețea anterioară"
 
@@ -4567,6 +4708,12 @@ msgstr "Nicio rețea anterioară"
 msgid "No saved Tailscale or Headscale account was found on this computer."
 msgstr ""
 "Nu s-a găsit niciun cont Tailscale sau Headscale salvat pe acest computer."
+
+#: src/big_remote_play/ui/host_view.py:1276
+msgid "No stream is open now. Start pairing again on the new device."
+msgstr ""
+"Acum nu mai este deschis niciun stream. Porniți din nou asocierea pe "
+"dispozitivul nou."
 
 #: usr/share/big-remote-play/scripts/configure_firewall.sh:60
 msgid "No supported firewall tool was found."
@@ -4581,7 +4728,7 @@ msgstr ""
 "Nu s-a găsit niciun terminal. Rulați această comandă:\n"
 "{}"
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1078
 msgid "No video bitrate ceiling"
 msgstr "Fără limită maximă a ratei de biți video"
 
@@ -4596,8 +4743,8 @@ msgid "Node ID of this computer"
 msgstr "ID-ul nodului acestui computer"
 
 #: src/big_remote_play/ui/connection_guides.py:211
-#: src/big_remote_play/ui/host_view.py:2004
-#: src/big_remote_play/ui/host_view.py:2010
+#: src/big_remote_play/ui/host_view.py:2265
+#: src/big_remote_play/ui/host_view.py:2271
 msgid "None"
 msgstr "Niciuna"
 
@@ -4605,7 +4752,7 @@ msgstr "Niciuna"
 msgid "None detected (firewalld and ufw checked)"
 msgstr "Niciunul detectat (au fost verificate firewalld și ufw)"
 
-#: src/big_remote_play/ui/host_view.py:2019
+#: src/big_remote_play/ui/host_view.py:2280
 msgid "None: the sound is captured directly"
 msgstr "Niciuna: sunetul este capturat direct"
 
@@ -4614,7 +4761,7 @@ msgstr "Niciuna: sunetul este capturat direct"
 msgid "Not available"
 msgstr "Indisponibil"
 
-#: src/big_remote_play/ui/guest_view.py:1803
+#: src/big_remote_play/ui/guest_view.py:1828
 msgid "Not checked"
 msgstr "Neverificat"
 
@@ -4635,6 +4782,10 @@ msgstr ""
 #: src/big_remote_play/ui/remote_connection.py:702
 msgid "Not installed"
 msgstr "Neinstalat"
+
+#: src/big_remote_play/ui/host_view.py:1244
+msgid "Not now"
+msgstr "Nu acum"
 
 #: src/big_remote_play/ui/connection_cards.py:49
 msgid "Not responding"
@@ -4670,7 +4821,7 @@ msgstr ""
 msgid "Now using {method}."
 msgstr "Acum se folosește {method}."
 
-#: src/big_remote_play/ui/host_view.py:1997
+#: src/big_remote_play/ui/host_view.py:2258
 #, python-brace-format
 msgid "Now: {output}"
 msgstr "Acum: {output}"
@@ -4688,7 +4839,7 @@ msgstr "ID client OAuth"
 msgid "OAuth client secret"
 msgstr "Secret client OAuth"
 
-#: src/big_remote_play/ui/guest_view.py:1846
+#: src/big_remote_play/ui/guest_view.py:1894
 #: src/big_remote_play/ui/preferences.py:236
 #: src/big_remote_play/ui/preferences.py:249
 #: src/big_remote_play/ui/preferences.py:395
@@ -4697,18 +4848,18 @@ msgstr "OK"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1560
-#: src/big_remote_play/ui/guest_view.py:1219
+#: src/big_remote_play/ui/guest_view.py:1239
 #: src/big_remote_play/ui/network_devices.py:121
 #: src/big_remote_play/ui/remote_connection.py:97
 msgid "Offline"
 msgstr "Offline"
 
-#: src/big_remote_play/ui/host_view.py:938
+#: src/big_remote_play/ui/host_view.py:997
 #: src/big_remote_play/ui/preferences.py:248
 msgid "Old log files have been removed."
 msgstr "Fișierele vechi de jurnal au fost eliminate."
 
-#: src/big_remote_play/ui/guest_view.py:1583
+#: src/big_remote_play/ui/guest_view.py:1608
 msgid ""
 "On the game PC:\n"
 "1. Open Share my game.\n"
@@ -4754,16 +4905,16 @@ msgstr ""
 "Acces API. Cheia API gestionează serverul; o cheie de preautentificare doar "
 "înregistrează un computer."
 
-#: src/big_remote_play/ui/guest_view.py:594
+#: src/big_remote_play/ui/guest_view.py:614
 msgid "On this computer"
 msgstr "Pe acest computer"
 
-#: src/big_remote_play/ui/guest_view.py:1234
+#: src/big_remote_play/ui/guest_view.py:1254
 #, python-brace-format
 msgid "On your {provider} private network at {address}"
 msgstr "În rețeaua dvs. privată {provider}, la {address}"
 
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid ""
 "Once both computers are on the same private network, return to Connect to "
 "find the game PC."
@@ -4799,7 +4950,7 @@ msgstr ""
 "către adresa locală fixă a acestui computer (o rezervare DHCP). Nu "
 "redirecționați niciodată {web}: este panoul de administrare."
 
-#: src/big_remote_play/ui/guest_view.py:405
+#: src/big_remote_play/ui/guest_view.py:425
 msgid "Only in fullscreen"
 msgstr "Numai pe ecran complet"
 
@@ -4808,7 +4959,7 @@ msgstr "Numai pe ecran complet"
 msgid "Only needed to run your own Headscale server."
 msgstr "Necesar doar pentru a rula propriul server Headscale."
 
-#: src/big_remote_play/ui/host_view.py:921
+#: src/big_remote_play/ui/host_view.py:980
 msgid "Only needed when reporting a problem."
 msgstr "Necesar doar când raportezi o problemă."
 
@@ -4842,13 +4993,13 @@ msgstr "Doar acest computer folosește noul nume."
 # line: 362
 # line: 1318
 #: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/private_network_view.py:692
+#: src/big_remote_play/ui/private_network_view.py:720
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "Deschide"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 621
-#: src/big_remote_play/ui/host_view.py:1424
+#: src/big_remote_play/ui/host_view.py:1681
 msgid "Open Configuration"
 msgstr "Deschide Configurarea"
 
@@ -4879,6 +5030,7 @@ msgid "Open Tailscale admin console"
 msgstr "Deschide consola de administrare Tailscale"
 
 #: src/big_remote_play/ui/network_devices.py:471
+#: src/big_remote_play/ui/private_network_view.py:97
 msgid "Open ZeroTier Central"
 msgstr "Deschide ZeroTier Central"
 
@@ -4888,7 +5040,7 @@ msgstr "Deschide consola"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 621
-#: src/big_remote_play/ui/host_view.py:2935
+#: src/big_remote_play/ui/host_view.py:3202
 msgid "Open folder"
 msgstr "Deschide dosarul"
 
@@ -4897,15 +5049,15 @@ msgstr "Deschide dosarul"
 msgid "Open guide"
 msgstr "Deschide ghidul"
 
-#: src/big_remote_play/ui/host_view.py:1549
+#: src/big_remote_play/ui/host_view.py:1807
 msgid "Open management to view all paired devices."
 msgstr "Deschideți gestionarea pentru a vedea toate dispozitivele asociate."
 
-#: src/big_remote_play/ui/host_view.py:1512
+#: src/big_remote_play/ui/host_view.py:1770
 msgid "Open paired device management"
 msgstr "Deschideți gestionarea dispozitivelor asociate"
 
-#: src/big_remote_play/ui/host_view.py:2920
+#: src/big_remote_play/ui/host_view.py:3187
 msgid "Open parent folder"
 msgstr "Deschide dosarul părinte"
 
@@ -4930,7 +5082,7 @@ msgid "Open the sign-in page again in your browser."
 msgstr "Deschideți din nou pagina de autentificare în browser."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1386
-#: src/big_remote_play/ui/host_view.py:2288
+#: src/big_remote_play/ui/host_view.py:2549
 msgid "Opening Steam Big Picture..."
 msgstr "Deschidere Steam Big Picture..."
 
@@ -4940,8 +5092,8 @@ msgstr "Deschide site-ul oficial"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/host_view.py:2643
-#: src/big_remote_play/ui/host_view.py:2848
+#: src/big_remote_play/ui/host_view.py:2910
+#: src/big_remote_play/ui/host_view.py:3115
 #: src/big_remote_play/ui/network_dashboard.py:473
 msgid "Operation failed"
 msgstr "Operațiunea a eșuat"
@@ -4951,17 +5103,17 @@ msgstr "Operațiunea a eșuat"
 msgid "Operation failed: {}"
 msgstr "Operația a eșuat: {}"
 
-#: src/big_remote_play/ui/guest_view.py:398
+#: src/big_remote_play/ui/guest_view.py:418
 msgid "Optimize the mouse for remote desktop"
 msgstr "Optimizează mouse-ul pentru desktop la distanță"
 
-#: src/big_remote_play/ui/guest_view.py:813
-#: src/big_remote_play/ui/host_view.py:1291
-#: src/big_remote_play/ui/host_view.py:1307
+#: src/big_remote_play/ui/guest_view.py:833
+#: src/big_remote_play/ui/host_view.py:1545
+#: src/big_remote_play/ui/host_view.py:1561
 msgid "Other computer"
 msgstr "Celălalt computer"
 
-#: src/big_remote_play/ui/guest_view.py:576
+#: src/big_remote_play/ui/guest_view.py:596
 msgid "Other ways to connect"
 msgstr "Alte moduri de conectare"
 
@@ -4975,12 +5127,12 @@ msgstr ""
 "VPN. Partajare → Avansat poate adăuga reguli doar pentru porturile de "
 "streaming, după ce confirmați; panoul de administrare rămâne închis."
 
-#: src/big_remote_play/ui/host_view.py:859
+#: src/big_remote_play/ui/host_view.py:918
 msgid "Overview"
 msgstr "Prezentare generală"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 609
-#: src/big_remote_play/ui/host_view.py:1339
+#: src/big_remote_play/ui/host_view.py:1593
 msgid "PIN Error"
 msgstr "Eroare PIN"
 
@@ -4990,12 +5142,12 @@ msgstr "Eroare PIN"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 705
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 307
-#: src/big_remote_play/host/sunshine_manager.py:593
-#: src/big_remote_play/ui/host_view.py:1328
+#: src/big_remote_play/host/sunshine_manager.py:645
+#: src/big_remote_play/ui/host_view.py:1582
 msgid "PIN sent successfully"
 msgstr "PIN trimis cu succes"
 
-#: src/big_remote_play/ui/host_view.py:1362
+#: src/big_remote_play/ui/host_view.py:1619
 msgid "PIN shown by Moonlight"
 msgstr "PIN-ul afișat de Moonlight"
 
@@ -5003,13 +5155,13 @@ msgstr "PIN-ul afișat de Moonlight"
 msgid "Packet Size"
 msgstr "Dimensiunea pachetului"
 
-#: src/big_remote_play/ui/host_view.py:753
-#: src/big_remote_play/ui/host_view.py:754
-#: src/big_remote_play/ui/host_view.py:1311
+#: src/big_remote_play/ui/host_view.py:814
+#: src/big_remote_play/ui/host_view.py:815
+#: src/big_remote_play/ui/host_view.py:1565
 msgid "Pair"
 msgstr "Asociază"
 
-#: src/big_remote_play/ui/guest_view.py:1837
+#: src/big_remote_play/ui/guest_view.py:1885
 msgid "Pair again"
 msgstr "Asociază din nou"
 
@@ -5027,48 +5179,48 @@ msgstr ""
 "implicit. Testează din afara rețelei de acasă. Elimină mapările publice de "
 "porturi când nu mai sunt necesare."
 
-#: src/big_remote_play/ui/host_view.py:757
+#: src/big_remote_play/ui/host_view.py:818
 msgid "Pair this device"
 msgstr "Asociază acest dispozitiv"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 198
-#: src/big_remote_play/ui/host_view.py:2511
+#: src/big_remote_play/ui/host_view.py:2778
 msgid "Paired Devices"
 msgstr "Dispozitive asociate"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 997
-#: src/big_remote_play/ui/host_view.py:1470
+#: src/big_remote_play/ui/host_view.py:1728
 msgid "Paired devices"
 msgstr "Dispozitive asociate"
 
-#: src/big_remote_play/ui/host_view.py:1475
-#: src/big_remote_play/ui/host_view.py:1869
+#: src/big_remote_play/ui/host_view.py:1733
+#: src/big_remote_play/ui/host_view.py:2130
 msgid "Paired devices appear here."
 msgstr "Dispozitivele asociate apar aici."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 651
-#: src/big_remote_play/ui/guest_view.py:1538
+#: src/big_remote_play/ui/guest_view.py:1563
 msgid "Paired successfully!"
 msgstr "Asociere reușită!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 653
-#: src/big_remote_play/ui/guest_view.py:1542
+#: src/big_remote_play/ui/guest_view.py:1863
 msgid "Pairing Error"
 msgstr "Eroare de asociere"
 
-#: src/big_remote_play/ui/host_view.py:746
+#: src/big_remote_play/ui/host_view.py:807
 msgid "Pairing code shown on the other PC"
 msgstr "Codul de asociere afișat pe celălalt calculator"
 
-#: src/big_remote_play/ui/guest_view.py:1588
+#: src/big_remote_play/ui/guest_view.py:1613
 #, python-brace-format
 msgid "Pairing code: {}"
 msgstr "Cod de asociere: {}"
 
-#: src/big_remote_play/ui/host_view.py:1267
-#: src/big_remote_play/ui/host_view.py:1284
+#: src/big_remote_play/ui/host_view.py:1518
+#: src/big_remote_play/ui/host_view.py:1535
 msgid "Pairing failed"
 msgstr "Asocierea a eșuat"
 
@@ -5080,11 +5232,19 @@ msgstr ""
 "Transmiteți evenimente de derulare de înaltă rezoluție de la clienții "
 "Moonlight."
 
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid ""
+"Paste the code on this page and join the network. Send the same code to the "
+"other person."
+msgstr ""
+"Lipiți codul pe această pagină și intrați în rețea. Trimiteți același cod "
+"celeilalte persoane."
+
 #: src/big_remote_play/ui/api_access_dialog.py:37
 msgid "Paste the credential first."
 msgstr "Mai întâi lipiți datele de acces."
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Lipiți adresa serverului și cheia în câmpurile de pe această pagină."
 
@@ -5110,7 +5270,7 @@ msgstr "Rută"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 686
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 750
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 190
-#: src/big_remote_play/ui/host_view.py:949
+#: src/big_remote_play/ui/host_view.py:1008
 #: src/big_remote_play/ui/preferences.py:254
 msgid "Path copied!"
 msgstr "Calea a fost copiată!"
@@ -5134,7 +5294,7 @@ msgstr "Este necesară permisiunea pentru a lista rețelele ZeroTier"
 msgid "Permission was not granted."
 msgstr "Permisiunea nu a fost acordată."
 
-#: src/big_remote_play/ui/guest_view.py:877
+#: src/big_remote_play/ui/guest_view.py:897
 msgid "Pick the PC that is sharing the game."
 msgstr "Alege PC-ul care partajează jocul."
 
@@ -5171,7 +5331,7 @@ msgid "Play or use this computer from anywhere, with a secure connection."
 msgstr ""
 "Joacă sau folosește acest computer de oriunde, cu o conexiune securizată."
 
-#: src/big_remote_play/ui/guest_view.py:588
+#: src/big_remote_play/ui/guest_view.py:608
 #: src/big_remote_play/ui/host_view.py:663
 #: src/big_remote_play/ui/host_view.py:665
 #: src/big_remote_play/ui/main_window.py:116
@@ -5196,19 +5356,19 @@ msgstr ""
 "Joacă-te cu prietenii de la distanță sau folosește puterea computerului pe "
 "alt dispozitiv compatibil."
 
-#: src/big_remote_play/ui/guest_view.py:357
+#: src/big_remote_play/ui/guest_view.py:377
 msgid "Playback on this computer"
 msgstr "Redare pe acest computer"
 
-#: src/big_remote_play/ui/host_view.py:2034
+#: src/big_remote_play/ui/host_view.py:2295
 msgid "Playing a short tone…"
 msgstr "Se redă un ton scurt…"
 
-#: src/big_remote_play/ui/guest_view.py:193
+#: src/big_remote_play/ui/guest_view.py:213
 msgid "Playing now"
 msgstr "Se joacă acum"
 
-#: src/big_remote_play/ui/host_view.py:796
+#: src/big_remote_play/ui/host_view.py:857
 #: src/big_remote_play/ui/main_window.py:1005
 msgid "Playing over the internet?"
 msgstr "Jucați pe internet?"
@@ -5235,11 +5395,11 @@ msgid "Poor"
 msgstr "Slabă"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 389
-#: src/big_remote_play/ui/guest_view.py:1283
+#: src/big_remote_play/ui/guest_view.py:1303
 msgid "Port"
 msgstr "Port"
 
-#: src/big_remote_play/ui/guest_view.py:1296
+#: src/big_remote_play/ui/guest_view.py:1316
 msgid "Port and IPv6"
 msgstr "Port și IPv6"
 
@@ -5275,7 +5435,7 @@ msgstr "Preferă CAVLC în loc de CABAC în H.264"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 273
 #: src/big_remote_play/ui/components.py:275
-#: src/big_remote_play/ui/host_view.py:891
+#: src/big_remote_play/ui/host_view.py:950
 msgid "Preferences"
 msgstr "Preferințe"
 
@@ -5283,18 +5443,18 @@ msgstr "Preferințe"
 msgid "Prepare this PC"
 msgstr "Pregătiți acest PC"
 
-#: src/big_remote_play/ui/guest_view.py:304
+#: src/big_remote_play/ui/guest_view.py:324
 msgid "Prevents image tearing. Disabling it can reduce latency."
 msgstr "Previne ruperea imaginii. Dezactivarea poate reduce latența."
 
-#: src/big_remote_play/ui/guest_view.py:354
+#: src/big_remote_play/ui/guest_view.py:374
 msgid "Prevents this computer's screen from turning off during a session."
 msgstr "Împiedică oprirea ecranului acestui computer în timpul unei sesiuni."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1031
-#: src/big_remote_play/ui/private_network_view.py:604
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:632
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Previous Networks"
 msgstr "Rețele anterioare"
 
@@ -5313,13 +5473,13 @@ msgstr "Cheie privată"
 msgid "Private Network Containers"
 msgstr "Containerele Rețelei Private"
 
-#: src/big_remote_play/ui/host_view.py:1885
+#: src/big_remote_play/ui/host_view.py:2146
 #: src/big_remote_play/ui/network_dashboard.py:175
 #: src/big_remote_play/ui/network_devices.py:213
 msgid "Private address"
 msgstr "Adresă privată"
 
-#: src/big_remote_play/ui/guest_view.py:1809
+#: src/big_remote_play/ui/guest_view.py:1834
 msgid "Private network connected"
 msgstr "Rețea privată conectată"
 
@@ -5353,7 +5513,7 @@ msgstr "Cod QR pentru {name}"
 msgid "Quantization Parameter"
 msgstr "Parametru de cuantizare"
 
-#: src/big_remote_play/ui/guest_view.py:1798
+#: src/big_remote_play/ui/guest_view.py:1823
 msgid "Quick read-only checks. Nothing is changed."
 msgstr "Verificări rapide, doar în citire. Nu se modifică nimic."
 
@@ -5370,7 +5530,7 @@ msgid "QuickSync Preset"
 msgstr "Preset QuickSync"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 972
-#: src/big_remote_play/ui/guest_view.py:2254
+#: src/big_remote_play/ui/guest_view.py:2302
 msgid "Quit Stream"
 msgstr "Ieșire din flux"
 
@@ -5413,7 +5573,7 @@ msgstr "Se citesc interfețele de rețea…"
 msgid "Reading the network status…"
 msgstr "Se citește starea rețelei…"
 
-#: src/big_remote_play/ui/guest_view.py:1817
+#: src/big_remote_play/ui/guest_view.py:1848
 #: src/big_remote_play/ui/network_common.py:147
 msgid "Ready to connect"
 msgstr "Gata de conectare"
@@ -5427,11 +5587,11 @@ msgid "Ready to play over the internet"
 msgstr "Gata de joc prin internet"
 
 #: src/big_remote_play/ui/network_dashboard.py:91
-#: src/big_remote_play/ui/private_network_view.py:592
+#: src/big_remote_play/ui/private_network_view.py:620
 msgid "Ready to play?"
 msgstr "Sunteți gata de joc?"
 
-#: src/big_remote_play/ui/host_view.py:1891
+#: src/big_remote_play/ui/host_view.py:2152
 msgid "Ready. This computer is also reachable over your private network."
 msgstr "Gata. Acest computer este accesibil și prin rețeaua dvs. privată."
 
@@ -5467,7 +5627,7 @@ msgstr "Conexiuni recente"
 msgid "Recommended"
 msgstr "Recomandat"
 
-#: src/big_remote_play/ui/guest_view.py:251
+#: src/big_remote_play/ui/guest_view.py:271
 msgid ""
 "Recommended for most computers. It reduces processor use and usually makes "
 "video smoother."
@@ -5495,7 +5655,7 @@ msgstr "Recomandat: o rețea privată"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1111
 #: src/big_remote_play/ui/network_common.py:163
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect"
 msgstr "Reconectare"
 
@@ -5503,7 +5663,7 @@ msgstr "Reconectare"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 855
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 78
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect using this saved network"
 msgstr "Reconectează folosind această rețea salvată"
 
@@ -5513,13 +5673,13 @@ msgstr "Sursa înregistrată"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1371
-#: src/big_remote_play/ui/host_view.py:2657
+#: src/big_remote_play/ui/host_view.py:2924
 #: src/big_remote_play/ui/network_dashboard.py:81
 #: src/big_remote_play/ui/network_devices.py:150
 msgid "Refresh"
 msgstr "Reîmprospătează"
 
-#: src/big_remote_play/ui/host_view.py:2658
+#: src/big_remote_play/ui/host_view.py:2925
 msgid "Refresh logs"
 msgstr "Reîmprospătează jurnalele"
 
@@ -5544,21 +5704,21 @@ msgid "Reload from Running Server"
 msgstr "Reîncarcă de pe serverul care rulează"
 
 #: src/big_remote_play/ui/api_access_dialog.py:92
-#: src/big_remote_play/ui/host_view.py:2611
+#: src/big_remote_play/ui/host_view.py:2878
 #: src/big_remote_play/ui/remote_connection.py:782
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:247
 msgid "Remove"
 msgstr "Elimină"
 
-#: src/big_remote_play/ui/host_view.py:2507
-#: src/big_remote_play/ui/host_view.py:2514
-#: src/big_remote_play/ui/host_view.py:2516
+#: src/big_remote_play/ui/host_view.py:2774
+#: src/big_remote_play/ui/host_view.py:2781
+#: src/big_remote_play/ui/host_view.py:2783
 msgid "Remove All"
 msgstr "Elimină toate"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 973
-#: src/big_remote_play/ui/host_view.py:2607
+#: src/big_remote_play/ui/host_view.py:2874
 msgid "Remove Device"
 msgstr "Elimină dispozitivul"
 
@@ -5566,8 +5726,8 @@ msgstr "Elimină dispozitivul"
 msgid "Remove account from this computer"
 msgstr "Elimină contul de pe acest computer"
 
-#: src/big_remote_play/ui/host_view.py:2798
-#: src/big_remote_play/ui/host_view.py:2799
+#: src/big_remote_play/ui/host_view.py:3065
+#: src/big_remote_play/ui/host_view.py:3066
 msgid "Remove app"
 msgstr "Elimină aplicația"
 
@@ -5575,8 +5735,8 @@ msgstr "Elimină aplicația"
 msgid "Remove credential"
 msgstr "Elimină datele de acces"
 
-#: src/big_remote_play/ui/host_view.py:2582
-#: src/big_remote_play/ui/host_view.py:2583
+#: src/big_remote_play/ui/host_view.py:2849
+#: src/big_remote_play/ui/host_view.py:2850
 #: src/big_remote_play/ui/network_devices.py:272
 #: src/big_remote_play/ui/network_devices.py:295
 #: src/big_remote_play/ui/network_devices.py:338
@@ -5594,7 +5754,7 @@ msgid "Remove logs, settings, servers and saved data"
 msgstr "Elimină jurnalele, setările, serverele și datele salvate"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 98
-#: src/big_remote_play/ui/host_view.py:935
+#: src/big_remote_play/ui/host_view.py:994
 msgid "Remove old log files"
 msgstr "Elimină fișierele de jurnal vechi"
 
@@ -5612,7 +5772,7 @@ msgstr "Eliminați acest dispozitiv?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1896
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Remove this network from history?"
 msgstr "Elimină această rețea din istoric?"
 
@@ -5633,7 +5793,7 @@ msgstr "Elimină {name} din rețea"
 msgid "Remove {name}?"
 msgstr "Elimini {name}?"
 
-#: src/big_remote_play/ui/host_view.py:2608
+#: src/big_remote_play/ui/host_view.py:2875
 #, python-brace-format
 msgid "Remove “{}”? It will need to pair again with a new PIN."
 msgstr "Eliminați „{}”? Va trebui să se asocieze din nou cu un cod PIN nou."
@@ -5673,7 +5833,7 @@ msgstr "Înlocuiește setările actuale cu un fișier salvat"
 msgid "Replace the current settings?"
 msgstr "Înlocuiești setările actuale?"
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "Request Access"
 msgstr "Solicită acces"
 
@@ -5683,7 +5843,7 @@ msgstr "Cerere anulată"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Request the 16-character ID from the network owner."
 msgstr "Cereți identificatorul de 16 caractere proprietarului rețelei."
 
@@ -5696,11 +5856,11 @@ msgstr "Solicitat: {settings}"
 msgid "Requesting configuration"
 msgstr "Se solicită configurația"
 
-#: src/big_remote_play/ui/guest_view.py:483
+#: src/big_remote_play/ui/guest_view.py:503
 msgid "Requests to the game PC"
 msgstr "Solicitări către computerul de jocuri"
 
-#: src/big_remote_play/ui/guest_view.py:560
+#: src/big_remote_play/ui/guest_view.py:580
 msgid "Requests to the game PC and connection checks"
 msgstr "Solicitări către computerul de jocuri și verificări ale conexiunii"
 
@@ -5712,7 +5872,7 @@ msgstr ""
 "Necesar pentru a partaja acest computer sau a invita persoane. Expiră după "
 "perioada aleasă (între 1 și 90 de zile)."
 
-#: src/big_remote_play/ui/guest_view.py:2160
+#: src/big_remote_play/ui/guest_view.py:2208
 #: src/big_remote_play/ui/preferences.py:56
 msgid "Reset"
 msgstr "Resetare"
@@ -5724,33 +5884,33 @@ msgstr "Resetare"
 msgid "Reset all settings to default"
 msgstr "Resetați toate setările la valorile implicite"
 
-#: src/big_remote_play/ui/guest_view.py:210
+#: src/big_remote_play/ui/guest_view.py:230
 msgid "Reset connection settings"
 msgstr "Resetează setările conexiunii"
 
-#: src/big_remote_play/ui/host_view.py:2988
+#: src/big_remote_play/ui/host_view.py:3255
 msgid "Reset directly; the server will restart"
 msgstr "Resetați direct; serverul va reporni"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 91
-#: src/big_remote_play/host/sunshine_manager.py:662
+#: src/big_remote_play/host/sunshine_manager.py:714
 #, python-brace-format
 msgid "Reset error: {}"
 msgstr "Eroare la resetare: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 813
-#: src/big_remote_play/host/sunshine_manager.py:660
+#: src/big_remote_play/host/sunshine_manager.py:712
 msgid "Reset failed"
 msgstr "Resetarea a eșuat"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 740
-#: src/big_remote_play/host/sunshine_manager.py:660
+#: src/big_remote_play/host/sunshine_manager.py:712
 #, python-brace-format
 msgid "Reset failed: {}"
 msgstr "Resetarea a eșuat: {}"
 
-#: src/big_remote_play/ui/guest_view.py:2156
+#: src/big_remote_play/ui/guest_view.py:2204
 msgid "Reset settings?"
 msgstr "Resetezi setările?"
 
@@ -5765,7 +5925,7 @@ msgstr "Restabiliți valorile implicite"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 78
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 85
-#: src/big_remote_play/ui/guest_view.py:246
+#: src/big_remote_play/ui/guest_view.py:266
 msgid "Resolution"
 msgstr "Rezoluție"
 
@@ -5788,7 +5948,7 @@ msgstr ""
 "ZeroTier."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1443
-#: src/big_remote_play/ui/host_view.py:3357
+#: src/big_remote_play/ui/host_view.py:3624
 #: src/big_remote_play/ui/preferences.py:58
 #: src/big_remote_play/ui/preferences.py:165
 #: src/big_remote_play/ui/preferences.py:262
@@ -5796,7 +5956,7 @@ msgid "Restore"
 msgstr "Restaurare"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1442
-#: src/big_remote_play/ui/host_view.py:3355
+#: src/big_remote_play/ui/host_view.py:3622
 #: src/big_remote_play/ui/preferences.py:57
 msgid "Restore Defaults"
 msgstr "Restabiliți valorile implicite"
@@ -5811,17 +5971,17 @@ msgstr "Restabiliți valorile implicite?"
 msgid "Restore a backup"
 msgstr "Restaurează o copie de rezervă"
 
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Reutilizează detaliile conexiunii salvate de Big Remote Play"
 
-#: src/big_remote_play/ui/host_view.py:1712
-#: src/big_remote_play/ui/host_view.py:1739
+#: src/big_remote_play/ui/host_view.py:1971
+#: src/big_remote_play/ui/host_view.py:1998
 #, python-brace-format
 msgid "Reveal {}"
 msgstr "Arată {}"
 
-#: src/big_remote_play/ui/guest_view.py:424
+#: src/big_remote_play/ui/guest_view.py:444
 msgid "Reverse the scroll-wheel direction"
 msgstr "Inversează direcția rotiței de derulare"
 
@@ -5874,7 +6034,7 @@ msgstr ""
 "computer."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
-#: src/big_remote_play/ui/host_view.py:1808
+#: src/big_remote_play/ui/host_view.py:2067
 #: src/big_remote_play/ui/main_window.py:552
 #: src/big_remote_play/ui/main_window.py:1409
 msgid "Running"
@@ -5895,7 +6055,7 @@ msgstr "Reglare software"
 msgid "Same as the first device that connects"
 msgstr "La fel ca primul dispozitiv care se conectează"
 
-#: src/big_remote_play/ui/host_view.py:797
+#: src/big_remote_play/ui/host_view.py:858
 msgid ""
 "Same home network? Skip this step. For different networks, set up internet "
 "play."
@@ -5907,24 +6067,25 @@ msgstr ""
 # line: 1092
 # line: 1859
 #: src/big_remote_play/ui/api_access_dialog.py:86
-#: src/big_remote_play/ui/host_view.py:3017
-#: src/big_remote_play/ui/private_network_view.py:972
+#: src/big_remote_play/ui/host_view.py:1212
+#: src/big_remote_play/ui/host_view.py:3284
+#: src/big_remote_play/ui/private_network_view.py:1001
 #: src/big_remote_play/ui/remote_connection.py:754
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:306
 msgid "Save"
 msgstr "Salvează"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:1381
+#: src/big_remote_play/ui/host_view.py:1638
 msgid "Save Password"
 msgstr "Salvați parola"
 
-#: src/big_remote_play/ui/guest_view.py:235
+#: src/big_remote_play/ui/guest_view.py:255
 msgid "Save bandwidth"
 msgstr "Economisește lățimea de bandă"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 670
-#: src/big_remote_play/ui/host_view.py:1382
+#: src/big_remote_play/ui/host_view.py:1639
 msgid "Save credentials to the system keyring"
 msgstr "Salvează datele de autentificare în inelul de chei al sistemului"
 
@@ -5949,35 +6110,35 @@ msgstr "Scanați-l cu telefonul persoanei pe care o invitați."
 msgid "Screen resolution while sharing"
 msgstr "Rezoluția ecranului în timpul partajării"
 
-#: src/big_remote_play/ui/host_view.py:877
+#: src/big_remote_play/ui/host_view.py:936
 msgid "Screen, graphics card and encoding"
 msgstr "Ecran, placă grafică și codare"
 
-#: src/big_remote_play/ui/host_view.py:1021
-#: src/big_remote_play/ui/host_view.py:1090
+#: src/big_remote_play/ui/host_view.py:1080
+#: src/big_remote_play/ui/host_view.py:1341
 #, python-brace-format
 msgid "Screen: {value}"
 msgstr "Ecran: {value}"
 
-#: src/big_remote_play/ui/guest_view.py:940
-#: src/big_remote_play/ui/guest_view.py:970
+#: src/big_remote_play/ui/guest_view.py:960
+#: src/big_remote_play/ui/guest_view.py:990
 msgid "Search again"
 msgstr "Caută din nou"
 
-#: src/big_remote_play/ui/guest_view.py:1334
-#: src/big_remote_play/ui/host_view.py:780
+#: src/big_remote_play/ui/guest_view.py:1354
+#: src/big_remote_play/ui/host_view.py:841
 msgid "Search code"
 msgstr "Cod de căutare"
 
-#: src/big_remote_play/ui/guest_view.py:971
+#: src/big_remote_play/ui/guest_view.py:991
 msgid "Search for game PCs again"
 msgstr "Caută din nou computere de jocuri"
 
-#: src/big_remote_play/ui/guest_view.py:491
+#: src/big_remote_play/ui/guest_view.py:511
 msgid "Searches the local network for computers that are sharing a game."
 msgstr "Caută în rețeaua locală computere care partajează un joc."
 
-#: src/big_remote_play/ui/guest_view.py:1095
+#: src/big_remote_play/ui/guest_view.py:1115
 msgid "Searching for game PCs..."
 msgstr "Se caută computere de jocuri…"
 
@@ -5994,7 +6155,7 @@ msgid "Seen in the last few minutes"
 msgstr "Văzut în ultimele minute"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:2867
+#: src/big_remote_play/ui/host_view.py:3134
 msgid "Select Executable"
 msgstr "Selectați fișierul executabil"
 
@@ -6003,7 +6164,7 @@ msgstr "Selectați fișierul executabil"
 msgid "Select Game"
 msgstr "Selectați jocul"
 
-#: src/big_remote_play/ui/host_view.py:2154
+#: src/big_remote_play/ui/host_view.py:2415
 msgid ""
 "Select a game or complete the app name and command. To share the whole "
 "screen instead, choose Full Desktop."
@@ -6011,12 +6172,12 @@ msgstr ""
 "Alegeți un joc sau completați numele aplicației și comanda. Pentru întregul "
 "ecran, alegeți Tot desktopul."
 
-#: src/big_remote_play/ui/private_network_view.py:758
+#: src/big_remote_play/ui/private_network_view.py:787
 msgid "Select a network service and try again."
 msgstr "Selectează un serviciu de rețea și încearcă din nou."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:2943
+#: src/big_remote_play/ui/host_view.py:3210
 msgid "Select executable"
 msgstr "Selectați fișierul executabil"
 
@@ -6027,13 +6188,13 @@ msgstr "Selectați ecranul de capturat"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 757
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 767
-#: src/big_remote_play/ui/host_view.py:2955
+#: src/big_remote_play/ui/host_view.py:3222
 #, python-brace-format
 msgid "Selected: {}"
 msgstr "Selectat: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 588
-#: src/big_remote_play/ui/host_view.py:1394
+#: src/big_remote_play/ui/host_view.py:1651
 msgid "Send"
 msgstr "Trimite"
 
@@ -6041,7 +6202,7 @@ msgstr "Trimite"
 msgid "Send invitation"
 msgstr "Trimite invitația"
 
-#: src/big_remote_play/ui/host_view.py:809
+#: src/big_remote_play/ui/host_view.py:868
 msgid ""
 "Send one of these to the other person, or let them pick this computer under "
 "Connect."
@@ -6049,7 +6210,7 @@ msgstr ""
 "Trimiteți unul dintre acestea celeilalte persoane sau lăsați-o să aleagă "
 "acest computer la Conectare."
 
-#: src/big_remote_play/ui/guest_view.py:404
+#: src/big_remote_play/ui/guest_view.py:424
 msgid "Send system shortcuts to the remote computer"
 msgstr "Trimite comenzile rapide de sistem către computerul la distanță"
 
@@ -6057,7 +6218,7 @@ msgstr "Trimite comenzile rapide de sistem către computerul la distanță"
 msgid "Send the Node ID to the network owner"
 msgstr "Trimiteți ID-ul nodului proprietarului rețelei"
 
-#: src/big_remote_play/ui/host_view.py:757
+#: src/big_remote_play/ui/host_view.py:818
 msgid "Send the code shown on the other PC to finish pairing"
 msgstr "Trimite codul afișat pe celălalt PC pentru a finaliza asocierea"
 
@@ -6079,25 +6240,25 @@ msgstr "Se trimite cererea către rețea."
 msgid "Sends your game to the other PC."
 msgstr "Trimite jocul tău către celălalt PC."
 
-#: src/big_remote_play/ui/private_network_view.py:655
+#: src/big_remote_play/ui/private_network_view.py:683
 msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Domeniul serverului (de ex. vpn.example.com)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1415
-#: src/big_remote_play/ui/host_view.py:2456
+#: src/big_remote_play/ui/host_view.py:2723
 msgid "Server Failed to Start"
 msgstr "Serverul nu a reușit să pornească."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:2968
+#: src/big_remote_play/ui/host_view.py:3235
 msgid "Server Password"
 msgstr "Parola serverului"
 
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
 #: src/big_remote_play/ui/network_devices.py:692
-#: src/big_remote_play/ui/private_network_view.py:655
-#: src/big_remote_play/ui/private_network_view.py:1022
+#: src/big_remote_play/ui/private_network_view.py:683
+#: src/big_remote_play/ui/private_network_view.py:1051
 msgid "Server address"
 msgstr "Adresa serverului"
 
@@ -6118,7 +6279,7 @@ msgid "Server password"
 msgstr "Parola serverului"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1196
-#: src/big_remote_play/ui/host_view.py:2252
+#: src/big_remote_play/ui/host_view.py:2513
 msgid "Server started"
 msgstr "Serverul a pornit"
 
@@ -6130,7 +6291,7 @@ msgstr "Instrumente pentru server"
 msgid "Service started"
 msgstr "Serviciu pornit"
 
-#: src/big_remote_play/ui/host_view.py:2978
+#: src/big_remote_play/ui/host_view.py:3245
 msgid ""
 "Set the username and password used to manage the Sunshine server. If you "
 "forgot the current password, switch on “I forgot the current password” to "
@@ -6162,7 +6323,7 @@ msgid "Setting up"
 msgstr "Se configurează"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1451
-#: src/big_remote_play/ui/host_view.py:3372
+#: src/big_remote_play/ui/host_view.py:3639
 msgid "Settings Restored"
 msgstr "Setările au fost restabilite"
 
@@ -6176,11 +6337,11 @@ msgstr ""
 "Setările au fost restabilite! Reporniți aplicația pentru a aplica toate "
 "modificările."
 
-#: src/big_remote_play/host/sunshine_manager.py:573
+#: src/big_remote_play/host/sunshine_manager.py:625
 msgid "Several computers are waiting to pair."
 msgstr "Mai multe computere așteaptă asocierea."
 
-#: src/big_remote_play/ui/host_view.py:1301
+#: src/big_remote_play/ui/host_view.py:1555
 msgid ""
 "Several computers are waiting to pair. Approve only the one that shows the "
 "code you entered."
@@ -6215,20 +6376,20 @@ msgstr "Partajează acest PC"
 msgid "Share this computer"
 msgstr "Partajează acest computer"
 
-#: src/big_remote_play/ui/guest_view.py:1217
+#: src/big_remote_play/ui/guest_view.py:1237
 msgid "Sharing found"
 msgstr "Partajare găsită"
 
-#: src/big_remote_play/ui/host_view.py:2725
-#: src/big_remote_play/ui/host_view.py:2856
+#: src/big_remote_play/ui/host_view.py:2992
+#: src/big_remote_play/ui/host_view.py:3123
 msgid "Sharing is off"
 msgstr "Partajarea este oprită"
 
-#: src/big_remote_play/ui/guest_view.py:1218
+#: src/big_remote_play/ui/guest_view.py:1238
 msgid "Sharing not found"
 msgstr "Partajare negăsită"
 
-#: src/big_remote_play/ui/host_view.py:835
+#: src/big_remote_play/ui/host_view.py:894
 msgid "Sharing now"
 msgstr "Se partajează acum"
 
@@ -6238,7 +6399,7 @@ msgid "Sharing sections"
 msgstr "Secțiuni de partajare"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1287
-#: src/big_remote_play/ui/host_view.py:2408
+#: src/big_remote_play/ui/host_view.py:2675
 msgid "Sharing stopped"
 msgstr "Partajarea s-a oprit"
 
@@ -6249,14 +6410,14 @@ msgstr ""
 "Partajarea întregului ecran arată și notificările și celelalte ferestre "
 "deschise."
 
-#: src/big_remote_play/ui/guest_view.py:236
+#: src/big_remote_play/ui/guest_view.py:256
 msgid "Sharper picture"
 msgstr "Imagine mai clară"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 67
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 947
-#: src/big_remote_play/ui/guest_view.py:213
-#: src/big_remote_play/ui/guest_view.py:2227
+#: src/big_remote_play/ui/guest_view.py:233
+#: src/big_remote_play/ui/guest_view.py:2275
 msgid "Shortcuts & Instructions"
 msgstr "Comenzi rapide și Instrucțiuni"
 
@@ -6271,12 +6432,12 @@ msgid "Show icon in system tray and display desktop notifications"
 msgstr ""
 "Afișați pictograma în zona de notificare și afișați notificări pe desktop."
 
-#: src/big_remote_play/ui/host_view.py:1713
+#: src/big_remote_play/ui/host_view.py:1972
 #, python-brace-format
 msgid "Show or hide the {} value"
 msgstr "Arată sau ascunde valoarea {}"
 
-#: src/big_remote_play/ui/guest_view.py:341
+#: src/big_remote_play/ui/guest_view.py:361
 msgid "Show performance statistics during streaming"
 msgstr "Afișează statisticile de performanță în timpul streamingului"
 
@@ -6285,7 +6446,7 @@ msgstr "Afișează statisticile de performanță în timpul streamingului"
 msgid "Show {name} as a QR code"
 msgstr "Afișează {name} ca cod QR"
 
-#: src/big_remote_play/ui/guest_view.py:348
+#: src/big_remote_play/ui/guest_view.py:368
 msgid "Shows a warning when the network becomes unstable or too slow."
 msgstr "Afișează un avertisment când rețeaua devine instabilă sau prea lentă."
 
@@ -6293,6 +6454,10 @@ msgstr "Afișează un avertisment când rețeaua devine instabilă sau prea lent
 msgid "Shows network details and tools for experienced users."
 msgstr ""
 "Afișează detaliile rețelei și instrumente pentru utilizatori experimentați."
+
+#: src/big_remote_play/ui/host_view.py:800
+msgid "Shows the ports first; your password is requested"
+msgstr "Afișează mai întâi porturile; vi se cere parola"
 
 #: src/big_remote_play/ui/network_common.py:150
 #: src/big_remote_play/ui/network_common.py:160
@@ -6304,6 +6469,10 @@ msgstr "Autentifică-te"
 #: src/big_remote_play/ui/network_devices.py:629
 msgid "Sign in on that computer with your own account."
 msgstr "Autentificați-vă pe acel computer cu propriul cont."
+
+#: src/big_remote_play/ui/private_network_view.py:94
+msgid "Sign in to ZeroTier Central"
+msgstr "Autentificați-vă în ZeroTier Central"
 
 #: src/big_remote_play/ui/remote_connection.py:65
 msgid "Sign in to connect this computer"
@@ -6318,8 +6487,8 @@ msgstr "Autentificați-vă în {name} pentru a continua."
 msgid "Sign in with another Tailscale account"
 msgstr "Autentifică-te cu alt cont Tailscale"
 
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 msgid "Sign in with browser"
 msgstr "Autentificare cu browserul"
 
@@ -6331,7 +6500,7 @@ msgstr "Autentificați-vă cu același cont"
 msgid "Sign in with your account and connect your devices."
 msgstr "Autentifică-te cu contul tău și conectează-ți dispozitivele."
 
-#: src/big_remote_play/ui/private_network_view.py:538
+#: src/big_remote_play/ui/private_network_view.py:566
 msgid "Sign in with your browser. Use the same account on all your devices."
 msgstr ""
 "Autentifică-te în browser. Folosește același cont pe toate dispozitivele "
@@ -6349,7 +6518,7 @@ msgstr "Linkul de autentificare afișat pe acel computer"
 msgid "Sign-in needed"
 msgstr "Necesită autentificare"
 
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Sign-in was not completed in the browser."
 msgstr "Autentificarea în browser nu a fost finalizată."
 
@@ -6387,7 +6556,7 @@ msgstr "Creșterea procentuală a VBV/HRD pe cadru unic"
 msgid "Software"
 msgstr "Software"
 
-#: src/big_remote_play/ui/host_view.py:894
+#: src/big_remote_play/ui/host_view.py:953
 msgid "Solve sharing problems"
 msgstr "Rezolvă problemele de partajare"
 
@@ -6421,7 +6590,7 @@ msgstr ""
 msgid "Somewhere else"
 msgstr "În altă parte"
 
-#: src/big_remote_play/ui/host_view.py:864
+#: src/big_remote_play/ui/host_view.py:923
 msgid "Sound and access on this computer"
 msgstr "Sunet și acces pe acest computer"
 
@@ -6463,35 +6632,39 @@ msgstr "Pornește serviciul"
 #: src/big_remote_play/ui/host_view.py:654
 #: src/big_remote_play/ui/host_view.py:657
 #: src/big_remote_play/ui/host_view.py:660
-#: src/big_remote_play/ui/host_view.py:1852
-#: src/big_remote_play/ui/host_view.py:1854
-#: src/big_remote_play/ui/host_view.py:1860
+#: src/big_remote_play/ui/host_view.py:2113
+#: src/big_remote_play/ui/host_view.py:2115
+#: src/big_remote_play/ui/host_view.py:2121
 msgid "Start sharing"
 msgstr "Începe partajarea"
 
-#: src/big_remote_play/ui/host_view.py:2856
+#: src/big_remote_play/ui/host_view.py:3123
 msgid "Start sharing first to browse this PC."
 msgstr "Începeți mai întâi partajarea pentru a răsfoi acest PC."
 
-#: src/big_remote_play/ui/host_view.py:2725
+#: src/big_remote_play/ui/host_view.py:2992
 msgid "Start sharing first to manage the game library."
 msgstr "Începeți mai întâi partajarea pentru a gestiona biblioteca de jocuri."
 
-#: src/big_remote_play/ui/guest_view.py:937
+#: src/big_remote_play/ui/host_view.py:1228
+msgid "Start sharing first, then enter the password again."
+msgstr "Porniți mai întâi partajarea, apoi introduceți din nou parola."
+
+#: src/big_remote_play/ui/guest_view.py:957
 msgid "Start sharing on the game PC, then search again."
 msgstr "Porniți partajarea pe PC-ul cu jocul și căutați din nou."
 
-#: src/big_remote_play/ui/guest_view.py:957
+#: src/big_remote_play/ui/guest_view.py:977
 msgid "Start sharing on the game PC. It will appear here."
 msgstr "Începeți partajarea pe calculatorul cu jocul. Va apărea aici."
 
 #: src/big_remote_play/ui/host_view.py:660
-#: src/big_remote_play/ui/host_view.py:1860
+#: src/big_remote_play/ui/host_view.py:2121
 msgid "Start sharing the game from this PC"
 msgstr "Începe partajarea jocului de pe acest PC"
 
-#: src/big_remote_play/ui/host_view.py:1474
-#: src/big_remote_play/ui/host_view.py:1868
+#: src/big_remote_play/ui/host_view.py:1732
+#: src/big_remote_play/ui/host_view.py:2129
 msgid "Start sharing to show paired devices"
 msgstr "Începeți partajarea pentru a vedea dispozitivele asociate"
 
@@ -6505,7 +6678,7 @@ msgid "Starting ZeroTier…"
 msgstr "Se pornește ZeroTier…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 634
-#: src/big_remote_play/ui/host_view.py:1752
+#: src/big_remote_play/ui/host_view.py:2011
 msgid "Starting game sharing..."
 msgstr "Se pornește partajarea jocului..."
 
@@ -6515,7 +6688,7 @@ msgstr "Pornirea vă cere parola o singură dată."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 67
-#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "Starting..."
 msgstr "Se pornește..."
 
@@ -6546,25 +6719,25 @@ msgstr "Stare: {}"
 msgid "Steam Remote Play"
 msgstr "Steam Remote Play"
 
-#: src/big_remote_play/ui/host_view.py:2015
+#: src/big_remote_play/ui/host_view.py:2276
 msgid "Steam is not recording sound"
 msgstr "Steam nu înregistrează sunet"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1959
-#: src/big_remote_play/ui/private_network_view.py:1021
+#: src/big_remote_play/ui/private_network_view.py:1050
 msgid "Step 1: Get credentials"
 msgstr "Pasul 1: Obțineți acreditivele"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1965
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Step 2: Enter details"
 msgstr "Pasul 2: Introduceți detalii"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1971
-#: src/big_remote_play/ui/private_network_view.py:1030
+#: src/big_remote_play/ui/private_network_view.py:1059
 msgid "Step 3: Connect"
 msgstr "Pasul 3: Conectare"
 
@@ -6577,12 +6750,12 @@ msgstr "Ghid pas cu pas"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 145
-#: src/big_remote_play/ui/guest_view.py:145
-#: src/big_remote_play/ui/guest_view.py:377
+#: src/big_remote_play/ui/guest_view.py:165
+#: src/big_remote_play/ui/guest_view.py:397
 msgid "Stereo"
 msgstr "Stereo"
 
-#: src/big_remote_play/ui/guest_view.py:548
+#: src/big_remote_play/ui/guest_view.py:568
 msgid "Stereo · This computer only"
 msgstr "Stereo · Numai acest computer"
 
@@ -6591,8 +6764,8 @@ msgstr "Stereo · Numai acest computer"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 868
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 198
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 206
-#: src/big_remote_play/ui/guest_view.py:855
-#: src/big_remote_play/ui/guest_view.py:879
+#: src/big_remote_play/ui/guest_view.py:875
+#: src/big_remote_play/ui/guest_view.py:899
 #: src/big_remote_play/ui/main_window.py:1478
 msgid "Stop"
 msgstr "Oprește"
@@ -6610,20 +6783,20 @@ msgstr "Oprește temporar ZeroTier"
 msgid "Stop ZeroTier temporarily?"
 msgstr "Oprești temporar ZeroTier?"
 
-#: src/big_remote_play/ui/host_view.py:1752
-#: src/big_remote_play/ui/host_view.py:1795
-#: src/big_remote_play/ui/host_view.py:1797
-#: src/big_remote_play/ui/host_view.py:1803
+#: src/big_remote_play/ui/host_view.py:2011
+#: src/big_remote_play/ui/host_view.py:2054
+#: src/big_remote_play/ui/host_view.py:2056
+#: src/big_remote_play/ui/host_view.py:2062
 msgid "Stop sharing"
 msgstr "Oprește partajarea"
 
-#: src/big_remote_play/ui/host_view.py:1803
+#: src/big_remote_play/ui/host_view.py:2062
 msgid "Stop sharing the game from this PC"
 msgstr "Oprește partajarea jocului de pe acest PC"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
 #: src/big_remote_play/ui/host_view.py:714
-#: src/big_remote_play/ui/host_view.py:1833
+#: src/big_remote_play/ui/host_view.py:2094
 #: src/big_remote_play/ui/main_window.py:554
 #: src/big_remote_play/ui/main_window.py:1409
 #: src/big_remote_play/ui/main_window.py:1510
@@ -6635,7 +6808,7 @@ msgid "Stopped looking for new devices"
 msgstr "Căutarea dispozitivelor noi s-a oprit"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1256
-#: src/big_remote_play/ui/host_view.py:2362
+#: src/big_remote_play/ui/host_view.py:2623
 msgid "Stopping server..."
 msgstr "Se oprește serverul..."
 
@@ -6653,15 +6826,9 @@ msgid "Strictly enforce frame bitrate limits for H.264/HEVC on AMD GPUs"
 msgstr ""
 "Aplică strict limitele de bitrate pentru cadrele H.264/HEVC pe GPU-urile AMD."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 794
-#: src/big_remote_play/ui/host_view.py:1676
-#, python-brace-format
-msgid "Success: {}"
-msgstr "Succes: {}"
-
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 88
-#: src/big_remote_play/host/sunshine_manager.py:528
+#: src/big_remote_play/host/sunshine_manager.py:530
 #, python-brace-format
 msgid "Sunshine API request failed: {}"
 msgstr "Cererea către API-ul Sunshine a eșuat: {}"
@@ -6673,7 +6840,7 @@ msgstr "Sunshine, gazdă pentru streamingul jocurilor"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 264
-#: src/big_remote_play/ui/host_view.py:2684
+#: src/big_remote_play/ui/host_view.py:2951
 msgid "Sunshine Logs"
 msgstr "Jurnale Sunshine"
 
@@ -6684,7 +6851,8 @@ msgstr "Sunshine este offline"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 265
-#: src/big_remote_play/ui/host_view.py:1377
+#: src/big_remote_play/ui/host_view.py:1207
+#: src/big_remote_play/ui/host_view.py:1634
 msgid "Sunshine Password"
 msgstr "Parola Sunshine"
 
@@ -6696,11 +6864,12 @@ msgstr "Mediul de rulare Sunshine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 264
-#: src/big_remote_play/ui/host_view.py:1373
+#: src/big_remote_play/ui/host_view.py:1205
+#: src/big_remote_play/ui/host_view.py:1630
 msgid "Sunshine User"
 msgstr "Utilizator Sunshine"
 
-#: src/big_remote_play/ui/guest_view.py:1811
+#: src/big_remote_play/ui/guest_view.py:1836
 msgid "Sunshine answers"
 msgstr "Sunshine răspunde"
 
@@ -6712,7 +6881,7 @@ msgstr ""
 "Sunshine solicită unui router compatibil deschiderea porturilor la pornire. "
 "Activarea opțiunii nu confirmă că porturile s-au deschis."
 
-#: src/big_remote_play/ui/host_view.py:1088
+#: src/big_remote_play/ui/host_view.py:1339
 msgid ""
 "Sunshine chooses compatible capture and encoding at startup. You can still "
 "set a video bitrate ceiling."
@@ -6720,13 +6889,24 @@ msgstr ""
 "Sunshine alege la pornire captură și codare compatibile. Poți seta în "
 "continuare o limită maximă a ratei de biți video."
 
-#: src/big_remote_play/ui/guest_view.py:1811
+#: src/big_remote_play/ui/host_view.py:1228
+msgid "Sunshine did not answer"
+msgstr "Sunshine nu a răspuns"
+
+#: src/big_remote_play/ui/host_view.py:1278
+msgid ""
+"Sunshine did not close it. Try again, or stop sharing and start it again."
+msgstr ""
+"Sunshine nu l-a închis. Încercați din nou sau opriți partajarea și porniți-o "
+"iar."
+
+#: src/big_remote_play/ui/guest_view.py:1836
 msgid "Sunshine does not answer. Start sharing on the game PC."
 msgstr "Sunshine nu răspunde. Începeți partajarea pe computerul de jocuri."
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
-#: src/big_remote_play/host/sunshine_manager.py:652
+#: src/big_remote_play/host/sunshine_manager.py:704
 #: src/big_remote_play/utils/system_check.py:184
 msgid "Sunshine executable not found"
 msgstr "Fișierul executabil Sunshine nu a fost găsit"
@@ -6739,21 +6919,21 @@ msgstr "Sunshine nu și-a raportat versiunea"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 86
-#: src/big_remote_play/host/sunshine_manager.py:254
+#: src/big_remote_play/host/sunshine_manager.py:256
 #, python-brace-format
 msgid "Sunshine failed to start (Exit code {}).\n"
 msgstr "Sunshine nu a reușit să pornească (Cod de ieșire {}).\n"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 90
-#: src/big_remote_play/host/sunshine_manager.py:258
+#: src/big_remote_play/host/sunshine_manager.py:260
 #, python-brace-format
 msgid "Sunshine failed to start (Exit code {}). Check logs."
 msgstr ""
 "Sunshine nu a reușit să pornească (Cod de ieșire {}). Verifică jurnalele."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1411
-#: src/big_remote_play/ui/host_view.py:2454
+#: src/big_remote_play/ui/host_view.py:2721
 #, python-brace-format
 msgid ""
 "Sunshine failed to start.\n"
@@ -6772,7 +6952,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 88
-#: src/big_remote_play/host/sunshine_manager.py:256
+#: src/big_remote_play/host/sunshine_manager.py:258
 #, python-brace-format
 msgid "Sunshine failed to start: {}"
 msgstr "Sunshine nu a putut porni: {}"
@@ -6791,13 +6971,13 @@ msgstr "Sunshine nu este disponibil."
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
-#: src/big_remote_play/host/sunshine_manager.py:286
+#: src/big_remote_play/host/sunshine_manager.py:288
 msgid "Sunshine is not running"
 msgstr "Sunshine nu rulează"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
-#: src/big_remote_play/ui/host_view.py:2492
+#: src/big_remote_play/ui/host_view.py:2759
 #: src/big_remote_play/ui/main_window.py:1331
 #: src/big_remote_play/ui/sunshine_preferences.py:367
 msgid "Sunshine is not running."
@@ -6808,6 +6988,14 @@ msgstr "Sunshine nu rulează."
 #: src/big_remote_play/ui/sunshine_preferences.py:349
 msgid "Sunshine is not running. Settings are saved to file."
 msgstr "Sunshine nu rulează. Setările sunt salvate în fișier."
+
+#: src/big_remote_play/ui/host_view.py:1201
+msgid "Sunshine password"
+msgstr "Parola Sunshine"
+
+#: src/big_remote_play/ui/host_view.py:1221
+msgid "Sunshine password saved. Devices can be approved right away."
+msgstr "Parola Sunshine a fost salvată. Dispozitivele pot fi aprobate imediat."
 
 #: src/big_remote_play/ui/connection_guides.py:73
 #: src/big_remote_play/ui/connection_guides.py:186
@@ -6820,17 +7008,21 @@ msgstr "Sunshine înregistrează acum"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 105
-#: src/big_remote_play/host/sunshine_manager.py:578
-#: src/big_remote_play/host/sunshine_manager.py:594
+#: src/big_remote_play/host/sunshine_manager.py:630
+#: src/big_remote_play/host/sunshine_manager.py:646
 msgid "Sunshine rejected the PIN"
 msgstr "Sunshine a respins codul PIN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 709
-#: src/big_remote_play/host/sunshine_manager.py:631
+#: src/big_remote_play/host/sunshine_manager.py:683
 msgid "Sunshine rejected the credentials"
 msgstr "Sunshine a respins datele de autentificare"
 
-#: src/big_remote_play/ui/host_view.py:1275
+#: src/big_remote_play/ui/host_view.py:1120
+msgid "Sunshine rejected the saved password"
+msgstr "Sunshine a respins parola salvată"
+
+#: src/big_remote_play/ui/host_view.py:1526
 msgid "Sunshine rejected the saved password."
 msgstr "Sunshine a refuzat parola salvată."
 
@@ -6840,22 +7032,26 @@ msgstr "Mediul de rulare Sunshine este disponibil"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 105
-#: src/big_remote_play/host/sunshine_manager.py:271
+#: src/big_remote_play/host/sunshine_manager.py:273
 #, python-brace-format
 msgid "Sunshine started (PID: {})"
 msgstr "Sunshine a pornit (PID: {})"
 
+#: src/big_remote_play/ui/host_view.py:1116
+msgid "Sunshine's password is needed to approve devices"
+msgstr "Parola Sunshine este necesară pentru a aproba dispozitive"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 332
-#: src/big_remote_play/ui/host_view.py:901
+#: src/big_remote_play/ui/host_view.py:960
 msgid "Support"
 msgstr "Asistență"
 
-#: src/big_remote_play/ui/guest_view.py:440
+#: src/big_remote_play/ui/guest_view.py:460
 msgid "Swap the A/B and X/Y buttons"
 msgstr "Schimbă între ele butoanele A/B și X/Y"
 
-#: src/big_remote_play/ui/guest_view.py:418
+#: src/big_remote_play/ui/guest_view.py:438
 msgid "Swap the left and right mouse buttons"
 msgstr "Inversează butoanele stâng și drept ale mouse-ului"
 
@@ -6876,7 +7072,7 @@ msgstr ""
 "Schimbați conturile Tailscale sau Headscale și vedeți toate rețelele "
 "ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:613
+#: src/big_remote_play/ui/private_network_view.py:641
 msgid ""
 "Switch saved accounts or leave networks without deleting online accounts."
 msgstr ""
@@ -6884,7 +7080,7 @@ msgstr ""
 "online."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 997
-#: src/big_remote_play/ui/guest_view.py:2273
+#: src/big_remote_play/ui/guest_view.py:2321
 msgid "Switching Monitors"
 msgstr "Comutarea monitoarelor"
 
@@ -6897,22 +7093,22 @@ msgstr "Se schimbă la {}…"
 msgid "System"
 msgstr "Sistem"
 
-#: src/big_remote_play/ui/host_view.py:2005
+#: src/big_remote_play/ui/host_view.py:2266
 msgid "System audio unavailable"
 msgstr "Sunetul sistemului este indisponibil"
 
-#: src/big_remote_play/ui/host_view.py:2001
+#: src/big_remote_play/ui/host_view.py:2262
 msgid "System audio unavailable: no output device was found."
 msgstr ""
 "Sunetul sistemului este indisponibil: nu a fost găsit niciun dispozitiv de "
 "ieșire."
 
-#: src/big_remote_play/ui/host_view.py:2053
+#: src/big_remote_play/ui/host_view.py:2314
 msgid "System audio unavailable: there is no output to test."
 msgstr ""
 "Sunetul sistemului este indisponibil: nu există nicio ieșire de testat."
 
-#: src/big_remote_play/ui/host_view.py:1230
+#: src/big_remote_play/ui/host_view.py:1481
 msgid "System keyring is unavailable. Password was not saved."
 msgstr ""
 "Inelul de chei al sistemului nu este disponibil. Parola nu a fost salvată."
@@ -6939,7 +7135,7 @@ msgstr "Tailscale"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 818
 # line: 1987
-#: src/big_remote_play/ui/private_network_view.py:1042
+#: src/big_remote_play/ui/private_network_view.py:1071
 msgid "Tailscale Instructions"
 msgstr "Instrucțiuni Tailscale"
 
@@ -6959,6 +7155,10 @@ msgstr "Conturi Tailscale și Headscale"
 msgid "Tailscale download page"
 msgstr "Pagina de descărcare Tailscale"
 
+#: src/big_remote_play/ui/host_view.py:1132
+msgid "Tailscale or Headscale"
+msgstr "Tailscale sau Headscale"
+
 #: src/big_remote_play/ui/connection_guides.py:165
 msgid ""
 "Tailscale, ZeroTier or Headscale usually work behind any router, including "
@@ -6972,7 +7172,7 @@ msgstr ""
 msgid "Technical audio details"
 msgstr "Detalii audio tehnice"
 
-#: src/big_remote_play/ui/guest_view.py:1818
+#: src/big_remote_play/ui/guest_view.py:1849
 #: src/big_remote_play/ui/network_dashboard.py:160
 #: src/big_remote_play/ui/zerotier_join.py:225
 msgid "Technical details"
@@ -7076,7 +7276,7 @@ msgstr ""
 "cooperative de la distanță — fără platforme proprietare, fără restricții, "
 "fără limite în ceea ce privește jocurile pe care le poți juca."
 
-#: src/big_remote_play/ui/host_view.py:1645
+#: src/big_remote_play/ui/host_view.py:1903
 msgid "The Sunshine port is outside the supported range."
 msgstr "Portul Sunshine este în afara intervalului acceptat."
 
@@ -7096,14 +7296,14 @@ msgstr ""
 "Conexiunea VPN activă se va opri. Conturile salvate sunt păstrate pentru a "
 "te putea reconecta ulterior."
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr ""
 "Administratorul trebuie să partajeze nodul sau să vă invite e-mailul în "
 "rețea."
 
-#: src/big_remote_play/ui/host_view.py:2156
+#: src/big_remote_play/ui/host_view.py:2417
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr ""
 "Comanda aplicației nu este validă. Verificați ghilimelele și încercați din "
@@ -7124,11 +7324,11 @@ msgstr ""
 "Moonlight. Pentru cea mai bună compatibilitate, acesta ar trebui să aibă o "
 "cheie publică RSA-2048."
 
-#: src/big_remote_play/ui/guest_view.py:1826
+#: src/big_remote_play/ui/guest_view.py:1857
 msgid "The checks could not run."
 msgstr "Verificările nu au putut fi efectuate."
 
-#: src/big_remote_play/ui/host_view.py:1592
+#: src/big_remote_play/ui/host_view.py:1850
 msgid ""
 "The chosen device plays the sound here too. Choose Automatic to share "
 "without playing it here."
@@ -7140,11 +7340,11 @@ msgstr ""
 msgid "The computer appears in this network's device list."
 msgstr "Computerul apare în lista de dispozitive a acestei rețele."
 
-#: src/big_remote_play/ui/guest_view.py:1810
+#: src/big_remote_play/ui/guest_view.py:1835
 msgid "The computer seems to be offline"
 msgstr "Computerul pare să fie offline"
 
-#: src/big_remote_play/ui/host_view.py:2021
+#: src/big_remote_play/ui/host_view.py:2282
 msgid "The connected client asked Sunshine not to play sound on this computer."
 msgstr ""
 "Clientul conectat a cerut ca Sunshine să nu redea sunet pe acest computer."
@@ -7196,7 +7396,15 @@ msgstr "Fișierul în care sunt stocate jurnalele curente ale Sunshine."
 msgid "The file that stores Sunshine's current state."
 msgstr "Fișierul în care este stocat starea curentă a Sunshine."
 
-#: src/big_remote_play/ui/host_view.py:1648
+#: src/big_remote_play/ui/host_view.py:791
+msgid "The firewall blocks other computers"
+msgstr "Firewallul blochează alte computere"
+
+#: src/big_remote_play/ui/host_view.py:1934
+msgid "The firewall now allows Sunshine's ports."
+msgstr "Firewallul permite acum porturile Sunshine."
+
+#: src/big_remote_play/ui/host_view.py:1906
 #, python-brace-format
 msgid ""
 "The firewall will allow incoming TCP {tcp} and UDP {udp}, plus 5353/UDP "
@@ -7209,7 +7417,7 @@ msgstr ""
 "permanentă și se aplică tuturor interfețelor de rețea. Panoul de "
 "administrare ({web}) rămâne închis."
 
-#: src/big_remote_play/ui/guest_view.py:1833
+#: src/big_remote_play/ui/guest_view.py:1881
 msgid ""
 "The game PC answered, but no video arrived. If this computer was removed "
 "from its paired devices, pair it again."
@@ -7217,9 +7425,32 @@ msgstr ""
 "Computerul de jocuri a răspuns, dar nu a sosit niciun videoclip. Dacă acest "
 "computer a fost eliminat din dispozitivele sale asociate, asociați-l din nou."
 
-#: src/big_remote_play/ui/guest_view.py:484
+#: src/big_remote_play/ui/guest_view.py:39
+msgid ""
+"The game PC answered, but sharing is not running on it. Start sharing on the "
+"game PC, then connect again."
+msgstr ""
+"PC-ul de joc a răspuns, dar partajarea nu rulează pe el. Porniți partajarea "
+"pe PC-ul de joc, apoi conectați-vă din nou."
+
+#: src/big_remote_play/ui/guest_view.py:45
+#, python-brace-format
+msgid ""
+"The game PC answers on the network, but its firewall blocks the game ports "
+"({port}). On the game PC, open Share and choose Allow in firewall, then "
+"connect again."
+msgstr ""
+"PC-ul de joc răspunde în rețea, dar firewallul lui blochează porturile "
+"jocului ({port}). Pe PC-ul de joc, deschideți Partajare, alegeți Permite în "
+"firewall, apoi conectați-vă din nou."
+
+#: src/big_remote_play/ui/guest_view.py:504
 msgid "The game PC decides whether these requests can be applied."
 msgstr "Computerul de jocuri decide dacă aceste solicitări pot fi aplicate."
+
+#: src/big_remote_play/ui/guest_view.py:1840
+msgid "The game PC's firewall blocks the game ports"
+msgstr "Firewallul PC-ului de joc blochează porturile jocului"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 386
@@ -7265,7 +7496,7 @@ msgstr ""
 "Rețeaua este privată: fiecare dispozitiv nou trebuie aprobat. Acest computer "
 "intră în rețea și este aprobat automat."
 
-#: src/big_remote_play/ui/private_network_view.py:1066
+#: src/big_remote_play/ui/private_network_view.py:1095
 msgid ""
 "The network owner must approve this computer, in Big Remote Play or in "
 "ZeroTier Central."
@@ -7295,7 +7526,7 @@ msgstr "Operațiunea a eșuat."
 msgid "The operation took longer than expected."
 msgstr "Operațiunea a durat mai mult decât era de așteptat."
 
-#: src/big_remote_play/ui/host_view.py:1272
+#: src/big_remote_play/ui/host_view.py:1523
 msgid "The other PC is paired."
 msgstr "Celălalt PC este asociat."
 
@@ -7343,7 +7574,7 @@ msgstr ""
 "Persoana intră în rețeaua dvs. privată și poate vedea dispozitivele pe care "
 "le permiteți."
 
-#: src/big_remote_play/ui/private_network_view.py:698
+#: src/big_remote_play/ui/private_network_view.py:726
 msgid "The person who created the network gives you this code."
 msgstr "Persoana care a creat rețeaua îți dă acest cod."
 
@@ -7358,7 +7589,7 @@ msgstr ""
 "Moonlight. Pentru cea mai bună compatibilitate, aceasta ar trebui să fie o "
 "cheie privată RSA-2048."
 
-#: src/big_remote_play/ui/guest_view.py:1809
+#: src/big_remote_play/ui/guest_view.py:1834
 msgid "The private network is not connected on this computer"
 msgstr "Rețeaua privată nu este conectată pe acest computer"
 
@@ -7374,7 +7605,7 @@ msgstr ""
 msgid "The saved credentials could not be read."
 msgstr "Datele de acces salvate nu au putut fi citite."
 
-#: src/big_remote_play/ui/host_view.py:2190
+#: src/big_remote_play/ui/host_view.py:2451
 msgid ""
 "The selected audio output is unavailable. Choose Automatic or reconnect the "
 "device."
@@ -7382,11 +7613,11 @@ msgstr ""
 "Ieșirea audio selectată este indisponibilă. Alege Automat sau reconectează "
 "dispozitivul."
 
-#: src/big_remote_play/ui/host_view.py:1999
+#: src/big_remote_play/ui/host_view.py:2260
 msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr "Ieșirea selectată nu este conectată. Reconecteaz-o sau alege Automat."
 
-#: src/big_remote_play/ui/private_network_view.py:665
+#: src/big_remote_play/ui/private_network_view.py:693
 msgid "The server administrator then approves this computer."
 msgstr "Apoi administratorul serverului aprobă acest computer."
 
@@ -7436,9 +7667,13 @@ msgstr "Serviciul nu a pornit."
 msgid "The service is running"
 msgstr "Serviciul rulează"
 
-#: src/big_remote_play/ui/guest_view.py:1832
+#: src/big_remote_play/ui/guest_view.py:1880
 msgid "The stream did not start"
 msgstr "Streamul nu a pornit"
+
+#: src/big_remote_play/ui/host_view.py:1278
+msgid "The stream is still open"
+msgstr "Streamul este încă deschis"
 
 #: src/big_remote_play/ui/api_access_dialog.py:273
 msgid "The system keyring is locked or unavailable. Nothing was saved."
@@ -7452,12 +7687,12 @@ msgstr ""
 "Inelul de chei al sistemului este blocat sau indisponibil. Deblocați-l și "
 "încercați din nou."
 
-#: src/big_remote_play/ui/host_view.py:2055
+#: src/big_remote_play/ui/host_view.py:2316
 #, python-brace-format
 msgid "The tone could not be played on {output}."
 msgstr "Tonul nu a putut fi redat pe {output}."
 
-#: src/big_remote_play/ui/host_view.py:2059
+#: src/big_remote_play/ui/host_view.py:2320
 #, python-brace-format
 msgid ""
 "The tone did not reach the shared sound. Check the output volume and that "
@@ -7466,10 +7701,18 @@ msgstr ""
 "Tonul nu a ajuns în sunetul partajat. Verifică volumul ieșirii și dacă "
 "{output} este ieșirea pe care o auzi."
 
-#: src/big_remote_play/ui/host_view.py:2057
+#: src/big_remote_play/ui/host_view.py:2318
 #, python-brace-format
 msgid "The tone reached the shared sound ({level:.0f} dB on {output})."
 msgstr "Tonul a ajuns în sunetul partajat ({level:.0f} dB pe {output})."
+
+#: src/big_remote_play/ui/host_view.py:1202
+msgid ""
+"The user and password of Sunshine on this computer, the ones of its web "
+"panel. They are kept in the system keyring."
+msgstr ""
+"Utilizatorul și parola Sunshine de pe acest computer, cele ale panoului său "
+"web. Sunt păstrate în portcheiul sistemului."
 
 #: src/big_remote_play/ui/network_common.py:125
 #, python-brace-format
@@ -7480,19 +7723,19 @@ msgstr "Serviciul {name} nu rulează pe acest computer."
 msgid "Then come back to add the other computer."
 msgstr "Apoi reveniți pentru a adăuga celălalt computer."
 
-#: src/big_remote_play/ui/guest_view.py:501
+#: src/big_remote_play/ui/guest_view.py:521
 msgid "These checks run on this computer and do not change the game PC."
 msgstr ""
 "Aceste verificări rulează pe acest computer și nu modifică computerul de "
 "jocuri."
 
-#: src/big_remote_play/ui/guest_view.py:391
+#: src/big_remote_play/ui/guest_view.py:411
 msgid "These choices control how sound is played during this connection."
 msgstr ""
 "Aceste opțiuni controlează modul în care este redat sunetul în timpul "
 "acestei conexiuni."
 
-#: src/big_remote_play/ui/guest_view.py:535
+#: src/big_remote_play/ui/guest_view.py:555
 msgid ""
 "These settings either send a request to the game PC or check the connection. "
 "The game PC can ignore requests it does not support."
@@ -7509,11 +7752,11 @@ msgstr ""
 "Acesta îl aprobă în ZeroTier Central sau în Big Remote Play. Pagina se "
 "actualizează când o reîmprospătați."
 
-#: src/big_remote_play/ui/host_view.py:791
+#: src/big_remote_play/ui/host_view.py:852
 msgid "This PC did not appear in the list?"
 msgstr "Acest PC nu a apărut în listă?"
 
-#: src/big_remote_play/ui/private_network_view.py:519
+#: src/big_remote_play/ui/private_network_view.py:547
 #, python-brace-format
 msgid "This PC is on the {} private network."
 msgstr "Acest PC este în rețeaua privată {}."
@@ -7560,7 +7803,7 @@ msgstr "Acest cod nu este complet"
 msgid "This computer"
 msgstr "Acest computer"
 
-#: src/big_remote_play/ui/host_view.py:872
+#: src/big_remote_play/ui/host_view.py:931
 msgid ""
 "This computer captures and encodes the game. Under Connect → Image, the "
 "other computer requests resolution, frame rate and video bitrate. The "
@@ -7577,7 +7820,7 @@ msgstr ""
 msgid "This computer has not joined a ZeroTier network yet."
 msgstr "Acest computer nu s-a alăturat încă unei rețele ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:514
+#: src/big_remote_play/ui/private_network_view.py:542
 msgid ""
 "This computer is already on a ZeroTier network. To join another one, type "
 "its code."
@@ -7642,7 +7885,7 @@ msgstr ""
 "Acest computer părăsește rețeaua. Poți intra din nou mai târziu cu același "
 "cod."
 
-#: src/big_remote_play/ui/guest_view.py:146
+#: src/big_remote_play/ui/guest_view.py:166
 msgid "This computer only"
 msgstr "Numai acest computer"
 
@@ -7750,7 +7993,7 @@ msgstr ""
 msgid "This file is not a Big Remote Play backup"
 msgstr "Acest fișier nu este o copie de rezervă Big Remote Play"
 
-#: src/big_remote_play/ui/guest_view.py:474
+#: src/big_remote_play/ui/guest_view.py:494
 msgid "This is a request. It only works when the game PC supports it."
 msgstr ""
 "Aceasta este o solicitare. Funcționează numai dacă este acceptată de "
@@ -7793,7 +8036,7 @@ msgstr ""
 msgid "This network needs a sign-in"
 msgstr "Această rețea necesită autentificare"
 
-#: src/big_remote_play/ui/guest_view.py:1347
+#: src/big_remote_play/ui/guest_view.py:1367
 msgid ""
 "This only finds the computer; it does not pair it. Use an address if the "
 "network blocks discovery."
@@ -7820,7 +8063,7 @@ msgstr ""
 "Acest ecran este în HDR, iar acest dispozitiv folosește SDR: acolo culorile "
 "par spălăcite. Activați „Corectează culorile ecranelor HDR”."
 
-#: src/big_remote_play/ui/guest_view.py:154
+#: src/big_remote_play/ui/guest_view.py:174
 msgid "This screen's resolution"
 msgstr "Rezoluția acestui ecran"
 
@@ -7884,22 +8127,22 @@ msgid "Today at {time}"
 msgstr "Astăzi la {time}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 977
-#: src/big_remote_play/ui/guest_view.py:2258
+#: src/big_remote_play/ui/guest_view.py:2306
 msgid "Toggle Fullscreen"
 msgstr "Comutare modul pe ecran complet"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 973
-#: src/big_remote_play/ui/guest_view.py:2255
+#: src/big_remote_play/ui/guest_view.py:2303
 msgid "Toggle Mouse Capture"
 msgstr "Comutare capturarea mouse-ului"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 975
-#: src/big_remote_play/ui/guest_view.py:2257
+#: src/big_remote_play/ui/guest_view.py:2305
 msgid "Toggle Mouse Mode (Remote/Absolute)"
 msgstr "Comutare modul mouse (de la distanță/absolut)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 974
-#: src/big_remote_play/ui/guest_view.py:2256
+#: src/big_remote_play/ui/guest_view.py:2304
 msgid "Toggle Stats Overlay"
 msgstr "Comutare suprapunerea statisticilor"
 
@@ -7933,10 +8176,11 @@ msgstr "Origini web de încredere"
 # line: 1769
 # line: 1914
 #: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:849
+#: src/big_remote_play/ui/private_network_view.py:878
 msgid "Try Again"
 msgstr "Încercați din nou"
 
+#: src/big_remote_play/ui/guest_view.py:1870
 #: src/big_remote_play/ui/network_dashboard.py:295
 #: src/big_remote_play/ui/zerotier_join.py:109
 msgid "Try again"
@@ -7976,13 +8220,13 @@ msgstr "Se activează…"
 msgid "Type"
 msgstr "Tip"
 
-#: src/big_remote_play/ui/private_network_view.py:539
+#: src/big_remote_play/ui/private_network_view.py:567
 msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr ""
 "Introdu adresa serverului tău. Administratorul lui aprobă acest computer."
 
-#: src/big_remote_play/ui/private_network_view.py:537
+#: src/big_remote_play/ui/private_network_view.py:565
 msgid "Type the network code you received."
 msgstr "Introdu codul de rețea primit."
 
@@ -7996,11 +8240,11 @@ msgstr "UPnP (redirecționare automată)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 112
-#: src/big_remote_play/ui/host_view.py:1935
+#: src/big_remote_play/ui/host_view.py:2196
 msgid "Unavailable"
 msgstr "Indisponibil"
 
-#: src/big_remote_play/ui/host_view.py:1622
+#: src/big_remote_play/ui/host_view.py:1880
 #, python-brace-format
 msgid "Unavailable: {device}"
 msgstr "Indisponibil: {device}"
@@ -8014,8 +8258,8 @@ msgstr "Indisponibil: {device}"
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 215
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 226
 #: src/big_remote_play/ui/host_view.py:169
-#: src/big_remote_play/ui/host_view.py:1112
-#: src/big_remote_play/ui/host_view.py:1117
+#: src/big_remote_play/ui/host_view.py:1363
+#: src/big_remote_play/ui/host_view.py:1368
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:230
 #: src/big_remote_play/utils/system_check.py:176
 #: src/big_remote_play/utils/system_check.py:179
@@ -8037,8 +8281,8 @@ msgstr "Serviciu VPN necunoscut: ${provider}"
 # 147
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 215
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 226
-#: src/big_remote_play/ui/host_view.py:1532
-#: src/big_remote_play/ui/host_view.py:2566
+#: src/big_remote_play/ui/host_view.py:1790
+#: src/big_remote_play/ui/host_view.py:2833
 msgid "Unknown device"
 msgstr "Dispozitiv necunoscut"
 
@@ -8050,16 +8294,16 @@ msgstr "Eroare necunoscută"
 msgid "Unlimited"
 msgstr "Nelimitat"
 
-#: src/big_remote_play/ui/guest_view.py:334
+#: src/big_remote_play/ui/guest_view.py:354
 msgid "Unlock the bitrate limit"
 msgstr "Elimină limita ratei de biți"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 685
-#: src/big_remote_play/ui/host_view.py:2785
+#: src/big_remote_play/ui/host_view.py:3052
 msgid "Unnamed"
 msgstr "Fără nume"
 
-#: src/big_remote_play/ui/host_view.py:1310
+#: src/big_remote_play/ui/host_view.py:1564
 msgid "Unnamed device"
 msgstr "Dispozitiv fără nume"
 
@@ -8072,7 +8316,7 @@ msgstr "Instabilă"
 msgid "Unstable network mode"
 msgstr "Mod pentru rețea instabilă"
 
-#: src/big_remote_play/ui/host_view.py:2918
+#: src/big_remote_play/ui/host_view.py:3185
 msgid "Up one level"
 msgstr "Un nivel mai sus"
 
@@ -8106,7 +8350,7 @@ msgstr ""
 "Folosiți Big Remote Play pe acel computer sau pagina oficială de descărcare."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 393
-#: src/big_remote_play/ui/guest_view.py:1287
+#: src/big_remote_play/ui/guest_view.py:1307
 msgid "Use IPv6"
 msgstr "Utilizați IPv6"
 
@@ -8125,11 +8369,11 @@ msgstr ""
 "funcționează. Nu expune panoul de administrare Sunshine (implicit 47990) și "
 "nu dezactiva paravanul de protecție."
 
-#: src/big_remote_play/ui/guided_setup.py:304
+#: src/big_remote_play/ui/guided_setup.py:307
 msgid "Use Tailscale"
 msgstr "Folosește Tailscale"
 
-#: src/big_remote_play/ui/guest_view.py:1640
+#: src/big_remote_play/ui/guest_view.py:1665
 msgid "Use a number between 1 and 65535."
 msgstr "Folosiți un număr între 1 și 65535."
 
@@ -8144,32 +8388,32 @@ msgstr ""
 "disponibilitate, reguli de reînnoire și condiții. Este opțional: o adresă IP "
 "publică accesibilă funcționează și fără domeniu."
 
-#: src/big_remote_play/ui/guest_view.py:250
+#: src/big_remote_play/ui/guest_view.py:270
 msgid "Use hardware decoding when available"
 msgstr "Folosește decodarea hardware când este disponibilă"
 
-#: src/big_remote_play/ui/guest_view.py:446
+#: src/big_remote_play/ui/guest_view.py:466
 msgid "Use multiple controllers"
 msgstr "Folosiți mai multe controlere"
 
-#: src/big_remote_play/ui/guest_view.py:323
+#: src/big_remote_play/ui/guest_view.py:343
 msgid "Use only when both computers and the screen support HDR."
 msgstr "Folosește numai dacă ambele computere și ecranul acceptă HDR."
 
-#: src/big_remote_play/ui/guest_view.py:452
+#: src/big_remote_play/ui/guest_view.py:472
 msgid "Use the controller to move the mouse"
 msgstr "Folosește controlerul pentru a deplasa mouse-ul"
 
-#: src/big_remote_play/ui/guest_view.py:1864
+#: src/big_remote_play/ui/guest_view.py:1912
 msgid "Use the form WIDTHxHEIGHT, e.g. 1920x1080."
 msgstr "Folosiți formatul LĂȚIMExÎNĂLȚIME, de exemplu 1920x1080."
 
-#: src/big_remote_play/ui/guest_view.py:1331
+#: src/big_remote_play/ui/guest_view.py:1351
 msgid "Use the search code in Big Remote Play on the game PC."
 msgstr ""
 "Folosiți codul de căutare din Big Remote Play pe calculatorul cu jocul."
 
-#: src/big_remote_play/ui/guest_view.py:411
+#: src/big_remote_play/ui/guest_view.py:431
 msgid "Use the touchscreen as a virtual trackpad"
 msgstr "Folosește ecranul tactil ca touchpad virtual"
 
@@ -8181,16 +8425,16 @@ msgstr "Folosește aceste opțiuni pentru a verifica sau administra Sunshine."
 msgid "Use this connection"
 msgstr "Folosește această conexiune"
 
-#: src/big_remote_play/ui/guest_view.py:1276
+#: src/big_remote_play/ui/guest_view.py:1296
 msgid "Use this only when automatic discovery cannot find the PC."
 msgstr ""
 "Folosește această opțiune numai când detectarea automată nu găsește PC-ul."
 
-#: src/big_remote_play/ui/guest_view.py:254
+#: src/big_remote_play/ui/guest_view.py:274
 msgid "Use this screen's resolution"
 msgstr "Folosește rezoluția acestui ecran"
 
-#: src/big_remote_play/ui/guest_view.py:441
+#: src/big_remote_play/ui/guest_view.py:461
 msgid "Use this when the controller labels do not match the game."
 msgstr ""
 "Folosește această opțiune când etichetele controlerului nu corespund jocului."
@@ -8207,11 +8451,11 @@ msgstr "Folosește propriul server Headscale. Configurare avansată."
 msgid "Used by this app to talk to the server"
 msgstr "Folosită de aplicație pentru a vorbi cu serverul"
 
-#: src/big_remote_play/ui/guest_view.py:412
+#: src/big_remote_play/ui/guest_view.py:432
 msgid "Useful for precise pointer control on touch devices."
 msgstr "Util pentru controlul precis al indicatorului pe dispozitive tactile."
 
-#: src/big_remote_play/ui/guest_view.py:480
+#: src/big_remote_play/ui/guest_view.py:500
 msgid "Useful on a dedicated game PC. Leave it off for normal use."
 msgstr ""
 "Util pe un computer dedicat jocurilor. Lasă dezactivat pentru utilizare "
@@ -8222,26 +8466,26 @@ msgid "User"
 msgstr "Utilizator"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 616
-#: src/big_remote_play/ui/host_view.py:1422
+#: src/big_remote_play/ui/host_view.py:1679
 msgid "User Not Found"
 msgstr "Utilizatorul nu a fost găsit"
 
-#: src/big_remote_play/host/sunshine_manager.py:649
+#: src/big_remote_play/host/sunshine_manager.py:701
 msgid "Username and password cannot be empty"
 msgstr "Numele de utilizator și parola nu pot fi goale"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 636
-#: src/big_remote_play/ui/host_view.py:3033
+#: src/big_remote_play/ui/host_view.py:3300
 msgid "Username and password cannot be empty."
 msgstr "Numele de utilizator și parola nu pot fi goale."
 
-#: src/big_remote_play/ui/guest_view.py:712
+#: src/big_remote_play/ui/guest_view.py:732
 msgid ""
 "Uses this screen at connection time; it does not measure internet speed."
 msgstr ""
 "Folosește acest ecran în momentul conectării; nu măsoară viteza internetului."
 
-#: src/big_remote_play/ui/guest_view.py:1920
+#: src/big_remote_play/ui/guest_view.py:1968
 msgid "Using this screen's resolution"
 msgstr "Se folosește rezoluția acestui ecran"
 
@@ -8252,7 +8496,7 @@ msgstr "Se folosește {method}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 124
-#: src/big_remote_play/ui/guest_view.py:303
+#: src/big_remote_play/ui/guest_view.py:323
 msgid "V-Sync"
 msgstr "V-Sync"
 
@@ -8273,7 +8517,7 @@ msgid "VPN accounts and networks"
 msgstr "Conturi și rețele VPN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 780
-#: src/big_remote_play/ui/guest_view.py:1927
+#: src/big_remote_play/ui/guest_view.py:1975
 msgid "Value"
 msgstr "Valoare"
 
@@ -8282,15 +8526,15 @@ msgstr "Valoare"
 msgid "Variation (jitter): {ms} ms"
 msgstr "Variație (jitter): {ms} ms"
 
-#: src/big_remote_play/ui/guest_view.py:315
+#: src/big_remote_play/ui/guest_view.py:335
 msgid "Video codec"
 msgstr "Codec video"
 
-#: src/big_remote_play/ui/guest_view.py:361
+#: src/big_remote_play/ui/guest_view.py:381
 msgid "Video format and diagnostics"
 msgstr "Format video și diagnosticare"
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1078
 #, python-brace-format
 msgid "Video limit: {mbps:g} Mbps"
 msgstr "Limită video: {mbps:g} Mbps"
@@ -8325,7 +8569,7 @@ msgid "VideoToolbox Software Encoding"
 msgstr "Codare Software VideoToolbox"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:2458
+#: src/big_remote_play/ui/host_view.py:2725
 msgid "View Logs"
 msgstr "Vezi jurnalele"
 
@@ -8346,7 +8590,7 @@ msgstr ""
 "de autentificare de rețea) din inelul de chei al sistemului. Aplicația se va "
 "închide."
 
-#: src/big_remote_play/ui/private_network_view.py:1065
+#: src/big_remote_play/ui/private_network_view.py:1094
 msgid "Wait for Approval"
 msgstr "Așteptați aprobarea"
 
@@ -8379,11 +8623,11 @@ msgstr "Se așteaptă date..."
 msgid "Waiting for permission…"
 msgstr "Se așteaptă permisiunea…"
 
-#: src/big_remote_play/ui/guest_view.py:347
+#: src/big_remote_play/ui/guest_view.py:367
 msgid "Warn when connection quality drops"
 msgstr "Avertizează când scade calitatea conexiunii"
 
-#: src/big_remote_play/ui/guest_view.py:497
+#: src/big_remote_play/ui/guest_view.py:517
 msgid "Warns when firewall or network rules may be preventing a connection."
 msgstr ""
 "Avertizează când paravanul de protecție sau regulile de rețea pot împiedica "
@@ -8404,8 +8648,8 @@ msgstr "Trebuie reparată o setare"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1723
 # line: 1849
-#: src/big_remote_play/ui/private_network_view.py:911
-#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:940
+#: src/big_remote_play/ui/private_network_view.py:993
 msgid "Web UI"
 msgstr "Interfață web"
 
@@ -8432,7 +8676,7 @@ msgid "What this computer shows"
 msgstr "Ce arată acest computer"
 
 #: src/big_remote_play/ui/connection_guides.py:100
-#: src/big_remote_play/ui/private_network_view.py:551
+#: src/big_remote_play/ui/private_network_view.py:579
 msgid "What you need"
 msgstr "De ce aveți nevoie"
 
@@ -8441,7 +8685,7 @@ msgid "What you need and the steps to run Headscale on a Linux server."
 msgstr ""
 "De ce aveți nevoie și pașii pentru a rula Headscale pe un server Linux."
 
-#: src/big_remote_play/ui/host_view.py:1457
+#: src/big_remote_play/ui/host_view.py:1715
 msgid ""
 "When another device starts playing, it appears here with its connection "
 "quality."
@@ -8460,7 +8704,7 @@ msgstr ""
 "poate fi refuzat de router și nu dovedește că accesul din exterior "
 "funcționează."
 
-#: src/big_remote_play/ui/guest_view.py:382
+#: src/big_remote_play/ui/guest_view.py:402
 msgid ""
 "When enabled, the game PC keeps playing sound. Turning this off may make "
 "Sunshine switch to a virtual output."
@@ -8469,8 +8713,8 @@ msgstr ""
 "Dezactivarea poate determina Sunshine să îl comute la o ieșire virtuală."
 
 #: src/big_remote_play/ui/host_view.py:485
-#: src/big_remote_play/ui/host_view.py:1594
-#: src/big_remote_play/ui/host_view.py:2023
+#: src/big_remote_play/ui/host_view.py:1852
+#: src/big_remote_play/ui/host_view.py:2284
 msgid "When off, only the other computer hears the game."
 msgstr "Când este dezactivat, doar celălalt computer aude jocul."
 
@@ -8486,7 +8730,7 @@ msgstr "Unde se creează un token"
 msgid "Where to create it"
 msgstr "Unde se creează"
 
-#: src/big_remote_play/ui/host_view.py:1301
+#: src/big_remote_play/ui/host_view.py:1555
 msgid "Which computer shows this code?"
 msgstr "Ce computer afișează acest cod?"
 
@@ -8517,7 +8761,7 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 116
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 125
-#: src/big_remote_play/ui/guest_view.py:289
+#: src/big_remote_play/ui/guest_view.py:309
 msgid "Windowed"
 msgstr "Fereastră"
 
@@ -8535,7 +8779,7 @@ msgstr ""
 msgid "Without a browser (advanced)"
 msgstr "Fără browser (avansat)"
 
-#: src/big_remote_play/ui/private_network_view.py:1032
+#: src/big_remote_play/ui/private_network_view.py:1061
 msgid ""
 "Without a key, a sign-in link opens; the administrator approves this "
 "computer on the server."
@@ -8547,7 +8791,7 @@ msgstr ""
 msgid "Without a private network"
 msgstr "Fără rețea privată"
 
-#: src/big_remote_play/ui/private_network_view.py:664
+#: src/big_remote_play/ui/private_network_view.py:692
 msgid "Without an auth key, a sign-in link opens"
 msgstr "Fără cheie de autentificare, se deschide un link de autentificare"
 
@@ -8563,7 +8807,7 @@ msgstr ""
 "Da — acest computer are o adresă NAT de operator (CGNAT). Redirecționarea "
 "porturilor nu poate funcționa aici; folosiți o rețea privată."
 
-#: src/big_remote_play/ui/host_view.py:2011
+#: src/big_remote_play/ui/host_view.py:2272
 msgid "Yes — this is an error; stop sharing and report it"
 msgstr "Da — aceasta este o eroare; oprește partajarea și raporteaz-o"
 
@@ -8604,7 +8848,7 @@ msgstr "Conexiunile tale apar aici după ce începi să joci cu Big Remote Play.
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1662
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "Your created/connected networks will appear here."
 msgstr "Rețelele create/conectate vor apărea aici."
 
@@ -8652,7 +8896,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 650
-#: src/big_remote_play/ui/private_network_view.py:1068
+#: src/big_remote_play/ui/private_network_view.py:1097
 msgid "ZT Panel"
 msgstr "Panou ZT"
 
@@ -8668,7 +8912,7 @@ msgstr "Token API ZeroTier"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 825
 # line: 1994
-#: src/big_remote_play/ui/private_network_view.py:1059
+#: src/big_remote_play/ui/private_network_view.py:1088
 msgid "ZeroTier Instructions"
 msgstr "Instrucțiuni ZeroTier"
 
@@ -8720,12 +8964,20 @@ msgstr "Rețele ZeroTier"
 msgid "ZeroTier service error"
 msgstr "Eroare serviciu ZeroTier"
 
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "ZeroTier shows its 16-character network code. Copy it."
+msgstr "ZeroTier afișează codul rețelei, de 16 caractere. Copiați-l."
+
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
 msgstr "neidentificat"
 
+#: src/big_remote_play/ui/host_view.py:1132
+msgid "the local network"
+msgstr "rețeaua locală"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 780
-#: src/big_remote_play/ui/host_view.py:1737
+#: src/big_remote_play/ui/host_view.py:1996
 msgid "value"
 msgstr "valoare"
 
@@ -8739,7 +8991,7 @@ msgstr "{count} dispozitive online"
 msgid "{hours} h {minutes} min"
 msgstr "{hours} h {minutes} min."
 
-#: src/big_remote_play/ui/guest_view.py:147
+#: src/big_remote_play/ui/guest_view.py:167
 #, python-brace-format
 msgid "{layout} · {location}"
 msgstr "{layout} · {location}"
@@ -8749,7 +9001,7 @@ msgstr "{layout} · {location}"
 msgid "{minutes} min"
 msgstr "{minutes} min."
 
-#: src/big_remote_play/ui/host_view.py:1022
+#: src/big_remote_play/ui/host_view.py:1081
 #, python-brace-format
 msgid "{mode} · {limit}"
 msgstr "{mode} · {limit}"
@@ -8805,27 +9057,27 @@ msgid ""
 msgstr ""
 "{name} va fi eliminat din rețea și trebuie adăugat din nou pentru a reveni."
 
-#: src/big_remote_play/ui/guest_view.py:166
+#: src/big_remote_play/ui/guest_view.py:186
 #, python-brace-format
 msgid "{resolution} · {frame_rate} · {bitrate}"
 msgstr "{resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:2030
+#: src/big_remote_play/ui/host_view.py:2291
 #, python-brace-format
 msgid "{source} (a microphone)"
 msgstr "{source} (un microfon)"
 
-#: src/big_remote_play/ui/host_view.py:2029
+#: src/big_remote_play/ui/host_view.py:2290
 #, python-brace-format
 msgid "{source} (sound this computer plays)"
 msgstr "{source} (sunetul redat de acest computer)"
 
-#: src/big_remote_play/ui/host_view.py:1769
+#: src/big_remote_play/ui/host_view.py:2028
 #, python-brace-format
 msgid "{source} · {quality}"
 msgstr "{source} · {quality}"
 
-#: src/big_remote_play/ui/host_view.py:2017
+#: src/big_remote_play/ui/host_view.py:2278
 #, python-brace-format
 msgid "{source} → {target}"
 msgstr "{source} → {target}"
@@ -8835,18 +9087,27 @@ msgstr "{source} → {target}"
 msgid "{state} · {ms} ms"
 msgstr "{state} · {ms} ms"
 
-#: src/big_remote_play/ui/guest_view.py:159
+#: src/big_remote_play/ui/host_view.py:1139
+#, python-brace-format
+msgid ""
+"{tool} is on and does not allow Sunshine's ports ({ports}) from {networks}. "
+"Devices there cannot connect until they are allowed."
+msgstr ""
+"{tool} este activ și nu permite porturile Sunshine ({ports}) din {networks}. "
+"Dispozitivele de acolo nu se pot conecta până nu sunt permise."
+
+#: src/big_remote_play/ui/guest_view.py:179
 #, python-brace-format
 msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 259
-#: src/big_remote_play/ui/private_network_view.py:449
+#: src/big_remote_play/ui/private_network_view.py:477
 #, python-brace-format
 msgid "{} installed"
 msgstr "{} instalat"
 
-#: src/big_remote_play/ui/private_network_view.py:420
+#: src/big_remote_play/ui/private_network_view.py:448
 #, python-brace-format
 msgid ""
 "{} is not installed yet. Install it below to continue (asks for your "
@@ -8857,7 +9118,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 198
-#: src/big_remote_play/ui/host_view.py:1548
+#: src/big_remote_play/ui/host_view.py:1806
 #, python-brace-format
 msgid "{} more paired devices"
 msgstr "Încă {} dispozitive asociate"

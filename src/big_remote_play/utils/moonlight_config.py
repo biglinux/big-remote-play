@@ -56,13 +56,29 @@ def moonlight_config_paths() -> list[Path]:
     ]
 
 
-def paired_host_certificate(address: str, paths: list[Path] | None = None) -> str:
+def _stored_certificate(value: str) -> str:
+    """The certificate in a ``srvcert`` value, ``""`` when Moonlight stored none.
+
+    Moonlight writes ``srvcert=@ByteArray()`` for a host it only contacted
+    (listed, discovered, or whose pairing failed) and the PEM text inside
+    ``@ByteArray(...)`` once pairing succeeded.
+    """
+    text = (value or "").strip()
+    if text.startswith("@ByteArray(") and text.endswith(")"):
+        text = text[len("@ByteArray(") : -1]
+    return value if text.strip() else ""
+
+
+def paired_host_certificate(address: str, paths: list[Path] | None = None, *, uuid: str = "") -> str:
     """The server certificate Moonlight stored for ``address`` (``""`` if none).
 
-    Moonlight writes ``hosts\\N\\srvcert`` only after a pairing succeeds, next to
-    the addresses it knows for that host.
+    Moonlight writes a certificate into ``hosts\\N\\srvcert`` only after a
+    pairing succeeds, next to the addresses it knows for that host. With
+    ``uuid`` (the host's ``uniqueid`` from ``/serverinfo``) an entry for another
+    host that once used the same address does not count.
     """
     wanted = address.strip().strip("[]").split("%")[0].lower()
+    wanted_uuid = uuid.strip().lower()
     for path in paths or moonlight_config_paths():
         try:
             lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
@@ -84,8 +100,13 @@ def paired_host_certificate(address: str, paths: list[Path] | None = None) -> st
                 entry.get(field, "").strip("[]").rsplit(":", 1)[0].lower() if entry.get(field, "").count(":") == 1 else entry.get(field, "").strip("[]").lower()
                 for field in ("manualaddress", "localaddress", "remoteaddress", "ipv6address")
             }
-            if wanted in known and entry.get("srvcert"):
-                return entry["srvcert"]
+            if wanted not in known:
+                continue
+            if wanted_uuid and entry.get("uuid", "").strip().lower() not in ("", wanted_uuid):
+                continue
+            certificate = _stored_certificate(entry.get("srvcert", ""))
+            if certificate:
+                return certificate
     return ""
 
 
