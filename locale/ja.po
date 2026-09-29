@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-09-29 00:00+0000\n"
+"POT-Creation-Date: 2026-09-29 22:34+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Japanese\n"
@@ -24,6 +24,10 @@ msgstr ""
 "0 にすると、もう一方のコンピューターからの要求に従います。制限されるのは映像"
 "のみで、ネットワーク全体の通信量ではありません。"
 
+#: src/big_remote_play/ui/private_network_view.py:93
+msgid "1. Account"
+msgstr "1. アカウント"
+
 #: src/big_remote_play/ui/connection_guides.py:48
 msgid "1. Check internet reachability"
 msgstr "1. インターネットに到達できるか確認する"
@@ -36,13 +40,13 @@ msgstr "1. 共有する内容を選ぶ"
 # line: 804
 # line: 811
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1045
+#: src/big_remote_play/ui/private_network_view.py:1074
 msgid "1. Create Account"
 msgstr "1. アカウントを作成"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1801
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "1. Identification"
 msgstr "1. 識別"
 
@@ -76,33 +80,41 @@ msgstr "2. ドメインと HTTPS"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1795
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "2. Invitation"
 msgstr "2. 招待"
 
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "2. Join"
 msgstr "2. 参加"
 
-#: src/big_remote_play/ui/host_view.py:843
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "2. Network"
+msgstr "2. ネットワーク"
+
+#: src/big_remote_play/ui/host_view.py:869
 msgid "2. Start sharing"
 msgstr "2. 共有を開始する"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1803
-#: src/big_remote_play/ui/private_network_view.py:1064
+#: src/big_remote_play/ui/private_network_view.py:1093
 msgid "3. Authorization"
 msgstr "3. 認証"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "3. Connect"
 msgstr "3. 接続する"
 
 #: src/big_remote_play/ui/host_view.py:733
 msgid "3. Connect the other PC"
 msgstr "3. もう一方のPCを接続する"
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "3. Join"
+msgstr "3. 参加"
 
 #: src/big_remote_play/ui/connection_guides.py:118
 msgid "3. Open only the server's ports"
@@ -119,6 +131,10 @@ msgstr "30 日"
 #: src/big_remote_play/ui/connection_guides.py:68
 msgid "4. Allow only the streaming ports"
 msgstr "4. ストリーミング用ポートだけを許可する"
+
+#: src/big_remote_play/ui/private_network_view.py:103
+msgid "4. Approve"
+msgstr "4. 承認"
 
 #: src/big_remote_play/ui/connection_guides.py:124
 msgid "4. Connect Big Remote Play"
@@ -196,6 +212,10 @@ msgstr ""
 "や車の画面には 1920 × 1080 が最も鮮明です。選んだ画面は終了後に元に戻ります。"
 "まず上で画面を選んでください。"
 
+#: src/big_remote_play/ui/host_view.py:749
+msgid "A stream is open on this computer"
+msgstr "このコンピューターでストリームが開いています"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 84
 #: src/big_remote_play/ui/sunshine_preferences.py:109
@@ -247,15 +267,15 @@ msgstr "AMF 分散ベース適応量子化 (VBAQ)"
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 313
 # line: 349
-#: src/big_remote_play/host/sunshine_manager.py:604
-#: src/big_remote_play/host/sunshine_manager.py:635
+#: src/big_remote_play/host/sunshine_manager.py:605
+#: src/big_remote_play/host/sunshine_manager.py:636
 #, python-brace-format
 msgid "API Error: {}"
 msgstr "APIエラー：{}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:71
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "API access"
 msgstr "API アクセス"
@@ -279,13 +299,13 @@ msgstr "API トークン"
 msgid "About"
 msgstr "このアプリについて"
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "About this VPN"
 msgstr "この VPN について"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1046
+#: src/big_remote_play/ui/private_network_view.py:1075
 msgid "Access Tailscale"
 msgstr "Tailscaleにアクセスする"
 
@@ -346,8 +366,8 @@ msgid "Active - No devices"
 msgstr "アクティブ - デバイスはありません"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 864
-#: src/big_remote_play/ui/host_view.py:1790
-#: src/big_remote_play/ui/host_view.py:1806
+#: src/big_remote_play/ui/host_view.py:1903
+#: src/big_remote_play/ui/host_view.py:1919
 msgid "Active - Waiting for Connections"
 msgstr "アクティブ - 接続を待機中"
 
@@ -376,7 +396,7 @@ msgid "Active devices: {}"
 msgstr "アクティブなデバイス: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:2731
+#: src/big_remote_play/ui/host_view.py:2850
 msgid "Add Detected Games"
 msgstr "検出したゲームを追加"
 
@@ -448,7 +468,7 @@ msgstr ""
 msgid "Add {name} to favorites"
 msgstr "{name} をお気に入りに追加"
 
-#: src/big_remote_play/ui/host_view.py:867
+#: src/big_remote_play/ui/host_view.py:893
 msgid "Additional settings"
 msgstr "追加設定"
 
@@ -522,8 +542,8 @@ msgstr "詳細モード"
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 79
 #: src/big_remote_play/ui/guided_setup.py:246
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:702
 #: src/big_remote_play/ui/sunshine_preferences.py:104
 msgid "Advanced options"
 msgstr "詳細オプション"
@@ -541,16 +561,16 @@ msgstr "サーバーの詳細設定"
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "ブラウザでの詳細設定（Sunshine）"
 
-#: src/big_remote_play/ui/host_view.py:1563
+#: src/big_remote_play/ui/host_view.py:1676
 msgid ""
 "Advanced: IP addresses for manual connection when automatic discovery fails."
 msgstr "詳細設定：自動検出に失敗した場合に手動接続で使用するIPアドレスです。"
 
-#: src/big_remote_play/ui/host_view.py:1525
+#: src/big_remote_play/ui/host_view.py:1638
 msgid "After step 2, the other PC appears here."
 msgstr "手順2のあと、もう一方のPCがここに表示されます。"
 
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1076
 msgid ""
 "All participants need to sign in so their PCs join the same Private Network."
 msgstr ""
@@ -565,7 +585,7 @@ msgstr ""
 "Big Remote Playで行った変更はすべて復元されます。SunshineとMoonlightの設定も"
 "含まれます。"
 
-#: src/big_remote_play/ui/host_view.py:1653
+#: src/big_remote_play/ui/host_view.py:1766
 #: src/big_remote_play/ui/network_common.py:141
 #: src/big_remote_play/ui/network_common.py:165
 #: src/big_remote_play/ui/network_dashboard.py:291
@@ -601,7 +621,7 @@ msgstr ""
 msgid "Allow Slow HEVC Encoding"
 msgstr "遅いHEVCエンコーディングを許可する"
 
-#: src/big_remote_play/ui/host_view.py:1650
+#: src/big_remote_play/ui/host_view.py:1763
 msgid "Allow Sunshine through the firewall?"
 msgstr "Sunshine をファイアウォールで許可しますか？"
 
@@ -640,7 +660,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 398
-#: src/big_remote_play/ui/host_view.py:1537
+#: src/big_remote_play/ui/host_view.py:1650
 #: src/big_remote_play/ui/sunshine_preferences.py:624
 msgid "Allowed"
 msgstr "許可された"
@@ -698,7 +718,7 @@ msgstr ""
 msgid "Almost there"
 msgstr "もう少しです"
 
-#: src/big_remote_play/ui/private_network_view.py:518
+#: src/big_remote_play/ui/private_network_view.py:546
 msgid "Already connected"
 msgstr "接続済み"
 
@@ -745,7 +765,7 @@ msgstr ""
 msgid "An administrator must approve this computer"
 msgstr "管理者がこのコンピューターを承認する必要があります"
 
-#: src/big_remote_play/ui/host_view.py:1030
+#: src/big_remote_play/ui/host_view.py:1056
 msgid ""
 "Another device is playing now, and Moonlight pairs only when nobody is "
 "playing: the new device shows “The computer is currently in a game”. End the "
@@ -783,7 +803,7 @@ msgstr "アプリケーションの詳細"
 msgid "Application Name"
 msgstr "アプリケーション名"
 
-#: src/big_remote_play/ui/host_view.py:920
+#: src/big_remote_play/ui/host_view.py:946
 msgid "Application diagnostics"
 msgstr "アプリの診断"
 
@@ -829,7 +849,11 @@ msgstr "承認"
 msgid "Approve a waiting computer"
 msgstr "待機中のコンピューターを承認"
 
-#: src/big_remote_play/ui/private_network_view.py:1031
+#: src/big_remote_play/ui/private_network_view.py:104
+msgid "Approve each computer"
+msgstr "各コンピューターを承認"
+
+#: src/big_remote_play/ui/private_network_view.py:1060
 msgid "Approve if needed"
 msgstr "必要に応じて承認"
 
@@ -877,7 +901,7 @@ msgstr "本当によろしいですか？"
 msgid "Ask the game PC to optimize the game for streaming"
 msgstr "ストリーミング向けにゲームを最適化するようゲーム PC に要求する"
 
-#: src/big_remote_play/ui/private_network_view.py:1023
+#: src/big_remote_play/ui/private_network_view.py:1052
 msgid ""
 "Ask the network administrator for the server address and, optionally, a one-"
 "time auth key."
@@ -885,19 +909,21 @@ msgstr ""
 "ネットワーク管理者に、サーバーのアドレスと、必要に応じてワンタイム認証キーを"
 "尋ねてください。"
 
-#: src/big_remote_play/ui/private_network_view.py:689
+#: src/big_remote_play/ui/private_network_view.py:717
 msgid "Ask the network owner, or look in ZeroTier Central → Networks"
 msgstr ""
 "ネットワークの所有者に尋ねるか、ZeroTier Central →「Networks」で確認してくだ"
 "さい"
 
-#: src/big_remote_play/ui/guided_setup.py:301
+#: src/big_remote_play/ui/guided_setup.py:302
 msgid ""
 "Ask the person who created the ZeroTier network to send it. If nobody has a "
-"network yet, Tailscale is the simplest way to start."
+"network yet, one of you creates it for free in ZeroTier Central, or you use "
+"Tailscale, the simplest way to start."
 msgstr ""
-"ZeroTier ネットワークを作った人に、コードを送ってもらいましょう。まだ誰もネッ"
-"トワークを持っていない場合は、Tailscale がいちばん簡単な始め方です。"
+"ZeroTier ネットワークを作成した人にコードを送ってもらってください。まだ誰も"
+"ネットワークを持っていない場合は、どちらかが ZeroTier Central で無料で作成す"
+"るか、いちばん簡単な Tailscale を使ってください。"
 
 #: src/big_remote_play/ui/network_dashboard.py:346
 #: src/big_remote_play/ui/zerotier_join.py:51
@@ -925,8 +951,8 @@ msgstr ""
 msgid "Audio"
 msgstr "オーディオ"
 
-#: src/big_remote_play/ui/host_view.py:1601
-#: src/big_remote_play/ui/host_view.py:1634
+#: src/big_remote_play/ui/host_view.py:1714
+#: src/big_remote_play/ui/host_view.py:1747
 msgid ""
 "Audio changes apply the next time you start sharing. The current output is "
 "unchanged."
@@ -946,27 +972,27 @@ msgstr "音声/映像"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 865
-#: src/big_remote_play/ui/private_network_view.py:656
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:673
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:684
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:701
+#: src/big_remote_play/ui/private_network_view.py:702
 msgid "Auth Key"
 msgstr "認証キー"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1331
+#: src/big_remote_play/ui/host_view.py:1442
 msgid "Authentication Failed"
 msgstr "認証に失敗しました"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 312
-#: src/big_remote_play/host/sunshine_manager.py:627
+#: src/big_remote_play/host/sunshine_manager.py:628
 msgid "Authentication Failed. Check the current password."
 msgstr "認証に失敗しました。現在のパスワードを確認してください。"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 312
-#: src/big_remote_play/host/sunshine_manager.py:602
+#: src/big_remote_play/host/sunshine_manager.py:603
 msgid "Authentication Failed. Configure a user in Sunshine."
 msgstr "認証に失敗しました。Sunshineでユーザーを設定してください。"
 
@@ -1004,7 +1030,7 @@ msgstr "自動検出（推奨）"
 #: src/big_remote_play/ui/host_view.py:147
 #: src/big_remote_play/ui/host_view.py:232
 #: src/big_remote_play/ui/host_view.py:404
-#: src/big_remote_play/ui/host_view.py:1077
+#: src/big_remote_play/ui/host_view.py:1188
 #: src/big_remote_play/ui/main_window.py:678
 msgid "Automatic"
 msgstr "自動"
@@ -1017,7 +1043,7 @@ msgid "Automatic (Recommended)"
 msgstr "自動（推奨）"
 
 #: src/big_remote_play/ui/host_view.py:321
-#: src/big_remote_play/ui/host_view.py:1020
+#: src/big_remote_play/ui/host_view.py:1046
 msgid "Automatic capture and encoding"
 msgstr "自動キャプチャーとエンコード"
 
@@ -1025,7 +1051,7 @@ msgstr "自動キャプチャーとエンコード"
 msgid "Automatic mode chooses the best format supported by both computers."
 msgstr "自動では、両方のコンピューターが対応する最適な形式を選びます。"
 
-#: src/big_remote_play/ui/host_view.py:878
+#: src/big_remote_play/ui/host_view.py:904
 msgid ""
 "Automatic options below are chosen by Sunshine when sharing starts, not "
 "measurements of an active stream."
@@ -1041,7 +1067,7 @@ msgstr ""
 "「自動」を選ぶと、このコンピューターですでに動いている方法が使われます。必要"
 "なときだけ別の方法を選んでください。"
 
-#: src/big_remote_play/ui/host_view.py:876
+#: src/big_remote_play/ui/host_view.py:902
 msgid "Automatic settings and video limit"
 msgstr "自動設定と映像上限"
 
@@ -1066,7 +1092,7 @@ msgstr ""
 msgid "Automatic · {resolution} · {frame_rate} · {bitrate}"
 msgstr "自動 · {resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:1618
+#: src/big_remote_play/ui/host_view.py:1731
 msgid "Automatic — use the current output"
 msgstr "自動 — 現在の出力を使用"
 
@@ -1077,7 +1103,7 @@ msgstr "自動 — 現在の出力を使用"
 msgid "Available at {}"
 msgstr "{} で利用可能"
 
-#: src/big_remote_play/ui/host_view.py:808
+#: src/big_remote_play/ui/host_view.py:834
 msgid "Available over the internet"
 msgstr "インターネット経由で利用可能"
 
@@ -1172,11 +1198,11 @@ msgstr ""
 msgid "Bind Address"
 msgstr "バインドアドレス"
 
-#: src/big_remote_play/ui/host_view.py:1537
+#: src/big_remote_play/ui/host_view.py:1650
 msgid "Blocked"
 msgstr "ブロック済み"
 
-#: src/big_remote_play/ui/host_view.py:1534
+#: src/big_remote_play/ui/host_view.py:1647
 msgid "Blocked until enabled again"
 msgstr "再度有効にするまでブロック"
 
@@ -1247,7 +1273,7 @@ msgstr "CPUエンコーディング"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 227
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 434
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 458
-#: src/big_remote_play/ui/host_view.py:1534
+#: src/big_remote_play/ui/host_view.py:1647
 msgid "Can connect without a new PIN"
 msgstr "新しい PIN なしで接続できます"
 
@@ -1267,14 +1293,14 @@ msgstr "新しい PIN なしで接続できます"
 #: src/big_remote_play/ui/guest_view.py:1590
 #: src/big_remote_play/ui/guest_view.py:1933
 #: src/big_remote_play/ui/guest_view.py:2159
-#: src/big_remote_play/ui/host_view.py:1302
-#: src/big_remote_play/ui/host_view.py:1393
-#: src/big_remote_play/ui/host_view.py:1423
-#: src/big_remote_play/ui/host_view.py:1652
-#: src/big_remote_play/ui/host_view.py:2515
-#: src/big_remote_play/ui/host_view.py:2610
-#: src/big_remote_play/ui/host_view.py:3015
-#: src/big_remote_play/ui/host_view.py:3356
+#: src/big_remote_play/ui/host_view.py:1413
+#: src/big_remote_play/ui/host_view.py:1505
+#: src/big_remote_play/ui/host_view.py:1535
+#: src/big_remote_play/ui/host_view.py:1765
+#: src/big_remote_play/ui/host_view.py:2634
+#: src/big_remote_play/ui/host_view.py:2729
+#: src/big_remote_play/ui/host_view.py:3134
+#: src/big_remote_play/ui/host_view.py:3475
 #: src/big_remote_play/ui/main_window.py:1139
 #: src/big_remote_play/ui/network_common.py:310
 #: src/big_remote_play/ui/network_dashboard.py:397
@@ -1283,8 +1309,8 @@ msgstr "新しい PIN なしで接続できます"
 #: src/big_remote_play/ui/preferences.py:261
 #: src/big_remote_play/ui/preferences.py:308
 #: src/big_remote_play/ui/preferences.py:318
-#: src/big_remote_play/ui/private_network_view.py:971
-#: src/big_remote_play/ui/private_network_view.py:999
+#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:1028
 #: src/big_remote_play/ui/remote_connection.py:753
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:246
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:266
@@ -1295,7 +1321,7 @@ msgstr "キャンセル"
 msgid "Cancel the request"
 msgstr "リクエストを取り消す"
 
-#: src/big_remote_play/ui/host_view.py:2909
+#: src/big_remote_play/ui/host_view.py:3028
 msgid "Cannot browse (no access or credentials)"
 msgstr "参照できません（アクセス権または認証情報がありません）"
 
@@ -1308,7 +1334,7 @@ msgstr "キャプチャ方法"
 msgid "Capture, compression and stream limits"
 msgstr "キャプチャー、圧縮、ストリームの上限"
 
-#: src/big_remote_play/ui/host_view.py:1092
+#: src/big_remote_play/ui/host_view.py:1203
 #, python-brace-format
 msgid "Capture: {value}"
 msgstr "キャプチャ: {value}"
@@ -1319,7 +1345,7 @@ msgstr "キャプチャ: {value}"
 msgid "Certificate"
 msgstr "証明書"
 
-#: src/big_remote_play/host/sunshine_manager.py:491
+#: src/big_remote_play/host/sunshine_manager.py:492
 #, python-brace-format
 msgid "Certificate trust error: {}"
 msgstr "証明書の信頼エラー：{}"
@@ -1359,7 +1385,7 @@ msgid "Check for blocked connections automatically"
 msgstr "接続のブロックを自動的に確認する"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1202
-#: src/big_remote_play/ui/host_view.py:2452
+#: src/big_remote_play/ui/host_view.py:2571
 msgid "Check logs for details."
 msgstr "詳細についてはログを確認してください。"
 
@@ -1380,7 +1406,7 @@ msgstr ""
 "コードを確認して、もう一度お試しください。コードが正しい場合は、ネットワーク"
 "が削除された可能性があります。"
 
-#: src/big_remote_play/ui/host_view.py:894
+#: src/big_remote_play/ui/host_view.py:920
 msgid "Check the connection first. Open server tools only when needed."
 msgstr ""
 "まず接続を確認してください。サーバーツールは必要な場合にのみ開いてください。"
@@ -1418,15 +1444,15 @@ msgstr "このコンピューターを確認しています…"
 msgid "Checking what this network allows…"
 msgstr "このネットワークで許可されている操作を確認しています…"
 
-#: src/big_remote_play/ui/host_view.py:2540
+#: src/big_remote_play/ui/host_view.py:2659
 msgid "Checking which devices are already allowed."
 msgstr "すでに許可されているデバイスを確認しています。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 224
 #: src/big_remote_play/ui/guest_view.py:542
 #: src/big_remote_play/ui/host_view.py:322
-#: src/big_remote_play/ui/host_view.py:825
-#: src/big_remote_play/ui/host_view.py:835
+#: src/big_remote_play/ui/host_view.py:851
+#: src/big_remote_play/ui/host_view.py:861
 #: src/big_remote_play/ui/main_window.py:487
 #: src/big_remote_play/ui/main_window.py:1086
 #: src/big_remote_play/ui/remote_connection.py:698
@@ -1457,7 +1483,7 @@ msgid "Choose a method to see its sign-in, network and device details."
 msgstr "方法を選ぶと、サインイン、ネットワーク、デバイスの詳細が表示されます。"
 
 #: src/big_remote_play/ui/host_view.py:701
-#: src/big_remote_play/ui/host_view.py:1831
+#: src/big_remote_play/ui/host_view.py:1944
 msgid "Choose a source, then start sharing."
 msgstr "共有元を選び、共有を開始してください。"
 
@@ -1517,7 +1543,7 @@ msgstr ""
 msgid "Choose this computer from the list."
 msgstr "一覧からこのPCを選んでください。"
 
-#: src/big_remote_play/ui/host_view.py:936
+#: src/big_remote_play/ui/host_view.py:962
 msgid "Clear"
 msgstr "クリア"
 
@@ -1531,7 +1557,7 @@ msgid "Clear Everything"
 msgstr "すべて消去"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 97
-#: src/big_remote_play/ui/host_view.py:935
+#: src/big_remote_play/ui/host_view.py:961
 msgid "Clear Logs"
 msgstr "ログをクリアする"
 
@@ -1551,9 +1577,9 @@ msgstr "接続履歴を消去しますか？"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1232
 #: src/big_remote_play/ui/guest_view.py:1780
 #: src/big_remote_play/ui/guest_view.py:1836
-#: src/big_remote_play/ui/guided_setup.py:303
-#: src/big_remote_play/ui/host_view.py:1158
-#: src/big_remote_play/ui/host_view.py:2457
+#: src/big_remote_play/ui/guided_setup.py:305
+#: src/big_remote_play/ui/host_view.py:1269
+#: src/big_remote_play/ui/host_view.py:2576
 #: src/big_remote_play/ui/installer_window.py:76
 msgid "Close"
 msgstr "閉じる"
@@ -1565,6 +1591,11 @@ msgstr "引き続き探すには、このウィンドウを閉じてもう一度
 #: src/big_remote_play/ui/guest_view.py:479
 msgid "Close the game on the game PC when streaming ends"
 msgstr "ストリーミング終了時にゲーム PC のゲームを終了する"
+
+#: src/big_remote_play/ui/host_view.py:764
+msgid "Close the stream on every device so a new device can pair"
+msgstr ""
+"新しいデバイスをペアリングできるよう、すべてのデバイスでストリームを閉じます"
 
 #: src/big_remote_play/ui/connection_guides.py:66
 #: src/big_remote_play/ui/connection_guides.py:116
@@ -1612,7 +1643,7 @@ msgstr "ストリーミング中に使用される一般的なショートカッ
 msgid "Complete the installation in the external terminal, then check again."
 msgstr "外部端末でインストールを完了し、もう一度確認してください。"
 
-#: src/big_remote_play/ui/private_network_view.py:788
+#: src/big_remote_play/ui/private_network_view.py:817
 msgid "Complete the sign-in in your browser."
 msgstr "ブラウザーでサインインを完了してください。"
 
@@ -1623,11 +1654,11 @@ msgstr ""
 "まだ不足しているコンポーネントがあります。インストールを完了して、もう一度確"
 "認してください。"
 
-#: src/big_remote_play/ui/host_view.py:1093
+#: src/big_remote_play/ui/host_view.py:1204
 msgid "Compression: H.264 only"
 msgstr "圧縮: H.264 のみ"
 
-#: src/big_remote_play/ui/host_view.py:1093
+#: src/big_remote_play/ui/host_view.py:1204
 msgid "Compression: HEVC/AV1 when supported"
 msgstr "圧縮: 対応時は HEVC/AV1"
 
@@ -1655,7 +1686,7 @@ msgstr "設定ファイル"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 226
-#: src/big_remote_play/ui/host_view.py:943
+#: src/big_remote_play/ui/host_view.py:969
 msgid "Configuration Directory"
 msgstr "設定ディレクトリ"
 
@@ -1701,12 +1732,12 @@ msgid "Configured for the next sharing session"
 msgstr "次回の共有セッション用に設定しました"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 776
-#: src/big_remote_play/ui/host_view.py:1661
+#: src/big_remote_play/ui/host_view.py:1774
 msgid "Configuring firewall... (Password may be requested)"
 msgstr "ファイアウォールを構成中...（パスワードが要求される場合があります）"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:2997
+#: src/big_remote_play/ui/host_view.py:3116
 msgid "Confirm New Password"
 msgstr "新しいパスワードの確認"
 
@@ -1724,8 +1755,8 @@ msgstr "新しいパスワードの確認"
 #: src/big_remote_play/ui/main_window.py:827
 #: src/big_remote_play/ui/main_window.py:992
 #: src/big_remote_play/ui/main_window.py:1218
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 #: src/big_remote_play/ui/remote_connection.py:453
 #: src/big_remote_play/ui/remote_connection.py:481
 msgid "Connect"
@@ -1743,19 +1774,19 @@ msgstr "アドレスで接続"
 
 #: src/big_remote_play/ui/network_common.py:164
 #: src/big_remote_play/ui/network_dashboard.py:217
-#: src/big_remote_play/ui/private_network_view.py:535
+#: src/big_remote_play/ui/private_network_view.py:563
 msgid "Connect this computer"
 msgstr "このコンピューターを接続"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 26
-#: src/big_remote_play/ui/private_network_view.py:103
+#: src/big_remote_play/ui/private_network_view.py:131
 msgid "Connect to Headscale Network"
 msgstr "Headscaleネットワークに接続する"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 36
-#: src/big_remote_play/ui/private_network_view.py:109
+#: src/big_remote_play/ui/private_network_view.py:137
 msgid "Connect to Tailscale Network"
 msgstr "Tailscaleネットワークに接続する"
 
@@ -1765,7 +1796,7 @@ msgstr "Wi-Fi かネットワークケーブルにつないでから、もう一
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 46
-#: src/big_remote_play/ui/private_network_view.py:115
+#: src/big_remote_play/ui/private_network_view.py:143
 msgid "Connect to ZeroTier Network"
 msgstr "ZeroTierネットワークに接続する"
 
@@ -1820,15 +1851,15 @@ msgstr "接続中のデバイス"
 msgid "Connected devices: {}"
 msgstr "接続中のデバイス: {}"
 
-#: src/big_remote_play/ui/host_view.py:1437
+#: src/big_remote_play/ui/host_view.py:1549
 msgid "Connected now"
 msgstr "現在接続中"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1907
-#: src/big_remote_play/ui/private_network_view.py:767
-#: src/big_remote_play/ui/private_network_view.py:804
-#: src/big_remote_play/ui/private_network_view.py:839
+#: src/big_remote_play/ui/private_network_view.py:796
+#: src/big_remote_play/ui/private_network_view.py:833
+#: src/big_remote_play/ui/private_network_view.py:868
 msgid "Connected successfully!"
 msgstr "接続に成功しました！"
 
@@ -1845,21 +1876,21 @@ msgstr "ネットワークに接続しています…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1848
-#: src/big_remote_play/ui/private_network_view.py:734
+#: src/big_remote_play/ui/private_network_view.py:763
 msgid "Connecting..."
 msgstr "接続中..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
-#: src/big_remote_play/ui/private_network_view.py:551
-#: src/big_remote_play/ui/private_network_view.py:949
+#: src/big_remote_play/ui/private_network_view.py:579
+#: src/big_remote_play/ui/private_network_view.py:978
 msgid "Connection Details"
 msgstr "接続の詳細"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
-#: src/big_remote_play/ui/private_network_view.py:553
-#: src/big_remote_play/ui/private_network_view.py:1014
+#: src/big_remote_play/ui/private_network_view.py:581
+#: src/big_remote_play/ui/private_network_view.py:1043
 msgid "Connection Log"
 msgstr "接続ログ"
 
@@ -1867,15 +1898,15 @@ msgstr "接続ログ"
 msgid "Connection checks"
 msgstr "接続チェック"
 
-#: src/big_remote_play/host/sunshine_manager.py:600
-#: src/big_remote_play/host/sunshine_manager.py:625
+#: src/big_remote_play/host/sunshine_manager.py:601
+#: src/big_remote_play/host/sunshine_manager.py:626
 msgid ""
 "Connection error: Sunshine is unreachable or its certificate does not match"
 msgstr "接続エラー：Sunshineに到達できないか、証明書が一致しません"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Connection failed"
 msgstr "接続に失敗しました"
 
@@ -1886,7 +1917,7 @@ msgid "Connection history"
 msgstr "接続履歴"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 381
-#: src/big_remote_play/ui/host_view.py:1562
+#: src/big_remote_play/ui/host_view.py:1675
 msgid "Connection information"
 msgstr "接続情報"
 
@@ -1898,7 +1929,7 @@ msgstr "接続方法"
 msgid "Connection methods"
 msgstr "接続方法"
 
-#: src/big_remote_play/ui/private_network_view.py:361
+#: src/big_remote_play/ui/private_network_view.py:389
 msgid "Connection progress"
 msgstr "接続の進行状況"
 
@@ -1969,13 +2000,13 @@ msgstr "Alt+Tab や Super キーなどのショートカットの扱いを制御
 
 #: src/big_remote_play/ui/network_common.py:213
 #: src/big_remote_play/ui/network_common.py:224
-#: src/big_remote_play/ui/private_network_view.py:1081
+#: src/big_remote_play/ui/private_network_view.py:1110
 msgid "Copied"
 msgstr "コピーしました"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 843
-#: src/big_remote_play/ui/host_view.py:1749
-#: src/big_remote_play/ui/host_view.py:2719
+#: src/big_remote_play/ui/host_view.py:1862
+#: src/big_remote_play/ui/host_view.py:2838
 msgid "Copied!"
 msgstr "コピーしました！"
 
@@ -1983,7 +2014,7 @@ msgstr "コピーしました！"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:2665
+#: src/big_remote_play/ui/host_view.py:2784
 #: src/big_remote_play/ui/network_common.py:229
 #: src/big_remote_play/ui/network_common.py:246
 msgid "Copy"
@@ -1993,7 +2024,7 @@ msgstr "コピー"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:948
+#: src/big_remote_play/ui/host_view.py:974
 msgid "Copy Path"
 msgstr "パスをコピー"
 
@@ -2001,8 +2032,8 @@ msgstr "パスをコピー"
 msgid "Copy address"
 msgstr "アドレスをコピー"
 
-#: src/big_remote_play/ui/host_view.py:772
-#: src/big_remote_play/ui/host_view.py:775
+#: src/big_remote_play/ui/host_view.py:800
+#: src/big_remote_play/ui/host_view.py:803
 msgid "Copy code"
 msgstr "コードをコピー"
 
@@ -2010,7 +2041,7 @@ msgstr "コードをコピー"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:2666
+#: src/big_remote_play/ui/host_view.py:2785
 msgid "Copy logs"
 msgstr "ログをコピー"
 
@@ -2023,12 +2054,12 @@ msgstr "技術的な詳細をコピー"
 msgid "Copy the private address of {name}"
 msgstr "{name} のプライベートアドレスをコピー"
 
-#: src/big_remote_play/ui/host_view.py:1721
+#: src/big_remote_play/ui/host_view.py:1834
 #, python-brace-format
 msgid "Copy the {} value to clipboard"
 msgstr "{} の値をクリップボードにコピー"
 
-#: src/big_remote_play/ui/host_view.py:775
+#: src/big_remote_play/ui/host_view.py:803
 msgid "Copy this PC's discovery code to the clipboard"
 msgstr "このPCの検索コードをクリップボードにコピー"
 
@@ -2041,7 +2072,7 @@ msgstr "{name} をクリップボードにコピー"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:1720
+#: src/big_remote_play/ui/host_view.py:1833
 #, python-brace-format
 msgid "Copy {}"
 msgstr "{} をコピー"
@@ -2100,7 +2131,7 @@ msgid "Could not save the connection settings. Check file permissions."
 msgstr ""
 "接続設定を保存できませんでした。ファイルのアクセス権を確認してください。"
 
-#: src/big_remote_play/ui/host_view.py:2208
+#: src/big_remote_play/ui/host_view.py:2321
 msgid "Could not save the server configuration."
 msgstr "サーバー設定を保存できませんでした。"
 
@@ -2108,18 +2139,20 @@ msgstr "サーバー設定を保存できませんでした。"
 msgid "Could not turn it on. Check the connection details."
 msgstr "オンにできませんでした。接続の詳細を確認してください。"
 
-#: src/big_remote_play/ui/host_view.py:2181
+#: src/big_remote_play/ui/host_view.py:2294
 msgid "Could not update the game library. Existing games were preserved."
 msgstr ""
 "ゲームライブラリを更新できませんでした。既存のゲームは保持されています。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1255
-#: src/big_remote_play/ui/private_network_view.py:1049
+#: src/big_remote_play/ui/private_network_view.py:1078
 msgid "Create Account"
 msgstr "アカウントを作成"
 
+#: src/big_remote_play/ui/guided_setup.py:306
 #: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "ZeroTier ネットワークを作成"
 
@@ -2128,8 +2161,17 @@ msgstr "ZeroTier ネットワークを作成"
 msgid "Create a backup"
 msgstr "バックアップを作成"
 
+#: src/big_remote_play/ui/private_network_view.py:95
+msgid ""
+"Create a free account or sign in. Only the person who owns the network does "
+"this."
+msgstr ""
+"無料のアカウントを作成するか、サインインします。これはネットワークの所有者だ"
+"けが行います。"
+
 #: src/big_remote_play/ui/network_dashboard.py:226
 #: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "ネットワークを作成"
 
@@ -2184,12 +2226,12 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 705
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 307
-#: src/big_remote_play/host/sunshine_manager.py:658
+#: src/big_remote_play/host/sunshine_manager.py:659
 msgid "Credentials reset successfully"
 msgstr "認証情報をリセットしました"
 
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr "Big Remote Play がこのネットワークを管理するための認証情報です。"
 
@@ -2199,17 +2241,17 @@ msgstr "Big Remote Play がネットワークを管理するための認証情�
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 344
-#: src/big_remote_play/host/sunshine_manager.py:634
+#: src/big_remote_play/host/sunshine_manager.py:635
 msgid "Credentials updated successfully"
 msgstr "認証情報を更新しました"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:2991
+#: src/big_remote_play/ui/host_view.py:3110
 msgid "Current Password"
 msgstr "現在のパスワード"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 685
-#: src/big_remote_play/ui/host_view.py:2989
+#: src/big_remote_play/ui/host_view.py:3108
 msgid "Current Username"
 msgstr "現在のユーザー名"
 
@@ -2262,8 +2304,8 @@ msgstr "既定のマイク"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1263
-#: src/big_remote_play/ui/private_network_view.py:902
-#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:931
+#: src/big_remote_play/ui/private_network_view.py:1029
 msgid "Delete"
 msgstr "削除"
 
@@ -2275,16 +2317,16 @@ msgstr "すべて削除"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1701
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Delete entry?"
 msgstr "エントリを削除しますか？"
 
-#: src/big_remote_play/ui/private_network_view.py:902
+#: src/big_remote_play/ui/private_network_view.py:931
 msgid "Delete this saved network"
 msgstr "この保存済みネットワークを削除"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:923
+#: src/big_remote_play/ui/host_view.py:949
 msgid "Detailed Logs"
 msgstr "詳細ログ"
 
@@ -2298,7 +2340,7 @@ msgid "Device ID"
 msgstr "デバイス ID"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:1370
+#: src/big_remote_play/ui/host_view.py:1482
 msgid "Device Name"
 msgstr "デバイス名"
 
@@ -2322,7 +2364,7 @@ msgid "Device at {address}"
 msgstr "{address} のデバイス"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:2574
+#: src/big_remote_play/ui/host_view.py:2693
 msgid "Device enabled"
 msgstr "デバイスを有効にしました"
 
@@ -2341,7 +2383,7 @@ msgstr "デバイス"
 msgid "Devices online now: {count}"
 msgstr "現在オンラインのデバイス: {count}"
 
-#: src/big_remote_play/ui/host_view.py:2510
+#: src/big_remote_play/ui/host_view.py:2629
 msgid ""
 "Devices paired with Sunshine. Disable to block access without re-pairing; "
 "remove to revoke (a new PIN will be required)."
@@ -2350,16 +2392,16 @@ msgstr ""
 "スをブロックできます。削除すると承認を取り消し、新しいPINでのペアリングが必要"
 "になります。"
 
-#: src/big_remote_play/ui/host_view.py:1437
+#: src/big_remote_play/ui/host_view.py:1549
 msgid "Devices playing on this computer at this moment."
 msgstr "今このコンピューターで遊んでいるデバイスです。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:2643
+#: src/big_remote_play/ui/host_view.py:2762
 msgid "Devices updated"
 msgstr "デバイスを更新しました"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "Devices, private address and how to add another computer."
 msgstr "デバイス、プライベートアドレス、別のコンピューターを追加する方法。"
 
@@ -2401,7 +2443,7 @@ msgstr ""
 msgid "Disable"
 msgstr "無効にする"
 
-#: src/big_remote_play/ui/host_view.py:1504
+#: src/big_remote_play/ui/host_view.py:1617
 msgid "Disable or remove devices that should no longer connect."
 msgstr "今後接続させないデバイスは無効化または削除してください。"
 
@@ -2484,7 +2526,7 @@ msgid "Displays latency, frame rate, and decoding information over the stream."
 msgstr "ストリーム上に遅延、フレームレート、デコード情報を表示します。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1442
-#: src/big_remote_play/ui/host_view.py:3355
+#: src/big_remote_play/ui/host_view.py:3474
 msgid "Do you want to restore default settings?"
 msgstr "デフォルト設定を復元しますか？"
 
@@ -2495,8 +2537,8 @@ msgstr "Dockerエンジン"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1137
-#: src/big_remote_play/ui/private_network_view.py:909
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:938
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Domain"
 msgstr "ドメイン"
 
@@ -2532,7 +2574,7 @@ msgstr "設定がかんたんで、自分のデバイスどうしをつなぐの
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1704
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit"
 msgstr "編集"
 
@@ -2544,13 +2586,13 @@ msgstr "カスタムフレームレートを編集"
 msgid "Edit custom resolution"
 msgstr "カスタム解像度を編集"
 
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit this saved network"
 msgstr "この保存済みネットワークを編集"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:969
+#: src/big_remote_play/ui/private_network_view.py:998
 #, python-brace-format
 msgid "Edit – {}"
 msgstr "編集 – {}"
@@ -2621,7 +2663,7 @@ msgstr "YUV 4:4:4 を有効にする"
 msgid "Enable simultaneous IPv4 and IPv6 support on server"
 msgstr "サーバーで同時にIPv4およびIPv6サポートを有効にする"
 
-#: src/big_remote_play/ui/host_view.py:923
+#: src/big_remote_play/ui/host_view.py:949
 msgid "Enable verbose logging for debugging"
 msgstr "デバッグ用の詳細ログを有効にする"
 
@@ -2636,7 +2678,7 @@ msgstr ""
 "ロップされるのを回避できますが、動きのある場面ではビデオ品質が低下する可能性"
 "があります。"
 
-#: src/big_remote_play/ui/host_view.py:1094
+#: src/big_remote_play/ui/host_view.py:1205
 #, python-brace-format
 msgid "Encoding priority: {value}"
 msgstr "エンコード優先度: {value}"
@@ -2646,6 +2688,11 @@ msgstr "エンコード優先度: {value}"
 msgid "End Game"
 msgstr "ゲームを終了"
 
+#: src/big_remote_play/ui/host_view.py:760
+#: src/big_remote_play/ui/host_view.py:1105
+msgid "End for everyone"
+msgstr "全員分を終了"
+
 #: src/big_remote_play/ui/performance_monitor.py:563
 msgid ""
 "End the running game gently, or forcefully evict the network address? Ending "
@@ -2654,8 +2701,12 @@ msgstr ""
 "実行中のゲームを通常終了しますか、それともネットワークアドレスを強制切断しま"
 "すか？ゲームを終了してもデバイスのペアリングは維持されます。"
 
+#: src/big_remote_play/ui/host_view.py:1101
+msgid "End the stream for everyone?"
+msgstr "全員のストリームを終了しますか？"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 325
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter ID"
 msgstr "ID を入力"
 
@@ -2663,7 +2714,7 @@ msgstr "ID を入力"
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "幅x高さを入力してください（例：1920x1080）："
 
-#: src/big_remote_play/ui/private_network_view.py:984
+#: src/big_remote_play/ui/private_network_view.py:1013
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "16文字の16進数でネットワークIDを入力してください。"
 
@@ -2685,8 +2736,8 @@ msgstr "別の 16 文字のネットワーク ID を入力"
 
 #: src/big_remote_play/ui/guest_view.py:1338
 #: src/big_remote_play/ui/guest_view.py:1650
-#: src/big_remote_play/ui/host_view.py:1252
-#: src/big_remote_play/ui/host_view.py:1407
+#: src/big_remote_play/ui/host_view.py:1363
+#: src/big_remote_play/ui/host_view.py:1519
 msgid "Enter exactly four digits."
 msgstr "4 桁の数字を正確に入力してください。"
 
@@ -2697,28 +2748,32 @@ msgstr "フレームレートを入力してください（例：75）："
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:116
+#: src/big_remote_play/ui/private_network_view.py:144
 msgid "Enter the 16-character Network ID to join a ZeroTier network."
 msgstr ""
 "ZeroTier ネットワークに参加するには、16 文字のネットワーク ID を入力してくだ"
 "さい。"
 
-#: src/big_remote_play/ui/private_network_view.py:746
+#: src/big_remote_play/ui/private_network_view.py:775
 msgid "Enter the Headscale server address."
 msgstr "Headscale サーバーのアドレスを入力してください。"
 
 #: src/big_remote_play/ui/network_devices.py:442
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter the ID on this page and choose Connect."
 msgstr "このページで ID を入力し、「接続」を選んでください。"
 
-#: src/big_remote_play/ui/host_view.py:1355
+#: src/big_remote_play/ui/host_view.py:1467
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr ""
 "もう一方のコンピューターの Moonlight に表示された PIN を入力してください。"
 
-#: src/big_remote_play/ui/host_view.py:751
-#: src/big_remote_play/ui/host_view.py:1367
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "Enter the code here"
+msgstr "ここにコードを入力"
+
+#: src/big_remote_play/ui/host_view.py:779
+#: src/big_remote_play/ui/host_view.py:1479
 msgid "Enter the four digits shown by Moonlight on the other computer."
 msgstr ""
 "もう一方のコンピューターの Moonlight に表示された 4 桁の数字を入力してくださ"
@@ -2731,7 +2786,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 27
-#: src/big_remote_play/ui/private_network_view.py:104
+#: src/big_remote_play/ui/private_network_view.py:132
 msgid "Enter the server domain and auth key provided by the administrator."
 msgstr "管理者が提供したサーバードメインと認証キーを入力してください。"
 
@@ -2745,7 +2800,7 @@ msgstr "エントロピー符号化モード"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/private_network_view.py:992
+#: src/big_remote_play/ui/private_network_view.py:1021
 msgid "Entry updated"
 msgstr "エントリが更新されました"
 
@@ -2758,8 +2813,8 @@ msgstr "エントリが更新されました"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1245
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 562
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 600
-#: src/big_remote_play/ui/host_view.py:1668
-#: src/big_remote_play/ui/host_view.py:2262
+#: src/big_remote_play/ui/host_view.py:1781
+#: src/big_remote_play/ui/host_view.py:2375
 msgid "Error"
 msgstr "エラー"
 
@@ -2768,7 +2823,7 @@ msgstr "エラー"
 msgid "Error Clearing"
 msgstr "消去中にエラーが発生しました"
 
-#: src/big_remote_play/ui/host_view.py:1095
+#: src/big_remote_play/ui/host_view.py:1206
 #, python-brace-format
 msgid "Error correction: {value}%"
 msgstr "誤り訂正: {value}%"
@@ -2780,15 +2835,15 @@ msgid "Error executing command: {}"
 msgstr "コマンドの実行中にエラーが発生しました: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 807
-#: src/big_remote_play/ui/host_view.py:1691
+#: src/big_remote_play/ui/host_view.py:1804
 #, python-brace-format
 msgid "Error executing script: {}"
 msgstr "スクリプトの実行中にエラーが発生しました: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1403
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1435
-#: src/big_remote_play/ui/host_view.py:2302
-#: src/big_remote_play/ui/host_view.py:2334
+#: src/big_remote_play/ui/host_view.py:2415
+#: src/big_remote_play/ui/host_view.py:2447
 #, python-brace-format
 msgid "Error launching game: {}"
 msgstr "ゲームの起動エラー: {}"
@@ -2801,7 +2856,7 @@ msgstr "復元エラー: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 109
-#: src/big_remote_play/host/sunshine_manager.py:275
+#: src/big_remote_play/host/sunshine_manager.py:276
 #, python-brace-format
 msgid "Error starting Sunshine: {}"
 msgstr "Sunshine の起動中にエラーが発生しました: {}"
@@ -2816,7 +2871,7 @@ msgstr "エラー: {}"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 937
 # line: 1908
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "Establish Connection"
 msgstr "接続を確立する"
 
@@ -2831,6 +2886,16 @@ msgstr ""
 #: src/big_remote_play/ui/remote_connection.py:524
 msgid "Every device on the network, approvals and removal."
 msgstr "ネットワーク上のすべてのデバイス、承認と削除。"
+
+#: src/big_remote_play/ui/host_view.py:1102
+msgid ""
+"Every device playing now is disconnected. Then start pairing again on the "
+"new device and enter its code here. Devices already paired can reconnect "
+"right after."
+msgstr ""
+"今プレイ中のすべてのデバイスが切断されます。その後、新しいデバイスでもう一度"
+"ペアリングを始めて、そのコードをここに入力してください。ペアリング済みのデバ"
+"イスはその後すぐに再接続できます。"
 
 #: src/big_remote_play/ui/history_dialog.py:151
 msgid ""
@@ -2858,7 +2923,7 @@ msgid "Excellent"
 msgstr "非常に良好"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:1678
+#: src/big_remote_play/ui/host_view.py:1791
 msgid "Execution failed or cancelled."
 msgstr "実行に失敗するか、キャンセルされました。"
 
@@ -2899,7 +2964,7 @@ msgstr ""
 "接続に失敗しました。Moonlightがペアリングされているか確認してください。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1153
-#: src/big_remote_play/ui/host_view.py:2601
+#: src/big_remote_play/ui/host_view.py:2720
 msgid "Failed to update device"
 msgstr "デバイスを更新できませんでした"
 
@@ -2911,14 +2976,14 @@ msgstr "応答速度を優先、または画質を優先"
 msgid "Favorite"
 msgstr "お気に入り"
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Fill in the form"
 msgstr "フォームに入力"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1291
 # line: 1293
-#: src/big_remote_play/ui/private_network_view.py:688
+#: src/big_remote_play/ui/private_network_view.py:716
 msgid "Find Network ID"
 msgstr "ネットワークIDを見つける"
 
@@ -2945,8 +3010,8 @@ msgid "Finish signing in"
 msgstr "サインインを完了"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:1645
-#: src/big_remote_play/ui/host_view.py:1678
+#: src/big_remote_play/ui/host_view.py:1758
+#: src/big_remote_play/ui/host_view.py:1791
 msgid "Firewall Error"
 msgstr "ファイアウォールエラー"
 
@@ -2968,7 +3033,7 @@ msgstr "修正"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 302
-#: src/big_remote_play/ui/host_view.py:2459
+#: src/big_remote_play/ui/host_view.py:2578
 msgid "Fix Dependencies"
 msgstr "依存関係を修正する"
 
@@ -3035,8 +3100,8 @@ msgstr "強制された"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1772
 # line: 1787
-#: src/big_remote_play/ui/private_network_view.py:935
-#: src/big_remote_play/ui/private_network_view.py:941
+#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:970
 #, python-brace-format
 msgid "Form filled for {}"
 msgstr "{}のフォームが記入されました。"
@@ -3064,7 +3129,7 @@ msgstr "フレーム毎秒"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 133
 #: src/big_remote_play/ui/host_view.py:273
-#: src/big_remote_play/ui/host_view.py:1774
+#: src/big_remote_play/ui/host_view.py:1887
 msgid "Full Desktop"
 msgstr "フルデスクトップ"
 
@@ -3077,7 +3142,7 @@ msgid "Fullscreen"
 msgstr "全画面"
 
 #: src/big_remote_play/ui/host_view.py:621
-#: src/big_remote_play/ui/host_view.py:2750
+#: src/big_remote_play/ui/host_view.py:2869
 msgid "Game Library"
 msgstr "ゲームライブラリ"
 
@@ -3104,12 +3169,12 @@ msgstr "ゲーム PC が見つかりません"
 msgid "Game Selection"
 msgstr "ゲーム選択"
 
-#: src/big_remote_play/ui/host_view.py:2843
+#: src/big_remote_play/ui/host_view.py:2962
 #, python-brace-format
 msgid "Games added: {}"
 msgstr "{} 個のゲームを追加しました"
 
-#: src/big_remote_play/ui/host_view.py:2750
+#: src/big_remote_play/ui/host_view.py:2869
 msgid ""
 "Games shown on the other computer in Moonlight. Add detected games or remove "
 "entries."
@@ -3131,7 +3196,7 @@ msgstr "一般"
 # line: 1023
 # line: 1069
 # line: 1666
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Get Network ID"
 msgstr "ネットワーク ID を取得"
 
@@ -3156,7 +3221,7 @@ msgstr ""
 msgid "Graphics Card / Encoder"
 msgstr "グラフィックカード / エンコーダー"
 
-#: src/big_remote_play/ui/host_view.py:1091
+#: src/big_remote_play/ui/host_view.py:1202
 #, python-brace-format
 msgid "Graphics card: {value}"
 msgstr "グラフィックスカード: {value}"
@@ -3171,11 +3236,11 @@ msgstr "グラフィックスカード: {value}"
 msgid "Guided setup"
 msgstr "ガイド付き設定"
 
-#: src/big_remote_play/ui/host_view.py:1051
+#: src/big_remote_play/ui/host_view.py:1162
 msgid "HDR screen: colors will look washed out on devices without HDR"
 msgstr "HDR 画面: HDR 非対応のデバイスでは色が白っぽく見えます"
 
-#: src/big_remote_play/ui/host_view.py:1050
+#: src/big_remote_play/ui/host_view.py:1161
 msgid "HDR screen: shared in SDR"
 msgstr "HDR 画面: SDR で共有します"
 
@@ -3212,8 +3277,8 @@ msgstr "Headscale では通常の Tailscale クライアントを使用します
 msgid "Hidden. Use Copy."
 msgstr "非表示です。「コピー」を使ってください。"
 
-#: src/big_remote_play/ui/host_view.py:1712
-#: src/big_remote_play/ui/host_view.py:1739
+#: src/big_remote_play/ui/host_view.py:1825
+#: src/big_remote_play/ui/host_view.py:1852
 #, python-brace-format
 msgid "Hide {}"
 msgstr "{} を隠す"
@@ -3314,17 +3379,21 @@ msgstr "ストリームを終了するまでに Moonlight からのデータを�
 msgid "How to approve"
 msgstr "承認の方法"
 
+#: src/big_remote_play/ui/private_network_view.py:730
+msgid "How to create a free network, step by step."
+msgstr "無料のネットワークを作成する手順です。"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 266
-#: src/big_remote_play/ui/private_network_view.py:435
+#: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
 msgid "How to install {}"
 msgstr "{} のインストール方法"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "How to run Headscale on your own server, step by step."
 msgstr "自分のサーバーで Headscale を動かす方法を順番に説明します。"
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "How to use the selected private network service."
 msgstr "選択したプライベートネットワークサービスの使い方です。"
 
@@ -3333,14 +3402,15 @@ msgid "I already use ZeroTier"
 msgstr "ZeroTier をすでに使っている"
 
 #: src/big_remote_play/ui/guided_setup.py:278
+#: src/big_remote_play/ui/private_network_view.py:730
 msgid "I don't have a code"
 msgstr "コードを持っていない"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "I don't have a server yet"
 msgstr "まだサーバーを持っていません"
 
-#: src/big_remote_play/ui/host_view.py:2987
+#: src/big_remote_play/ui/host_view.py:3106
 msgid "I forgot the current password"
 msgstr "現在のパスワードを忘れました"
 
@@ -3405,13 +3475,13 @@ msgstr ""
 msgid "Image"
 msgstr "映像"
 
-#: src/big_remote_play/ui/host_view.py:824
-#: src/big_remote_play/ui/host_view.py:869
-#: src/big_remote_play/ui/host_view.py:879
+#: src/big_remote_play/ui/host_view.py:850
+#: src/big_remote_play/ui/host_view.py:895
+#: src/big_remote_play/ui/host_view.py:905
 msgid "Image and capture"
 msgstr "映像とキャプチャー"
 
-#: src/big_remote_play/ui/host_view.py:864
+#: src/big_remote_play/ui/host_view.py:890
 msgid "Image and capture settings are on Overview, next to Start sharing."
 msgstr "映像とキャプチャーの設定は、「概要」の「共有を開始」の横にあります。"
 
@@ -3443,7 +3513,7 @@ msgstr ""
 "Big Remote Play で「Headscale → ネットワークに参加」を選んでサーバーのアドレ"
 "スを入力するか、下のコマンドを実行してください。"
 
-#: src/big_remote_play/ui/host_view.py:781
+#: src/big_remote_play/ui/host_view.py:809
 msgid ""
 "In Big Remote Play on the other PC, choose Find by code. This is not the "
 "pairing code."
@@ -3456,6 +3526,14 @@ msgid "In Big Remote Play, choose Play over the internet and type this code."
 msgstr ""
 "Big Remote Play で「インターネット経由で遊ぶ」を選び、このコードを入力してく"
 "ださい。"
+
+#: src/big_remote_play/ui/private_network_view.py:105
+msgid ""
+"In ZeroTier Central, open the network and allow each computer under Members. "
+"Until then it waits for approval."
+msgstr ""
+"ZeroTier Central でネットワークを開き、Members で各コンピューターを許可しま"
+"す。それまでは承認待ちになります。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 337
@@ -3483,7 +3561,7 @@ msgid "In use now"
 msgstr "現在の通信量"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 890
-#: src/big_remote_play/ui/host_view.py:1824
+#: src/big_remote_play/ui/host_view.py:1937
 msgid "Inactive"
 msgstr "非アクティブ"
 
@@ -3513,7 +3591,7 @@ msgid "Input, Network, and Access"
 msgstr "入力、ネットワーク、アクセス"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 569
-#: src/big_remote_play/ui/host_view.py:1355
+#: src/big_remote_play/ui/host_view.py:1467
 msgid "Insert PIN"
 msgstr "PINを入力してください。"
 
@@ -3561,8 +3639,8 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 464
 #: src/big_remote_play/ui/main_window.py:1129
 #: src/big_remote_play/ui/main_window.py:1138
-#: src/big_remote_play/ui/private_network_view.py:430
-#: src/big_remote_play/ui/private_network_view.py:432
+#: src/big_remote_play/ui/private_network_view.py:458
+#: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
 msgid "Install {}"
 msgstr "{} をインストール"
@@ -3571,8 +3649,8 @@ msgstr "{} をインストール"
 # line: 1498
 # line: 1529
 # line: 1542
-#: src/big_remote_play/ui/private_network_view.py:373
-#: src/big_remote_play/ui/private_network_view.py:421
+#: src/big_remote_play/ui/private_network_view.py:401
+#: src/big_remote_play/ui/private_network_view.py:449
 msgid "Installation Log"
 msgstr "インストールログ"
 
@@ -3584,7 +3662,7 @@ msgstr "インストールが成功しました！"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 449
-#: src/big_remote_play/ui/private_network_view.py:456
+#: src/big_remote_play/ui/private_network_view.py:484
 msgid "Installation failed. Check the log."
 msgstr "インストールに失敗しました。ログを確認してください。"
 
@@ -3629,7 +3707,7 @@ msgstr "{} をインストールしています…"
 # line: 89
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1669
-#: src/big_remote_play/ui/private_network_view.py:444
+#: src/big_remote_play/ui/private_network_view.py:472
 msgid "Installing..."
 msgstr "インストール中..."
 
@@ -3669,7 +3747,7 @@ msgid "Invalid IP address: ${ip}"
 msgstr "無効な IP アドレス: ${ip}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 719
-#: src/big_remote_play/ui/host_view.py:1407
+#: src/big_remote_play/ui/host_view.py:1519
 msgid "Invalid PIN"
 msgstr "無効なPIN"
 
@@ -3687,8 +3765,8 @@ msgstr "無効なアドレス"
 msgid "Invalid code"
 msgstr "無効なコード"
 
-#: src/big_remote_play/ui/host_view.py:2312
-#: src/big_remote_play/ui/host_view.py:2325
+#: src/big_remote_play/ui/host_view.py:2425
+#: src/big_remote_play/ui/host_view.py:2438
 msgid "Invalid launch command"
 msgstr "無効な起動コマンド"
 
@@ -3697,7 +3775,7 @@ msgid "Invalid port"
 msgstr "無効なポート"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1331
+#: src/big_remote_play/ui/host_view.py:1442
 msgid "Invalid username or password."
 msgstr "無効なユーザー名またはパスワードです。"
 
@@ -3748,7 +3826,7 @@ msgstr ""
 "このネットワークの所有者はサインインページを使っています。ZeroTier アプリでサ"
 "インインしてから、もう一度確認してください。"
 
-#: src/big_remote_play/ui/private_network_view.py:110
+#: src/big_remote_play/ui/private_network_view.py:138
 msgid ""
 "Join Tailscale with browser login, or use an auth key if someone gave you "
 "one."
@@ -3756,7 +3834,7 @@ msgstr ""
 "ブラウザーログインでTailscaleに参加するか、誰かから認証キーを受け取っている場"
 "合はそれを使用してください。"
 
-#: src/big_remote_play/ui/private_network_view.py:1018
+#: src/big_remote_play/ui/private_network_view.py:1047
 msgid "Join a Headscale VPN"
 msgstr "Headscale VPN に参加"
 
@@ -3832,7 +3910,7 @@ msgstr ""
 "通常のプレイではオフのままにしてください。UPnP と同時に有効にすると、"
 "Sunshine がルーターの管理ポートも開く場合があります。"
 
-#: src/big_remote_play/ui/host_view.py:881
+#: src/big_remote_play/ui/host_view.py:907
 msgid ""
 "Keep router port forwarding off when using a VPN. Changes apply when sharing "
 "starts again."
@@ -3899,9 +3977,9 @@ msgstr "遅延 {}、FPS {}（目標）、帯域幅 {}（目標）"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1399
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1431
-#: src/big_remote_play/ui/host_view.py:2298
-#: src/big_remote_play/ui/host_view.py:2317
-#: src/big_remote_play/ui/host_view.py:2330
+#: src/big_remote_play/ui/host_view.py:2411
+#: src/big_remote_play/ui/host_view.py:2430
+#: src/big_remote_play/ui/host_view.py:2443
 #, python-brace-format
 msgid "Launching {}..."
 msgstr "{}を起動中..."
@@ -3974,7 +4052,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/host_view.py:2848
+#: src/big_remote_play/ui/host_view.py:2967
 msgid "Library updated"
 msgstr "ライブラリを更新しました"
 
@@ -4010,15 +4088,15 @@ msgstr "履歴を読み込んでいます…"
 msgid "Loading networks…"
 msgstr "ネットワークを読み込んでいます…"
 
-#: src/big_remote_play/ui/host_view.py:2539
+#: src/big_remote_play/ui/host_view.py:2658
 msgid "Loading paired devices…"
 msgstr "ペアリング済みデバイスを読み込んでいます…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 712
-#: src/big_remote_play/ui/host_view.py:2502
-#: src/big_remote_play/ui/host_view.py:2692
-#: src/big_remote_play/ui/host_view.py:2738
+#: src/big_remote_play/ui/host_view.py:2621
+#: src/big_remote_play/ui/host_view.py:2811
+#: src/big_remote_play/ui/host_view.py:2857
 msgid "Loading…"
 msgstr "読み込み中..."
 
@@ -4041,13 +4119,13 @@ msgstr "ログファイルパス"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1831
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Login Server"
 msgstr "ログインサーバー"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1284
-#: src/big_remote_play/ui/private_network_view.py:672
+#: src/big_remote_play/ui/private_network_view.py:700
 msgid "Login Server (leave empty for tailscale.com)"
 msgstr "ログインサーバー（tailscale.comの場合は空白のままにしてください）"
 
@@ -4093,11 +4171,11 @@ msgstr "ポインターの動きを、ゲームよりデスクトップ操作に
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1215
-#: src/big_remote_play/ui/host_view.py:1508
+#: src/big_remote_play/ui/host_view.py:1621
 msgid "Manage"
 msgstr "管理"
 
-#: src/big_remote_play/ui/private_network_view.py:612
+#: src/big_remote_play/ui/private_network_view.py:640
 msgid "Manage accounts and networks"
 msgstr "アカウントとネットワークを管理"
 
@@ -4113,12 +4191,12 @@ msgid "Manage network"
 msgstr "ネットワークを管理"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 246
-#: src/big_remote_play/ui/host_view.py:1503
-#: src/big_remote_play/ui/host_view.py:1512
+#: src/big_remote_play/ui/host_view.py:1616
+#: src/big_remote_play/ui/host_view.py:1625
 msgid "Manage paired devices"
 msgstr "ペアリング済みデバイスを管理"
 
-#: src/big_remote_play/ui/host_view.py:1020
+#: src/big_remote_play/ui/host_view.py:1046
 msgid "Manual capture and encoding"
 msgstr "手動キャプチャーとエンコード"
 
@@ -4200,7 +4278,7 @@ msgstr "モード2"
 #: src/big_remote_play/ui/host_view.py:187
 #: src/big_remote_play/ui/host_view.py:200
 #: src/big_remote_play/ui/host_view.py:365
-#: src/big_remote_play/ui/host_view.py:1124
+#: src/big_remote_play/ui/host_view.py:1235
 msgid "Monitor / Display"
 msgstr "モニター / ディスプレイ"
 
@@ -4238,7 +4316,7 @@ msgid "More exposed than a private VPN"
 msgstr "プライベート VPN より公開範囲が広い"
 
 #: src/big_remote_play/ui/network_dashboard.py:95
-#: src/big_remote_play/ui/private_network_view.py:601
+#: src/big_remote_play/ui/private_network_view.py:629
 msgid "More options"
 msgstr "その他のオプション"
 
@@ -4269,7 +4347,7 @@ msgstr "Moonlight がアクティブウィンドウでないときにミュー�
 msgid "My devices"
 msgstr "マイデバイス"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "My network"
 msgstr "マイネットワーク"
 
@@ -4339,8 +4417,8 @@ msgstr "ネットワーク"
 #: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
-#: src/big_remote_play/ui/private_network_view.py:910
-#: src/big_remote_play/ui/private_network_view.py:959
+#: src/big_remote_play/ui/private_network_view.py:939
+#: src/big_remote_play/ui/private_network_view.py:988
 msgid "Network ID"
 msgstr "ネットワーク ID"
 
@@ -4350,7 +4428,7 @@ msgstr "ネットワーク ID"
 msgid "Network ID (16 characters)"
 msgstr "ネットワークID（16文字）"
 
-#: src/big_remote_play/ui/host_view.py:881
+#: src/big_remote_play/ui/host_view.py:907
 msgid "Network and access"
 msgstr "ネットワークとアクセス"
 
@@ -4391,7 +4469,7 @@ msgstr "ネットワーク名"
 msgid "Network not found"
 msgstr "ネットワークが見つかりません"
 
-#: src/big_remote_play/ui/private_network_view.py:606
+#: src/big_remote_play/ui/private_network_view.py:634
 msgid "Networks this PC joined before."
 msgstr "このPCが以前に参加したネットワーク。"
 
@@ -4404,12 +4482,12 @@ msgid "New Central"
 msgstr "New Central"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:2996
+#: src/big_remote_play/ui/host_view.py:3115
 msgid "New Password"
 msgstr "新しいパスワード"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 641
-#: src/big_remote_play/ui/host_view.py:2994
+#: src/big_remote_play/ui/host_view.py:3113
 msgid "New Username"
 msgstr "新しいユーザー名"
 
@@ -4421,16 +4499,27 @@ msgstr "新しいコンピューターの所属先"
 msgid "New devices appear here while this window is open."
 msgstr "このウィンドウを開いている間、新しいデバイスがここに表示されます。"
 
-#: src/big_remote_play/ui/host_view.py:3038
+#: src/big_remote_play/ui/host_view.py:751
+msgid ""
+"New devices can pair only when no stream is open: they show “The computer is "
+"currently in a game”. End the stream for everyone, then start pairing again "
+"on the new device. Devices already paired can reconnect right after."
+msgstr ""
+"新しいデバイスは、開いているストリームがないときにしかペアリングできません。"
+"そのため「The computer is currently in a game」と表示されます。全員のストリー"
+"ムを終了してから、新しいデバイスでもう一度ペアリングを始めてください。ペアリ"
+"ング済みのデバイスはその後すぐに再接続できます。"
+
+#: src/big_remote_play/ui/host_view.py:3157
 msgid "New passwords do not match."
 msgstr "新しいパスワードが一致しません。"
 
-#: src/big_remote_play/ui/host_view.py:2011
+#: src/big_remote_play/ui/host_view.py:2124
 msgid "No"
 msgstr "いいえ"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 617
-#: src/big_remote_play/ui/host_view.py:1422
+#: src/big_remote_play/ui/host_view.py:1534
 msgid "No Sunshine user exists. Configure one in the browser."
 msgstr ""
 "Sunshineでユーザーが作成されていません。ブラウザを通じてユーザーを設定する必"
@@ -4444,11 +4533,11 @@ msgstr "アカウントが見つかりません"
 msgid "No active connection found"
 msgstr "アクティブな接続が見つかりません"
 
-#: src/big_remote_play/ui/host_view.py:2777
+#: src/big_remote_play/ui/host_view.py:2896
 msgid "No apps configured"
 msgstr "設定されたアプリはありません"
 
-#: src/big_remote_play/ui/host_view.py:2009
+#: src/big_remote_play/ui/host_view.py:2122
 msgid "No client is receiving sound right now"
 msgstr "現在、音声を受信しているクライアントはありません"
 
@@ -4460,12 +4549,11 @@ msgstr ""
 "この検索コードに応答したPCはありません。コードを確認するか、アドレスで接続し"
 "てください。"
 
-#: src/big_remote_play/ui/host_view.py:1282
-#: src/big_remote_play/ui/host_view.py:1337
+#: src/big_remote_play/ui/host_view.py:1066
 msgid "No computer is waiting"
 msgstr "待機中のコンピューターはありません"
 
-#: src/big_remote_play/host/sunshine_manager.py:571
+#: src/big_remote_play/host/sunshine_manager.py:572
 msgid ""
 "No computer is waiting to pair. Choose this computer under Connect on the "
 "other PC, then enter the code it shows."
@@ -4473,7 +4561,7 @@ msgstr ""
 "ペアリングを待っているコンピューターはありません。もう一方のPCの「接続」でこ"
 "のコンピューターを選び、表示されたコードを入力してください。"
 
-#: src/big_remote_play/ui/host_view.py:1186
+#: src/big_remote_play/ui/host_view.py:1297
 msgid "No connected monitor could be identified."
 msgstr "接続されているモニターを識別できませんでした。"
 
@@ -4487,6 +4575,18 @@ msgstr "まだ接続はありません"
 msgid "No details reported."
 msgstr "詳細は報告されていません。"
 
+#: src/big_remote_play/ui/host_view.py:1071
+msgid ""
+"No device is waiting for this code because a stream is open on this "
+"computer: the new device shows “The computer is currently in a game”. End "
+"the stream for everyone, then start pairing again on the new device and "
+"enter its new code here."
+msgstr ""
+"このコンピューターでストリームが開いているため、このコードを待っているデバイ"
+"スはありません。新しいデバイスには「The computer is currently in a game」と表"
+"示されます。全員のストリームを終了し、新しいデバイスでもう一度ペアリングを始"
+"めて、表示された新しいコードをここに入力してください。"
+
 #: src/big_remote_play/ui/network_devices.py:495
 msgid "No device is waiting yet…"
 msgstr "待機中のデバイスはまだありません…"
@@ -4495,7 +4595,7 @@ msgstr "待機中のデバイスはまだありません…"
 msgid "No game PC found yet"
 msgstr "ゲーム PC はまだ見つかっていません"
 
-#: src/big_remote_play/ui/host_view.py:2707
+#: src/big_remote_play/ui/host_view.py:2826
 msgid "No logs available (Sunshine not running or no credentials)."
 msgstr ""
 "利用できるログがありません（Sunshineが実行されていないか、認証情報がありませ"
@@ -4509,7 +4609,7 @@ msgstr "ネットワークコードがありませんか？"
 msgid "No network found"
 msgstr "ネットワークが見つかりません"
 
-#: src/big_remote_play/ui/host_view.py:1457
+#: src/big_remote_play/ui/host_view.py:1570
 msgid "No one is playing yet"
 msgstr "まだ誰も遊んでいません"
 
@@ -4524,17 +4624,17 @@ msgstr "ほかのデバイスはまだありません"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 973
-#: src/big_remote_play/ui/host_view.py:2559
+#: src/big_remote_play/ui/host_view.py:2678
 msgid "No paired devices"
 msgstr "ペアリング済みデバイスはありません"
 
-#: src/big_remote_play/ui/host_view.py:1524
+#: src/big_remote_play/ui/host_view.py:1637
 msgid "No paired devices yet"
 msgstr "ペアリング済みデバイスはまだありません"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1629
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "No previous networks"
 msgstr "以前のネットワークはありません"
 
@@ -4543,6 +4643,12 @@ msgid "No saved Tailscale or Headscale account was found on this computer."
 msgstr ""
 "このコンピューターに保存済みの Tailscale または Headscale アカウントがありま"
 "せん。"
+
+#: src/big_remote_play/ui/host_view.py:1136
+msgid "No stream is open now. Start pairing again on the new device."
+msgstr ""
+"開いているストリームはなくなりました。新しいデバイスでもう一度ペアリングを始"
+"めてください。"
 
 #: usr/share/big-remote-play/scripts/configure_firewall.sh:60
 msgid "No supported firewall tool was found."
@@ -4557,7 +4663,7 @@ msgstr ""
 "端末が見つかりません。次のコマンドを実行してください：\n"
 "{}"
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1045
 msgid "No video bitrate ceiling"
 msgstr "映像ビットレートの上限なし"
 
@@ -4572,8 +4678,8 @@ msgid "Node ID of this computer"
 msgstr "このコンピューターのノード ID"
 
 #: src/big_remote_play/ui/connection_guides.py:211
-#: src/big_remote_play/ui/host_view.py:2004
-#: src/big_remote_play/ui/host_view.py:2010
+#: src/big_remote_play/ui/host_view.py:2117
+#: src/big_remote_play/ui/host_view.py:2123
 msgid "None"
 msgstr "なし"
 
@@ -4581,7 +4687,7 @@ msgstr "なし"
 msgid "None detected (firewalld and ufw checked)"
 msgstr "検出されませんでした（firewalld と ufw を確認済み）"
 
-#: src/big_remote_play/ui/host_view.py:2019
+#: src/big_remote_play/ui/host_view.py:2132
 msgid "None: the sound is captured directly"
 msgstr "なし: 音声を直接キャプチャーしています"
 
@@ -4612,6 +4718,10 @@ msgstr ""
 #: src/big_remote_play/ui/remote_connection.py:702
 msgid "Not installed"
 msgstr "未インストール"
+
+#: src/big_remote_play/ui/host_view.py:1104
+msgid "Not now"
+msgstr "今はしない"
 
 #: src/big_remote_play/ui/connection_cards.py:49
 msgid "Not responding"
@@ -4646,7 +4756,7 @@ msgstr "Sunshine の新しいプレリリース版が公開されたら通知す
 msgid "Now using {method}."
 msgstr "{method} を使うようになりました。"
 
-#: src/big_remote_play/ui/host_view.py:1997
+#: src/big_remote_play/ui/host_view.py:2110
 #, python-brace-format
 msgid "Now: {output}"
 msgstr "現在: {output}"
@@ -4679,7 +4789,7 @@ msgstr "OK"
 msgid "Offline"
 msgstr "オフライン"
 
-#: src/big_remote_play/ui/host_view.py:938
+#: src/big_remote_play/ui/host_view.py:964
 #: src/big_remote_play/ui/preferences.py:248
 msgid "Old log files have been removed."
 msgstr "古いログファイルを削除しました。"
@@ -4740,7 +4850,7 @@ msgstr "このコンピューター"
 msgid "On your {provider} private network at {address}"
 msgstr "{provider} のプライベートネットワーク上（{address}）"
 
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid ""
 "Once both computers are on the same private network, return to Connect to "
 "find the game PC."
@@ -4785,7 +4895,7 @@ msgstr "全画面表示時のみ"
 msgid "Only needed to run your own Headscale server."
 msgstr "自分の Headscale サーバーを運用する場合にのみ必要です。"
 
-#: src/big_remote_play/ui/host_view.py:921
+#: src/big_remote_play/ui/host_view.py:947
 msgid "Only needed when reporting a problem."
 msgstr "問題を報告するときだけ必要です。"
 
@@ -4818,13 +4928,13 @@ msgstr "新しい名前はこのコンピューターでだけ使われます。
 # line: 347
 # line: 1295
 #: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/private_network_view.py:692
+#: src/big_remote_play/ui/private_network_view.py:720
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "開く"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 621
-#: src/big_remote_play/ui/host_view.py:1424
+#: src/big_remote_play/ui/host_view.py:1536
 msgid "Open Configuration"
 msgstr "設定を開く"
 
@@ -4854,6 +4964,7 @@ msgid "Open Tailscale admin console"
 msgstr "Tailscale 管理コンソールを開く"
 
 #: src/big_remote_play/ui/network_devices.py:471
+#: src/big_remote_play/ui/private_network_view.py:97
 msgid "Open ZeroTier Central"
 msgstr "ZeroTier Central を開く"
 
@@ -4863,7 +4974,7 @@ msgstr "コンソールを開く"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 621
-#: src/big_remote_play/ui/host_view.py:2935
+#: src/big_remote_play/ui/host_view.py:3054
 msgid "Open folder"
 msgstr "フォルダーを開く"
 
@@ -4872,15 +4983,15 @@ msgstr "フォルダーを開く"
 msgid "Open guide"
 msgstr "ガイドを開く"
 
-#: src/big_remote_play/ui/host_view.py:1549
+#: src/big_remote_play/ui/host_view.py:1662
 msgid "Open management to view all paired devices."
 msgstr "管理画面を開いて、ペアリング済みデバイスをすべて表示します。"
 
-#: src/big_remote_play/ui/host_view.py:1512
+#: src/big_remote_play/ui/host_view.py:1625
 msgid "Open paired device management"
 msgstr "ペアリング済みデバイス管理を開く"
 
-#: src/big_remote_play/ui/host_view.py:2920
+#: src/big_remote_play/ui/host_view.py:3039
 msgid "Open parent folder"
 msgstr "親フォルダーを開く"
 
@@ -4905,7 +5016,7 @@ msgid "Open the sign-in page again in your browser."
 msgstr "ブラウザーでサインインページをもう一度開いてください。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1386
-#: src/big_remote_play/ui/host_view.py:2288
+#: src/big_remote_play/ui/host_view.py:2401
 msgid "Opening Steam Big Picture..."
 msgstr "Steam Big Picture を開いています..."
 
@@ -4915,8 +5026,8 @@ msgstr "公式 Web サイトを開きます"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/host_view.py:2643
-#: src/big_remote_play/ui/host_view.py:2848
+#: src/big_remote_play/ui/host_view.py:2762
+#: src/big_remote_play/ui/host_view.py:2967
 #: src/big_remote_play/ui/network_dashboard.py:473
 msgid "Operation failed"
 msgstr "操作に失敗しました"
@@ -4931,8 +5042,8 @@ msgid "Optimize the mouse for remote desktop"
 msgstr "リモートデスクトップ向けにマウスを最適化"
 
 #: src/big_remote_play/ui/guest_view.py:813
-#: src/big_remote_play/ui/host_view.py:1291
-#: src/big_remote_play/ui/host_view.py:1307
+#: src/big_remote_play/ui/host_view.py:1402
+#: src/big_remote_play/ui/host_view.py:1418
 msgid "Other computer"
 msgstr "もう一方のコンピューター"
 
@@ -4950,12 +5061,12 @@ msgstr ""
 "トを許可する必要があります。「共有 → 詳細設定」では、確認後にストリーミング用"
 "ポートだけのルールを追加できます。管理パネルは閉じたままです。"
 
-#: src/big_remote_play/ui/host_view.py:859
+#: src/big_remote_play/ui/host_view.py:885
 msgid "Overview"
 msgstr "概要"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 609
-#: src/big_remote_play/ui/host_view.py:1339
+#: src/big_remote_play/ui/host_view.py:1450
 msgid "PIN Error"
 msgstr "PINエラー"
 
@@ -4965,12 +5076,12 @@ msgstr "PINエラー"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 705
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 307
-#: src/big_remote_play/host/sunshine_manager.py:593
-#: src/big_remote_play/ui/host_view.py:1328
+#: src/big_remote_play/host/sunshine_manager.py:594
+#: src/big_remote_play/ui/host_view.py:1439
 msgid "PIN sent successfully"
 msgstr "PIN を送信しました"
 
-#: src/big_remote_play/ui/host_view.py:1362
+#: src/big_remote_play/ui/host_view.py:1474
 msgid "PIN shown by Moonlight"
 msgstr "Moonlight に表示された PIN"
 
@@ -4978,9 +5089,9 @@ msgstr "Moonlight に表示された PIN"
 msgid "Packet Size"
 msgstr "パケットサイズ"
 
-#: src/big_remote_play/ui/host_view.py:753
-#: src/big_remote_play/ui/host_view.py:754
-#: src/big_remote_play/ui/host_view.py:1311
+#: src/big_remote_play/ui/host_view.py:781
+#: src/big_remote_play/ui/host_view.py:782
+#: src/big_remote_play/ui/host_view.py:1422
 msgid "Pair"
 msgstr "ペアリング"
 
@@ -5002,24 +5113,24 @@ msgstr ""
 "庭内ネットワークの外からテストします。不要になった公開ポートマッピングは削除"
 "してください。"
 
-#: src/big_remote_play/ui/host_view.py:757
+#: src/big_remote_play/ui/host_view.py:785
 msgid "Pair this device"
 msgstr "この機器をペアリング"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 198
-#: src/big_remote_play/ui/host_view.py:2511
+#: src/big_remote_play/ui/host_view.py:2630
 msgid "Paired Devices"
 msgstr "ペアリング済みデバイス"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 982
-#: src/big_remote_play/ui/host_view.py:1470
+#: src/big_remote_play/ui/host_view.py:1583
 msgid "Paired devices"
 msgstr "ペアリング済みデバイス"
 
-#: src/big_remote_play/ui/host_view.py:1475
-#: src/big_remote_play/ui/host_view.py:1869
+#: src/big_remote_play/ui/host_view.py:1588
+#: src/big_remote_play/ui/host_view.py:1982
 msgid "Paired devices appear here."
 msgstr "ペアリング済みデバイスがここに表示されます。"
 
@@ -5033,7 +5144,7 @@ msgstr "ペアリングに成功しました！"
 msgid "Pairing Error"
 msgstr "ペアリングエラー"
 
-#: src/big_remote_play/ui/host_view.py:746
+#: src/big_remote_play/ui/host_view.py:774
 msgid "Pairing code shown on the other PC"
 msgstr "もう一方のPCに表示されたペアリングコード"
 
@@ -5042,8 +5153,8 @@ msgstr "もう一方のPCに表示されたペアリングコード"
 msgid "Pairing code: {}"
 msgstr "ペアリングコード：{}"
 
-#: src/big_remote_play/ui/host_view.py:1267
-#: src/big_remote_play/ui/host_view.py:1284
+#: src/big_remote_play/ui/host_view.py:1378
+#: src/big_remote_play/ui/host_view.py:1395
 msgid "Pairing failed"
 msgstr "ペアリングに失敗しました"
 
@@ -5053,11 +5164,19 @@ msgstr "ペアリングに失敗しました"
 msgid "Pass through high resolution scroll events from Moonlight clients"
 msgstr "Moonlight クライアントからの高解像度スクロールイベントをそのまま渡す"
 
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid ""
+"Paste the code on this page and join the network. Send the same code to the "
+"other person."
+msgstr ""
+"このページにコードを貼り付けてネットワークに参加します。同じコードを相手にも"
+"送ってください。"
+
 #: src/big_remote_play/ui/api_access_dialog.py:37
 msgid "Paste the credential first."
 msgstr "まず認証情報を貼り付けてください。"
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "このページの入力欄に、サーバーのアドレスとキーを貼り付けます。"
 
@@ -5085,7 +5204,7 @@ msgstr "経路"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 686
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 750
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 190
-#: src/big_remote_play/ui/host_view.py:949
+#: src/big_remote_play/ui/host_view.py:975
 #: src/big_remote_play/ui/preferences.py:254
 msgid "Path copied!"
 msgstr "パスがコピーされました！"
@@ -5176,7 +5295,7 @@ msgstr ""
 msgid "Playback on this computer"
 msgstr "このコンピューターで再生"
 
-#: src/big_remote_play/ui/host_view.py:2034
+#: src/big_remote_play/ui/host_view.py:2147
 msgid "Playing a short tone…"
 msgstr "短いテスト音を再生しています…"
 
@@ -5184,7 +5303,7 @@ msgstr "短いテスト音を再生しています…"
 msgid "Playing now"
 msgstr "プレイ中"
 
-#: src/big_remote_play/ui/host_view.py:796
+#: src/big_remote_play/ui/host_view.py:824
 #: src/big_remote_play/ui/main_window.py:1005
 msgid "Playing over the internet?"
 msgstr "インターネット経由でプレイしますか？"
@@ -5251,7 +5370,7 @@ msgstr "H.264でCABACよりCAVLCを優先する"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 273
 #: src/big_remote_play/ui/components.py:275
-#: src/big_remote_play/ui/host_view.py:891
+#: src/big_remote_play/ui/host_view.py:917
 msgid "Preferences"
 msgstr "設定"
 
@@ -5270,8 +5389,8 @@ msgstr "セッション中にこのコンピューターの画面がオフにな
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1031
-#: src/big_remote_play/ui/private_network_view.py:604
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:632
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Previous Networks"
 msgstr "以前のネットワーク"
 
@@ -5290,7 +5409,7 @@ msgstr "秘密鍵"
 msgid "Private Network Containers"
 msgstr "プライベートネットワークコンテナ"
 
-#: src/big_remote_play/ui/host_view.py:1885
+#: src/big_remote_play/ui/host_view.py:1998
 #: src/big_remote_play/ui/network_dashboard.py:175
 #: src/big_remote_play/ui/network_devices.py:213
 msgid "Private address"
@@ -5403,11 +5522,11 @@ msgid "Ready to play over the internet"
 msgstr "インターネット経由で遊ぶ準備ができました"
 
 #: src/big_remote_play/ui/network_dashboard.py:91
-#: src/big_remote_play/ui/private_network_view.py:592
+#: src/big_remote_play/ui/private_network_view.py:620
 msgid "Ready to play?"
 msgstr "プレイの準備はできましたか？"
 
-#: src/big_remote_play/ui/host_view.py:1891
+#: src/big_remote_play/ui/host_view.py:2004
 msgid "Ready. This computer is also reachable over your private network."
 msgstr ""
 "準備完了。このコンピューターにはプライベートネットワーク経由でも接続できま"
@@ -5472,7 +5591,7 @@ msgstr "おすすめ：プライベートネットワーク"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1111
 #: src/big_remote_play/ui/network_common.py:163
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect"
 msgstr "再接続"
 
@@ -5480,7 +5599,7 @@ msgstr "再接続"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 855
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 78
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect using this saved network"
 msgstr "この保存済みネットワークで再接続"
 
@@ -5490,13 +5609,13 @@ msgstr "録音されるソース"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1348
-#: src/big_remote_play/ui/host_view.py:2657
+#: src/big_remote_play/ui/host_view.py:2776
 #: src/big_remote_play/ui/network_dashboard.py:81
 #: src/big_remote_play/ui/network_devices.py:150
 msgid "Refresh"
 msgstr "更新"
 
-#: src/big_remote_play/ui/host_view.py:2658
+#: src/big_remote_play/ui/host_view.py:2777
 msgid "Refresh logs"
 msgstr "ログを更新"
 
@@ -5521,21 +5640,21 @@ msgid "Reload from Running Server"
 msgstr "実行中のサーバーから再読み込み"
 
 #: src/big_remote_play/ui/api_access_dialog.py:92
-#: src/big_remote_play/ui/host_view.py:2611
+#: src/big_remote_play/ui/host_view.py:2730
 #: src/big_remote_play/ui/remote_connection.py:782
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:247
 msgid "Remove"
 msgstr "削除"
 
-#: src/big_remote_play/ui/host_view.py:2507
-#: src/big_remote_play/ui/host_view.py:2514
-#: src/big_remote_play/ui/host_view.py:2516
+#: src/big_remote_play/ui/host_view.py:2626
+#: src/big_remote_play/ui/host_view.py:2633
+#: src/big_remote_play/ui/host_view.py:2635
 msgid "Remove All"
 msgstr "すべて削除"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 973
-#: src/big_remote_play/ui/host_view.py:2607
+#: src/big_remote_play/ui/host_view.py:2726
 msgid "Remove Device"
 msgstr "デバイスを削除"
 
@@ -5543,8 +5662,8 @@ msgstr "デバイスを削除"
 msgid "Remove account from this computer"
 msgstr "このコンピューターからアカウントを削除"
 
-#: src/big_remote_play/ui/host_view.py:2798
-#: src/big_remote_play/ui/host_view.py:2799
+#: src/big_remote_play/ui/host_view.py:2917
+#: src/big_remote_play/ui/host_view.py:2918
 msgid "Remove app"
 msgstr "アプリを削除"
 
@@ -5552,8 +5671,8 @@ msgstr "アプリを削除"
 msgid "Remove credential"
 msgstr "認証情報を削除"
 
-#: src/big_remote_play/ui/host_view.py:2582
-#: src/big_remote_play/ui/host_view.py:2583
+#: src/big_remote_play/ui/host_view.py:2701
+#: src/big_remote_play/ui/host_view.py:2702
 #: src/big_remote_play/ui/network_devices.py:272
 #: src/big_remote_play/ui/network_devices.py:295
 #: src/big_remote_play/ui/network_devices.py:338
@@ -5571,7 +5690,7 @@ msgid "Remove logs, settings, servers and saved data"
 msgstr "ログ、設定、サーバー、および保存されたデータを削除する"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 98
-#: src/big_remote_play/ui/host_view.py:935
+#: src/big_remote_play/ui/host_view.py:961
 msgid "Remove old log files"
 msgstr "古いログファイルを削除"
 
@@ -5589,7 +5708,7 @@ msgstr "このデバイスを削除しますか？"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1702
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Remove this network from history?"
 msgstr "このネットワークを履歴から削除しますか？"
 
@@ -5610,7 +5729,7 @@ msgstr "{name} をネットワークから削除"
 msgid "Remove {name}?"
 msgstr "{name} を削除しますか?"
 
-#: src/big_remote_play/ui/host_view.py:2608
+#: src/big_remote_play/ui/host_view.py:2727
 #, python-brace-format
 msgid "Remove “{}”? It will need to pair again with a new PIN."
 msgstr "「{}」を削除しますか？新しいPINで再度ペアリングする必要があります。"
@@ -5650,7 +5769,7 @@ msgstr "現在の設定を保存済みファイルで置き換える"
 msgid "Replace the current settings?"
 msgstr "現在の設定を置き換えますか？"
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "Request Access"
 msgstr "アクセスをリクエスト"
 
@@ -5660,7 +5779,7 @@ msgstr "リクエストを取り消しました"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Request the 16-character ID from the network owner."
 msgstr "ネットワークの所有者に 16 文字の ID を尋ねてください。"
 
@@ -5705,24 +5824,24 @@ msgstr "すべての設定をデフォルトにリセット"
 msgid "Reset connection settings"
 msgstr "接続設定をリセット"
 
-#: src/big_remote_play/ui/host_view.py:2988
+#: src/big_remote_play/ui/host_view.py:3107
 msgid "Reset directly; the server will restart"
 msgstr "直接リセットします。サーバーは再起動します"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 91
-#: src/big_remote_play/host/sunshine_manager.py:662
+#: src/big_remote_play/host/sunshine_manager.py:663
 #, python-brace-format
 msgid "Reset error: {}"
 msgstr "リセットエラー: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 813
-#: src/big_remote_play/host/sunshine_manager.py:660
+#: src/big_remote_play/host/sunshine_manager.py:661
 msgid "Reset failed"
 msgstr "リセットに失敗しました"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 740
-#: src/big_remote_play/host/sunshine_manager.py:660
+#: src/big_remote_play/host/sunshine_manager.py:661
 #, python-brace-format
 msgid "Reset failed: {}"
 msgstr "リセットに失敗しました: {}"
@@ -5765,7 +5884,7 @@ msgstr ""
 "ZeroTier を再インストールしてください。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1443
-#: src/big_remote_play/ui/host_view.py:3357
+#: src/big_remote_play/ui/host_view.py:3476
 #: src/big_remote_play/ui/preferences.py:58
 #: src/big_remote_play/ui/preferences.py:165
 #: src/big_remote_play/ui/preferences.py:262
@@ -5773,7 +5892,7 @@ msgid "Restore"
 msgstr "復元"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1442
-#: src/big_remote_play/ui/host_view.py:3355
+#: src/big_remote_play/ui/host_view.py:3474
 #: src/big_remote_play/ui/preferences.py:57
 msgid "Restore Defaults"
 msgstr "デフォルトに戻す"
@@ -5788,12 +5907,12 @@ msgstr "デフォルトに戻しますか？"
 msgid "Restore a backup"
 msgstr "バックアップを復元"
 
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Big Remote Play が保存した接続情報を再利用"
 
-#: src/big_remote_play/ui/host_view.py:1712
-#: src/big_remote_play/ui/host_view.py:1739
+#: src/big_remote_play/ui/host_view.py:1825
+#: src/big_remote_play/ui/host_view.py:1852
 #, python-brace-format
 msgid "Reveal {}"
 msgstr "{} を表示"
@@ -5851,7 +5970,7 @@ msgstr ""
 "めのものです。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
-#: src/big_remote_play/ui/host_view.py:1808
+#: src/big_remote_play/ui/host_view.py:1921
 #: src/big_remote_play/ui/main_window.py:552
 #: src/big_remote_play/ui/main_window.py:1409
 msgid "Running"
@@ -5872,7 +5991,7 @@ msgstr "SW チューニング"
 msgid "Same as the first device that connects"
 msgstr "最初に接続したデバイスに合わせる"
 
-#: src/big_remote_play/ui/host_view.py:797
+#: src/big_remote_play/ui/host_view.py:825
 msgid ""
 "Same home network? Skip this step. For different networks, set up internet "
 "play."
@@ -5883,15 +6002,15 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1077
 #: src/big_remote_play/ui/api_access_dialog.py:86
-#: src/big_remote_play/ui/host_view.py:3017
-#: src/big_remote_play/ui/private_network_view.py:972
+#: src/big_remote_play/ui/host_view.py:3136
+#: src/big_remote_play/ui/private_network_view.py:1001
 #: src/big_remote_play/ui/remote_connection.py:754
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:306
 msgid "Save"
 msgstr "保存"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:1381
+#: src/big_remote_play/ui/host_view.py:1493
 msgid "Save Password"
 msgstr "パスワードを保存"
 
@@ -5900,7 +6019,7 @@ msgid "Save bandwidth"
 msgstr "帯域幅を節約"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 670
-#: src/big_remote_play/ui/host_view.py:1382
+#: src/big_remote_play/ui/host_view.py:1494
 msgid "Save credentials to the system keyring"
 msgstr "認証情報をシステムのキーリングに保存する"
 
@@ -5925,12 +6044,12 @@ msgstr "招待する相手のスマートフォンで読み取ってもらって
 msgid "Screen resolution while sharing"
 msgstr "共有中の画面解像度"
 
-#: src/big_remote_play/ui/host_view.py:877
+#: src/big_remote_play/ui/host_view.py:903
 msgid "Screen, graphics card and encoding"
 msgstr "画面、グラフィックスカード、エンコード"
 
-#: src/big_remote_play/ui/host_view.py:1021
-#: src/big_remote_play/ui/host_view.py:1090
+#: src/big_remote_play/ui/host_view.py:1047
+#: src/big_remote_play/ui/host_view.py:1201
 #, python-brace-format
 msgid "Screen: {value}"
 msgstr "画面: {value}"
@@ -5941,7 +6060,7 @@ msgid "Search again"
 msgstr "もう一度検索"
 
 #: src/big_remote_play/ui/guest_view.py:1334
-#: src/big_remote_play/ui/host_view.py:780
+#: src/big_remote_play/ui/host_view.py:808
 msgid "Search code"
 msgstr "検索コード"
 
@@ -5971,7 +6090,7 @@ msgid "Seen in the last few minutes"
 msgstr "数分以内に確認済み"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:2867
+#: src/big_remote_play/ui/host_view.py:2986
 msgid "Select Executable"
 msgstr "実行ファイルを選択"
 
@@ -5980,7 +6099,7 @@ msgstr "実行ファイルを選択"
 msgid "Select Game"
 msgstr "ゲームを選択してください"
 
-#: src/big_remote_play/ui/host_view.py:2154
+#: src/big_remote_play/ui/host_view.py:2267
 msgid ""
 "Select a game or complete the app name and command. To share the whole "
 "screen instead, choose Full Desktop."
@@ -5988,12 +6107,12 @@ msgstr ""
 "ゲームを選ぶか、アプリ名とコマンドを入力してください。画面全体を共有するには"
 "「フルデスクトップ」を選びます。"
 
-#: src/big_remote_play/ui/private_network_view.py:758
+#: src/big_remote_play/ui/private_network_view.py:787
 msgid "Select a network service and try again."
 msgstr "ネットワークサービスを選び、もう一度お試しください。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:2943
+#: src/big_remote_play/ui/host_view.py:3062
 msgid "Select executable"
 msgstr "実行ファイルを選択"
 
@@ -6004,13 +6123,13 @@ msgstr "キャプチャするディスプレイを選択してください"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 757
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 767
-#: src/big_remote_play/ui/host_view.py:2955
+#: src/big_remote_play/ui/host_view.py:3074
 #, python-brace-format
 msgid "Selected: {}"
 msgstr "選択: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 588
-#: src/big_remote_play/ui/host_view.py:1394
+#: src/big_remote_play/ui/host_view.py:1506
 msgid "Send"
 msgstr "送信"
 
@@ -6018,7 +6137,7 @@ msgstr "送信"
 msgid "Send invitation"
 msgstr "招待を送信"
 
-#: src/big_remote_play/ui/host_view.py:809
+#: src/big_remote_play/ui/host_view.py:835
 msgid ""
 "Send one of these to the other person, or let them pick this computer under "
 "Connect."
@@ -6034,7 +6153,7 @@ msgstr "システムショートカットをリモートコンピューターへ
 msgid "Send the Node ID to the network owner"
 msgstr "ノード ID をネットワークの所有者に送る"
 
-#: src/big_remote_play/ui/host_view.py:757
+#: src/big_remote_play/ui/host_view.py:785
 msgid "Send the code shown on the other PC to finish pairing"
 msgstr "ペアリングを完了するには、もう一方のPCに表示されたコードを送信します"
 
@@ -6056,25 +6175,25 @@ msgstr "ネットワークにリクエストを送信しています。"
 msgid "Sends your game to the other PC."
 msgstr "ゲームをもう一方の PC に送信します。"
 
-#: src/big_remote_play/ui/private_network_view.py:655
+#: src/big_remote_play/ui/private_network_view.py:683
 msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "サーバーのドメイン（例：vpn.example.com）"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1415
-#: src/big_remote_play/ui/host_view.py:2456
+#: src/big_remote_play/ui/host_view.py:2575
 msgid "Server Failed to Start"
 msgstr "サーバーの起動に失敗しました"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:2968
+#: src/big_remote_play/ui/host_view.py:3087
 msgid "Server Password"
 msgstr "サーバーのパスワード"
 
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
 #: src/big_remote_play/ui/network_devices.py:692
-#: src/big_remote_play/ui/private_network_view.py:655
-#: src/big_remote_play/ui/private_network_view.py:1022
+#: src/big_remote_play/ui/private_network_view.py:683
+#: src/big_remote_play/ui/private_network_view.py:1051
 msgid "Server address"
 msgstr "サーバーのアドレス"
 
@@ -6095,7 +6214,7 @@ msgid "Server password"
 msgstr "サーバーのパスワード"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1196
-#: src/big_remote_play/ui/host_view.py:2252
+#: src/big_remote_play/ui/host_view.py:2365
 msgid "Server started"
 msgstr "サーバーが起動しました"
 
@@ -6107,7 +6226,7 @@ msgstr "サーバーツール"
 msgid "Service started"
 msgstr "サービスを開始しました"
 
-#: src/big_remote_play/ui/host_view.py:2978
+#: src/big_remote_play/ui/host_view.py:3097
 msgid ""
 "Set the username and password used to manage the Sunshine server. If you "
 "forgot the current password, switch on “I forgot the current password” to "
@@ -6139,7 +6258,7 @@ msgid "Setting up"
 msgstr "設定中"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1451
-#: src/big_remote_play/ui/host_view.py:3372
+#: src/big_remote_play/ui/host_view.py:3491
 msgid "Settings Restored"
 msgstr "設定が復元されました"
 
@@ -6153,11 +6272,11 @@ msgstr ""
 "設定を復元しました！すべての変更を適用するにはアプリケーションを再起動してく"
 "ださい。"
 
-#: src/big_remote_play/host/sunshine_manager.py:573
+#: src/big_remote_play/host/sunshine_manager.py:574
 msgid "Several computers are waiting to pair."
 msgstr "複数のコンピューターがペアリングを待っています。"
 
-#: src/big_remote_play/ui/host_view.py:1301
+#: src/big_remote_play/ui/host_view.py:1412
 msgid ""
 "Several computers are waiting to pair. Approve only the one that shows the "
 "code you entered."
@@ -6196,8 +6315,8 @@ msgstr "このコンピューターを共有"
 msgid "Sharing found"
 msgstr "共有が見つかりました"
 
-#: src/big_remote_play/ui/host_view.py:2725
-#: src/big_remote_play/ui/host_view.py:2856
+#: src/big_remote_play/ui/host_view.py:2844
+#: src/big_remote_play/ui/host_view.py:2975
 msgid "Sharing is off"
 msgstr "共有はオフです"
 
@@ -6205,7 +6324,7 @@ msgstr "共有はオフです"
 msgid "Sharing not found"
 msgstr "共有が見つかりません"
 
-#: src/big_remote_play/ui/host_view.py:835
+#: src/big_remote_play/ui/host_view.py:861
 msgid "Sharing now"
 msgstr "共有中"
 
@@ -6215,7 +6334,7 @@ msgid "Sharing sections"
 msgstr "共有のセクション"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1287
-#: src/big_remote_play/ui/host_view.py:2408
+#: src/big_remote_play/ui/host_view.py:2527
 msgid "Sharing stopped"
 msgstr "共有を停止しました"
 
@@ -6245,7 +6364,7 @@ msgstr "接続された各画面に番号を表示"
 msgid "Show icon in system tray and display desktop notifications"
 msgstr "システムトレイにアイコンを表示し、デスクトップ通知を表示する"
 
-#: src/big_remote_play/ui/host_view.py:1713
+#: src/big_remote_play/ui/host_view.py:1826
 #, python-brace-format
 msgid "Show or hide the {} value"
 msgstr "{} の値を表示または非表示"
@@ -6278,6 +6397,10 @@ msgstr "サインイン"
 msgid "Sign in on that computer with your own account."
 msgstr "そのコンピューターで、その人自身のアカウントでサインインします。"
 
+#: src/big_remote_play/ui/private_network_view.py:94
+msgid "Sign in to ZeroTier Central"
+msgstr "ZeroTier Central にサインイン"
+
 #: src/big_remote_play/ui/remote_connection.py:65
 msgid "Sign in to connect this computer"
 msgstr "サインインしてこのコンピューターをつなぎましょう"
@@ -6291,8 +6414,8 @@ msgstr "続行するには {name} にサインインしてください。"
 msgid "Sign in with another Tailscale account"
 msgstr "別の Tailscale アカウントでサインイン"
 
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 msgid "Sign in with browser"
 msgstr "ブラウザーでサインイン"
 
@@ -6304,7 +6427,7 @@ msgstr "同じアカウントでサインイン"
 msgid "Sign in with your account and connect your devices."
 msgstr "アカウントでサインインして、デバイスを接続します。"
 
-#: src/big_remote_play/ui/private_network_view.py:538
+#: src/big_remote_play/ui/private_network_view.py:566
 msgid "Sign in with your browser. Use the same account on all your devices."
 msgstr ""
 "ブラウザーでサインインしてください。すべてのデバイスで同じアカウントを使って"
@@ -6322,7 +6445,7 @@ msgstr "そのコンピューターに表示されたサインインリンク"
 msgid "Sign-in needed"
 msgstr "サインインが必要"
 
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Sign-in was not completed in the browser."
 msgstr "ブラウザーでのサインインが完了しませんでした。"
 
@@ -6359,7 +6482,7 @@ msgstr "単一フレームVBV/HRDパーセンテージ増加"
 msgid "Software"
 msgstr "ソフトウェア"
 
-#: src/big_remote_play/ui/host_view.py:894
+#: src/big_remote_play/ui/host_view.py:920
 msgid "Solve sharing problems"
 msgstr "共有の問題を解決"
 
@@ -6392,7 +6515,7 @@ msgstr ""
 msgid "Somewhere else"
 msgstr "別の場所"
 
-#: src/big_remote_play/ui/host_view.py:864
+#: src/big_remote_play/ui/host_view.py:890
 msgid "Sound and access on this computer"
 msgstr "このコンピューターの音声とアクセス"
 
@@ -6434,17 +6557,17 @@ msgstr "サービスを開始"
 #: src/big_remote_play/ui/host_view.py:654
 #: src/big_remote_play/ui/host_view.py:657
 #: src/big_remote_play/ui/host_view.py:660
-#: src/big_remote_play/ui/host_view.py:1852
-#: src/big_remote_play/ui/host_view.py:1854
-#: src/big_remote_play/ui/host_view.py:1860
+#: src/big_remote_play/ui/host_view.py:1965
+#: src/big_remote_play/ui/host_view.py:1967
+#: src/big_remote_play/ui/host_view.py:1973
 msgid "Start sharing"
 msgstr "共有を開始"
 
-#: src/big_remote_play/ui/host_view.py:2856
+#: src/big_remote_play/ui/host_view.py:2975
 msgid "Start sharing first to browse this PC."
 msgstr "このPCを参照するには、先に共有を開始してください。"
 
-#: src/big_remote_play/ui/host_view.py:2725
+#: src/big_remote_play/ui/host_view.py:2844
 msgid "Start sharing first to manage the game library."
 msgstr "ゲームライブラリを管理するには、先に共有を開始してください。"
 
@@ -6457,12 +6580,12 @@ msgid "Start sharing on the game PC. It will appear here."
 msgstr "ゲーム用PCで共有を開始すると、ここに表示されます。"
 
 #: src/big_remote_play/ui/host_view.py:660
-#: src/big_remote_play/ui/host_view.py:1860
+#: src/big_remote_play/ui/host_view.py:1973
 msgid "Start sharing the game from this PC"
 msgstr "このPCからゲーム共有を開始"
 
-#: src/big_remote_play/ui/host_view.py:1474
-#: src/big_remote_play/ui/host_view.py:1868
+#: src/big_remote_play/ui/host_view.py:1587
+#: src/big_remote_play/ui/host_view.py:1981
 msgid "Start sharing to show paired devices"
 msgstr "ペアリング済みデバイスを表示するには共有を開始してください"
 
@@ -6476,7 +6599,7 @@ msgid "Starting ZeroTier…"
 msgstr "ZeroTier を起動しています…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 634
-#: src/big_remote_play/ui/host_view.py:1752
+#: src/big_remote_play/ui/host_view.py:1865
 msgid "Starting game sharing..."
 msgstr "ゲームの共有を開始しています..."
 
@@ -6486,7 +6609,7 @@ msgstr "開始時にパスワードを一度だけ求められます。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 67
-#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "Starting..."
 msgstr "開始中..."
 
@@ -6517,25 +6640,25 @@ msgstr "状態: {}"
 msgid "Steam Remote Play"
 msgstr "Steam Remote Play"
 
-#: src/big_remote_play/ui/host_view.py:2015
+#: src/big_remote_play/ui/host_view.py:2128
 msgid "Steam is not recording sound"
 msgstr "Steam は音声を録音していません"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1765
-#: src/big_remote_play/ui/private_network_view.py:1021
+#: src/big_remote_play/ui/private_network_view.py:1050
 msgid "Step 1: Get credentials"
 msgstr "ステップ 1: 認証情報を取得する"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1771
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Step 2: Enter details"
 msgstr "ステップ2：詳細を入力してください"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1777
-#: src/big_remote_play/ui/private_network_view.py:1030
+#: src/big_remote_play/ui/private_network_view.py:1059
 msgid "Step 3: Connect"
 msgstr "ステップ3：接続"
 
@@ -6581,20 +6704,20 @@ msgstr "ZeroTier を一時停止"
 msgid "Stop ZeroTier temporarily?"
 msgstr "ZeroTier を一時停止しますか？"
 
-#: src/big_remote_play/ui/host_view.py:1752
-#: src/big_remote_play/ui/host_view.py:1795
-#: src/big_remote_play/ui/host_view.py:1797
-#: src/big_remote_play/ui/host_view.py:1803
+#: src/big_remote_play/ui/host_view.py:1865
+#: src/big_remote_play/ui/host_view.py:1908
+#: src/big_remote_play/ui/host_view.py:1910
+#: src/big_remote_play/ui/host_view.py:1916
 msgid "Stop sharing"
 msgstr "共有を停止"
 
-#: src/big_remote_play/ui/host_view.py:1803
+#: src/big_remote_play/ui/host_view.py:1916
 msgid "Stop sharing the game from this PC"
 msgstr "このPCからのゲーム共有を停止"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
 #: src/big_remote_play/ui/host_view.py:714
-#: src/big_remote_play/ui/host_view.py:1833
+#: src/big_remote_play/ui/host_view.py:1946
 #: src/big_remote_play/ui/main_window.py:554
 #: src/big_remote_play/ui/main_window.py:1409
 #: src/big_remote_play/ui/main_window.py:1510
@@ -6606,7 +6729,7 @@ msgid "Stopped looking for new devices"
 msgstr "新しいデバイスの検索を停止しました"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1256
-#: src/big_remote_play/ui/host_view.py:2362
+#: src/big_remote_play/ui/host_view.py:2475
 msgid "Stopping server..."
 msgstr "サーバーを停止しています..."
 
@@ -6623,14 +6746,14 @@ msgid "Strictly enforce frame bitrate limits for H.264/HEVC on AMD GPUs"
 msgstr "AMD GPUのH.264/HEVCに対するフレームビットレート制限を厳格に適用する"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 794
-#: src/big_remote_play/ui/host_view.py:1676
+#: src/big_remote_play/ui/host_view.py:1789
 #, python-brace-format
 msgid "Success: {}"
 msgstr "成功: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 88
-#: src/big_remote_play/host/sunshine_manager.py:528
+#: src/big_remote_play/host/sunshine_manager.py:529
 #, python-brace-format
 msgid "Sunshine API request failed: {}"
 msgstr "Sunshine API リクエストに失敗しました: {}"
@@ -6642,7 +6765,7 @@ msgstr "Sunshine ゲームストリームホスト"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 264
-#: src/big_remote_play/ui/host_view.py:2684
+#: src/big_remote_play/ui/host_view.py:2803
 msgid "Sunshine Logs"
 msgstr "Sunshine のログ"
 
@@ -6653,7 +6776,7 @@ msgstr "Sunshine オフライン"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 265
-#: src/big_remote_play/ui/host_view.py:1377
+#: src/big_remote_play/ui/host_view.py:1489
 msgid "Sunshine Password"
 msgstr "Sunshine のパスワード"
 
@@ -6665,7 +6788,7 @@ msgstr "Sunshine ランタイム"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 264
-#: src/big_remote_play/ui/host_view.py:1373
+#: src/big_remote_play/ui/host_view.py:1485
 msgid "Sunshine User"
 msgstr "Sunshine ユーザー"
 
@@ -6681,7 +6804,7 @@ msgstr ""
 "Sunshine は起動時に対応ルーターへ要求を送ります。有効にしても、ポートが開いた"
 "ことは確認できません。"
 
-#: src/big_remote_play/ui/host_view.py:1088
+#: src/big_remote_play/ui/host_view.py:1199
 msgid ""
 "Sunshine chooses compatible capture and encoding at startup. You can still "
 "set a video bitrate ceiling."
@@ -6689,13 +6812,20 @@ msgstr ""
 "Sunshine は起動時に互換性のあるキャプチャーとエンコードを選びます。映像ビット"
 "レートの上限は設定できます。"
 
+#: src/big_remote_play/ui/host_view.py:1138
+msgid ""
+"Sunshine did not close it. Try again, or stop sharing and start it again."
+msgstr ""
+"Sunshine がストリームを閉じませんでした。もう一度試すか、共有を停止してから再"
+"開してください。"
+
 #: src/big_remote_play/ui/guest_view.py:1811
 msgid "Sunshine does not answer. Start sharing on the game PC."
 msgstr "Sunshine が応答しません。ゲーム PC で共有を開始してください。"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
-#: src/big_remote_play/host/sunshine_manager.py:652
+#: src/big_remote_play/host/sunshine_manager.py:653
 #: src/big_remote_play/utils/system_check.py:184
 msgid "Sunshine executable not found"
 msgstr "Sunshine の実行ファイルが見つかりません"
@@ -6708,20 +6838,20 @@ msgstr "Sunshineからバージョン情報を取得できませんでした"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 86
-#: src/big_remote_play/host/sunshine_manager.py:254
+#: src/big_remote_play/host/sunshine_manager.py:255
 #, python-brace-format
 msgid "Sunshine failed to start (Exit code {}).\n"
 msgstr "Sunshineの起動に失敗しました（終了コード{}）。\n"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 90
-#: src/big_remote_play/host/sunshine_manager.py:258
+#: src/big_remote_play/host/sunshine_manager.py:259
 #, python-brace-format
 msgid "Sunshine failed to start (Exit code {}). Check logs."
 msgstr "Sunshineの起動に失敗しました（終了コード{}）。ログを確認してください。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1411
-#: src/big_remote_play/ui/host_view.py:2454
+#: src/big_remote_play/ui/host_view.py:2573
 #, python-brace-format
 msgid ""
 "Sunshine failed to start.\n"
@@ -6740,7 +6870,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 88
-#: src/big_remote_play/host/sunshine_manager.py:256
+#: src/big_remote_play/host/sunshine_manager.py:257
 #, python-brace-format
 msgid "Sunshine failed to start: {}"
 msgstr "Sunshine の起動に失敗しました: {}"
@@ -6759,13 +6889,13 @@ msgstr "Sunshine を利用できません。"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
-#: src/big_remote_play/host/sunshine_manager.py:286
+#: src/big_remote_play/host/sunshine_manager.py:287
 msgid "Sunshine is not running"
 msgstr "Sunshine は実行されていません"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
-#: src/big_remote_play/ui/host_view.py:2492
+#: src/big_remote_play/ui/host_view.py:2611
 #: src/big_remote_play/ui/main_window.py:1331
 #: src/big_remote_play/ui/sunshine_preferences.py:367
 msgid "Sunshine is not running."
@@ -6788,17 +6918,17 @@ msgstr "Sunshine が現在録音中"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 105
-#: src/big_remote_play/host/sunshine_manager.py:578
-#: src/big_remote_play/host/sunshine_manager.py:594
+#: src/big_remote_play/host/sunshine_manager.py:579
+#: src/big_remote_play/host/sunshine_manager.py:595
 msgid "Sunshine rejected the PIN"
 msgstr "SunshineがPINを拒否しました"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 709
-#: src/big_remote_play/host/sunshine_manager.py:631
+#: src/big_remote_play/host/sunshine_manager.py:632
 msgid "Sunshine rejected the credentials"
 msgstr "Sunshine が認証情報を拒否しました"
 
-#: src/big_remote_play/ui/host_view.py:1275
+#: src/big_remote_play/ui/host_view.py:1386
 msgid "Sunshine rejected the saved password."
 msgstr "Sunshine が保存済みのパスワードを拒否しました。"
 
@@ -6808,14 +6938,14 @@ msgstr "Sunshineランタイムを利用できます"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 105
-#: src/big_remote_play/host/sunshine_manager.py:271
+#: src/big_remote_play/host/sunshine_manager.py:272
 #, python-brace-format
 msgid "Sunshine started (PID: {})"
 msgstr "Sunshine を開始しました (PID: {})"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 332
-#: src/big_remote_play/ui/host_view.py:901
+#: src/big_remote_play/ui/host_view.py:927
 msgid "Support"
 msgstr "サポート"
 
@@ -6844,7 +6974,7 @@ msgstr ""
 "Tailscale や Headscale のアカウントを切り替え、すべての ZeroTier ネットワーク"
 "を確認します。"
 
-#: src/big_remote_play/ui/private_network_view.py:613
+#: src/big_remote_play/ui/private_network_view.py:641
 msgid ""
 "Switch saved accounts or leave networks without deleting online accounts."
 msgstr ""
@@ -6865,19 +6995,19 @@ msgstr "{} に切り替えています…"
 msgid "System"
 msgstr "システム"
 
-#: src/big_remote_play/ui/host_view.py:2005
+#: src/big_remote_play/ui/host_view.py:2118
 msgid "System audio unavailable"
 msgstr "システム音声を利用できません"
 
-#: src/big_remote_play/ui/host_view.py:2001
+#: src/big_remote_play/ui/host_view.py:2114
 msgid "System audio unavailable: no output device was found."
 msgstr "システム音声を利用できません: 出力デバイスが見つかりませんでした。"
 
-#: src/big_remote_play/ui/host_view.py:2053
+#: src/big_remote_play/ui/host_view.py:2166
 msgid "System audio unavailable: there is no output to test."
 msgstr "システム音声を利用できません: テストできる出力がありません。"
 
-#: src/big_remote_play/ui/host_view.py:1230
+#: src/big_remote_play/ui/host_view.py:1341
 msgid "System keyring is unavailable. Password was not saved."
 msgstr ""
 "システムのキーリングを利用できません。パスワードは保存されませんでした。"
@@ -6903,7 +7033,7 @@ msgstr "Tailscale"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 803
 # line: 1793
-#: src/big_remote_play/ui/private_network_view.py:1042
+#: src/big_remote_play/ui/private_network_view.py:1071
 msgid "Tailscale Instructions"
 msgstr "Tailscale の手順"
 
@@ -7034,7 +7164,7 @@ msgstr ""
 "リモート協力ゲームに必要なすべてを統合したオールインワンアプリケーション — 独"
 "自のプラットフォームは不要、制限なし、プレイできるゲームに制限はありません。"
 
-#: src/big_remote_play/ui/host_view.py:1645
+#: src/big_remote_play/ui/host_view.py:1758
 msgid "The Sunshine port is outside the supported range."
 msgstr "Sunshine のポートが対応範囲外です。"
 
@@ -7054,14 +7184,14 @@ msgstr ""
 "有効な VPN 接続を停止します。後で再接続できるよう、保存済みアカウントは保持さ"
 "れます。"
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr ""
 "管理者はノードを共有するか、あなたのメールアドレスをネットワークに招待する必"
 "要があります。"
 
-#: src/big_remote_play/ui/host_view.py:2156
+#: src/big_remote_play/ui/host_view.py:2269
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr "アプリのコマンドが無効です。引用符を確認して、もう一度お試しください。"
 
@@ -7083,7 +7213,7 @@ msgstr ""
 msgid "The checks could not run."
 msgstr "チェックを実行できませんでした。"
 
-#: src/big_remote_play/ui/host_view.py:1592
+#: src/big_remote_play/ui/host_view.py:1705
 msgid ""
 "The chosen device plays the sound here too. Choose Automatic to share "
 "without playing it here."
@@ -7099,7 +7229,7 @@ msgstr "コンピューターがこのネットワークのデバイス一覧に
 msgid "The computer seems to be offline"
 msgstr "コンピューターがオフラインのようです"
 
-#: src/big_remote_play/ui/host_view.py:2021
+#: src/big_remote_play/ui/host_view.py:2134
 msgid "The connected client asked Sunshine not to play sound on this computer."
 msgstr ""
 "接続中のクライアントが、このコンピューターで音声を再生しないよう Sunshine に"
@@ -7153,7 +7283,7 @@ msgstr "Sunshine の現在のログを保存するファイル。"
 msgid "The file that stores Sunshine's current state."
 msgstr "Sunshine の現在の状態を保存するファイル。"
 
-#: src/big_remote_play/ui/host_view.py:1648
+#: src/big_remote_play/ui/host_view.py:1761
 #, python-brace-format
 msgid ""
 "The firewall will allow incoming TCP {tcp} and UDP {udp}, plus 5353/UDP "
@@ -7222,7 +7352,7 @@ msgstr ""
 "このネットワークはプライベートです。新しいデバイスはすべて承認が必要です。こ"
 "のコンピューターは参加すると自動的に承認されます。"
 
-#: src/big_remote_play/ui/private_network_view.py:1066
+#: src/big_remote_play/ui/private_network_view.py:1095
 msgid ""
 "The network owner must approve this computer, in Big Remote Play or in "
 "ZeroTier Central."
@@ -7252,7 +7382,7 @@ msgstr "操作に失敗しました。"
 msgid "The operation took longer than expected."
 msgstr "操作に予想以上の時間がかかりました。"
 
-#: src/big_remote_play/ui/host_view.py:1272
+#: src/big_remote_play/ui/host_view.py:1383
 msgid "The other PC is paired."
 msgstr "もう一方のPCとペアリングしました。"
 
@@ -7299,7 +7429,7 @@ msgstr ""
 "相手はあなたのプライベートネットワークに参加し、あなたが許可したデバイスを見"
 "ることができます。"
 
-#: src/big_remote_play/ui/private_network_view.py:698
+#: src/big_remote_play/ui/private_network_view.py:726
 msgid "The person who created the network gives you this code."
 msgstr "このコードは、ネットワークを作った人から受け取ります。"
 
@@ -7329,7 +7459,7 @@ msgstr ""
 msgid "The saved credentials could not be read."
 msgstr "保存されている認証情報を読み取れませんでした。"
 
-#: src/big_remote_play/ui/host_view.py:2190
+#: src/big_remote_play/ui/host_view.py:2303
 msgid ""
 "The selected audio output is unavailable. Choose Automatic or reconnect the "
 "device."
@@ -7337,12 +7467,12 @@ msgstr ""
 "選択した音声出力を利用できません。「自動」を選ぶか、デバイスを接続し直してく"
 "ださい。"
 
-#: src/big_remote_play/ui/host_view.py:1999
+#: src/big_remote_play/ui/host_view.py:2112
 msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr ""
 "選択した出力が接続されていません。接続し直すか、「自動」を選んでください。"
 
-#: src/big_remote_play/ui/private_network_view.py:665
+#: src/big_remote_play/ui/private_network_view.py:693
 msgid "The server administrator then approves this computer."
 msgstr "その後、サーバー管理者がこのコンピューターを承認します。"
 
@@ -7394,6 +7524,10 @@ msgstr "サービスは実行中です"
 msgid "The stream did not start"
 msgstr "ストリームを開始できませんでした"
 
+#: src/big_remote_play/ui/host_view.py:1138
+msgid "The stream is still open"
+msgstr "ストリームはまだ開いています"
+
 #: src/big_remote_play/ui/api_access_dialog.py:273
 msgid "The system keyring is locked or unavailable. Nothing was saved."
 msgstr ""
@@ -7406,12 +7540,12 @@ msgstr ""
 "システムのキーリングがロックされているか、利用できません。ロックを解除しても"
 "う一度お試しください。"
 
-#: src/big_remote_play/ui/host_view.py:2055
+#: src/big_remote_play/ui/host_view.py:2168
 #, python-brace-format
 msgid "The tone could not be played on {output}."
 msgstr "{output} でテスト音を再生できませんでした。"
 
-#: src/big_remote_play/ui/host_view.py:2059
+#: src/big_remote_play/ui/host_view.py:2172
 #, python-brace-format
 msgid ""
 "The tone did not reach the shared sound. Check the output volume and that "
@@ -7420,7 +7554,7 @@ msgstr ""
 "テスト音が共有される音声に届きませんでした。出力の音量と、{output} が実際に聞"
 "いている出力かどうかを確認してください。"
 
-#: src/big_remote_play/ui/host_view.py:2057
+#: src/big_remote_play/ui/host_view.py:2170
 #, python-brace-format
 msgid "The tone reached the shared sound ({level:.0f} dB on {output})."
 msgstr "テスト音が共有される音声に届きました（{output} で {level:.0f} dB）。"
@@ -7460,11 +7594,11 @@ msgstr ""
 "所有者が ZeroTier Central または Big Remote Play で承認します。このページは更"
 "新したときに反映されます。"
 
-#: src/big_remote_play/ui/host_view.py:791
+#: src/big_remote_play/ui/host_view.py:819
 msgid "This PC did not appear in the list?"
 msgstr "このPCが一覧に出ませんでしたか？"
 
-#: src/big_remote_play/ui/private_network_view.py:519
+#: src/big_remote_play/ui/private_network_view.py:547
 #, python-brace-format
 msgid "This PC is on the {} private network."
 msgstr "このPCはプライベートネットワーク {} にあります。"
@@ -7509,7 +7643,7 @@ msgstr "このコードは不完全です"
 msgid "This computer"
 msgstr "このコンピューター"
 
-#: src/big_remote_play/ui/host_view.py:872
+#: src/big_remote_play/ui/host_view.py:898
 msgid ""
 "This computer captures and encodes the game. Under Connect → Image, the "
 "other computer requests resolution, frame rate and video bitrate. The "
@@ -7526,7 +7660,7 @@ msgstr ""
 msgid "This computer has not joined a ZeroTier network yet."
 msgstr "このコンピューターはまだ ZeroTier ネットワークに参加していません。"
 
-#: src/big_remote_play/ui/private_network_view.py:514
+#: src/big_remote_play/ui/private_network_view.py:542
 msgid ""
 "This computer is already on a ZeroTier network. To join another one, type "
 "its code."
@@ -7881,7 +8015,7 @@ msgstr "信頼済みWeb UIオリジン"
 # line: 1769
 # line: 1914
 #: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:849
+#: src/big_remote_play/ui/private_network_view.py:878
 msgid "Try Again"
 msgstr "再試行してください"
 
@@ -7924,14 +8058,14 @@ msgstr "オンにしています…"
 msgid "Type"
 msgstr "種類"
 
-#: src/big_remote_play/ui/private_network_view.py:539
+#: src/big_remote_play/ui/private_network_view.py:567
 msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr ""
 "サーバーのアドレスを入力してください。サーバーの管理者がこのコンピューターを"
 "承認します。"
 
-#: src/big_remote_play/ui/private_network_view.py:537
+#: src/big_remote_play/ui/private_network_view.py:565
 msgid "Type the network code you received."
 msgstr "受け取ったネットワークコードを入力してください。"
 
@@ -7945,11 +8079,11 @@ msgstr "UPnP"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 112
-#: src/big_remote_play/ui/host_view.py:1935
+#: src/big_remote_play/ui/host_view.py:2048
 msgid "Unavailable"
 msgstr "利用できません"
 
-#: src/big_remote_play/ui/host_view.py:1622
+#: src/big_remote_play/ui/host_view.py:1735
 #, python-brace-format
 msgid "Unavailable: {device}"
 msgstr "利用不可: {device}"
@@ -7963,8 +8097,8 @@ msgstr "利用不可: {device}"
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 215
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 226
 #: src/big_remote_play/ui/host_view.py:169
-#: src/big_remote_play/ui/host_view.py:1112
-#: src/big_remote_play/ui/host_view.py:1117
+#: src/big_remote_play/ui/host_view.py:1223
+#: src/big_remote_play/ui/host_view.py:1228
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:230
 #: src/big_remote_play/utils/system_check.py:176
 #: src/big_remote_play/utils/system_check.py:179
@@ -7986,8 +8120,8 @@ msgstr "不明な VPN サービス: ${provider}"
 # 147
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 215
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 226
-#: src/big_remote_play/ui/host_view.py:1532
-#: src/big_remote_play/ui/host_view.py:2566
+#: src/big_remote_play/ui/host_view.py:1645
+#: src/big_remote_play/ui/host_view.py:2685
 msgid "Unknown device"
 msgstr "不明なデバイス"
 
@@ -8004,11 +8138,11 @@ msgid "Unlock the bitrate limit"
 msgstr "ビットレート制限を解除"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 685
-#: src/big_remote_play/ui/host_view.py:2785
+#: src/big_remote_play/ui/host_view.py:2904
 msgid "Unnamed"
 msgstr "名前なし"
 
-#: src/big_remote_play/ui/host_view.py:1310
+#: src/big_remote_play/ui/host_view.py:1421
 msgid "Unnamed device"
 msgstr "名前のないデバイス"
 
@@ -8021,7 +8155,7 @@ msgstr "不安定"
 msgid "Unstable network mode"
 msgstr "不安定なネットワーク用モード"
 
-#: src/big_remote_play/ui/host_view.py:2918
+#: src/big_remote_play/ui/host_view.py:3037
 msgid "Up one level"
 msgstr "1つ上の階層へ"
 
@@ -8075,7 +8209,7 @@ msgstr ""
 "スできることの証明にはなりません。Sunshine の管理パネル（既定では 47990）を公"
 "開せず、ファイアウォールも無効にしないでください。"
 
-#: src/big_remote_play/ui/guided_setup.py:304
+#: src/big_remote_play/ui/guided_setup.py:307
 msgid "Use Tailscale"
 msgstr "Tailscale を使う"
 
@@ -8167,16 +8301,16 @@ msgid "User"
 msgstr "ユーザー"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 616
-#: src/big_remote_play/ui/host_view.py:1422
+#: src/big_remote_play/ui/host_view.py:1534
 msgid "User Not Found"
 msgstr "ユーザーが見つかりません"
 
-#: src/big_remote_play/host/sunshine_manager.py:649
+#: src/big_remote_play/host/sunshine_manager.py:650
 msgid "Username and password cannot be empty"
 msgstr "ユーザー名とパスワードを空にすることはできません"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 636
-#: src/big_remote_play/ui/host_view.py:3033
+#: src/big_remote_play/ui/host_view.py:3152
 msgid "Username and password cannot be empty."
 msgstr "ユーザー名とパスワードを空にすることはできません。"
 
@@ -8234,7 +8368,7 @@ msgstr "映像コーデック"
 msgid "Video format and diagnostics"
 msgstr "映像形式と診断"
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1045
 #, python-brace-format
 msgid "Video limit: {mbps:g} Mbps"
 msgstr "映像上限: {mbps:g} Mbps"
@@ -8269,7 +8403,7 @@ msgid "VideoToolbox Software Encoding"
 msgstr "VideoToolboxソフトウェアエンコーディング"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:2458
+#: src/big_remote_play/ui/host_view.py:2577
 msgid "View Logs"
 msgstr "ログを表示"
 
@@ -8289,7 +8423,7 @@ msgstr ""
 "ワード（Sunshine、ZeroTier、ネットワーク認証キー）もシステムのキーリングから"
 "削除されます。アプリケーションは終了します。"
 
-#: src/big_remote_play/ui/private_network_view.py:1065
+#: src/big_remote_play/ui/private_network_view.py:1094
 msgid "Wait for Approval"
 msgstr "承認を待つ"
 
@@ -8346,8 +8480,8 @@ msgstr "設定を 1 つ直す必要があります"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1668
-#: src/big_remote_play/ui/private_network_view.py:911
-#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:940
+#: src/big_remote_play/ui/private_network_view.py:993
 msgid "Web UI"
 msgstr "ウェブユーザーインターフェース"
 
@@ -8374,7 +8508,7 @@ msgid "What this computer shows"
 msgstr "このコンピューターで検出された内容"
 
 #: src/big_remote_play/ui/connection_guides.py:100
-#: src/big_remote_play/ui/private_network_view.py:551
+#: src/big_remote_play/ui/private_network_view.py:579
 msgid "What you need"
 msgstr "必要なもの"
 
@@ -8382,7 +8516,7 @@ msgstr "必要なもの"
 msgid "What you need and the steps to run Headscale on a Linux server."
 msgstr "Linux サーバーで Headscale を運用するために必要なものと手順。"
 
-#: src/big_remote_play/ui/host_view.py:1457
+#: src/big_remote_play/ui/host_view.py:1570
 msgid ""
 "When another device starts playing, it appears here with its connection "
 "quality."
@@ -8407,8 +8541,8 @@ msgstr ""
 "想出力へ切り替える場合があります。"
 
 #: src/big_remote_play/ui/host_view.py:485
-#: src/big_remote_play/ui/host_view.py:1594
-#: src/big_remote_play/ui/host_view.py:2023
+#: src/big_remote_play/ui/host_view.py:1707
+#: src/big_remote_play/ui/host_view.py:2136
 msgid "When off, only the other computer hears the game."
 msgstr "オフにすると、ゲームの音声はもう一方のコンピューターでのみ聞こえます。"
 
@@ -8424,7 +8558,7 @@ msgstr "トークンの作成場所"
 msgid "Where to create it"
 msgstr "作成場所"
 
-#: src/big_remote_play/ui/host_view.py:1301
+#: src/big_remote_play/ui/host_view.py:1412
 msgid "Which computer shows this code?"
 msgstr "このコードを表示しているのはどのコンピューターですか？"
 
@@ -8472,7 +8606,7 @@ msgstr ""
 msgid "Without a browser (advanced)"
 msgstr "ブラウザーを使わない方法（上級者向け）"
 
-#: src/big_remote_play/ui/private_network_view.py:1032
+#: src/big_remote_play/ui/private_network_view.py:1061
 msgid ""
 "Without a key, a sign-in link opens; the administrator approves this "
 "computer on the server."
@@ -8484,7 +8618,7 @@ msgstr ""
 msgid "Without a private network"
 msgstr "プライベートネットワークを使わない場合"
 
-#: src/big_remote_play/ui/private_network_view.py:664
+#: src/big_remote_play/ui/private_network_view.py:692
 msgid "Without an auth key, a sign-in link opens"
 msgstr "認証キーがない場合はサインインリンクが開きます"
 
@@ -8500,7 +8634,7 @@ msgstr ""
 "はい — このコンピューターのアドレスはキャリアグレード NAT のものです。ここで"
 "はポート転送は機能しません。プライベートネットワークを使用してください。"
 
-#: src/big_remote_play/ui/host_view.py:2011
+#: src/big_remote_play/ui/host_view.py:2124
 msgid "Yes — this is an error; stop sharing and report it"
 msgstr "はい — これはエラーです。共有を停止して報告してください"
 
@@ -8541,7 +8675,7 @@ msgstr "Big Remote Play で遊び始めると、ここに接続が表示され�
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1631
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "Your created/connected networks will appear here."
 msgstr "作成した/接続したネットワークはここに表示されます。"
 
@@ -8587,7 +8721,7 @@ msgstr "設定・ペアリング済みネットワーク・好みを1つのフ�
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 650
-#: src/big_remote_play/ui/private_network_view.py:1068
+#: src/big_remote_play/ui/private_network_view.py:1097
 msgid "ZT Panel"
 msgstr "ZT パネル"
 
@@ -8603,7 +8737,7 @@ msgstr "ZeroTier API トークン"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 810
 # line: 1800
-#: src/big_remote_play/ui/private_network_view.py:1059
+#: src/big_remote_play/ui/private_network_view.py:1088
 msgid "ZeroTier Instructions"
 msgstr "ZeroTier の手順"
 
@@ -8655,12 +8789,17 @@ msgstr "ZeroTier ネットワーク"
 msgid "ZeroTier service error"
 msgstr "ZeroTier サービスエラー"
 
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "ZeroTier shows its 16-character network code. Copy it."
+msgstr ""
+"ZeroTier に 16 文字のネットワークコードが表示されます。コピーしてください。"
+
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
 msgstr "不明"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 780
-#: src/big_remote_play/ui/host_view.py:1737
+#: src/big_remote_play/ui/host_view.py:1850
 msgid "value"
 msgstr "値"
 
@@ -8684,7 +8823,7 @@ msgstr "{layout} · {location}"
 msgid "{minutes} min"
 msgstr "{minutes} 分"
 
-#: src/big_remote_play/ui/host_view.py:1022
+#: src/big_remote_play/ui/host_view.py:1048
 #, python-brace-format
 msgid "{mode} · {limit}"
 msgstr "{mode} · {limit}"
@@ -8746,22 +8885,22 @@ msgstr ""
 msgid "{resolution} · {frame_rate} · {bitrate}"
 msgstr "{resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:2030
+#: src/big_remote_play/ui/host_view.py:2143
 #, python-brace-format
 msgid "{source} (a microphone)"
 msgstr "{source}（マイク）"
 
-#: src/big_remote_play/ui/host_view.py:2029
+#: src/big_remote_play/ui/host_view.py:2142
 #, python-brace-format
 msgid "{source} (sound this computer plays)"
 msgstr "{source}（このコンピューターで再生される音声）"
 
-#: src/big_remote_play/ui/host_view.py:1769
+#: src/big_remote_play/ui/host_view.py:1882
 #, python-brace-format
 msgid "{source} · {quality}"
 msgstr "{source} · {quality}"
 
-#: src/big_remote_play/ui/host_view.py:2017
+#: src/big_remote_play/ui/host_view.py:2130
 #, python-brace-format
 msgid "{source} → {target}"
 msgstr "{source} → {target}"
@@ -8777,12 +8916,12 @@ msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 259
-#: src/big_remote_play/ui/private_network_view.py:449
+#: src/big_remote_play/ui/private_network_view.py:477
 #, python-brace-format
 msgid "{} installed"
 msgstr "{} をインストールしました"
 
-#: src/big_remote_play/ui/private_network_view.py:420
+#: src/big_remote_play/ui/private_network_view.py:448
 #, python-brace-format
 msgid ""
 "{} is not installed yet. Install it below to continue (asks for your "
@@ -8793,7 +8932,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 198
-#: src/big_remote_play/ui/host_view.py:1548
+#: src/big_remote_play/ui/host_view.py:1661
 #, python-brace-format
 msgid "{} more paired devices"
 msgstr "ほかに {} 台のペアリング済みデバイス"

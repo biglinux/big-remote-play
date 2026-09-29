@@ -338,8 +338,13 @@ class ZeroTierJoiner:
             snapshot = replace(snapshot, phase=JoinPhase.STARTING_SERVICE, service_running=False)
             report(snapshot)
             started = self.manager.start_service(ZEROTIER_UNIT)
-            if started.returncode != 0 or not self._wait_for_service(cancelled):
+            if started.returncode != 0:
                 return replace(snapshot, phase=JoinPhase.SERVICE_STOPPED, detail=(started.stderr or started.stdout).strip())
+            if not self._wait_for_service(cancelled):
+                if not self._safe(self._service_running):
+                    return replace(snapshot, phase=JoinPhase.SERVICE_STOPPED, detail=(started.stderr or started.stdout).strip())
+                # systemd runs it, yet the CLI never reached it: not "stopped".
+                return replace(snapshot, phase=JoinPhase.FAILED, service_running=True, detail="zerotier-one is running but did not answer zerotier-cli")
         snapshot = replace(snapshot, service_running=True)
 
         node = self.manager.zerotier_info()
@@ -374,9 +379,15 @@ class ZeroTierJoiner:
         return self._follow(snapshot, report=report, cancelled=cancelled, wait=wait)
 
     def _wait_for_service(self, cancelled: Callable[[], bool]) -> bool:
+        """Until the service answers, or runs but refuses this user (asked next)."""
         deadline = self._clock() + SERVICE_START_WAIT_SECONDS
         while self._clock() < deadline and not cancelled():
-            if self.manager.zerotier_info().address:
+            node = self.manager.zerotier_info()
+            if node.address:
+                return True
+            # Right after a first start this user cannot read the service
+            # token yet; that is a permission to ask for, not a stopped service.
+            if node.needs_privilege and self._safe(self._service_running):
                 return True
             self._sleep(0.5)
         return False

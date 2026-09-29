@@ -743,6 +743,34 @@ class HostView(Gtk.Box):
         set_row_icon(first_step, "brp-client-symbolic")
         pin_group.add(first_step)
 
+        # Moonlight refuses to pair while Sunshine has an app open, even after
+        # everyone disconnected; say so where pairing happens, with the way out.
+        self.pair_busy_row = Adw.ActionRow(
+            title=_("A stream is open on this computer"),
+            subtitle=_(
+                "New devices can pair only when no stream is open: they show “The computer is currently in a game”. End the stream for everyone, then start pairing again on the new device. Devices already paired can reconnect right after."
+            ),
+            use_markup=False,
+        )
+        self.pair_busy_row.set_title_lines(0)
+        self.pair_busy_row.set_subtitle_lines(0)
+        set_row_icon(self.pair_busy_row, "brp-dialog-information-symbolic")
+        pin_group.add(self.pair_busy_row)
+        # A row of its own: a suffix button would squeeze the text at phone width.
+        self.end_for_everyone_row = Adw.ButtonRow(title=_("End for everyone"))
+        self.end_for_everyone_row.add_css_class("destructive-action")
+        self.end_for_everyone_row.update_property(
+            [Gtk.AccessibleProperty.DESCRIPTION],
+            [_("Close the stream on every device so a new device can pair")],
+        )
+        self.end_for_everyone_row.connect("activated", lambda _row: self._confirm_end_for_everyone())
+        pin_group.add(self.end_for_everyone_row)
+        self._show_pairing_busy(False)
+        from .network_common import RowGroup, Worker
+
+        self._pair_busy_worker = Worker()
+        self._end_stream_worker = Worker()
+
         self.pair_entry = Adw.EntryRow(title=_("Pairing code shown on the other PC"))
         self.pair_entry.set_input_purpose(Gtk.InputPurpose.DIGITS)
         self.pair_entry.add_css_class("brp-code-entry")
@@ -803,8 +831,6 @@ class HostView(Gtk.Box):
         network_group.add(network_row)
         # While sharing: the private addresses another computer can really use,
         # read from the VPN clients (never a guessed or public address).
-        from .network_common import RowGroup, Worker
-
         self.internet_access_group = RowGroup(title=_("Available over the internet"))
         self.internet_access_group.set_description(_("Send one of these to the other person, or let them pick this computer under Connect."))
         self.internet_access_group.set_visible(False)
@@ -1030,6 +1056,91 @@ class HostView(Gtk.Box):
                 "Another device is playing now, and Moonlight pairs only when nobody is playing: the new device shows “The computer is currently in a game”. End the stream on the other devices, pair the new one, then connect them again. Pairing is needed only once."
             )
         return message
+
+    def _pairing_blocked(self, result) -> bool:
+        """Worker thread: no device is waiting because Sunshine has a stream open."""
+        return result is not None and result.status == PIN_NONE_WAITING and bool(self.sunshine.running_app_id())
+
+    def _explain_none_waiting(self, message: str, blocked: bool) -> None:
+        if not blocked:
+            self.show_error_dialog(_("No computer is waiting"), self._none_waiting_message(message))
+            return
+        self._show_pairing_busy(self.is_hosting)
+        self._confirm_end_for_everyone(
+            _(
+                "No device is waiting for this code because a stream is open on this computer: the new device shows “The computer is currently in a game”. End the stream for everyone, then start pairing again on the new device and enter its new code here."
+            )
+        )
+
+    def _show_pairing_busy(self, visible: bool) -> None:
+        self.pair_busy_row.set_visible(visible)
+        self.end_for_everyone_row.set_visible(visible)
+
+    def _check_pairing_busy(self) -> None:
+        """Show the way out when an open stream would block pairing (off the GTK thread)."""
+        if not self.is_hosting:
+            self._pair_busy_worker.cancel()
+            self._pair_busy_checking = False
+            self._show_pairing_busy(False)
+            return
+        if getattr(self, "_pair_busy_checking", False) or getattr(self, "_ending_for_everyone", False):
+            return
+        self._pair_busy_checking = True
+
+        def apply(app_id) -> None:
+            self._pair_busy_checking = False
+            self._show_pairing_busy(self.is_hosting and bool(app_id))
+
+        def failed(_error) -> None:
+            self._pair_busy_checking = False
+
+        self._pair_busy_worker.submit(self.sunshine.running_app_id, apply, failed=failed)
+
+    def _confirm_end_for_everyone(self, body: str | None = None) -> None:
+        dialog = Adw.AlertDialog(
+            heading=_("End the stream for everyone?"),
+            body=body or _("Every device playing now is disconnected. Then start pairing again on the new device and enter its code here. Devices already paired can reconnect right after."),
+        )
+        dialog.add_response("cancel", _("Not now"))
+        dialog.add_response("end", _("End for everyone"))
+        dialog.set_response_appearance("end", Adw.ResponseAppearance.DESTRUCTIVE)
+        dialog.set_default_response("cancel")
+        dialog.set_close_response("cancel")
+        dialog.connect("response", lambda _d, response: self._end_for_everyone() if response == "end" else None)
+        dialog.present(self)
+
+    def _end_for_everyone(self) -> None:
+        """Close Sunshine's open app (POST /api/apps/close) so Moonlight can pair."""
+        if getattr(self, "_ending_for_everyone", False):
+            return
+        self._ending_for_everyone = True
+        self.end_for_everyone_row.set_sensitive(False)
+
+        def work() -> bool:
+            credentials = self._get_sunshine_creds()
+            if not credentials or not self.sunshine.close_app(auth=credentials):
+                return False
+            for _attempt in range(20):  # Sunshine runs the app's undo commands first
+                if self.sunshine.running_app_id() == 0:
+                    return True
+                time.sleep(0.25)
+            return False
+
+        def done(ok) -> None:
+            self._ending_for_everyone = False
+            self.end_for_everyone_row.set_sensitive(True)
+            if ok:
+                self._show_pairing_busy(False)
+                self.pair_entry.set_text("")
+                self.pair_entry.grab_focus()
+                self.show_toast(_("No stream is open now. Start pairing again on the new device."))
+            else:
+                self.show_error_dialog(_("The stream is still open"), _("Sunshine did not close it. Try again, or stop sharing and start it again."))
+
+        def failed(_error) -> None:
+            done(False)
+
+        self._end_stream_worker.submit(work, done, failed=failed)
 
     def _share_resolution(self) -> str:
         index = self.share_resolution_row.get_selected()
@@ -1258,7 +1369,7 @@ class HostView(Gtk.Box):
         self._pairing_busy = True
         self.guest_pair_button.set_sensitive(False)
 
-        def finish(credentials, result, error):
+        def finish(credentials, result, error, blocked=False):
             self._pairing_busy = False
             if getattr(self, "_closed", False):
                 return False
@@ -1279,7 +1390,7 @@ class HostView(Gtk.Box):
             elif result.status == PIN_CHOOSE:
                 self._choose_pending_pairing(pin, credentials, result.pending)
             elif result.status == PIN_NONE_WAITING:
-                self.show_error_dialog(_("No computer is waiting"), self._none_waiting_message(result.message))
+                self._explain_none_waiting(result.message, blocked)
             else:
                 self.show_error_dialog(_("Pairing failed"), result.message)
             return False
@@ -1289,7 +1400,7 @@ class HostView(Gtk.Box):
                 self._ensure_sunshine_config()
                 credentials = self._get_sunshine_creds()
                 result = self.sunshine.send_pin(pin, name=_("Other computer"), auth=credentials) if credentials else None
-                GLib.idle_add(finish, credentials, result, "")
+                GLib.idle_add(finish, credentials, result, "", self._pairing_blocked(result))
             except Exception as exc:
                 GLib.idle_add(finish, None, None, str(exc))
 
@@ -1320,7 +1431,7 @@ class HostView(Gtk.Box):
     def _send_pin_async(self, pin: str, name: str, auth, *, pairing_id: str | None = None) -> None:
         """Send a PIN off the GTK thread and report the outcome."""
 
-        def done(result) -> bool:
+        def done(result, blocked) -> bool:
             if getattr(self, "_closed", False):
                 return False
             if result.ok:
@@ -1334,13 +1445,14 @@ class HostView(Gtk.Box):
             elif result.status == PIN_CHOOSE:
                 self._choose_pending_pairing(pin, auth, result.pending)
             elif result.status == PIN_NONE_WAITING:
-                self.show_error_dialog(_("No computer is waiting"), self._none_waiting_message(result.message))
+                self._explain_none_waiting(result.message, blocked)
             else:
                 self.show_error_dialog(_("PIN Error"), result.message)
             return False
 
         def work() -> None:
-            GLib.idle_add(done, self.sunshine.send_pin(pin, name=name, auth=auth, pairing_id=pairing_id))
+            result = self.sunshine.send_pin(pin, name=name, auth=auth, pairing_id=pairing_id)
+            GLib.idle_add(done, result, self._pairing_blocked(result))
 
         threading.Thread(target=work, daemon=True).start()
 
@@ -1450,6 +1562,7 @@ class HostView(Gtk.Box):
     def _show_connected_devices(self, infos) -> None:
         from .connection_cards import DeviceConnectionCard
 
+        self._check_pairing_busy()
         box = self.connected_devices_list
         while child := box.get_first_child():
             box.remove(child)
@@ -3381,6 +3494,9 @@ class HostView(Gtk.Box):
         self._close_monitor_identifiers()
         if hasattr(self, "_internet_worker"):
             self._internet_worker.close()
+        if hasattr(self, "_pair_busy_worker"):
+            self._pair_busy_worker.close()
+            self._end_stream_worker.close()
         self._closed = True
         if hasattr(self, "perf_monitor"):
             self.perf_monitor.stop_monitoring()

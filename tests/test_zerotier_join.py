@@ -203,6 +203,43 @@ def test_a_stopped_service_is_started_before_joining():
     assert result.phase is JoinPhase.CONNECTED
 
 
+def test_a_first_start_without_permission_asks_for_it_instead_of_reporting_stopped():
+    """The bug seen for real: ZeroTier just installed, service off, user token not yet copied.
+
+    systemctl enabled and started the service (its only output was "Created
+    symlink ..."), but ``zerotier-cli info`` failed for lack of permission,
+    and after 15 s the page said "ZeroTier is not running".
+    """
+    service = FakeZeroTier(["OK"], running=False, token=False)
+    original = service.start_service
+
+    def start(unit):
+        original(unit)
+        return CommandResult(0, "", "Created symlink '/etc/systemd/system/multi-user.target.wants/zerotier-one.service' → '/usr/lib/systemd/system/zerotier-one.service'.")
+
+    service.start_service = start
+    result, seen = run_join(service)
+    assert JoinPhase.SERVICE_STOPPED not in seen
+    assert JoinPhase.ASKING_PERMISSION in seen and ("grant",) in service.calls
+    assert result.phase is JoinPhase.CONNECTED
+
+
+def test_a_started_service_that_never_answers_is_not_called_stopped():
+    service = FakeZeroTier(running=False)
+    original = service.start_service
+
+    def start(unit):
+        original(unit)
+        service.zerotier_info = lambda: ZeroTierNode("", error="Error connecting to the ZeroTier service: connection failed")
+        return CommandResult(0)
+
+    service.start_service = start
+    result, _ = run_join(service)
+    assert result.phase is JoinPhase.FAILED  # systemd says it runs: a different problem
+    assert "did not answer" in result.detail
+    assert not any(call[0] == "join" for call in service.calls)
+
+
 def test_a_service_that_cannot_be_started_is_said_plainly():
     service = FakeZeroTier(running=False)
     service.start_service = lambda unit: CommandResult(126, "", "Not authorized")

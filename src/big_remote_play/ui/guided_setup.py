@@ -298,13 +298,27 @@ class GuidedSetup:
     def _explain_no_code(self) -> None:
         dialog = Adw.AlertDialog(
             heading=_("No network code?"),
-            body=_("Ask the person who created the ZeroTier network to send it. If nobody has a network yet, Tailscale is the simplest way to start."),
+            body=_(
+                "Ask the person who created the ZeroTier network to send it. If nobody has a network yet, one of you creates it for free in ZeroTier Central, or you use Tailscale, the simplest way to start."
+            ),
         )
         dialog.add_response("close", _("Close"))
+        dialog.add_response("create", _("Create a ZeroTier network"))
         dialog.add_response("tailscale", _("Use Tailscale"))
         dialog.set_response_appearance("tailscale", Adw.ResponseAppearance.SUGGESTED)
-        dialog.connect("response", lambda _dialog, response: self.open_method(ProviderId.TAILSCALE) if response == "tailscale" else None)
+        dialog.connect("response", self._on_no_code_response)
         dialog.present(self.window)
+
+    def _on_no_code_response(self, _dialog, response: str) -> None:
+        if response == "tailscale":
+            self.open_method(ProviderId.TAILSCALE)
+        elif response == "create":
+            self.show_create_zerotier_steps()
+
+    def show_create_zerotier_steps(self) -> None:
+        from .private_network_view import show_create_zerotier_steps
+
+        show_create_zerotier_steps(self.window)
 
     # ── done ───────────────────────────────────────────────────────────────
     def _return_to_task(self) -> None:

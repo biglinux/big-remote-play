@@ -147,17 +147,72 @@ def test_suggested_settings_parser():
     assert suggested_up_settings("\ttailscale up --hostname='unterminated") is None
 
 
-def test_service_turn_on_and_fix_use_the_allowlisted_units():
+class ServiceClock:
+    def __init__(self):
+        self.now = 0.0
+
+    def __call__(self):
+        return self.now
+
+    def sleep(self, seconds):
+        self.now += seconds
+
+
+def starting_service(*, zerotier_reads=(), tailscale_reads=(), start=CommandResult(0)):
+    """A service whose clients answer with ``*_reads`` in turn (the last repeats)."""
+    from big_remote_play.utils.vpn_accounts import ZeroTierNode
+
     service = OfflinePrivateNetworkService()
     calls = []
+    zt, ts = list(zerotier_reads) or [ZeroTierNode("8056c2e21c")], list(tailscale_reads) or [ProviderStatus(P.TAILSCALE, S.NEEDS_AUTHENTICATION)]
     service.manager = SimpleNamespace(
         resume_tailscale=lambda: SimpleNamespace(connected=True),
-        start_service=lambda unit: calls.append(unit) or CommandResult(0),
+        start_service=lambda unit: calls.append(unit) or start,
+        zerotier_info=lambda: zt.pop(0) if len(zt) > 1 else zt[0],
     )
+    service._tailscale_cli = lambda: SimpleNamespace(status=lambda provider: ts.pop(0) if len(ts) > 1 else ts[0])
+    clock = ServiceClock()
+    service._clock, service._sleep = clock, clock.sleep
+    return service, calls, clock
+
+
+def test_service_turn_on_and_fix_use_the_allowlisted_units():
+    service, calls, _clock = starting_service()
     assert service.turn_on(P.TAILSCALE)
     assert service.turn_on(P.ZEROTIER)
     assert service.start_service(P.HEADSCALE)
     assert calls == ["zerotier-one", "tailscaled"]
+
+
+def test_starting_zerotier_waits_until_it_answers_even_if_this_user_is_refused():
+    from big_remote_play.utils.vpn_accounts import ZeroTierNode
+
+    stopped = ZeroTierNode("", error="Error connecting to the ZeroTier service: connection failed")
+    refused = ZeroTierNode("", needs_privilege=True, error="authtoken.secret not found or readable in /var/lib/zerotier-one (try again as root)")
+    service, calls, clock = starting_service(zerotier_reads=[stopped, stopped, refused])
+    assert service.start_service(P.ZEROTIER)  # the next screen asks for access, not "stopped"
+    assert calls == ["zerotier-one"] and clock.now == 1.0
+
+
+def test_starting_tailscaled_waits_for_the_client_to_reach_it():
+    down = ProviderStatus(P.HEADSCALE, S.UNAVAILABLE, technical_detail="tailscaled is not running", recovery=R.START_SERVICE)
+    service, calls, clock = starting_service(tailscale_reads=[down, ProviderStatus(P.HEADSCALE, S.NEEDS_AUTHENTICATION)])
+    assert service.start_service(P.HEADSCALE)
+    assert calls == ["tailscaled"] and clock.now == 0.5
+
+
+def test_a_service_that_starts_but_never_answers_is_not_reported_as_running():
+    from big_remote_play.utils.vpn_accounts import ZeroTierNode
+
+    service, _calls, clock = starting_service(zerotier_reads=[ZeroTierNode("", error="connection failed")])
+    assert not service.start_service(P.ZEROTIER)
+    assert clock.now >= 15.0
+
+
+def test_a_refused_start_does_not_wait():
+    service, _calls, clock = starting_service(start=CommandResult(126, "", "Not authorized"))
+    assert not service.start_service(P.TAILSCALE)
+    assert clock.now == 0.0
 
 
 def test_internet_check_reads_only_local_interfaces():

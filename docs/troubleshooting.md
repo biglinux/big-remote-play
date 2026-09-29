@@ -42,7 +42,9 @@ ZeroTier's control key is readable only by the system. Choose **Allow** once: Bi
 
 ## ZeroTier: joining failed, or showed “0 join connection failed”
 
-`0 join connection failed` is what `zerotier-cli join` prints when it cannot reach the local `zerotier-one` service — not an answer from the network. Older versions showed it as “Connection failed” when the service had been stopped (for example by **Network details → Disconnect**, which stops ZeroTier temporarily). The join now starts the service first and says **ZeroTier is not running** only if it cannot. To check by hand: `systemctl is-active zerotier-one`, then `zerotier-cli -j listnetworks`.
+`0 join connection failed` is what `zerotier-cli join` prints when it cannot reach the local `zerotier-one` service — not an answer from the network. Older versions showed it as “Connection failed” when the service had been stopped (for example by **Network details → Disconnect**, which stops ZeroTier temporarily). The join now starts the service first and says **ZeroTier is not running** only if it cannot. Right after ZeroTier is installed or enabled for the first time, the service runs but this user may not use it yet: the join then asks for the one-time permission (**Allow**) instead of reporting a stopped service, as versions up to 26.09.29 did after waiting 15 s (technical details showed only `Created symlink … zerotier-one.service`). To check by hand: `systemctl is-active zerotier-one`, then `zerotier-cli -j listnetworks`.
+
+Without a network code, choose **I don't have a code**: in the guided setup and on the ZeroTier connection page it explains how the owner creates a free network in ZeroTier Central, where the 16-character code is shown, and how each computer is approved under **Members**.
 
 ## ZeroTier shows “Waiting for authorization”
 
@@ -70,7 +72,7 @@ Sunshine probes every display and encoder when capture and encoder are set to au
 
 ## A device says “The computer is currently in a game” or asks to close the game
 
-Moonlight pairs only when nothing is being played, and Sunshine counts the shared **Desktop** as a game while any device is connected. Big Remote Play then answers the PIN with **No computer is waiting** and explains it. End the stream on the other devices, pair the new one (only once), then connect everyone again.
+Moonlight pairs only when Sunshine has no stream open, and Sunshine counts the shared **Desktop** as a game while it is open — also after every device disconnected, until it is closed. While a stream is open, **Share → 3. Connect the other PC** says **A stream is open on this computer** with **End for everyone**, and a PIN sent then offers the same action instead of only **No computer is waiting**. **End for everyone** asks first, closes the stream on every device (Sunshine's own close, as in its web panel) and checks that nothing is open any more; then start pairing again on the new device and enter its new code. The devices already paired reconnect afterwards without a new PIN.
 
 To pair several new devices, pair them one at a time, each while nobody is playing; the devices already paired reconnect afterwards without a new PIN. A device that never lists the computer has not found it on the network (some TV apps keep an empty computer list): add it by the sharing computer's address, shown in **Share**, then pair.
 

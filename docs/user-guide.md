@@ -115,7 +115,7 @@ When sharing, **Share** lists under **Available over the internet** the name and
 
 ### Joining a ZeroTier network
 
-Type the **Network code** (16 letters and numbers, sent by the owner of the network; spaces and dashes are ignored) and choose **Join network**. If ZeroTier's service is stopped, it is started first (your password may be requested). Being on one ZeroTier network never hides the field: a computer can join several.
+Type the **Network code** (16 letters and numbers, sent by the owner of the network; spaces and dashes are ignored) and choose **Join network**. If ZeroTier's service is stopped, it is started first (your password may be requested); right after a first installation this is followed by the one-time **Allow**. Being on one ZeroTier network never hides the field: a computer can join several. Nobody has a network yet? **I don't have a code** shows how to create one for free in ZeroTier Central, step by step, or offers Tailscale.
 
 | You see | What it means | Button |
 |---|---|---|

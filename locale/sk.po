@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-09-29 00:00+0000\n"
+"POT-Creation-Date: 2026-09-29 22:34+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Slovak\n"
@@ -24,6 +24,10 @@ msgstr ""
 "Hodnota 0 sa riadi požiadavkou druhého počítača. Obmedzuje iba video, nie "
 "celú sieťovú prevádzku."
 
+#: src/big_remote_play/ui/private_network_view.py:93
+msgid "1. Account"
+msgstr "1. Účet"
+
 #: src/big_remote_play/ui/connection_guides.py:48
 msgid "1. Check internet reachability"
 msgstr "1. Skontrolujte dostupnosť internetu"
@@ -36,13 +40,13 @@ msgstr "1. Vyberte, čo zdieľať"
 # line: 819
 # line: 826
 # line: 1988
-#: src/big_remote_play/ui/private_network_view.py:1045
+#: src/big_remote_play/ui/private_network_view.py:1074
 msgid "1. Create Account"
 msgstr "1. Vytvoriť účet"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1995
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "1. Identification"
 msgstr "1. Identifikácia"
 
@@ -76,33 +80,41 @@ msgstr "2. Doména a HTTPS"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1989
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "2. Invitation"
 msgstr "2. Pozvánka"
 
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "2. Join"
 msgstr "2. Pripojenie"
 
-#: src/big_remote_play/ui/host_view.py:843
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "2. Network"
+msgstr "2. Sieť"
+
+#: src/big_remote_play/ui/host_view.py:869
 msgid "2. Start sharing"
 msgstr "2. Spustite zdieľanie"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1997
-#: src/big_remote_play/ui/private_network_view.py:1064
+#: src/big_remote_play/ui/private_network_view.py:1093
 msgid "3. Authorization"
 msgstr "3. Autorizácia"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1990
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "3. Connect"
 msgstr "3. Pripojenie"
 
 #: src/big_remote_play/ui/host_view.py:733
 msgid "3. Connect the other PC"
 msgstr "3. Pripojte druhý počítač"
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "3. Join"
+msgstr "3. Pripojenie"
 
 #: src/big_remote_play/ui/connection_guides.py:118
 msgid "3. Open only the server's ports"
@@ -119,6 +131,10 @@ msgstr "30 dní"
 #: src/big_remote_play/ui/connection_guides.py:68
 msgid "4. Allow only the streaming ports"
 msgstr "4. Povoľte iba porty streamovania"
+
+#: src/big_remote_play/ui/private_network_view.py:103
+msgid "4. Approve"
+msgstr "4. Schválenie"
 
 #: src/big_remote_play/ui/connection_guides.py:124
 msgid "4. Connect Big Remote Play"
@@ -194,6 +210,10 @@ msgstr ""
 "rozmazaný. Pre televízory a obrazovky v autách je najostrejšie 1920 × 1080. "
 "Zvolená obrazovka sa potom vráti do normálu. Najprv vyššie vyberte obrazovku."
 
+#: src/big_remote_play/ui/host_view.py:749
+msgid "A stream is open on this computer"
+msgstr "Na tomto počítači je otvorený stream"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 84
 #: src/big_remote_play/ui/sunshine_preferences.py:109
@@ -245,15 +265,15 @@ msgstr "Adaptívna kvantizácia AMF založená na rozptyle (VBAQ)"
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 313
 # line: 349
-#: src/big_remote_play/host/sunshine_manager.py:604
-#: src/big_remote_play/host/sunshine_manager.py:635
+#: src/big_remote_play/host/sunshine_manager.py:605
+#: src/big_remote_play/host/sunshine_manager.py:636
 #, python-brace-format
 msgid "API Error: {}"
 msgstr "Chyba API: {}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:71
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "API access"
 msgstr "Prístup k API"
@@ -277,13 +297,13 @@ msgstr "Token API"
 msgid "About"
 msgstr "O aplikácii"
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "About this VPN"
 msgstr "O tejto VPN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1988
-#: src/big_remote_play/ui/private_network_view.py:1046
+#: src/big_remote_play/ui/private_network_view.py:1075
 msgid "Access Tailscale"
 msgstr "Prístup k Tailscale"
 
@@ -344,8 +364,8 @@ msgid "Active - No devices"
 msgstr "Aktívne - Žiadne zariadenia"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 864
-#: src/big_remote_play/ui/host_view.py:1790
-#: src/big_remote_play/ui/host_view.py:1806
+#: src/big_remote_play/ui/host_view.py:1903
+#: src/big_remote_play/ui/host_view.py:1919
 msgid "Active - Waiting for Connections"
 msgstr "Aktívne – čaká sa na pripojenia"
 
@@ -374,7 +394,7 @@ msgid "Active devices: {}"
 msgstr "Aktívne zariadenia: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:2731
+#: src/big_remote_play/ui/host_view.py:2850
 msgid "Add Detected Games"
 msgstr "Pridať nájdené hry"
 
@@ -446,7 +466,7 @@ msgstr "Pridajte telefón, notebook, televízor alebo ďalší počítač."
 msgid "Add {name} to favorites"
 msgstr "Pridať {name} medzi obľúbené"
 
-#: src/big_remote_play/ui/host_view.py:867
+#: src/big_remote_play/ui/host_view.py:893
 msgid "Additional settings"
 msgstr "Ďalšie nastavenia"
 
@@ -520,8 +540,8 @@ msgstr "Pokročilý režim"
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 79
 #: src/big_remote_play/ui/guided_setup.py:246
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:702
 #: src/big_remote_play/ui/sunshine_preferences.py:104
 msgid "Advanced options"
 msgstr "Rozšírené voľby"
@@ -539,17 +559,17 @@ msgstr "Rozšírené nastavenia servera"
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "Pokročilé nastavenia v prehliadači (Sunshine)"
 
-#: src/big_remote_play/ui/host_view.py:1563
+#: src/big_remote_play/ui/host_view.py:1676
 msgid ""
 "Advanced: IP addresses for manual connection when automatic discovery fails."
 msgstr ""
 "Rozšírené: IP adresy na ručné pripojenie, keď automatické vyhľadávanie zlyhá."
 
-#: src/big_remote_play/ui/host_view.py:1525
+#: src/big_remote_play/ui/host_view.py:1638
 msgid "After step 2, the other PC appears here."
 msgstr "Po kroku 2 sa tu objaví druhý počítač."
 
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1076
 msgid ""
 "All participants need to sign in so their PCs join the same Private Network."
 msgstr ""
@@ -564,7 +584,7 @@ msgstr ""
 "Všetky vaše zmeny v Big Remote Play budú vrátené späť! Týka sa to aj "
 "nastavení Sunshine a Moonlightu."
 
-#: src/big_remote_play/ui/host_view.py:1653
+#: src/big_remote_play/ui/host_view.py:1766
 #: src/big_remote_play/ui/network_common.py:141
 #: src/big_remote_play/ui/network_common.py:165
 #: src/big_remote_play/ui/network_dashboard.py:291
@@ -600,7 +620,7 @@ msgstr ""
 msgid "Allow Slow HEVC Encoding"
 msgstr "Povoliť pomalé kódovanie HEVC"
 
-#: src/big_remote_play/ui/host_view.py:1650
+#: src/big_remote_play/ui/host_view.py:1763
 msgid "Allow Sunshine through the firewall?"
 msgstr "Povoliť Sunshine vo firewalle?"
 
@@ -639,7 +659,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 398
-#: src/big_remote_play/ui/host_view.py:1537
+#: src/big_remote_play/ui/host_view.py:1650
 #: src/big_remote_play/ui/sunshine_preferences.py:624
 msgid "Allowed"
 msgstr "Povolené"
@@ -696,7 +716,7 @@ msgstr ""
 msgid "Almost there"
 msgstr "Už to skoro bude"
 
-#: src/big_remote_play/ui/private_network_view.py:518
+#: src/big_remote_play/ui/private_network_view.py:546
 msgid "Already connected"
 msgstr "Už pripojené"
 
@@ -743,7 +763,7 @@ msgstr ""
 msgid "An administrator must approve this computer"
 msgstr "Tento počítač musí schváliť správca"
 
-#: src/big_remote_play/ui/host_view.py:1030
+#: src/big_remote_play/ui/host_view.py:1056
 msgid ""
 "Another device is playing now, and Moonlight pairs only when nobody is "
 "playing: the new device shows “The computer is currently in a game”. End the "
@@ -780,7 +800,7 @@ msgstr "Podrobnosti aplikácie"
 msgid "Application Name"
 msgstr "Názov aplikácie"
 
-#: src/big_remote_play/ui/host_view.py:920
+#: src/big_remote_play/ui/host_view.py:946
 msgid "Application diagnostics"
 msgstr "Diagnostika aplikácie"
 
@@ -826,7 +846,11 @@ msgstr "Schváliť"
 msgid "Approve a waiting computer"
 msgstr "Schváliť čakajúci počítač"
 
-#: src/big_remote_play/ui/private_network_view.py:1031
+#: src/big_remote_play/ui/private_network_view.py:104
+msgid "Approve each computer"
+msgstr "Schváľte každý počítač"
+
+#: src/big_remote_play/ui/private_network_view.py:1060
 msgid "Approve if needed"
 msgstr "V prípade potreby schváliť"
 
@@ -874,7 +898,7 @@ msgstr "Ste si úplne istí?"
 msgid "Ask the game PC to optimize the game for streaming"
 msgstr "Požiadať herný počítač o optimalizáciu hry na streamovanie"
 
-#: src/big_remote_play/ui/private_network_view.py:1023
+#: src/big_remote_play/ui/private_network_view.py:1052
 msgid ""
 "Ask the network administrator for the server address and, optionally, a one-"
 "time auth key."
@@ -882,18 +906,20 @@ msgstr ""
 "Požiadajte správcu siete o adresu servera a prípadne o jednorazový overovací "
 "kľúč."
 
-#: src/big_remote_play/ui/private_network_view.py:689
+#: src/big_remote_play/ui/private_network_view.py:717
 msgid "Ask the network owner, or look in ZeroTier Central → Networks"
 msgstr ""
 "Opýtajte sa vlastníka siete alebo sa pozrite do ZeroTier Central → Networks"
 
-#: src/big_remote_play/ui/guided_setup.py:301
+#: src/big_remote_play/ui/guided_setup.py:302
 msgid ""
 "Ask the person who created the ZeroTier network to send it. If nobody has a "
-"network yet, Tailscale is the simplest way to start."
+"network yet, one of you creates it for free in ZeroTier Central, or you use "
+"Tailscale, the simplest way to start."
 msgstr ""
-"Požiadajte toho, kto sieť ZeroTier vytvoril, aby vám poslal kód. Ak zatiaľ "
-"nikto sieť nemá, najjednoduchšie je začať s Tailscale."
+"Požiadajte o kód toho, kto sieť ZeroTier vytvoril. Ak zatiaľ nikto sieť "
+"nemá, jeden z vás ju zadarmo vytvorí v ZeroTier Central – alebo použite "
+"Tailscale, najjednoduchší spôsob, ako začať."
 
 #: src/big_remote_play/ui/network_dashboard.py:346
 #: src/big_remote_play/ui/zerotier_join.py:51
@@ -921,8 +947,8 @@ msgstr ""
 msgid "Audio"
 msgstr "Zvuk"
 
-#: src/big_remote_play/ui/host_view.py:1601
-#: src/big_remote_play/ui/host_view.py:1634
+#: src/big_remote_play/ui/host_view.py:1714
+#: src/big_remote_play/ui/host_view.py:1747
 msgid ""
 "Audio changes apply the next time you start sharing. The current output is "
 "unchanged."
@@ -942,27 +968,27 @@ msgstr "Zvuk/video"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 865
-#: src/big_remote_play/ui/private_network_view.py:656
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:673
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:684
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:701
+#: src/big_remote_play/ui/private_network_view.py:702
 msgid "Auth Key"
 msgstr "Overovací kľúč"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1331
+#: src/big_remote_play/ui/host_view.py:1442
 msgid "Authentication Failed"
 msgstr "Overenie zlyhalo"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 312
-#: src/big_remote_play/host/sunshine_manager.py:627
+#: src/big_remote_play/host/sunshine_manager.py:628
 msgid "Authentication Failed. Check the current password."
 msgstr "Overenie zlyhalo. Skontrolujte súčasné heslo."
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 312
-#: src/big_remote_play/host/sunshine_manager.py:602
+#: src/big_remote_play/host/sunshine_manager.py:603
 msgid "Authentication Failed. Configure a user in Sunshine."
 msgstr "Overenie zlyhalo. Nastavte používateľa v Sunshine."
 
@@ -1000,7 +1026,7 @@ msgstr "Automatické zistenie (Odporúčané)"
 #: src/big_remote_play/ui/host_view.py:147
 #: src/big_remote_play/ui/host_view.py:232
 #: src/big_remote_play/ui/host_view.py:404
-#: src/big_remote_play/ui/host_view.py:1077
+#: src/big_remote_play/ui/host_view.py:1188
 #: src/big_remote_play/ui/main_window.py:678
 msgid "Automatic"
 msgstr "Automaticky"
@@ -1013,7 +1039,7 @@ msgid "Automatic (Recommended)"
 msgstr "Automaticky (odporúčané)"
 
 #: src/big_remote_play/ui/host_view.py:321
-#: src/big_remote_play/ui/host_view.py:1020
+#: src/big_remote_play/ui/host_view.py:1046
 msgid "Automatic capture and encoding"
 msgstr "Automatické snímanie a kódovanie"
 
@@ -1021,7 +1047,7 @@ msgstr "Automatické snímanie a kódovanie"
 msgid "Automatic mode chooses the best format supported by both computers."
 msgstr "Automatický režim vyberie najlepší formát podporovaný oboma počítačmi."
 
-#: src/big_remote_play/ui/host_view.py:878
+#: src/big_remote_play/ui/host_view.py:904
 msgid ""
 "Automatic options below are chosen by Sunshine when sharing starts, not "
 "measurements of an active stream."
@@ -1037,7 +1063,7 @@ msgstr ""
 "Možnosť Automaticky vyberie ten, ktorý na tomto počítači už funguje. Iný "
 "zvoľte, len ak ho potrebujete."
 
-#: src/big_remote_play/ui/host_view.py:876
+#: src/big_remote_play/ui/host_view.py:902
 msgid "Automatic settings and video limit"
 msgstr "Automatické nastavenia a limit videa"
 
@@ -1062,7 +1088,7 @@ msgstr ""
 msgid "Automatic · {resolution} · {frame_rate} · {bitrate}"
 msgstr "Automaticky · {resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:1618
+#: src/big_remote_play/ui/host_view.py:1731
 msgid "Automatic — use the current output"
 msgstr "Automaticky — použiť aktuálny výstup"
 
@@ -1073,7 +1099,7 @@ msgstr "Automaticky — použiť aktuálny výstup"
 msgid "Available at {}"
 msgstr "Dostupné na {}"
 
-#: src/big_remote_play/ui/host_view.py:808
+#: src/big_remote_play/ui/host_view.py:834
 msgid "Available over the internet"
 msgstr "Dostupné cez internet"
 
@@ -1166,11 +1192,11 @@ msgstr ""
 msgid "Bind Address"
 msgstr "Adresa väzby"
 
-#: src/big_remote_play/ui/host_view.py:1537
+#: src/big_remote_play/ui/host_view.py:1650
 msgid "Blocked"
 msgstr "Zablokované"
 
-#: src/big_remote_play/ui/host_view.py:1534
+#: src/big_remote_play/ui/host_view.py:1647
 msgid "Blocked until enabled again"
 msgstr "Zablokované, kým sa znova nepovolí"
 
@@ -1240,7 +1266,7 @@ msgstr "Kódovanie CPU"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 227
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 434
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 458
-#: src/big_remote_play/ui/host_view.py:1534
+#: src/big_remote_play/ui/host_view.py:1647
 msgid "Can connect without a new PIN"
 msgstr "Môže sa pripojiť bez nového PIN"
 
@@ -1260,14 +1286,14 @@ msgstr "Môže sa pripojiť bez nového PIN"
 #: src/big_remote_play/ui/guest_view.py:1590
 #: src/big_remote_play/ui/guest_view.py:1933
 #: src/big_remote_play/ui/guest_view.py:2159
-#: src/big_remote_play/ui/host_view.py:1302
-#: src/big_remote_play/ui/host_view.py:1393
-#: src/big_remote_play/ui/host_view.py:1423
-#: src/big_remote_play/ui/host_view.py:1652
-#: src/big_remote_play/ui/host_view.py:2515
-#: src/big_remote_play/ui/host_view.py:2610
-#: src/big_remote_play/ui/host_view.py:3015
-#: src/big_remote_play/ui/host_view.py:3356
+#: src/big_remote_play/ui/host_view.py:1413
+#: src/big_remote_play/ui/host_view.py:1505
+#: src/big_remote_play/ui/host_view.py:1535
+#: src/big_remote_play/ui/host_view.py:1765
+#: src/big_remote_play/ui/host_view.py:2634
+#: src/big_remote_play/ui/host_view.py:2729
+#: src/big_remote_play/ui/host_view.py:3134
+#: src/big_remote_play/ui/host_view.py:3475
 #: src/big_remote_play/ui/main_window.py:1139
 #: src/big_remote_play/ui/network_common.py:310
 #: src/big_remote_play/ui/network_dashboard.py:397
@@ -1276,8 +1302,8 @@ msgstr "Môže sa pripojiť bez nového PIN"
 #: src/big_remote_play/ui/preferences.py:261
 #: src/big_remote_play/ui/preferences.py:308
 #: src/big_remote_play/ui/preferences.py:318
-#: src/big_remote_play/ui/private_network_view.py:971
-#: src/big_remote_play/ui/private_network_view.py:999
+#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:1028
 #: src/big_remote_play/ui/remote_connection.py:753
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:246
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:266
@@ -1288,7 +1314,7 @@ msgstr "Zrušiť"
 msgid "Cancel the request"
 msgstr "Zrušiť žiadosť"
 
-#: src/big_remote_play/ui/host_view.py:2909
+#: src/big_remote_play/ui/host_view.py:3028
 msgid "Cannot browse (no access or credentials)"
 msgstr "Prehľadávanie nie je možné (chýba prístup alebo prihlasovacie údaje)"
 
@@ -1301,7 +1327,7 @@ msgstr "Metóda zachytávania"
 msgid "Capture, compression and stream limits"
 msgstr "Snímanie, kompresia a limity streamu"
 
-#: src/big_remote_play/ui/host_view.py:1092
+#: src/big_remote_play/ui/host_view.py:1203
 #, python-brace-format
 msgid "Capture: {value}"
 msgstr "Zachytávanie: {value}"
@@ -1312,7 +1338,7 @@ msgstr "Zachytávanie: {value}"
 msgid "Certificate"
 msgstr "Certifikát"
 
-#: src/big_remote_play/host/sunshine_manager.py:491
+#: src/big_remote_play/host/sunshine_manager.py:492
 #, python-brace-format
 msgid "Certificate trust error: {}"
 msgstr "Chyba dôveryhodnosti certifikátu: {}"
@@ -1352,7 +1378,7 @@ msgid "Check for blocked connections automatically"
 msgstr "Automaticky kontrolovať zablokované pripojenia"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1202
-#: src/big_remote_play/ui/host_view.py:2452
+#: src/big_remote_play/ui/host_view.py:2571
 msgid "Check logs for details."
 msgstr "Skontrolujte protokoly pre podrobnosti."
 
@@ -1372,7 +1398,7 @@ msgid ""
 msgstr ""
 "Skontrolujte kód a skúste to znova. Ak je správny, sieť mohla byť odstránená."
 
-#: src/big_remote_play/ui/host_view.py:894
+#: src/big_remote_play/ui/host_view.py:920
 msgid "Check the connection first. Open server tools only when needed."
 msgstr ""
 "Najprv skontrolujte pripojenie. Nástroje servera otvárajte iba podľa potreby."
@@ -1410,15 +1436,15 @@ msgstr "Kontroluje sa tento počítač…"
 msgid "Checking what this network allows…"
 msgstr "Zisťuje sa, čo táto sieť povoľuje…"
 
-#: src/big_remote_play/ui/host_view.py:2540
+#: src/big_remote_play/ui/host_view.py:2659
 msgid "Checking which devices are already allowed."
 msgstr "Zisťuje sa, ktoré zariadenia sú už povolené."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 224
 #: src/big_remote_play/ui/guest_view.py:542
 #: src/big_remote_play/ui/host_view.py:322
-#: src/big_remote_play/ui/host_view.py:825
-#: src/big_remote_play/ui/host_view.py:835
+#: src/big_remote_play/ui/host_view.py:851
+#: src/big_remote_play/ui/host_view.py:861
 #: src/big_remote_play/ui/main_window.py:487
 #: src/big_remote_play/ui/main_window.py:1086
 #: src/big_remote_play/ui/remote_connection.py:698
@@ -1450,7 +1476,7 @@ msgstr ""
 "Vyberte spôsob a zobrazte podrobnosti o prihlásení, sieti a zariadeniach."
 
 #: src/big_remote_play/ui/host_view.py:701
-#: src/big_remote_play/ui/host_view.py:1831
+#: src/big_remote_play/ui/host_view.py:1944
 msgid "Choose a source, then start sharing."
 msgstr "Vyberte zdroj a spustite zdieľanie."
 
@@ -1510,7 +1536,7 @@ msgstr ""
 msgid "Choose this computer from the list."
 msgstr "Vyberte tento počítač zo zoznamu."
 
-#: src/big_remote_play/ui/host_view.py:936
+#: src/big_remote_play/ui/host_view.py:962
 msgid "Clear"
 msgstr "Vymazať"
 
@@ -1524,7 +1550,7 @@ msgid "Clear Everything"
 msgstr "Vymazať všetko"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 97
-#: src/big_remote_play/ui/host_view.py:935
+#: src/big_remote_play/ui/host_view.py:961
 msgid "Clear Logs"
 msgstr "Vymazať záznamy"
 
@@ -1544,9 +1570,9 @@ msgstr "Vymazať históriu pripojení?"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1232
 #: src/big_remote_play/ui/guest_view.py:1780
 #: src/big_remote_play/ui/guest_view.py:1836
-#: src/big_remote_play/ui/guided_setup.py:303
-#: src/big_remote_play/ui/host_view.py:1158
-#: src/big_remote_play/ui/host_view.py:2457
+#: src/big_remote_play/ui/guided_setup.py:305
+#: src/big_remote_play/ui/host_view.py:1269
+#: src/big_remote_play/ui/host_view.py:2576
 #: src/big_remote_play/ui/installer_window.py:76
 msgid "Close"
 msgstr "Zavrieť"
@@ -1558,6 +1584,12 @@ msgstr "Ak chcete hľadať ďalej, zatvorte a znova otvorte toto okno."
 #: src/big_remote_play/ui/guest_view.py:479
 msgid "Close the game on the game PC when streaming ends"
 msgstr "Po skončení streamovania zavrieť hru na hernom počítači"
+
+#: src/big_remote_play/ui/host_view.py:764
+msgid "Close the stream on every device so a new device can pair"
+msgstr ""
+"Zavrieť stream na všetkých zariadeniach, aby sa mohlo spárovať nové "
+"zariadenie"
 
 #: src/big_remote_play/ui/connection_guides.py:66
 #: src/big_remote_play/ui/connection_guides.py:116
@@ -1605,7 +1637,7 @@ msgstr "Bežné klávesové skratky používané počas streamovania"
 msgid "Complete the installation in the external terminal, then check again."
 msgstr "Dokončite inštaláciu v externom termináli a skontrolujte znova."
 
-#: src/big_remote_play/ui/private_network_view.py:788
+#: src/big_remote_play/ui/private_network_view.py:817
 msgid "Complete the sign-in in your browser."
 msgstr "Dokončite prihlásenie v prehliadači."
 
@@ -1615,11 +1647,11 @@ msgid ""
 msgstr ""
 "Niektoré súčasti stále chýbajú. Dokončite inštaláciu a skontrolujte znova."
 
-#: src/big_remote_play/ui/host_view.py:1093
+#: src/big_remote_play/ui/host_view.py:1204
 msgid "Compression: H.264 only"
 msgstr "Kompresia: iba H.264"
 
-#: src/big_remote_play/ui/host_view.py:1093
+#: src/big_remote_play/ui/host_view.py:1204
 msgid "Compression: HEVC/AV1 when supported"
 msgstr "Kompresia: HEVC/AV1, keď je podporované"
 
@@ -1646,7 +1678,7 @@ msgstr "Konfiguračné súbory"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 226
-#: src/big_remote_play/ui/host_view.py:943
+#: src/big_remote_play/ui/host_view.py:969
 msgid "Configuration Directory"
 msgstr "Adresár s konfiguráciou"
 
@@ -1692,12 +1724,12 @@ msgid "Configured for the next sharing session"
 msgstr "Nastavené pre nasledujúcu reláciu zdieľania"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 776
-#: src/big_remote_play/ui/host_view.py:1661
+#: src/big_remote_play/ui/host_view.py:1774
 msgid "Configuring firewall... (Password may be requested)"
 msgstr "Konfigurácia firewallu... (Môže byť požadované heslo)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:2997
+#: src/big_remote_play/ui/host_view.py:3116
 msgid "Confirm New Password"
 msgstr "Potvrďte nové heslo"
 
@@ -1715,8 +1747,8 @@ msgstr "Potvrďte nové heslo"
 #: src/big_remote_play/ui/main_window.py:827
 #: src/big_remote_play/ui/main_window.py:992
 #: src/big_remote_play/ui/main_window.py:1218
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 #: src/big_remote_play/ui/remote_connection.py:453
 #: src/big_remote_play/ui/remote_connection.py:481
 msgid "Connect"
@@ -1734,19 +1766,19 @@ msgstr "Pripojiť pomocou adresy"
 
 #: src/big_remote_play/ui/network_common.py:164
 #: src/big_remote_play/ui/network_dashboard.py:217
-#: src/big_remote_play/ui/private_network_view.py:535
+#: src/big_remote_play/ui/private_network_view.py:563
 msgid "Connect this computer"
 msgstr "Pripojiť tento počítač"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 26
-#: src/big_remote_play/ui/private_network_view.py:103
+#: src/big_remote_play/ui/private_network_view.py:131
 msgid "Connect to Headscale Network"
 msgstr "Pripojiť sa k sieti Headscale"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 36
-#: src/big_remote_play/ui/private_network_view.py:109
+#: src/big_remote_play/ui/private_network_view.py:137
 msgid "Connect to Tailscale Network"
 msgstr "Pripojiť sa k sieti Tailscale"
 
@@ -1757,7 +1789,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 46
-#: src/big_remote_play/ui/private_network_view.py:115
+#: src/big_remote_play/ui/private_network_view.py:143
 msgid "Connect to ZeroTier Network"
 msgstr "Pripojiť sa k sieti ZeroTier"
 
@@ -1812,15 +1844,15 @@ msgstr "Pripojené zariadenie"
 msgid "Connected devices: {}"
 msgstr "Pripojené zariadenia: {}"
 
-#: src/big_remote_play/ui/host_view.py:1437
+#: src/big_remote_play/ui/host_view.py:1549
 msgid "Connected now"
 msgstr "Práve pripojené"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1907
-#: src/big_remote_play/ui/private_network_view.py:767
-#: src/big_remote_play/ui/private_network_view.py:804
-#: src/big_remote_play/ui/private_network_view.py:839
+#: src/big_remote_play/ui/private_network_view.py:796
+#: src/big_remote_play/ui/private_network_view.py:833
+#: src/big_remote_play/ui/private_network_view.py:868
 msgid "Connected successfully!"
 msgstr "Pripojenie prebehlo úspešne!"
 
@@ -1837,21 +1869,21 @@ msgstr "Pripája sa k sieti…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1848
-#: src/big_remote_play/ui/private_network_view.py:734
+#: src/big_remote_play/ui/private_network_view.py:763
 msgid "Connecting..."
 msgstr "Pripája sa..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
-#: src/big_remote_play/ui/private_network_view.py:551
-#: src/big_remote_play/ui/private_network_view.py:949
+#: src/big_remote_play/ui/private_network_view.py:579
+#: src/big_remote_play/ui/private_network_view.py:978
 msgid "Connection Details"
 msgstr "Podrobnosti pripojenia"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
-#: src/big_remote_play/ui/private_network_view.py:553
-#: src/big_remote_play/ui/private_network_view.py:1014
+#: src/big_remote_play/ui/private_network_view.py:581
+#: src/big_remote_play/ui/private_network_view.py:1043
 msgid "Connection Log"
 msgstr "Záznam pripojenia"
 
@@ -1859,15 +1891,15 @@ msgstr "Záznam pripojenia"
 msgid "Connection checks"
 msgstr "Kontroly pripojenia"
 
-#: src/big_remote_play/host/sunshine_manager.py:600
-#: src/big_remote_play/host/sunshine_manager.py:625
+#: src/big_remote_play/host/sunshine_manager.py:601
+#: src/big_remote_play/host/sunshine_manager.py:626
 msgid ""
 "Connection error: Sunshine is unreachable or its certificate does not match"
 msgstr "Chyba pripojenia: Sunshine je nedostupný alebo certifikát nesúhlasí"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Connection failed"
 msgstr "Pripojenie zlyhalo"
 
@@ -1878,7 +1910,7 @@ msgid "Connection history"
 msgstr "História pripojení"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 381
-#: src/big_remote_play/ui/host_view.py:1562
+#: src/big_remote_play/ui/host_view.py:1675
 msgid "Connection information"
 msgstr "Informácie o pripojení"
 
@@ -1890,7 +1922,7 @@ msgstr "Spôsob pripojenia"
 msgid "Connection methods"
 msgstr "Spôsoby pripojenia"
 
-#: src/big_remote_play/ui/private_network_view.py:361
+#: src/big_remote_play/ui/private_network_view.py:389
 msgid "Connection progress"
 msgstr "Priebeh pripájania"
 
@@ -1960,13 +1992,13 @@ msgstr "Určuje správanie skratiek, ako sú Alt+Tab a kláves Super."
 
 #: src/big_remote_play/ui/network_common.py:213
 #: src/big_remote_play/ui/network_common.py:224
-#: src/big_remote_play/ui/private_network_view.py:1081
+#: src/big_remote_play/ui/private_network_view.py:1110
 msgid "Copied"
 msgstr "Skopírované"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 843
-#: src/big_remote_play/ui/host_view.py:1749
-#: src/big_remote_play/ui/host_view.py:2719
+#: src/big_remote_play/ui/host_view.py:1862
+#: src/big_remote_play/ui/host_view.py:2838
 msgid "Copied!"
 msgstr "Skopírované!"
 
@@ -1974,7 +2006,7 @@ msgstr "Skopírované!"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:2665
+#: src/big_remote_play/ui/host_view.py:2784
 #: src/big_remote_play/ui/network_common.py:229
 #: src/big_remote_play/ui/network_common.py:246
 msgid "Copy"
@@ -1984,7 +2016,7 @@ msgstr "Kopírovať"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:948
+#: src/big_remote_play/ui/host_view.py:974
 msgid "Copy Path"
 msgstr "Kopírovať cestu"
 
@@ -1992,8 +2024,8 @@ msgstr "Kopírovať cestu"
 msgid "Copy address"
 msgstr "Kopírovať adresu"
 
-#: src/big_remote_play/ui/host_view.py:772
-#: src/big_remote_play/ui/host_view.py:775
+#: src/big_remote_play/ui/host_view.py:800
+#: src/big_remote_play/ui/host_view.py:803
 msgid "Copy code"
 msgstr "Kopírovať kód"
 
@@ -2001,7 +2033,7 @@ msgstr "Kopírovať kód"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:2666
+#: src/big_remote_play/ui/host_view.py:2785
 msgid "Copy logs"
 msgstr "Kopírovať záznamy"
 
@@ -2014,12 +2046,12 @@ msgstr "Kopírovať technické podrobnosti"
 msgid "Copy the private address of {name}"
 msgstr "Kopírovať súkromnú adresu zariadenia {name}"
 
-#: src/big_remote_play/ui/host_view.py:1721
+#: src/big_remote_play/ui/host_view.py:1834
 #, python-brace-format
 msgid "Copy the {} value to clipboard"
 msgstr "Skopírovať hodnotu {} do schránky"
 
-#: src/big_remote_play/ui/host_view.py:775
+#: src/big_remote_play/ui/host_view.py:803
 msgid "Copy this PC's discovery code to the clipboard"
 msgstr "Skopírovať vyhľadávací kód tohto počítača do schránky"
 
@@ -2032,7 +2064,7 @@ msgstr "Kopírovať do schránky: {name}"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 720
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:1720
+#: src/big_remote_play/ui/host_view.py:1833
 #, python-brace-format
 msgid "Copy {}"
 msgstr "Kopírovať {}"
@@ -2091,7 +2123,7 @@ msgid "Could not save the connection settings. Check file permissions."
 msgstr ""
 "Nepodarilo sa uložiť nastavenia pripojenia. Skontrolujte oprávnenia súboru."
 
-#: src/big_remote_play/ui/host_view.py:2208
+#: src/big_remote_play/ui/host_view.py:2321
 msgid "Could not save the server configuration."
 msgstr "Konfiguráciu servera sa nepodarilo uložiť."
 
@@ -2099,18 +2131,20 @@ msgstr "Konfiguráciu servera sa nepodarilo uložiť."
 msgid "Could not turn it on. Check the connection details."
 msgstr "Zapnutie sa nepodarilo. Skontrolujte podrobnosti pripojenia."
 
-#: src/big_remote_play/ui/host_view.py:2181
+#: src/big_remote_play/ui/host_view.py:2294
 msgid "Could not update the game library. Existing games were preserved."
 msgstr ""
 "Knižnicu hier sa nepodarilo aktualizovať. Existujúce hry boli zachované."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1255
-#: src/big_remote_play/ui/private_network_view.py:1049
+#: src/big_remote_play/ui/private_network_view.py:1078
 msgid "Create Account"
 msgstr "Vytvoriť účet"
 
+#: src/big_remote_play/ui/guided_setup.py:306
 #: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "Vytvoriť sieť ZeroTier"
 
@@ -2119,8 +2153,16 @@ msgstr "Vytvoriť sieť ZeroTier"
 msgid "Create a backup"
 msgstr "Vytvoriť zálohu"
 
+#: src/big_remote_play/ui/private_network_view.py:95
+msgid ""
+"Create a free account or sign in. Only the person who owns the network does "
+"this."
+msgstr ""
+"Vytvorte si bezplatný účet alebo sa prihláste. Robí to iba vlastník siete."
+
 #: src/big_remote_play/ui/network_dashboard.py:226
 #: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "Vytvoriť sieť"
 
@@ -2177,12 +2219,12 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 705
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 307
-#: src/big_remote_play/host/sunshine_manager.py:658
+#: src/big_remote_play/host/sunshine_manager.py:659
 msgid "Credentials reset successfully"
 msgstr "Prihlasovacie údaje boli obnovené"
 
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr ""
 "Prihlasovacie údaje, ktoré umožňujú Big Remote Play spravovať túto sieť."
@@ -2194,17 +2236,17 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 344
-#: src/big_remote_play/host/sunshine_manager.py:634
+#: src/big_remote_play/host/sunshine_manager.py:635
 msgid "Credentials updated successfully"
 msgstr "Prihlasovacie údaje boli aktualizované"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:2991
+#: src/big_remote_play/ui/host_view.py:3110
 msgid "Current Password"
 msgstr "Súčasné heslo"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 685
-#: src/big_remote_play/ui/host_view.py:2989
+#: src/big_remote_play/ui/host_view.py:3108
 msgid "Current Username"
 msgstr "Súčasné používateľské meno"
 
@@ -2257,8 +2299,8 @@ msgstr "Predvolený mikrofón"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1263
-#: src/big_remote_play/ui/private_network_view.py:902
-#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:931
+#: src/big_remote_play/ui/private_network_view.py:1029
 msgid "Delete"
 msgstr "Odstrániť"
 
@@ -2270,16 +2312,16 @@ msgstr "Odstrániť všetko"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1895
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Delete entry?"
 msgstr "Zmazať záznam?"
 
-#: src/big_remote_play/ui/private_network_view.py:902
+#: src/big_remote_play/ui/private_network_view.py:931
 msgid "Delete this saved network"
 msgstr "Odstrániť túto uloženú sieť"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:923
+#: src/big_remote_play/ui/host_view.py:949
 msgid "Detailed Logs"
 msgstr "Podrobné záznamy"
 
@@ -2293,7 +2335,7 @@ msgid "Device ID"
 msgstr "ID zariadenia"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:1370
+#: src/big_remote_play/ui/host_view.py:1482
 msgid "Device Name"
 msgstr "Názov zariadenia"
 
@@ -2317,7 +2359,7 @@ msgid "Device at {address}"
 msgstr "Zariadenie na {address}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:2574
+#: src/big_remote_play/ui/host_view.py:2693
 msgid "Device enabled"
 msgstr "Zariadenie povolené"
 
@@ -2336,7 +2378,7 @@ msgstr "Zariadenia"
 msgid "Devices online now: {count}"
 msgstr "Zariadenia online: {count}"
 
-#: src/big_remote_play/ui/host_view.py:2510
+#: src/big_remote_play/ui/host_view.py:2629
 msgid ""
 "Devices paired with Sunshine. Disable to block access without re-pairing; "
 "remove to revoke (a new PIN will be required)."
@@ -2344,16 +2386,16 @@ msgstr ""
 "Zariadenia spárované so Sunshine. Zakázanie zablokuje prístup bez nového "
 "párovania; odstránenie ho zruší (bude potrebný nový PIN)."
 
-#: src/big_remote_play/ui/host_view.py:1437
+#: src/big_remote_play/ui/host_view.py:1549
 msgid "Devices playing on this computer at this moment."
 msgstr "Zariadenia, ktoré práve hrajú na tomto počítači."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:2643
+#: src/big_remote_play/ui/host_view.py:2762
 msgid "Devices updated"
 msgstr "Zariadenia aktualizované"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "Devices, private address and how to add another computer."
 msgstr "Zariadenia, súkromná adresa a ako pridať ďalší počítač."
 
@@ -2394,7 +2436,7 @@ msgstr ""
 msgid "Disable"
 msgstr "Zakázať"
 
-#: src/big_remote_play/ui/host_view.py:1504
+#: src/big_remote_play/ui/host_view.py:1617
 msgid "Disable or remove devices that should no longer connect."
 msgstr "Zakážte alebo odstráňte zariadenia, ktoré sa už nemajú pripájať."
 
@@ -2478,7 +2520,7 @@ msgstr ""
 "Zobrazuje nad streamom údaje o latencii, snímkovej frekvencii a dekódovaní."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1442
-#: src/big_remote_play/ui/host_view.py:3355
+#: src/big_remote_play/ui/host_view.py:3474
 msgid "Do you want to restore default settings?"
 msgstr "Chcete obnoviť predvolené nastavenia?"
 
@@ -2489,8 +2531,8 @@ msgstr "Docker Engine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1137
-#: src/big_remote_play/ui/private_network_view.py:909
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:938
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Domain"
 msgstr "Doména"
 
@@ -2526,7 +2568,7 @@ msgstr "Ľahko sa nastavuje a skvele prepojí vaše vlastné zariadenia."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1704
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit"
 msgstr "Upraviť"
 
@@ -2538,13 +2580,13 @@ msgstr "Upraviť vlastnú snímkovú frekvenciu"
 msgid "Edit custom resolution"
 msgstr "Upraviť vlastné rozlíšenie"
 
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit this saved network"
 msgstr "Upraviť túto uloženú sieť"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:969
+#: src/big_remote_play/ui/private_network_view.py:998
 #, python-brace-format
 msgid "Edit – {}"
 msgstr "Upraviť – {}"
@@ -2615,7 +2657,7 @@ msgstr "Zapnúť YUV 4:4:4"
 msgid "Enable simultaneous IPv4 and IPv6 support on server"
 msgstr "Povoliť súčasnú podporu IPv4 a IPv6 na serveri"
 
-#: src/big_remote_play/ui/host_view.py:923
+#: src/big_remote_play/ui/host_view.py:949
 msgid "Enable verbose logging for debugging"
 msgstr "Zapnúť podrobné zaznamenávanie na ladenie"
 
@@ -2629,7 +2671,7 @@ msgstr ""
 "Povolením tejto možnosti môžete zabrániť stratám snímok v sieti počas zmien "
 "scén, ale kvalita videa sa môže znížiť počas pohybu."
 
-#: src/big_remote_play/ui/host_view.py:1094
+#: src/big_remote_play/ui/host_view.py:1205
 #, python-brace-format
 msgid "Encoding priority: {value}"
 msgstr "Priorita kódovania: {value}"
@@ -2639,6 +2681,11 @@ msgstr "Priorita kódovania: {value}"
 msgid "End Game"
 msgstr "Ukončiť hru"
 
+#: src/big_remote_play/ui/host_view.py:760
+#: src/big_remote_play/ui/host_view.py:1105
+msgid "End for everyone"
+msgstr "Ukončiť pre všetkých"
+
 #: src/big_remote_play/ui/performance_monitor.py:563
 msgid ""
 "End the running game gently, or forcefully evict the network address? Ending "
@@ -2647,8 +2694,12 @@ msgstr ""
 "Ukončiť bežiacu hru šetrne, alebo natvrdo odpojiť sieťovú adresu? Ukončenie "
 "hry ponechá zariadenie spárované."
 
+#: src/big_remote_play/ui/host_view.py:1101
+msgid "End the stream for everyone?"
+msgstr "Ukončiť stream pre všetkých?"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 325
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter ID"
 msgstr "Zadať ID"
 
@@ -2656,7 +2707,7 @@ msgstr "Zadať ID"
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Zadajte ŠÍRKAxVÝŠKA (napríklad 1920x1080):"
 
-#: src/big_remote_play/ui/private_network_view.py:984
+#: src/big_remote_play/ui/private_network_view.py:1013
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "Zadajte šestnásťmiestne hexadecimálne ID siete."
 
@@ -2678,8 +2729,8 @@ msgstr "Zadajte iné 16-znakové ID siete"
 
 #: src/big_remote_play/ui/guest_view.py:1338
 #: src/big_remote_play/ui/guest_view.py:1650
-#: src/big_remote_play/ui/host_view.py:1252
-#: src/big_remote_play/ui/host_view.py:1407
+#: src/big_remote_play/ui/host_view.py:1363
+#: src/big_remote_play/ui/host_view.py:1519
 msgid "Enter exactly four digits."
 msgstr "Zadajte presne štyri číslice."
 
@@ -2690,25 +2741,29 @@ msgstr "Zadajte počet snímok za sekundu (napríklad 75):"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:116
+#: src/big_remote_play/ui/private_network_view.py:144
 msgid "Enter the 16-character Network ID to join a ZeroTier network."
 msgstr "Zadajte šestnásťznakové ID siete a pripojte sa k sieti ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:746
+#: src/big_remote_play/ui/private_network_view.py:775
 msgid "Enter the Headscale server address."
 msgstr "Zadajte adresu servera Headscale."
 
 #: src/big_remote_play/ui/network_devices.py:442
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter the ID on this page and choose Connect."
 msgstr "Zadajte ID na tejto stránke a vyberte Pripojiť."
 
-#: src/big_remote_play/ui/host_view.py:1355
+#: src/big_remote_play/ui/host_view.py:1467
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr "Zadajte PIN zobrazený aplikáciou Moonlight na druhom počítači."
 
-#: src/big_remote_play/ui/host_view.py:751
-#: src/big_remote_play/ui/host_view.py:1367
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "Enter the code here"
+msgstr "Zadajte kód sem"
+
+#: src/big_remote_play/ui/host_view.py:779
+#: src/big_remote_play/ui/host_view.py:1479
 msgid "Enter the four digits shown by Moonlight on the other computer."
 msgstr ""
 "Zadajte štyri číslice zobrazené aplikáciou Moonlight na druhom počítači."
@@ -2719,7 +2774,7 @@ msgstr "Zadajte úplnú adresu https servera Headscale."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 27
-#: src/big_remote_play/ui/private_network_view.py:104
+#: src/big_remote_play/ui/private_network_view.py:132
 msgid "Enter the server domain and auth key provided by the administrator."
 msgstr "Zadajte doménu servera a overovací kľúč poskytnutý správcom."
 
@@ -2733,7 +2788,7 @@ msgstr "Režim kódovania entropie"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/private_network_view.py:992
+#: src/big_remote_play/ui/private_network_view.py:1021
 msgid "Entry updated"
 msgstr "Položka aktualizovaná"
 
@@ -2746,8 +2801,8 @@ msgstr "Položka aktualizovaná"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 787
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1239
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1245
-#: src/big_remote_play/ui/host_view.py:1668
-#: src/big_remote_play/ui/host_view.py:2262
+#: src/big_remote_play/ui/host_view.py:1781
+#: src/big_remote_play/ui/host_view.py:2375
 msgid "Error"
 msgstr "Chyba"
 
@@ -2756,7 +2811,7 @@ msgstr "Chyba"
 msgid "Error Clearing"
 msgstr "Chyba pri mazaní"
 
-#: src/big_remote_play/ui/host_view.py:1095
+#: src/big_remote_play/ui/host_view.py:1206
 #, python-brace-format
 msgid "Error correction: {value}%"
 msgstr "Oprava chýb: {value}%"
@@ -2768,15 +2823,15 @@ msgid "Error executing command: {}"
 msgstr "Chyba pri vykonávaní príkazu: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 807
-#: src/big_remote_play/ui/host_view.py:1691
+#: src/big_remote_play/ui/host_view.py:1804
 #, python-brace-format
 msgid "Error executing script: {}"
 msgstr "Chyba pri vykonávaní skriptu: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1403
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1435
-#: src/big_remote_play/ui/host_view.py:2302
-#: src/big_remote_play/ui/host_view.py:2334
+#: src/big_remote_play/ui/host_view.py:2415
+#: src/big_remote_play/ui/host_view.py:2447
 #, python-brace-format
 msgid "Error launching game: {}"
 msgstr "Chyba pri spúšťaní hry: {}"
@@ -2789,7 +2844,7 @@ msgstr "Chyba pri obnove: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 109
-#: src/big_remote_play/host/sunshine_manager.py:275
+#: src/big_remote_play/host/sunshine_manager.py:276
 #, python-brace-format
 msgid "Error starting Sunshine: {}"
 msgstr "Chyba pri spúšťaní Sunshine: {}"
@@ -2804,7 +2859,7 @@ msgstr "Chyba: {}"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 937
 # line: 1908
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "Establish Connection"
 msgstr "Nadviazať pripojenie"
 
@@ -2819,6 +2874,16 @@ msgstr ""
 #: src/big_remote_play/ui/remote_connection.py:524
 msgid "Every device on the network, approvals and removal."
 msgstr "Všetky zariadenia v sieti, ich schvaľovanie a odstraňovanie."
+
+#: src/big_remote_play/ui/host_view.py:1102
+msgid ""
+"Every device playing now is disconnected. Then start pairing again on the "
+"new device and enter its code here. Devices already paired can reconnect "
+"right after."
+msgstr ""
+"Všetky zariadenia, ktoré práve hrajú, sa odpoja. Potom na novom zariadení "
+"spustite párovanie znova a zadajte sem jeho kód. Už spárované zariadenia sa "
+"môžu hneď potom znova pripojiť."
 
 #: src/big_remote_play/ui/history_dialog.py:151
 msgid ""
@@ -2846,7 +2911,7 @@ msgid "Excellent"
 msgstr "Výborná"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:1678
+#: src/big_remote_play/ui/host_view.py:1791
 msgid "Execution failed or cancelled."
 msgstr "Spustenie zlyhalo alebo bolo zrušené."
 
@@ -2886,7 +2951,7 @@ msgid "Failed to connect. Verify if Moonlight is paired."
 msgstr "Nepodarilo sa pripojiť. Overte, či je Moonlight spárovaný."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1153
-#: src/big_remote_play/ui/host_view.py:2601
+#: src/big_remote_play/ui/host_view.py:2720
 msgid "Failed to update device"
 msgstr "Zariadenie sa nepodarilo aktualizovať"
 
@@ -2898,13 +2963,13 @@ msgstr "Rýchlejšia odozva alebo lepší obraz"
 msgid "Favorite"
 msgstr "Obľúbené"
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Fill in the form"
 msgstr "Vyplňte formulár"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1316
-#: src/big_remote_play/ui/private_network_view.py:688
+#: src/big_remote_play/ui/private_network_view.py:716
 msgid "Find Network ID"
 msgstr "Nájsť ID siete"
 
@@ -2931,8 +2996,8 @@ msgid "Finish signing in"
 msgstr "Dokončite prihlásenie"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:1645
-#: src/big_remote_play/ui/host_view.py:1678
+#: src/big_remote_play/ui/host_view.py:1758
+#: src/big_remote_play/ui/host_view.py:1791
 msgid "Firewall Error"
 msgstr "Chyba firewallu"
 
@@ -2954,7 +3019,7 @@ msgstr "Opraviť"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 302
-#: src/big_remote_play/ui/host_view.py:2459
+#: src/big_remote_play/ui/host_view.py:2578
 msgid "Fix Dependencies"
 msgstr "Opraviť závislosti"
 
@@ -3020,8 +3085,8 @@ msgstr "Nútené"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1772
 # line: 1787
-#: src/big_remote_play/ui/private_network_view.py:935
-#: src/big_remote_play/ui/private_network_view.py:941
+#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:970
 #, python-brace-format
 msgid "Form filled for {}"
 msgstr "Formulár vyplnený pre {}"
@@ -3049,7 +3114,7 @@ msgstr "Snímok za sekundu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 133
 #: src/big_remote_play/ui/host_view.py:273
-#: src/big_remote_play/ui/host_view.py:1774
+#: src/big_remote_play/ui/host_view.py:1887
 msgid "Full Desktop"
 msgstr "Celá plocha"
 
@@ -3062,7 +3127,7 @@ msgid "Fullscreen"
 msgstr "Celá obrazovka"
 
 #: src/big_remote_play/ui/host_view.py:621
-#: src/big_remote_play/ui/host_view.py:2750
+#: src/big_remote_play/ui/host_view.py:2869
 msgid "Game Library"
 msgstr "Knižnica hier"
 
@@ -3089,12 +3154,12 @@ msgstr "Herný počítač sa nenašiel"
 msgid "Game Selection"
 msgstr "Výber hier"
 
-#: src/big_remote_play/ui/host_view.py:2843
+#: src/big_remote_play/ui/host_view.py:2962
 #, python-brace-format
 msgid "Games added: {}"
 msgstr "Pridané hry: {}"
 
-#: src/big_remote_play/ui/host_view.py:2750
+#: src/big_remote_play/ui/host_view.py:2869
 msgid ""
 "Games shown on the other computer in Moonlight. Add detected games or remove "
 "entries."
@@ -3117,7 +3182,7 @@ msgstr "Všeobecné"
 # line: 1084
 # line: 1721
 # line: 1842
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Get Network ID"
 msgstr "Získať ID siete"
 
@@ -3141,7 +3206,7 @@ msgstr ""
 msgid "Graphics Card / Encoder"
 msgstr "Grafická karta / Kodér"
 
-#: src/big_remote_play/ui/host_view.py:1091
+#: src/big_remote_play/ui/host_view.py:1202
 #, python-brace-format
 msgid "Graphics card: {value}"
 msgstr "Grafická karta: {value}"
@@ -3156,11 +3221,11 @@ msgstr "Grafická karta: {value}"
 msgid "Guided setup"
 msgstr "Sprievodca nastavením"
 
-#: src/big_remote_play/ui/host_view.py:1051
+#: src/big_remote_play/ui/host_view.py:1162
 msgid "HDR screen: colors will look washed out on devices without HDR"
 msgstr "Obrazovka s HDR: na zariadeniach bez HDR budú farby vyzerať vyblednuto"
 
-#: src/big_remote_play/ui/host_view.py:1050
+#: src/big_remote_play/ui/host_view.py:1161
 msgid "HDR screen: shared in SDR"
 msgstr "Obrazovka s HDR: zdieľa sa v SDR"
 
@@ -3196,8 +3261,8 @@ msgstr "Headscale používa bežného klienta Tailscale."
 msgid "Hidden. Use Copy."
 msgstr "Skryté. Použite Kopírovať."
 
-#: src/big_remote_play/ui/host_view.py:1712
-#: src/big_remote_play/ui/host_view.py:1739
+#: src/big_remote_play/ui/host_view.py:1825
+#: src/big_remote_play/ui/host_view.py:1852
 #, python-brace-format
 msgid "Hide {}"
 msgstr "Skryť {}"
@@ -3299,17 +3364,21 @@ msgstr ""
 msgid "How to approve"
 msgstr "Ako schváliť"
 
+#: src/big_remote_play/ui/private_network_view.py:730
+msgid "How to create a free network, step by step."
+msgstr "Ako vytvoriť bezplatnú sieť, krok za krokom."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 266
-#: src/big_remote_play/ui/private_network_view.py:435
+#: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
 msgid "How to install {}"
 msgstr "Ako nainštalovať {}"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "How to run Headscale on your own server, step by step."
 msgstr "Ako krok za krokom prevádzkovať Headscale na vlastnom serveri."
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "How to use the selected private network service."
 msgstr "Ako používať vybranú službu súkromnej siete."
 
@@ -3318,14 +3387,15 @@ msgid "I already use ZeroTier"
 msgstr "ZeroTier už používam"
 
 #: src/big_remote_play/ui/guided_setup.py:278
+#: src/big_remote_play/ui/private_network_view.py:730
 msgid "I don't have a code"
 msgstr "Nemám kód"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "I don't have a server yet"
 msgstr "Ešte nemám server"
 
-#: src/big_remote_play/ui/host_view.py:2987
+#: src/big_remote_play/ui/host_view.py:3106
 msgid "I forgot the current password"
 msgstr "Zabudol som súčasné heslo"
 
@@ -3391,13 +3461,13 @@ msgstr ""
 msgid "Image"
 msgstr "Obraz"
 
-#: src/big_remote_play/ui/host_view.py:824
-#: src/big_remote_play/ui/host_view.py:869
-#: src/big_remote_play/ui/host_view.py:879
+#: src/big_remote_play/ui/host_view.py:850
+#: src/big_remote_play/ui/host_view.py:895
+#: src/big_remote_play/ui/host_view.py:905
 msgid "Image and capture"
 msgstr "Obraz a snímanie"
 
-#: src/big_remote_play/ui/host_view.py:864
+#: src/big_remote_play/ui/host_view.py:890
 msgid "Image and capture settings are on Overview, next to Start sharing."
 msgstr ""
 "Nastavenia obrazu a snímania nájdete v časti Prehľad vedľa možnosti „Spustiť "
@@ -3435,7 +3505,7 @@ msgstr ""
 "V Big Remote Play vyberte Headscale → Pripojiť sa k sieti a zadajte adresu "
 "servera, alebo spustite príkaz nižšie."
 
-#: src/big_remote_play/ui/host_view.py:781
+#: src/big_remote_play/ui/host_view.py:809
 msgid ""
 "In Big Remote Play on the other PC, choose Find by code. This is not the "
 "pairing code."
@@ -3446,6 +3516,14 @@ msgstr ""
 #: src/big_remote_play/ui/network_devices.py:442
 msgid "In Big Remote Play, choose Play over the internet and type this code."
 msgstr "V Big Remote Play zvoľte Hranie cez internet a zadajte tento kód."
+
+#: src/big_remote_play/ui/private_network_view.py:105
+msgid ""
+"In ZeroTier Central, open the network and allow each computer under Members. "
+"Until then it waits for approval."
+msgstr ""
+"V ZeroTier Central otvorte sieť a povoľte každý počítač v časti Members. "
+"Dovtedy čaká na schválenie."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 337
@@ -3473,7 +3551,7 @@ msgid "In use now"
 msgstr "Práve využívané"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 890
-#: src/big_remote_play/ui/host_view.py:1824
+#: src/big_remote_play/ui/host_view.py:1937
 msgid "Inactive"
 msgstr "Neaktívny"
 
@@ -3503,7 +3581,7 @@ msgid "Input, Network, and Access"
 msgstr "Vstup, Sieť a Prístup"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 569
-#: src/big_remote_play/ui/host_view.py:1355
+#: src/big_remote_play/ui/host_view.py:1467
 msgid "Insert PIN"
 msgstr "Zadať PIN"
 
@@ -3550,8 +3628,8 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 464
 #: src/big_remote_play/ui/main_window.py:1129
 #: src/big_remote_play/ui/main_window.py:1138
-#: src/big_remote_play/ui/private_network_view.py:430
-#: src/big_remote_play/ui/private_network_view.py:432
+#: src/big_remote_play/ui/private_network_view.py:458
+#: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
 msgid "Install {}"
 msgstr "Nainštalovať {}"
@@ -3560,8 +3638,8 @@ msgstr "Nainštalovať {}"
 # line: 1498
 # line: 1529
 # line: 1542
-#: src/big_remote_play/ui/private_network_view.py:373
-#: src/big_remote_play/ui/private_network_view.py:421
+#: src/big_remote_play/ui/private_network_view.py:401
+#: src/big_remote_play/ui/private_network_view.py:449
 msgid "Installation Log"
 msgstr "Inštalačný protokol"
 
@@ -3573,7 +3651,7 @@ msgstr "Inštalácia bola úspešne dokončená!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 464
-#: src/big_remote_play/ui/private_network_view.py:456
+#: src/big_remote_play/ui/private_network_view.py:484
 msgid "Installation failed. Check the log."
 msgstr "Inštalácia zlyhala. Skontrolujte protokol."
 
@@ -3617,7 +3695,7 @@ msgstr "Inštaluje sa {}..."
 # line: 89
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1669
-#: src/big_remote_play/ui/private_network_view.py:444
+#: src/big_remote_play/ui/private_network_view.py:472
 msgid "Installing..."
 msgstr "Inštaluje sa..."
 
@@ -3657,7 +3735,7 @@ msgid "Invalid IP address: ${ip}"
 msgstr "Neplatná adresa IP: ${ip}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 719
-#: src/big_remote_play/ui/host_view.py:1407
+#: src/big_remote_play/ui/host_view.py:1519
 msgid "Invalid PIN"
 msgstr "Neplatný PIN"
 
@@ -3675,8 +3753,8 @@ msgstr "Neplatná adresa"
 msgid "Invalid code"
 msgstr "Neplatný kód"
 
-#: src/big_remote_play/ui/host_view.py:2312
-#: src/big_remote_play/ui/host_view.py:2325
+#: src/big_remote_play/ui/host_view.py:2425
+#: src/big_remote_play/ui/host_view.py:2438
 msgid "Invalid launch command"
 msgstr "Neplatný spúšťací príkaz"
 
@@ -3685,7 +3763,7 @@ msgid "Invalid port"
 msgstr "Neplatný port"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1331
+#: src/big_remote_play/ui/host_view.py:1442
 msgid "Invalid username or password."
 msgstr "Neplatné používateľské meno alebo heslo."
 
@@ -3735,7 +3813,7 @@ msgstr ""
 "Jej vlastník používa prihlasovaciu stránku. Prihláste sa v aplikácii "
 "ZeroTier a potom to skontrolujte znova."
 
-#: src/big_remote_play/ui/private_network_view.py:110
+#: src/big_remote_play/ui/private_network_view.py:138
 msgid ""
 "Join Tailscale with browser login, or use an auth key if someone gave you "
 "one."
@@ -3743,7 +3821,7 @@ msgstr ""
 "Pripojte sa k Tailscale prihlásením v prehliadači alebo použite overovací "
 "kľúč, ak vám ho niekto dal."
 
-#: src/big_remote_play/ui/private_network_view.py:1018
+#: src/big_remote_play/ui/private_network_view.py:1047
 msgid "Join a Headscale VPN"
 msgstr "Pripojiť sa k VPN Headscale"
 
@@ -3819,7 +3897,7 @@ msgstr ""
 "Pri bežnom hraní nechajte vypnuté. Ak je táto možnosť zapnutá spolu s UPnP, "
 "Sunshine môže na smerovači otvoriť aj port správy."
 
-#: src/big_remote_play/ui/host_view.py:881
+#: src/big_remote_play/ui/host_view.py:907
 msgid ""
 "Keep router port forwarding off when using a VPN. Changes apply when sharing "
 "starts again."
@@ -3887,9 +3965,9 @@ msgstr "Odozva {}, FPS {} (cieľ), prenos {} (cieľ)"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1399
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1431
-#: src/big_remote_play/ui/host_view.py:2298
-#: src/big_remote_play/ui/host_view.py:2317
-#: src/big_remote_play/ui/host_view.py:2330
+#: src/big_remote_play/ui/host_view.py:2411
+#: src/big_remote_play/ui/host_view.py:2430
+#: src/big_remote_play/ui/host_view.py:2443
 #, python-brace-format
 msgid "Launching {}..."
 msgstr "Spúšťam {}..."
@@ -3961,7 +4039,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/host_view.py:2848
+#: src/big_remote_play/ui/host_view.py:2967
 msgid "Library updated"
 msgstr "Knižnica aktualizovaná"
 
@@ -3997,15 +4075,15 @@ msgstr "Načítava sa história…"
 msgid "Loading networks…"
 msgstr "Načítavajú sa siete…"
 
-#: src/big_remote_play/ui/host_view.py:2539
+#: src/big_remote_play/ui/host_view.py:2658
 msgid "Loading paired devices…"
 msgstr "Načítavajú sa spárované zariadenia…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 712
-#: src/big_remote_play/ui/host_view.py:2502
-#: src/big_remote_play/ui/host_view.py:2692
-#: src/big_remote_play/ui/host_view.py:2738
+#: src/big_remote_play/ui/host_view.py:2621
+#: src/big_remote_play/ui/host_view.py:2811
+#: src/big_remote_play/ui/host_view.py:2857
 msgid "Loading…"
 msgstr "Načítava sa…"
 
@@ -4028,13 +4106,13 @@ msgstr "Cesta k súboru protokolu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1831
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Login Server"
 msgstr "Prihlasovací server"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1307
-#: src/big_remote_play/ui/private_network_view.py:672
+#: src/big_remote_play/ui/private_network_view.py:700
 msgid "Login Server (leave empty for tailscale.com)"
 msgstr "Prihlasovací server (nechajte prázdne pre tailscale.com)"
 
@@ -4080,11 +4158,11 @@ msgstr "Prispôsobuje pohyb ukazovateľa skôr práci na ploche než hrám."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1230
-#: src/big_remote_play/ui/host_view.py:1508
+#: src/big_remote_play/ui/host_view.py:1621
 msgid "Manage"
 msgstr "Spravovať"
 
-#: src/big_remote_play/ui/private_network_view.py:612
+#: src/big_remote_play/ui/private_network_view.py:640
 msgid "Manage accounts and networks"
 msgstr "Spravovať účty a siete"
 
@@ -4100,12 +4178,12 @@ msgid "Manage network"
 msgstr "Spravovať sieť"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 246
-#: src/big_remote_play/ui/host_view.py:1503
-#: src/big_remote_play/ui/host_view.py:1512
+#: src/big_remote_play/ui/host_view.py:1616
+#: src/big_remote_play/ui/host_view.py:1625
 msgid "Manage paired devices"
 msgstr "Spravovať spárované zariadenia"
 
-#: src/big_remote_play/ui/host_view.py:1020
+#: src/big_remote_play/ui/host_view.py:1046
 msgid "Manual capture and encoding"
 msgstr "Ručné snímanie a kódovanie"
 
@@ -4188,7 +4266,7 @@ msgstr "Režim 2"
 #: src/big_remote_play/ui/host_view.py:187
 #: src/big_remote_play/ui/host_view.py:200
 #: src/big_remote_play/ui/host_view.py:365
-#: src/big_remote_play/ui/host_view.py:1124
+#: src/big_remote_play/ui/host_view.py:1235
 msgid "Monitor / Display"
 msgstr "Monitor / Obrazovka"
 
@@ -4226,7 +4304,7 @@ msgid "More exposed than a private VPN"
 msgstr "Väčšie vystavenie než pri súkromnej VPN"
 
 #: src/big_remote_play/ui/network_dashboard.py:95
-#: src/big_remote_play/ui/private_network_view.py:601
+#: src/big_remote_play/ui/private_network_view.py:629
 msgid "More options"
 msgstr "Ďalšie možnosti"
 
@@ -4257,7 +4335,7 @@ msgstr "Stlmiť zvuk, keď Moonlight nie je aktívne okno"
 msgid "My devices"
 msgstr "Moje zariadenia"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "My network"
 msgstr "Moja sieť"
 
@@ -4328,8 +4406,8 @@ msgstr "Sieť"
 #: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
-#: src/big_remote_play/ui/private_network_view.py:910
-#: src/big_remote_play/ui/private_network_view.py:959
+#: src/big_remote_play/ui/private_network_view.py:939
+#: src/big_remote_play/ui/private_network_view.py:988
 msgid "Network ID"
 msgstr "ID siete"
 
@@ -4339,7 +4417,7 @@ msgstr "ID siete"
 msgid "Network ID (16 characters)"
 msgstr "ID siete (16 znakov)"
 
-#: src/big_remote_play/ui/host_view.py:881
+#: src/big_remote_play/ui/host_view.py:907
 msgid "Network and access"
 msgstr "Sieť a prístup"
 
@@ -4380,7 +4458,7 @@ msgstr "Názov siete"
 msgid "Network not found"
 msgstr "Sieť sa nenašla"
 
-#: src/big_remote_play/ui/private_network_view.py:606
+#: src/big_remote_play/ui/private_network_view.py:634
 msgid "Networks this PC joined before."
 msgstr "Siete, ku ktorým sa tento počítač už pripojil."
 
@@ -4393,12 +4471,12 @@ msgid "New Central"
 msgstr "New Central"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:2996
+#: src/big_remote_play/ui/host_view.py:3115
 msgid "New Password"
 msgstr "Nové heslo"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 641
-#: src/big_remote_play/ui/host_view.py:2994
+#: src/big_remote_play/ui/host_view.py:3113
 msgid "New Username"
 msgstr "Nový používateľ"
 
@@ -4410,16 +4488,27 @@ msgstr "Vlastník nových počítačov"
 msgid "New devices appear here while this window is open."
 msgstr "Nové zariadenia sa tu zobrazujú, kým je toto okno otvorené."
 
-#: src/big_remote_play/ui/host_view.py:3038
+#: src/big_remote_play/ui/host_view.py:751
+msgid ""
+"New devices can pair only when no stream is open: they show “The computer is "
+"currently in a game”. End the stream for everyone, then start pairing again "
+"on the new device. Devices already paired can reconnect right after."
+msgstr ""
+"Nové zariadenia sa dajú spárovať, len keď nie je otvorený žiadny stream: "
+"zobrazia „The computer is currently in a game“. Ukončite stream pre všetkých "
+"a potom na novom zariadení spustite párovanie znova. Už spárované zariadenia "
+"sa môžu hneď potom znova pripojiť."
+
+#: src/big_remote_play/ui/host_view.py:3157
 msgid "New passwords do not match."
 msgstr "Nové heslá sa nezhodujú."
 
-#: src/big_remote_play/ui/host_view.py:2011
+#: src/big_remote_play/ui/host_view.py:2124
 msgid "No"
 msgstr "Nie"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 617
-#: src/big_remote_play/ui/host_view.py:1422
+#: src/big_remote_play/ui/host_view.py:1534
 msgid "No Sunshine user exists. Configure one in the browser."
 msgstr ""
 "V Sunshine nebol vytvorený žiadny používateľ. Je potrebné nakonfigurovať "
@@ -4433,11 +4522,11 @@ msgstr "Nenašiel sa žiadny účet"
 msgid "No active connection found"
 msgstr "Nenašlo sa žiadne aktívne pripojenie"
 
-#: src/big_remote_play/ui/host_view.py:2777
+#: src/big_remote_play/ui/host_view.py:2896
 msgid "No apps configured"
 msgstr "Nie sú nastavené žiadne aplikácie"
 
-#: src/big_remote_play/ui/host_view.py:2009
+#: src/big_remote_play/ui/host_view.py:2122
 msgid "No client is receiving sound right now"
 msgstr "Zvuk teraz neprijíma žiadny klient"
 
@@ -4449,12 +4538,11 @@ msgstr ""
 "Na tento vyhľadávací kód neodpovedal žiadny počítač. Skontrolujte kód alebo "
 "použite adresu."
 
-#: src/big_remote_play/ui/host_view.py:1282
-#: src/big_remote_play/ui/host_view.py:1337
+#: src/big_remote_play/ui/host_view.py:1066
 msgid "No computer is waiting"
 msgstr "Nečaká žiadny počítač"
 
-#: src/big_remote_play/host/sunshine_manager.py:571
+#: src/big_remote_play/host/sunshine_manager.py:572
 msgid ""
 "No computer is waiting to pair. Choose this computer under Connect on the "
 "other PC, then enter the code it shows."
@@ -4462,7 +4550,7 @@ msgstr ""
 "Na spárovanie nečaká žiadny počítač. Na druhom počítači vyberte v časti "
 "Pripojiť tento počítač a potom zadajte kód, ktorý zobrazí."
 
-#: src/big_remote_play/ui/host_view.py:1186
+#: src/big_remote_play/ui/host_view.py:1297
 msgid "No connected monitor could be identified."
 msgstr "Nepodarilo sa identifikovať žiadny pripojený monitor."
 
@@ -4476,6 +4564,18 @@ msgstr "Zatiaľ žiadne pripojenia"
 msgid "No details reported."
 msgstr "Neboli nahlásené žiadne podrobnosti."
 
+#: src/big_remote_play/ui/host_view.py:1071
+msgid ""
+"No device is waiting for this code because a stream is open on this "
+"computer: the new device shows “The computer is currently in a game”. End "
+"the stream for everyone, then start pairing again on the new device and "
+"enter its new code here."
+msgstr ""
+"Na tento kód nečaká žiadne zariadenie, pretože na tomto počítači je otvorený "
+"stream: nové zariadenie zobrazí „The computer is currently in a game“. "
+"Ukončite stream pre všetkých, na novom zariadení spustite párovanie znova a "
+"zadajte sem jeho nový kód."
+
 #: src/big_remote_play/ui/network_devices.py:495
 msgid "No device is waiting yet…"
 msgstr "Zatiaľ nečaká žiadne zariadenie…"
@@ -4484,7 +4584,7 @@ msgstr "Zatiaľ nečaká žiadne zariadenie…"
 msgid "No game PC found yet"
 msgstr "Zatiaľ sa nenašiel žiadny herný počítač"
 
-#: src/big_remote_play/ui/host_view.py:2707
+#: src/big_remote_play/ui/host_view.py:2826
 msgid "No logs available (Sunshine not running or no credentials)."
 msgstr ""
 "Nie sú dostupné žiadne záznamy (Sunshine nebeží alebo chýbajú prihlasovacie "
@@ -4498,7 +4598,7 @@ msgstr "Nemáte kód siete?"
 msgid "No network found"
 msgstr "Nenašla sa žiadna sieť"
 
-#: src/big_remote_play/ui/host_view.py:1457
+#: src/big_remote_play/ui/host_view.py:1570
 msgid "No one is playing yet"
 msgstr "Zatiaľ nikto nehrá"
 
@@ -4513,23 +4613,29 @@ msgstr "Zatiaľ žiadne iné zariadenie"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 973
-#: src/big_remote_play/ui/host_view.py:2559
+#: src/big_remote_play/ui/host_view.py:2678
 msgid "No paired devices"
 msgstr "Žiadne spárované zariadenia"
 
-#: src/big_remote_play/ui/host_view.py:1524
+#: src/big_remote_play/ui/host_view.py:1637
 msgid "No paired devices yet"
 msgstr "Zatiaľ žiadne spárované zariadenia"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1660
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "No previous networks"
 msgstr "Žiadne predchádzajúce siete"
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:136
 msgid "No saved Tailscale or Headscale account was found on this computer."
 msgstr "V tomto počítači sa nenašiel uložený účet Tailscale ani Headscale."
+
+#: src/big_remote_play/ui/host_view.py:1136
+msgid "No stream is open now. Start pairing again on the new device."
+msgstr ""
+"Teraz už nie je otvorený žiadny stream. Na novom zariadení spustite "
+"párovanie znova."
 
 #: usr/share/big-remote-play/scripts/configure_firewall.sh:60
 msgid "No supported firewall tool was found."
@@ -4544,7 +4650,7 @@ msgstr ""
 "Nenašiel sa žiadny terminál. Spustite tento príkaz:\n"
 "{}"
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1045
 msgid "No video bitrate ceiling"
 msgstr "Bez horného limitu dátového toku videa"
 
@@ -4559,8 +4665,8 @@ msgid "Node ID of this computer"
 msgstr "ID uzla tohto počítača"
 
 #: src/big_remote_play/ui/connection_guides.py:211
-#: src/big_remote_play/ui/host_view.py:2004
-#: src/big_remote_play/ui/host_view.py:2010
+#: src/big_remote_play/ui/host_view.py:2117
+#: src/big_remote_play/ui/host_view.py:2123
 msgid "None"
 msgstr "Žiadne"
 
@@ -4568,7 +4674,7 @@ msgstr "Žiadne"
 msgid "None detected (firewalld and ufw checked)"
 msgstr "Nič nezistené (skontrolované firewalld a ufw)"
 
-#: src/big_remote_play/ui/host_view.py:2019
+#: src/big_remote_play/ui/host_view.py:2132
 msgid "None: the sound is captured directly"
 msgstr "Žiadne: zvuk sa zachytáva priamo"
 
@@ -4597,6 +4703,10 @@ msgstr "Na tomto počítači nezistené. Smerovač môže byť napriek tomu za C
 #: src/big_remote_play/ui/remote_connection.py:702
 msgid "Not installed"
 msgstr "Nenainštalované"
+
+#: src/big_remote_play/ui/host_view.py:1104
+msgid "Not now"
+msgstr "Teraz nie"
 
 #: src/big_remote_play/ui/connection_cards.py:49
 msgid "Not responding"
@@ -4631,7 +4741,7 @@ msgstr "Upozorňovať na nové predbežné verzie Sunshine"
 msgid "Now using {method}."
 msgstr "Teraz sa používa {method}."
 
-#: src/big_remote_play/ui/host_view.py:1997
+#: src/big_remote_play/ui/host_view.py:2110
 #, python-brace-format
 msgid "Now: {output}"
 msgstr "Teraz: {output}"
@@ -4664,7 +4774,7 @@ msgstr "OK"
 msgid "Offline"
 msgstr "Offline"
 
-#: src/big_remote_play/ui/host_view.py:938
+#: src/big_remote_play/ui/host_view.py:964
 #: src/big_remote_play/ui/preferences.py:248
 msgid "Old log files have been removed."
 msgstr "Staré súbory záznamov boli odstránené."
@@ -4724,7 +4834,7 @@ msgstr "Na tomto počítači"
 msgid "On your {provider} private network at {address}"
 msgstr "Vo vašej súkromnej sieti {provider} na adrese {address}"
 
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid ""
 "Once both computers are on the same private network, return to Connect to "
 "find the game PC."
@@ -4769,7 +4879,7 @@ msgstr "Iba na celej obrazovke"
 msgid "Only needed to run your own Headscale server."
 msgstr "Potrebné iba na prevádzku vlastného servera Headscale."
 
-#: src/big_remote_play/ui/host_view.py:921
+#: src/big_remote_play/ui/host_view.py:947
 msgid "Only needed when reporting a problem."
 msgstr "Potrebné len pri hlásení problému."
 
@@ -4802,13 +4912,13 @@ msgstr "Nový názov sa použije len na tomto počítači."
 # line: 362
 # line: 1318
 #: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/private_network_view.py:692
+#: src/big_remote_play/ui/private_network_view.py:720
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "Otvoriť"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 621
-#: src/big_remote_play/ui/host_view.py:1424
+#: src/big_remote_play/ui/host_view.py:1536
 msgid "Open Configuration"
 msgstr "Otvoriť konfiguráciu"
 
@@ -4838,6 +4948,7 @@ msgid "Open Tailscale admin console"
 msgstr "Otvoriť administrátorskú konzolu Tailscale"
 
 #: src/big_remote_play/ui/network_devices.py:471
+#: src/big_remote_play/ui/private_network_view.py:97
 msgid "Open ZeroTier Central"
 msgstr "Otvoriť ZeroTier Central"
 
@@ -4847,7 +4958,7 @@ msgstr "Otvoriť konzolu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 621
-#: src/big_remote_play/ui/host_view.py:2935
+#: src/big_remote_play/ui/host_view.py:3054
 msgid "Open folder"
 msgstr "Otvoriť priečinok"
 
@@ -4856,15 +4967,15 @@ msgstr "Otvoriť priečinok"
 msgid "Open guide"
 msgstr "Otvoriť sprievodcu"
 
-#: src/big_remote_play/ui/host_view.py:1549
+#: src/big_remote_play/ui/host_view.py:1662
 msgid "Open management to view all paired devices."
 msgstr "Otvorte správu, aby ste videli všetky spárované zariadenia."
 
-#: src/big_remote_play/ui/host_view.py:1512
+#: src/big_remote_play/ui/host_view.py:1625
 msgid "Open paired device management"
 msgstr "Otvoriť správu spárovaných zariadení"
 
-#: src/big_remote_play/ui/host_view.py:2920
+#: src/big_remote_play/ui/host_view.py:3039
 msgid "Open parent folder"
 msgstr "Otvoriť nadradený priečinok"
 
@@ -4889,7 +5000,7 @@ msgid "Open the sign-in page again in your browser."
 msgstr "Znova otvorte prihlasovaciu stránku v prehliadači."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1386
-#: src/big_remote_play/ui/host_view.py:2288
+#: src/big_remote_play/ui/host_view.py:2401
 msgid "Opening Steam Big Picture..."
 msgstr "Otvorenie režimu Big Picture v Steame..."
 
@@ -4899,8 +5010,8 @@ msgstr "Otvorí oficiálnu webovú stránku"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/host_view.py:2643
-#: src/big_remote_play/ui/host_view.py:2848
+#: src/big_remote_play/ui/host_view.py:2762
+#: src/big_remote_play/ui/host_view.py:2967
 #: src/big_remote_play/ui/network_dashboard.py:473
 msgid "Operation failed"
 msgstr "Operácia zlyhala"
@@ -4915,8 +5026,8 @@ msgid "Optimize the mouse for remote desktop"
 msgstr "Optimalizovať myš pre vzdialenú plochu"
 
 #: src/big_remote_play/ui/guest_view.py:813
-#: src/big_remote_play/ui/host_view.py:1291
-#: src/big_remote_play/ui/host_view.py:1307
+#: src/big_remote_play/ui/host_view.py:1402
+#: src/big_remote_play/ui/host_view.py:1418
 msgid "Other computer"
 msgstr "Druhý počítač"
 
@@ -4934,12 +5045,12 @@ msgstr ""
 "Zdieľať → Pokročilé môže po vašom potvrdení pridať pravidlá iba pre "
 "streamovacie porty; administračný panel zostane zatvorený."
 
-#: src/big_remote_play/ui/host_view.py:859
+#: src/big_remote_play/ui/host_view.py:885
 msgid "Overview"
 msgstr "Prehľad"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 609
-#: src/big_remote_play/ui/host_view.py:1339
+#: src/big_remote_play/ui/host_view.py:1450
 msgid "PIN Error"
 msgstr "Chyba PIN"
 
@@ -4949,12 +5060,12 @@ msgstr "Chyba PIN"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 705
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 307
-#: src/big_remote_play/host/sunshine_manager.py:593
-#: src/big_remote_play/ui/host_view.py:1328
+#: src/big_remote_play/host/sunshine_manager.py:594
+#: src/big_remote_play/ui/host_view.py:1439
 msgid "PIN sent successfully"
 msgstr "PIN bol úspešne odoslaný"
 
-#: src/big_remote_play/ui/host_view.py:1362
+#: src/big_remote_play/ui/host_view.py:1474
 msgid "PIN shown by Moonlight"
 msgstr "PIN zobrazený v Moonlighte"
 
@@ -4962,9 +5073,9 @@ msgstr "PIN zobrazený v Moonlighte"
 msgid "Packet Size"
 msgstr "Veľkosť paketu"
 
-#: src/big_remote_play/ui/host_view.py:753
-#: src/big_remote_play/ui/host_view.py:754
-#: src/big_remote_play/ui/host_view.py:1311
+#: src/big_remote_play/ui/host_view.py:781
+#: src/big_remote_play/ui/host_view.py:782
+#: src/big_remote_play/ui/host_view.py:1422
 msgid "Pair"
 msgstr "Spárovať"
 
@@ -4986,24 +5097,24 @@ msgstr ""
 "mimo domácej siete. Keď už nie sú potrebné, odstráňte verejné mapovania "
 "portov."
 
-#: src/big_remote_play/ui/host_view.py:757
+#: src/big_remote_play/ui/host_view.py:785
 msgid "Pair this device"
 msgstr "Spárovať toto zariadenie"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 198
-#: src/big_remote_play/ui/host_view.py:2511
+#: src/big_remote_play/ui/host_view.py:2630
 msgid "Paired Devices"
 msgstr "Spárované zariadenia"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 997
-#: src/big_remote_play/ui/host_view.py:1470
+#: src/big_remote_play/ui/host_view.py:1583
 msgid "Paired devices"
 msgstr "Spárované zariadenia"
 
-#: src/big_remote_play/ui/host_view.py:1475
-#: src/big_remote_play/ui/host_view.py:1869
+#: src/big_remote_play/ui/host_view.py:1588
+#: src/big_remote_play/ui/host_view.py:1982
 msgid "Paired devices appear here."
 msgstr "Spárované zariadenia sa zobrazia tu."
 
@@ -5017,7 +5128,7 @@ msgstr "Párovanie prebehlo úspešne!"
 msgid "Pairing Error"
 msgstr "Chyba párovania"
 
-#: src/big_remote_play/ui/host_view.py:746
+#: src/big_remote_play/ui/host_view.py:774
 msgid "Pairing code shown on the other PC"
 msgstr "Párovací kód zobrazený na druhom počítači"
 
@@ -5026,8 +5137,8 @@ msgstr "Párovací kód zobrazený na druhom počítači"
 msgid "Pairing code: {}"
 msgstr "Párovací kód: {}"
 
-#: src/big_remote_play/ui/host_view.py:1267
-#: src/big_remote_play/ui/host_view.py:1284
+#: src/big_remote_play/ui/host_view.py:1378
+#: src/big_remote_play/ui/host_view.py:1395
 msgid "Pairing failed"
 msgstr "Párovanie zlyhalo"
 
@@ -5038,11 +5149,19 @@ msgid "Pass through high resolution scroll events from Moonlight clients"
 msgstr ""
 "Odovzdávať udalosti posúvania s vysokým rozlíšením z klientov Moonlight"
 
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid ""
+"Paste the code on this page and join the network. Send the same code to the "
+"other person."
+msgstr ""
+"Vložte kód na túto stránku a pripojte sa k sieti. Pošlite rovnaký kód druhej "
+"osobe."
+
 #: src/big_remote_play/ui/api_access_dialog.py:37
 msgid "Paste the credential first."
 msgstr "Najprv vložte prihlasovacie údaje."
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Vložte adresu servera a kľúč do polí na tejto stránke."
 
@@ -5068,7 +5187,7 @@ msgstr "Cesta"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 686
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 750
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 148
-#: src/big_remote_play/ui/host_view.py:949
+#: src/big_remote_play/ui/host_view.py:975
 #: src/big_remote_play/ui/preferences.py:254
 msgid "Path copied!"
 msgstr "Cesta skopírovaná!"
@@ -5159,7 +5278,7 @@ msgstr ""
 msgid "Playback on this computer"
 msgstr "Prehrávanie na tomto počítači"
 
-#: src/big_remote_play/ui/host_view.py:2034
+#: src/big_remote_play/ui/host_view.py:2147
 msgid "Playing a short tone…"
 msgstr "Prehráva sa krátky tón…"
 
@@ -5167,7 +5286,7 @@ msgstr "Prehráva sa krátky tón…"
 msgid "Playing now"
 msgstr "Práve sa hrá"
 
-#: src/big_remote_play/ui/host_view.py:796
+#: src/big_remote_play/ui/host_view.py:824
 #: src/big_remote_play/ui/main_window.py:1005
 msgid "Playing over the internet?"
 msgstr "Hráte cez internet?"
@@ -5233,7 +5352,7 @@ msgstr "Uprednostniť CAVLC pred CABAC v H.264"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 273
 #: src/big_remote_play/ui/components.py:275
-#: src/big_remote_play/ui/host_view.py:891
+#: src/big_remote_play/ui/host_view.py:917
 msgid "Preferences"
 msgstr "Predvoľby"
 
@@ -5251,8 +5370,8 @@ msgstr "Zabraňuje vypnutiu obrazovky tohto počítača počas relácie."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1031
-#: src/big_remote_play/ui/private_network_view.py:604
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:632
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Previous Networks"
 msgstr "Predchádzajúce siete"
 
@@ -5271,7 +5390,7 @@ msgstr "Súkromný kľúč"
 msgid "Private Network Containers"
 msgstr "Kontajnery Súkromnej siete"
 
-#: src/big_remote_play/ui/host_view.py:1885
+#: src/big_remote_play/ui/host_view.py:1998
 #: src/big_remote_play/ui/network_dashboard.py:175
 #: src/big_remote_play/ui/network_devices.py:213
 msgid "Private address"
@@ -5385,11 +5504,11 @@ msgid "Ready to play over the internet"
 msgstr "Pripravené na hranie cez internet"
 
 #: src/big_remote_play/ui/network_dashboard.py:91
-#: src/big_remote_play/ui/private_network_view.py:592
+#: src/big_remote_play/ui/private_network_view.py:620
 msgid "Ready to play?"
 msgstr "Pripravení hrať?"
 
-#: src/big_remote_play/ui/host_view.py:1891
+#: src/big_remote_play/ui/host_view.py:2004
 msgid "Ready. This computer is also reachable over your private network."
 msgstr "Pripravené. Tento počítač je dostupný aj cez vašu súkromnú sieť."
 
@@ -5452,7 +5571,7 @@ msgstr "Odporúčané: súkromná sieť"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1111
 #: src/big_remote_play/ui/network_common.py:163
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect"
 msgstr "Znova sa pripojiť"
 
@@ -5460,7 +5579,7 @@ msgstr "Znova sa pripojiť"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 855
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 78
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect using this saved network"
 msgstr "Znova pripojiť pomocou tejto uloženej siete"
 
@@ -5470,13 +5589,13 @@ msgstr "Nahrávaný zdroj"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1371
-#: src/big_remote_play/ui/host_view.py:2657
+#: src/big_remote_play/ui/host_view.py:2776
 #: src/big_remote_play/ui/network_dashboard.py:81
 #: src/big_remote_play/ui/network_devices.py:150
 msgid "Refresh"
 msgstr "Obnoviť"
 
-#: src/big_remote_play/ui/host_view.py:2658
+#: src/big_remote_play/ui/host_view.py:2777
 msgid "Refresh logs"
 msgstr "Obnoviť záznamy"
 
@@ -5501,21 +5620,21 @@ msgid "Reload from Running Server"
 msgstr "Načítať znova z bežiaceho servera"
 
 #: src/big_remote_play/ui/api_access_dialog.py:92
-#: src/big_remote_play/ui/host_view.py:2611
+#: src/big_remote_play/ui/host_view.py:2730
 #: src/big_remote_play/ui/remote_connection.py:782
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:247
 msgid "Remove"
 msgstr "Odstrániť"
 
-#: src/big_remote_play/ui/host_view.py:2507
-#: src/big_remote_play/ui/host_view.py:2514
-#: src/big_remote_play/ui/host_view.py:2516
+#: src/big_remote_play/ui/host_view.py:2626
+#: src/big_remote_play/ui/host_view.py:2633
+#: src/big_remote_play/ui/host_view.py:2635
 msgid "Remove All"
 msgstr "Odstrániť všetko"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 973
-#: src/big_remote_play/ui/host_view.py:2607
+#: src/big_remote_play/ui/host_view.py:2726
 msgid "Remove Device"
 msgstr "Odstrániť zariadenie"
 
@@ -5523,8 +5642,8 @@ msgstr "Odstrániť zariadenie"
 msgid "Remove account from this computer"
 msgstr "Odstrániť účet z tohto počítača"
 
-#: src/big_remote_play/ui/host_view.py:2798
-#: src/big_remote_play/ui/host_view.py:2799
+#: src/big_remote_play/ui/host_view.py:2917
+#: src/big_remote_play/ui/host_view.py:2918
 msgid "Remove app"
 msgstr "Odstrániť aplikáciu"
 
@@ -5532,8 +5651,8 @@ msgstr "Odstrániť aplikáciu"
 msgid "Remove credential"
 msgstr "Odstrániť prihlasovacie údaje"
 
-#: src/big_remote_play/ui/host_view.py:2582
-#: src/big_remote_play/ui/host_view.py:2583
+#: src/big_remote_play/ui/host_view.py:2701
+#: src/big_remote_play/ui/host_view.py:2702
 #: src/big_remote_play/ui/network_devices.py:272
 #: src/big_remote_play/ui/network_devices.py:295
 #: src/big_remote_play/ui/network_devices.py:338
@@ -5551,7 +5670,7 @@ msgid "Remove logs, settings, servers and saved data"
 msgstr "Odstrániť záznamy, nastavenia, servery a uložené údaje"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 98
-#: src/big_remote_play/ui/host_view.py:935
+#: src/big_remote_play/ui/host_view.py:961
 msgid "Remove old log files"
 msgstr "Odstrániť staré súbory záznamov"
 
@@ -5569,7 +5688,7 @@ msgstr "Odstrániť toto zariadenie?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1896
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Remove this network from history?"
 msgstr "Odstrániť túto sieť z histórie?"
 
@@ -5590,7 +5709,7 @@ msgstr "Odstrániť zariadenie {name} zo siete"
 msgid "Remove {name}?"
 msgstr "Odstrániť {name}?"
 
-#: src/big_remote_play/ui/host_view.py:2608
+#: src/big_remote_play/ui/host_view.py:2727
 #, python-brace-format
 msgid "Remove “{}”? It will need to pair again with a new PIN."
 msgstr "Odstrániť „{}“? Bude sa musieť znova spárovať novým PIN."
@@ -5630,7 +5749,7 @@ msgstr "Nahradiť súčasné nastavenia uloženým súborom"
 msgid "Replace the current settings?"
 msgstr "Nahradiť súčasné nastavenia?"
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "Request Access"
 msgstr "Požiadať o prístup"
 
@@ -5640,7 +5759,7 @@ msgstr "Žiadosť zrušená"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Request the 16-character ID from the network owner."
 msgstr "Vyžiadajte si šestnásťznakové ID od vlastníka siete."
 
@@ -5685,24 +5804,24 @@ msgstr "Obnoviť všetky nastavenia na predvolené"
 msgid "Reset connection settings"
 msgstr "Obnoviť nastavenia pripojenia"
 
-#: src/big_remote_play/ui/host_view.py:2988
+#: src/big_remote_play/ui/host_view.py:3107
 msgid "Reset directly; the server will restart"
 msgstr "Obnoviť priamo; server sa reštartuje"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 91
-#: src/big_remote_play/host/sunshine_manager.py:662
+#: src/big_remote_play/host/sunshine_manager.py:663
 #, python-brace-format
 msgid "Reset error: {}"
 msgstr "Chyba obnovenia: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 813
-#: src/big_remote_play/host/sunshine_manager.py:660
+#: src/big_remote_play/host/sunshine_manager.py:661
 msgid "Reset failed"
 msgstr "Obnovenie zlyhalo"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 740
-#: src/big_remote_play/host/sunshine_manager.py:660
+#: src/big_remote_play/host/sunshine_manager.py:661
 #, python-brace-format
 msgid "Reset failed: {}"
 msgstr "Obnovenie zlyhalo: {}"
@@ -5745,7 +5864,7 @@ msgstr ""
 "ZeroTier."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1443
-#: src/big_remote_play/ui/host_view.py:3357
+#: src/big_remote_play/ui/host_view.py:3476
 #: src/big_remote_play/ui/preferences.py:58
 #: src/big_remote_play/ui/preferences.py:165
 #: src/big_remote_play/ui/preferences.py:262
@@ -5753,7 +5872,7 @@ msgid "Restore"
 msgstr "Obnoviť"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1442
-#: src/big_remote_play/ui/host_view.py:3355
+#: src/big_remote_play/ui/host_view.py:3474
 #: src/big_remote_play/ui/preferences.py:57
 msgid "Restore Defaults"
 msgstr "Obnoviť predvolené hodnoty"
@@ -5768,12 +5887,12 @@ msgstr "Obnoviť predvolené hodnoty?"
 msgid "Restore a backup"
 msgstr "Obnoviť zálohu"
 
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Znova použiť podrobnosti pripojenia uložené aplikáciou Big Remote Play"
 
-#: src/big_remote_play/ui/host_view.py:1712
-#: src/big_remote_play/ui/host_view.py:1739
+#: src/big_remote_play/ui/host_view.py:1825
+#: src/big_remote_play/ui/host_view.py:1852
 #, python-brace-format
 msgid "Reveal {}"
 msgstr "Zobraziť {}"
@@ -5830,7 +5949,7 @@ msgstr ""
 "počítač."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
-#: src/big_remote_play/ui/host_view.py:1808
+#: src/big_remote_play/ui/host_view.py:1921
 #: src/big_remote_play/ui/main_window.py:552
 #: src/big_remote_play/ui/main_window.py:1409
 msgid "Running"
@@ -5851,7 +5970,7 @@ msgstr "Softvérové ladenie"
 msgid "Same as the first device that connects"
 msgstr "Rovnaké ako prvé pripojené zariadenie"
 
-#: src/big_remote_play/ui/host_view.py:797
+#: src/big_remote_play/ui/host_view.py:825
 msgid ""
 "Same home network? Skip this step. For different networks, set up internet "
 "play."
@@ -5863,15 +5982,15 @@ msgstr ""
 # line: 1092
 # line: 1859
 #: src/big_remote_play/ui/api_access_dialog.py:86
-#: src/big_remote_play/ui/host_view.py:3017
-#: src/big_remote_play/ui/private_network_view.py:972
+#: src/big_remote_play/ui/host_view.py:3136
+#: src/big_remote_play/ui/private_network_view.py:1001
 #: src/big_remote_play/ui/remote_connection.py:754
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:306
 msgid "Save"
 msgstr "Uložiť"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:1381
+#: src/big_remote_play/ui/host_view.py:1493
 msgid "Save Password"
 msgstr "Uložiť heslo"
 
@@ -5880,7 +5999,7 @@ msgid "Save bandwidth"
 msgstr "Šetriť šírku pásma"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 670
-#: src/big_remote_play/ui/host_view.py:1382
+#: src/big_remote_play/ui/host_view.py:1494
 msgid "Save credentials to the system keyring"
 msgstr "Uložiť prihlasovacie údaje do systémového zväzku kľúčov"
 
@@ -5905,12 +6024,12 @@ msgstr "Naskenujte ho telefónom osoby, ktorú pozývate."
 msgid "Screen resolution while sharing"
 msgstr "Rozlíšenie obrazovky počas zdieľania"
 
-#: src/big_remote_play/ui/host_view.py:877
+#: src/big_remote_play/ui/host_view.py:903
 msgid "Screen, graphics card and encoding"
 msgstr "Obrazovka, grafická karta a kódovanie"
 
-#: src/big_remote_play/ui/host_view.py:1021
-#: src/big_remote_play/ui/host_view.py:1090
+#: src/big_remote_play/ui/host_view.py:1047
+#: src/big_remote_play/ui/host_view.py:1201
 #, python-brace-format
 msgid "Screen: {value}"
 msgstr "Obrazovka: {value}"
@@ -5921,7 +6040,7 @@ msgid "Search again"
 msgstr "Hľadať znova"
 
 #: src/big_remote_play/ui/guest_view.py:1334
-#: src/big_remote_play/ui/host_view.py:780
+#: src/big_remote_play/ui/host_view.py:808
 msgid "Search code"
 msgstr "Vyhľadávací kód"
 
@@ -5951,7 +6070,7 @@ msgid "Seen in the last few minutes"
 msgstr "Videné v posledných niekoľkých minútach"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:2867
+#: src/big_remote_play/ui/host_view.py:2986
 msgid "Select Executable"
 msgstr "Vybrať spustiteľný súbor"
 
@@ -5960,7 +6079,7 @@ msgstr "Vybrať spustiteľný súbor"
 msgid "Select Game"
 msgstr "Vybrať hru"
 
-#: src/big_remote_play/ui/host_view.py:2154
+#: src/big_remote_play/ui/host_view.py:2267
 msgid ""
 "Select a game or complete the app name and command. To share the whole "
 "screen instead, choose Full Desktop."
@@ -5968,12 +6087,12 @@ msgstr ""
 "Vyberte hru alebo doplňte názov aplikácie a príkaz. Na zdieľanie celej "
 "obrazovky vyberte Celá plocha."
 
-#: src/big_remote_play/ui/private_network_view.py:758
+#: src/big_remote_play/ui/private_network_view.py:787
 msgid "Select a network service and try again."
 msgstr "Vyberte sieťovú službu a skúste to znova."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:2943
+#: src/big_remote_play/ui/host_view.py:3062
 msgid "Select executable"
 msgstr "Vybrať spustiteľný súbor"
 
@@ -5984,13 +6103,13 @@ msgstr "Vyberte displej na zachytenie"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 757
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 767
-#: src/big_remote_play/ui/host_view.py:2955
+#: src/big_remote_play/ui/host_view.py:3074
 #, python-brace-format
 msgid "Selected: {}"
 msgstr "Vybrané: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 588
-#: src/big_remote_play/ui/host_view.py:1394
+#: src/big_remote_play/ui/host_view.py:1506
 msgid "Send"
 msgstr "Odoslať"
 
@@ -5998,7 +6117,7 @@ msgstr "Odoslať"
 msgid "Send invitation"
 msgstr "Odoslať pozvánku"
 
-#: src/big_remote_play/ui/host_view.py:809
+#: src/big_remote_play/ui/host_view.py:835
 msgid ""
 "Send one of these to the other person, or let them pick this computer under "
 "Connect."
@@ -6014,7 +6133,7 @@ msgstr "Odosielať systémové skratky do vzdialeného počítača"
 msgid "Send the Node ID to the network owner"
 msgstr "Pošlite ID uzla vlastníkovi siete"
 
-#: src/big_remote_play/ui/host_view.py:757
+#: src/big_remote_play/ui/host_view.py:785
 msgid "Send the code shown on the other PC to finish pairing"
 msgstr "Odoslať kód zobrazený na druhom počítači a dokončiť párovanie"
 
@@ -6036,25 +6155,25 @@ msgstr "Odosiela sa žiadosť do siete."
 msgid "Sends your game to the other PC."
 msgstr "Posiela vašu hru na druhý počítač."
 
-#: src/big_remote_play/ui/private_network_view.py:655
+#: src/big_remote_play/ui/private_network_view.py:683
 msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Doména servera (napr. vpn.example.com)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1415
-#: src/big_remote_play/ui/host_view.py:2456
+#: src/big_remote_play/ui/host_view.py:2575
 msgid "Server Failed to Start"
 msgstr "Server sa nepodarilo spustiť"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:2968
+#: src/big_remote_play/ui/host_view.py:3087
 msgid "Server Password"
 msgstr "Heslo servera"
 
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
 #: src/big_remote_play/ui/network_devices.py:692
-#: src/big_remote_play/ui/private_network_view.py:655
-#: src/big_remote_play/ui/private_network_view.py:1022
+#: src/big_remote_play/ui/private_network_view.py:683
+#: src/big_remote_play/ui/private_network_view.py:1051
 msgid "Server address"
 msgstr "Adresa servera"
 
@@ -6075,7 +6194,7 @@ msgid "Server password"
 msgstr "Heslo servera"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1196
-#: src/big_remote_play/ui/host_view.py:2252
+#: src/big_remote_play/ui/host_view.py:2365
 msgid "Server started"
 msgstr "Server spustený"
 
@@ -6087,7 +6206,7 @@ msgstr "Nástroje servera"
 msgid "Service started"
 msgstr "Služba spustená"
 
-#: src/big_remote_play/ui/host_view.py:2978
+#: src/big_remote_play/ui/host_view.py:3097
 msgid ""
 "Set the username and password used to manage the Sunshine server. If you "
 "forgot the current password, switch on “I forgot the current password” to "
@@ -6118,7 +6237,7 @@ msgid "Setting up"
 msgstr "Nastavuje sa"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1451
-#: src/big_remote_play/ui/host_view.py:3372
+#: src/big_remote_play/ui/host_view.py:3491
 msgid "Settings Restored"
 msgstr "Nastavenia obnovené"
 
@@ -6131,11 +6250,11 @@ msgid "Settings restored! Restart the application to apply all changes."
 msgstr ""
 "Nastavenia obnovené! Reštartujte aplikáciu, aby sa všetky zmeny prejavili."
 
-#: src/big_remote_play/host/sunshine_manager.py:573
+#: src/big_remote_play/host/sunshine_manager.py:574
 msgid "Several computers are waiting to pair."
 msgstr "Na spárovanie čaká niekoľko počítačov."
 
-#: src/big_remote_play/ui/host_view.py:1301
+#: src/big_remote_play/ui/host_view.py:1412
 msgid ""
 "Several computers are waiting to pair. Approve only the one that shows the "
 "code you entered."
@@ -6174,8 +6293,8 @@ msgstr "Zdieľať tento počítač"
 msgid "Sharing found"
 msgstr "Zdieľanie nájdené"
 
-#: src/big_remote_play/ui/host_view.py:2725
-#: src/big_remote_play/ui/host_view.py:2856
+#: src/big_remote_play/ui/host_view.py:2844
+#: src/big_remote_play/ui/host_view.py:2975
 msgid "Sharing is off"
 msgstr "Zdieľanie je vypnuté"
 
@@ -6183,7 +6302,7 @@ msgstr "Zdieľanie je vypnuté"
 msgid "Sharing not found"
 msgstr "Zdieľanie nenájdené"
 
-#: src/big_remote_play/ui/host_view.py:835
+#: src/big_remote_play/ui/host_view.py:861
 msgid "Sharing now"
 msgstr "Práve sa zdieľa"
 
@@ -6193,7 +6312,7 @@ msgid "Sharing sections"
 msgstr "Sekcie zdieľania"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1287
-#: src/big_remote_play/ui/host_view.py:2408
+#: src/big_remote_play/ui/host_view.py:2527
 msgid "Sharing stopped"
 msgstr "Zdieľanie zastavené"
 
@@ -6225,7 +6344,7 @@ msgid "Show icon in system tray and display desktop notifications"
 msgstr ""
 "Zobraziť ikonu v systémovej lište a zobraziť upozornenia na pracovnej ploche"
 
-#: src/big_remote_play/ui/host_view.py:1713
+#: src/big_remote_play/ui/host_view.py:1826
 #, python-brace-format
 msgid "Show or hide the {} value"
 msgstr "Zobraziť alebo skryť hodnotu {}"
@@ -6258,6 +6377,10 @@ msgstr "Prihlásiť sa"
 msgid "Sign in on that computer with your own account."
 msgstr "Prihláste sa na tom počítači vlastným účtom."
 
+#: src/big_remote_play/ui/private_network_view.py:94
+msgid "Sign in to ZeroTier Central"
+msgstr "Prihláste sa do ZeroTier Central"
+
 #: src/big_remote_play/ui/remote_connection.py:65
 msgid "Sign in to connect this computer"
 msgstr "Prihláste sa a pripojte tento počítač"
@@ -6271,8 +6394,8 @@ msgstr "Ak chcete pokračovať, prihláste sa do {name}."
 msgid "Sign in with another Tailscale account"
 msgstr "Prihlásiť sa pomocou iného účtu Tailscale"
 
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 msgid "Sign in with browser"
 msgstr "Prihlásiť sa prehliadačom"
 
@@ -6284,7 +6407,7 @@ msgstr "Prihláste sa rovnakým účtom"
 msgid "Sign in with your account and connect your devices."
 msgstr "Prihláste sa do svojho účtu a pripojte svoje zariadenia."
 
-#: src/big_remote_play/ui/private_network_view.py:538
+#: src/big_remote_play/ui/private_network_view.py:566
 msgid "Sign in with your browser. Use the same account on all your devices."
 msgstr ""
 "Prihláste sa v prehliadači. Na všetkých svojich zariadeniach použite rovnaký "
@@ -6302,7 +6425,7 @@ msgstr "Prihlasovací odkaz zobrazený na tom počítači"
 msgid "Sign-in needed"
 msgstr "Vyžaduje sa prihlásenie"
 
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Sign-in was not completed in the browser."
 msgstr "Prihlásenie v prehliadači nebolo dokončené."
 
@@ -6340,7 +6463,7 @@ msgstr "Percentuálny nárast jednofrámového VBV/HRD"
 msgid "Software"
 msgstr "Softvér"
 
-#: src/big_remote_play/ui/host_view.py:894
+#: src/big_remote_play/ui/host_view.py:920
 msgid "Solve sharing problems"
 msgstr "Vyriešiť problémy so zdieľaním"
 
@@ -6374,7 +6497,7 @@ msgstr ""
 msgid "Somewhere else"
 msgstr "Niekde inde"
 
-#: src/big_remote_play/ui/host_view.py:864
+#: src/big_remote_play/ui/host_view.py:890
 msgid "Sound and access on this computer"
 msgstr "Zvuk a prístup na tomto počítači"
 
@@ -6416,17 +6539,17 @@ msgstr "Spustiť službu"
 #: src/big_remote_play/ui/host_view.py:654
 #: src/big_remote_play/ui/host_view.py:657
 #: src/big_remote_play/ui/host_view.py:660
-#: src/big_remote_play/ui/host_view.py:1852
-#: src/big_remote_play/ui/host_view.py:1854
-#: src/big_remote_play/ui/host_view.py:1860
+#: src/big_remote_play/ui/host_view.py:1965
+#: src/big_remote_play/ui/host_view.py:1967
+#: src/big_remote_play/ui/host_view.py:1973
 msgid "Start sharing"
 msgstr "Spustiť zdieľanie"
 
-#: src/big_remote_play/ui/host_view.py:2856
+#: src/big_remote_play/ui/host_view.py:2975
 msgid "Start sharing first to browse this PC."
 msgstr "Najprv spustite zdieľanie, aby ste mohli prehľadávať tento počítač."
 
-#: src/big_remote_play/ui/host_view.py:2725
+#: src/big_remote_play/ui/host_view.py:2844
 msgid "Start sharing first to manage the game library."
 msgstr "Najprv spustite zdieľanie, aby ste mohli spravovať knižnicu hier."
 
@@ -6439,12 +6562,12 @@ msgid "Start sharing on the game PC. It will appear here."
 msgstr "Spustite zdieľanie na hernom počítači. Zobrazí sa tu."
 
 #: src/big_remote_play/ui/host_view.py:660
-#: src/big_remote_play/ui/host_view.py:1860
+#: src/big_remote_play/ui/host_view.py:1973
 msgid "Start sharing the game from this PC"
 msgstr "Spustiť zdieľanie hry z tohto počítača"
 
-#: src/big_remote_play/ui/host_view.py:1474
-#: src/big_remote_play/ui/host_view.py:1868
+#: src/big_remote_play/ui/host_view.py:1587
+#: src/big_remote_play/ui/host_view.py:1981
 msgid "Start sharing to show paired devices"
 msgstr "Spustite zdieľanie, aby sa zobrazili spárované zariadenia"
 
@@ -6458,7 +6581,7 @@ msgid "Starting ZeroTier…"
 msgstr "Spúšťa sa ZeroTier…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 634
-#: src/big_remote_play/ui/host_view.py:1752
+#: src/big_remote_play/ui/host_view.py:1865
 msgid "Starting game sharing..."
 msgstr "Spúšťa sa zdieľanie hry..."
 
@@ -6468,7 +6591,7 @@ msgstr "Spustenie si raz vyžiada vaše heslo."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 67
-#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "Starting..."
 msgstr "Spúšťa sa..."
 
@@ -6499,25 +6622,25 @@ msgstr "Stav: {}"
 msgid "Steam Remote Play"
 msgstr "Steam Remote Play"
 
-#: src/big_remote_play/ui/host_view.py:2015
+#: src/big_remote_play/ui/host_view.py:2128
 msgid "Steam is not recording sound"
 msgstr "Steam nenahráva zvuk"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1959
-#: src/big_remote_play/ui/private_network_view.py:1021
+#: src/big_remote_play/ui/private_network_view.py:1050
 msgid "Step 1: Get credentials"
 msgstr "Krok 1: Získajte poverenia"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1965
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Step 2: Enter details"
 msgstr "Krok 2: Zadajte podrobnosti"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1971
-#: src/big_remote_play/ui/private_network_view.py:1030
+#: src/big_remote_play/ui/private_network_view.py:1059
 msgid "Step 3: Connect"
 msgstr "Krok 3: Pripojiť"
 
@@ -6563,20 +6686,20 @@ msgstr "Dočasne zastaviť ZeroTier"
 msgid "Stop ZeroTier temporarily?"
 msgstr "Dočasne zastaviť ZeroTier?"
 
-#: src/big_remote_play/ui/host_view.py:1752
-#: src/big_remote_play/ui/host_view.py:1795
-#: src/big_remote_play/ui/host_view.py:1797
-#: src/big_remote_play/ui/host_view.py:1803
+#: src/big_remote_play/ui/host_view.py:1865
+#: src/big_remote_play/ui/host_view.py:1908
+#: src/big_remote_play/ui/host_view.py:1910
+#: src/big_remote_play/ui/host_view.py:1916
 msgid "Stop sharing"
 msgstr "Zastaviť zdieľanie"
 
-#: src/big_remote_play/ui/host_view.py:1803
+#: src/big_remote_play/ui/host_view.py:1916
 msgid "Stop sharing the game from this PC"
 msgstr "Zastaviť zdieľanie hry z tohto počítača"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
 #: src/big_remote_play/ui/host_view.py:714
-#: src/big_remote_play/ui/host_view.py:1833
+#: src/big_remote_play/ui/host_view.py:1946
 #: src/big_remote_play/ui/main_window.py:554
 #: src/big_remote_play/ui/main_window.py:1409
 #: src/big_remote_play/ui/main_window.py:1510
@@ -6588,7 +6711,7 @@ msgid "Stopped looking for new devices"
 msgstr "Hľadanie nových zariadení ukončené"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1256
-#: src/big_remote_play/ui/host_view.py:2362
+#: src/big_remote_play/ui/host_view.py:2475
 msgid "Stopping server..."
 msgstr "Zastavuje sa server..."
 
@@ -6606,14 +6729,14 @@ msgid "Strictly enforce frame bitrate limits for H.264/HEVC on AMD GPUs"
 msgstr "Prísne vynucovať limity dátového toku snímky pre H.264/HEVC na GPU AMD"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 794
-#: src/big_remote_play/ui/host_view.py:1676
+#: src/big_remote_play/ui/host_view.py:1789
 #, python-brace-format
 msgid "Success: {}"
 msgstr "Úspech: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 88
-#: src/big_remote_play/host/sunshine_manager.py:528
+#: src/big_remote_play/host/sunshine_manager.py:529
 #, python-brace-format
 msgid "Sunshine API request failed: {}"
 msgstr "Požiadavka na API Sunshine zlyhala: {}"
@@ -6625,7 +6748,7 @@ msgstr "Sunshine, hostiteľ streamovania hier"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 264
-#: src/big_remote_play/ui/host_view.py:2684
+#: src/big_remote_play/ui/host_view.py:2803
 msgid "Sunshine Logs"
 msgstr "Záznamy Sunshine"
 
@@ -6636,7 +6759,7 @@ msgstr "Sunshine je offline"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 265
-#: src/big_remote_play/ui/host_view.py:1377
+#: src/big_remote_play/ui/host_view.py:1489
 msgid "Sunshine Password"
 msgstr "Heslo Sunshine"
 
@@ -6648,7 +6771,7 @@ msgstr "Behové prostredie Sunshine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 264
-#: src/big_remote_play/ui/host_view.py:1373
+#: src/big_remote_play/ui/host_view.py:1485
 msgid "Sunshine User"
 msgstr "Používateľ Sunshine"
 
@@ -6664,7 +6787,7 @@ msgstr ""
 "Sunshine pri spustení požiada kompatibilný smerovač. Zapnutie tejto možnosti "
 "nepotvrdzuje, že sa porty otvorili."
 
-#: src/big_remote_play/ui/host_view.py:1088
+#: src/big_remote_play/ui/host_view.py:1199
 msgid ""
 "Sunshine chooses compatible capture and encoding at startup. You can still "
 "set a video bitrate ceiling."
@@ -6672,13 +6795,20 @@ msgstr ""
 "Sunshine pri spustení vyberie kompatibilné snímanie a kódovanie. Stále "
 "môžete nastaviť horný limit dátového toku videa."
 
+#: src/big_remote_play/ui/host_view.py:1138
+msgid ""
+"Sunshine did not close it. Try again, or stop sharing and start it again."
+msgstr ""
+"Sunshine ho nezavrel. Skúste to znova alebo zdieľanie zastavte a spustite "
+"znova."
+
 #: src/big_remote_play/ui/guest_view.py:1811
 msgid "Sunshine does not answer. Start sharing on the game PC."
 msgstr "Sunshine neodpovedá. Spustite zdieľanie na hernom počítači."
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
-#: src/big_remote_play/host/sunshine_manager.py:652
+#: src/big_remote_play/host/sunshine_manager.py:653
 #: src/big_remote_play/utils/system_check.py:184
 msgid "Sunshine executable not found"
 msgstr "Spustiteľný súbor Sunshine sa nenašiel"
@@ -6691,21 +6821,21 @@ msgstr "Sunshine nenahlásil svoju verziu"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 86
-#: src/big_remote_play/host/sunshine_manager.py:254
+#: src/big_remote_play/host/sunshine_manager.py:255
 #, python-brace-format
 msgid "Sunshine failed to start (Exit code {}).\n"
 msgstr "Sunshine sa nepodarilo spustiť (Kód ukončenia {}).\n"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 90
-#: src/big_remote_play/host/sunshine_manager.py:258
+#: src/big_remote_play/host/sunshine_manager.py:259
 #, python-brace-format
 msgid "Sunshine failed to start (Exit code {}). Check logs."
 msgstr ""
 "Sunshine sa nepodarilo spustiť (Kód ukončenia {}). Skontrolujte protokoly."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1411
-#: src/big_remote_play/ui/host_view.py:2454
+#: src/big_remote_play/ui/host_view.py:2573
 #, python-brace-format
 msgid ""
 "Sunshine failed to start.\n"
@@ -6724,7 +6854,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 88
-#: src/big_remote_play/host/sunshine_manager.py:256
+#: src/big_remote_play/host/sunshine_manager.py:257
 #, python-brace-format
 msgid "Sunshine failed to start: {}"
 msgstr "Sunshine sa nepodarilo spustiť: {}"
@@ -6743,13 +6873,13 @@ msgstr "Sunshine nie je dostupný."
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
-#: src/big_remote_play/host/sunshine_manager.py:286
+#: src/big_remote_play/host/sunshine_manager.py:287
 msgid "Sunshine is not running"
 msgstr "Sunshine nebeží"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
-#: src/big_remote_play/ui/host_view.py:2492
+#: src/big_remote_play/ui/host_view.py:2611
 #: src/big_remote_play/ui/main_window.py:1331
 #: src/big_remote_play/ui/sunshine_preferences.py:367
 msgid "Sunshine is not running."
@@ -6772,17 +6902,17 @@ msgstr "Sunshine teraz nahráva"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 105
-#: src/big_remote_play/host/sunshine_manager.py:578
-#: src/big_remote_play/host/sunshine_manager.py:594
+#: src/big_remote_play/host/sunshine_manager.py:579
+#: src/big_remote_play/host/sunshine_manager.py:595
 msgid "Sunshine rejected the PIN"
 msgstr "Sunshine odmietol PIN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 709
-#: src/big_remote_play/host/sunshine_manager.py:631
+#: src/big_remote_play/host/sunshine_manager.py:632
 msgid "Sunshine rejected the credentials"
 msgstr "Sunshine odmietol prihlasovacie údaje"
 
-#: src/big_remote_play/ui/host_view.py:1275
+#: src/big_remote_play/ui/host_view.py:1386
 msgid "Sunshine rejected the saved password."
 msgstr "Sunshine odmietol uložené heslo."
 
@@ -6792,14 +6922,14 @@ msgstr "Behové prostredie Sunshine je dostupné"
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 105
-#: src/big_remote_play/host/sunshine_manager.py:271
+#: src/big_remote_play/host/sunshine_manager.py:272
 #, python-brace-format
 msgid "Sunshine started (PID: {})"
 msgstr "Sunshine spustený (PID: {})"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 332
-#: src/big_remote_play/ui/host_view.py:901
+#: src/big_remote_play/ui/host_view.py:927
 msgid "Support"
 msgstr "Podpora"
 
@@ -6826,7 +6956,7 @@ msgid "Switch Tailscale or Headscale accounts, and see every ZeroTier network."
 msgstr ""
 "Prepínajte účty Tailscale alebo Headscale a zobrazte všetky siete ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:613
+#: src/big_remote_play/ui/private_network_view.py:641
 msgid ""
 "Switch saved accounts or leave networks without deleting online accounts."
 msgstr ""
@@ -6846,19 +6976,19 @@ msgstr "Prepína sa na {}…"
 msgid "System"
 msgstr "Systém"
 
-#: src/big_remote_play/ui/host_view.py:2005
+#: src/big_remote_play/ui/host_view.py:2118
 msgid "System audio unavailable"
 msgstr "Systémový zvuk nie je dostupný"
 
-#: src/big_remote_play/ui/host_view.py:2001
+#: src/big_remote_play/ui/host_view.py:2114
 msgid "System audio unavailable: no output device was found."
 msgstr "Systémový zvuk nie je dostupný: nenašlo sa žiadne výstupné zariadenie."
 
-#: src/big_remote_play/ui/host_view.py:2053
+#: src/big_remote_play/ui/host_view.py:2166
 msgid "System audio unavailable: there is no output to test."
 msgstr "Systémový zvuk nie je dostupný: nie je žiadny výstup na otestovanie."
 
-#: src/big_remote_play/ui/host_view.py:1230
+#: src/big_remote_play/ui/host_view.py:1341
 msgid "System keyring is unavailable. Password was not saved."
 msgstr "Systémový zväzok kľúčov nie je dostupný. Heslo nebolo uložené."
 
@@ -6884,7 +7014,7 @@ msgstr "Tailscale"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 818
 # line: 1987
-#: src/big_remote_play/ui/private_network_view.py:1042
+#: src/big_remote_play/ui/private_network_view.py:1071
 msgid "Tailscale Instructions"
 msgstr "Návod na Tailscale"
 
@@ -7017,7 +7147,7 @@ msgstr ""
 "kooperatívne hranie — žiadne proprietárne platformy, žiadne obmedzenia, "
 "žiadne limity na to, ktoré hry môžete hrať."
 
-#: src/big_remote_play/ui/host_view.py:1645
+#: src/big_remote_play/ui/host_view.py:1758
 msgid "The Sunshine port is outside the supported range."
 msgstr "Port Sunshine je mimo podporovaného rozsahu."
 
@@ -7037,12 +7167,12 @@ msgstr ""
 "Aktívne pripojenie VPN sa zastaví. Uložené účty sa zachovajú, aby ste sa "
 "mohli neskôr znova pripojiť."
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr "Správca musí zdieľať uzol alebo pozvať váš e-mail do siete."
 
-#: src/big_remote_play/ui/host_view.py:2156
+#: src/big_remote_play/ui/host_view.py:2269
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr ""
 "Príkaz aplikácie nie je platný. Skontrolujte úvodzovky a skúste to znova."
@@ -7065,7 +7195,7 @@ msgstr ""
 msgid "The checks could not run."
 msgstr "Kontroly sa nepodarilo spustiť."
 
-#: src/big_remote_play/ui/host_view.py:1592
+#: src/big_remote_play/ui/host_view.py:1705
 msgid ""
 "The chosen device plays the sound here too. Choose Automatic to share "
 "without playing it here."
@@ -7081,7 +7211,7 @@ msgstr "Počítač sa zobrazí v zozname zariadení tejto siete."
 msgid "The computer seems to be offline"
 msgstr "Počítač je zrejme offline"
 
-#: src/big_remote_play/ui/host_view.py:2021
+#: src/big_remote_play/ui/host_view.py:2134
 msgid "The connected client asked Sunshine not to play sound on this computer."
 msgstr ""
 "Pripojený klient požiadal Sunshine, aby na tomto počítači neprehrával zvuk."
@@ -7134,7 +7264,7 @@ msgstr "Súbor, kde sú uložené aktuálne protokoly Sunshine."
 msgid "The file that stores Sunshine's current state."
 msgstr "Súbor, kde je uložený aktuálny stav Sunshine."
 
-#: src/big_remote_play/ui/host_view.py:1648
+#: src/big_remote_play/ui/host_view.py:1761
 #, python-brace-format
 msgid ""
 "The firewall will allow incoming TCP {tcp} and UDP {udp}, plus 5353/UDP "
@@ -7202,7 +7332,7 @@ msgstr ""
 "Sieť je súkromná: každé nové zariadenie musí byť schválené. Tento počítač sa "
 "pripojí a bude schválený automaticky."
 
-#: src/big_remote_play/ui/private_network_view.py:1066
+#: src/big_remote_play/ui/private_network_view.py:1095
 msgid ""
 "The network owner must approve this computer, in Big Remote Play or in "
 "ZeroTier Central."
@@ -7231,7 +7361,7 @@ msgstr "Operácia zlyhala."
 msgid "The operation took longer than expected."
 msgstr "Operácia trvala dlhšie, ako sa očakávalo."
 
-#: src/big_remote_play/ui/host_view.py:1272
+#: src/big_remote_play/ui/host_view.py:1383
 msgid "The other PC is paired."
 msgstr "Druhý počítač je spárovaný."
 
@@ -7275,7 +7405,7 @@ msgid ""
 msgstr ""
 "Osoba sa pripojí k vašej súkromnej sieti a uvidí zariadenia, ktoré povolíte."
 
-#: src/big_remote_play/ui/private_network_view.py:698
+#: src/big_remote_play/ui/private_network_view.py:726
 msgid "The person who created the network gives you this code."
 msgstr "Tento kód vám dá ten, kto sieť vytvoril."
 
@@ -7305,7 +7435,7 @@ msgstr ""
 msgid "The saved credentials could not be read."
 msgstr "Uložené prihlasovacie údaje sa nepodarilo načítať."
 
-#: src/big_remote_play/ui/host_view.py:2190
+#: src/big_remote_play/ui/host_view.py:2303
 msgid ""
 "The selected audio output is unavailable. Choose Automatic or reconnect the "
 "device."
@@ -7313,12 +7443,12 @@ msgstr ""
 "Vybraný zvukový výstup nie je dostupný. Zvoľte Automaticky alebo zariadenie "
 "znova pripojte."
 
-#: src/big_remote_play/ui/host_view.py:1999
+#: src/big_remote_play/ui/host_view.py:2112
 msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr ""
 "Vybraný výstup nie je pripojený. Znova ho pripojte alebo zvoľte Automaticky."
 
-#: src/big_remote_play/ui/private_network_view.py:665
+#: src/big_remote_play/ui/private_network_view.py:693
 msgid "The server administrator then approves this computer."
 msgstr "Správca servera potom tento počítač schváli."
 
@@ -7372,6 +7502,10 @@ msgstr "Služba je spustená"
 msgid "The stream did not start"
 msgstr "Stream sa nespustil"
 
+#: src/big_remote_play/ui/host_view.py:1138
+msgid "The stream is still open"
+msgstr "Stream je stále otvorený"
+
 #: src/big_remote_play/ui/api_access_dialog.py:273
 msgid "The system keyring is locked or unavailable. Nothing was saved."
 msgstr ""
@@ -7383,12 +7517,12 @@ msgstr ""
 "Systémový zväzok kľúčov je zamknutý alebo nedostupný. Odomknite ho a skúste "
 "to znova."
 
-#: src/big_remote_play/ui/host_view.py:2055
+#: src/big_remote_play/ui/host_view.py:2168
 #, python-brace-format
 msgid "The tone could not be played on {output}."
 msgstr "Tón sa na zariadení {output} nepodarilo prehrať."
 
-#: src/big_remote_play/ui/host_view.py:2059
+#: src/big_remote_play/ui/host_view.py:2172
 #, python-brace-format
 msgid ""
 "The tone did not reach the shared sound. Check the output volume and that "
@@ -7397,7 +7531,7 @@ msgstr ""
 "Tón sa nedostal do zdieľaného zvuku. Skontrolujte hlasitosť výstupu a či je "
 "{output} výstup, ktorý počujete."
 
-#: src/big_remote_play/ui/host_view.py:2057
+#: src/big_remote_play/ui/host_view.py:2170
 #, python-brace-format
 msgid "The tone reached the shared sound ({level:.0f} dB on {output})."
 msgstr ""
@@ -7437,11 +7571,11 @@ msgstr ""
 "Vlastník siete ho schváli v ZeroTier Central alebo v Big Remote Play. Táto "
 "stránka sa aktualizuje po obnovení."
 
-#: src/big_remote_play/ui/host_view.py:791
+#: src/big_remote_play/ui/host_view.py:819
 msgid "This PC did not appear in the list?"
 msgstr "Neobjavil sa tento počítač v zozname?"
 
-#: src/big_remote_play/ui/private_network_view.py:519
+#: src/big_remote_play/ui/private_network_view.py:547
 #, python-brace-format
 msgid "This PC is on the {} private network."
 msgstr "Tento počítač je v súkromnej sieti {}."
@@ -7486,7 +7620,7 @@ msgstr "Tento kód nie je úplný"
 msgid "This computer"
 msgstr "Tento počítač"
 
-#: src/big_remote_play/ui/host_view.py:872
+#: src/big_remote_play/ui/host_view.py:898
 msgid ""
 "This computer captures and encodes the game. Under Connect → Image, the "
 "other computer requests resolution, frame rate and video bitrate. The "
@@ -7502,7 +7636,7 @@ msgstr ""
 msgid "This computer has not joined a ZeroTier network yet."
 msgstr "Tento počítač sa zatiaľ nepripojil k žiadnej sieti ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:514
+#: src/big_remote_play/ui/private_network_view.py:542
 msgid ""
 "This computer is already on a ZeroTier network. To join another one, type "
 "its code."
@@ -7852,7 +7986,7 @@ msgstr "Dôveryhodné zdroje webového rozhrania"
 # line: 1769
 # line: 1914
 #: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:849
+#: src/big_remote_play/ui/private_network_view.py:878
 msgid "Try Again"
 msgstr "Skúste znova"
 
@@ -7894,12 +8028,12 @@ msgstr "Zapína sa…"
 msgid "Type"
 msgstr "Typ"
 
-#: src/big_remote_play/ui/private_network_view.py:539
+#: src/big_remote_play/ui/private_network_view.py:567
 msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr "Zadajte adresu svojho servera. Jeho správca tento počítač schváli."
 
-#: src/big_remote_play/ui/private_network_view.py:537
+#: src/big_remote_play/ui/private_network_view.py:565
 msgid "Type the network code you received."
 msgstr "Zadajte kód siete, ktorý ste dostali."
 
@@ -7913,11 +8047,11 @@ msgstr "UPnP"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 112
-#: src/big_remote_play/ui/host_view.py:1935
+#: src/big_remote_play/ui/host_view.py:2048
 msgid "Unavailable"
 msgstr "Nedostupné"
 
-#: src/big_remote_play/ui/host_view.py:1622
+#: src/big_remote_play/ui/host_view.py:1735
 #, python-brace-format
 msgid "Unavailable: {device}"
 msgstr "Nedostupné: {device}"
@@ -7931,8 +8065,8 @@ msgstr "Nedostupné: {device}"
 # 144
 # 147
 #: src/big_remote_play/ui/host_view.py:169
-#: src/big_remote_play/ui/host_view.py:1112
-#: src/big_remote_play/ui/host_view.py:1117
+#: src/big_remote_play/ui/host_view.py:1223
+#: src/big_remote_play/ui/host_view.py:1228
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:230
 #: src/big_remote_play/utils/system_check.py:176
 #: src/big_remote_play/utils/system_check.py:179
@@ -7954,8 +8088,8 @@ msgstr "Neznáma služba VPN: ${provider}"
 # 127
 # 144
 # 147
-#: src/big_remote_play/ui/host_view.py:1532
-#: src/big_remote_play/ui/host_view.py:2566
+#: src/big_remote_play/ui/host_view.py:1645
+#: src/big_remote_play/ui/host_view.py:2685
 msgid "Unknown device"
 msgstr "Neznáme zariadenie"
 
@@ -7972,11 +8106,11 @@ msgid "Unlock the bitrate limit"
 msgstr "Zrušiť limit dátového toku"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 685
-#: src/big_remote_play/ui/host_view.py:2785
+#: src/big_remote_play/ui/host_view.py:2904
 msgid "Unnamed"
 msgstr "Bez názvu"
 
-#: src/big_remote_play/ui/host_view.py:1310
+#: src/big_remote_play/ui/host_view.py:1421
 msgid "Unnamed device"
 msgstr "Zariadenie bez názvu"
 
@@ -7989,7 +8123,7 @@ msgstr "Nestabilná"
 msgid "Unstable network mode"
 msgstr "Režim nestabilnej siete"
 
-#: src/big_remote_play/ui/host_view.py:2918
+#: src/big_remote_play/ui/host_view.py:3037
 msgid "Up one level"
 msgstr "O úroveň vyššie"
 
@@ -8041,7 +8175,7 @@ msgstr ""
 "nie dôkaz funkčného prístupu. Nesprístupňujte panel správy Sunshine "
 "(predvolene 47990) a nevypínajte firewall."
 
-#: src/big_remote_play/ui/guided_setup.py:304
+#: src/big_remote_play/ui/guided_setup.py:307
 msgid "Use Tailscale"
 msgstr "Použiť Tailscale"
 
@@ -8135,16 +8269,16 @@ msgid "User"
 msgstr "Používateľ"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 616
-#: src/big_remote_play/ui/host_view.py:1422
+#: src/big_remote_play/ui/host_view.py:1534
 msgid "User Not Found"
 msgstr "Používateľ nenájdený"
 
-#: src/big_remote_play/host/sunshine_manager.py:649
+#: src/big_remote_play/host/sunshine_manager.py:650
 msgid "Username and password cannot be empty"
 msgstr "Používateľské meno a heslo nesmú byť prázdne"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 636
-#: src/big_remote_play/ui/host_view.py:3033
+#: src/big_remote_play/ui/host_view.py:3152
 msgid "Username and password cannot be empty."
 msgstr "Používateľské meno a heslo nesmú byť prázdne."
 
@@ -8202,7 +8336,7 @@ msgstr "Video kodek"
 msgid "Video format and diagnostics"
 msgstr "Formát videa a diagnostika"
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1045
 #, python-brace-format
 msgid "Video limit: {mbps:g} Mbps"
 msgstr "Limit videa: {mbps:g} Mb/s"
@@ -8237,7 +8371,7 @@ msgid "VideoToolbox Software Encoding"
 msgstr "Softvérové kódovanie VideoToolbox"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:2458
+#: src/big_remote_play/ui/host_view.py:2577
 msgid "View Logs"
 msgstr "Zobraziť záznamy"
 
@@ -8257,7 +8391,7 @@ msgstr ""
 "servery a zo systémového zväzku kľúčov sa odstránia uložené heslá (Sunshine, "
 "ZeroTier, overovacie kľúče siete). Aplikácia sa zatvorí."
 
-#: src/big_remote_play/ui/private_network_view.py:1065
+#: src/big_remote_play/ui/private_network_view.py:1094
 msgid "Wait for Approval"
 msgstr "Počkajte na schválenie"
 
@@ -8313,8 +8447,8 @@ msgstr "Treba opraviť nastavenie"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1723
 # line: 1849
-#: src/big_remote_play/ui/private_network_view.py:911
-#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:940
+#: src/big_remote_play/ui/private_network_view.py:993
 msgid "Web UI"
 msgstr "Webové rozhranie"
 
@@ -8341,7 +8475,7 @@ msgid "What this computer shows"
 msgstr "Čo zobrazuje tento počítač"
 
 #: src/big_remote_play/ui/connection_guides.py:100
-#: src/big_remote_play/ui/private_network_view.py:551
+#: src/big_remote_play/ui/private_network_view.py:579
 msgid "What you need"
 msgstr "Čo budete potrebovať"
 
@@ -8350,7 +8484,7 @@ msgid "What you need and the steps to run Headscale on a Linux server."
 msgstr ""
 "Čo budete potrebovať a postup spustenia Headscale na serveri s Linuxom."
 
-#: src/big_remote_play/ui/host_view.py:1457
+#: src/big_remote_play/ui/host_view.py:1570
 msgid ""
 "When another device starts playing, it appears here with its connection "
 "quality."
@@ -8376,8 +8510,8 @@ msgstr ""
 "spôsobiť, že ho Sunshine prepne na virtuálny výstup."
 
 #: src/big_remote_play/ui/host_view.py:485
-#: src/big_remote_play/ui/host_view.py:1594
-#: src/big_remote_play/ui/host_view.py:2023
+#: src/big_remote_play/ui/host_view.py:1707
+#: src/big_remote_play/ui/host_view.py:2136
 msgid "When off, only the other computer hears the game."
 msgstr "Keď je vypnuté, hru počuje len druhý počítač."
 
@@ -8393,7 +8527,7 @@ msgstr "Kde vytvoriť token"
 msgid "Where to create it"
 msgstr "Kde ho vytvoriť"
 
-#: src/big_remote_play/ui/host_view.py:1301
+#: src/big_remote_play/ui/host_view.py:1412
 msgid "Which computer shows this code?"
 msgstr "Ktorý počítač zobrazuje tento kód?"
 
@@ -8441,7 +8575,7 @@ msgstr ""
 msgid "Without a browser (advanced)"
 msgstr "Bez prehliadača (pokročilé)"
 
-#: src/big_remote_play/ui/private_network_view.py:1032
+#: src/big_remote_play/ui/private_network_view.py:1061
 msgid ""
 "Without a key, a sign-in link opens; the administrator approves this "
 "computer on the server."
@@ -8453,7 +8587,7 @@ msgstr ""
 msgid "Without a private network"
 msgstr "Bez súkromnej siete"
 
-#: src/big_remote_play/ui/private_network_view.py:664
+#: src/big_remote_play/ui/private_network_view.py:692
 msgid "Without an auth key, a sign-in link opens"
 msgstr "Bez overovacieho kľúča sa otvorí prihlasovací odkaz"
 
@@ -8469,7 +8603,7 @@ msgstr ""
 "Áno — tento počítač má adresu carrier-grade NAT. Presmerovanie portov tu "
 "nemôže fungovať; použite súkromnú sieť."
 
-#: src/big_remote_play/ui/host_view.py:2011
+#: src/big_remote_play/ui/host_view.py:2124
 msgid "Yes — this is an error; stop sharing and report it"
 msgstr "Áno — ide o chybu; zastavte zdieľanie a nahláste ju"
 
@@ -8510,7 +8644,7 @@ msgstr "Vaše pripojenia sa tu zobrazia, keď začnete hrať s Big Remote Play."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1662
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "Your created/connected networks will appear here."
 msgstr "Vaše vytvorené/pripojené siete sa tu zobrazia."
 
@@ -8556,7 +8690,7 @@ msgstr "Vaše nastavenia, spárované siete a predvoľby v jednom súbore."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 650
-#: src/big_remote_play/ui/private_network_view.py:1068
+#: src/big_remote_play/ui/private_network_view.py:1097
 msgid "ZT Panel"
 msgstr "Panel ZT"
 
@@ -8572,7 +8706,7 @@ msgstr "Token API ZeroTier"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 825
 # line: 1994
-#: src/big_remote_play/ui/private_network_view.py:1059
+#: src/big_remote_play/ui/private_network_view.py:1088
 msgid "ZeroTier Instructions"
 msgstr "Návod na ZeroTier"
 
@@ -8624,12 +8758,16 @@ msgstr "Siete ZeroTier"
 msgid "ZeroTier service error"
 msgstr "Chyba služby ZeroTier"
 
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "ZeroTier shows its 16-character network code. Copy it."
+msgstr "ZeroTier zobrazí 16-znakový kód siete. Skopírujte ho."
+
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
 msgstr "neurčené"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 780
-#: src/big_remote_play/ui/host_view.py:1737
+#: src/big_remote_play/ui/host_view.py:1850
 msgid "value"
 msgstr "hodnota"
 
@@ -8653,7 +8791,7 @@ msgstr "{layout} · {location}"
 msgid "{minutes} min"
 msgstr "{minutes} min"
 
-#: src/big_remote_play/ui/host_view.py:1022
+#: src/big_remote_play/ui/host_view.py:1048
 #, python-brace-format
 msgid "{mode} · {limit}"
 msgstr "{mode} · {limit}"
@@ -8716,22 +8854,22 @@ msgstr ""
 msgid "{resolution} · {frame_rate} · {bitrate}"
 msgstr "{resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:2030
+#: src/big_remote_play/ui/host_view.py:2143
 #, python-brace-format
 msgid "{source} (a microphone)"
 msgstr "{source} (mikrofón)"
 
-#: src/big_remote_play/ui/host_view.py:2029
+#: src/big_remote_play/ui/host_view.py:2142
 #, python-brace-format
 msgid "{source} (sound this computer plays)"
 msgstr "{source} (zvuk prehrávaný týmto počítačom)"
 
-#: src/big_remote_play/ui/host_view.py:1769
+#: src/big_remote_play/ui/host_view.py:1882
 #, python-brace-format
 msgid "{source} · {quality}"
 msgstr "{source} · {quality}"
 
-#: src/big_remote_play/ui/host_view.py:2017
+#: src/big_remote_play/ui/host_view.py:2130
 #, python-brace-format
 msgid "{source} → {target}"
 msgstr "{source} → {target}"
@@ -8747,12 +8885,12 @@ msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 259
-#: src/big_remote_play/ui/private_network_view.py:449
+#: src/big_remote_play/ui/private_network_view.py:477
 #, python-brace-format
 msgid "{} installed"
 msgstr "{} nainštalovaný"
 
-#: src/big_remote_play/ui/private_network_view.py:420
+#: src/big_remote_play/ui/private_network_view.py:448
 #, python-brace-format
 msgid ""
 "{} is not installed yet. Install it below to continue (asks for your "
@@ -8763,7 +8901,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 198
-#: src/big_remote_play/ui/host_view.py:1548
+#: src/big_remote_play/ui/host_view.py:1661
 #, python-brace-format
 msgid "{} more paired devices"
 msgstr "Ďalšie spárované zariadenia: {}"
