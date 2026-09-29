@@ -41,8 +41,7 @@ Colour space, range and decoder were not the cause: both full- and limited-range
 
 **Fix.** Big Remote Play adds one Sunshine `global_prep_cmd` (`host/stream_display.py`). Sunshine runs it before capture starts and after the session ends, with the client's request in `SUNSHINE_CLIENT_HDR`, `SUNSHINE_CLIENT_WIDTH`, `SUNSHINE_CLIENT_HEIGHT` and `SUNSHINE_CLIENT_FPS`:
 
-- client without HDR and the shared screen in HDR → `kscreen-doctor output.<screen>.hdr.disable output.<screen>.wcg.disable` for the session, then enabled again;
-- client with HDR → nothing changes (Sunshine sends PQ/BT.2020 10-bit, which the client shows as HDR);
+- the shared screen in HDR → `kscreen-doctor output.<screen>.hdr.disable output.<screen>.wcg.disable` for the session, then enabled again, **whatever the first device asked for**. Sunshine runs the command once per app launch and every device that joins later shares the capture. From an SDR screen Sunshine serves SDR devices correctly and an HDR request as `SDR (Rec. 2020)` 10-bit; from an HDR screen only HDR devices look right. Seen for real on 2026-09-29: an HDR TV launched the session, then a phone, an Xbox and a PC joined in SDR and got washed-out colours; switching the screen to SDR during the session made Sunshine re-create all four encoders as SDR (the HDR one as `SDR (Rec. 2020)`);
 - with the screen set to **Automatic**, every HDR screen is switched, because Sunshine chooses the one it captures.
 
 The previous state is kept in `$XDG_RUNTIME_DIR/big-remote-play/stream-display.json` (0600). If Sunshine is killed and never runs the undo, **Stop sharing**, the next session or the next start of Big Remote Play puts it back. Entries the person added to `global_prep_cmd` are kept; an unreadable value is left untouched. Only KDE Plasma (`kscreen-doctor`) is handled; on other desktops the screen is not changed.
@@ -75,7 +74,7 @@ Measured on 2026-09-29 with H.264, the bitrates TVs and car screens usually requ
 
 Host capture + encode time stayed 1.8–2.5 ms. With a static picture, doubling the bitrate from 10 to 20 Mbps changed text SSIM by less than 0.005; the scaling, not the bitrate, decided sharpness. The aliasing (moiré on 1-px lines, jagged text) is Sunshine's scaler reducing 3440 px to 1920 px without an anti-aliasing filter; Sunshine's VAAPI encoder scaled no better than its Vulkan encoder (text SSIM 0.914 vs 0.913 at 10 Mbps H.264).
 
-The client's requested size is known only for the device that launched the session: Sunshine runs `global_prep_cmd` when the app is launched and the undo when it closes, not for every device that joins later. The HDR decision and **Same as the first device that connects** therefore follow that first device; a fixed size serves every device.
+The client's requested size is known only for the device that launched the session: Sunshine runs `global_prep_cmd` when the app is launched and the undo when it closes, not for every device that joins later. **Same as the first device that connects** therefore follows that first device, and HDR screens are always shared in SDR; a fixed size serves every device.
 
 ## Codecs, 4:4:4 and latency on the test machine
 
@@ -100,6 +99,8 @@ No frames were dropped by the network. Sunshine chose its Vulkan encoder automat
 ## Physical devices (2026-09-29)
 
 A phone, a TV and a car multimedia unit (2.4 GHz Wi-Fi only) streamed at the same time from the 3440×1440 HDR screen after the colour fix. Colours were correct on all three; the phone (its own 20:9 resolution, HEVC, 26 Mbps) looked very good. The TV and the car unit requested the Moonlight default of about 10 Mbps (7.3 Mbps of video after error correction), H.264 on the car unit, and showed jagged, hard-to-read text: the scaling measured above. The car unit's link had 12–25 ms of ping variation (Wi-Fi), which Moonlight shows as stutter.
+
+Later the same day six devices streamed at once — a phone, three LG webOS TVs (Moonlight TV 1.6.36), an Xbox Series X and a PC running Big Remote Play — over the local network (RTT 1.7–6.8 ms, no loss), with the HDR screen shared in SDR for all of them. With three devices streaming, Sunshine used about 11 % CPU and the RX 9060 XT about 7 %.
 
 ## Still to verify on other hardware
 

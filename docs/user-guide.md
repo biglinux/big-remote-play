@@ -39,7 +39,7 @@ Opening Share does not start the server, install software or change network/fire
 
 Two options in **Image and capture** decide how faithful the picture is:
 
-- **Correct colors of HDR screens** (on by default): if the shared screen uses HDR and the other device does not, that screen switches to SDR while sharing and back afterwards. Without it, colors look grey and washed out on the other device. The **Image and capture** summary says when the shared screen is in HDR.
+- **Correct colors of HDR screens** (on by default): if the shared screen uses HDR, it switches to SDR while sharing and back afterwards, so every connected device sees correct colors; a device that asks for HDR gets SDR. Without it, devices without HDR see grey, washed-out colors. The **Image and capture** summary says when the shared screen is in HDR.
 - **Screen resolution while sharing** (needs a chosen screen): **Keep this screen's resolution** (default), **Same as the first device that connects**, **1920 × 1080 — best for TVs**, 2560 × 1440 or **1280 × 720 — slow connections**. A screen larger than the other device is scaled down and small text loses detail; with a wide 3440 × 1440 screen, 1920 × 1080 makes text on a TV or car screen much sharper. The screen changes only while sharing (for anyone sitting at it too) and returns afterwards.
 
 On the other device, Moonlight chooses its own resolution, frame rate and bitrate. For a TV on a fast home network, ask for its screen resolution and about 20–30 Mbps; a car screen on 2.4 GHz Wi-Fi works best at 1280 × 720 or 1920 × 1080 with about 8–10 Mbps, where the connection, not the picture, sets the limit.

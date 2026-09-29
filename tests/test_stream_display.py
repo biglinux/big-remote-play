@@ -50,9 +50,12 @@ def test_an_hdr_screen_is_shared_in_sdr_to_a_device_without_hdr():
     assert plan.undo == ["output.DP-1.hdr.enable", "output.DP-1.wcg.enable"]
 
 
-def test_an_hdr_device_keeps_hdr():
+def test_an_hdr_first_device_does_not_leave_later_sdr_devices_washed_out():
+    """Seen for real: an HDR TV launched the session, then a phone, an Xbox
+    and a PC joined in SDR and got PQ pixels. The screen is SDR for all."""
     plan = plan_session(outputs(), Request(hdr=True), target="DP-1")
-    assert plan.apply == [] and plan.undo == []
+    assert plan.apply == ["output.DP-1.hdr.disable", "output.DP-1.wcg.disable"]
+    assert any("first device asked for HDR" in note for note in plan.notes)
 
 
 def test_an_sdr_screen_is_left_alone_and_malformed_outputs_are_ignored():
@@ -72,20 +75,20 @@ def test_resolution_matching_uses_an_exact_mode_and_restores_the_old_one():
     plan = plan_session(outputs(), Request(hdr=False, width=1920, height=1080, fps=60), target="DP-1", resolution="client")
     assert "output.DP-1.mode.95" in plan.apply  # 60 Hz, not the 120 Hz mode
     assert plan.undo[0] == "output.DP-1.mode.89"  # the mode comes back before HDR
-    high = plan_session(outputs(), Request(hdr=True, width=1920, height=1080, fps=120), target="DP-1", resolution="client")
+    high = plan_session(outputs(), Request(hdr=True, width=1920, height=1080, fps=120), target="DP-1", resolution="client", sdr_for_sdr_clients=False)
     assert high.apply == ["output.DP-1.mode.93"]
 
 
 def test_a_fixed_sharing_resolution_serves_every_device():
     """Measured: a 1080p TV at 10 Mbps H.264 went from text SSIM 0.89 to 0.99."""
-    plan = plan_session(outputs(), Request(hdr=True, width=2610, height=1220, fps=60), target="DP-1", resolution="1920x1080")
+    plan = plan_session(outputs(), Request(hdr=True, width=2610, height=1220, fps=60), target="DP-1", resolution="1920x1080", sdr_for_sdr_clients=False)
     assert plan.apply == ["output.DP-1.mode.95"] and plan.undo == ["output.DP-1.mode.89"]
-    assert plan_session(outputs(), Request(hdr=True), target="DP-1", resolution="1920x1080;rm").apply == []
-    assert plan_session(outputs(), Request(hdr=True), target=None, resolution="1920x1080").apply == []  # needs a chosen screen
+    assert plan_session(outputs(), Request(), target="DP-1", resolution="1920x1080;rm", sdr_for_sdr_clients=False).apply == []
+    assert plan_session(outputs(), Request(), target=None, resolution="1920x1080", sdr_for_sdr_clients=False).apply == []  # needs a chosen screen
 
 
 def test_no_exact_mode_means_no_change():
-    plan = plan_session(outputs(), Request(hdr=True, width=1366, height=768, fps=60), target="DP-1", resolution="client")
+    plan = plan_session(outputs(), Request(width=1366, height=768, fps=60), target="DP-1", resolution="client", sdr_for_sdr_clients=False)
     assert plan.apply == []
     assert any("Sunshine scales" in note for note in plan.notes)
 

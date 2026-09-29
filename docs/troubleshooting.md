@@ -11,7 +11,7 @@ The card on **Play over the internet** names the problem and its fix:
 
 ## Colors look grey or washed out on the other computer
 
-The shared screen is almost certainly in HDR (KDE: **System Settings → Display** shows HDR on). Sunshine captures HDR pixels and sends them as SDR, without converting them. Keep **Share → Image and capture → Correct colors of HDR screens** on and start sharing again: the screen uses SDR during the session and HDR afterwards. On desktops other than KDE Plasma, turn HDR off on that screen by hand before sharing. If the other device supports HDR, choose HDR in its Moonlight settings instead. Measurements and details: [video quality](video-quality.md).
+The shared screen is almost certainly in HDR (KDE: **System Settings → Display** shows HDR on). Sunshine captures HDR pixels and sends them as SDR, without converting them. Keep **Share → Image and capture → Correct colors of HDR screens** on and start sharing again: the screen uses SDR during the session and HDR afterwards. On desktops other than KDE Plasma, turn HDR off on that screen by hand before sharing. Measurements and details: [video quality](video-quality.md).
 
 ## Small text is blurry on the other computer
 
@@ -71,6 +71,8 @@ Sunshine probes every display and encoder when capture and encoder are set to au
 ## A device says “The computer is currently in a game” or asks to close the game
 
 Moonlight pairs only when nothing is being played, and Sunshine counts the shared **Desktop** as a game while any device is connected. Big Remote Play then answers the PIN with **No computer is waiting** and explains it. End the stream on the other devices, pair the new one (only once), then connect everyone again.
+
+To pair several new devices, pair them one at a time, each while nobody is playing; the devices already paired reconnect afterwards without a new PIN. A device that never lists the computer has not found it on the network (some TV apps keep an empty computer list): add it by the sharing computer's address, shown in **Share**, then pair.
 
 When a device asks to close the game although nothing seems to be open, it asked for a different app than the one running for the other devices. Choose the app that is already running (usually **Desktop**) to join it; closing it ends the other devices' streams. A device that remembers an app the computer no longer offers (for example an old **Steam Big Picture** entry) fails to start it: refresh the app list on that device.
 
