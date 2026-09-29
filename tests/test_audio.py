@@ -82,6 +82,7 @@ class FakePulse:
         self.links: dict[str, tuple[str, str]] = {"90": ("mic:capture_FL", "hw:playback_FL")}  # someone else's
         self.next_link = 300
         self.fail_list = False
+        self.extra_outputs: list[str] = []  # output ports of programs, e.g. an effects filter
 
     # -- helpers for tests -------------------------------------------------
     def sunshine_starts_session(self, *, host_audio: bool, surround: bool = False, audio_sink: str | None = None) -> None:
@@ -101,6 +102,22 @@ class FakePulse:
     def sunshine_ends_session(self, restore_to: str) -> None:
         self.capture = [c for c in self.capture if c.props.get("application.process.binary") != "sunshine"]
         self.default_sink = restore_to
+
+    def sunshine_exits(self, restore_to: str) -> None:
+        """Sunshine quits: its outputs and every link to their ports disappear."""
+        self.sunshine_ends_session(restore_to)
+        self.sinks = [s for s in self.sinks if not s.name.startswith("sink-sunshine-")]
+        self.links = {k: (o, i) for k, (o, i) in self.links.items() if not (o.startswith("sink-sunshine-") or i.startswith("sink-sunshine-"))}
+
+    def effects_program_plays_into(self, sink: str, node: str = "jdsp_@PwJamesDspPlugin_JamesDsp") -> None:
+        """A filter like JamesDSP that links its own output to the default output."""
+        for channel in ("FL", "FR"):
+            port = f"{node}:output_{channel}"
+            if port not in self.extra_outputs:
+                self.extra_outputs.append(port)
+            self.links = {k: v for k, v in self.links.items() if v[0] != port}
+            self.next_link += 1
+            self.links[str(self.next_link)] = (port, f"{sink}:playback_{channel}")
 
     def sources(self) -> list[tuple[str, str, str]]:
         found = [(f"{s.name}.monitor", f"Monitor of {s.description}", s.name) for s in self.sinks]
@@ -135,7 +152,7 @@ class FakePulse:
         args = argv[1:]
         ok = lambda out="": subprocess.CompletedProcess(argv, 0, out, "")  # noqa: E731
         if args == ["-o"]:
-            return ok("\n".join(f"{s.name}:monitor_{c}" for s in self.sinks for c in s.channels) + "\n")
+            return ok("\n".join([f"{s.name}:monitor_{c}" for s in self.sinks for c in s.channels] + self.extra_outputs) + "\n")
         if args == ["-i"]:
             return ok("\n".join(f"{s.name}:playback_{c}" for s in self.sinks for c in s.channels) + "\n")
         if args == ["-l", "-I"]:
@@ -153,6 +170,12 @@ class FakePulse:
         if args[0] == "-d":
             pair = (args[1], args[2])
             self.links = {k: v for k, v in self.links.items() if v != pair}
+            return ok()
+        if len(args) == 2 and not args[0].startswith("-"):
+            if (args[0], args[1]) in self.links.values():
+                return subprocess.CompletedProcess(argv, 1, "", "failed to link ports: File exists")
+            self.next_link += 1
+            self.links[str(self.next_link)] = (args[0], args[1])
             return ok()
         raise AssertionError(f"unexpected pw-link call {argv}")
 
@@ -507,7 +530,7 @@ def test_state_file_is_private_and_holds_no_stream_ids(pulse, manager, tmp_path)
     path = tmp_path / "audio-session.json"
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
     state = json.loads(path.read_text())
-    assert set(state) == {"owner_pid", "token", "original_sink", "manual_output", "play_on_host", "bridges"}
+    assert set(state) == {"owner_pid", "token", "original_sink", "manual_output", "play_on_host", "bridges", "feeders"}
     assert state["original_sink"] == HDMI and len(state["bridges"]) == 1 and len(state["bridges"][0]["links"]) == 2
 
 
@@ -559,6 +582,109 @@ def test_a_corrupt_state_file_is_ignored(manager, tmp_path):
     )
     session = AudioRoutingSession.load(manager, tmp_path / "audio-session.json")
     assert session is not None and session.links == {}
+
+
+# -------------------------------------------- programs left unlinked on exit
+
+JDSP_FL, JDSP_FR = "jdsp_@PwJamesDspPlugin_JamesDsp:output_FL", "jdsp_@PwJamesDspPlugin_JamesDsp:output_FR"
+
+
+def muted_session_with_effects(pulse, manager, tmp_path):
+    session = session_for(manager, tmp_path, play_on_host=False)
+    session.begin(manager.snapshot())
+    pulse.sunshine_starts_session(host_audio=False)
+    pulse.effects_program_plays_into(SUNSHINE_STEREO_SINK)  # it follows the default output
+    session.reconcile()
+    return session
+
+
+def test_an_effects_program_left_unlinked_by_sunshine_exit_is_reconnected(pulse, manager, tmp_path):
+    session = muted_session_with_effects(pulse, manager, tmp_path)
+    assert json.loads((tmp_path / "audio-session.json").read_text())["feeders"] == [JDSP_FL, JDSP_FR]
+    # Measured on 2026-09-29: JamesDSP missed the change when the default
+    # went back and Sunshine's output vanished at the same moment.
+    pulse.sunshine_exits(HDMI)
+    session.end(settle=0)
+    assert (JDSP_FL, f"{HDMI}:playback_FL") in pulse.links.values()
+    assert (JDSP_FR, f"{HDMI}:playback_FR") in pulse.links.values()
+    relinks = [w for w in pulse.writes if w[0] == "pw-link" and w[1] in (JDSP_FL, JDSP_FR)]
+    assert relinks == [["pw-link", JDSP_FL, f"{HDMI}:playback_FL"], ["pw-link", JDSP_FR, f"{HDMI}:playback_FR"]]  # not tagged as ours
+    assert not [w for w in pulse.writes if w[:2] == ["pw-link", "-d"] and w[2].startswith("jdsp")]
+    assert not (tmp_path / "audio-session.json").exists()
+
+
+def test_a_program_that_followed_the_output_by_itself_is_left_alone(pulse, manager, tmp_path):
+    session = muted_session_with_effects(pulse, manager, tmp_path)
+    pulse.sunshine_exits(HDMI)
+    pulse.effects_program_plays_into(HDMI)
+    writes = len(pulse.writes)
+    session.end(settle=0)
+    assert pulse.writes[writes:] == []
+
+
+def test_the_program_gets_time_to_relink_itself_first(pulse, manager, tmp_path, monkeypatch):
+    session = muted_session_with_effects(pulse, manager, tmp_path)
+    pulse.sunshine_exits(HDMI)
+    waits = []
+
+    def sleep(seconds):
+        waits.append(seconds)
+        pulse.effects_program_plays_into(HDMI)
+
+    monkeypatch.setattr(audio.time, "sleep", sleep)
+    writes = len(pulse.writes)
+    session.end(settle=5)
+    assert waits and pulse.writes[writes:] == []
+
+
+def test_nothing_is_linked_into_a_virtual_default_output(pulse, manager, tmp_path):
+    # EasyEffects' own sink as default: linking a filter into it could feed it back into itself.
+    session = muted_session_with_effects(pulse, manager, tmp_path)
+    pulse.sunshine_exits(EASY)
+    session.end(settle=0)
+    assert not any(o in (JDSP_FL, JDSP_FR) for o, _i in pulse.links.values())
+
+
+def test_a_mono_device_gets_the_front_channels(pulse, manager, tmp_path):
+    pulse.sinks.append(Sink("alsa_output.usb-Mono-00.mono", "Mono speaker", {"device.api": "alsa"}, "HARDWARE", channels=("MONO",)))
+    session = muted_session_with_effects(pulse, manager, tmp_path)
+    pulse.sunshine_exits("alsa_output.usb-Mono-00.mono")
+    session.end(settle=0)
+    assert {(JDSP_FL, "alsa_output.usb-Mono-00.mono:playback_MONO"), (JDSP_FR, "alsa_output.usb-Mono-00.mono:playback_MONO")} <= set(pulse.links.values())
+
+
+def test_nothing_is_relinked_while_sunshine_still_runs(pulse, manager, tmp_path):
+    session = muted_session_with_effects(pulse, manager, tmp_path)
+    pulse.links = {k: v for k, v in pulse.links.items() if v[0] not in (JDSP_FL, JDSP_FR)}
+    session.end(sunshine_stopped=False, settle=0)
+    assert not any(o in (JDSP_FL, JDSP_FR) for o, _i in pulse.links.values())
+
+
+def test_feeders_are_programs_not_sunshine_nor_our_bridges():
+    links = {
+        "1": (JDSP_FL, f"{SUNSHINE_STEREO_SINK}:playback_FL"),
+        "2": (f"{NULL51}:monitor_FL", f"{SUNSHINE_STEREO_SINK}:playback_FL"),  # Sunshine into Sunshine
+        "3": (f"{HDMI}:monitor_FL", f"{SUNSHINE_STEREO_SINK}:playback_FL"),  # our bridge
+        "4": ("firefox:output_FL", f"{HDMI}:playback_FL"),  # not into Sunshine
+    }
+    assert audio.feeder_ports(links, owned=[links["3"]]) == {JDSP_FL}
+
+
+def test_recovery_after_a_crash_reconnects_the_recorded_programs(pulse, manager, tmp_path, monkeypatch):
+    muted_session_with_effects(pulse, manager, tmp_path)
+    state = json.loads((tmp_path / "audio-session.json").read_text())
+    state["owner_pid"] = 2**22 + 1
+    (tmp_path / "audio-session.json").write_text(json.dumps(state))
+    pulse.sunshine_exits(HDMI)
+    monkeypatch.setattr(AudioRoutingSession, "RELINK_SETTLE_SECONDS", 0)
+    assert AudioRoutingSession.recover(manager, sunshine_running=False, state_path=tmp_path / "audio-session.json") is None
+    assert (JDSP_FL, f"{HDMI}:playback_FL") in pulse.links.values()
+
+
+def test_recorded_ports_from_a_corrupt_state_are_filtered(manager, tmp_path):
+    (tmp_path / "audio-session.json").write_text(json.dumps({"token": "0123456789abcdef", "feeders": ["ok:output_FL", 7, "no-colon", "x:" + "y" * 300]}))
+    session = AudioRoutingSession.load(manager, tmp_path / "audio-session.json")
+    assert session is not None and session.feeders == {"ok:output_FL"}
 
 
 # ----------------------------------------------------------------- watcher
