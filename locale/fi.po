@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-09-29 22:15+0000\n"
+"POT-Creation-Date: 2026-09-29 22:34+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Finnish\n"
@@ -24,6 +24,10 @@ msgstr ""
 "Arvo 0 noudattaa toisen tietokoneen pyyntöä. Se rajoittaa vain videota, ei "
 "kaikkea verkkoliikennettä."
 
+#: src/big_remote_play/ui/private_network_view.py:93
+msgid "1. Account"
+msgstr "1. Tili"
+
 #: src/big_remote_play/ui/connection_guides.py:48
 msgid "1. Check internet reachability"
 msgstr "1. Tarkista internetyhteyden toimivuus"
@@ -36,13 +40,13 @@ msgstr "1. Valitse jaettava sisältö"
 # line: 804
 # line: 811
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1045
+#: src/big_remote_play/ui/private_network_view.py:1074
 msgid "1. Create Account"
 msgstr "1. Luo tili"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1801
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "1. Identification"
 msgstr "1. Tunnistus"
 
@@ -76,13 +80,17 @@ msgstr "2. Verkkotunnus ja HTTPS"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1795
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "2. Invitation"
 msgstr "2. Kutsu"
 
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "2. Join"
 msgstr "2. Liity"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "2. Network"
+msgstr "2. Verkko"
 
 #: src/big_remote_play/ui/host_view.py:869
 msgid "2. Start sharing"
@@ -90,19 +98,23 @@ msgstr "2. Aloita jakaminen"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1803
-#: src/big_remote_play/ui/private_network_view.py:1064
+#: src/big_remote_play/ui/private_network_view.py:1093
 msgid "3. Authorization"
 msgstr "3. Valtuutus"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "3. Connect"
 msgstr "3. Yhdistä"
 
 #: src/big_remote_play/ui/host_view.py:733
 msgid "3. Connect the other PC"
 msgstr "3. Yhdistä toinen tietokone"
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "3. Join"
+msgstr "3. Liittyminen"
 
 #: src/big_remote_play/ui/connection_guides.py:118
 msgid "3. Open only the server's ports"
@@ -119,6 +131,10 @@ msgstr "30 päivää"
 #: src/big_remote_play/ui/connection_guides.py:68
 msgid "4. Allow only the streaming ports"
 msgstr "4. Salli vain suoratoistoportit"
+
+#: src/big_remote_play/ui/private_network_view.py:103
+msgid "4. Approve"
+msgstr "4. Hyväksyntä"
 
 #: src/big_remote_play/ui/connection_guides.py:124
 msgid "4. Connect Big Remote Play"
@@ -259,7 +275,7 @@ msgstr "API-virhe: {}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:71
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "API access"
 msgstr "API-käyttöoikeus"
@@ -283,13 +299,13 @@ msgstr "API-tunnus"
 msgid "About"
 msgstr "Tietoja"
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "About this VPN"
 msgstr "Tietoja tästä VPN:stä"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1046
+#: src/big_remote_play/ui/private_network_view.py:1075
 msgid "Access Tailscale"
 msgstr "Pääsy Tailscaleen"
 
@@ -526,8 +542,8 @@ msgstr "Edistynyt tila"
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 78
 #: src/big_remote_play/ui/guided_setup.py:246
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:702
 #: src/big_remote_play/ui/sunshine_preferences.py:104
 msgid "Advanced options"
 msgstr "Lisävalinnat"
@@ -556,7 +572,7 @@ msgstr ""
 msgid "After step 2, the other PC appears here."
 msgstr "Vaiheen 2 jälkeen toinen tietokone näkyy tässä."
 
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1076
 msgid ""
 "All participants need to sign in so their PCs join the same Private Network."
 msgstr ""
@@ -705,7 +721,7 @@ msgstr ""
 msgid "Almost there"
 msgstr "Melkein valmista"
 
-#: src/big_remote_play/ui/private_network_view.py:518
+#: src/big_remote_play/ui/private_network_view.py:546
 msgid "Already connected"
 msgstr "Jo yhdistetty"
 
@@ -836,7 +852,11 @@ msgstr "Hyväksy"
 msgid "Approve a waiting computer"
 msgstr "Hyväksy odottava tietokone"
 
-#: src/big_remote_play/ui/private_network_view.py:1031
+#: src/big_remote_play/ui/private_network_view.py:104
+msgid "Approve each computer"
+msgstr "Hyväksy jokainen tietokone"
+
+#: src/big_remote_play/ui/private_network_view.py:1060
 msgid "Approve if needed"
 msgstr "Hyväksy tarvittaessa"
 
@@ -884,7 +904,7 @@ msgstr "Oletko aivan varma?"
 msgid "Ask the game PC to optimize the game for streaming"
 msgstr "Pyydä pelitietokonetta optimoimaan peli suoratoistoa varten"
 
-#: src/big_remote_play/ui/private_network_view.py:1023
+#: src/big_remote_play/ui/private_network_view.py:1052
 msgid ""
 "Ask the network administrator for the server address and, optionally, a one-"
 "time auth key."
@@ -892,17 +912,19 @@ msgstr ""
 "Pyydä verkon ylläpitäjältä palvelimen osoite ja halutessasi kertakäyttöinen "
 "todennusavain."
 
-#: src/big_remote_play/ui/private_network_view.py:689
+#: src/big_remote_play/ui/private_network_view.py:717
 msgid "Ask the network owner, or look in ZeroTier Central → Networks"
 msgstr "Kysy verkon omistajalta tai katso kohdasta ZeroTier Central → Networks"
 
-#: src/big_remote_play/ui/guided_setup.py:301
+#: src/big_remote_play/ui/guided_setup.py:302
 msgid ""
 "Ask the person who created the ZeroTier network to send it. If nobody has a "
-"network yet, Tailscale is the simplest way to start."
+"network yet, one of you creates it for free in ZeroTier Central, or you use "
+"Tailscale, the simplest way to start."
 msgstr ""
-"Pyydä ZeroTier-verkon luonutta henkilöä lähettämään se. Jos kenelläkään ei "
-"vielä ole verkkoa, Tailscale on helpoin tapa aloittaa."
+"Pyydä koodi henkilöltä, joka loi ZeroTier-verkon. Jos kenelläkään ei vielä "
+"ole verkkoa, yksi teistä luo sen maksutta ZeroTier Centralissa – tai "
+"käyttäkää Tailscalea, joka on helpoin tapa aloittaa."
 
 #: src/big_remote_play/ui/network_dashboard.py:346
 #: src/big_remote_play/ui/zerotier_join.py:51
@@ -951,10 +973,10 @@ msgstr "Ääni/Video"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 385
-#: src/big_remote_play/ui/private_network_view.py:656
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:673
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:684
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:701
+#: src/big_remote_play/ui/private_network_view.py:702
 msgid "Auth Key"
 msgstr "Todennusavain"
 
@@ -1284,8 +1306,8 @@ msgstr "Voi yhdistää ilman uutta PIN-koodia"
 #: src/big_remote_play/ui/preferences.py:261
 #: src/big_remote_play/ui/preferences.py:308
 #: src/big_remote_play/ui/preferences.py:318
-#: src/big_remote_play/ui/private_network_view.py:971
-#: src/big_remote_play/ui/private_network_view.py:999
+#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:1028
 #: src/big_remote_play/ui/remote_connection.py:753
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:246
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:266
@@ -1549,7 +1571,7 @@ msgstr "Tyhjennetäänkö yhteyshistoria?"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1225
 #: src/big_remote_play/ui/guest_view.py:1780
 #: src/big_remote_play/ui/guest_view.py:1836
-#: src/big_remote_play/ui/guided_setup.py:303
+#: src/big_remote_play/ui/guided_setup.py:305
 #: src/big_remote_play/ui/host_view.py:1269
 #: src/big_remote_play/ui/host_view.py:2576
 #: src/big_remote_play/ui/installer_window.py:76
@@ -1616,7 +1638,7 @@ msgstr "Yleisimmät pikanäppäimet suoratoiston aikana"
 msgid "Complete the installation in the external terminal, then check again."
 msgstr "Viimeistele asennus ulkoisessa päätteessä ja tarkista uudelleen."
 
-#: src/big_remote_play/ui/private_network_view.py:788
+#: src/big_remote_play/ui/private_network_view.py:817
 msgid "Complete the sign-in in your browser."
 msgstr "Viimeistele kirjautuminen selaimessa."
 
@@ -1726,8 +1748,8 @@ msgstr "Vahvista uusi salasana"
 #: src/big_remote_play/ui/main_window.py:827
 #: src/big_remote_play/ui/main_window.py:992
 #: src/big_remote_play/ui/main_window.py:1218
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 #: src/big_remote_play/ui/remote_connection.py:453
 #: src/big_remote_play/ui/remote_connection.py:481
 msgid "Connect"
@@ -1745,19 +1767,19 @@ msgstr "Yhdistä osoitteella"
 
 #: src/big_remote_play/ui/network_common.py:164
 #: src/big_remote_play/ui/network_dashboard.py:217
-#: src/big_remote_play/ui/private_network_view.py:535
+#: src/big_remote_play/ui/private_network_view.py:563
 msgid "Connect this computer"
 msgstr "Yhdistä tämä tietokone"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 26
-#: src/big_remote_play/ui/private_network_view.py:103
+#: src/big_remote_play/ui/private_network_view.py:131
 msgid "Connect to Headscale Network"
 msgstr "Yhdistä Headscale-verkkoon"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 36
-#: src/big_remote_play/ui/private_network_view.py:109
+#: src/big_remote_play/ui/private_network_view.py:137
 msgid "Connect to Tailscale Network"
 msgstr "Yhdistä Tailscale-verkkoon"
 
@@ -1767,7 +1789,7 @@ msgstr "Yhdistä Wi-Fiin tai verkkokaapeliin ja tarkista sitten uudelleen."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 46
-#: src/big_remote_play/ui/private_network_view.py:115
+#: src/big_remote_play/ui/private_network_view.py:143
 msgid "Connect to ZeroTier Network"
 msgstr "Yhdistä ZeroTier-verkkoon"
 
@@ -1828,9 +1850,9 @@ msgstr "Yhdistettynä nyt"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1907
-#: src/big_remote_play/ui/private_network_view.py:767
-#: src/big_remote_play/ui/private_network_view.py:804
-#: src/big_remote_play/ui/private_network_view.py:839
+#: src/big_remote_play/ui/private_network_view.py:796
+#: src/big_remote_play/ui/private_network_view.py:833
+#: src/big_remote_play/ui/private_network_view.py:868
 msgid "Connected successfully!"
 msgstr "Yhteys muodostettiin!"
 
@@ -1847,21 +1869,21 @@ msgstr "Yhdistetään verkkoon…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1848
-#: src/big_remote_play/ui/private_network_view.py:734
+#: src/big_remote_play/ui/private_network_view.py:763
 msgid "Connecting..."
 msgstr "Yhdistetään..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
-#: src/big_remote_play/ui/private_network_view.py:551
-#: src/big_remote_play/ui/private_network_view.py:949
+#: src/big_remote_play/ui/private_network_view.py:579
+#: src/big_remote_play/ui/private_network_view.py:978
 msgid "Connection Details"
 msgstr "Yhteyden tiedot"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
-#: src/big_remote_play/ui/private_network_view.py:553
-#: src/big_remote_play/ui/private_network_view.py:1014
+#: src/big_remote_play/ui/private_network_view.py:581
+#: src/big_remote_play/ui/private_network_view.py:1043
 msgid "Connection Log"
 msgstr "Yhteyslokit"
 
@@ -1877,7 +1899,7 @@ msgstr "Yhteysvirhe: Sunshineen ei saada yhteyttä tai varmenne ei täsmää"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Connection failed"
 msgstr "Yhteys epäonnistui"
 
@@ -1900,7 +1922,7 @@ msgstr "Yhteystapa"
 msgid "Connection methods"
 msgstr "Yhteystavat"
 
-#: src/big_remote_play/ui/private_network_view.py:361
+#: src/big_remote_play/ui/private_network_view.py:389
 msgid "Connection progress"
 msgstr "Yhdistämisen edistyminen"
 
@@ -1972,7 +1994,7 @@ msgstr "Hallitsee pikanäppäimiä, kuten Alt+Tab ja Super-näppäin."
 
 #: src/big_remote_play/ui/network_common.py:213
 #: src/big_remote_play/ui/network_common.py:224
-#: src/big_remote_play/ui/private_network_view.py:1081
+#: src/big_remote_play/ui/private_network_view.py:1110
 msgid "Copied"
 msgstr "Kopioitu"
 
@@ -2105,11 +2127,13 @@ msgstr "Pelikirjastoa ei voitu päivittää. Olemassa olevat pelit säilytettiin
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1255
-#: src/big_remote_play/ui/private_network_view.py:1049
+#: src/big_remote_play/ui/private_network_view.py:1078
 msgid "Create Account"
 msgstr "Luo tili"
 
+#: src/big_remote_play/ui/guided_setup.py:306
 #: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "Luo ZeroTier-verkko"
 
@@ -2118,8 +2142,16 @@ msgstr "Luo ZeroTier-verkko"
 msgid "Create a backup"
 msgstr "Luo varmuuskopio"
 
+#: src/big_remote_play/ui/private_network_view.py:95
+msgid ""
+"Create a free account or sign in. Only the person who owns the network does "
+"this."
+msgstr ""
+"Luo maksuton tili tai kirjaudu sisään. Vain verkon omistaja tekee tämän."
+
 #: src/big_remote_play/ui/network_dashboard.py:226
 #: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "Luo verkko"
 
@@ -2180,7 +2212,7 @@ msgid "Credentials reset successfully"
 msgstr "Kirjautumistiedot palautettiin"
 
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr ""
 "Tunnistetiedot, joiden avulla Big Remote Play voi hallita tätä verkkoa."
@@ -2254,8 +2286,8 @@ msgstr "Oletusmikrofoni"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 815
-#: src/big_remote_play/ui/private_network_view.py:902
-#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:931
+#: src/big_remote_play/ui/private_network_view.py:1029
 msgid "Delete"
 msgstr "Poista"
 
@@ -2267,11 +2299,11 @@ msgstr "Poista kaikki"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1701
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Delete entry?"
 msgstr "Poistetaanko merkintä?"
 
-#: src/big_remote_play/ui/private_network_view.py:902
+#: src/big_remote_play/ui/private_network_view.py:931
 msgid "Delete this saved network"
 msgstr "Poista tämä tallennettu verkko"
 
@@ -2351,7 +2383,7 @@ msgstr "Laitteet, jotka pelaavat tällä tietokoneella juuri nyt."
 msgid "Devices updated"
 msgstr "Laitteet päivitettiin"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "Devices, private address and how to add another computer."
 msgstr "Laitteet, yksityinen osoite ja toisen tietokoneen lisääminen."
 
@@ -2491,8 +2523,8 @@ msgstr "Docker Engine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 714
-#: src/big_remote_play/ui/private_network_view.py:909
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:938
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Domain"
 msgstr "Verkkotunnus"
 
@@ -2528,7 +2560,7 @@ msgstr "Helppo ottaa käyttöön ja sopii hyvin omien laitteiden yhdistämiseen.
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1704
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit"
 msgstr "Muokkaa"
 
@@ -2540,13 +2572,13 @@ msgstr "Muokkaa mukautettua kuvataajuutta"
 msgid "Edit custom resolution"
 msgstr "Muokkaa mukautettua tarkkuutta"
 
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit this saved network"
 msgstr "Muokkaa tätä tallennettua verkkoa"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:969
+#: src/big_remote_play/ui/private_network_view.py:998
 #, python-brace-format
 msgid "Edit – {}"
 msgstr "Muokkaa – {}"
@@ -2659,7 +2691,7 @@ msgid "End the stream for everyone?"
 msgstr "Lopetetaanko suoratoisto kaikilta?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 320
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter ID"
 msgstr "Anna tunnus"
 
@@ -2667,7 +2699,7 @@ msgstr "Anna tunnus"
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Anna LEVEYSxKORKEUS (esimerkiksi 1920x1080):"
 
-#: src/big_remote_play/ui/private_network_view.py:984
+#: src/big_remote_play/ui/private_network_view.py:1013
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "Syötä 16 heksadesimaalimerkkiä sisältävä verkkotunniste."
 
@@ -2701,22 +2733,26 @@ msgstr "Anna kuvia sekunnissa (esimerkiksi 75):"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:116
+#: src/big_remote_play/ui/private_network_view.py:144
 msgid "Enter the 16-character Network ID to join a ZeroTier network."
 msgstr "Anna 16-merkkinen Network ID liittyäksesi ZeroTier-verkkoon."
 
-#: src/big_remote_play/ui/private_network_view.py:746
+#: src/big_remote_play/ui/private_network_view.py:775
 msgid "Enter the Headscale server address."
 msgstr "Anna Headscale-palvelimen osoite."
 
 #: src/big_remote_play/ui/network_devices.py:442
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter the ID on this page and choose Connect."
 msgstr "Anna tunnus tällä sivulla ja valitse Yhdistä."
 
 #: src/big_remote_play/ui/host_view.py:1467
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr "Anna Moonlightin toisella tietokoneella näyttämä PIN-koodi."
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "Enter the code here"
+msgstr "Kirjoita koodi tähän"
 
 #: src/big_remote_play/ui/host_view.py:779
 #: src/big_remote_play/ui/host_view.py:1479
@@ -2729,7 +2765,7 @@ msgstr "Anna Headscale-palvelimen koko https-osoite."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 27
-#: src/big_remote_play/ui/private_network_view.py:104
+#: src/big_remote_play/ui/private_network_view.py:132
 msgid "Enter the server domain and auth key provided by the administrator."
 msgstr "Syötä palvelimen verkkotunnus ja ylläpitäjän antama todennusavain."
 
@@ -2743,7 +2779,7 @@ msgstr "Entropiakoodausmoodi"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/private_network_view.py:992
+#: src/big_remote_play/ui/private_network_view.py:1021
 msgid "Entry updated"
 msgstr "Merkintä päivitettiin"
 
@@ -2811,7 +2847,7 @@ msgstr "Virhe: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 403
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "Establish Connection"
 msgstr "Perusta yhteys"
 
@@ -2919,14 +2955,14 @@ msgstr "Nopeampi vaste tai parempi kuva"
 msgid "Favorite"
 msgstr "Suosikki"
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Fill in the form"
 msgstr "Täytä lomake"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1291
 # line: 1293
-#: src/big_remote_play/ui/private_network_view.py:688
+#: src/big_remote_play/ui/private_network_view.py:716
 msgid "Find Network ID"
 msgstr "Etsi Network ID"
 
@@ -3039,8 +3075,8 @@ msgstr "Pakotettu"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1772
 # line: 1787
-#: src/big_remote_play/ui/private_network_view.py:935
-#: src/big_remote_play/ui/private_network_view.py:941
+#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:970
 #, python-brace-format
 msgid "Form filled for {}"
 msgstr "Lomake täytetty {} varten"
@@ -3135,7 +3171,7 @@ msgstr "Yleiset"
 # line: 1023
 # line: 1069
 # line: 1666
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Get Network ID"
 msgstr "Hae Network ID"
 
@@ -3319,17 +3355,21 @@ msgstr ""
 msgid "How to approve"
 msgstr "Näin hyväksyt"
 
+#: src/big_remote_play/ui/private_network_view.py:730
+msgid "How to create a free network, step by step."
+msgstr "Näin luot maksuttoman verkon vaihe vaiheelta."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 222
-#: src/big_remote_play/ui/private_network_view.py:435
+#: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
 msgid "How to install {}"
 msgstr "Näin asennat {}"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "How to run Headscale on your own server, step by step."
 msgstr "Näin käytät Headscalea omalla palvelimellasi, vaihe vaiheelta."
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "How to use the selected private network service."
 msgstr "Valitun yksityisverkkopalvelun käyttäminen."
 
@@ -3338,10 +3378,11 @@ msgid "I already use ZeroTier"
 msgstr "Käytän jo ZeroTieriä"
 
 #: src/big_remote_play/ui/guided_setup.py:278
+#: src/big_remote_play/ui/private_network_view.py:730
 msgid "I don't have a code"
 msgstr "Minulla ei ole koodia"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "I don't have a server yet"
 msgstr "Minulla ei ole vielä palvelinta"
 
@@ -3469,6 +3510,14 @@ msgstr ""
 "Valitse Big Remote Play -sovelluksessa Pelaaminen internetin yli ja kirjoita "
 "tämä koodi."
 
+#: src/big_remote_play/ui/private_network_view.py:105
+msgid ""
+"In ZeroTier Central, open the network and allow each computer under Members. "
+"Until then it waits for approval."
+msgstr ""
+"Avaa verkko ZeroTier Centralissa ja salli jokainen tietokone kohdassa "
+"Members. Siihen asti se odottaa hyväksyntää."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 335
 #: src/big_remote_play/ui/sunshine_preferences.py:523
@@ -3572,8 +3621,8 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 420
 #: src/big_remote_play/ui/main_window.py:1129
 #: src/big_remote_play/ui/main_window.py:1138
-#: src/big_remote_play/ui/private_network_view.py:430
-#: src/big_remote_play/ui/private_network_view.py:432
+#: src/big_remote_play/ui/private_network_view.py:458
+#: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
 msgid "Install {}"
 msgstr "Asenna {}"
@@ -3582,8 +3631,8 @@ msgstr "Asenna {}"
 # line: 1498
 # line: 1529
 # line: 1542
-#: src/big_remote_play/ui/private_network_view.py:373
-#: src/big_remote_play/ui/private_network_view.py:421
+#: src/big_remote_play/ui/private_network_view.py:401
+#: src/big_remote_play/ui/private_network_view.py:449
 msgid "Installation Log"
 msgstr "Asennuslokit"
 
@@ -3595,7 +3644,7 @@ msgstr "Asennus suoritettu onnistuneesti!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 449
-#: src/big_remote_play/ui/private_network_view.py:456
+#: src/big_remote_play/ui/private_network_view.py:484
 msgid "Installation failed. Check the log."
 msgstr "Asennus epäonnistui. Tarkista loki."
 
@@ -3640,7 +3689,7 @@ msgstr "Asennetaan {}..."
 # line: 89
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 576
-#: src/big_remote_play/ui/private_network_view.py:444
+#: src/big_remote_play/ui/private_network_view.py:472
 msgid "Installing..."
 msgstr "Asennetaan..."
 
@@ -3759,7 +3808,7 @@ msgstr ""
 "Verkon omistaja käyttää kirjautumissivua. Kirjaudu sisään ZeroTier-"
 "sovelluksella ja tarkista sitten uudelleen."
 
-#: src/big_remote_play/ui/private_network_view.py:110
+#: src/big_remote_play/ui/private_network_view.py:138
 msgid ""
 "Join Tailscale with browser login, or use an auth key if someone gave you "
 "one."
@@ -3767,7 +3816,7 @@ msgstr ""
 "Liity Tailscaleen kirjautumalla selaimessa tai käytä todennusavainta, jos "
 "joku on antanut sinulle sellaisen."
 
-#: src/big_remote_play/ui/private_network_view.py:1018
+#: src/big_remote_play/ui/private_network_view.py:1047
 msgid "Join a Headscale VPN"
 msgstr "Liity Headscale VPN:ään"
 
@@ -4051,13 +4100,13 @@ msgstr "Lokitiedoston polku"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1831
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Login Server"
 msgstr "Kirjautumispalvelin"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1284
-#: src/big_remote_play/ui/private_network_view.py:672
+#: src/big_remote_play/ui/private_network_view.py:700
 msgid "Login Server (leave empty for tailscale.com)"
 msgstr "Kirjautumispalvelin (jätä tyhjäksi, jos tailscale.com)"
 
@@ -4108,7 +4157,7 @@ msgstr ""
 msgid "Manage"
 msgstr "Hallitse"
 
-#: src/big_remote_play/ui/private_network_view.py:612
+#: src/big_remote_play/ui/private_network_view.py:640
 msgid "Manage accounts and networks"
 msgstr "Hallitse tilejä ja verkkoja"
 
@@ -4250,7 +4299,7 @@ msgid "More exposed than a private VPN"
 msgstr "Altistuu internetille enemmän kuin yksityinen VPN"
 
 #: src/big_remote_play/ui/network_dashboard.py:95
-#: src/big_remote_play/ui/private_network_view.py:601
+#: src/big_remote_play/ui/private_network_view.py:629
 msgid "More options"
 msgstr "Lisää vaihtoehtoja"
 
@@ -4281,7 +4330,7 @@ msgstr "Mykistä, kun Moonlight ei ole aktiivinen ikkuna"
 msgid "My devices"
 msgstr "Omat laitteet"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "My network"
 msgstr "Oma verkko"
 
@@ -4351,8 +4400,8 @@ msgstr "Verkko"
 #: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
-#: src/big_remote_play/ui/private_network_view.py:910
-#: src/big_remote_play/ui/private_network_view.py:959
+#: src/big_remote_play/ui/private_network_view.py:939
+#: src/big_remote_play/ui/private_network_view.py:988
 msgid "Network ID"
 msgstr "Verkon tunnus"
 
@@ -4403,7 +4452,7 @@ msgstr "Verkon nimi"
 msgid "Network not found"
 msgstr "Verkkoa ei löytynyt"
 
-#: src/big_remote_play/ui/private_network_view.py:606
+#: src/big_remote_play/ui/private_network_view.py:634
 msgid "Networks this PC joined before."
 msgstr "Verkot, joihin tämä tietokone on aiemmin liittynyt."
 
@@ -4568,7 +4617,7 @@ msgstr "Ei vielä laitepariksi liitettyjä laitteita"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1629
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "No previous networks"
 msgstr "Ei aiempia verkkoja"
 
@@ -4782,7 +4831,7 @@ msgstr "Tällä tietokoneella"
 msgid "On your {provider} private network at {address}"
 msgstr "{provider}-yksityisverkossasi osoitteessa {address}"
 
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid ""
 "Once both computers are on the same private network, return to Connect to "
 "find the game PC."
@@ -4861,7 +4910,7 @@ msgstr "Vain tämä tietokone käyttää uutta nimeä."
 # line: 347
 # line: 1295
 #: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/private_network_view.py:692
+#: src/big_remote_play/ui/private_network_view.py:720
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "Avaa"
@@ -4897,6 +4946,7 @@ msgid "Open Tailscale admin console"
 msgstr "Avaa Tailscalen hallintakonsoli"
 
 #: src/big_remote_play/ui/network_devices.py:471
+#: src/big_remote_play/ui/private_network_view.py:97
 msgid "Open ZeroTier Central"
 msgstr "Avaa ZeroTier Central"
 
@@ -5097,11 +5147,19 @@ msgstr "Laiteparin muodostus epäonnistui"
 msgid "Pass through high resolution scroll events from Moonlight clients"
 msgstr "Siirrä korkean resoluution vieritystapahtumat Moonlight-asiakkailta."
 
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid ""
+"Paste the code on this page and join the network. Send the same code to the "
+"other person."
+msgstr ""
+"Liitä koodi tälle sivulle ja liity verkkoon. Lähetä sama koodi toiselle "
+"henkilölle."
+
 #: src/big_remote_play/ui/api_access_dialog.py:37
 msgid "Paste the credential first."
 msgstr "Liitä ensin tunnistetieto."
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Liitä palvelimen osoite ja avain tämän sivun kenttiin."
 
@@ -5315,8 +5373,8 @@ msgstr "Estää tämän tietokoneen näyttöä sammumasta istunnon aikana."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 618
-#: src/big_remote_play/ui/private_network_view.py:604
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:632
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Previous Networks"
 msgstr "Aikaisemmat verkot"
 
@@ -5449,7 +5507,7 @@ msgid "Ready to play over the internet"
 msgstr "Valmis pelaamaan internetin yli"
 
 #: src/big_remote_play/ui/network_dashboard.py:91
-#: src/big_remote_play/ui/private_network_view.py:592
+#: src/big_remote_play/ui/private_network_view.py:620
 msgid "Ready to play?"
 msgstr "Valmiina pelaamaan?"
 
@@ -5517,12 +5575,12 @@ msgstr "Suositus: yksityisverkko"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 688
 #: src/big_remote_play/ui/network_common.py:163
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect"
 msgstr "Yhdistä uudelleen"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 40
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect using this saved network"
 msgstr "Yhdistä uudelleen tällä tallennetulla verkolla"
 
@@ -5631,7 +5689,7 @@ msgstr "Poistetaanko tämä laite?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1702
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Remove this network from history?"
 msgstr "Poistetaanko tämä verkko historiasta?"
 
@@ -5694,7 +5752,7 @@ msgstr "Korvaa nykyiset asetukset tallennetulla tiedostolla"
 msgid "Replace the current settings?"
 msgstr "Korvataanko nykyiset asetukset?"
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "Request Access"
 msgstr "Pyydä pääsyä"
 
@@ -5704,7 +5762,7 @@ msgstr "Pyyntö peruttu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Request the 16-character ID from the network owner."
 msgstr "Pyydä 16-merkkinen tunnus verkon omistajalta."
 
@@ -5832,7 +5890,7 @@ msgstr "Palautetaanko oletusarvot?"
 msgid "Restore a backup"
 msgstr "Palauta varmuuskopio"
 
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Käytä Big Remote Playn tallentamia yhteystietoja uudelleen"
 
@@ -5926,7 +5984,7 @@ msgstr ""
 # line: 1077
 #: src/big_remote_play/ui/api_access_dialog.py:86
 #: src/big_remote_play/ui/host_view.py:3136
-#: src/big_remote_play/ui/private_network_view.py:972
+#: src/big_remote_play/ui/private_network_view.py:1001
 #: src/big_remote_play/ui/remote_connection.py:754
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:306
 msgid "Save"
@@ -6029,7 +6087,7 @@ msgstr ""
 "Valitse peli tai täytä sovelluksen nimi ja komento. Jaa koko näyttö "
 "valitsemalla Koko työpöytä."
 
-#: src/big_remote_play/ui/private_network_view.py:758
+#: src/big_remote_play/ui/private_network_view.py:787
 msgid "Select a network service and try again."
 msgstr "Valitse verkkopalvelu ja yritä uudelleen."
 
@@ -6097,7 +6155,7 @@ msgstr "Lähetetään pyyntöä verkkoon."
 msgid "Sends your game to the other PC."
 msgstr "Lähettää pelisi toiselle tietokoneelle."
 
-#: src/big_remote_play/ui/private_network_view.py:655
+#: src/big_remote_play/ui/private_network_view.py:683
 msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Palvelimen verkkotunnus (esim. vpn.example.com)"
 
@@ -6114,8 +6172,8 @@ msgstr "Palvelimen salasana"
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
 #: src/big_remote_play/ui/network_devices.py:692
-#: src/big_remote_play/ui/private_network_view.py:655
-#: src/big_remote_play/ui/private_network_view.py:1022
+#: src/big_remote_play/ui/private_network_view.py:683
+#: src/big_remote_play/ui/private_network_view.py:1051
 msgid "Server address"
 msgstr "Palvelimen osoite"
 
@@ -6321,6 +6379,10 @@ msgstr "Kirjaudu sisään"
 msgid "Sign in on that computer with your own account."
 msgstr "Kirjaudu sillä tietokoneella omalla tililläsi."
 
+#: src/big_remote_play/ui/private_network_view.py:94
+msgid "Sign in to ZeroTier Central"
+msgstr "Kirjaudu ZeroTier Centraliin"
+
 #: src/big_remote_play/ui/remote_connection.py:65
 msgid "Sign in to connect this computer"
 msgstr "Kirjaudu sisään yhdistääksesi tämän tietokoneen"
@@ -6334,8 +6396,8 @@ msgstr "Jatka kirjautumalla palveluun {name}."
 msgid "Sign in with another Tailscale account"
 msgstr "Kirjaudu toisella Tailscale-tilillä"
 
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 msgid "Sign in with browser"
 msgstr "Kirjaudu selaimella"
 
@@ -6347,7 +6409,7 @@ msgstr "Kirjaudu samalla tilillä"
 msgid "Sign in with your account and connect your devices."
 msgstr "Kirjaudu sisään tililläsi ja yhdistä laitteesi."
 
-#: src/big_remote_play/ui/private_network_view.py:538
+#: src/big_remote_play/ui/private_network_view.py:566
 msgid "Sign in with your browser. Use the same account on all your devices."
 msgstr "Kirjaudu sisään selaimella. Käytä samaa tiliä kaikilla laitteillasi."
 
@@ -6363,7 +6425,7 @@ msgstr "Kyseisellä tietokoneella näkyvä kirjautumislinkki"
 msgid "Sign-in needed"
 msgstr "Kirjautuminen tarvitaan"
 
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Sign-in was not completed in the browser."
 msgstr "Kirjautumista ei viimeistelty selaimessa."
 
@@ -6529,7 +6591,7 @@ msgstr "Käynnistäminen kysyy salasanaasi kerran."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 67
-#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "Starting..."
 msgstr "Käynnistetään..."
 
@@ -6566,19 +6628,19 @@ msgstr "Steam ei tallenna ääntä"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1765
-#: src/big_remote_play/ui/private_network_view.py:1021
+#: src/big_remote_play/ui/private_network_view.py:1050
 msgid "Step 1: Get credentials"
 msgstr "Vaihe 1: Hanki käyttöoikeustiedot"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1771
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Step 2: Enter details"
 msgstr "Vaihe 2: Syötä tiedot"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1777
-#: src/big_remote_play/ui/private_network_view.py:1030
+#: src/big_remote_play/ui/private_network_view.py:1059
 msgid "Step 3: Connect"
 msgstr "Vaihe 3: Yhdistä"
 
@@ -6891,7 +6953,7 @@ msgstr ""
 msgid "Switch Tailscale or Headscale accounts, and see every ZeroTier network."
 msgstr "Vaihda Tailscale- tai Headscale-tiliä ja näe kaikki ZeroTier-verkot."
 
-#: src/big_remote_play/ui/private_network_view.py:613
+#: src/big_remote_play/ui/private_network_view.py:641
 msgid ""
 "Switch saved accounts or leave networks without deleting online accounts."
 msgstr ""
@@ -6951,7 +7013,7 @@ msgstr "Tailscale"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 803
 # line: 1793
-#: src/big_remote_play/ui/private_network_view.py:1042
+#: src/big_remote_play/ui/private_network_view.py:1071
 msgid "Tailscale Instructions"
 msgstr "Tailscalen ohjeet"
 
@@ -7108,7 +7170,7 @@ msgstr ""
 "Aktiivinen VPN-yhteys pysähtyy. Tallennetut tilit säilyvät, jotta voit "
 "yhdistää myöhemmin uudelleen."
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr "Ylläpitäjän on jaettava solmu tai kutsuttava sähköpostisi verkkoon."
@@ -7275,7 +7337,7 @@ msgstr ""
 "Verkko on yksityinen: jokainen uusi laite on hyväksyttävä. Tämä tietokone "
 "liittyy ja hyväksytään automaattisesti."
 
-#: src/big_remote_play/ui/private_network_view.py:1066
+#: src/big_remote_play/ui/private_network_view.py:1095
 msgid ""
 "The network owner must approve this computer, in Big Remote Play or in "
 "ZeroTier Central."
@@ -7351,7 +7413,7 @@ msgid ""
 "The person joins your private network and can see the devices you allow."
 msgstr "Henkilö liittyy yksityisverkkoosi ja näkee sallimasi laitteet."
 
-#: src/big_remote_play/ui/private_network_view.py:698
+#: src/big_remote_play/ui/private_network_view.py:726
 msgid "The person who created the network gives you this code."
 msgstr "Verkon luonut henkilö antaa sinulle tämän koodin."
 
@@ -7396,7 +7458,7 @@ msgstr ""
 "Valittua ulostuloa ei ole kytketty. Kytke se uudelleen tai valitse "
 "Automaattinen."
 
-#: src/big_remote_play/ui/private_network_view.py:665
+#: src/big_remote_play/ui/private_network_view.py:693
 msgid "The server administrator then approves this computer."
 msgstr "Palvelimen ylläpitäjä hyväksyy sitten tämän tietokoneen."
 
@@ -7523,7 +7585,7 @@ msgstr ""
 msgid "This PC did not appear in the list?"
 msgstr "Eikö tämä tietokone näkynyt luettelossa?"
 
-#: src/big_remote_play/ui/private_network_view.py:519
+#: src/big_remote_play/ui/private_network_view.py:547
 #, python-brace-format
 msgid "This PC is on the {} private network."
 msgstr "Tämä tietokone on yksityisverkossa {}."
@@ -7585,7 +7647,7 @@ msgstr ""
 msgid "This computer has not joined a ZeroTier network yet."
 msgstr "Tämä tietokone ei ole vielä liittynyt ZeroTier-verkkoon."
 
-#: src/big_remote_play/ui/private_network_view.py:514
+#: src/big_remote_play/ui/private_network_view.py:542
 msgid ""
 "This computer is already on a ZeroTier network. To join another one, type "
 "its code."
@@ -7937,7 +7999,7 @@ msgstr "Luotetut verkkokäyttöliittymän lähteet"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 601
 #: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:849
+#: src/big_remote_play/ui/private_network_view.py:878
 msgid "Try Again"
 msgstr "Yritä uudelleen"
 
@@ -7979,13 +8041,13 @@ msgstr "Kytketään päälle…"
 msgid "Type"
 msgstr "Tyyppi"
 
-#: src/big_remote_play/ui/private_network_view.py:539
+#: src/big_remote_play/ui/private_network_view.py:567
 msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr ""
 "Kirjoita palvelimesi osoite. Sen ylläpitäjä hyväksyy tämän tietokoneen."
 
-#: src/big_remote_play/ui/private_network_view.py:537
+#: src/big_remote_play/ui/private_network_view.py:565
 msgid "Type the network code you received."
 msgstr "Kirjoita saamasi verkon koodi."
 
@@ -8126,7 +8188,7 @@ msgstr ""
 "toimivasta yhteydestä. Älä altista Sunshinen hallintapaneelia (oletuksena "
 "47990) äläkä poista palomuuria käytöstä."
 
-#: src/big_remote_play/ui/guided_setup.py:304
+#: src/big_remote_play/ui/guided_setup.py:307
 msgid "Use Tailscale"
 msgstr "Käytä Tailscalea"
 
@@ -8343,7 +8405,7 @@ msgstr ""
 "palvelimet sekä poistaa tallennetut salasanat (Sunshine, ZeroTier, verkon "
 "todennusavaimet) järjestelmän avainnipusta. Sovellus sulkeutuu."
 
-#: src/big_remote_play/ui/private_network_view.py:1065
+#: src/big_remote_play/ui/private_network_view.py:1094
 msgid "Wait for Approval"
 msgstr "Odota hyväksyntää"
 
@@ -8398,8 +8460,8 @@ msgstr "Yksi asetus pitää korjata"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1668
-#: src/big_remote_play/ui/private_network_view.py:911
-#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:940
+#: src/big_remote_play/ui/private_network_view.py:993
 msgid "Web UI"
 msgstr "Verkkokäyttöliittymä"
 
@@ -8426,7 +8488,7 @@ msgid "What this computer shows"
 msgstr "Mitä tämä tietokone näyttää"
 
 #: src/big_remote_play/ui/connection_guides.py:100
-#: src/big_remote_play/ui/private_network_view.py:551
+#: src/big_remote_play/ui/private_network_view.py:579
 msgid "What you need"
 msgstr "Mitä tarvitset"
 
@@ -8525,7 +8587,7 @@ msgstr ""
 msgid "Without a browser (advanced)"
 msgstr "Ilman selainta (edistynyt)"
 
-#: src/big_remote_play/ui/private_network_view.py:1032
+#: src/big_remote_play/ui/private_network_view.py:1061
 msgid ""
 "Without a key, a sign-in link opens; the administrator approves this "
 "computer on the server."
@@ -8537,7 +8599,7 @@ msgstr ""
 msgid "Without a private network"
 msgstr "Ilman yksityisverkkoa"
 
-#: src/big_remote_play/ui/private_network_view.py:664
+#: src/big_remote_play/ui/private_network_view.py:692
 msgid "Without an auth key, a sign-in link opens"
 msgstr "Ilman todennusavainta avautuu kirjautumislinkki"
 
@@ -8594,7 +8656,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1631
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "Your created/connected networks will appear here."
 msgstr "Luomasi/yhdistetyt verkot näkyvät täällä."
 
@@ -8640,7 +8702,7 @@ msgstr "Asetuksesi, liitetyt verkot ja valintasi yhdessä tiedostossa."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 650
-#: src/big_remote_play/ui/private_network_view.py:1068
+#: src/big_remote_play/ui/private_network_view.py:1097
 msgid "ZT Panel"
 msgstr "ZT-paneeli"
 
@@ -8656,7 +8718,7 @@ msgstr "ZeroTierin API-tunnus"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 810
 # line: 1800
-#: src/big_remote_play/ui/private_network_view.py:1059
+#: src/big_remote_play/ui/private_network_view.py:1088
 msgid "ZeroTier Instructions"
 msgstr "ZeroTierin ohjeet"
 
@@ -8707,6 +8769,10 @@ msgstr "ZeroTier-verkot"
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:228
 msgid "ZeroTier service error"
 msgstr "ZeroTier-palvelun virhe"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "ZeroTier shows its 16-character network code. Copy it."
+msgstr "ZeroTier näyttää 16 merkin verkkokoodin. Kopioi se."
 
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
@@ -8830,12 +8896,12 @@ msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 215
-#: src/big_remote_play/ui/private_network_view.py:449
+#: src/big_remote_play/ui/private_network_view.py:477
 #, python-brace-format
 msgid "{} installed"
 msgstr "{} asennettu"
 
-#: src/big_remote_play/ui/private_network_view.py:420
+#: src/big_remote_play/ui/private_network_view.py:448
 #, python-brace-format
 msgid ""
 "{} is not installed yet. Install it below to continue (asks for your "

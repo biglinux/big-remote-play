@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-09-29 22:15+0000\n"
+"POT-Creation-Date: 2026-09-29 22:34+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Hungarian\n"
@@ -24,6 +24,10 @@ msgstr ""
 "A 0 érték a másik számítógép kérését követi. Ez csak a videót korlátozza, "
 "nem a teljes hálózati forgalmat."
 
+#: src/big_remote_play/ui/private_network_view.py:93
+msgid "1. Account"
+msgstr "1. Fiók"
+
 #: src/big_remote_play/ui/connection_guides.py:48
 msgid "1. Check internet reachability"
 msgstr "1. Ellenőrizze az internet elérhetőségét"
@@ -36,13 +40,13 @@ msgstr "1. Válassza ki a megosztandó tartalmat"
 # line: 804
 # line: 811
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1045
+#: src/big_remote_play/ui/private_network_view.py:1074
 msgid "1. Create Account"
 msgstr "1. Fiók létrehozása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1801
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "1. Identification"
 msgstr "1. Azonosítás"
 
@@ -76,13 +80,17 @@ msgstr "2. Tartomány és HTTPS"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1795
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "2. Invitation"
 msgstr "2. Meghívás"
 
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "2. Join"
 msgstr "2. Csatlakozás"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "2. Network"
+msgstr "2. Hálózat"
 
 #: src/big_remote_play/ui/host_view.py:869
 msgid "2. Start sharing"
@@ -90,19 +98,23 @@ msgstr "2. Indítsa el a megosztást"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1803
-#: src/big_remote_play/ui/private_network_view.py:1064
+#: src/big_remote_play/ui/private_network_view.py:1093
 msgid "3. Authorization"
 msgstr "3. Engedélyezés"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "3. Connect"
 msgstr "3. Csatlakozás"
 
 #: src/big_remote_play/ui/host_view.py:733
 msgid "3. Connect the other PC"
 msgstr "3. Csatlakoztassa a másik gépet"
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "3. Join"
+msgstr "3. Csatlakozás"
 
 #: src/big_remote_play/ui/connection_guides.py:118
 msgid "3. Open only the server's ports"
@@ -119,6 +131,10 @@ msgstr "30 nap"
 #: src/big_remote_play/ui/connection_guides.py:68
 msgid "4. Allow only the streaming ports"
 msgstr "4. Csak a streamelési portokat engedélyezze"
+
+#: src/big_remote_play/ui/private_network_view.py:103
+msgid "4. Approve"
+msgstr "4. Jóváhagyás"
 
 #: src/big_remote_play/ui/connection_guides.py:124
 msgid "4. Connect Big Remote Play"
@@ -259,7 +275,7 @@ msgstr "API-hiba: {}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:71
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "API access"
 msgstr "API-hozzáférés"
@@ -283,13 +299,13 @@ msgstr "API-token"
 msgid "About"
 msgstr "Névjegy"
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "About this VPN"
 msgstr "A VPN névjegye"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1046
+#: src/big_remote_play/ui/private_network_view.py:1075
 msgid "Access Tailscale"
 msgstr "Tailscale elérése"
 
@@ -528,8 +544,8 @@ msgstr "Haladó mód"
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 79
 #: src/big_remote_play/ui/guided_setup.py:246
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:702
 #: src/big_remote_play/ui/sunshine_preferences.py:104
 msgid "Advanced options"
 msgstr "Speciális beállítások"
@@ -558,7 +574,7 @@ msgstr ""
 msgid "After step 2, the other PC appears here."
 msgstr "A 2. lépés után itt jelenik meg a másik gép."
 
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1076
 msgid ""
 "All participants need to sign in so their PCs join the same Private Network."
 msgstr ""
@@ -711,7 +727,7 @@ msgstr ""
 msgid "Almost there"
 msgstr "Mindjárt kész"
 
-#: src/big_remote_play/ui/private_network_view.py:518
+#: src/big_remote_play/ui/private_network_view.py:546
 msgid "Already connected"
 msgstr "Már csatlakozva"
 
@@ -842,7 +858,11 @@ msgstr "Jóváhagyás"
 msgid "Approve a waiting computer"
 msgstr "Várakozó számítógép jóváhagyása"
 
-#: src/big_remote_play/ui/private_network_view.py:1031
+#: src/big_remote_play/ui/private_network_view.py:104
+msgid "Approve each computer"
+msgstr "Hagyja jóvá az összes számítógépet"
+
+#: src/big_remote_play/ui/private_network_view.py:1060
 msgid "Approve if needed"
 msgstr "Jóváhagyás, ha szükséges"
 
@@ -890,7 +910,7 @@ msgstr "Egészen biztos benne?"
 msgid "Ask the game PC to optimize the game for streaming"
 msgstr "A játékgép felkérése a játék streameléshez való optimalizálására"
 
-#: src/big_remote_play/ui/private_network_view.py:1023
+#: src/big_remote_play/ui/private_network_view.py:1052
 msgid ""
 "Ask the network administrator for the server address and, optionally, a one-"
 "time auth key."
@@ -898,19 +918,21 @@ msgstr ""
 "Kérje el a hálózat rendszergazdájától a kiszolgáló címét és opcionálisan egy "
 "egyszer használatos hitelesítő kulcsot."
 
-#: src/big_remote_play/ui/private_network_view.py:689
+#: src/big_remote_play/ui/private_network_view.py:717
 msgid "Ask the network owner, or look in ZeroTier Central → Networks"
 msgstr ""
 "Kérdezze meg a hálózat tulajdonosát, vagy nézze meg itt: ZeroTier Central → "
 "Networks"
 
-#: src/big_remote_play/ui/guided_setup.py:301
+#: src/big_remote_play/ui/guided_setup.py:302
 msgid ""
 "Ask the person who created the ZeroTier network to send it. If nobody has a "
-"network yet, Tailscale is the simplest way to start."
+"network yet, one of you creates it for free in ZeroTier Central, or you use "
+"Tailscale, the simplest way to start."
 msgstr ""
-"Kérje meg azt, aki a ZeroTier hálózatot létrehozta, hogy küldje el. Ha még "
-"senkinek sincs hálózata, a Tailscale a legegyszerűbb kezdés."
+"Kérje el a kódot attól, aki a ZeroTier-hálózatot létrehozta. Ha még senkinek "
+"sincs hálózata, egyikük ingyen létrehozza a ZeroTier Centralban – vagy "
+"használják a Tailscale-t, a legegyszerűbb kezdést."
 
 #: src/big_remote_play/ui/network_dashboard.py:346
 #: src/big_remote_play/ui/zerotier_join.py:51
@@ -959,10 +981,10 @@ msgstr "Hang/Videó"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 537
-#: src/big_remote_play/ui/private_network_view.py:656
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:673
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:684
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:701
+#: src/big_remote_play/ui/private_network_view.py:702
 msgid "Auth Key"
 msgstr "Hitelesítő kulcs"
 
@@ -1300,8 +1322,8 @@ msgstr "Új PIN-kód nélkül is csatlakozhat"
 #: src/big_remote_play/ui/preferences.py:261
 #: src/big_remote_play/ui/preferences.py:308
 #: src/big_remote_play/ui/preferences.py:318
-#: src/big_remote_play/ui/private_network_view.py:971
-#: src/big_remote_play/ui/private_network_view.py:999
+#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:1028
 #: src/big_remote_play/ui/remote_connection.py:753
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:246
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:266
@@ -1574,7 +1596,7 @@ msgstr "Törli a kapcsolati előzményeket?"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1233
 #: src/big_remote_play/ui/guest_view.py:1780
 #: src/big_remote_play/ui/guest_view.py:1836
-#: src/big_remote_play/ui/guided_setup.py:303
+#: src/big_remote_play/ui/guided_setup.py:305
 #: src/big_remote_play/ui/host_view.py:1269
 #: src/big_remote_play/ui/host_view.py:2576
 #: src/big_remote_play/ui/installer_window.py:76
@@ -1640,7 +1662,7 @@ msgstr "A streaming során használt gyakori billentyűparancsok"
 msgid "Complete the installation in the external terminal, then check again."
 msgstr "Fejezze be a telepítést a külső terminálban, majd ellenőrizze újra."
 
-#: src/big_remote_play/ui/private_network_view.py:788
+#: src/big_remote_play/ui/private_network_view.py:817
 msgid "Complete the sign-in in your browser."
 msgstr "Fejezze be a bejelentkezést a böngészőben."
 
@@ -1750,8 +1772,8 @@ msgstr "Új jelszó megerősítése"
 #: src/big_remote_play/ui/main_window.py:827
 #: src/big_remote_play/ui/main_window.py:992
 #: src/big_remote_play/ui/main_window.py:1218
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 #: src/big_remote_play/ui/remote_connection.py:453
 #: src/big_remote_play/ui/remote_connection.py:481
 msgid "Connect"
@@ -1769,19 +1791,19 @@ msgstr "Csatlakozás cím alapján"
 
 #: src/big_remote_play/ui/network_common.py:164
 #: src/big_remote_play/ui/network_dashboard.py:217
-#: src/big_remote_play/ui/private_network_view.py:535
+#: src/big_remote_play/ui/private_network_view.py:563
 msgid "Connect this computer"
 msgstr "A számítógép csatlakoztatása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 26
-#: src/big_remote_play/ui/private_network_view.py:103
+#: src/big_remote_play/ui/private_network_view.py:131
 msgid "Connect to Headscale Network"
 msgstr "Csatlakozás a Headscale hálózathoz"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 36
-#: src/big_remote_play/ui/private_network_view.py:109
+#: src/big_remote_play/ui/private_network_view.py:137
 msgid "Connect to Tailscale Network"
 msgstr "Csatlakozás a Tailscale-hálózathoz"
 
@@ -1791,7 +1813,7 @@ msgstr "Csatlakozzon Wi-Fi-hez vagy hálózati kábelhez, majd ellenőrizze újr
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 46
-#: src/big_remote_play/ui/private_network_view.py:115
+#: src/big_remote_play/ui/private_network_view.py:143
 msgid "Connect to ZeroTier Network"
 msgstr "Csatlakozás a ZeroTier hálózathoz"
 
@@ -1852,9 +1874,9 @@ msgstr "Most csatlakoztatva"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1907
-#: src/big_remote_play/ui/private_network_view.py:767
-#: src/big_remote_play/ui/private_network_view.py:804
-#: src/big_remote_play/ui/private_network_view.py:839
+#: src/big_remote_play/ui/private_network_view.py:796
+#: src/big_remote_play/ui/private_network_view.py:833
+#: src/big_remote_play/ui/private_network_view.py:868
 msgid "Connected successfully!"
 msgstr "A kapcsolat sikerült!"
 
@@ -1871,21 +1893,21 @@ msgstr "Kapcsolódás a hálózathoz…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1848
-#: src/big_remote_play/ui/private_network_view.py:734
+#: src/big_remote_play/ui/private_network_view.py:763
 msgid "Connecting..."
 msgstr "Csatlakozás..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
-#: src/big_remote_play/ui/private_network_view.py:551
-#: src/big_remote_play/ui/private_network_view.py:949
+#: src/big_remote_play/ui/private_network_view.py:579
+#: src/big_remote_play/ui/private_network_view.py:978
 msgid "Connection Details"
 msgstr "Kapcsolat részletei"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
-#: src/big_remote_play/ui/private_network_view.py:553
-#: src/big_remote_play/ui/private_network_view.py:1014
+#: src/big_remote_play/ui/private_network_view.py:581
+#: src/big_remote_play/ui/private_network_view.py:1043
 msgid "Connection Log"
 msgstr "Kapcsolati napló"
 
@@ -1902,7 +1924,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Connection failed"
 msgstr "A kapcsolat nem sikerült"
 
@@ -1925,7 +1947,7 @@ msgstr "Kapcsolódási mód"
 msgid "Connection methods"
 msgstr "Kapcsolódási módok"
 
-#: src/big_remote_play/ui/private_network_view.py:361
+#: src/big_remote_play/ui/private_network_view.py:389
 msgid "Connection progress"
 msgstr "Csatlakozás folyamata"
 
@@ -1999,7 +2021,7 @@ msgstr ""
 
 #: src/big_remote_play/ui/network_common.py:213
 #: src/big_remote_play/ui/network_common.py:224
-#: src/big_remote_play/ui/private_network_view.py:1081
+#: src/big_remote_play/ui/private_network_view.py:1110
 msgid "Copied"
 msgstr "Másolva"
 
@@ -2135,11 +2157,13 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1255
-#: src/big_remote_play/ui/private_network_view.py:1049
+#: src/big_remote_play/ui/private_network_view.py:1078
 msgid "Create Account"
 msgstr "Fiók létrehozása"
 
+#: src/big_remote_play/ui/guided_setup.py:306
 #: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "ZeroTier-hálózat létrehozása"
 
@@ -2148,8 +2172,17 @@ msgstr "ZeroTier-hálózat létrehozása"
 msgid "Create a backup"
 msgstr "Biztonsági mentés készítése"
 
+#: src/big_remote_play/ui/private_network_view.py:95
+msgid ""
+"Create a free account or sign in. Only the person who owns the network does "
+"this."
+msgstr ""
+"Hozzon létre ingyenes fiókot, vagy jelentkezzen be. Ezt csak a hálózat "
+"tulajdonosa végzi el."
+
 #: src/big_remote_play/ui/network_dashboard.py:226
 #: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "Hálózat létrehozása"
 
@@ -2211,7 +2244,7 @@ msgid "Credentials reset successfully"
 msgstr "A belépési adatok visszaállítva"
 
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr ""
 "Hitelesítési adatok, amelyekkel a Big Remote Play kezelheti ezt a hálózatot."
@@ -2286,8 +2319,8 @@ msgstr "Alapértelmezett mikrofon"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 815
-#: src/big_remote_play/ui/private_network_view.py:902
-#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:931
+#: src/big_remote_play/ui/private_network_view.py:1029
 msgid "Delete"
 msgstr "Törlés"
 
@@ -2299,11 +2332,11 @@ msgstr "Minden törlése"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1701
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Delete entry?"
 msgstr "Bejegyzés törlése?"
 
-#: src/big_remote_play/ui/private_network_view.py:902
+#: src/big_remote_play/ui/private_network_view.py:931
 msgid "Delete this saved network"
 msgstr "A mentett hálózat törlése"
 
@@ -2382,7 +2415,7 @@ msgstr "Az eszközök, amelyek most ezen a számítógépen játszanak."
 msgid "Devices updated"
 msgstr "Eszközök frissítve"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "Devices, private address and how to add another computer."
 msgstr ""
 "Eszközök, magánhálózati cím és egy másik számítógép hozzáadásának módja."
@@ -2523,8 +2556,8 @@ msgstr "Docker Engine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 714
-#: src/big_remote_play/ui/private_network_view.py:909
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:938
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Domain"
 msgstr "Tartomány"
 
@@ -2560,7 +2593,7 @@ msgstr "Könnyen beállítható, és kiváló a saját eszközei összekapcsolá
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1704
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit"
 msgstr "Szerkesztés"
 
@@ -2572,13 +2605,13 @@ msgstr "Egyéni képkockasebesség szerkesztése"
 msgid "Edit custom resolution"
 msgstr "Egyéni felbontás szerkesztése"
 
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit this saved network"
 msgstr "A mentett hálózat szerkesztése"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:969
+#: src/big_remote_play/ui/private_network_view.py:998
 #, python-brace-format
 msgid "Edit – {}"
 msgstr "Szerkesztés – {}"
@@ -2691,7 +2724,7 @@ msgid "End the stream for everyone?"
 msgstr "Befejezi a streamet mindenkinél?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 325
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter ID"
 msgstr "Azonosító megadása"
 
@@ -2699,7 +2732,7 @@ msgstr "Azonosító megadása"
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Adja meg: SZÉLESSÉGxMAGASSÁG (például 1920x1080):"
 
-#: src/big_remote_play/ui/private_network_view.py:984
+#: src/big_remote_play/ui/private_network_view.py:1013
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "Adjon meg egy 16 karakteres hexadecimális hálózati azonosítót."
 
@@ -2733,18 +2766,18 @@ msgstr "Adja meg a másodpercenkénti képkockák számát (például 75):"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:116
+#: src/big_remote_play/ui/private_network_view.py:144
 msgid "Enter the 16-character Network ID to join a ZeroTier network."
 msgstr ""
 "Adja meg a 16 karakteres Network ID-t egy ZeroTier-hálózathoz való "
 "csatlakozáshoz."
 
-#: src/big_remote_play/ui/private_network_view.py:746
+#: src/big_remote_play/ui/private_network_view.py:775
 msgid "Enter the Headscale server address."
 msgstr "Adja meg a Headscale-kiszolgáló címét."
 
 #: src/big_remote_play/ui/network_devices.py:442
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter the ID on this page and choose Connect."
 msgstr ""
 "Írja be az azonosítót ezen az oldalon, és válassza a Csatlakozás lehetőséget."
@@ -2753,6 +2786,10 @@ msgstr ""
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr ""
 "Adja meg a Moonlight által a másik számítógépen megjelenített PIN-kódot."
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "Enter the code here"
+msgstr "Írja be ide a kódot"
 
 #: src/big_remote_play/ui/host_view.py:779
 #: src/big_remote_play/ui/host_view.py:1479
@@ -2767,7 +2804,7 @@ msgstr "Adja meg a Headscale-kiszolgáló teljes https-címét."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 27
-#: src/big_remote_play/ui/private_network_view.py:104
+#: src/big_remote_play/ui/private_network_view.py:132
 msgid "Enter the server domain and auth key provided by the administrator."
 msgstr ""
 "Adja meg a kiszolgáló tartományát és a rendszergazdától kapott hitelesítő "
@@ -2783,7 +2820,7 @@ msgstr "Entrópia kódolási mód"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/private_network_view.py:992
+#: src/big_remote_play/ui/private_network_view.py:1021
 msgid "Entry updated"
 msgstr "A bejegyzés frissítve"
 
@@ -2850,7 +2887,7 @@ msgstr "Hiba: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 555
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "Establish Connection"
 msgstr "Kapcsolat létrehozása"
 
@@ -2957,13 +2994,13 @@ msgstr "Gyorsabb válasz vagy jobb kép"
 msgid "Favorite"
 msgstr "Kedvenc"
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Fill in the form"
 msgstr "Töltse ki az űrlapot"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1293
-#: src/big_remote_play/ui/private_network_view.py:688
+#: src/big_remote_play/ui/private_network_view.py:716
 msgid "Find Network ID"
 msgstr "Network ID megkeresése"
 
@@ -3081,8 +3118,8 @@ msgstr "Kényszerített"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1772
 # line: 1787
-#: src/big_remote_play/ui/private_network_view.py:935
-#: src/big_remote_play/ui/private_network_view.py:941
+#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:970
 #, python-brace-format
 msgid "Form filled for {}"
 msgstr "Űrlap kitöltve a(z) {} számára"
@@ -3177,7 +3214,7 @@ msgstr "Általános"
 # line: 1023
 # line: 1069
 # line: 1666
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Get Network ID"
 msgstr "Network ID beszerzése"
 
@@ -3362,17 +3399,21 @@ msgstr ""
 msgid "How to approve"
 msgstr "A jóváhagyás módja"
 
+#: src/big_remote_play/ui/private_network_view.py:730
+msgid "How to create a free network, step by step."
+msgstr "Ingyenes hálózat létrehozása lépésről lépésre."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 266
-#: src/big_remote_play/ui/private_network_view.py:435
+#: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
 msgid "How to install {}"
 msgstr "A(z) {} telepítése így történik"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "How to run Headscale on your own server, step by step."
 msgstr "A Headscale futtatása saját kiszolgálón, lépésről lépésre."
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "How to use the selected private network service."
 msgstr "A kiválasztott magánhálózati szolgáltatás használata."
 
@@ -3381,10 +3422,11 @@ msgid "I already use ZeroTier"
 msgstr "Már használom a ZeroTiert"
 
 #: src/big_remote_play/ui/guided_setup.py:278
+#: src/big_remote_play/ui/private_network_view.py:730
 msgid "I don't have a code"
 msgstr "Nincs kódom"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "I don't have a server yet"
 msgstr "Még nincs kiszolgálóm"
 
@@ -3512,6 +3554,14 @@ msgstr ""
 "A Big Remote Play alkalmazásban válassza a Játék az interneten át "
 "lehetőséget, és írja be ezt a kódot."
 
+#: src/big_remote_play/ui/private_network_view.py:105
+msgid ""
+"In ZeroTier Central, open the network and allow each computer under Members. "
+"Until then it waits for approval."
+msgstr ""
+"A ZeroTier Centralban nyissa meg a hálózatot, és engedélyezze az egyes "
+"számítógépeket a Members részben. Addig jóváhagyásra várnak."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 337
 #: src/big_remote_play/ui/sunshine_preferences.py:523
@@ -3618,8 +3668,8 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 464
 #: src/big_remote_play/ui/main_window.py:1129
 #: src/big_remote_play/ui/main_window.py:1138
-#: src/big_remote_play/ui/private_network_view.py:430
-#: src/big_remote_play/ui/private_network_view.py:432
+#: src/big_remote_play/ui/private_network_view.py:458
+#: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
 msgid "Install {}"
 msgstr "{} telepítése"
@@ -3628,8 +3678,8 @@ msgstr "{} telepítése"
 # line: 1498
 # line: 1529
 # line: 1542
-#: src/big_remote_play/ui/private_network_view.py:373
-#: src/big_remote_play/ui/private_network_view.py:421
+#: src/big_remote_play/ui/private_network_view.py:401
+#: src/big_remote_play/ui/private_network_view.py:449
 msgid "Installation Log"
 msgstr "Telepítési napló"
 
@@ -3641,7 +3691,7 @@ msgstr "A telepítés sikeresen befejeződött!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 449
-#: src/big_remote_play/ui/private_network_view.py:456
+#: src/big_remote_play/ui/private_network_view.py:484
 msgid "Installation failed. Check the log."
 msgstr "A telepítés meghiúsult. Ellenőrizze a naplót."
 
@@ -3685,7 +3735,7 @@ msgstr "{} telepítése..."
 # line: 89
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1077
-#: src/big_remote_play/ui/private_network_view.py:444
+#: src/big_remote_play/ui/private_network_view.py:472
 msgid "Installing..."
 msgstr "Telepítés..."
 
@@ -3804,7 +3854,7 @@ msgstr ""
 "A tulajdonosa bejelentkezési oldalt használ. Jelentkezzen be a ZeroTier "
 "alkalmazással, majd ellenőrizze újra."
 
-#: src/big_remote_play/ui/private_network_view.py:110
+#: src/big_remote_play/ui/private_network_view.py:138
 msgid ""
 "Join Tailscale with browser login, or use an auth key if someone gave you "
 "one."
@@ -3812,7 +3862,7 @@ msgstr ""
 "Csatlakozzon a Tailscale-hez böngészős bejelentkezéssel, vagy használjon "
 "hitelesítő kulcsot, ha kapott valakitől."
 
-#: src/big_remote_play/ui/private_network_view.py:1018
+#: src/big_remote_play/ui/private_network_view.py:1047
 msgid "Join a Headscale VPN"
 msgstr "Csatlakozás Headscale VPN-hez"
 
@@ -4099,13 +4149,13 @@ msgstr "Naplófájl elérési útja"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1831
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Login Server"
 msgstr "Bejelentkezési szerver"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1284
-#: src/big_remote_play/ui/private_network_view.py:672
+#: src/big_remote_play/ui/private_network_view.py:700
 msgid "Login Server (leave empty for tailscale.com)"
 msgstr "Bejelentkezési szerver (hagyja üresen a tailscale.com-hoz)"
 
@@ -4158,7 +4208,7 @@ msgstr ""
 msgid "Manage"
 msgstr "Kezelés"
 
-#: src/big_remote_play/ui/private_network_view.py:612
+#: src/big_remote_play/ui/private_network_view.py:640
 msgid "Manage accounts and networks"
 msgstr "Fiókok és hálózatok kezelése"
 
@@ -4300,7 +4350,7 @@ msgid "More exposed than a private VPN"
 msgstr "Nyitottabb az internet felé, mint egy magán-VPN"
 
 #: src/big_remote_play/ui/network_dashboard.py:95
-#: src/big_remote_play/ui/private_network_view.py:601
+#: src/big_remote_play/ui/private_network_view.py:629
 msgid "More options"
 msgstr "További lehetőségek"
 
@@ -4331,7 +4381,7 @@ msgstr "Némítás, amikor nem a Moonlight az aktív ablak"
 msgid "My devices"
 msgstr "Saját eszközök"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "My network"
 msgstr "Saját hálózat"
 
@@ -4402,8 +4452,8 @@ msgstr "Hálózat"
 #: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
-#: src/big_remote_play/ui/private_network_view.py:910
-#: src/big_remote_play/ui/private_network_view.py:959
+#: src/big_remote_play/ui/private_network_view.py:939
+#: src/big_remote_play/ui/private_network_view.py:988
 msgid "Network ID"
 msgstr "Hálózati azonosító"
 
@@ -4454,7 +4504,7 @@ msgstr "Hálózat neve"
 msgid "Network not found"
 msgstr "A hálózat nem található"
 
-#: src/big_remote_play/ui/private_network_view.py:606
+#: src/big_remote_play/ui/private_network_view.py:634
 msgid "Networks this PC joined before."
 msgstr "Hálózatok, amelyekhez ez a gép korábban csatlakozott."
 
@@ -4618,7 +4668,7 @@ msgstr "Még nincs párosított eszköz"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1629
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "No previous networks"
 msgstr "Nincsenek korábbi hálózatok"
 
@@ -4837,7 +4887,7 @@ msgstr "Ezen a számítógépen"
 msgid "On your {provider} private network at {address}"
 msgstr "Az Ön {provider} magánhálózatán, a(z) {address} címen"
 
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid ""
 "Once both computers are on the same private network, return to Connect to "
 "find the game PC."
@@ -4915,7 +4965,7 @@ msgstr "Az új nevet csak ez a számítógép használja."
 # line: 347
 # line: 1295
 #: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/private_network_view.py:692
+#: src/big_remote_play/ui/private_network_view.py:720
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "Megnyitás"
@@ -4952,6 +5002,7 @@ msgid "Open Tailscale admin console"
 msgstr "Tailscale felügyeleti konzol megnyitása"
 
 #: src/big_remote_play/ui/network_devices.py:471
+#: src/big_remote_play/ui/private_network_view.py:97
 msgid "Open ZeroTier Central"
 msgstr "ZeroTier Central megnyitása"
 
@@ -5152,11 +5203,19 @@ msgid "Pass through high resolution scroll events from Moonlight clients"
 msgstr ""
 "Továbbítsa a nagy felbontású görgetési eseményeket a Moonlight kliensektől."
 
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid ""
+"Paste the code on this page and join the network. Send the same code to the "
+"other person."
+msgstr ""
+"Illessze be a kódot ezen az oldalon, és csatlakozzon a hálózathoz. Küldje el "
+"ugyanezt a kódot a másik személynek."
+
 #: src/big_remote_play/ui/api_access_dialog.py:37
 msgid "Paste the credential first."
 msgstr "Előbb illessze be a hitelesítési adatot."
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Illessze be a kiszolgáló címét és a kulcsot az oldal mezőibe."
 
@@ -5358,8 +5417,8 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 618
-#: src/big_remote_play/ui/private_network_view.py:604
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:632
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Previous Networks"
 msgstr "Előző Hálózatok"
 
@@ -5493,7 +5552,7 @@ msgid "Ready to play over the internet"
 msgstr "Minden kész a játékhoz az interneten át"
 
 #: src/big_remote_play/ui/network_dashboard.py:91
-#: src/big_remote_play/ui/private_network_view.py:592
+#: src/big_remote_play/ui/private_network_view.py:620
 msgid "Ready to play?"
 msgstr "Készen áll a játékra?"
 
@@ -5560,12 +5619,12 @@ msgstr "Ajánlott: magánhálózat"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 688
 #: src/big_remote_play/ui/network_common.py:163
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect"
 msgstr "Újracsatlakozás"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 78
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect using this saved network"
 msgstr "Újracsatlakozás ezzel a mentett hálózattal"
 
@@ -5674,7 +5733,7 @@ msgstr "Eltávolítja ezt az eszközt?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1702
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Remove this network from history?"
 msgstr "Eltávolítja ezt a hálózatot az előzményekből?"
 
@@ -5735,7 +5794,7 @@ msgstr "A jelenlegi beállítások cseréje mentett fájlra"
 msgid "Replace the current settings?"
 msgstr "Lecseréli a jelenlegi beállításokat?"
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "Request Access"
 msgstr "Hozzáférés kérése"
 
@@ -5745,7 +5804,7 @@ msgstr "Kérés visszavonva"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Request the 16-character ID from the network owner."
 msgstr "Kérje el a 16 karakteres azonosítót a hálózat tulajdonosától."
 
@@ -5873,7 +5932,7 @@ msgstr "Visszaállítja az alapértékeket?"
 msgid "Restore a backup"
 msgstr "Biztonsági mentés visszaállítása"
 
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "A Big Remote Play által mentett kapcsolati adatok újrafelhasználása"
 
@@ -5969,7 +6028,7 @@ msgstr ""
 # line: 1077
 #: src/big_remote_play/ui/api_access_dialog.py:86
 #: src/big_remote_play/ui/host_view.py:3136
-#: src/big_remote_play/ui/private_network_view.py:972
+#: src/big_remote_play/ui/private_network_view.py:1001
 #: src/big_remote_play/ui/remote_connection.py:754
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:306
 msgid "Save"
@@ -6072,7 +6131,7 @@ msgstr ""
 "Válasszon játékot, vagy töltse ki az alkalmazás nevét és parancsát. Teljes "
 "képernyő megosztásához válassza a Teljes asztalt."
 
-#: src/big_remote_play/ui/private_network_view.py:758
+#: src/big_remote_play/ui/private_network_view.py:787
 msgid "Select a network service and try again."
 msgstr "Válasszon hálózati szolgáltatást, majd próbálja újra."
 
@@ -6140,7 +6199,7 @@ msgstr "A kérés elküldése a hálózatnak."
 msgid "Sends your game to the other PC."
 msgstr "Elküldi a játékot a másik gépre."
 
-#: src/big_remote_play/ui/private_network_view.py:655
+#: src/big_remote_play/ui/private_network_view.py:683
 msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Kiszolgáló tartománya (pl. vpn.example.com)"
 
@@ -6157,8 +6216,8 @@ msgstr "Kiszolgáló jelszava"
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
 #: src/big_remote_play/ui/network_devices.py:692
-#: src/big_remote_play/ui/private_network_view.py:655
-#: src/big_remote_play/ui/private_network_view.py:1022
+#: src/big_remote_play/ui/private_network_view.py:683
+#: src/big_remote_play/ui/private_network_view.py:1051
 msgid "Server address"
 msgstr "Kiszolgáló címe"
 
@@ -6367,6 +6426,10 @@ msgstr "Bejelentkezés"
 msgid "Sign in on that computer with your own account."
 msgstr "Jelentkezzen be azon a számítógépen a saját fiókjával."
 
+#: src/big_remote_play/ui/private_network_view.py:94
+msgid "Sign in to ZeroTier Central"
+msgstr "Bejelentkezés a ZeroTier Centralba"
+
 #: src/big_remote_play/ui/remote_connection.py:65
 msgid "Sign in to connect this computer"
 msgstr "Jelentkezzen be a számítógép csatlakoztatásához"
@@ -6380,8 +6443,8 @@ msgstr "A folytatáshoz jelentkezzen be a(z) {name} szolgáltatásba."
 msgid "Sign in with another Tailscale account"
 msgstr "Bejelentkezés másik Tailscale-fiókkal"
 
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 msgid "Sign in with browser"
 msgstr "Bejelentkezés böngészővel"
 
@@ -6393,7 +6456,7 @@ msgstr "Bejelentkezés ugyanazzal a fiókkal"
 msgid "Sign in with your account and connect your devices."
 msgstr "Jelentkezzen be a fiókjával, és csatlakoztassa az eszközeit."
 
-#: src/big_remote_play/ui/private_network_view.py:538
+#: src/big_remote_play/ui/private_network_view.py:566
 msgid "Sign in with your browser. Use the same account on all your devices."
 msgstr ""
 "Jelentkezzen be a böngészőben. Minden eszközén ugyanazt a fiókot használja."
@@ -6410,7 +6473,7 @@ msgstr "Az azon a számítógépen megjelenő bejelentkezési hivatkozás"
 msgid "Sign-in needed"
 msgstr "Bejelentkezés szükséges"
 
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Sign-in was not completed in the browser."
 msgstr "A bejelentkezés nem fejeződött be a böngészőben."
 
@@ -6574,7 +6637,7 @@ msgstr "Az indításhoz egyszer meg kell adnia a jelszavát."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 67
-#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "Starting..."
 msgstr "Indítás..."
 
@@ -6611,19 +6674,19 @@ msgstr "A Steam nem rögzít hangot"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1765
-#: src/big_remote_play/ui/private_network_view.py:1021
+#: src/big_remote_play/ui/private_network_view.py:1050
 msgid "Step 1: Get credentials"
 msgstr "1. lépés: Szerezze meg a hitelesítő adatokat"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1771
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Step 2: Enter details"
 msgstr "2. lépés: Adatok megadása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1777
-#: src/big_remote_play/ui/private_network_view.py:1030
+#: src/big_remote_play/ui/private_network_view.py:1059
 msgid "Step 3: Connect"
 msgstr "3. lépés: Csatlakozás"
 
@@ -6941,7 +7004,7 @@ msgstr ""
 "Váltson Tailscale- vagy Headscale-fiókot, és tekintse meg az összes ZeroTier-"
 "hálózatot."
 
-#: src/big_remote_play/ui/private_network_view.py:613
+#: src/big_remote_play/ui/private_network_view.py:641
 msgid ""
 "Switch saved accounts or leave networks without deleting online accounts."
 msgstr ""
@@ -6999,7 +7062,7 @@ msgstr "Tailscale"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 803
 # line: 1793
-#: src/big_remote_play/ui/private_network_view.py:1042
+#: src/big_remote_play/ui/private_network_view.py:1071
 msgid "Tailscale Instructions"
 msgstr "Tailscale útmutató"
 
@@ -7155,7 +7218,7 @@ msgstr ""
 "Az aktív VPN-kapcsolat leáll. A mentett fiókok megmaradnak, így később "
 "újracsatlakozhat."
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr ""
@@ -7327,7 +7390,7 @@ msgstr ""
 "A hálózat privát: minden új eszközt jóvá kell hagyni. Ez a számítógép "
 "csatlakozik, és automatikusan jóváhagyást kap."
 
-#: src/big_remote_play/ui/private_network_view.py:1066
+#: src/big_remote_play/ui/private_network_view.py:1095
 msgid ""
 "The network owner must approve this computer, in Big Remote Play or in "
 "ZeroTier Central."
@@ -7404,7 +7467,7 @@ msgstr ""
 "A személy csatlakozik a magánhálózatához, és láthatja az Ön által "
 "engedélyezett eszközöket."
 
-#: src/big_remote_play/ui/private_network_view.py:698
+#: src/big_remote_play/ui/private_network_view.py:726
 msgid "The person who created the network gives you this code."
 msgstr "Ezt a kódot a hálózatot létrehozó személytől kapja."
 
@@ -7449,7 +7512,7 @@ msgstr ""
 "A kiválasztott kimenet nincs csatlakoztatva. Csatlakoztassa újra, vagy "
 "válassza az Automatikus lehetőséget."
 
-#: src/big_remote_play/ui/private_network_view.py:665
+#: src/big_remote_play/ui/private_network_view.py:693
 msgid "The server administrator then approves this computer."
 msgstr "Ezután a kiszolgáló rendszergazdája jóváhagyja ezt a számítógépet."
 
@@ -7580,7 +7643,7 @@ msgstr ""
 msgid "This PC did not appear in the list?"
 msgstr "Nem jelent meg ez a gép a listában?"
 
-#: src/big_remote_play/ui/private_network_view.py:519
+#: src/big_remote_play/ui/private_network_view.py:547
 #, python-brace-format
 msgid "This PC is on the {} private network."
 msgstr "Ez a gép a(z) {} magánhálózaton van."
@@ -7643,7 +7706,7 @@ msgstr ""
 msgid "This computer has not joined a ZeroTier network yet."
 msgstr "Ez a számítógép még nem csatlakozott ZeroTier-hálózathoz."
 
-#: src/big_remote_play/ui/private_network_view.py:514
+#: src/big_remote_play/ui/private_network_view.py:542
 msgid ""
 "This computer is already on a ZeroTier network. To join another one, type "
 "its code."
@@ -8001,7 +8064,7 @@ msgstr "Megbízható webes felület eredetek"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1118
 #: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:849
+#: src/big_remote_play/ui/private_network_view.py:878
 msgid "Try Again"
 msgstr "Próbálja újra"
 
@@ -8044,14 +8107,14 @@ msgstr "Bekapcsolás…"
 msgid "Type"
 msgstr "Típus"
 
-#: src/big_remote_play/ui/private_network_view.py:539
+#: src/big_remote_play/ui/private_network_view.py:567
 msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr ""
 "Írja be a kiszolgáló címét. A kiszolgáló rendszergazdája hagyja jóvá ezt a "
 "számítógépet."
 
-#: src/big_remote_play/ui/private_network_view.py:537
+#: src/big_remote_play/ui/private_network_view.py:565
 msgid "Type the network code you received."
 msgstr "Írja be a kapott hálózati kódot."
 
@@ -8195,7 +8258,7 @@ msgstr ""
 "adminisztrációs paneljét (alapértelmezés szerint 47990), és ne kapcsolja ki "
 "a tűzfalat."
 
-#: src/big_remote_play/ui/guided_setup.py:304
+#: src/big_remote_play/ui/guided_setup.py:307
 msgid "Use Tailscale"
 msgstr "Tailscale használata"
 
@@ -8416,7 +8479,7 @@ msgstr ""
 "hálózati hitelesítő kulcsok) a rendszer kulcstartójából. Az alkalmazás "
 "bezárul."
 
-#: src/big_remote_play/ui/private_network_view.py:1065
+#: src/big_remote_play/ui/private_network_view.py:1094
 msgid "Wait for Approval"
 msgstr "Várjon a jóváhagyásra"
 
@@ -8473,8 +8536,8 @@ msgstr "Egy beállítást javítani kell"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1668
-#: src/big_remote_play/ui/private_network_view.py:911
-#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:940
+#: src/big_remote_play/ui/private_network_view.py:993
 msgid "Web UI"
 msgstr "Webes felület"
 
@@ -8501,7 +8564,7 @@ msgid "What this computer shows"
 msgstr "Mit mutat ez a számítógép"
 
 #: src/big_remote_play/ui/connection_guides.py:100
-#: src/big_remote_play/ui/private_network_view.py:551
+#: src/big_remote_play/ui/private_network_view.py:579
 msgid "What you need"
 msgstr "Amire szüksége van"
 
@@ -8606,7 +8669,7 @@ msgstr ""
 msgid "Without a browser (advanced)"
 msgstr "Böngésző nélkül (haladó)"
 
-#: src/big_remote_play/ui/private_network_view.py:1032
+#: src/big_remote_play/ui/private_network_view.py:1061
 msgid ""
 "Without a key, a sign-in link opens; the administrator approves this "
 "computer on the server."
@@ -8618,7 +8681,7 @@ msgstr ""
 msgid "Without a private network"
 msgstr "Magánhálózat nélkül"
 
-#: src/big_remote_play/ui/private_network_view.py:664
+#: src/big_remote_play/ui/private_network_view.py:692
 msgid "Without an auth key, a sign-in link opens"
 msgstr "Hitelesítő kulcs nélkül bejelentkezési hivatkozás nyílik meg"
 
@@ -8676,7 +8739,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1631
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "Your created/connected networks will appear here."
 msgstr "Itt fognak megjelenni a létrehozott/csatlakoztatott hálózatok."
 
@@ -8723,7 +8786,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 650
-#: src/big_remote_play/ui/private_network_view.py:1068
+#: src/big_remote_play/ui/private_network_view.py:1097
 msgid "ZT Panel"
 msgstr "ZT panel"
 
@@ -8739,7 +8802,7 @@ msgstr "ZeroTier API-token"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 810
 # line: 1800
-#: src/big_remote_play/ui/private_network_view.py:1059
+#: src/big_remote_play/ui/private_network_view.py:1088
 msgid "ZeroTier Instructions"
 msgstr "ZeroTier útmutató"
 
@@ -8790,6 +8853,10 @@ msgstr "ZeroTier-hálózatok"
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:228
 msgid "ZeroTier service error"
 msgstr "ZeroTier szolgáltatáshiba"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "ZeroTier shows its 16-character network code. Copy it."
+msgstr "A ZeroTier megjeleníti a 16 karakteres hálózati kódot. Másolja ki."
 
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
@@ -8914,12 +8981,12 @@ msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 259
-#: src/big_remote_play/ui/private_network_view.py:449
+#: src/big_remote_play/ui/private_network_view.py:477
 #, python-brace-format
 msgid "{} installed"
 msgstr "{} telepítve"
 
-#: src/big_remote_play/ui/private_network_view.py:420
+#: src/big_remote_play/ui/private_network_view.py:448
 #, python-brace-format
 msgid ""
 "{} is not installed yet. Install it below to continue (asks for your "

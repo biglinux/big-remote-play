@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-09-29 22:15+0000\n"
+"POT-Creation-Date: 2026-09-29 22:34+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Czech\n"
@@ -24,6 +24,10 @@ msgstr ""
 "Hodnota 0 se řídí požadavkem druhého počítače. Omezuje pouze video, ne "
 "veškerý síťový provoz."
 
+#: src/big_remote_play/ui/private_network_view.py:93
+msgid "1. Account"
+msgstr "1. Účet"
+
 #: src/big_remote_play/ui/connection_guides.py:48
 msgid "1. Check internet reachability"
 msgstr "1. Zkontrolujte dostupnost internetu"
@@ -36,13 +40,13 @@ msgstr "1. Vyberte, co sdílet"
 # line: 804
 # line: 811
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1045
+#: src/big_remote_play/ui/private_network_view.py:1074
 msgid "1. Create Account"
 msgstr "1. Vytvořit účet"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1801
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "1. Identification"
 msgstr "1. Identifikace"
 
@@ -76,13 +80,17 @@ msgstr "2. Doména a HTTPS"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1795
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "2. Invitation"
 msgstr "2. Pozvánka"
 
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "2. Join"
 msgstr "2. Připojení"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "2. Network"
+msgstr "2. Síť"
 
 #: src/big_remote_play/ui/host_view.py:869
 msgid "2. Start sharing"
@@ -90,19 +98,23 @@ msgstr "2. Spusťte sdílení"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1803
-#: src/big_remote_play/ui/private_network_view.py:1064
+#: src/big_remote_play/ui/private_network_view.py:1093
 msgid "3. Authorization"
 msgstr "3. Autorizace"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "3. Connect"
 msgstr "3. Připojení"
 
 #: src/big_remote_play/ui/host_view.py:733
 msgid "3. Connect the other PC"
 msgstr "3. Připojte druhý počítač"
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "3. Join"
+msgstr "3. Připojení"
 
 #: src/big_remote_play/ui/connection_guides.py:118
 msgid "3. Open only the server's ports"
@@ -119,6 +131,10 @@ msgstr "30 dní"
 #: src/big_remote_play/ui/connection_guides.py:68
 msgid "4. Allow only the streaming ports"
 msgstr "4. Povolte pouze porty pro streamování"
+
+#: src/big_remote_play/ui/private_network_view.py:103
+msgid "4. Approve"
+msgstr "4. Schválení"
 
 #: src/big_remote_play/ui/connection_guides.py:124
 msgid "4. Connect Big Remote Play"
@@ -257,7 +273,7 @@ msgstr "Chyba API: {}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:71
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "API access"
 msgstr "Přístup k API"
@@ -281,13 +297,13 @@ msgstr "Token API"
 msgid "About"
 msgstr "O aplikaci"
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "About this VPN"
 msgstr "O této VPN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1046
+#: src/big_remote_play/ui/private_network_view.py:1075
 msgid "Access Tailscale"
 msgstr "Přístup k Tailscale"
 
@@ -523,8 +539,8 @@ msgstr "Pokročilý režim"
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 78
 #: src/big_remote_play/ui/guided_setup.py:246
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:702
 #: src/big_remote_play/ui/sunshine_preferences.py:104
 msgid "Advanced options"
 msgstr "Pokročilé volby"
@@ -552,7 +568,7 @@ msgstr ""
 msgid "After step 2, the other PC appears here."
 msgstr "Po kroku 2 se zde objeví druhý počítač."
 
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1076
 msgid ""
 "All participants need to sign in so their PCs join the same Private Network."
 msgstr ""
@@ -698,7 +714,7 @@ msgstr ""
 msgid "Almost there"
 msgstr "Už to skoro bude"
 
-#: src/big_remote_play/ui/private_network_view.py:518
+#: src/big_remote_play/ui/private_network_view.py:546
 msgid "Already connected"
 msgstr "Již připojeno"
 
@@ -828,7 +844,11 @@ msgstr "Schválit"
 msgid "Approve a waiting computer"
 msgstr "Schválit čekající počítač"
 
-#: src/big_remote_play/ui/private_network_view.py:1031
+#: src/big_remote_play/ui/private_network_view.py:104
+msgid "Approve each computer"
+msgstr "Schvalte každý počítač"
+
+#: src/big_remote_play/ui/private_network_view.py:1060
 msgid "Approve if needed"
 msgstr "V případě potřeby schválit"
 
@@ -876,7 +896,7 @@ msgstr "Jste si naprosto jisti?"
 msgid "Ask the game PC to optimize the game for streaming"
 msgstr "Požádat herní počítač, aby optimalizoval hru pro streamování"
 
-#: src/big_remote_play/ui/private_network_view.py:1023
+#: src/big_remote_play/ui/private_network_view.py:1052
 msgid ""
 "Ask the network administrator for the server address and, optionally, a one-"
 "time auth key."
@@ -884,18 +904,20 @@ msgstr ""
 "Požádejte správce sítě o adresu serveru a případně o jednorázový ověřovací "
 "klíč."
 
-#: src/big_remote_play/ui/private_network_view.py:689
+#: src/big_remote_play/ui/private_network_view.py:717
 msgid "Ask the network owner, or look in ZeroTier Central → Networks"
 msgstr ""
 "Zeptejte se vlastníka sítě nebo se podívejte do ZeroTier Central → Networks"
 
-#: src/big_remote_play/ui/guided_setup.py:301
+#: src/big_remote_play/ui/guided_setup.py:302
 msgid ""
 "Ask the person who created the ZeroTier network to send it. If nobody has a "
-"network yet, Tailscale is the simplest way to start."
+"network yet, one of you creates it for free in ZeroTier Central, or you use "
+"Tailscale, the simplest way to start."
 msgstr ""
-"Požádejte toho, kdo síť ZeroTier vytvořil, aby vám kód poslal. Pokud zatím "
-"nikdo síť nemá, nejjednodušší je začít s Tailscale."
+"Požádejte o kód toho, kdo síť ZeroTier vytvořil. Pokud zatím nikdo síť nemá, "
+"jeden z vás ji zdarma vytvoří v ZeroTier Central – nebo použijte Tailscale, "
+"nejjednodušší způsob, jak začít."
 
 #: src/big_remote_play/ui/network_dashboard.py:346
 #: src/big_remote_play/ui/zerotier_join.py:51
@@ -944,10 +966,10 @@ msgstr "Zvuk/Video"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 385
-#: src/big_remote_play/ui/private_network_view.py:656
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:673
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:684
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:701
+#: src/big_remote_play/ui/private_network_view.py:702
 msgid "Auth Key"
 msgstr "Ověřovací klíč"
 
@@ -1276,8 +1298,8 @@ msgstr "Může se připojit bez nového PIN"
 #: src/big_remote_play/ui/preferences.py:261
 #: src/big_remote_play/ui/preferences.py:308
 #: src/big_remote_play/ui/preferences.py:318
-#: src/big_remote_play/ui/private_network_view.py:971
-#: src/big_remote_play/ui/private_network_view.py:999
+#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:1028
 #: src/big_remote_play/ui/remote_connection.py:753
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:246
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:266
@@ -1544,7 +1566,7 @@ msgstr "Vymazat historii připojení?"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1225
 #: src/big_remote_play/ui/guest_view.py:1780
 #: src/big_remote_play/ui/guest_view.py:1836
-#: src/big_remote_play/ui/guided_setup.py:303
+#: src/big_remote_play/ui/guided_setup.py:305
 #: src/big_remote_play/ui/host_view.py:1269
 #: src/big_remote_play/ui/host_view.py:2576
 #: src/big_remote_play/ui/installer_window.py:76
@@ -1609,7 +1631,7 @@ msgstr "Běžné zkratky používané během streamování"
 msgid "Complete the installation in the external terminal, then check again."
 msgstr "Dokončete instalaci v externím terminálu a zkontrolujte znovu."
 
-#: src/big_remote_play/ui/private_network_view.py:788
+#: src/big_remote_play/ui/private_network_view.py:817
 msgid "Complete the sign-in in your browser."
 msgstr "Dokončete přihlášení v prohlížeči."
 
@@ -1716,8 +1738,8 @@ msgstr "Potvrdit nové heslo"
 #: src/big_remote_play/ui/main_window.py:827
 #: src/big_remote_play/ui/main_window.py:992
 #: src/big_remote_play/ui/main_window.py:1218
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 #: src/big_remote_play/ui/remote_connection.py:453
 #: src/big_remote_play/ui/remote_connection.py:481
 msgid "Connect"
@@ -1735,19 +1757,19 @@ msgstr "Připojit pomocí adresy"
 
 #: src/big_remote_play/ui/network_common.py:164
 #: src/big_remote_play/ui/network_dashboard.py:217
-#: src/big_remote_play/ui/private_network_view.py:535
+#: src/big_remote_play/ui/private_network_view.py:563
 msgid "Connect this computer"
 msgstr "Připojit tento počítač"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 26
-#: src/big_remote_play/ui/private_network_view.py:103
+#: src/big_remote_play/ui/private_network_view.py:131
 msgid "Connect to Headscale Network"
 msgstr "Připojit se k síti Headscale"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 36
-#: src/big_remote_play/ui/private_network_view.py:109
+#: src/big_remote_play/ui/private_network_view.py:137
 msgid "Connect to Tailscale Network"
 msgstr "Připojit se k síti Tailscale"
 
@@ -1757,7 +1779,7 @@ msgstr "Připojte se k Wi-Fi nebo síťovému kabelu a pak to zkontrolujte znovu
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 46
-#: src/big_remote_play/ui/private_network_view.py:115
+#: src/big_remote_play/ui/private_network_view.py:143
 msgid "Connect to ZeroTier Network"
 msgstr "Připojit se k síti ZeroTier"
 
@@ -1818,9 +1840,9 @@ msgstr "Právě připojená"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1907
-#: src/big_remote_play/ui/private_network_view.py:767
-#: src/big_remote_play/ui/private_network_view.py:804
-#: src/big_remote_play/ui/private_network_view.py:839
+#: src/big_remote_play/ui/private_network_view.py:796
+#: src/big_remote_play/ui/private_network_view.py:833
+#: src/big_remote_play/ui/private_network_view.py:868
 msgid "Connected successfully!"
 msgstr "Připojení proběhlo úspěšně!"
 
@@ -1837,21 +1859,21 @@ msgstr "Připojování k síti…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1848
-#: src/big_remote_play/ui/private_network_view.py:734
+#: src/big_remote_play/ui/private_network_view.py:763
 msgid "Connecting..."
 msgstr "Připojování..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
-#: src/big_remote_play/ui/private_network_view.py:551
-#: src/big_remote_play/ui/private_network_view.py:949
+#: src/big_remote_play/ui/private_network_view.py:579
+#: src/big_remote_play/ui/private_network_view.py:978
 msgid "Connection Details"
 msgstr "Podrobnosti připojení"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
-#: src/big_remote_play/ui/private_network_view.py:553
-#: src/big_remote_play/ui/private_network_view.py:1014
+#: src/big_remote_play/ui/private_network_view.py:581
+#: src/big_remote_play/ui/private_network_view.py:1043
 msgid "Connection Log"
 msgstr "Protokol připojení"
 
@@ -1867,7 +1889,7 @@ msgstr "Chyba připojení: Sunshine je nedostupný nebo certifikát nesouhlasí"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Connection failed"
 msgstr "Připojení selhalo"
 
@@ -1890,7 +1912,7 @@ msgstr "Způsob připojení"
 msgid "Connection methods"
 msgstr "Způsoby připojení"
 
-#: src/big_remote_play/ui/private_network_view.py:361
+#: src/big_remote_play/ui/private_network_view.py:389
 msgid "Connection progress"
 msgstr "Průběh připojování"
 
@@ -1961,7 +1983,7 @@ msgstr "Řídí klávesové zkratky, například Alt+Tab a klávesu Super."
 
 #: src/big_remote_play/ui/network_common.py:213
 #: src/big_remote_play/ui/network_common.py:224
-#: src/big_remote_play/ui/private_network_view.py:1081
+#: src/big_remote_play/ui/private_network_view.py:1110
 msgid "Copied"
 msgstr "Zkopírováno"
 
@@ -2094,11 +2116,13 @@ msgstr "Knihovnu her nelze aktualizovat. Stávající hry byly zachovány."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1255
-#: src/big_remote_play/ui/private_network_view.py:1049
+#: src/big_remote_play/ui/private_network_view.py:1078
 msgid "Create Account"
 msgstr "Vytvořit účet"
 
+#: src/big_remote_play/ui/guided_setup.py:306
 #: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "Vytvořit síť ZeroTier"
 
@@ -2107,8 +2131,16 @@ msgstr "Vytvořit síť ZeroTier"
 msgid "Create a backup"
 msgstr "Vytvořit zálohu"
 
+#: src/big_remote_play/ui/private_network_view.py:95
+msgid ""
+"Create a free account or sign in. Only the person who owns the network does "
+"this."
+msgstr ""
+"Vytvořte si bezplatný účet nebo se přihlaste. Dělá to jen vlastník sítě."
+
 #: src/big_remote_play/ui/network_dashboard.py:226
 #: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "Vytvořit síť"
 
@@ -2170,7 +2202,7 @@ msgid "Credentials reset successfully"
 msgstr "Přihlašovací údaje byly obnoveny"
 
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr "Přihlašovací údaje, které Big Remote Play umožňují spravovat tuto síť."
 
@@ -2244,8 +2276,8 @@ msgstr "Výchozí mikrofon"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 815
-#: src/big_remote_play/ui/private_network_view.py:902
-#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:931
+#: src/big_remote_play/ui/private_network_view.py:1029
 msgid "Delete"
 msgstr "Smazat"
 
@@ -2257,11 +2289,11 @@ msgstr "Smazat vše"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1701
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Delete entry?"
 msgstr "Smazat položku?"
 
-#: src/big_remote_play/ui/private_network_view.py:902
+#: src/big_remote_play/ui/private_network_view.py:931
 msgid "Delete this saved network"
 msgstr "Odstranit tuto uloženou síť"
 
@@ -2340,7 +2372,7 @@ msgstr "Zařízení, která právě hrají na tomto počítači."
 msgid "Devices updated"
 msgstr "Zařízení aktualizována"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "Devices, private address and how to add another computer."
 msgstr "Zařízení, soukromá adresa a jak přidat další počítač."
 
@@ -2479,8 +2511,8 @@ msgstr "Docker Engine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 714
-#: src/big_remote_play/ui/private_network_view.py:909
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:938
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Domain"
 msgstr "Doména"
 
@@ -2516,7 +2548,7 @@ msgstr "Snadno se nastaví a skvěle propojí vaše vlastní zařízení."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1704
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit"
 msgstr "Upravit"
 
@@ -2528,13 +2560,13 @@ msgstr "Upravit vlastní snímkovou frekvenci"
 msgid "Edit custom resolution"
 msgstr "Upravit vlastní rozlišení"
 
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit this saved network"
 msgstr "Upravit tuto uloženou síť"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:969
+#: src/big_remote_play/ui/private_network_view.py:998
 #, python-brace-format
 msgid "Edit – {}"
 msgstr "Upravit – {}"
@@ -2647,7 +2679,7 @@ msgid "End the stream for everyone?"
 msgstr "Ukončit stream pro všechny?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 320
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter ID"
 msgstr "Zadat ID"
 
@@ -2655,7 +2687,7 @@ msgstr "Zadat ID"
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Zadejte ŠÍŘKAxVÝŠKA (například 1920x1080):"
 
-#: src/big_remote_play/ui/private_network_view.py:984
+#: src/big_remote_play/ui/private_network_view.py:1013
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "Zadejte šestnáctimístné hexadecimální ID sítě."
 
@@ -2689,22 +2721,26 @@ msgstr "Zadejte počet snímků za sekundu (například 75):"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:116
+#: src/big_remote_play/ui/private_network_view.py:144
 msgid "Enter the 16-character Network ID to join a ZeroTier network."
 msgstr "Zadejte šestnáctiznakové ID sítě a připojte se k síti ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:746
+#: src/big_remote_play/ui/private_network_view.py:775
 msgid "Enter the Headscale server address."
 msgstr "Zadejte adresu serveru Headscale."
 
 #: src/big_remote_play/ui/network_devices.py:442
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter the ID on this page and choose Connect."
 msgstr "Zadejte ID na této stránce a vyberte Připojit."
 
 #: src/big_remote_play/ui/host_view.py:1467
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr "Zadejte kód PIN zobrazený aplikací Moonlight na druhém počítači."
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "Enter the code here"
+msgstr "Zadejte kód sem"
 
 #: src/big_remote_play/ui/host_view.py:779
 #: src/big_remote_play/ui/host_view.py:1479
@@ -2717,7 +2753,7 @@ msgstr "Zadejte úplnou adresu https serveru Headscale."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 27
-#: src/big_remote_play/ui/private_network_view.py:104
+#: src/big_remote_play/ui/private_network_view.py:132
 msgid "Enter the server domain and auth key provided by the administrator."
 msgstr "Zadejte doménu serveru a ověřovací klíč poskytnutý správcem."
 
@@ -2731,7 +2767,7 @@ msgstr "Režim kódování entropie"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/private_network_view.py:992
+#: src/big_remote_play/ui/private_network_view.py:1021
 msgid "Entry updated"
 msgstr "Položka aktualizována"
 
@@ -2799,7 +2835,7 @@ msgstr "Chyba: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 403
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "Establish Connection"
 msgstr "Navázat připojení"
 
@@ -2903,13 +2939,13 @@ msgstr "Rychlejší odezva, nebo lepší obraz"
 msgid "Favorite"
 msgstr "Oblíbené"
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Fill in the form"
 msgstr "Vyplňte formulář"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1293
-#: src/big_remote_play/ui/private_network_view.py:688
+#: src/big_remote_play/ui/private_network_view.py:716
 msgid "Find Network ID"
 msgstr "Najít ID sítě"
 
@@ -3025,8 +3061,8 @@ msgstr "Vynuceno"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1772
 # line: 1787
-#: src/big_remote_play/ui/private_network_view.py:935
-#: src/big_remote_play/ui/private_network_view.py:941
+#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:970
 #, python-brace-format
 msgid "Form filled for {}"
 msgstr "Formulář vyplněn pro {}"
@@ -3121,7 +3157,7 @@ msgstr "Obecné"
 # line: 1023
 # line: 1069
 # line: 1666
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Get Network ID"
 msgstr "Získat ID sítě"
 
@@ -3299,17 +3335,21 @@ msgstr ""
 msgid "How to approve"
 msgstr "Jak schválit"
 
+#: src/big_remote_play/ui/private_network_view.py:730
+msgid "How to create a free network, step by step."
+msgstr "Jak vytvořit bezplatnou síť, krok za krokem."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 196
-#: src/big_remote_play/ui/private_network_view.py:435
+#: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
 msgid "How to install {}"
 msgstr "Jak nainstalovat {}"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "How to run Headscale on your own server, step by step."
 msgstr "Jak krok za krokem provozovat Headscale na vlastním serveru."
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "How to use the selected private network service."
 msgstr "Jak používat vybranou službu soukromé sítě."
 
@@ -3318,10 +3358,11 @@ msgid "I already use ZeroTier"
 msgstr "ZeroTier už používám"
 
 #: src/big_remote_play/ui/guided_setup.py:278
+#: src/big_remote_play/ui/private_network_view.py:730
 msgid "I don't have a code"
 msgstr "Nemám kód"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "I don't have a server yet"
 msgstr "Ještě nemám server"
 
@@ -3447,6 +3488,14 @@ msgstr ""
 msgid "In Big Remote Play, choose Play over the internet and type this code."
 msgstr "V Big Remote Play zvolte Hraní přes internet a zadejte tento kód."
 
+#: src/big_remote_play/ui/private_network_view.py:105
+msgid ""
+"In ZeroTier Central, open the network and allow each computer under Members. "
+"Until then it waits for approval."
+msgstr ""
+"V ZeroTier Central otevřete síť a povolte každý počítač v části Members. Do "
+"té doby čeká na schválení."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 335
 #: src/big_remote_play/ui/sunshine_preferences.py:523
@@ -3550,8 +3599,8 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 366
 #: src/big_remote_play/ui/main_window.py:1129
 #: src/big_remote_play/ui/main_window.py:1138
-#: src/big_remote_play/ui/private_network_view.py:430
-#: src/big_remote_play/ui/private_network_view.py:432
+#: src/big_remote_play/ui/private_network_view.py:458
+#: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
 msgid "Install {}"
 msgstr "Nainstalovat {}"
@@ -3560,8 +3609,8 @@ msgstr "Nainstalovat {}"
 # line: 1498
 # line: 1529
 # line: 1542
-#: src/big_remote_play/ui/private_network_view.py:373
-#: src/big_remote_play/ui/private_network_view.py:421
+#: src/big_remote_play/ui/private_network_view.py:401
+#: src/big_remote_play/ui/private_network_view.py:449
 msgid "Installation Log"
 msgstr "Instalační protokol"
 
@@ -3573,7 +3622,7 @@ msgstr "Instalace byla úspěšně dokončena!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 449
-#: src/big_remote_play/ui/private_network_view.py:456
+#: src/big_remote_play/ui/private_network_view.py:484
 msgid "Installation failed. Check the log."
 msgstr "Instalace selhala. Zkontrolujte protokol."
 
@@ -3611,7 +3660,7 @@ msgstr "Instaluje se {}..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 89
-#: src/big_remote_play/ui/private_network_view.py:444
+#: src/big_remote_play/ui/private_network_view.py:472
 msgid "Installing..."
 msgstr "Instaluje se..."
 
@@ -3729,7 +3778,7 @@ msgstr ""
 "Její vlastník používá přihlašovací stránku. Přihlaste se v aplikaci ZeroTier "
 "a pak to zkontrolujte znovu."
 
-#: src/big_remote_play/ui/private_network_view.py:110
+#: src/big_remote_play/ui/private_network_view.py:138
 msgid ""
 "Join Tailscale with browser login, or use an auth key if someone gave you "
 "one."
@@ -3737,7 +3786,7 @@ msgstr ""
 "Připojte se k Tailscale přihlášením v prohlížeči, nebo použijte ověřovací "
 "klíč, pokud vám ho někdo dal."
 
-#: src/big_remote_play/ui/private_network_view.py:1018
+#: src/big_remote_play/ui/private_network_view.py:1047
 msgid "Join a Headscale VPN"
 msgstr "Připojit se k VPN Headscale"
 
@@ -4019,13 +4068,13 @@ msgstr "Cesta k souboru protokolu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1831
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Login Server"
 msgstr "Přihlašovací server"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1284
-#: src/big_remote_play/ui/private_network_view.py:672
+#: src/big_remote_play/ui/private_network_view.py:700
 msgid "Login Server (leave empty for tailscale.com)"
 msgstr "Přihlašovací server (nechte prázdné pro tailscale.com)"
 
@@ -4076,7 +4125,7 @@ msgstr ""
 msgid "Manage"
 msgstr "Spravovat"
 
-#: src/big_remote_play/ui/private_network_view.py:612
+#: src/big_remote_play/ui/private_network_view.py:640
 msgid "Manage accounts and networks"
 msgstr "Spravovat účty a sítě"
 
@@ -4218,7 +4267,7 @@ msgid "More exposed than a private VPN"
 msgstr "Více vystaveno internetu než soukromá VPN"
 
 #: src/big_remote_play/ui/network_dashboard.py:95
-#: src/big_remote_play/ui/private_network_view.py:601
+#: src/big_remote_play/ui/private_network_view.py:629
 msgid "More options"
 msgstr "Další možnosti"
 
@@ -4249,7 +4298,7 @@ msgstr "Ztlumit, když Moonlight není aktivním oknem"
 msgid "My devices"
 msgstr "Moje zařízení"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "My network"
 msgstr "Moje síť"
 
@@ -4319,8 +4368,8 @@ msgstr "Síť"
 #: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
-#: src/big_remote_play/ui/private_network_view.py:910
-#: src/big_remote_play/ui/private_network_view.py:959
+#: src/big_remote_play/ui/private_network_view.py:939
+#: src/big_remote_play/ui/private_network_view.py:988
 msgid "Network ID"
 msgstr "ID sítě"
 
@@ -4371,7 +4420,7 @@ msgstr "Název sítě"
 msgid "Network not found"
 msgstr "Síť nebyla nalezena"
 
-#: src/big_remote_play/ui/private_network_view.py:606
+#: src/big_remote_play/ui/private_network_view.py:634
 msgid "Networks this PC joined before."
 msgstr "Sítě, ke kterým se tento počítač dříve připojil."
 
@@ -4536,7 +4585,7 @@ msgstr "Zatím žádná spárovaná zařízení"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1629
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "No previous networks"
 msgstr "Žádné předchozí sítě"
 
@@ -4751,7 +4800,7 @@ msgstr "Na tomto počítači"
 msgid "On your {provider} private network at {address}"
 msgstr "Ve vaší soukromé síti {provider} na adrese {address}"
 
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid ""
 "Once both computers are on the same private network, return to Connect to "
 "find the game PC."
@@ -4829,7 +4878,7 @@ msgstr "Nový název se použije jen na tomto počítači."
 # line: 347
 # line: 1295
 #: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/private_network_view.py:692
+#: src/big_remote_play/ui/private_network_view.py:720
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "Otevřít"
@@ -4865,6 +4914,7 @@ msgid "Open Tailscale admin console"
 msgstr "Otevřít administrátorskou konzoli Tailscale"
 
 #: src/big_remote_play/ui/network_devices.py:471
+#: src/big_remote_play/ui/private_network_view.py:97
 msgid "Open ZeroTier Central"
 msgstr "Otevřít ZeroTier Central"
 
@@ -5065,11 +5115,19 @@ msgstr "Párování selhalo"
 msgid "Pass through high resolution scroll events from Moonlight clients"
 msgstr "Přenášet události vysokého rozlišení rolování od klientů Moonlight"
 
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid ""
+"Paste the code on this page and join the network. Send the same code to the "
+"other person."
+msgstr ""
+"Vložte kód na tuto stránku a připojte se k síti. Pošlete stejný kód druhé "
+"osobě."
+
 #: src/big_remote_play/ui/api_access_dialog.py:37
 msgid "Paste the credential first."
 msgstr "Nejprve vložte přihlašovací údaje."
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Vložte adresu serveru a klíč do polí na této stránce."
 
@@ -5263,8 +5321,8 @@ msgstr "Zabraňuje vypnutí obrazovky tohoto počítače během relace."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 618
-#: src/big_remote_play/ui/private_network_view.py:604
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:632
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Previous Networks"
 msgstr "Předchozí sítě"
 
@@ -5395,7 +5453,7 @@ msgid "Ready to play over the internet"
 msgstr "Připraveno ke hraní přes internet"
 
 #: src/big_remote_play/ui/network_dashboard.py:91
-#: src/big_remote_play/ui/private_network_view.py:592
+#: src/big_remote_play/ui/private_network_view.py:620
 msgid "Ready to play?"
 msgstr "Připraveni hrát?"
 
@@ -5462,12 +5520,12 @@ msgstr "Doporučeno: soukromá síť"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 688
 #: src/big_remote_play/ui/network_common.py:163
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect"
 msgstr "Znovu se připojit"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 40
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect using this saved network"
 msgstr "Znovu připojit pomocí této uložené sítě"
 
@@ -5576,7 +5634,7 @@ msgstr "Odebrat toto zařízení?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1702
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Remove this network from history?"
 msgstr "Odebrat tuto síť z historie?"
 
@@ -5637,7 +5695,7 @@ msgstr "Nahradit současná nastavení uloženým souborem"
 msgid "Replace the current settings?"
 msgstr "Nahradit současná nastavení?"
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "Request Access"
 msgstr "Požádat o přístup"
 
@@ -5647,7 +5705,7 @@ msgstr "Žádost zrušena"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Request the 16-character ID from the network owner."
 msgstr "Vyžádejte si šestnáctiznakové ID od vlastníka sítě."
 
@@ -5775,7 +5833,7 @@ msgstr "Obnovit výchozí hodnoty?"
 msgid "Restore a backup"
 msgstr "Obnovit zálohu"
 
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Znovu použít údaje o připojení uložené aplikací Big Remote Play"
 
@@ -5869,7 +5927,7 @@ msgstr ""
 # line: 1077
 #: src/big_remote_play/ui/api_access_dialog.py:86
 #: src/big_remote_play/ui/host_view.py:3136
-#: src/big_remote_play/ui/private_network_view.py:972
+#: src/big_remote_play/ui/private_network_view.py:1001
 #: src/big_remote_play/ui/remote_connection.py:754
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:306
 msgid "Save"
@@ -5972,7 +6030,7 @@ msgstr ""
 "Vyberte hru nebo doplňte název aplikace a příkaz. Pro sdílení celé obrazovky "
 "zvolte Celá plocha."
 
-#: src/big_remote_play/ui/private_network_view.py:758
+#: src/big_remote_play/ui/private_network_view.py:787
 msgid "Select a network service and try again."
 msgstr "Vyberte síťovou službu a zkuste to znovu."
 
@@ -6040,7 +6098,7 @@ msgstr "Odesílá se žádost do sítě."
 msgid "Sends your game to the other PC."
 msgstr "Posílá vaši hru na druhý počítač."
 
-#: src/big_remote_play/ui/private_network_view.py:655
+#: src/big_remote_play/ui/private_network_view.py:683
 msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Doména serveru (např. vpn.example.com)"
 
@@ -6057,8 +6115,8 @@ msgstr "Heslo serveru"
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
 #: src/big_remote_play/ui/network_devices.py:692
-#: src/big_remote_play/ui/private_network_view.py:655
-#: src/big_remote_play/ui/private_network_view.py:1022
+#: src/big_remote_play/ui/private_network_view.py:683
+#: src/big_remote_play/ui/private_network_view.py:1051
 msgid "Server address"
 msgstr "Adresa serveru"
 
@@ -6262,6 +6320,10 @@ msgstr "Přihlásit se"
 msgid "Sign in on that computer with your own account."
 msgstr "Přihlaste se na tom počítači vlastním účtem."
 
+#: src/big_remote_play/ui/private_network_view.py:94
+msgid "Sign in to ZeroTier Central"
+msgstr "Přihlaste se do ZeroTier Central"
+
 #: src/big_remote_play/ui/remote_connection.py:65
 msgid "Sign in to connect this computer"
 msgstr "Přihlaste se a připojte tento počítač"
@@ -6275,8 +6337,8 @@ msgstr "Pro pokračování se přihlaste do {name}."
 msgid "Sign in with another Tailscale account"
 msgstr "Přihlásit se pomocí jiného účtu Tailscale"
 
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 msgid "Sign in with browser"
 msgstr "Přihlásit se prohlížečem"
 
@@ -6288,7 +6350,7 @@ msgstr "Přihlaste se stejným účtem"
 msgid "Sign in with your account and connect your devices."
 msgstr "Přihlaste se ke svému účtu a připojte svá zařízení."
 
-#: src/big_remote_play/ui/private_network_view.py:538
+#: src/big_remote_play/ui/private_network_view.py:566
 msgid "Sign in with your browser. Use the same account on all your devices."
 msgstr ""
 "Přihlaste se v prohlížeči. Na všech svých zařízeních použijte stejný účet."
@@ -6305,7 +6367,7 @@ msgstr "Přihlašovací odkaz zobrazený na tom počítači"
 msgid "Sign-in needed"
 msgstr "Je nutné přihlášení"
 
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Sign-in was not completed in the browser."
 msgstr "Přihlášení v prohlížeči nebylo dokončeno."
 
@@ -6469,7 +6531,7 @@ msgstr "Spuštění si jednou vyžádá vaše heslo."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 67
-#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "Starting..."
 msgstr "Spouštění..."
 
@@ -6506,19 +6568,19 @@ msgstr "Steam nenahrává zvuk"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1765
-#: src/big_remote_play/ui/private_network_view.py:1021
+#: src/big_remote_play/ui/private_network_view.py:1050
 msgid "Step 1: Get credentials"
 msgstr "Krok 1: Získejte přihlašovací údaje"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1771
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Step 2: Enter details"
 msgstr "Krok 2: Zadejte podrobnosti"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1777
-#: src/big_remote_play/ui/private_network_view.py:1030
+#: src/big_remote_play/ui/private_network_view.py:1059
 msgid "Step 3: Connect"
 msgstr "Krok 3: Připojit"
 
@@ -6832,7 +6894,7 @@ msgid "Switch Tailscale or Headscale accounts, and see every ZeroTier network."
 msgstr ""
 "Přepínejte účty Tailscale nebo Headscale a zobrazte všechny sítě ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:613
+#: src/big_remote_play/ui/private_network_view.py:641
 msgid ""
 "Switch saved accounts or leave networks without deleting online accounts."
 msgstr ""
@@ -6890,7 +6952,7 @@ msgstr "Tailscale"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 803
 # line: 1793
-#: src/big_remote_play/ui/private_network_view.py:1042
+#: src/big_remote_play/ui/private_network_view.py:1071
 msgid "Tailscale Instructions"
 msgstr "Návod k Tailscale"
 
@@ -7041,7 +7103,7 @@ msgstr ""
 "Aktivní připojení VPN bude zastaveno. Uložené účty zůstanou zachovány, "
 "abyste se mohli později znovu připojit."
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr "Správce musí sdílet uzel nebo pozvat váš e-mail do sítě."
@@ -7205,7 +7267,7 @@ msgstr ""
 "Síť je soukromá: každé nové zařízení musí být schváleno. Tento počítač se "
 "připojí a bude schválen automaticky."
 
-#: src/big_remote_play/ui/private_network_view.py:1066
+#: src/big_remote_play/ui/private_network_view.py:1095
 msgid ""
 "The network owner must approve this computer, in Big Remote Play or in "
 "ZeroTier Central."
@@ -7278,7 +7340,7 @@ msgid ""
 msgstr ""
 "Osoba se připojí k vaší soukromé síti a uvidí zařízení, která povolíte."
 
-#: src/big_remote_play/ui/private_network_view.py:698
+#: src/big_remote_play/ui/private_network_view.py:726
 msgid "The person who created the network gives you this code."
 msgstr "Tento kód vám dá ten, kdo síť vytvořil."
 
@@ -7321,7 +7383,7 @@ msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr ""
 "Vybraný výstup není připojen. Znovu jej připojte nebo zvolte Automaticky."
 
-#: src/big_remote_play/ui/private_network_view.py:665
+#: src/big_remote_play/ui/private_network_view.py:693
 msgid "The server administrator then approves this computer."
 msgstr "Správce serveru pak tento počítač schválí."
 
@@ -7446,7 +7508,7 @@ msgstr ""
 msgid "This PC did not appear in the list?"
 msgstr "Neobjevil se tento počítač v seznamu?"
 
-#: src/big_remote_play/ui/private_network_view.py:519
+#: src/big_remote_play/ui/private_network_view.py:547
 #, python-brace-format
 msgid "This PC is on the {} private network."
 msgstr "Tento počítač je v soukromé síti {}."
@@ -7508,7 +7570,7 @@ msgstr ""
 msgid "This computer has not joined a ZeroTier network yet."
 msgstr "Tento počítač se zatím nepřipojil k žádné síti ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:514
+#: src/big_remote_play/ui/private_network_view.py:542
 msgid ""
 "This computer is already on a ZeroTier network. To join another one, type "
 "its code."
@@ -7857,7 +7919,7 @@ msgstr "Důvěryhodné zdroje webového rozhraní"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 601
 #: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:849
+#: src/big_remote_play/ui/private_network_view.py:878
 msgid "Try Again"
 msgstr "Zkusit znovu"
 
@@ -7900,12 +7962,12 @@ msgstr "Zapínání…"
 msgid "Type"
 msgstr "Typ"
 
-#: src/big_remote_play/ui/private_network_view.py:539
+#: src/big_remote_play/ui/private_network_view.py:567
 msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr "Zadejte adresu svého serveru. Jeho správce tento počítač schválí."
 
-#: src/big_remote_play/ui/private_network_view.py:537
+#: src/big_remote_play/ui/private_network_view.py:565
 msgid "Type the network code you received."
 msgstr "Zadejte kód sítě, který jste dostali."
 
@@ -8046,7 +8108,7 @@ msgstr ""
 "že přístup funguje. Nevystavujte panel pro správu Sunshine (ve výchozím "
 "nastavení port 47990) a nevypínejte bránu firewall."
 
-#: src/big_remote_play/ui/guided_setup.py:304
+#: src/big_remote_play/ui/guided_setup.py:307
 msgid "Use Tailscale"
 msgstr "Použít Tailscale"
 
@@ -8262,7 +8324,7 @@ msgstr ""
 "servery a ze systémové klíčenky se odstraní uložená hesla (Sunshine, "
 "ZeroTier, ověřovací klíče sítě). Aplikace se zavře."
 
-#: src/big_remote_play/ui/private_network_view.py:1065
+#: src/big_remote_play/ui/private_network_view.py:1094
 msgid "Wait for Approval"
 msgstr "Počkejte na schválení"
 
@@ -8318,8 +8380,8 @@ msgstr "Je potřeba opravit nastavení"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1668
-#: src/big_remote_play/ui/private_network_view.py:911
-#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:940
+#: src/big_remote_play/ui/private_network_view.py:993
 msgid "Web UI"
 msgstr "Webové rozhraní"
 
@@ -8346,7 +8408,7 @@ msgid "What this computer shows"
 msgstr "Co zobrazuje tento počítač"
 
 #: src/big_remote_play/ui/connection_guides.py:100
-#: src/big_remote_play/ui/private_network_view.py:551
+#: src/big_remote_play/ui/private_network_view.py:579
 msgid "What you need"
 msgstr "Co budete potřebovat"
 
@@ -8445,7 +8507,7 @@ msgstr ""
 msgid "Without a browser (advanced)"
 msgstr "Bez prohlížeče (pokročilé)"
 
-#: src/big_remote_play/ui/private_network_view.py:1032
+#: src/big_remote_play/ui/private_network_view.py:1061
 msgid ""
 "Without a key, a sign-in link opens; the administrator approves this "
 "computer on the server."
@@ -8457,7 +8519,7 @@ msgstr ""
 msgid "Without a private network"
 msgstr "Bez soukromé sítě"
 
-#: src/big_remote_play/ui/private_network_view.py:664
+#: src/big_remote_play/ui/private_network_view.py:692
 msgid "Without an auth key, a sign-in link opens"
 msgstr "Bez ověřovacího klíče se otevře přihlašovací odkaz"
 
@@ -8513,7 +8575,7 @@ msgstr "Vaše připojení se tu zobrazí, jakmile začnete hrát s Big Remote Pl
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1631
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "Your created/connected networks will appear here."
 msgstr "Vaše vytvořené/připojené sítě se zde zobrazí."
 
@@ -8559,7 +8621,7 @@ msgstr "Vaše nastavení, spárované sítě a předvolby v jednom souboru."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 650
-#: src/big_remote_play/ui/private_network_view.py:1068
+#: src/big_remote_play/ui/private_network_view.py:1097
 msgid "ZT Panel"
 msgstr "Panel ZT"
 
@@ -8575,7 +8637,7 @@ msgstr "Token API ZeroTier"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 810
 # line: 1800
-#: src/big_remote_play/ui/private_network_view.py:1059
+#: src/big_remote_play/ui/private_network_view.py:1088
 msgid "ZeroTier Instructions"
 msgstr "Návod k ZeroTier"
 
@@ -8626,6 +8688,10 @@ msgstr "Sítě ZeroTier"
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:228
 msgid "ZeroTier service error"
 msgstr "Chyba služby ZeroTier"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "ZeroTier shows its 16-character network code. Copy it."
+msgstr "ZeroTier zobrazí 16znakový kód sítě. Zkopírujte ho."
 
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
@@ -8750,12 +8816,12 @@ msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 190
-#: src/big_remote_play/ui/private_network_view.py:449
+#: src/big_remote_play/ui/private_network_view.py:477
 #, python-brace-format
 msgid "{} installed"
 msgstr "{} nainstalován"
 
-#: src/big_remote_play/ui/private_network_view.py:420
+#: src/big_remote_play/ui/private_network_view.py:448
 #, python-brace-format
 msgid ""
 "{} is not installed yet. Install it below to continue (asks for your "

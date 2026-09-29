@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-09-29 22:15+0000\n"
+"POT-Creation-Date: 2026-09-29 22:34+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Hebrew\n"
@@ -25,6 +25,10 @@ msgstr ""
 "הערך 0 פועל לפי הבקשה של המחשב האחר. הוא מגביל את הווידאו בלבד, לא את כל "
 "תעבורת הרשת."
 
+#: src/big_remote_play/ui/private_network_view.py:93
+msgid "1. Account"
+msgstr "1. חשבון"
+
 #: src/big_remote_play/ui/connection_guides.py:48
 msgid "1. Check internet reachability"
 msgstr "1. בדיקת גישה לאינטרנט"
@@ -37,13 +41,13 @@ msgstr "1. בחרו מה לשתף"
 # line: 804
 # line: 811
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1045
+#: src/big_remote_play/ui/private_network_view.py:1074
 msgid "1. Create Account"
 msgstr "1. צור חשבון"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1801
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "1. Identification"
 msgstr "1. זיהוי"
 
@@ -77,13 +81,17 @@ msgstr "2. שם מתחם ו־HTTPS"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1795
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "2. Invitation"
 msgstr "2. הזמנה"
 
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "2. Join"
 msgstr "2. הצטרפות"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "2. Network"
+msgstr "2. רשת"
 
 #: src/big_remote_play/ui/host_view.py:869
 msgid "2. Start sharing"
@@ -91,19 +99,23 @@ msgstr "2. התחילו את השיתוף"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1803
-#: src/big_remote_play/ui/private_network_view.py:1064
+#: src/big_remote_play/ui/private_network_view.py:1093
 msgid "3. Authorization"
 msgstr "3. הרשאה"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "3. Connect"
 msgstr "3. חיבור"
 
 #: src/big_remote_play/ui/host_view.py:733
 msgid "3. Connect the other PC"
 msgstr "3. חברו את המחשב השני"
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "3. Join"
+msgstr "3. הצטרפות"
 
 #: src/big_remote_play/ui/connection_guides.py:118
 msgid "3. Open only the server's ports"
@@ -120,6 +132,10 @@ msgstr "30 ימים"
 #: src/big_remote_play/ui/connection_guides.py:68
 msgid "4. Allow only the streaming ports"
 msgstr "4. מתן גישה ליציאות ההזרמה בלבד"
+
+#: src/big_remote_play/ui/private_network_view.py:103
+msgid "4. Approve"
+msgstr "4. אישור"
 
 #: src/big_remote_play/ui/connection_guides.py:124
 msgid "4. Connect Big Remote Play"
@@ -256,7 +272,7 @@ msgstr "שגיאת API: {}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:71
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "API access"
 msgstr "גישת API"
@@ -280,13 +296,13 @@ msgstr "אסימון API"
 msgid "About"
 msgstr "אודות"
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "About this VPN"
 msgstr "על אודות ה־VPN הזה"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1046
+#: src/big_remote_play/ui/private_network_view.py:1075
 msgid "Access Tailscale"
 msgstr "גישה ל־Tailscale"
 
@@ -519,8 +535,8 @@ msgstr "מצב מתקדם"
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 78
 #: src/big_remote_play/ui/guided_setup.py:246
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:702
 #: src/big_remote_play/ui/sunshine_preferences.py:104
 msgid "Advanced options"
 msgstr "אפשרויות מתקדמות"
@@ -547,7 +563,7 @@ msgstr "מתקדם: כתובות IP לחיבור ידני כאשר הגילוי 
 msgid "After step 2, the other PC appears here."
 msgstr "אחרי שלב 2, המחשב השני יופיע כאן."
 
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1076
 msgid ""
 "All participants need to sign in so their PCs join the same Private Network."
 msgstr "כל המשתתפים צריכים להתחבר כדי שהמחשבים שלהם יצטרפו לאותה רשת פרטית."
@@ -686,7 +702,7 @@ msgstr ""
 msgid "Almost there"
 msgstr "כמעט סיימנו"
 
-#: src/big_remote_play/ui/private_network_view.py:518
+#: src/big_remote_play/ui/private_network_view.py:546
 msgid "Already connected"
 msgstr "כבר מחובר"
 
@@ -814,7 +830,11 @@ msgstr "אישור"
 msgid "Approve a waiting computer"
 msgstr "אישור מחשב ממתין"
 
-#: src/big_remote_play/ui/private_network_view.py:1031
+#: src/big_remote_play/ui/private_network_view.py:104
+msgid "Approve each computer"
+msgstr "אישור כל מחשב"
+
+#: src/big_remote_play/ui/private_network_view.py:1060
 msgid "Approve if needed"
 msgstr "אישור אם צריך"
 
@@ -862,23 +882,25 @@ msgstr "האם אתם בטוחים לחלוטין?"
 msgid "Ask the game PC to optimize the game for streaming"
 msgstr "בקשה ממחשב המשחק למטב את המשחק להזרמה"
 
-#: src/big_remote_play/ui/private_network_view.py:1023
+#: src/big_remote_play/ui/private_network_view.py:1052
 msgid ""
 "Ask the network administrator for the server address and, optionally, a one-"
 "time auth key."
 msgstr "בקשו ממנהל הרשת את כתובת השרת, ואם רוצים גם מפתח אימות חד־פעמי."
 
-#: src/big_remote_play/ui/private_network_view.py:689
+#: src/big_remote_play/ui/private_network_view.py:717
 msgid "Ask the network owner, or look in ZeroTier Central → Networks"
 msgstr "שאלו את בעל הרשת, או חפשו ב־ZeroTier Central → Networks"
 
-#: src/big_remote_play/ui/guided_setup.py:301
+#: src/big_remote_play/ui/guided_setup.py:302
 msgid ""
 "Ask the person who created the ZeroTier network to send it. If nobody has a "
-"network yet, Tailscale is the simplest way to start."
+"network yet, one of you creates it for free in ZeroTier Central, or you use "
+"Tailscale, the simplest way to start."
 msgstr ""
-"בקשו מהאדם שיצר את רשת ZeroTier לשלוח לכם אותו. אם עדיין אין לאף אחד רשת, "
-"Tailscale היא הדרך הפשוטה ביותר להתחיל."
+"יש לבקש את הקוד ממי שיצר את רשת ה־ZeroTier. אם עדיין לאף אחד אין רשת, אחד "
+"מכם יוצר אותה בחינם ב־ZeroTier Central, או שמשתמשים ב־Tailscale, הדרך הפשוטה "
+"ביותר להתחיל."
 
 #: src/big_remote_play/ui/network_dashboard.py:346
 #: src/big_remote_play/ui/zerotier_join.py:51
@@ -925,10 +947,10 @@ msgstr "אודיו/וידאו"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 385
-#: src/big_remote_play/ui/private_network_view.py:656
-#: src/big_remote_play/ui/private_network_view.py:658
-#: src/big_remote_play/ui/private_network_view.py:673
-#: src/big_remote_play/ui/private_network_view.py:674
+#: src/big_remote_play/ui/private_network_view.py:684
+#: src/big_remote_play/ui/private_network_view.py:686
+#: src/big_remote_play/ui/private_network_view.py:701
+#: src/big_remote_play/ui/private_network_view.py:702
 msgid "Auth Key"
 msgstr "מפתח אימות"
 
@@ -1254,8 +1276,8 @@ msgstr "ניתן להתחבר ללא PIN חדש"
 #: src/big_remote_play/ui/preferences.py:261
 #: src/big_remote_play/ui/preferences.py:308
 #: src/big_remote_play/ui/preferences.py:318
-#: src/big_remote_play/ui/private_network_view.py:971
-#: src/big_remote_play/ui/private_network_view.py:999
+#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:1028
 #: src/big_remote_play/ui/remote_connection.py:753
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:246
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:266
@@ -1510,7 +1532,7 @@ msgstr "לנקות את היסטוריית החיבורים?"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1225
 #: src/big_remote_play/ui/guest_view.py:1780
 #: src/big_remote_play/ui/guest_view.py:1836
-#: src/big_remote_play/ui/guided_setup.py:303
+#: src/big_remote_play/ui/guided_setup.py:305
 #: src/big_remote_play/ui/host_view.py:1269
 #: src/big_remote_play/ui/host_view.py:2576
 #: src/big_remote_play/ui/installer_window.py:76
@@ -1575,7 +1597,7 @@ msgstr "קיצורי דרך נפוצים בשימוש במהלך סטרימינ�
 msgid "Complete the installation in the external terminal, then check again."
 msgstr "יש להשלים את ההתקנה במסוף החיצוני ולבדוק שוב."
 
-#: src/big_remote_play/ui/private_network_view.py:788
+#: src/big_remote_play/ui/private_network_view.py:817
 msgid "Complete the sign-in in your browser."
 msgstr "השלימו את ההתחברות בדפדפן."
 
@@ -1682,8 +1704,8 @@ msgstr "אימות הסיסמה החדשה"
 #: src/big_remote_play/ui/main_window.py:827
 #: src/big_remote_play/ui/main_window.py:992
 #: src/big_remote_play/ui/main_window.py:1218
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 #: src/big_remote_play/ui/remote_connection.py:453
 #: src/big_remote_play/ui/remote_connection.py:481
 msgid "Connect"
@@ -1701,19 +1723,19 @@ msgstr "חיבור לפי כתובת"
 
 #: src/big_remote_play/ui/network_common.py:164
 #: src/big_remote_play/ui/network_dashboard.py:217
-#: src/big_remote_play/ui/private_network_view.py:535
+#: src/big_remote_play/ui/private_network_view.py:563
 msgid "Connect this computer"
 msgstr "חיבור המחשב הזה"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 26
-#: src/big_remote_play/ui/private_network_view.py:103
+#: src/big_remote_play/ui/private_network_view.py:131
 msgid "Connect to Headscale Network"
 msgstr "התחבר לרשת Headscale"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 36
-#: src/big_remote_play/ui/private_network_view.py:109
+#: src/big_remote_play/ui/private_network_view.py:137
 msgid "Connect to Tailscale Network"
 msgstr "התחבר לרשת Tailscale"
 
@@ -1723,7 +1745,7 @@ msgstr "התחברו ל־Wi-Fi או לכבל רשת, ואז בדקו שוב."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 46
-#: src/big_remote_play/ui/private_network_view.py:115
+#: src/big_remote_play/ui/private_network_view.py:143
 msgid "Connect to ZeroTier Network"
 msgstr "התחבר לרשת ZeroTier"
 
@@ -1784,9 +1806,9 @@ msgstr "מחוברים עכשיו"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1907
-#: src/big_remote_play/ui/private_network_view.py:767
-#: src/big_remote_play/ui/private_network_view.py:804
-#: src/big_remote_play/ui/private_network_view.py:839
+#: src/big_remote_play/ui/private_network_view.py:796
+#: src/big_remote_play/ui/private_network_view.py:833
+#: src/big_remote_play/ui/private_network_view.py:868
 msgid "Connected successfully!"
 msgstr "מחובר בהצלחה!"
 
@@ -1803,21 +1825,21 @@ msgstr "מתחבר לרשת…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1848
-#: src/big_remote_play/ui/private_network_view.py:734
+#: src/big_remote_play/ui/private_network_view.py:763
 msgid "Connecting..."
 msgstr "מתחבר..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
-#: src/big_remote_play/ui/private_network_view.py:551
-#: src/big_remote_play/ui/private_network_view.py:949
+#: src/big_remote_play/ui/private_network_view.py:579
+#: src/big_remote_play/ui/private_network_view.py:978
 msgid "Connection Details"
 msgstr "פרטי חיבור"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
-#: src/big_remote_play/ui/private_network_view.py:553
-#: src/big_remote_play/ui/private_network_view.py:1014
+#: src/big_remote_play/ui/private_network_view.py:581
+#: src/big_remote_play/ui/private_network_view.py:1043
 msgid "Connection Log"
 msgstr "יומן חיבור"
 
@@ -1833,7 +1855,7 @@ msgstr "שגיאת חיבור: Sunshine אינו נגיש או שהאישור א
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Connection failed"
 msgstr "חיבור נכשל"
 
@@ -1856,7 +1878,7 @@ msgstr "שיטת חיבור"
 msgid "Connection methods"
 msgstr "שיטות חיבור"
 
-#: src/big_remote_play/ui/private_network_view.py:361
+#: src/big_remote_play/ui/private_network_view.py:389
 msgid "Connection progress"
 msgstr "התקדמות החיבור"
 
@@ -1925,7 +1947,7 @@ msgstr "שולט בקיצורים כגון Alt+Tab ומקש Super."
 
 #: src/big_remote_play/ui/network_common.py:213
 #: src/big_remote_play/ui/network_common.py:224
-#: src/big_remote_play/ui/private_network_view.py:1081
+#: src/big_remote_play/ui/private_network_view.py:1110
 msgid "Copied"
 msgstr "הועתק"
 
@@ -2056,11 +2078,13 @@ msgstr "לא ניתן לעדכן את ספריית המשחקים. המשחקי�
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1255
-#: src/big_remote_play/ui/private_network_view.py:1049
+#: src/big_remote_play/ui/private_network_view.py:1078
 msgid "Create Account"
 msgstr "יצירת חשבון"
 
+#: src/big_remote_play/ui/guided_setup.py:306
 #: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "יצירת רשת ZeroTier"
 
@@ -2069,8 +2093,15 @@ msgstr "יצירת רשת ZeroTier"
 msgid "Create a backup"
 msgstr "יצירת גיבוי"
 
+#: src/big_remote_play/ui/private_network_view.py:95
+msgid ""
+"Create a free account or sign in. Only the person who owns the network does "
+"this."
+msgstr "יש ליצור חשבון בחינם או להתחבר. רק הבעלים של הרשת עושה זאת."
+
 #: src/big_remote_play/ui/network_dashboard.py:226
 #: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "יצירת רשת"
 
@@ -2131,7 +2162,7 @@ msgid "Credentials reset successfully"
 msgstr "פרטי הגישה אופסו בהצלחה"
 
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:618
+#: src/big_remote_play/ui/private_network_view.py:646
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr "פרטי גישה שמאפשרים ל־Big Remote Play לנהל את הרשת הזו."
 
@@ -2204,8 +2235,8 @@ msgstr "מיקרופון ברירת מחדל"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 815
-#: src/big_remote_play/ui/private_network_view.py:902
-#: src/big_remote_play/ui/private_network_view.py:1000
+#: src/big_remote_play/ui/private_network_view.py:931
+#: src/big_remote_play/ui/private_network_view.py:1029
 msgid "Delete"
 msgstr "מחק"
 
@@ -2217,11 +2248,11 @@ msgstr "מחק הכול"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1701
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Delete entry?"
 msgstr "מחק רשומה?"
 
-#: src/big_remote_play/ui/private_network_view.py:902
+#: src/big_remote_play/ui/private_network_view.py:931
 msgid "Delete this saved network"
 msgstr "מחיקת הרשת השמורה הזאת"
 
@@ -2298,7 +2329,7 @@ msgstr "מכשירים שמשחקים במחשב הזה ברגע זה."
 msgid "Devices updated"
 msgstr "המכשירים עודכנו"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "Devices, private address and how to add another computer."
 msgstr "מכשירים, כתובת פרטית ואיך להוסיף מחשב נוסף."
 
@@ -2435,8 +2466,8 @@ msgstr "Docker Engine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 714
-#: src/big_remote_play/ui/private_network_view.py:909
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:938
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Domain"
 msgstr "שם מתחם"
 
@@ -2470,7 +2501,7 @@ msgstr "קל להגדרה ומצוין לחיבור המכשירים שלכם."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1704
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit"
 msgstr "ערוך"
 
@@ -2482,13 +2513,13 @@ msgstr "עריכת קצב פריימים מותאם אישית"
 msgid "Edit custom resolution"
 msgstr "עריכת רזולוציה מותאמת אישית"
 
-#: src/big_remote_play/ui/private_network_view.py:894
+#: src/big_remote_play/ui/private_network_view.py:923
 msgid "Edit this saved network"
 msgstr "עריכת הרשת השמורה הזאת"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:969
+#: src/big_remote_play/ui/private_network_view.py:998
 #, python-brace-format
 msgid "Edit – {}"
 msgstr "עריכה – {}"
@@ -2601,7 +2632,7 @@ msgid "End the stream for everyone?"
 msgstr "לסיים את ההזרמה לכולם?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 320
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter ID"
 msgstr "הזנת מזהה"
 
@@ -2609,7 +2640,7 @@ msgstr "הזנת מזהה"
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "יש להזין רוחבxגובה (למשל 1920x1080):"
 
-#: src/big_remote_play/ui/private_network_view.py:984
+#: src/big_remote_play/ui/private_network_view.py:1013
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "יש להזין מזהה רשת הקסדצימלי בן 16 תווים."
 
@@ -2643,22 +2674,26 @@ msgstr "יש להזין פריימים לשנייה (למשל 75):"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:116
+#: src/big_remote_play/ui/private_network_view.py:144
 msgid "Enter the 16-character Network ID to join a ZeroTier network."
 msgstr "הזן את מזהה הרשת בן 16 התווים כדי להצטרף לרשת ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:746
+#: src/big_remote_play/ui/private_network_view.py:775
 msgid "Enter the Headscale server address."
 msgstr "יש להזין את כתובת שרת ה־Headscale."
 
 #: src/big_remote_play/ui/network_devices.py:442
-#: src/big_remote_play/ui/private_network_view.py:1062
+#: src/big_remote_play/ui/private_network_view.py:1091
 msgid "Enter the ID on this page and choose Connect."
 msgstr "הזינו את המזהה בעמוד הזה ובחרו „התחברות”."
 
 #: src/big_remote_play/ui/host_view.py:1467
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr "יש להזין את קוד ה־PIN שמוצג ב־Moonlight במחשב האחר."
+
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid "Enter the code here"
+msgstr "הזנת הקוד כאן"
 
 #: src/big_remote_play/ui/host_view.py:779
 #: src/big_remote_play/ui/host_view.py:1479
@@ -2671,7 +2706,7 @@ msgstr "יש להזין את כתובת ה־https המלאה של שרת ה־Hea
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 27
-#: src/big_remote_play/ui/private_network_view.py:104
+#: src/big_remote_play/ui/private_network_view.py:132
 msgid "Enter the server domain and auth key provided by the administrator."
 msgstr "הזינו את שם המתחם של השרת ואת מפתח האימות שקיבלתם מהמנהל."
 
@@ -2685,7 +2720,7 @@ msgstr "מצב קידוד אנטרופיה"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/private_network_view.py:992
+#: src/big_remote_play/ui/private_network_view.py:1021
 msgid "Entry updated"
 msgstr "הכניסה עודכנה"
 
@@ -2753,7 +2788,7 @@ msgstr "שגיאה: {}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 403
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "Establish Connection"
 msgstr "הקם חיבור"
 
@@ -2853,13 +2888,13 @@ msgstr "תגובה מהירה יותר או תמונה טובה יותר"
 msgid "Favorite"
 msgstr "מועדף"
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Fill in the form"
 msgstr "מלאו את הטופס"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1293
-#: src/big_remote_play/ui/private_network_view.py:688
+#: src/big_remote_play/ui/private_network_view.py:716
 msgid "Find Network ID"
 msgstr "מצא מזהה רשת"
 
@@ -2974,8 +3009,8 @@ msgstr "מאולץ"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1772
 # line: 1787
-#: src/big_remote_play/ui/private_network_view.py:935
-#: src/big_remote_play/ui/private_network_view.py:941
+#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:970
 #, python-brace-format
 msgid "Form filled for {}"
 msgstr "טופס מולא עבור {}"
@@ -3070,7 +3105,7 @@ msgstr "כללי"
 # line: 1023
 # line: 1069
 # line: 1666
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Get Network ID"
 msgstr "קבלת מזהה רשת"
 
@@ -3248,17 +3283,21 @@ msgstr "כמה זמן לחכות במילישניות לקבלת נתונים מ
 msgid "How to approve"
 msgstr "איך לאשר"
 
+#: src/big_remote_play/ui/private_network_view.py:730
+msgid "How to create a free network, step by step."
+msgstr "איך ליצור רשת בחינם, צעד אחר צעד."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 222
-#: src/big_remote_play/ui/private_network_view.py:435
+#: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
 msgid "How to install {}"
 msgstr "כיצד להתקין את {}"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "How to run Headscale on your own server, step by step."
 msgstr "איך להפעיל את Headscale בשרת משלכם, צעד אחר צעד."
 
-#: src/big_remote_play/ui/private_network_view.py:590
+#: src/big_remote_play/ui/private_network_view.py:618
 msgid "How to use the selected private network service."
 msgstr "אופן השימוש בשירות הרשת הפרטית שנבחר."
 
@@ -3267,10 +3306,11 @@ msgid "I already use ZeroTier"
 msgstr "כבר יש לי ZeroTier"
 
 #: src/big_remote_play/ui/guided_setup.py:278
+#: src/big_remote_play/ui/private_network_view.py:730
 msgid "I don't have a code"
 msgstr "אין לי קוד"
 
-#: src/big_remote_play/ui/private_network_view.py:669
+#: src/big_remote_play/ui/private_network_view.py:697
 msgid "I don't have a server yet"
 msgstr "עדיין אין לי שרת"
 
@@ -3387,6 +3427,14 @@ msgstr ""
 msgid "In Big Remote Play, choose Play over the internet and type this code."
 msgstr "ב־Big Remote Play, בחרו „לשחק דרך האינטרנט” והקלידו את הקוד הזה."
 
+#: src/big_remote_play/ui/private_network_view.py:105
+msgid ""
+"In ZeroTier Central, open the network and allow each computer under Members. "
+"Until then it waits for approval."
+msgstr ""
+"ב־ZeroTier Central יש לפתוח את הרשת ולאשר כל מחשב תחת Members. עד אז הוא "
+"ממתין לאישור."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 335
 #: src/big_remote_play/ui/sunshine_preferences.py:523
@@ -3488,8 +3536,8 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 420
 #: src/big_remote_play/ui/main_window.py:1129
 #: src/big_remote_play/ui/main_window.py:1138
-#: src/big_remote_play/ui/private_network_view.py:430
-#: src/big_remote_play/ui/private_network_view.py:432
+#: src/big_remote_play/ui/private_network_view.py:458
+#: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
 msgid "Install {}"
 msgstr "התקנת {}"
@@ -3498,8 +3546,8 @@ msgstr "התקנת {}"
 # line: 1498
 # line: 1529
 # line: 1542
-#: src/big_remote_play/ui/private_network_view.py:373
-#: src/big_remote_play/ui/private_network_view.py:421
+#: src/big_remote_play/ui/private_network_view.py:401
+#: src/big_remote_play/ui/private_network_view.py:449
 msgid "Installation Log"
 msgstr "יומן התקנה"
 
@@ -3511,7 +3559,7 @@ msgstr "ההתקנה הושלמה בהצלחה!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 449
-#: src/big_remote_play/ui/private_network_view.py:456
+#: src/big_remote_play/ui/private_network_view.py:484
 msgid "Installation failed. Check the log."
 msgstr "ההתקנה נכשלה. בדוק את הלוג."
 
@@ -3555,7 +3603,7 @@ msgstr "מתבצעת התקנה של {}..."
 # line: 89
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 576
-#: src/big_remote_play/ui/private_network_view.py:444
+#: src/big_remote_play/ui/private_network_view.py:472
 msgid "Installing..."
 msgstr "מתקין..."
 
@@ -3670,7 +3718,7 @@ msgid ""
 "again."
 msgstr "בעל הרשת משתמש בדף התחברות. התחברו באפליקציית ZeroTier, ואז בדקו שוב."
 
-#: src/big_remote_play/ui/private_network_view.py:110
+#: src/big_remote_play/ui/private_network_view.py:138
 msgid ""
 "Join Tailscale with browser login, or use an auth key if someone gave you "
 "one."
@@ -3678,7 +3726,7 @@ msgstr ""
 "אפשר להצטרף ל-Tailscale באמצעות התחברות בדפדפן, או להשתמש במפתח אימות אם "
 "מישהו נתן לך כזה."
 
-#: src/big_remote_play/ui/private_network_view.py:1018
+#: src/big_remote_play/ui/private_network_view.py:1047
 msgid "Join a Headscale VPN"
 msgstr "הצטרפות ל־VPN של Headscale"
 
@@ -3958,13 +4006,13 @@ msgstr "נתיב קובץ יומן"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1831
-#: src/big_remote_play/ui/private_network_view.py:954
+#: src/big_remote_play/ui/private_network_view.py:983
 msgid "Login Server"
 msgstr "שרת כניסה"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1284
-#: src/big_remote_play/ui/private_network_view.py:672
+#: src/big_remote_play/ui/private_network_view.py:700
 msgid "Login Server (leave empty for tailscale.com)"
 msgstr "שרת כניסה (השאר ריק עבור tailscale.com)"
 
@@ -4014,7 +4062,7 @@ msgstr "מתאים את תנועת הסמן יותר לשימוש בשולחן �
 msgid "Manage"
 msgstr "ניהול"
 
-#: src/big_remote_play/ui/private_network_view.py:612
+#: src/big_remote_play/ui/private_network_view.py:640
 msgid "Manage accounts and networks"
 msgstr "ניהול חשבונות ורשתות"
 
@@ -4155,7 +4203,7 @@ msgid "More exposed than a private VPN"
 msgstr "חשוף יותר מ־VPN פרטי"
 
 #: src/big_remote_play/ui/network_dashboard.py:95
-#: src/big_remote_play/ui/private_network_view.py:601
+#: src/big_remote_play/ui/private_network_view.py:629
 msgid "More options"
 msgstr "אפשרויות נוספות"
 
@@ -4186,7 +4234,7 @@ msgstr "השתקה כאשר Moonlight אינו החלון הפעיל"
 msgid "My devices"
 msgstr "המכשירים שלי"
 
-#: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:624
 msgid "My network"
 msgstr "הרשת שלי"
 
@@ -4256,8 +4304,8 @@ msgstr "רשת"
 #: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
-#: src/big_remote_play/ui/private_network_view.py:910
-#: src/big_remote_play/ui/private_network_view.py:959
+#: src/big_remote_play/ui/private_network_view.py:939
+#: src/big_remote_play/ui/private_network_view.py:988
 msgid "Network ID"
 msgstr "מזהה רשת"
 
@@ -4308,7 +4356,7 @@ msgstr "שם הרשת"
 msgid "Network not found"
 msgstr "הרשת לא נמצאה"
 
-#: src/big_remote_play/ui/private_network_view.py:606
+#: src/big_remote_play/ui/private_network_view.py:634
 msgid "Networks this PC joined before."
 msgstr "רשתות שהמחשב הזה הצטרף אליהן בעבר."
 
@@ -4465,7 +4513,7 @@ msgstr "עדיין אין התקנים מצומדים"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1629
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "No previous networks"
 msgstr "אין רשתות קודמות"
 
@@ -4676,7 +4724,7 @@ msgstr "במחשב הזה"
 msgid "On your {provider} private network at {address}"
 msgstr "ברשת הפרטית של {provider} בכתובת {address}"
 
-#: src/big_remote_play/ui/private_network_view.py:1053
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid ""
 "Once both computers are on the same private network, return to Connect to "
 "find the game PC."
@@ -4753,7 +4801,7 @@ msgstr "רק המחשב הזה משתמש בשם החדש."
 # line: 347
 # line: 1295
 #: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/private_network_view.py:692
+#: src/big_remote_play/ui/private_network_view.py:720
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "פתח"
@@ -4787,6 +4835,7 @@ msgid "Open Tailscale admin console"
 msgstr "פתיחת מסוף הניהול של Tailscale"
 
 #: src/big_remote_play/ui/network_devices.py:471
+#: src/big_remote_play/ui/private_network_view.py:97
 msgid "Open ZeroTier Central"
 msgstr "פתיחת ZeroTier Central"
 
@@ -4986,11 +5035,18 @@ msgstr "הצימוד נכשל"
 msgid "Pass through high resolution scroll events from Moonlight clients"
 msgstr "העברת אירועי גלילה ברזולוציה גבוהה מלקוחות Moonlight"
 
+#: src/big_remote_play/ui/private_network_view.py:101
+msgid ""
+"Paste the code on this page and join the network. Send the same code to the "
+"other person."
+msgstr ""
+"יש להדביק את הקוד בדף הזה ולהצטרף לרשת. יש לשלוח את אותו הקוד לאדם השני."
+
 #: src/big_remote_play/ui/api_access_dialog.py:37
 msgid "Paste the credential first."
 msgstr "הדביקו תחילה את פרטי הגישה."
 
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "הדביקו את כתובת השרת ואת המפתח בשדות שבעמוד הזה."
 
@@ -5185,8 +5241,8 @@ msgstr "מונע מהמסך של המחשב הזה להיכבות במהלך ה�
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 618
-#: src/big_remote_play/ui/private_network_view.py:604
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:632
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Previous Networks"
 msgstr "רשתות קודמות"
 
@@ -5316,7 +5372,7 @@ msgid "Ready to play over the internet"
 msgstr "מוכן לשחק דרך האינטרנט"
 
 #: src/big_remote_play/ui/network_dashboard.py:91
-#: src/big_remote_play/ui/private_network_view.py:592
+#: src/big_remote_play/ui/private_network_view.py:620
 msgid "Ready to play?"
 msgstr "הכול מוכן למשחק?"
 
@@ -5381,12 +5437,12 @@ msgstr "מומלץ: רשת פרטית"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 688
 #: src/big_remote_play/ui/network_common.py:163
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect"
 msgstr "התחבר מחדש"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 40
-#: src/big_remote_play/ui/private_network_view.py:887
+#: src/big_remote_play/ui/private_network_view.py:916
 msgid "Reconnect using this saved network"
 msgstr "התחברות מחדש באמצעות הרשת השמורה הזאת"
 
@@ -5495,7 +5551,7 @@ msgstr "להסיר את המכשיר הזה?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1702
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:1027
 msgid "Remove this network from history?"
 msgstr "האם להסיר רשת זו מההיסטוריה?"
 
@@ -5556,7 +5612,7 @@ msgstr "החלפת ההגדרות הנוכחיות בקובץ שמור"
 msgid "Replace the current settings?"
 msgstr "להחליף את ההגדרות הנוכחיות?"
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid "Request Access"
 msgstr "בקשת גישה"
 
@@ -5566,7 +5622,7 @@ msgstr "הבקשה בוטלה"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:1061
+#: src/big_remote_play/ui/private_network_view.py:1090
 msgid "Request the 16-character ID from the network owner."
 msgstr "בקשו מבעל הרשת את המזהה בן 16 התווים."
 
@@ -5692,7 +5748,7 @@ msgstr "לשחזר את ברירות המחדל?"
 msgid "Restore a backup"
 msgstr "שחזור גיבוי"
 
-#: src/big_remote_play/ui/private_network_view.py:608
+#: src/big_remote_play/ui/private_network_view.py:636
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "שימוש חוזר בפרטי החיבור שנשמרו על ידי Big Remote Play"
 
@@ -5783,7 +5839,7 @@ msgstr ""
 # line: 1077
 #: src/big_remote_play/ui/api_access_dialog.py:86
 #: src/big_remote_play/ui/host_view.py:3136
-#: src/big_remote_play/ui/private_network_view.py:972
+#: src/big_remote_play/ui/private_network_view.py:1001
 #: src/big_remote_play/ui/remote_connection.py:754
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:306
 msgid "Save"
@@ -5886,7 +5942,7 @@ msgstr ""
 "בחרו משחק או מלאו את שם היישום והפקודה. כדי לשתף את כל המסך, בחרו שולחן "
 "עבודה מלא."
 
-#: src/big_remote_play/ui/private_network_view.py:758
+#: src/big_remote_play/ui/private_network_view.py:787
 msgid "Select a network service and try again."
 msgstr "יש לבחור שירות רשת ולנסות שוב."
 
@@ -5952,7 +6008,7 @@ msgstr "שולח את הבקשה לרשת."
 msgid "Sends your game to the other PC."
 msgstr "שולח את המשחק שלכם למחשב האחר."
 
-#: src/big_remote_play/ui/private_network_view.py:655
+#: src/big_remote_play/ui/private_network_view.py:683
 msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "שם המתחם של השרת (לדוגמה vpn.example.com)"
 
@@ -5969,8 +6025,8 @@ msgstr "סיסמת השרת"
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
 #: src/big_remote_play/ui/network_devices.py:692
-#: src/big_remote_play/ui/private_network_view.py:655
-#: src/big_remote_play/ui/private_network_view.py:1022
+#: src/big_remote_play/ui/private_network_view.py:683
+#: src/big_remote_play/ui/private_network_view.py:1051
 msgid "Server address"
 msgstr "כתובת השרת"
 
@@ -6169,6 +6225,10 @@ msgstr "התחברות"
 msgid "Sign in on that computer with your own account."
 msgstr "התחברו במחשב ההוא עם החשבון שלכם."
 
+#: src/big_remote_play/ui/private_network_view.py:94
+msgid "Sign in to ZeroTier Central"
+msgstr "התחברות ל־ZeroTier Central"
+
 #: src/big_remote_play/ui/remote_connection.py:65
 msgid "Sign in to connect this computer"
 msgstr "התחברו לחשבון כדי לחבר את המחשב הזה"
@@ -6182,8 +6242,8 @@ msgstr "התחברו אל {name} כדי להמשיך."
 msgid "Sign in with another Tailscale account"
 msgstr "כניסה באמצעות חשבון Tailscale אחר"
 
-#: src/big_remote_play/ui/private_network_view.py:565
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:593
+#: src/big_remote_play/ui/private_network_view.py:595
 msgid "Sign in with browser"
 msgstr "התחברות דרך הדפדפן"
 
@@ -6195,7 +6255,7 @@ msgstr "התחברות עם אותו חשבון"
 msgid "Sign in with your account and connect your devices."
 msgstr "התחברו עם החשבון שלכם וחברו את המכשירים שלכם."
 
-#: src/big_remote_play/ui/private_network_view.py:538
+#: src/big_remote_play/ui/private_network_view.py:566
 msgid "Sign in with your browser. Use the same account on all your devices."
 msgstr "התחברו דרך הדפדפן. השתמשו באותו חשבון בכל המכשירים שלכם."
 
@@ -6211,7 +6271,7 @@ msgstr "קישור ההתחברות שמוצג במחשב ההוא"
 msgid "Sign-in needed"
 msgstr "נדרשת התחברות"
 
-#: src/big_remote_play/ui/private_network_view.py:846
+#: src/big_remote_play/ui/private_network_view.py:875
 msgid "Sign-in was not completed in the browser."
 msgstr "ההתחברות בדפדפן לא הושלמה."
 
@@ -6373,7 +6433,7 @@ msgstr "ההפעלה מבקשת את הסיסמה שלכם פעם אחת."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 67
-#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "Starting..."
 msgstr "מתחיל..."
 
@@ -6410,19 +6470,19 @@ msgstr "Steam אינו מקליט צליל"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1765
-#: src/big_remote_play/ui/private_network_view.py:1021
+#: src/big_remote_play/ui/private_network_view.py:1050
 msgid "Step 1: Get credentials"
 msgstr "שלב 1: קבלת פרטי גישה"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1771
-#: src/big_remote_play/ui/private_network_view.py:1028
+#: src/big_remote_play/ui/private_network_view.py:1057
 msgid "Step 2: Enter details"
 msgstr "שלב 2: הזן פרטים"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1777
-#: src/big_remote_play/ui/private_network_view.py:1030
+#: src/big_remote_play/ui/private_network_view.py:1059
 msgid "Step 3: Connect"
 msgstr "שלב 3: חיבור"
 
@@ -6733,7 +6793,7 @@ msgstr "החלפת חשבונות Tailscale או Headscale וניהול מספר
 msgid "Switch Tailscale or Headscale accounts, and see every ZeroTier network."
 msgstr "החליפו חשבונות Tailscale או Headscale, וצפו בכל רשתות ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:613
+#: src/big_remote_play/ui/private_network_view.py:641
 msgid ""
 "Switch saved accounts or leave networks without deleting online accounts."
 msgstr "החלפת חשבונות שמורים או עזיבת רשתות בלי למחוק חשבונות מקוונים."
@@ -6789,7 +6849,7 @@ msgstr "Tailscale"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 803
 # line: 1793
-#: src/big_remote_play/ui/private_network_view.py:1042
+#: src/big_remote_play/ui/private_network_view.py:1071
 msgid "Tailscale Instructions"
 msgstr "הוראות Tailscale"
 
@@ -6936,7 +6996,7 @@ msgstr ""
 "חיבור ה־VPN הפעיל יופסק. החשבונות השמורים יישמרו כדי לאפשר התחברות מחדש "
 "מאוחר יותר."
 
-#: src/big_remote_play/ui/private_network_view.py:1052
+#: src/big_remote_play/ui/private_network_view.py:1081
 msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr "מנהל המערכת חייב לשתף את הצומת או להזמין את כתובת הדוא״ל שלך לרשת."
@@ -7094,7 +7154,7 @@ msgid ""
 msgstr ""
 "הרשת פרטית: כל מכשיר חדש חייב לקבל אישור. המחשב הזה מצטרף ומאושר אוטומטית."
 
-#: src/big_remote_play/ui/private_network_view.py:1066
+#: src/big_remote_play/ui/private_network_view.py:1095
 msgid ""
 "The network owner must approve this computer, in Big Remote Play or in "
 "ZeroTier Central."
@@ -7163,7 +7223,7 @@ msgid ""
 "The person joins your private network and can see the devices you allow."
 msgstr "האדם מצטרף לרשת הפרטית שלכם ויכול לראות את המכשירים שתאפשרו."
 
-#: src/big_remote_play/ui/private_network_view.py:698
+#: src/big_remote_play/ui/private_network_view.py:726
 msgid "The person who created the network gives you this code."
 msgstr "את הקוד הזה נותן לכם מי שיצר את הרשת."
 
@@ -7203,7 +7263,7 @@ msgstr "פלט השמע שנבחר אינו זמין. בחרו „אוטומטי
 msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr "הפלט שנבחר אינו מחובר. חברו אותו מחדש או בחרו „אוטומטי”."
 
-#: src/big_remote_play/ui/private_network_view.py:665
+#: src/big_remote_play/ui/private_network_view.py:693
 msgid "The server administrator then approves this computer."
 msgstr "לאחר מכן מנהל השרת מאשר את המחשב הזה."
 
@@ -7321,7 +7381,7 @@ msgstr ""
 msgid "This PC did not appear in the list?"
 msgstr "המחשב הזה לא הופיע ברשימה?"
 
-#: src/big_remote_play/ui/private_network_view.py:519
+#: src/big_remote_play/ui/private_network_view.py:547
 #, python-brace-format
 msgid "This PC is on the {} private network."
 msgstr "המחשב הזה נמצא ברשת הפרטית {}."
@@ -7382,7 +7442,7 @@ msgstr ""
 msgid "This computer has not joined a ZeroTier network yet."
 msgstr "המחשב הזה עדיין לא הצטרף לרשת ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:514
+#: src/big_remote_play/ui/private_network_view.py:542
 msgid ""
 "This computer is already on a ZeroTier network. To join another one, type "
 "its code."
@@ -7717,7 +7777,7 @@ msgstr "מקורות מהימנים של ממשק האינטרנט"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 601
 #: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:849
+#: src/big_remote_play/ui/private_network_view.py:878
 msgid "Try Again"
 msgstr "נסה שוב"
 
@@ -7759,12 +7819,12 @@ msgstr "מפעיל…"
 msgid "Type"
 msgstr "סוג"
 
-#: src/big_remote_play/ui/private_network_view.py:539
+#: src/big_remote_play/ui/private_network_view.py:567
 msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr "הקלידו את כתובת השרת שלכם. מנהל השרת יאשר את המחשב הזה."
 
-#: src/big_remote_play/ui/private_network_view.py:537
+#: src/big_remote_play/ui/private_network_view.py:565
 msgid "Type the network code you received."
 msgstr "הקלידו את קוד הרשת שקיבלתם."
 
@@ -7903,7 +7963,7 @@ msgstr ""
 "אש מתאימים. UPnP הוא ניסיון בלבד, לא הוכחה שהגישה פועלת. אין לחשוף את לוח "
 "הניהול של Sunshine (47990 כברירת מחדל) ואין להשבית את חומת האש."
 
-#: src/big_remote_play/ui/guided_setup.py:304
+#: src/big_remote_play/ui/guided_setup.py:307
 msgid "Use Tailscale"
 msgstr "שימוש ב־Tailscale"
 
@@ -8117,7 +8177,7 @@ msgstr ""
 "ותסיר ממחזיק המפתחות של המערכת סיסמאות שמורות (Sunshine, ZeroTier, מפתחות "
 "אימות רשת). היישום ייסגר."
 
-#: src/big_remote_play/ui/private_network_view.py:1065
+#: src/big_remote_play/ui/private_network_view.py:1094
 msgid "Wait for Approval"
 msgstr "המתנה לאישור"
 
@@ -8172,8 +8232,8 @@ msgstr "צריך לתקן הגדרה"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1668
-#: src/big_remote_play/ui/private_network_view.py:911
-#: src/big_remote_play/ui/private_network_view.py:964
+#: src/big_remote_play/ui/private_network_view.py:940
+#: src/big_remote_play/ui/private_network_view.py:993
 msgid "Web UI"
 msgstr "ממשק משתמש אינטרנטי"
 
@@ -8200,7 +8260,7 @@ msgid "What this computer shows"
 msgstr "מה המחשב הזה מציג"
 
 #: src/big_remote_play/ui/connection_guides.py:100
-#: src/big_remote_play/ui/private_network_view.py:551
+#: src/big_remote_play/ui/private_network_view.py:579
 msgid "What you need"
 msgstr "מה צריך"
 
@@ -8296,7 +8356,7 @@ msgstr ""
 msgid "Without a browser (advanced)"
 msgstr "ללא דפדפן (מתקדם)"
 
-#: src/big_remote_play/ui/private_network_view.py:1032
+#: src/big_remote_play/ui/private_network_view.py:1061
 msgid ""
 "Without a key, a sign-in link opens; the administrator approves this "
 "computer on the server."
@@ -8306,7 +8366,7 @@ msgstr "ללא מפתח, נפתח קישור התחברות; המנהל מאשר
 msgid "Without a private network"
 msgstr "בלי רשת פרטית"
 
-#: src/big_remote_play/ui/private_network_view.py:664
+#: src/big_remote_play/ui/private_network_view.py:692
 msgid "Without an auth key, a sign-in link opens"
 msgstr "ללא מפתח אימות, נפתח קישור התחברות"
 
@@ -8361,7 +8421,7 @@ msgstr "החיבורים שלכם יופיעו כאן אחרי שתתחילו ל
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1631
-#: src/big_remote_play/ui/private_network_view.py:861
+#: src/big_remote_play/ui/private_network_view.py:890
 msgid "Your created/connected networks will appear here."
 msgstr "הרשתות שיצרת/חיברת יופיעו כאן."
 
@@ -8407,7 +8467,7 @@ msgstr "ההגדרות, הרשתות המצומדות וההעדפות שלך ב
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 650
-#: src/big_remote_play/ui/private_network_view.py:1068
+#: src/big_remote_play/ui/private_network_view.py:1097
 msgid "ZT Panel"
 msgstr "לוח ZT"
 
@@ -8423,7 +8483,7 @@ msgstr "אסימון API של ZeroTier"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 810
 # line: 1800
-#: src/big_remote_play/ui/private_network_view.py:1059
+#: src/big_remote_play/ui/private_network_view.py:1088
 msgid "ZeroTier Instructions"
 msgstr "הוראות ZeroTier"
 
@@ -8474,6 +8534,10 @@ msgstr "רשתות ZeroTier"
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:228
 msgid "ZeroTier service error"
 msgstr "שגיאת שירות ZeroTier"
+
+#: src/big_remote_play/ui/private_network_view.py:100
+msgid "ZeroTier shows its 16-character network code. Copy it."
+msgstr "ZeroTier מציג את קוד הרשת בן 16 התווים. יש להעתיק אותו."
 
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
@@ -8596,12 +8660,12 @@ msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 215
-#: src/big_remote_play/ui/private_network_view.py:449
+#: src/big_remote_play/ui/private_network_view.py:477
 #, python-brace-format
 msgid "{} installed"
 msgstr "{} מותקן"
 
-#: src/big_remote_play/ui/private_network_view.py:420
+#: src/big_remote_play/ui/private_network_view.py:448
 #, python-brace-format
 msgid ""
 "{} is not installed yet. Install it below to continue (asks for your "

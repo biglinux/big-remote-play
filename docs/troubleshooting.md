@@ -42,7 +42,9 @@ ZeroTier's control key is readable only by the system. Choose **Allow** once: Bi
 
 ## ZeroTier: joining failed, or showed “0 join connection failed”
 
-`0 join connection failed` is what `zerotier-cli join` prints when it cannot reach the local `zerotier-one` service — not an answer from the network. Older versions showed it as “Connection failed” when the service had been stopped (for example by **Network details → Disconnect**, which stops ZeroTier temporarily). The join now starts the service first and says **ZeroTier is not running** only if it cannot. To check by hand: `systemctl is-active zerotier-one`, then `zerotier-cli -j listnetworks`.
+`0 join connection failed` is what `zerotier-cli join` prints when it cannot reach the local `zerotier-one` service — not an answer from the network. Older versions showed it as “Connection failed” when the service had been stopped (for example by **Network details → Disconnect**, which stops ZeroTier temporarily). The join now starts the service first and says **ZeroTier is not running** only if it cannot. Right after ZeroTier is installed or enabled for the first time, the service runs but this user may not use it yet: the join then asks for the one-time permission (**Allow**) instead of reporting a stopped service, as versions up to 26.09.29 did after waiting 15 s (technical details showed only `Created symlink … zerotier-one.service`). To check by hand: `systemctl is-active zerotier-one`, then `zerotier-cli -j listnetworks`.
+
+Without a network code, choose **I don't have a code**: in the guided setup and on the ZeroTier connection page it explains how the owner creates a free network in ZeroTier Central, where the 16-character code is shown, and how each computer is approved under **Members**.
 
 ## ZeroTier shows “Waiting for authorization”
 
