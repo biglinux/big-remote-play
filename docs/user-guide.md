@@ -37,6 +37,14 @@ The back arrow goes one question back. After a connection is set up from the gui
 
 Opening Share does not start the server, install software or change network/firewall settings by itself.
 
+While sharing, **3. Connect the other PC** also tells you, before any device waits:
+
+- **Sunshine's password is needed to approve devices** (or **Sunshine rejected the saved password**): **Enter Sunshine password** checks it with Sunshine and keeps it in the system keyring, so a code is approved the moment you type it;
+- **The firewall blocks other computers**: this computer's firewall (ufw or firewalld) does not allow Sunshine's ports from the local network, ZeroTier, Tailscale or Headscale. **Allow in firewall** lists the ports and asks for your password;
+- **A stream is open on this computer**: new devices can pair only after **End for everyone**.
+
+Pairing requests that a device abandoned (cancelled, cut by the network or a firewall) are cleared automatically, so the device's next attempt is not refused.
+
 Two options in **Image and capture** decide how faithful the picture is:
 
 - **Correct colors of HDR screens** (on by default): if the shared screen uses HDR, it switches to SDR while sharing and back afterwards, so every connected device sees correct colors; a device that asks for HDR gets SDR. Without it, devices without HDR see grey, washed-out colors. The **Image and capture** summary says when the shared screen is in HDR.

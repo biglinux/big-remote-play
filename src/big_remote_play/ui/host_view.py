@@ -766,10 +766,43 @@ class HostView(Gtk.Box):
         self.end_for_everyone_row.connect("activated", lambda _row: self._confirm_end_for_everyone())
         pin_group.add(self.end_for_everyone_row)
         self._show_pairing_busy(False)
+
         from .network_common import RowGroup, Worker
 
         self._pair_busy_worker = Worker()
         self._end_stream_worker = Worker()
+        self._credentials_worker = Worker()
+
+        # Approving a device needs Sunshine's password. Asking for it while a
+        # device waits delays the approval, so it is asked for up front.
+        self.sunshine_password_row = Adw.ActionRow(use_markup=False)
+        self.sunshine_password_row.set_title_lines(0)
+        self.sunshine_password_row.set_subtitle_lines(0)
+        set_row_icon(self.sunshine_password_row, "brp-dialog-password-symbolic")
+        pin_group.add(self.sunshine_password_row)
+        self.sunshine_password_button = Adw.ButtonRow(title=_("Enter Sunshine password"))
+        self.sunshine_password_button.add_css_class("suggested-action")
+        self.sunshine_password_button.connect("activated", lambda _row: self.open_sunshine_credentials_dialog())
+        pin_group.add(self.sunshine_password_button)
+        self._show_password_needed("")
+
+        # A firewall that drops Sunshine's ports looks, from the other
+        # computer, like sharing that is off; say it here, where it is fixed.
+        self.firewall_block_row = Adw.ActionRow(title=_("The firewall blocks other computers"), use_markup=False)
+        self.firewall_block_row.set_title_lines(0)
+        self.firewall_block_row.set_subtitle_lines(0)
+        set_row_icon(self.firewall_block_row, "brp-firewall-symbolic")
+        pin_group.add(self.firewall_block_row)
+        self.firewall_allow_row = Adw.ButtonRow(title=_("Allow in firewall"))
+        self.firewall_allow_row.add_css_class("suggested-action")
+        self.firewall_allow_row.update_property(
+            [Gtk.AccessibleProperty.DESCRIPTION],
+            [_("Shows the ports first; your password is requested")],
+        )
+        self.firewall_allow_row.connect("activated", lambda _row: self.on_configure_firewall_clicked(None))
+        pin_group.add(self.firewall_allow_row)
+        self._firewall_worker = Worker()
+        self._show_firewall_report(None)
 
         self.pair_entry = Adw.EntryRow(title=_("Pairing code shown on the other PC"))
         self.pair_entry.set_input_purpose(Gtk.InputPurpose.DIGITS)
@@ -1076,25 +1109,132 @@ class HostView(Gtk.Box):
         self.pair_busy_row.set_visible(visible)
         self.end_for_everyone_row.set_visible(visible)
 
+    def _show_password_needed(self, state: str) -> None:
+        """``""`` (nothing to ask), ``missing`` or ``rejected``."""
+        texts = {
+            "missing": (
+                _("Sunshine's password is needed to approve devices"),
+                _("Enter it now, so a device is approved the moment you type its code. Otherwise Moonlight on the device may give up while you type it."),
+            ),
+            "rejected": (
+                _("Sunshine rejected the saved password"),
+                _("Enter the current Sunshine user and password, so devices can be approved."),
+            ),
+        }
+        title, subtitle = texts.get(state, ("", ""))
+        self.sunshine_password_row.set_title(title)
+        self.sunshine_password_row.set_subtitle(subtitle)
+        self.sunshine_password_row.set_visible(bool(state))
+        self.sunshine_password_button.set_visible(bool(state))
+
+    @staticmethod
+    def _firewall_network_label(kind: str) -> str:
+        return {"local": _("the local network"), "zerotier": "ZeroTier", "tailscale": _("Tailscale or Headscale")}.get(kind, kind)
+
+    def _show_firewall_report(self, report) -> None:
+        blocked = bool(report is not None and report.blocks and self.is_hosting)
+        if blocked and report is not None:
+            networks = ", ".join(self._firewall_network_label(kind) for kind, ports in report.blocked.items() if ports)
+            self.firewall_block_row.set_subtitle(
+                _("{tool} is on and does not allow Sunshine's ports ({ports}) from {networks}. Devices there cannot connect until they are allowed.").format(
+                    tool=report.tool, ports=", ".join(report.blocked_ports), networks=networks
+                )
+            )
+        self.firewall_block_row.set_visible(blocked)
+        self.firewall_allow_row.set_visible(blocked)
+
+    def _check_firewall(self) -> None:
+        """Read-only: whether this computer's firewall lets other computers reach Sunshine."""
+        if not self.is_hosting:
+            self._firewall_worker.cancel()
+            self._show_firewall_report(None)
+            return
+        from big_remote_play.host.firewall_check import check_firewall
+
+        base = self.sunshine.api_port - 1
+        self._firewall_worker.submit(lambda: check_firewall(base), self._show_firewall_report, failed=lambda _error: self._show_firewall_report(None))
+
+    def _pairing_upkeep(self) -> tuple[int | None, str]:
+        """Worker: the open app, and whether devices can be approved right away.
+
+        With working credentials it also cancels pairing requests the device
+        abandoned, which would otherwise refuse its next attempt.
+        """
+        app_id = self.sunshine.running_app_id()
+        credentials = self._get_sunshine_creds()
+        if not credentials:
+            return app_id, "missing"
+        _pending, status = self.sunshine.pending_pairings(credentials)
+        if status == 401:
+            return app_id, "rejected"
+        if status == 200:
+            self.sunshine.discard_abandoned_pairings(credentials)
+        return app_id, ""
+
     def _check_pairing_busy(self) -> None:
         """Show the way out when an open stream would block pairing (off the GTK thread)."""
         if not self.is_hosting:
             self._pair_busy_worker.cancel()
             self._pair_busy_checking = False
             self._show_pairing_busy(False)
+            self._show_password_needed("")
             return
         if getattr(self, "_pair_busy_checking", False) or getattr(self, "_ending_for_everyone", False):
             return
         self._pair_busy_checking = True
 
-        def apply(app_id) -> None:
+        def apply(result) -> None:
             self._pair_busy_checking = False
+            app_id, password = result
             self._show_pairing_busy(self.is_hosting and bool(app_id))
+            self._show_password_needed(password if self.is_hosting else "")
 
         def failed(_error) -> None:
             self._pair_busy_checking = False
 
-        self._pair_busy_worker.submit(self.sunshine.running_app_id, apply, failed=failed)
+        self._pair_busy_worker.submit(self._pairing_upkeep, apply, failed=failed)
+
+    def open_sunshine_credentials_dialog(self) -> None:
+        """Ask for Sunshine's user and password once, check them, keep them in the keyring."""
+        saved = self._get_sunshine_creds()
+        dialog = Adw.AlertDialog(
+            heading=_("Sunshine password"),
+            body=_("The user and password of Sunshine on this computer, the ones of its web panel. They are kept in the system keyring."),
+        )
+        group = Adw.PreferencesGroup()
+        user_row = Adw.EntryRow(title=_("Sunshine User"))
+        user_row.set_text(saved[0] if saved else "")
+        pass_row = Adw.PasswordEntryRow(title=_("Sunshine Password"))
+        group.add(user_row)
+        group.add(pass_row)
+        dialog.set_extra_child(group)
+        dialog.add_response("cancel", _("Cancel"))
+        dialog.add_response("save", _("Save"))
+        dialog.set_response_appearance("save", Adw.ResponseAppearance.SUGGESTED)
+        dialog.set_default_response("save")
+        dialog.set_close_response("cancel")
+
+        def checked(result) -> None:
+            status, user, password = result
+            if status == 200:
+                if self._save_sunshine_creds(user, password):
+                    self.show_toast(_("Sunshine password saved. Devices can be approved right away."))
+                    self._show_password_needed("")
+            elif status == 401:
+                self.show_error_dialog(_("Authentication Failed"), _("Invalid username or password."))
+            elif status == 307:
+                self.prompt_create_user(None)
+            else:
+                self.show_error_dialog(_("Sunshine did not answer"), _("Start sharing first, then enter the password again."))
+
+        def on_response(_dialog, response: str) -> None:
+            user, password = user_row.get_text().strip(), pass_row.get_text()
+            if response != "save" or not user or not password:
+                return
+            self._credentials_worker.submit(lambda: (self.sunshine.pending_pairings((user, password))[1], user, password), checked)
+
+        dialog.connect("response", on_response)
+        dialog.present(self)
 
     def _confirm_end_for_everyone(self, body: str | None = None) -> None:
         dialog = Adw.AlertDialog(
@@ -1399,6 +1539,9 @@ class HostView(Gtk.Box):
             try:
                 self._ensure_sunshine_config()
                 credentials = self._get_sunshine_creds()
+                if credentials:
+                    # A request the device abandoned would take this PIN.
+                    self.sunshine.discard_abandoned_pairings(credentials)
                 result = self.sunshine.send_pin(pin, name=_("Other computer"), auth=credentials) if credentials else None
                 GLib.idle_add(finish, credentials, result, "", self._pairing_blocked(result))
             except Exception as exc:
@@ -1451,6 +1594,8 @@ class HostView(Gtk.Box):
             return False
 
         def work() -> None:
+            if auth and pairing_id is None:
+                self.sunshine.discard_abandoned_pairings(auth)
             result = self.sunshine.send_pin(pin, name=name, auth=auth, pairing_id=pairing_id)
             GLib.idle_add(done, result, self._pairing_blocked(result))
 
@@ -1786,7 +1931,8 @@ class HostView(Gtk.Box):
 
             def on_done(ok, out):
                 if ok:
-                    self.show_toast(_("Success: {}").format(out.strip()))
+                    self.show_toast(_("The firewall now allows Sunshine's ports."))
+                    self._check_firewall()
                 else:
                     self.show_error_dialog(_("Firewall Error"), out if out else _("Execution failed or cancelled."))
 
@@ -1933,9 +2079,11 @@ class HostView(Gtk.Box):
 
             self._refresh_paired_devices()
             self._refresh_internet_access()
+            self._check_firewall()
         else:
             self.perf_monitor.set_connection_status("Sunshine", _("Inactive"), False)
             self.perf_monitor.stop_monitoring()
+            self._check_firewall()
             if hasattr(self, "internet_access_group"):
                 self._internet_worker.cancel()
                 self.internet_access_group.set_visible(False)
@@ -3497,6 +3645,8 @@ class HostView(Gtk.Box):
         if hasattr(self, "_pair_busy_worker"):
             self._pair_busy_worker.close()
             self._end_stream_worker.close()
+            self._credentials_worker.close()
+            self._firewall_worker.close()
         self._closed = True
         if hasattr(self, "perf_monitor"):
             self.perf_monitor.stop_monitoring()

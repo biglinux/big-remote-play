@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
+import errno
 import http.client
 import ipaddress
 import json
@@ -26,6 +27,7 @@ _CGNAT = ipaddress.ip_network("100.64.0.0/10")
 _OVERLAY_PREFIXES = ("tailscale", "zt", "ztr")
 _VIRTUAL_PREFIXES = ("lo", "docker", "veth", "br-", "virbr", "vnet", "vmnet", "vboxnet", "podman", "cni", "flannel")
 _HOSTNAME_RE = re.compile(r"<hostname>([^<]{1,253})</hostname>")
+_UNIQUEID_RE = re.compile(r"<uniqueid>([0-9A-Fa-f-]{8,64})</uniqueid>")
 
 Runner = Callable[..., subprocess.CompletedProcess]
 
@@ -54,14 +56,31 @@ def valid_host(address: str) -> bool:
     return re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,62})(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,62}))*\.?", text) is not None
 
 
-def probe_tcp(address: str, port: int, *, timeout: float = 1.5) -> bool:
+def tcp_outcome(address: str, port: int, *, timeout: float = 1.5) -> str:
+    """How a TCP connection attempt ended, from the kernel's answer.
+
+    ``open``; ``refused`` — the computer answered that nothing listens there;
+    ``timeout`` — nothing answered (a firewall that drops, or the computer is
+    away); ``unreachable`` — refused with an ICMP error (a firewall that
+    rejects, or no route); ``error`` otherwise.
+    """
     if not valid_host(address) or not 1 <= int(port) <= 65_535:
-        return False
+        return "error"
     try:
         with socket.create_connection((address.strip("[]"), int(port)), timeout=timeout):
-            return True
-    except OSError:
-        return False
+            return "open"
+    except ConnectionRefusedError:
+        return "refused"
+    except TimeoutError:
+        return "timeout"
+    except OSError as error:
+        if error.errno in (errno.EHOSTUNREACH, errno.ENETUNREACH, errno.EACCES, errno.EPERM):
+            return "unreachable"
+        return "error"
+
+
+def probe_tcp(address: str, port: int, *, timeout: float = 1.5) -> bool:
+    return tcp_outcome(address, port, timeout=timeout) == "open"
 
 
 @dataclass(frozen=True)
@@ -69,6 +88,8 @@ class SunshineProbe:
     listening: bool
     answered: bool = False
     hostname: str = ""
+    uniqueid: str = ""  # the host's identity, as Moonlight records it (``uuid``)
+    tcp: str = ""  # tcp_outcome() when Sunshine did not answer
 
 
 def probe_sunshine(address: str, port: int = SUNSHINE_DEFAULT_BASE_PORT, *, timeout: float = 2.0) -> SunshineProbe:
@@ -87,12 +108,14 @@ def probe_sunshine(address: str, port: int = SUNSHINE_DEFAULT_BASE_PORT, *, time
         response = connection.getresponse()
         body = response.read(64 * 1024).decode("utf-8", errors="replace")
     except (OSError, http.client.HTTPException):
-        return SunshineProbe(probe_tcp(address, port, timeout=timeout))
+        outcome = tcp_outcome(address, port, timeout=timeout)
+        return SunshineProbe(outcome == "open", tcp=outcome)
     finally:
         connection.close()
     match = _HOSTNAME_RE.search(body)
+    unique = _UNIQUEID_RE.search(body)
     answered = "<root" in body or match is not None
-    return SunshineProbe(True, answered=answered, hostname=match.group(1).strip() if match else "")
+    return SunshineProbe(True, answered=answered, hostname=match.group(1).strip() if match else "", uniqueid=unique.group(1) if unique else "", tcp="open")
 
 
 @dataclass(frozen=True)
