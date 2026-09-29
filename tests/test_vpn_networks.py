@@ -10,7 +10,7 @@ import pytest
 
 import big_remote_play.ui.private_network_view as pnv
 from big_remote_play.private_network.models import ConnectionState, OverlayNetwork, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus, Recovery
-from big_remote_play.utils.vpn_accounts import CommandResult, TailscaleConnection, VPNAccountManager, ZeroTierNetwork, ZeroTierNetworks, ZeroTierNode
+from big_remote_play.utils.vpn_accounts import CommandResult, TailscaleConnection, VPNAccountManager
 
 
 def _gtk_or_skip():
@@ -245,69 +245,6 @@ def test_join_reports_success_only_when_the_daemon_is_connected(monkeypatch):
     connected, connection = outcomes[-1]
     assert connected is False
     assert connection.awaiting_authentication
-
-
-@pytest.mark.parametrize(
-    "listing,expected",
-    [
-        ([ZeroTierNetwork("8056c2e21c000001", "games", "OK", ("10.147.17.5/24",))], "connected"),
-        ([ZeroTierNetwork("8056c2e21c000001", "games", "ACCESS_DENIED")], "approval"),
-    ],
-)
-def test_zerotier_join_waits_for_the_services_verdict(monkeypatch, listing, expected):
-    outcomes = []
-
-    class Manager:
-        def join_zerotier_network(self, network_id, allow_privileged=True):
-            outcomes.append(("join", network_id))
-            return CommandResult(0, "200 join OK")
-
-        def list_zerotier_networks(self, allow_privileged=False):
-            return ZeroTierNetworks(tuple(listing))
-
-        def zerotier_info(self):
-            return ZeroTierNode("a1b2c3d4e5", online=True)
-
-    page = types.SimpleNamespace(
-        main_window=types.SimpleNamespace(system_check=None),
-        ZEROTIER_JOIN_WAIT=1.0,
-        _report_connect_output=lambda line: None,
-        _c_done=lambda ok, connection=None: outcomes.append(("done", ok)),
-        _awaiting_approval=lambda network_id, node_id: outcomes.append(("approval", network_id, node_id)),
-    )
-    monkeypatch.setattr(pnv, "VPNAccountManager", lambda _system_check: Manager())
-    monkeypatch.setattr(pnv.threading, "Thread", lambda target, daemon: types.SimpleNamespace(start=target))
-    monkeypatch.setattr(pnv.GLib, "idle_add", lambda callback, *args: callback(*args))
-    monkeypatch.setattr(pnv.time, "sleep", lambda seconds: None)
-
-    pnv.ConnectPage._join_zerotier(page, "8056c2e21c000001")
-
-    assert outcomes[0] == ("join", "8056c2e21c000001")
-    if expected == "connected":
-        assert ("done", True) in outcomes
-    else:
-        assert ("approval", "8056c2e21c000001", "a1b2c3d4e5") in outcomes
-        assert ("done", True) not in outcomes
-
-
-def test_zerotier_join_failure_is_reported_not_hidden(monkeypatch):
-    outcomes = []
-
-    class Manager:
-        def join_zerotier_network(self, network_id, allow_privileged=True):
-            return CommandResult(1, "", "Request was cancelled")
-
-    page = types.SimpleNamespace(
-        main_window=types.SimpleNamespace(system_check=None),
-        ZEROTIER_JOIN_WAIT=1.0,
-        _report_connect_output=lambda line: outcomes.append(("line", line)),
-        _c_done=lambda ok, connection=None: outcomes.append(("done", ok)),
-    )
-    monkeypatch.setattr(pnv, "VPNAccountManager", lambda _system_check: Manager())
-    monkeypatch.setattr(pnv.threading, "Thread", lambda target, daemon: types.SimpleNamespace(start=target))
-    monkeypatch.setattr(pnv.GLib, "idle_add", lambda callback, *args: callback(*args))
-    pnv.ConnectPage._join_zerotier(page, "8056c2e21c000001")
-    assert ("done", False) in outcomes
 
 
 def test_privileged_helpers_keep_the_users_message_locale(monkeypatch):

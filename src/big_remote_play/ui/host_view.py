@@ -25,7 +25,7 @@ from big_remote_play.utils.secret_store import SecretStoreUnavailable
 from big_remote_play.host.sunshine_manager import PIN_CHOOSE, PIN_NONE_WAITING
 from big_remote_play.utils.sunshine_credentials import ensure_sunshine_api_config, load_sunshine_credentials, save_sunshine_credentials
 from big_remote_play.utils.uri import open_uri, open_path
-from .components import action_row, boxed_rows, intro, preferences_dialog, set_row_icon, content_dialog, name_icon_button
+from .components import physical_size, action_row, boxed_rows, intro, preferences_dialog, set_row_icon, content_dialog, name_icon_button
 
 
 # Host FPS combo index -> value (index 4 "Custom" falls back to 60).
@@ -90,12 +90,14 @@ class HostView(Gtk.Box):
         self.game_detector = GameDetector()
         self.detected_games = {"Steam": [], "Lutris": []}
         self._auto_signature = ""
+        self._hdr_outputs: set[str] = set()
         self.load_settings()
         self.connect_settings_signals()
         self.loading_settings = False
         # Detection runs after the saved values are in place, so it only writes
         # when the user wants automatic settings and the hardware moved.
         self._apply_auto_quality()
+        self._probe_hdr_outputs()
 
         # Ensure config is correct (API enabled)
         if hasattr(self, "_ensure_sunshine_config"):
@@ -404,6 +406,37 @@ class HostView(Gtk.Box):
         self.platform_row.set_model(platform_model)
         self.platform_row.set_selected(0)
         self.hardware_group.add(self.platform_row)
+
+        # The picture the other computer sees, before any compression.
+        self.hdr_sdr_row = Adw.SwitchRow(use_markup=False)
+        self.hdr_sdr_row.set_title(_("Correct colors of HDR screens"))
+        self.hdr_sdr_row.set_subtitle(_("While sharing with a device that does not use HDR, the shared screen switches to SDR and back afterwards. Without it, colors look grey and washed out there."))
+        self.hdr_sdr_row.set_active(True)
+        self.hardware_group.add(self.hdr_sdr_row)
+        # Scaling a large screen down to a TV or car screen blurs small text
+        # (measured: text SSIM 0.89 → 0.99 when a 3440x1440 screen used
+        # 1920x1080 for a 1080p TV). One mode serves every device at once.
+        self.share_resolution_values = ("", "client", "1920x1080", "2560x1440", "1280x720")
+        self.share_resolution_row = Adw.ComboRow(use_markup=False)
+        self.share_resolution_row.set_title(_("Screen resolution while sharing"))
+        self.share_resolution_row.set_subtitle(
+            _(
+                "A screen larger than the other device is scaled down, which blurs small text. For TVs and car screens, 1920 × 1080 is sharpest. The chosen screen returns to normal afterwards. Choose a screen above first."
+            )
+        )
+        self.share_resolution_row.set_model(
+            Gtk.StringList.new(
+                [
+                    _("Keep this screen's resolution"),
+                    _("Same as the first device that connects"),
+                    _("1920 × 1080 — best for TVs"),
+                    "2560 × 1440",
+                    _("1280 × 720 — slow connections"),
+                ]
+            )
+        )
+        self.share_resolution_row.set_selected(0)
+        self.hardware_group.add(self.share_resolution_row)
 
         # New "Performance" settings as requested
         self.codecs_row = Adw.SwitchRow()
@@ -809,7 +842,10 @@ class HostView(Gtk.Box):
         self.share_controls.append(start_heading)
         self.share_controls.append(self.overview_start_button)
         overview_body.append(self.share_controls)
-        # Right under the running session: where the other person can reach it.
+        # Right under the running session: who is playing now, then where the
+        # other person can reach it. "Connected now" is live sessions only;
+        # pairings are listed separately below.
+        overview_body.append(self._create_connected_devices_group())
         overview_body.append(self.internet_access_group)
         overview_body.append(pin_group)
         overview_body.append(self._create_paired_devices_overview())
@@ -932,10 +968,9 @@ class HostView(Gtk.Box):
             monitors = display.get_monitors() if display is not None else None
             monitor = monitors.get_item(0) if monitors is not None and monitors.get_n_items() else None
             if monitor is not None:
-                area = monitor.get_geometry()
-                scale = monitor.get_scale_factor() or 1
+                width, height = physical_size(monitor)
                 # get_refresh_rate() is in milli-Hz.
-                return area.width * scale, area.height * scale, round((monitor.get_refresh_rate() or 60000) / 1000)
+                return width, height, round((monitor.get_refresh_rate() or 60000) / 1000)
         except Exception as exc:
             _log.debug(f"Cannot read monitor metrics: {exc}")
         return 1920, 1080, 60
@@ -981,7 +1016,56 @@ class HostView(Gtk.Box):
         mode = _("Automatic capture and encoding") if self.auto_quality_row.get_active() else _("Manual capture and encoding")
         screen = _("Screen: {value}").format(value=self._choice_text(self.monitor_row))
         quality = _("{mode} · {limit}").format(mode=mode, limit=cap)
-        return f"{screen} · {quality}"
+        hdr = self._hdr_summary()
+        return f"{screen} · {quality}" + (f" · {hdr}" if hdr else "")
+
+    def _none_waiting_message(self, message: str) -> str:
+        """Moonlight refuses to pair while the computer is "in a game": say why."""
+        if getattr(self.perf_monitor, "connections", None):
+            return _(
+                "Another device is playing now, and Moonlight pairs only when nobody is playing: the new device shows “The computer is currently in a game”. End the stream on the other devices, pair the new one, then connect them again. Pairing is needed only once."
+            )
+        return message
+
+    def _share_resolution(self) -> str:
+        index = self.share_resolution_row.get_selected()
+        return self.share_resolution_values[index] if 0 <= index < len(self.share_resolution_values) else ""
+
+    def _shared_output(self) -> str | None:
+        index = self.monitor_row.get_selected()
+        monitors = getattr(self, "available_monitors", [])
+        return monitors[index][1] if 0 < index < len(monitors) and monitors[index][1] != "auto" else None
+
+    def _hdr_summary(self) -> str:
+        """One phrase when the shared screen is in HDR, from the last probe."""
+        hdr_outputs = getattr(self, "_hdr_outputs", set())
+        target = self._shared_output()
+        if not hdr_outputs or (target is not None and target not in hdr_outputs):
+            return ""
+        if self.hdr_sdr_row.get_active():
+            return _("HDR screen: shared in SDR for devices without HDR")
+        return _("HDR screen: colors will look washed out on devices without HDR")
+
+    def _probe_hdr_outputs(self) -> None:
+        """Which screens use HDR now (kscreen-doctor, off the GTK thread)."""
+
+        def work() -> None:
+            from big_remote_play.host.stream_display import StreamDisplay
+
+            display = StreamDisplay()
+            # A session that ended without Sunshine's "undo" is put back first.
+            if not self.sunshine.is_running():
+                display.restore()
+            names = {output.name for output in display.outputs() if output.enabled and output.hdr}
+
+            def apply() -> bool:
+                self._hdr_outputs = names
+                self._sync_quality_controls()
+                return False
+
+            GLib.idle_add(apply)
+
+        threading.Thread(target=work, daemon=True).start()
 
     @staticmethod
     def _choice_text(row) -> str:
@@ -994,6 +1078,8 @@ class HostView(Gtk.Box):
         for row in (self.fps_row, self.gpu_row, self.platform_row, self.codecs_row, self.wifi_row, self.optimization_row):
             row.set_sensitive(not automatic)
         self.bandwidth_row.set_sensitive(True)
+        # Matching needs one known screen; Automatic lets Sunshine pick it.
+        self.share_resolution_row.set_sensitive(self.monitor_row.get_selected() > 0)
         self.redetect_row.set_visible(automatic)
         self.auto_quality_row.set_subtitle(_("Sunshine chooses compatible capture and encoding at startup. You can still set a video bitrate ceiling."))
         configured = [
@@ -1189,7 +1275,7 @@ class HostView(Gtk.Box):
             elif result.status == PIN_CHOOSE:
                 self._choose_pending_pairing(pin, credentials, result.pending)
             elif result.status == PIN_NONE_WAITING:
-                self.show_error_dialog(_("No computer is waiting"), result.message)
+                self.show_error_dialog(_("No computer is waiting"), self._none_waiting_message(result.message))
             else:
                 self.show_error_dialog(_("Pairing failed"), result.message)
             return False
@@ -1244,7 +1330,7 @@ class HostView(Gtk.Box):
             elif result.status == PIN_CHOOSE:
                 self._choose_pending_pairing(pin, auth, result.pending)
             elif result.status == PIN_NONE_WAITING:
-                self.show_error_dialog(_("No computer is waiting"), result.message)
+                self.show_error_dialog(_("No computer is waiting"), self._none_waiting_message(result.message))
             else:
                 self.show_error_dialog(_("PIN Error"), result.message)
             return False
@@ -1342,6 +1428,38 @@ class HostView(Gtk.Box):
 
         dialog.connect("response", on_resp)
         dialog.present(self)
+
+    def _create_connected_devices_group(self) -> Adw.PreferencesGroup:
+        group = Adw.PreferencesGroup(title=_("Connected now"), description=_("Devices playing on this computer at this moment."))
+        group.set_visible(False)
+        self.connected_devices_group = group
+        self.connected_devices_list = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
+        self.connected_devices_list.add_css_class("boxed-list")
+        self.connected_devices_list.add_css_class("brp-boxed")
+        self.connected_devices_list.set_accessible_role(Gtk.AccessibleRole.LIST)
+        group.add(self.connected_devices_list)
+        # The same measurements as Support → monitoring, never a second probe.
+        self.perf_monitor.add_listener(self._show_connected_devices)
+        self._show_connected_devices([])
+        return group
+
+    def _show_connected_devices(self, infos) -> None:
+        from .connection_cards import DeviceConnectionCard
+
+        box = self.connected_devices_list
+        while child := box.get_first_child():
+            box.remove(child)
+        if not infos:
+            row = Adw.ActionRow(title=_("No one is playing yet"), subtitle=_("When another device starts playing, it appears here with its connection quality."), use_markup=False)
+            row.set_subtitle_lines(0)
+            set_row_icon(row, "brp-client-symbolic")
+            box.append(row)
+            return
+        for info in infos:
+            card = DeviceConnectionCard(info)
+            for edge in ("top", "bottom", "start", "end"):
+                getattr(card, f"set_margin_{edge}")(12)
+            box.append(Gtk.ListBoxRow(activatable=False, child=card))
 
     def _create_paired_devices_overview(self) -> Adw.PreferencesGroup:
         group = Adw.PreferencesGroup()
@@ -1656,6 +1774,9 @@ class HostView(Gtk.Box):
         self.start_heading.set_visible(not self.is_hosting)
         self.guest_access_group.set_visible(self.is_hosting)
         self.paired_devices_overview_group.set_visible(self.is_hosting)
+        self.connected_devices_group.set_visible(self.is_hosting)
+        if not self.is_hosting:
+            self._show_connected_devices([])
         # Running: state, not a form. Stopped: the choices that start it.
         for widget in (self.game_group, self.quality_summary_box):
             widget.set_visible(not self.is_hosting)
@@ -2010,6 +2131,15 @@ class HostView(Gtk.Box):
                 config["output_name"] = mon_name
 
         config["adapter_name"] = gpu["adapter"] if gpu["encoder"] == "vaapi" and gpu["adapter"] != "auto" else None
+        # Sunshine runs this before capture and after each session; merged
+        # with any global_prep_cmd the person has (see host/stream_display.py).
+        from big_remote_play.host.stream_display import prep_command
+
+        config["brp_stream_display"] = prep_command(
+            target=config["output_name"],
+            sdr_for_sdr_clients=self.hdr_sdr_row.get_active(),
+            resolution=self._share_resolution() if config["output_name"] is not None else "",
+        )
         return config
 
     def _collect_hosting_config(self) -> dict:
@@ -2249,6 +2379,13 @@ class HostView(Gtk.Box):
             self.sunshine.stop()
         except Exception as exc:
             _log.error("Error stopping Sunshine: %s", exc)
+        try:
+            # Normally Sunshine's "undo" already did this; after a crash it did not.
+            from big_remote_play.host.stream_display import StreamDisplay
+
+            StreamDisplay().restore()
+        except Exception as exc:
+            _log.error("Error restoring the shared screen: %s", exc)
         if session is not None:
             try:
                 # After Sunshine exited: remove our bridges and, if Sunshine
@@ -2996,6 +3133,8 @@ class HostView(Gtk.Box):
                 "webui_anyone": self.webui_anyone_row.get_active(),
                 # New settings
                 "efficient_codecs": self.codecs_row.get_active(),
+                "hdr_to_sdr": self.hdr_sdr_row.get_active(),
+                "share_resolution": self._share_resolution(),
                 "optimization_mode": self.optimization_row.get_selected(),
                 "wifi_mode": self.wifi_row.get_active(),
             }
@@ -3148,13 +3287,17 @@ class HostView(Gtk.Box):
 
             # New settings
             self.codecs_row.set_active(h.get("efficient_codecs", True))
+            self.hdr_sdr_row.set_active(h.get("hdr_to_sdr", True) is not False)
+            # Older versions stored an on/off "match the device" switch.
+            saved = h.get("share_resolution", "client" if h.get("match_client_resolution") is True else "")
+            self.share_resolution_row.set_selected(self.share_resolution_values.index(saved) if saved in self.share_resolution_values else 0)
             self.optimization_row.set_selected(h.get("optimization_mode", 1))
             self.wifi_row.set_active(h.get("wifi_mode", False))
         finally:
             self.loading_settings = False
 
     def connect_settings_signals(self):
-        for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row, self.audio_play_here_row]:
+        for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row, self.audio_play_here_row, self.hdr_sdr_row]:
             r.connect("notify::active", self._schedule_save_host_settings)
 
         for r in [
@@ -3166,6 +3309,7 @@ class HostView(Gtk.Box):
             self.audio_output_row,
             self.optimization_row,
             self.fps_row,
+            self.share_resolution_row,
         ]:
             r.connect("notify::selected", self._schedule_save_host_settings)
 
@@ -3183,6 +3327,8 @@ class HostView(Gtk.Box):
             (self.optimization_row, "notify::selected"),
             (self.codecs_row, "notify::active"),
             (self.wifi_row, "notify::active"),
+            (self.hdr_sdr_row, "notify::active"),
+            (self.share_resolution_row, "notify::selected"),
         ):
             row.connect(signal, lambda *_a: self._sync_quality_controls())
         for r in [self.custom_name_entry, self.custom_cmd_entry]:

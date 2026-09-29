@@ -45,7 +45,7 @@ Open **Connect**, select the game computer and connect. On the first connection,
 
 ### 3. When the computers are in different places
 
-Open **Play over the internet**. **Connect your devices** looks at what already works on this computer and shows one sentence with one button — **Turn on**, **Fix**, **Sign in**, **Set up** or **Add a device or invite a player**. My devices, Recent connections and favourites follow; network details and administration stay in **Advanced mode**. Put both computers on the same private network, then return to Share or Connect. If discovery is unavailable on that network, connect using the game computer's private address.
+Not sure where to start? **Guided setup** on Home asks what you want to do and where the other device is, then opens the right page. For playing across the internet, open **Play over the internet**. **Connect your devices** looks at what already works on this computer and shows one sentence with one button — **Turn on**, **Fix**, **Sign in**, **Set up** or **Add a device or invite a player**. My devices, Recent connections and favourites follow; network details and administration stay in **Advanced mode**. Put both computers on the same private network, then return to Share or Connect. If discovery is unavailable on that network, connect using the game computer's private address.
 
 > **Pairing code and search code are different.** A pairing code authorizes a device. A search code only helps locate a Big Remote Play computer on a network that permits discovery.
 

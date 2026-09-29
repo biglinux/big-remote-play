@@ -44,11 +44,26 @@ def _isolated_user_config(tmp_path_factory, monkeypatch):
     monkeypatch.setenv("XDG_RUNTIME_DIR", str(tmp_path_factory.mktemp("runtime")))
     monkeypatch.setattr(audio.AudioManager, "__init__", _offline_audio_init(audio.AudioManager.__init__))
     monkeypatch.setattr(audio.AudioManager, "test_tone", lambda self, manual_output="": {"played": False, "detected": False, "level_db": None, "monitor": None, "output": ""})
+    # Nor the display configuration: the stream-display helper finds no
+    # kscreen-doctor unless a test passes its own tool and runner.
+    from big_remote_play.host import stream_display
+
+    monkeypatch.setattr(stream_display.StreamDisplay, "__init__", _offline_display_init(stream_display.StreamDisplay.__init__))
 
 
 def _offline_audio_init(original):
     def init(self, runner=None):
         original(self, runner if runner is not None else _no_sound_server)
+
+    return init
+
+
+def _offline_display_init(original):
+    def init(self, *, runner=None, state=None, tool=None):
+        kwargs = {"state": state, "tool": tool if tool is not None else ""}
+        if runner is not None:
+            kwargs["runner"] = runner
+        original(self, **kwargs)
 
     return init
 

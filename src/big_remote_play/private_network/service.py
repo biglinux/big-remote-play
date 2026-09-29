@@ -13,6 +13,7 @@ import logging
 from types import SimpleNamespace
 
 from big_remote_play.integration_contracts import SUNSHINE_DEFAULT_BASE_PORT
+from big_remote_play.utils.connection_health import LinkSample
 from big_remote_play.utils.secret_store import SecretStoreUnavailable
 from big_remote_play.utils.system_check import SystemCheck
 from big_remote_play.utils.vpn_accounts import CommandResult, VPNAccountManager
@@ -314,6 +315,29 @@ class PrivateNetworkService:
         return self.manager.start_service(unit).returncode == 0
 
     # ── ZeroTier local actions ─────────────────────────────────────────────
+    def link_sample(self, status: ProviderStatus) -> LinkSample:
+        """How well this private network reaches the other devices, right now.
+
+        Tailscale/Headscale: one ``tailscale ping`` of an online device (the
+        client answers it on any system and says direct or relay). ZeroTier:
+        the latencies ZeroTier itself keeps for its peers, so nothing is sent.
+        """
+        if status.provider is ProviderId.ZEROTIER:
+            from .zerotier_join import controller_of, summarize_peers
+
+            controllers = [controller_of(network.network_id) for network in status.networks] or [controller_of(status.network_id)]
+            summary = summarize_peers(self.manager.list_zerotier_peers(), controllers=controllers)
+            if summary.total == 0:
+                return LinkSample(path="none")
+            path = "direct" if summary.direct else "relay"
+            return LinkSample(float(summary.best_latency_ms) if summary.best_latency_ms is not None else None, path)
+        peer = next((item for item in status.online_peers if not item.is_self and item.best_address), None)
+        if peer is None:
+            return LinkSample(path="none")
+        report = self._tailscale_cli().ping(peer.best_address, count=1, timeout_seconds=2)
+        kind = report.kind if report.kind in ("direct", "relay") else ("relay" if report.kind == "peer_relay" else "unknown")
+        return LinkSample(report.latency_ms if report.reachable else None, kind, peer.name)
+
     def join_zerotier(self, network_id: str) -> CommandResult:
         return self.manager.join_zerotier_network(network_id, allow_privileged=True)
 

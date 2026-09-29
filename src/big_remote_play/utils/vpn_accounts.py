@@ -706,8 +706,21 @@ class VPNAccountManager:
         value = network_id.strip().lower()
         if _ZEROTIER_NETWORK_ID_RE.fullmatch(value) is None:
             return CommandResult(2, "", "invalid network id")
-        result, _needs_privilege = self._run_zerotier(["join", value], timeout=45, allow_privileged=allow_privileged)
+        # -j: on success the service answers with the network object (status,
+        # addresses), which is structured and needs no parsing of prose.
+        result, _needs_privilege = self._run_zerotier(["-j", "join", value], timeout=45, allow_privileged=allow_privileged)
         return result
+
+    def list_zerotier_peers(self) -> list[dict[str, Any]]:
+        """``zerotier-cli -j listpeers``: roles, paths and latencies, no secrets."""
+        result, _needs_privilege = self._run_zerotier(["-j", "listpeers"], timeout=15)
+        if result.returncode != 0:
+            return []
+        try:
+            payload = json.loads(result.stdout)
+        except (TypeError, ValueError):
+            return []
+        return [item for item in payload if isinstance(item, dict)] if isinstance(payload, list) else []
 
     def leave_zerotier_network(self, network_id: str, *, allow_privileged: bool = True) -> CommandResult:
         value = network_id.strip().lower()
