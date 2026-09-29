@@ -107,28 +107,47 @@ def test_nonobject_json_config_is_rejected(fake_home, value):
     assert Config().get("network")["upnp"] is False
 
 
-def test_sunshine_keeps_custom_port_and_library_path(tmp_path):
+def test_sunshine_keeps_custom_port_and_library_path(tmp_path, monkeypatch):
+    # Sunshine resolves a relative file_apps in its own data directory
+    # ($XDG_CONFIG_HOME/sunshine), not beside the configuration file.
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "xdg"))
+    data = tmp_path / "xdg" / "sunshine"
+    data.mkdir(parents=True)
     host = SunshineHost(cdir=tmp_path)
     (tmp_path / "sunshine.conf").write_text("port = 50000\nfile_apps = custom.json\nqp = 24\nplatform = wayland\nfps = 60\n")
     original = {"env": {"CUSTOM": "present"}, "apps": [{"name": "My game", "cmd": "game"}]}
-    (tmp_path / "custom.json").write_text(json.dumps(original))
+    (data / "custom.json").write_text(json.dumps(original))
+    (tmp_path / "custom.json").write_text("not the library Sunshine serves")
     assert host.ensure_desktop_app()
     assert host.configure({"max_bitrate": 20000, "capture": ""})
     assert host.api_port == 50001 and host.web_ui_url.endswith(":50001")
     config = (tmp_path / "sunshine.conf").read_text()
     assert "qp = 24" in config and "file_apps = custom.json" in config
     assert "fps =" not in config and "platform =" not in config
-    library = json.loads((tmp_path / "custom.json").read_text())
+    library = json.loads((data / "custom.json").read_text())
     assert library["env"] == original["env"] and library["apps"][0] == original["apps"][0]
     assert library["apps"][-1] == {"name": "Desktop", "cmd": ""}
     assert host.ensure_desktop_app()
-    assert len(json.loads((tmp_path / "custom.json").read_text())["apps"]) == 2
+    assert len(json.loads((data / "custom.json").read_text())["apps"]) == 2
+    assert (tmp_path / "custom.json").read_text() == "not the library Sunshine serves"
+
+
+def test_an_absolute_library_path_is_used_as_written(tmp_path):
+    library = tmp_path / "elsewhere" / "apps.json"
+    library.parent.mkdir()
+    library.write_text(json.dumps({"apps": []}))
+    (tmp_path / "sunshine.conf").write_text(f"file_apps = {library}\n")
+    host = SunshineHost(cdir=tmp_path)
+    assert host.apps_file() == library and host.ensure_desktop_app()
+    assert json.loads(library.read_text())["apps"] == [{"name": "Desktop", "cmd": ""}]
 
 
 @pytest.mark.parametrize("body", ["broken", "[]", '{"apps":null}', '{"apps":{}}'])
-def test_invalid_game_library_is_left_untouched(tmp_path, body):
+def test_invalid_game_library_is_left_untouched(tmp_path, body, monkeypatch):
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
+    (tmp_path / "sunshine").mkdir()
     host = SunshineHost(cdir=tmp_path)
-    file = tmp_path / "apps.json"
+    file = tmp_path / "sunshine" / "apps.json"
     file.write_text(body)
     assert not host.ensure_desktop_app()
     assert file.read_text() == body

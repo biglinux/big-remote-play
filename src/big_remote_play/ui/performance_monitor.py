@@ -11,7 +11,6 @@ from dataclasses import dataclass
 import time
 import threading
 import subprocess
-import re
 import queue
 import os
 from big_remote_play import paths
@@ -22,66 +21,28 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Gtk, GLib, Adw  # type: ignore
 from big_remote_play.utils.i18n import _
+from big_remote_play.utils.connection_health import (
+    SAMPLE_INTERVAL_SECONDS,
+    ConnectionInfo,
+    Health,
+    LatencyWindow,
+    Quality,
+    Transport,
+    ping_once,
+    route_to,
+    transport_for,
+)
 
 CHART_MAX_HISTORY = 60
-
-# Sunshine stream/control ports (TCP+UDP). Deliberately excludes the config web
-# UI port 47990 so the app's own localhost API connections are not mistaken for
-# guest stream sessions.
-_STREAM_PORTS = frozenset({"47984", "47989", "47998", "47999", "48000", "48001", "48002", "48010"})
 
 # Reverse-DNS lookups run here with a per-call timeout so a slow resolver never
 # blocks the monitor worker, and never via socket.setdefaulttimeout (which would
 # mutate the timeout for every socket in the process, including the Sunshine API).
 _dns_pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="brp-revdns")
-
-
-def _split_endpoint(token: str) -> tuple[str, str]:
-    """Split an ``ss`` address:port token into (host, port).
-
-    Handles bracketed IPv6 (``[fe80::1%eth0]:48010``), mapped IPv4
-    (``[::ffff:1.2.3.4]:47989``), wildcard (``*:47989``) and plain IPv4.
-    """
-    token = token.strip()
-    if token.startswith("["):
-        host, _, port = token[1:].partition("]:")
-        return host, port
-    host, _, port = token.rpartition(":")
-    return host, port
-
-
-def _normalize_ip(host: str) -> str:
-    """Strip an IPv6 zone id and unwrap ``::ffff:`` mapped IPv4."""
-    host = host.strip().split("%", 1)[0]
-    if host.lower().startswith("::ffff:") and "." in host:
-        host = host[len("::ffff:") :]
-    return host
-
-
-def _parse_ss_sessions(stdout: str) -> dict[str, dict]:
-    """Extract {guest_ip: session} from ``ss -tun -a`` output.
-
-    A row counts as a guest session when its LOCAL port is a Sunshine stream
-    port (exact match, not a substring) — the PEER address is then the guest.
-    IPv4 and IPv6 peers are both captured.
-    """
-    sessions: dict[str, dict] = {}
-    for line in stdout.splitlines():
-        parts = line.split()
-        if len(parts) < 6:
-            continue
-        if parts[1] not in ("ESTAB", "UNCONN"):
-            continue
-        _local_host, local_port = _split_endpoint(parts[4])
-        if local_port not in _STREAM_PORTS:
-            continue
-        peer_host, _peer_port = _split_endpoint(parts[5])
-        ip = _normalize_ip(peer_host)
-        if not ip or ip in ("0.0.0.0", "*", "::"):  # nosec B104 (rejects wildcard peers, does not bind)
-            continue
-        if ip not in sessions:
-            sessions[ip] = {"ip": ip, "name": _("Guest"), "latency": 0, "fps": 60}
-    return sessions
+# How often the worker looks at Sunshine's log and the handshakes (cheap: a
+# stat, a small read and one `ss`). Pings run on their own, slower interval.
+POLL_SECONDS = 3.0
+ROUTE_CACHE_SECONDS = 60.0
 
 
 from big_remote_play.utils.icons import create_icon_widget, set_icon
@@ -470,9 +431,17 @@ class PerformanceMonitor(Gtk.Box):
         self._last_fps = 0.0
         self._last_bandwidth = 10.0
 
-        # Cache for device persistence
-        # Key: IP, Value: {'name': str, 'last_seen': float, 'last_latency': float}
-        self._known_devices = {}
+        # Who is measured: Sunshine's live sessions (Share) or the one computer
+        # this one streams from (Connect). Never a device that merely answers.
+        self._tracker = None
+        self._peer: tuple[str, str, float] | None = None
+        self._windows: dict[str, LatencyWindow] = {}
+        self._routes: dict[str, tuple[Transport, float]] = {}
+        self._names: dict[str, str] = {}
+        self._tailnet: tuple[Transport, float] | None = None
+        self._last_sample = 0.0
+        self._listeners: list = []
+        self.connections: list[ConnectionInfo] = []
 
         self._data_queue = queue.Queue()
         self._worker_thread = None
@@ -507,7 +476,7 @@ class PerformanceMonitor(Gtk.Box):
         self.update_timer_active = True
         GLib.timeout_add(100, self._process_data_queue)
         self._start_worker_thread()
-        self.update_stats(0, 0, 0, [])
+        self.update_connections([])
 
     def stop_monitoring(self):
         if not self.update_timer_active:
@@ -536,7 +505,7 @@ class PerformanceMonitor(Gtk.Box):
                 if not self._worker_running:
                     break
                 self._fetch_and_process_data()
-                for _ in range(10):  # ~1 segundo de pausa
+                for _ in range(int(POLL_SECONDS * 10)):
                     if not self._worker_running or self._worker_event.wait(timeout=0.1):
                         break
             except Exception:
@@ -549,14 +518,7 @@ class PerformanceMonitor(Gtk.Box):
             processed_count = 0
             while not self._data_queue.empty() and processed_count < 10:
                 try:
-                    data = self._data_queue.get_nowait()
-                    if len(data) == 6:
-                        latency, fps, bandwidth, sessions, device_latencies, bw_text = data
-                    else:
-                        latency, fps, bandwidth, sessions, device_latencies = data
-                        bw_text = None
-
-                    self.update_stats(latency, fps, bandwidth, sessions, device_latencies, bw_text)
+                    self.update_connections(self._data_queue.get_nowait())
                     processed_count += 1
                 except queue.Empty:
                     break
@@ -674,298 +636,183 @@ class PerformanceMonitor(Gtk.Box):
             # Show error (optional, toast would be better but we are inside widget)
             pass
 
-    def _ping_host(self, ip):
-        # Allow pinging localhost or ::1 for local testing
-        if not ip or ip in ["", "Unknown IP", "0.0.0.0"]:  # nosec B104 (rejects the wildcard address, does not bind)
-            return 0.0
+    # ── who is connected ───────────────────────────────────────────────────
+    def add_listener(self, callback) -> None:
+        """``callback(list[ConnectionInfo])`` on the GTK thread after each update."""
+        self._listeners.append(callback)
+
+    def set_peer(self, address: str | None, name: str = "") -> None:
+        """Connect: measure the computer this one is streaming from (or stop)."""
+        if not address:
+            self._peer = None
+        elif self._peer is None or self._peer[0] != address:
+            self._peer = (address, name or address, time.time())
+            self._windows.pop(address, None)
+            self._last_sample = 0.0
+
+    def _session_tracker(self):
+        if self._tracker is None and self.sunshine is not None:
+            from big_remote_play.host.sunshine_sessions import SessionTracker
+
+            sunshine = self.sunshine
+            try:
+                base_port = int(getattr(sunshine, "api_port", 47990)) - 1
+            except (TypeError, ValueError):
+                base_port = 47989
+            self._tracker = SessionTracker(sunshine.config_dir / "sunshine.log", base_port=base_port, running=sunshine.is_running)
+        return self._tracker
+
+    def _targets(self) -> list[tuple[str, str, float | None, object]]:
+        if self._peer is not None:
+            return [(*self._peer, "")]
+        tracker = self._session_tracker()
+        if tracker is None:
+            return []
+        sessions = tracker.poll()
+        return [(session.address, self._display_name(session.address), session.started_at, session) for session in sessions]
+
+    @staticmethod
+    def _session_details(session, newest: bool) -> tuple[str, tuple[tuple[str, str], ...]]:
+        """Technical words and fixable problems for one live Sunshine session.
+
+        The client's request is known only for the newest session (Sunshine
+        runs the prep command once per session start).
+        """
+        from big_remote_play.host.stream_display import read_client_report
+
+        parts = [session.video.summary()] if session.video is not None and session.video.encoder else []
+        warnings: list[tuple[str, str]] = []
+        report = read_client_report() if newest else None
+        if report is not None and report.started_at >= session.started_at - 60:
+            parts.append(report.summary())
+            if report.scaled:
+                warnings.append(("scaled", f"{report.width}x{report.height}|{report.screen_width}x{report.screen_height}"))
+            if report.hdr_sent_as_sdr:
+                warnings.append(("hdr_as_sdr", report.screen))
+        return " · ".join(part for part in parts if part), tuple(warnings)
+
+    def _display_name(self, address: str) -> str:
+        if not address:
+            return _("Connected device")
+        if address not in self._names:
+            from big_remote_play.private_network.devices import DevicePreferences
+
+            name = DevicePreferences().display_name(address, "") or self._peer_name(address) or self._resolve_hostname(address) or ""
+            self._names[address] = name or _("Device at {address}").format(address=address)
+        return self._names[address]
+
+    @staticmethod
+    def _peer_name(address: str) -> str:
+        """The name a private network gives this address, if any."""
         try:
-            import platform
+            from big_remote_play.private_network.service import default_service
 
-            system = platform.system()
-            # Force LOCALE C to ensure a decimal point and English message
-            env = os.environ.copy()
-            env["LC_ALL"] = "C"
+            for status in default_service().overview():
+                for peer in status.peers:
+                    if address in peer.addresses and peer.name:
+                        return peer.name
+        except Exception:  # a name is a nicety; never break the monitor for it
+            return ""
+        return ""
 
-            is_ipv6 = ":" in ip
-            if system == "Linux":
-                cmd = ["ping", "-c", "1", "-W", "1", "-n", ip]
-                if is_ipv6:
-                    cmd.insert(1, "-6")
-            elif system == "Darwin":
-                cmd = ["ping6" if is_ipv6 else "ping", "-c", "1", "-t", "1", "-n", ip]
-            elif system == "Windows":
-                cmd = ["ping", "-n", "1", "-w", "1000", ip]
-            else:
-                cmd = ["ping", "-c", "1", "-n", ip]
+    def _transport(self, address: str, now: float) -> Transport:
+        cached = self._routes.get(address)
+        if cached is not None and now - cached[1] < ROUTE_CACHE_SECONDS:
+            return cached[0]
+        route = route_to(address)
+        tailnet = Transport.TAILSCALE
+        if route is not None and route.device.startswith("tailscale"):
+            tailnet = self._tailnet_kind(now)
+        transport = transport_for(address, route, tailnet=tailnet)
+        self._routes[address] = (transport, now)
+        return transport
 
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=1.5, env=env)
+    def _tailnet_kind(self, now: float) -> Transport:
+        """Tailscale or a Headscale server: the same interface, told apart once."""
+        if self._tailnet is not None and now - self._tailnet[1] < 300:
+            return self._tailnet[0]
+        kind = Transport.TAILSCALE
+        try:
+            from big_remote_play.private_network.models import ProviderId
+            from big_remote_play.private_network.service import default_service
 
-            if result.returncode == 0:
-                # Robust regex for tempo=1.23, time=1.23, ttl... time=1.23
-                match = re.search(r"(?:time|tempo|ttl)[=<]([\d\.,]+)\s*ms", result.stdout, re.IGNORECASE)
-                if match:
-                    val_str = match.group(1).replace(",", ".")
-                    return float(val_str)
-                # Simple fallback
-                match_fallback = re.search(r"([\d\.,]+)\s*ms", result.stdout)
-                if match_fallback:
-                    val_str = match_fallback.group(1).replace(",", ".")
-                    return float(val_str)
-            return 0.0
+            if default_service().status(ProviderId.HEADSCALE).connected:
+                kind = Transport.HEADSCALE
         except Exception:
-            return 0.0
-
-    def _detect_sessions_via_ss(self):
-        """Return {ip: session} for guests connected to Sunshine stream ports."""
-        try:
-            result = subprocess.run(["ss", "-tun", "-a"], capture_output=True, text=True, timeout=5)
-        except (subprocess.SubprocessError, OSError):
-            return {}
-        if result.returncode != 0:
-            return {}
-        return _parse_ss_sessions(result.stdout)
+            pass
+        self._tailnet = (kind, now)
+        return kind
 
     def _fetch_and_process_data(self):
+        """Collect the current connections (worker thread; no GTK here)."""
         try:
-            # Sunshine exposes no stats/sessions REST endpoint. Global metrics start
-            # at 0 and fall back to per-device ping / target values further below.
-            latency_avg = 0.0
-            fps = 0.0
-            bandwidth = 0.0
-
-            # Live sessions come from socket inspection (ss).
-            ss_sessions_dict = self._detect_sessions_via_ss()
-
-            normalized_api_sessions = []
-            current_cycle_ips = set()
-            for ip, data in ss_sessions_dict.items():
-                hname = self._resolve_hostname(ip) or _("Guest")
-                normalized_api_sessions.append({"ip": ip, "name": hname, "source": "ss", "id": None})
-                current_cycle_ips.add(ip)
-
-            # 4. UPDATE THE KNOWN DEVICES LIST (persistence)
-            # If an IP showed up now, update the timestamp.
-            # If it didn't show up now, keep it in the list if it answers ping.
-
             now = time.time()
-
-            # Insert new ones or update existing ones detected now
-            for s in normalized_api_sessions:
-                ip = s["ip"]
-                name = s["name"]
-                if not ip:
-                    continue
-
-                # If already known, preserve the name if it is "Guest" now
-                if ip in self._known_devices:
-                    if name == _("Guest") and self._known_devices[ip]["name"] != _("Guest"):
-                        name = self._known_devices[ip]["name"]
-
-                self._known_devices[ip] = {"ip": ip, "name": name, "last_seen": now, "status": "active"}
-
-            # 5. PING AND CLEANUP
-            # Iterate over ALL known devices, not only the active ones
-            final_display_list = []
-            device_latencies = {}
-
-            active_sessions_count = 0
-
-            ips_to_remove = []
-
-            for ip, data in self._known_devices.items():
-                # Check whether it is "active" this cycle (came from API or SS)
-                is_active_cycle = ip in current_cycle_ips
-
-                # ALWAYS PING to have data in the chart
-                # This fixes the missing-data problem
-                lat = self._ping_host(ip)
-
-                # Persistence logic:
-                # If ping > 0: keep it in the list as 'Online'
-                # If ping == 0:
-                #    If it was active this cycle (API said it's there), keep it (could be a firewall blocking ping)
-                #    If it was NOT active this cycle, mark it for removal (timeout)
-
-                if lat > 0:
-                    data["last_latency"] = lat
-                    data["last_seen"] = now  # Renovamos "visto" se ping responde
-                else:
-                    # If ping failed, use the last known value or 0
-                    lat = data.get("last_latency", 0)
-
-                # Set the display name
-                display_name = data["name"]
-                if ip not in display_name:
-                    display_name = f"{display_name} ({ip})"
-
-                # Add a suffix if only in "ping mode" (no active stream)
-                if not is_active_cycle and lat > 0:
-                    # Optional: indicate idle, but the user asked for PERPETUAL
-                    pass
-
-                # If there is no sign of life (no API, no SS, no Ping) for X time, remove it
-                if not is_active_cycle and lat == 0 and (now - data["last_seen"] > 30):  # 30 seconds tolerance
-                    ips_to_remove.append(ip)
-                    continue
-
-                # Preparar objeto para a UI
-                session_obj = {"ip": ip, "name": display_name, "latency": lat, "id": None}
-
-                # Find matching session to get ID
-                for s in normalized_api_sessions:
-                    if s["ip"] == ip:
-                        session_obj["id"] = s.get("id")
-                        break
-
-                # Find ID from api list if ip matches
-
-                if is_active_cycle:
-                    active_sessions_count += 1
-
-                final_display_list.append(session_obj)
-
-                # Add to the chart if it has latency
-                if lat > 0:
-                    device_latencies[display_name] = lat
-
-            # Clean up old ones
-            for ip in ips_to_remove:
-                del self._known_devices[ip]
-
-            # Compute averages for the overall line
-            if not latency_avg and device_latencies:
-                latency_avg = sum(device_latencies.values()) / len(device_latencies)
-
-            # Keep FPS/BW stable
-            if fps == 0:
-                fps = self._last_fps if self._last_fps > 0 else self._target_fps
-            else:
-                self._last_fps = fps
-
-            bw_txt_override = None
-            if bandwidth == 0:
-                bandwidth = self._last_bandwidth if self._last_bandwidth > 0 else (self._target_bw if self._target_bw > 0 else 1.0)
-                if self._target_bw == 0:
-                    bw_txt_override = "Unlimited"
-                    if bandwidth < 100:
-                        bandwidth = 100.0  # Dummy value for visual scale
-            else:
-                self._last_bandwidth = bandwidth
-                if self._target_bw == 0:
-                    bw_txt_override = f"{bandwidth:.1f} Mbps (Unlim)"
-
-            # Send to the UI
-            self._data_queue.put((latency_avg, fps, bandwidth, final_display_list, device_latencies, bw_txt_override))
-
+            targets = self._targets()
+            sample = now - self._last_sample >= SAMPLE_INTERVAL_SECONDS - 0.5
+            if sample:
+                self._last_sample = now
+            infos: list[ConnectionInfo] = []
+            newest = max((target[2] or 0 for target in targets), default=0)
+            for address, name, started, session in targets:
+                video, warnings = ("", ()) if isinstance(session, str) else self._session_details(session, (started or 0) >= newest)
+                health = Health(Quality.MEASURING)
+                transport = Transport.UNKNOWN
+                if address:
+                    window = self._windows.setdefault(address, LatencyWindow())
+                    health = window.add(ping_once(address)) if sample else window.health
+                    transport = self._transport(address, now)
+                infos.append(ConnectionInfo(name, address, transport, health, True, started, video, warnings))
+            current = {target[0] for target in targets}
+            for address in list(self._windows):
+                if address not in current:
+                    del self._windows[address]
+            self._data_queue.put(infos)
         except Exception:
             pass
 
-    def update_stats(
-        self,
-        latency,
-        fps,
-        bandwidth,
-        sessions=None,
-        device_latencies: dict[str, float] | None = None,
-        bw_text: str | None = None,
-    ):
-        try:
-            if not self.update_timer_active:
-                return
-            sessions, device_latencies = sessions or [], device_latencies or {}
-            active = bool(sessions or device_latencies)
-            self.metric_values["latency"].set_label(f"{latency:.0f} ms" if active and latency > 0 else "—")
-            self.metric_values["fps"].set_label(f"{self._target_fps:.0f} FPS" if self._target_fps > 0 else "—")
-            self.metric_values["bandwidth"].set_label(f"{self._target_bw:g} Mbps" if self._target_bw > 0 else _("Unlimited"))
-
-            # Only chart real activity. With no connected guest, latency/fps/bw are
-            # synthetic (target values, dummy "Unlimited" bandwidth); plotting them
-            # paints a flat fake graph that looks like a live 60 FPS session. Skip so
-            # the chart keeps its "Waiting for data..." idle state instead.
-            if sessions or device_latencies:
-                self.chart.add_data_point(latency, fps, bandwidth, users=len(sessions), device_latencies=device_latencies, bw_text_override=bw_text)
-
-            if len(sessions) > 0:
-                if len(sessions) == 1:
-                    guest_name = sessions[0].get("name", "Sunshine")
-                    # Clean name for title
-                    if "(" in guest_name:
-                        guest_name = guest_name.split("(")[0].strip()
-                    self.set_connection_status(guest_name, _("Active Connection"), True)
-                else:
-                    self.set_connection_status("Sunshine", _("Monitored devices: {}").format(len(sessions)), True)
-                self._details_frame.set_visible(True)
+    def update_connections(self, infos: list[ConnectionInfo]) -> None:
+        """Show the measured connections (GTK thread)."""
+        if not self.update_timer_active:
+            return
+        self.connections = list(infos)
+        latencies = {info.device_name: info.health.latency_ms for info in infos if info.health.latency_ms is not None}
+        average = sum(latencies.values()) / len(latencies) if latencies else 0.0
+        self.metric_values["latency"].set_label(f"{average:.0f} ms" if latencies else "—")
+        self.metric_values["fps"].set_label(f"{self._target_fps:.0f} FPS" if self._target_fps > 0 else "—")
+        self.metric_values["bandwidth"].set_label(f"{self._target_bw:g} Mbps" if self._target_bw > 0 else _("Unlimited"))
+        # Only chart real measurements, never a flat line of targets.
+        if latencies:
+            self.chart.add_data_point(average, self._target_fps, self._target_bw, users=len(infos), device_latencies=latencies)
+        if self._peer is None:
+            if len(infos) == 1:
+                self.set_connection_status(infos[0].device_name, _("Active Connection"), True)
+            elif infos:
+                self.set_connection_status("Sunshine", _("Connected devices: {}").format(len(infos)), True)
             else:
                 self.set_connection_status("Sunshine", _("Active - No devices"), True)
-                self._details_frame.set_visible(False)
+        self._details_frame.set_visible(bool(infos))
+        self._update_guest_list(infos)
+        for listener in list(self._listeners):
+            listener(list(infos))
 
-            self._update_guest_list(sessions)
-        except Exception:
-            pass
+    def _update_guest_list(self, infos: list[ConnectionInfo]) -> None:
+        from .connection_cards import DeviceConnectionCard
 
-    def _update_guest_list(self, sessions):
         while child := self._details_list.get_first_child():
             self._details_list.remove(child)
-        for s in sessions:
-            row = Adw.ActionRow()
-            full_name = s.get("name", _("Guest"))
-            ip = s.get("ip", "Unknown IP")
-            latency = s.get("latency", 0)
-
-            # Split Name and IP for a cleaner look
-            if "(" in full_name:
-                name_part = full_name.split("(")[0].strip()
-            else:
-                name_part = full_name
-
-            row.set_use_markup(False)
-            row.set_title(name_part)
-            row.set_subtitle(f"IP: {ip}")
-
-            ping_lbl = Gtk.Label(label=f"{latency:.0f} ms")
-            if latency <= 0:
-                ping_lbl.set_label("-- ms")
-                ping_lbl.add_css_class("error")
-            elif latency < 15:
-                ping_lbl.add_css_class("success")
-            elif latency < 50:
-                ping_lbl.add_css_class("warning")
-            else:
-                ping_lbl.add_css_class("error")
-
-            if hasattr(self.chart, "_get_device_color"):
-                try:
-                    # Use the full name to keep the same color as the chart
-                    color = self.chart._get_device_color(full_name)
-                    da = Gtk.DrawingArea()
-                    da.set_content_width(24)
-                    da.set_content_height(24)
-                    da.set_valign(Gtk.Align.CENTER)
-
-                    def draw_indicator(_area, cr, width, height, color=color):
-                        cr.set_source_rgba(*color)
-                        cr.arc(width / 2, height / 2, 5, 0, 2 * 3.14159)
-                        cr.fill()
-
-                    da.set_draw_func(draw_indicator)
-                    row.add_prefix(da)
-                except Exception:
-                    pass
-
-            row.add_suffix(ping_lbl)
-
-            # Disconnect button (If we have an ID or IP)
-            if s.get("id") or s.get("ip"):
-                disc_btn = Gtk.Button()
-                disc_btn.set_icon_name("brp-network-offline-symbolic")
+        for info in infos:
+            card = DeviceConnectionCard(info)
+            for edge in ("top", "bottom", "start", "end"):
+                getattr(card, f"set_margin_{edge}")(10)
+            if self.sunshine is not None:
+                disc_btn = Gtk.Button(valign=Gtk.Align.CENTER)
+                disc_btn.set_child(create_icon_widget("brp-network-offline-symbolic", size=16))
                 disc_btn.add_css_class("flat")
-                disc_btn.add_css_class("destructive-action")
                 disc_btn.set_tooltip_text(_("Disconnect this specific guest (Admin)"))
-                disc_btn.set_valign(Gtk.Align.CENTER)
                 disc_btn.update_property([Gtk.AccessibleProperty.LABEL], [_("Disconnect guest")])
-                disc_btn.connect("clicked", lambda b, sid=s.get("id"), sip=s.get("ip"): self._prompt_disconnect(sid, sip))
-                row.add_suffix(disc_btn)
-
+                disc_btn.connect("clicked", lambda _b, ip=info.address: self._prompt_disconnect(None, ip))
+                card.append(disc_btn)
+            row = Gtk.ListBoxRow(activatable=False, child=card)
             self._details_list.append(row)
 
     def set_connection_status(self, name, status, conn=True):

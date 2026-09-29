@@ -9,6 +9,18 @@ The card on **Play over the internet** names the problem and its fix:
 - **This computer is not connected to the internet.** No network interface has an address: connect Wi-Fi or a cable and choose **Check again**.
 - **We need to fix a setting → See details.** Opens the network details, where **Technical details** shows what the connection program reported.
 
+## Colors look grey or washed out on the other computer
+
+The shared screen is almost certainly in HDR (KDE: **System Settings → Display** shows HDR on). Sunshine captures HDR pixels and sends them as SDR, without converting them. Keep **Share → Image and capture → Correct colors of HDR screens** on and start sharing again: the screen uses SDR during the session and HDR afterwards. On desktops other than KDE Plasma, turn HDR off on that screen by hand before sharing. If the other device supports HDR, choose HDR in its Moonlight settings instead. Measurements and details: [video quality](video-quality.md).
+
+## Small text is blurry on the other computer
+
+Text is sharp when the stream has the sharing screen's resolution. A wide or high-resolution screen sent to a smaller screen is scaled down (for example 3440×1440 to 1920×1080). Choose the screen in **Share → Image and capture**, then **Screen resolution while sharing → 1920 × 1080 — best for TVs** (or the size of the device), and start sharing again. Raising the bitrate does not bring back detail lost to scaling. Lag and stutter on a car screen or other 2.4 GHz Wi-Fi device come from the connection: **Share → Connected now** shows **Unstable** when replies vary a lot; lower the device's resolution or bitrate in its Moonlight settings.
+
+## Connected now is empty, or a card says “Not responding”
+
+**Connected now** lists only devices Sunshine reports as streaming; paired devices that are not playing are not listed. A device listed as **Connected device** without an address started its stream without a handshake the program could see. **Not responding** means pings got no reply for a while: the stream may still work if that device's firewall blocks ping. See [connection status](connection-status.md).
+
 ## No computer found
 
 First start sharing on the game PC. Check that both PCs are reachable on the same home or private network. Search again. Across a VPN, use the game PC's private IP address; broadcast discovery is not universally supported. A search code does not create network connectivity.
@@ -28,9 +40,17 @@ connecting afterwards needs no password.
 
 ZeroTier's control key is readable only by the system. Choose **Allow** once: Big Remote Play copies it to a private file in your home folder, as ZeroTier documents for desktop users, and then lists and joins networks without a password. Until then, joining asks for your password every time.
 
-## ZeroTier joined but shows “Waiting for approval”
+## ZeroTier: joining failed, or showed “0 join connection failed”
 
-The network is private: its owner must approve this computer. Send them the **Node ID** shown on the page. The owner approves it in **Play over the internet → Add a device or invite a player** (with a ZeroTier API token) or on the ZeroTier website. A network that approves the computer but assigns no address also stays in this state; the owner must enable automatic IPv4 assignment.
+`0 join connection failed` is what `zerotier-cli join` prints when it cannot reach the local `zerotier-one` service — not an answer from the network. Older versions showed it as “Connection failed” when the service had been stopped (for example by **Network details → Disconnect**, which stops ZeroTier temporarily). The join now starts the service first and says **ZeroTier is not running** only if it cannot. To check by hand: `systemctl is-active zerotier-one`, then `zerotier-cli -j listnetworks`.
+
+## ZeroTier shows “Waiting for authorization”
+
+The network is private: its owner must authorize this computer. Send them the **Node ID** under **Your device**. The owner approves it in **Play over the internet → Add a device or invite a player** (with a ZeroTier API token) or on the ZeroTier website (**Approve on the ZeroTier website**). Keep the page open: it checks again by itself and turns into **Connected** without joining again. A network that approves the computer but assigns no address shows **Almost there**; the owner must assign an address or enable automatic IPv4 assignment.
+
+## ZeroTier says “Network code not found” or “The network has not answered yet”
+
+**Not found** comes from the network's controller: the network does not exist (a typo in a real owner's code, or a deleted network). **Has not answered yet** after a minute usually means the code points to no controller at all, so nobody can say “not found”; check the code, or choose **Cancel the request** so the computer stops trying.
 
 ## A computer shows “Sign-in expired” or “Sharing not found”
 
@@ -47,6 +67,12 @@ The first appears when you enter a code on the game PC but no Moonlight is waiti
 ## Sharing never becomes ready on a PC with several GPUs or monitors
 
 Sunshine probes every display and encoder when capture and encoder are set to automatic. On some multi-GPU, multi-monitor machines that probe can stall for minutes. In **Share → Image and capture**, choose the screen, the capture method and the encoder explicitly.
+
+## A device says “The computer is currently in a game” or asks to close the game
+
+Moonlight pairs only when nothing is being played, and Sunshine counts the shared **Desktop** as a game while any device is connected. Big Remote Play then answers the PIN with **No computer is waiting** and explains it. End the stream on the other devices, pair the new one (only once), then connect everyone again.
+
+When a device asks to close the game although nothing seems to be open, it asked for a different app than the one running for the other devices. Choose the app that is already running (usually **Desktop**) to join it; closing it ends the other devices' streams. A device that remembers an app the computer no longer offers (for example an old **Steam Big Picture** entry) fails to start it: refresh the app list on that device.
 
 ## Pairing does not finish
 

@@ -147,11 +147,27 @@ class SunshineHost:
             time.sleep(STARTUP_PROBE_INTERVAL)
         return self.process.poll() if self.process is not None else 1
 
+    @staticmethod
+    def sunshine_data_dir() -> Path:
+        """Where Sunshine resolves relative paths from its configuration.
+
+        Sunshine uses its own data directory (``$XDG_CONFIG_HOME/sunshine``)
+        for relative ``file_apps``, ``file_state`` and similar paths, not the
+        directory of the configuration file it was started with. Seen for
+        real: with ``file_apps = apps.json`` the apps offered to devices came
+        from ``~/.config/sunshine/apps.json``.
+        """
+        root = os.environ.get("XDG_CONFIG_HOME") or str(Path.home() / ".config")
+        return Path(root) / "sunshine"
+
+    def apps_file(self) -> Path:
+        """The app library Sunshine really serves."""
+        app_file = Path(self._config_value("file_apps", "apps.json")).expanduser()
+        return app_file if app_file.is_absolute() else self.sunshine_data_dir() / app_file
+
     def ensure_desktop_app(self) -> bool:
         """Add Desktop without erasing the user's apps, environment or path."""
-        app_file = Path(self._config_value("file_apps", "apps.json"))
-        if not app_file.is_absolute():
-            app_file = self.config_dir / app_file
+        app_file = self.apps_file()
         try:
             data = json.loads(app_file.read_text()) if app_file.exists() else {"env": {}, "apps": []}
             if not isinstance(data, dict) or not isinstance(data.get("apps"), list):
@@ -424,6 +440,13 @@ class SunshineHost:
                 except Exception as e:
                     _log.error(f"Error reading existing config: {e}")
                     return False
+
+            settings = dict(settings)
+            if "brp_stream_display" in settings:
+                # Our prep command replaces only our own entry.
+                from big_remote_play.host.stream_display import merge_prep_commands
+
+                settings["global_prep_cmd"] = merge_prep_commands(current_config.get("global_prep_cmd"), settings.pop("brp_stream_display"))
 
             # Update with new settings
             for k, v in settings.items():

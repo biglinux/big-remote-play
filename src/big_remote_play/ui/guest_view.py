@@ -19,7 +19,7 @@ from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget
 from big_remote_play.integration_contracts import BRP_DISCOVERY_CODE_LENGTH, SUNSHINE_DEFAULT_BASE_PORT
 from big_remote_play.utils.moonlight_config import MoonlightConfigManager
-from .components import action_row, content_dialog, icon_tile, intro, note, set_row_icon, name_icon_button, preferences_dialog
+from .components import physical_size, action_row, content_dialog, icon_tile, intro, note, set_row_icon, name_icon_button, preferences_dialog
 from .network_common import RowGroup, Worker, path_summary
 
 PRIVATE_PROVIDER_NAMES = {"tailscale": "Tailscale", "headscale": "Headscale", "zerotier": "ZeroTier"}
@@ -180,9 +180,23 @@ class GuestView(Gtk.Box):
 
         from .performance_monitor import PerformanceMonitor
 
+        # The monitor measures; this page shows its result as one compact card.
         self.perf_monitor = PerformanceMonitor()
         self.perf_monitor.set_visible(False)
-        content.append(self.perf_monitor)
+        self.perf_monitor.add_listener(self._on_session_measured)
+        from .connection_cards import DeviceConnectionCard
+
+        self.session_card = DeviceConnectionCard()
+        self.session_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8, visible=False)
+        self.session_box.add_css_class("card")
+        self.session_box.add_css_class("padded")
+        playing = Gtk.Label(label=_("Playing now"), xalign=0)
+        playing.add_css_class("caption-heading")
+        playing.add_css_class("dim-label")
+        self.session_box.append(playing)
+        self.session_box.append(self.session_card)
+        self.session_box.set_accessible_role(Gtk.AccessibleRole.STATUS)
+        content.append(self.session_box)
 
         # One question per page: which computer. Address and PIN are not rival
         # tabs — they are what the page offers next when no computer answers.
@@ -631,10 +645,9 @@ class GuestView(Gtk.Box):
                 monitors = display.get_monitors()
                 monitor = monitors.get_item(0) if monitors.get_n_items() else None
             if monitor is not None:
-                area = monitor.get_geometry()
-                scale = monitor.get_scale_factor() or 1
+                width, height = physical_size(monitor)
                 # get_refresh_rate() is in milli-Hz.
-                return area.width * scale, area.height * scale, round((monitor.get_refresh_rate() or 60000) / 1000)
+                return width, height, round((monitor.get_refresh_rate() or 60000) / 1000)
         except Exception as exc:
             _log.debug(f"Cannot read screen metrics: {exc}")
         return 1920, 1080, 60
@@ -771,9 +784,7 @@ class GuestView(Gtk.Box):
                     self.is_connected = True
                     host_name = self.moonlight.connected_host if self.moonlight.connected_host else "Host"
                     self.perf_monitor.set_connection_status(host_name, _("Active Session"), True)
-
-                    self.perf_monitor.set_visible(True)
-                    self.perf_monitor.start_monitoring()
+                    self._show_session_card()
 
             else:
                 if self.is_connected or self._session_id:
@@ -782,8 +793,9 @@ class GuestView(Gtk.Box):
                     # Detected disconnection
                     self.is_connected = False
                     self.perf_monitor.set_connection_status("None", _("Disconnected"), False)
+                    self.perf_monitor.set_peer(None)
                     self.perf_monitor.stop_monitoring()
-                    self.perf_monitor.set_visible(False)
+                    self.session_box.set_visible(False)
 
                     self.show_toast(_("Moonlight closed"))
 
@@ -791,6 +803,22 @@ class GuestView(Gtk.Box):
             self.update_ui_state()
 
         return True  # Continue polling
+
+    def _show_session_card(self) -> None:
+        """The computer being played on: its name, then measured quality."""
+        from big_remote_play.utils.connection_health import ConnectionInfo, valid_address
+
+        host = (getattr(self, "current_host_ctx", {}) or {}).get("host", {}) or {}
+        address = valid_address(str(getattr(self.moonlight, "connected_host", None) or host.get("ip") or "")) or ""
+        name = str(host.get("name") or address or _("Other computer"))
+        self.perf_monitor.set_peer(address or None, name)
+        self.session_card.update(ConnectionInfo(name, address))
+        self.session_box.set_visible(True)
+        self.perf_monitor.start_monitoring()
+
+    def _on_session_measured(self, infos) -> None:
+        if self.is_connected and infos:
+            self.session_card.update(infos[0])
 
     def update_ui_state(self):
         c = self.is_connected
@@ -1417,7 +1445,7 @@ class GuestView(Gtk.Box):
             if self._attempt_valid(attempt):
                 self.show_loading(False)
                 self.perf_monitor.set_connection_status(host["name"], _("Active Stream"), True)
-                self.perf_monitor.start_monitoring()
+                self._show_session_card()
                 self._record_session_start(host, requested)
             return False
 
@@ -1592,9 +1620,8 @@ class GuestView(Gtk.Box):
                 if monitors.get_n_items() > 0:
                     monitor = monitors.get_item(0)
             if monitor:
-                r = monitor.get_geometry()
-                scale = monitor.get_scale_factor() or 1
-                return f"{r.width * scale}x{r.height * scale}"
+                width, height = physical_size(monitor)
+                return f"{width}x{height}"
         except Exception:
             pass
         return "1920x1080"
