@@ -22,6 +22,41 @@ if os.environ.get("DISPLAY"):
 import pytest  # noqa: E402
 
 
+@pytest.fixture(autouse=True)
+def _isolated_user_config(tmp_path_factory, monkeypatch):
+    """No test may read, migrate or delete the developer's real settings.
+
+    paths.CONFIG_DIR is resolved lazily from XDG_CONFIG_HOME, so pointing it at
+    a per-test directory covers every module, including legacy-file migrations
+    that delete the source after copying it. Tests that need a particular
+    layout still override HOME/XDG_CONFIG_HOME or paths.CONFIG_DIR themselves.
+    """
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path_factory.mktemp("xdg-config")))
+    # The UI must never reach a real VPN client from a test: the private-network
+    # facade is replaced by an offline one unless a test installs its own.
+    from big_remote_play.private_network import service
+
+    monkeypatch.setattr(service, "_default_factory", lambda: service.OfflinePrivateNetworkService())
+    # Nor the sound server: AudioManager sees no PulseAudio/PipeWire server
+    # unless a test passes its own runner, and session state stays temporary.
+    from big_remote_play.utils import audio
+
+    monkeypatch.setenv("XDG_RUNTIME_DIR", str(tmp_path_factory.mktemp("runtime")))
+    monkeypatch.setattr(audio.AudioManager, "__init__", _offline_audio_init(audio.AudioManager.__init__))
+    monkeypatch.setattr(audio.AudioManager, "test_tone", lambda self, manual_output="": {"played": False, "detected": False, "level_db": None, "monitor": None, "output": ""})
+
+
+def _offline_audio_init(original):
+    def init(self, runner=None):
+        original(self, runner if runner is not None else _no_sound_server)
+
+    return init
+
+
+def _no_sound_server(*_args, **_kwargs):
+    raise FileNotFoundError("pactl is not available in tests")
+
+
 @pytest.fixture
 def fake_home(tmp_path, monkeypatch):
     """Point HOME at a temp dir so Config/Logger write under tmp_path.

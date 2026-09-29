@@ -1,5 +1,14 @@
 # Troubleshooting
 
+## Play over the internet says something is wrong
+
+The card on **Play over the internet** names the problem and its fix:
+
+- **Your secure connection is turned off → Turn on.** The account is kept; it only reconnects. The first time, your password may be requested once so your user can control Tailscale; later it needs none.
+- **The connection service is stopped → Fix.** Starts the service and keeps it enabled (password requested).
+- **This computer is not connected to the internet.** No network interface has an address: connect Wi-Fi or a cable and choose **Check again**.
+- **We need to fix a setting → See details.** Opens the network details, where **Technical details** shows what the connection program reported.
+
 ## No computer found
 
 First start sharing on the game PC. Check that both PCs are reachable on the same home or private network. Search again. Across a VPN, use the game PC's private IP address; broadcast discovery is not universally supported. A search code does not create network connectivity.
@@ -15,13 +24,45 @@ and finish the sign-in. The password prompt appears at most once per PC, to
 start the `tailscaled` service and to authorize your user to control it;
 connecting afterwards needs no password.
 
+## ZeroTier says “Needs attention” and asks for permission
+
+ZeroTier's control key is readable only by the system. Choose **Allow** once: Big Remote Play copies it to a private file in your home folder, as ZeroTier documents for desktop users, and then lists and joins networks without a password. Until then, joining asks for your password every time.
+
+## ZeroTier joined but shows “Waiting for approval”
+
+The network is private: its owner must approve this computer. Send them the **Node ID** shown on the page. The owner approves it in **Play over the internet → Add a device or invite a player** (with a ZeroTier API token) or on the ZeroTier website. A network that approves the computer but assigns no address also stays in this state; the owner must enable automatic IPv4 assignment.
+
+## A computer shows “Sign-in expired” or “Sharing not found”
+
+“Sign-in expired” means that device's Tailscale key expired: sign in again on that device. “Sharing not found” means the private network reaches the computer but Sunshine did not answer: start sharing on it, and check its firewall allows the streaming ports on the VPN interface. Use **Diagnose** for details.
+
+## An API credential is refused
+
+**API access → Test connection** explains whether the credential was refused (wrong, expired or revoked), lacks permission, or the service was unreachable. Replace it with a new one. Tailscale OAuth clients cannot share a single computer or invite people; use a Tailscale API access token for those.
+
+## “No computer is waiting to pair” or “The stream did not start”
+
+The first appears when you enter a code on the game PC but no Moonlight is waiting: choose the game PC under Connect on the other computer first, then enter the code it shows. If several computers are waiting, Share asks which one shows your code. “The stream did not start” means the game PC answered but no video arrived — usually because this computer was removed from its paired devices; choose **Pair again**.
+
+## Sharing never becomes ready on a PC with several GPUs or monitors
+
+Sunshine probes every display and encoder when capture and encoder are set to automatic. On some multi-GPU, multi-monitor machines that probe can stall for minutes. In **Share → Image and capture**, choose the screen, the capture method and the encoder explicitly.
+
 ## Pairing does not finish
 
 The connecting PC displays Moonlight's four-digit code. Enter it on the game PC under Share, not into the search-code field. Keep the connecting window open while approving. If approval fails, check the administrative credentials or complete pairing through Sunshine's official web interface. Cancellation must end the pending attempt before retrying.
 
 ## Incorrect resolution, frame rate or sound
 
-Set resolution and frame rate on the **connecting** PC under Image. Share's bitrate limit is a ceiling, not the requested video resolution. Its automatic mode leaves the request to the client. Check the selected display and audio output on the game PC.
+Set resolution and frame rate on the **connecting** PC under Image. Share's bitrate limit is a ceiling, not the requested video resolution. Its automatic mode leaves the request to the client. Check the selected display on the game PC.
+
+For sound, open **Share → Preferences → Audio** on the game PC:
+
+1. Press **Test audio**. "The tone reached the shared sound" means the game PC side works; check the connecting computer's volume and its **Audio** settings. "System audio unavailable" means no output device was found: connect or enable one.
+2. Open **Technical audio details** while connected. **Sunshine records now** should name a source followed by "sound this computer plays". **Microphone sent to Sunshine** must say **No**; if it says otherwise, stop sharing and report it.
+3. The game PC went silent when a client connected: that client asked Sunshine to mute the game PC. Keep **Also play sound on this computer** on. If your output is an effects program (EasyEffects, JamesDSP), this computer stays silent for that client; enable **Also play sound on the game PC** on the connecting computer instead.
+4. No sound anywhere after sharing stopped unexpectedly: start Big Remote Play again; it puts back the output Sunshine left on its silent output. Otherwise choose your output in the system sound settings.
+5. Steam Remote Play Together has no sound while sharing: the technical details show which source Steam records. Big Remote Play no longer moves application sound, so Steam's own capture is not undone. See [audio architecture](audio-architecture.md#coexisting-with-steam-remote-play-together).
 
 A configured value in the monitor is not a measured frame rate. Network ping is not end-to-end gaming latency. Test wired networking and the actual encoder/decoder before attributing low FPS to the interface.
 

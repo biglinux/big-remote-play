@@ -8,6 +8,13 @@ import secrets
 import threading
 import time
 
+from big_remote_play.utils.moonlight_config import paired_host_certificate
+
+
+# Logged by moonlight-common-c (never translated) once the video stream is
+# set up after the RTSP handshake; an error window never prints them.
+STREAM_STARTED_MARKERS = ("Starting video stream", "IDR frame request sent")
+
 
 class MoonlightClient:
     def __init__(self, logger: Any | None = None) -> None:
@@ -18,6 +25,7 @@ class MoonlightClient:
         self._pair_lock = threading.Lock()
         self.logger = logger
         self.moonlight_cmd = next((c for c in ["moonlight-qt", "moonlight"] if shutil.which(c)), None)
+        self.stream_confirmed = threading.Event()
 
     def _prepare_ip(self, ip):
         """Prepares IP for Moonlight CLI."""
@@ -97,32 +105,36 @@ class MoonlightClient:
                 self.logger.info(f"Connecting to {ip} (target: {target_ip}) with options: {kw}")
                 self.logger.info(f"Command: {' '.join(cmd)}")
 
-            stdout_target = subprocess.PIPE if self.logger else None
-            stderr_target = subprocess.PIPE if self.logger else None
-
             cancel_event = kw.get("cancel_event")
             if cancel_event is not None and cancel_event.is_set():
                 return False
-            self.process = subprocess.Popen(cmd, stdout=stdout_target, stderr=stderr_target, text=True)
+            # Output is always read: it is how a real stream is told apart from
+            # a Moonlight window that only shows an error.
+            self.stream_confirmed = threading.Event()
+            self.process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace")
             if cancel_event is not None and cancel_event.is_set():
                 self.disconnect()
                 return False
             self.connected_host = ip
 
             logger = self.logger
-            if logger:
-                import threading
+            confirmed = self.stream_confirmed
 
-                def log_output(pipe: TextIO, level: str) -> None:
-                    for line in iter(pipe.readline, ""):
-                        if line:
-                            getattr(logger, level, logger.info)(f"[Moonlight] {line.strip()}")
-                    pipe.close()
+            def read_output(pipe: TextIO) -> None:
+                for line in iter(pipe.readline, ""):
+                    # A real text pipe yields only strings. Stop cleanly if a
+                    # substituted process boundary violates that contract;
+                    # otherwise a background exception can outlive the task.
+                    if not isinstance(line, str):
+                        break
+                    if not confirmed.is_set() and any(marker in line for marker in STREAM_STARTED_MARKERS):
+                        confirmed.set()
+                    if logger and line.strip():
+                        logger.info(f"[Moonlight] {line.strip()}")
+                pipe.close()
 
-                if self.process.stdout:
-                    threading.Thread(target=log_output, args=(self.process.stdout, "info"), daemon=True).start()
-                if self.process.stderr:
-                    threading.Thread(target=log_output, args=(self.process.stderr, "error"), daemon=True).start()
+            if self.process.stdout:
+                threading.Thread(target=read_output, args=(self.process.stdout,), daemon=True).start()
 
             try:
                 exit_code = self.process.wait(timeout=1.0)
@@ -138,6 +150,20 @@ class MoonlightClient:
             if self.logger:
                 self.logger.error(f"Error connecting: {e}")
             return False
+
+    def wait_for_stream(self, timeout: float = 30.0) -> bool:
+        """Block until Moonlight reports that video is flowing.
+
+        Returns False on timeout, or as soon as Moonlight exits without having
+        started a stream (for example after an error dialog is closed).
+        """
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            if self.stream_confirmed.wait(0.5):
+                return self.is_connected()
+            if not self.is_connected():
+                return False
+        return False
 
     def is_connected(self) -> bool:
         return bool(self.process and self.process.poll() is None)
@@ -194,6 +220,10 @@ class MoonlightClient:
                 return False
             pin = f"{secrets.randbelow(10000):04d}"
             command = [self.moonlight_cmd, "pair", self.target_address(host_ip, port), "--pin", pin]
+            # Current Moonlight can finish pairing yet leave the process
+            # running. The certificate it stores for the host appears (or
+            # changes) only after the PIN was accepted, so that is the signal.
+            certificate_before = paired_host_certificate(host_ip)
             process = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
             self._pair_process = process
             if cancel_event is not None and cancel_event.is_set():
@@ -202,13 +232,19 @@ class MoonlightClient:
             if on_pin_callback:
                 on_pin_callback(pin)
             deadline = time.monotonic() + 90
+            next_check = time.monotonic() + 1.0
             while not self._pair_cancel.is_set() and not (cancel_event is not None and cancel_event.is_set()):
                 if time.monotonic() >= deadline:
                     return False
                 try:
                     return process.wait(timeout=0.25) == 0 and not self._pair_cancel.is_set() and not (cancel_event is not None and cancel_event.is_set())
                 except subprocess.TimeoutExpired:
-                    continue
+                    pass
+                if time.monotonic() >= next_check:
+                    next_check = time.monotonic() + 1.0
+                    certificate = paired_host_certificate(host_ip)
+                    if certificate and certificate != certificate_before:
+                        return not self._pair_cancel.is_set() and not (cancel_event is not None and cancel_event.is_set())
             return False
         except (OSError, ValueError, subprocess.SubprocessError) as exc:
             if self.logger:
@@ -217,8 +253,14 @@ class MoonlightClient:
         finally:
             try:
                 if process is not None and process.poll() is None:
-                    process.kill()
-                    process.wait(timeout=5)
+                    # A graceful stop lets Moonlight release its profile before
+                    # the next command (list/stream) uses it.
+                    process.terminate()
+                    try:
+                        process.wait(timeout=3)
+                    except subprocess.TimeoutExpired:
+                        process.kill()
+                        process.wait(timeout=5)
             except (OSError, subprocess.SubprocessError):
                 pass
             finally:

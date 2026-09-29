@@ -77,6 +77,7 @@ class Config:
         """Returns default configuration"""
         return {
             "theme": "auto",
+            "network_advanced_mode": False,
             "network": {
                 "upnp": False,
                 "ipv6": False,

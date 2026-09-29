@@ -29,6 +29,39 @@ from big_remote_play.utils.system_check import SystemCheck
 
 _PROFILE_ID_RE = re.compile(r"^[A-Za-z0-9._:@+-]{1,256}$")
 _ZEROTIER_NETWORK_ID_RE = re.compile(r"^[0-9a-fA-F]{16}$")
+_ZEROTIER_NODE_ID_RE = re.compile(r"^[0-9a-f]{10}$")
+_ZEROTIER_LOCAL_TOKEN_RE = re.compile(r"^[A-Za-z0-9]{16,128}$")
+ZEROTIER_SERVICE_TOKEN = "/var/lib/zerotier-one/authtoken.secret"
+_STARTABLE_UNITS = frozenset({"tailscaled", "zerotier-one"})
+# Settings `tailscale up` may be asked to repeat when a turned-off client is
+# turned on again. Anything else it suggests (a key, --reset, --force-reauth)
+# is refused: turning on must never change the account or the settings.
+_RESUMABLE_SETTINGS = frozenset(
+    {
+        "accept-dns",
+        "accept-risk",
+        "accept-routes",
+        "advertise-connector",
+        "advertise-exit-node",
+        "advertise-routes",
+        "advertise-tags",
+        "auto-update",
+        "exit-node",
+        "exit-node-allow-lan-access",
+        "hostname",
+        "login-server",
+        "netfilter-mode",
+        "operator",
+        "report-posture",
+        "shields-up",
+        "snat-subnet-routes",
+        "ssh",
+        "stateful-filtering",
+        "unattended",
+        "webclient",
+    }
+)
+_SETTING_RE = re.compile(r"^--([a-z][a-z0-9-]*)(?:=([^\s]*))?$")
 _AUTH_URL_RE = re.compile(r"https://[^\s\"'<>]+")
 _PERMISSION_MARKERS = (
     "permission denied",
@@ -107,6 +140,46 @@ class ZeroTierNetworks:
 
 
 @dataclass(frozen=True)
+class ZeroTierNode:
+    address: str
+    online: bool = False
+    version: str = ""
+    needs_privilege: bool = False
+    error: str = ""
+
+
+def valid_zerotier_network_id(value: str) -> bool:
+    return _ZEROTIER_NETWORK_ID_RE.fullmatch((value or "").strip()) is not None
+
+
+def valid_zerotier_node_id(value: str) -> bool:
+    return _ZEROTIER_NODE_ID_RE.fullmatch((value or "").strip().lower()) is not None
+
+
+def _write_private_file(path: Path, text: str) -> None:
+    """Atomically create ``path`` (mode 0600) without touching its directory.
+
+    The temporary file is created exclusively and not followed through a
+    symlink; ``os.replace`` then swaps the name itself, never a link target.
+    """
+    directory = path.parent
+    temporary = directory / f".{path.name}.{os.getpid()}.tmp"
+    fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    except BaseException:
+        try:
+            os.unlink(temporary)
+        except OSError:
+            pass
+        raise
+
+
+@dataclass(frozen=True)
 class TailscaleConnection:
     """Outcome of a connection attempt, judged by the daemon's own state."""
 
@@ -124,6 +197,28 @@ class TailscaleConnection:
 def _default_runner(argv: Sequence[str], *, timeout: float = 15.0) -> CommandResult:
     result = subprocess.run(list(argv), capture_output=True, text=True, timeout=timeout, check=False)
     return CommandResult(result.returncode, result.stdout or "", result.stderr or "")
+
+
+def suggested_up_settings(output: str) -> list[str] | None:
+    """The flags of the ``tailscale up …`` line the client suggests, validated.
+
+    ``[]`` when no command was suggested; ``None`` when it contains anything
+    that is not a plain known setting (so nothing is run).
+    """
+    import shlex
+
+    line = next((raw.strip() for raw in output.splitlines() if raw.strip().startswith("tailscale up")), "")
+    if not line:
+        return []
+    try:
+        words = shlex.split(line)[2:]
+    except ValueError:
+        return None
+    for word in words:
+        match = _SETTING_RE.fullmatch(word)
+        if match is None or match.group(1) not in _RESUMABLE_SETTINGS:
+            return None
+    return words
 
 
 def extract_auth_url(line: str) -> str:
@@ -372,6 +467,30 @@ class VPNAccountManager:
             return self._run(["pkexec", "/usr/bin/tailscale", "down"], timeout=60)
         return result
 
+    def resume_tailscale(self) -> TailscaleConnection:
+        """Turn a signed-in client back on: the inverse of :meth:`pause_tailscale`.
+
+        `tailscale up` refuses when the profile has non-default settings and
+        prints the exact command that repeats them; that command is run only
+        after every flag is checked against the settings allowlist.
+        """
+        base = [*self.system_check.tailscale_cmd(), "up", "--timeout=30s"]
+        result = self._run(base, timeout=45)
+        if result.returncode != 0 and self._permission_error(result):
+            # Documented remedy, asked once: let this desktop user control
+            # tailscaled; every later turn-on then needs no password.
+            operator = self._run(["pkexec", "/usr/bin/tailscale", "set", f"--operator={getpass.getuser()}"], timeout=120)
+            if operator.returncode != 0:
+                return TailscaleConnection(False, backend_state=self.tailscale_backend_state(), detail=(operator.stderr or operator.stdout).strip()[-500:])
+            result = self._run(base, timeout=45)
+        if result.returncode != 0 and "requires mentioning all" in (result.stdout + result.stderr):
+            settings = suggested_up_settings(result.stdout + "\n" + result.stderr)
+            if settings is None:
+                return TailscaleConnection(False, backend_state=self.tailscale_backend_state(), detail="refused an unexpected setting in the suggested command")
+            result = self._run([*base, *settings], timeout=45)
+        state = self.tailscale_backend_state()
+        return TailscaleConnection(state == "Running", backend_state=state, detail=(result.stderr or result.stdout).strip()[-500:])
+
     def logout_tailscale(self) -> CommandResult:
         """Expire the current node key; a later connection requires login."""
         return self._run([*self.system_check.tailscale_cmd(), "logout"], timeout=45)
@@ -436,6 +555,14 @@ class VPNAccountManager:
             output += "\n" + self._stream(tailscale_connect_argv(self.system_check.tailscale_cmd(), timeout=timeout), on_auth_url=on_auth_url, on_output=on_output)[0]
             state = self.tailscale_backend_state()
         return TailscaleConnection(state == "Running", backend_state=state, auth_url=auth_url, detail=output.strip()[-500:])
+
+    def start_service(self, unit: str) -> CommandResult:
+        """Enable and start one VPN daemon through PolicyKit, on explicit request."""
+        if unit not in _STARTABLE_UNITS:
+            return CommandResult(2, "", "unsupported service")
+        if self._run(["systemctl", "is-active", "--quiet", unit], timeout=15).returncode == 0:
+            return CommandResult(0)
+        return self._run(["pkexec", "/usr/bin/systemctl", "enable", "--now", unit], timeout=120)
 
     def _ensure_tailscaled(self, on_output: Callable[[str], None] | None) -> None:
         """Start the daemon only when it is not already running."""
@@ -535,6 +662,45 @@ class VPNAccountManager:
                 )
             )
         return ZeroTierNetworks(tuple(networks))
+
+    def zerotier_info(self) -> ZeroTierNode:
+        """This computer's ZeroTier node address (the "Node ID" admins authorize)."""
+        result, needs_privilege = self._run_zerotier(["-j", "info"], timeout=15)
+        if result.returncode != 0:
+            return ZeroTierNode("", needs_privilege=needs_privilege, error=(result.stderr or result.stdout).strip()[:300])
+        try:
+            payload = json.loads(result.stdout)
+        except (TypeError, ValueError):
+            return ZeroTierNode("", error="invalid info JSON")
+        if not isinstance(payload, dict):
+            return ZeroTierNode("", error="invalid info JSON")
+        address = str(payload.get("address") or "").lower()
+        if _ZEROTIER_NODE_ID_RE.fullmatch(address) is None:
+            return ZeroTierNode("", error="invalid node address")
+        return ZeroTierNode(address, online=bool(payload.get("online")), version=str(payload.get("version") or ""))
+
+    def grant_zerotier_user_access(self) -> CommandResult:
+        """Let the desktop user run ``zerotier-cli`` without a password.
+
+        ``zerotier-cli`` reads ``~/.zeroTierOneAuthToken`` when the service
+        token in /var/lib/zerotier-one is not readable. The service token is
+        read once through PolicyKit into this process (a pipe, never argv) and
+        written by the user, so root never writes into the home directory and
+        cannot be tricked into following a planted symlink.
+        """
+        result = self._run(["pkexec", "/usr/bin/cat", ZEROTIER_SERVICE_TOKEN], timeout=120)
+        token = result.stdout.strip()
+        if result.returncode != 0 or _ZEROTIER_LOCAL_TOKEN_RE.fullmatch(token) is None:
+            return CommandResult(result.returncode or 1, "", "could not read the ZeroTier service token")
+        try:
+            _write_private_file(self.zerotier_user_token_file, token)
+        except OSError as error:
+            return CommandResult(1, "", str(error))
+        return CommandResult(0)
+
+    @property
+    def zerotier_user_token_file(self) -> Path:
+        return Path.home() / ".zeroTierOneAuthToken"
 
     def join_zerotier_network(self, network_id: str, *, allow_privileged: bool = True) -> CommandResult:
         value = network_id.strip().lower()

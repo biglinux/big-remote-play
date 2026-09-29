@@ -50,18 +50,20 @@ def test_firewall_does_not_open_sunshine_web_ui(tmp_path: Path) -> None:
     assert "sysctl" not in script.read_text()
 
 
-def test_network_scripts_do_not_persist_raw_tokens() -> None:
-    zerotier = (ROOT / "usr/share/big-remote-play/scripts/create-network_zerotier.sh").read_text()
-    headscale = (ROOT / "usr/share/big-remote-play/scripts/create-network_headscale.sh").read_text()
+def test_no_privileged_helper_receives_an_api_credential() -> None:
+    """Network creation and member approval moved to the Python API client.
 
-    assert "API_TOKEN_FILE" not in zerotier
-    assert "api_token.txt" not in zerotier
-    assert "big-remoteplay/zerotier" not in zerotier
-    assert "brp_data api_key" not in zerotier
-    assert "brp_data api_key" not in headscale
-    assert "chmod -R 777" not in headscale
-    assert "/var/lib/tailscale" not in headscale
-    assert '--authkey="$AUTH_KEY"' not in headscale
+    The former helpers ran as root, read tokens from stdin and passed them to
+    curl on its command line (visible in /proc/<pid>/cmdline). No shipped
+    script may take an API token, and none may call a provider API.
+    """
+    scripts = {path.name: path.read_text() for path in (ROOT / "usr/share/big-remote-play/scripts").glob("*.sh")}
+    assert "create-network_zerotier.sh" not in scripts
+    assert "create-network_headscale.sh" not in scripts
+    for name, text in scripts.items():
+        assert "API_TOKEN" not in text, name
+        assert "Authorization:" not in text, name
+        assert "api.zerotier.com" not in text and "api.cloudflare.com" not in text, name
 
 
 def test_tailnet_auth_key_never_reaches_argv() -> None:
@@ -76,23 +78,17 @@ def test_tailnet_auth_key_never_reaches_argv() -> None:
     assert "secure_write_text(path, key)" in source
 
 
-def test_network_scripts_match_current_provider_docs() -> None:
-    zerotier = (ROOT / "usr/share/big-remote-play/scripts/create-network_zerotier.sh").read_text()
-    headscale = (ROOT / "usr/share/big-remote-play/scripts/create-network_headscale.sh").read_text()
+def test_provider_api_clients_match_current_upstream_contracts() -> None:
+    from big_remote_play.private_network import headscale_api, tailscale_api, zerotier_api
 
-    assert "https://api.zerotier.com/api/v1" in zerotier
-    assert "Authorization: token $API_TOKEN" in zerotier
-    assert "Authorization: bearer $API_TOKEN" not in zerotier
-    assert 'headscale_version="${HEADSCALE_VERSION:-0.29.1}"' in headscale
-    assert "raw.githubusercontent.com/juanfont/headscale/v$headscale_version/config-example.yaml" in headscale
-    assert "ip_prefixes:" not in headscale
-    assert "0.0.0.0/0" not in headscale
-    assert "read_only: true" in headscale
-    assert "./config:/etc/headscale:ro" in headscale
-    assert "./caddy_config:/config" in headscale
-    assert '"443:443/udp"' in headscale
-    assert "handle /generate_204" in headscale
-    assert '$headscale_image" configtest' in headscale
+    assert zerotier_api.LEGACY_BASE == "https://api.zerotier.com/api/v1"
+    assert zerotier_api.CENTRAL_BASE == "https://central.zerotier.com/api/v2"
+    assert tailscale_api.API_BASE == "https://api.tailscale.com/api/v2"
+    # /api/v1/routes was removed in Headscale 0.26; routes are approved per node.
+    source = (ROOT / "src/big_remote_play/private_network/headscale_api.py").read_text()
+    assert '"/api/v1/routes' not in source
+    assert "/approve_routes" in source
+    assert headscale_api.registration_key("https://vpn.example/register/AbCdEf123456") == "AbCdEf123456"
 
 
 def test_sunshine_network_options_cover_current_docs() -> None:
@@ -112,7 +108,7 @@ def test_stop_hosting_does_not_broad_kill_sunshine() -> None:
     assert "self.sunshine.stop()" in stop_hosting
 
 
-def test_history_saves_secret_refs_not_plaintext(tmp_path: Path, monkeypatch) -> None:
+def test_history_never_saves_credentials(tmp_path: Path, monkeypatch) -> None:
     private_network_view = _import_private_network_view(tmp_path, monkeypatch)
 
     backend = InMemorySecretBackend()
@@ -125,31 +121,33 @@ def test_history_saves_secret_refs_not_plaintext(tmp_path: Path, monkeypatch) ->
             "domain": "vpn.example.test",
             "auth_key": "hs-auth-secret",
             "api_key": "hs-admin-secret",
+            "cf_token": "cf-secret",
         }
     )
 
     raw_history = Path(private_network_view.HISTORY_FILE).read_text()
-    assert "hs-auth-secret" not in raw_history
-    assert "hs-admin-secret" not in raw_history
-
-    history = json.loads(raw_history)["history"]
-    entry = history[0]
+    assert "secret" not in raw_history
+    entry = json.loads(raw_history)["history"][0]
     assert entry["domain"] == "vpn.example.test"
-    assert set(entry["secret_refs"]) == {"auth_key", "api_key"}
-    assert private_network_view._entry_secret(entry, "auth_key") == "hs-auth-secret"
-    assert private_network_view._entry_secret(entry, "api_key") == "hs-admin-secret"
+    # One-time keys are not kept anywhere, not even in the keyring.
+    assert backend._values == {}
     assert stat.S_IMODE(Path(private_network_view.HISTORY_FILE).stat().st_mode) == 0o600
 
 
 def test_zerotier_token_uses_secret_store(tmp_path: Path, monkeypatch) -> None:
-    private_network_view = _import_private_network_view(tmp_path, monkeypatch)
+    from big_remote_play.private_network.credentials import CredentialKind, CredentialStore
 
     backend = InMemorySecretBackend()
-    legacy_file = tmp_path / "api_token.txt"
-    monkeypatch.setattr(private_network_view, "_SECRET_STORE", SecretStore(backend))
-    monkeypatch.setattr(private_network_view, "LEGACY_ZT_TOKEN_FILE", str(legacy_file))
+    store = CredentialStore(SecretStore(backend), tmp_path / "credentials.json")
+    store.save(CredentialKind.ZEROTIER_API_TOKEN, "ztFakeToken0123456789")
 
-    private_network_view._set_zerotier_api_token("zt-secret")
+    assert store.secret(CredentialKind.ZEROTIER_API_TOKEN) == "ztFakeToken0123456789"
+    assert "ztFakeToken0123456789" not in (tmp_path / "credentials.json").read_text()
 
-    assert private_network_view._get_zerotier_api_token() == "zt-secret"
-    assert not legacy_file.exists()
+
+def test_no_user_interface_module_performs_http_or_holds_tokens() -> None:
+    """UI → service → provider API: the UI never builds a request itself."""
+    for path in (ROOT / "src/big_remote_play/ui").glob("*.py"):
+        text = path.read_text()
+        assert "urllib.request" not in text, path.name
+        assert '"Authorization":' not in text and "Authorization: " not in text, path.name
