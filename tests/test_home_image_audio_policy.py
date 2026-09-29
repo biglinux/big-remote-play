@@ -378,6 +378,26 @@ def test_stopping_after_a_host_muting_client_removes_only_our_bridge(ui, monkeyp
     assert [m[0] for m in pulse.modules] == ["7"]
 
 
+def test_stopping_reconnects_an_effects_program_sunshine_left_unlinked(ui, monkeypatch):
+    from big_remote_play.utils.audio import AudioRoutingSession
+
+    h = ui.host_view
+    pulse = outputs(h, monkeypatch)
+    run_start(h, monkeypatch)
+    pulse.sunshine_starts_session(host_audio=False)
+    h.audio_session.reconcile()
+    # Linked after the last check: only the look right before stopping sees it.
+    pulse.effects_program_plays_into(SUNSHINE_STEREO_SINK)
+    monkeypatch.setattr(AudioRoutingSession, "RELINK_SETTLE_SECONDS", 0)
+    monkeypatch.setattr(h.sunshine, "stop", lambda: pulse.sunshine_exits(HDMI))
+    monkeypatch.setattr(h.sunshine, "is_running", lambda: False)
+    with monkeypatch.context() as mp:
+        mp.setattr(GLib, "idle_add", lambda *a, **kw: 0)
+        h._run_stop_hosting()
+    assert ("jdsp_@PwJamesDspPlugin_JamesDsp:output_FL", f"{HDMI}:playback_FL") in pulse.links.values()
+    assert ("jdsp_@PwJamesDspPlugin_JamesDsp:output_FR", f"{HDMI}:playback_FR") in pulse.links.values()
+
+
 def test_audio_details_state_the_microphone_is_not_sent(ui, monkeypatch):
     h = ui.host_view
     pulse = outputs(h, monkeypatch)
