@@ -34,7 +34,7 @@ Run the native interface in Portuguese and English, light/dark themes, compact w
 | Native package | Clean install/upgrade/removal on supported BigLinux/Manjaro; private Python layout, resources and launchers intact |
 | Streaming | Sunshine → Moonlight connection, pairing, stop/reconnect, custom port and invalid credentials |
 | Capture/audio | Wayland/X11 sessions, actual GPU encoding/decoding, display changes, host/client sound |
-| Internet | Real Tailscale browser authorization, ZeroTier authorization and Headscale deployment/client join |
+| Internet | Real Tailscale browser authorization and machine sharing, ZeroTier join/approval/managed IP, Headscale server (0.27+) with API key, registration approval and pre-auth key; Share ↔ Connect over each provider, including a relayed path. Track results in the [private-network test matrix](private-network-test-matrix.md) |
 | Privileges | PolicyKit allow/cancel/failure and desktop keyring locked/unavailable states |
 | Accessibility | Orca/AT-SPI navigation and announcements, keyboard-only use, touch targets and text scaling |
 | Safety | Real backup/restore with native certificates, cancelled startup, preserved libraries and devices |
@@ -57,11 +57,14 @@ The hermetic regression test simulates the path and process behavior, but only a
 
 ## Additional acceptance for audio and public access
 
-Confirm with multiple real outputs (USB, HDMI, speakers and an existing virtual
-processor) that default startup/stop/close never reroutes audio. Test a fresh client
-with host playback on, a saved mute-off choice and a third-party Moonlight client;
-Sunshine may choose its virtual sink for the latter request. Test explicit routing,
-device removal/reordering and the user's changing output during a session.
+Follow [audio testing](audio-testing.md). With multiple real outputs (USB, HDMI,
+Bluetooth and an effects output), confirm that Automatic startup/stop/close writes
+nothing to the sound server and that `sunshine-record` always records a monitor.
+Test a client that plays sound on the host and one that mutes it, with **Also play
+sound on this computer** on and off, a chosen device, device removal and the person
+changing output during a stream. Test Steam Remote Play Together with sharing active,
+kill Sunshine during a host-muting session and check that the next start restores
+the output. **Microphone sent to Sunshine** must read **No** throughout.
 
 For UPnP, check the router mappings and Sunshine logs, then connect from another
 network. Also test a router without UPnP and a CGNAT/double-NAT connection. Neither

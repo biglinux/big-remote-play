@@ -163,12 +163,11 @@ def test_discovery_empty_state_is_text_first_without_large_search_artwork() -> N
     assert "large=True" not in block
 
 
-def test_private_network_tabs_are_labelled_icon_backed_headerbar_views() -> None:
+def test_network_pages_use_a_titled_back_button_instead_of_tabs() -> None:
     source = (ROOT / "src/big_remote_play/ui/main_window.py").read_text()
-    assert "self.network_navigation_stack = Adw.ViewStack()" in source
-    assert '(_("My network"), "create_private", "brp-network-setup-symbolic")' in source
-    assert '(_("Join a network"), "connect_private", "brp-network-connect-symbolic")' in source
-    assert '(_("Change service"), "vpn_selector", "brp-provider-switch-symbolic")' in source
+    # Three product-shaped tabs were cut off at 1024 px; one hub plus Back replaces them.
+    assert "network_navigation_stack" not in source
+    assert 'name_icon_button(self.network_back_button, _("Back"), _("Back to Connect your devices"))' in source
     assert 'self.header_title_stack.add_named(self.header_view_switcher, "switcher")' in source
     assert "header.set_title_widget(self.header_title_stack)" in source
     assert "Adw.ViewSwitcherTitle" not in source
@@ -203,14 +202,14 @@ def test_symbolic_icon_factory_uses_gtk_icon_theme() -> None:
 def test_icon_colour_hierarchy_is_explicit_and_consistent() -> None:
     components = (ROOT / "src/big_remote_play/ui/components.py").read_text(encoding="utf-8")
     guest = (ROOT / "src/big_remote_play/ui/guest_view.py").read_text(encoding="utf-8")
-    main = (ROOT / "src/big_remote_play/ui/main_window.py").read_text(encoding="utf-8")
+    hub = (ROOT / "src/big_remote_play/ui/remote_connection.py").read_text(encoding="utf-8")
 
     # Routine rows default to a monochrome native prefix; accent tiles must be
     # requested explicitly for a major choice.
     assert 'icon_style: Literal["plain", "tile"] = "plain"' in components
     assert 'if icon_style == "tile":' in components
     assert 'css_class="brp-row-icon"' in components
-    assert 'icon_style="tile"' in main  # VPN provider selection
+    assert 'icon_style="tile"' in hub  # connection method choice
 
     # Adjacent client utility rows now share one visual treatment and use the
     # concrete keyboard metaphor instead of a generic help glyph.

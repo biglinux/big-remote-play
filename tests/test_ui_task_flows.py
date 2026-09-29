@@ -21,7 +21,6 @@ from big_remote_play.ui.components import action_row
 from big_remote_play.ui.main_window import MainWindow
 from big_remote_play.ui.host_view import HostView
 from big_remote_play.host.sunshine_manager import SunshineHost
-from big_remote_play.utils.audio import AudioManager
 from big_remote_play.utils.config import Config
 from big_remote_play.utils.moonlight_config import MoonlightConfigManager
 from big_remote_play.utils.network import NetworkDiscovery
@@ -55,9 +54,6 @@ def ui(tmp_path, monkeypatch):
     monkeypatch.setattr(HostView, "detect_gpus", lambda self: [{"label": "Automatic", "encoder": "auto", "adapter": "auto"}])
     monkeypatch.setattr(HostView, "_ensure_sunshine_config", lambda self: None)
     monkeypatch.setattr(SunshineHost, "is_running", lambda self: False)
-    monkeypatch.setattr(AudioManager, "get_passive_sinks", lambda self: [])
-    monkeypatch.setattr(AudioManager, "get_default_sink", lambda self: None)
-    monkeypatch.setattr(AudioManager, "disable_streaming_audio", lambda *args: None)
     monkeypatch.setattr(NetworkDiscovery, "discover_hosts", lambda self, callback, **kwargs: callback([]))
     # The private-network pages probe the real tailscale/zerotier CLIs, each
     # with a ten-second timeout; the UI tests are about the pages, not the CLIs.
@@ -127,7 +123,7 @@ def test_automatic_quality_locks_the_rows_it_owns_and_frees_them_when_turned_off
 
 def test_each_host_settings_sheet_is_reachable_and_preserves_widgets(ui):
     host = ui.host_view
-    assert len(host.settings_dialogs) == 3
+    assert len(host.settings_dialogs) == 2  # the per-app audio mixer sheet is gone
     for dialog in host.settings_dialogs.values():
         dialog.present(host)
         drain()
@@ -138,15 +134,12 @@ def test_each_host_settings_sheet_is_reachable_and_preserves_widgets(ui):
     assert host.platform_row.get_model().get_n_items() == 7
 
 
-def test_mixer_has_an_explanatory_empty_state(ui):
+def test_audio_settings_say_what_is_shared_in_words(ui):
     host = ui.host_view
-    assert host.mixer_empty_row.get_visible()
-    host._apply_mixer_apps([{"id": "4", "name": "Game & voice"}])
-    assert not host.mixer_empty_row.get_visible()
-    assert host.mixer_rows["4"].get_title() == "Game & voice"
-    assert not host.mixer_rows["4"].get_use_markup()
-    host._apply_mixer_apps([])
-    assert host.mixer_empty_row.get_visible()
+    assert host.audio_output_row.get_title() == "Server output"
+    assert host.audio_play_here_row.get_title() == "Also play sound on this computer"
+    assert host.audio_details_row.get_title() == "Technical audio details"
+    assert not hasattr(host, "mixer_rows")  # applications are never moved between outputs
 
 
 def test_guest_page_summarises_quality_and_the_row_opens_the_sheet(ui):
@@ -232,16 +225,18 @@ def test_connect_is_one_page_and_private_network_keeps_the_header_switcher(ui):
     assert not hasattr(guest, "method_stack")
     assert guest.connect_card.is_ancestor(guest)
 
+    # Network sub-pages are titled by the task and return to the hub with Back.
     ui._vpn_choice = "tailscale"
     ui.navigate_to("create_private")
-    assert ui._header_context == "network"
-    assert ui.header_title_stack.get_visible_child_name() == "switcher"
-    assert ui.compact_view_switcher.get_stack() is ui.network_navigation_stack
-    assert ui.network_navigation_stack.get_visible_child_name() == "create_private"
+    assert ui._header_context is None
+    assert ui.content_title.get_title() == "Network details"
+    assert ui.content_title.get_subtitle() == "Tailscale"
+    assert ui.network_back_button.get_visible()
     ui.navigate_to("connect_private")
-    assert ui.network_navigation_stack.get_visible_child_name() == "connect_private"
-    ui.navigate_to("vpn_selector")
-    assert ui.network_navigation_stack.get_visible_child_name() == "vpn_selector"
+    assert ui.content_title.get_title() == "Set up the connection"
+    ui.network_back_button.emit("clicked")
+    assert ui.current_page == "vpn_selector"
+    assert not ui.network_back_button.get_visible()
 
 
 def test_computer_row_is_keyboard_activatable_and_handles_literal_markup(ui):
@@ -425,16 +420,13 @@ def test_network_helper_failure_reenables_connect_and_stops_spinner(ui, monkeypa
     assert not page._return_to_game.get_visible()
 
 
-def test_create_helper_failure_is_delivered_to_completion_callback(ui, monkeypatch):
+def test_helper_failure_is_delivered_to_completion_callback(ui, monkeypatch):
     import big_remote_play.ui.private_network_view as pnv
 
-    monkeypatch.setattr(pnv.CreatePage, "_check_logged_in", lambda self: False)
-    monkeypatch.setattr(pnv.CreatePage, "_is_vpn_installed", lambda self: True)
     monkeypatch.setattr(pnv.threading, "Thread", InlineThread)
     monkeypatch.setattr(pnv.subprocess, "Popen", Mock(side_effect=FileNotFoundError("pkexec")))
-    page = pnv.CreatePage("tailscale", ui)
     done = Mock(return_value=False)
-    page._run_script("create-network_zerotier.sh", [], done)
+    pnv.run_helper_script("install-vpn.sh", [], on_text=Mock(), on_phase=Mock(), on_done=done)
     drain()
     done.assert_called_once_with(127, {})
 
@@ -520,37 +512,47 @@ def test_background_discovery_keeps_the_chosen_computer(ui, monkeypatch):
     assert guest.selected_host_card_data["ip"] == "10.0.0.2"
 
 
-def test_connected_network_page_shows_devices_not_a_sign_in_form(ui, monkeypatch):
-    import big_remote_play.ui.private_network_view as pnv
+def _wait_for(predicate, timeout=2.0):
+    import time
 
-    monkeypatch.setattr(pnv, "provider_connected", lambda *args: True)
-    monkeypatch.setattr(pnv.CreatePage, "_refresh_networks", lambda self: None)
+    deadline = time.monotonic() + timeout
+    while not predicate() and time.monotonic() < deadline:
+        GLib.MainContext.default().iteration(False)
+        time.sleep(0.01)
+    return predicate()
+
+
+def test_my_network_without_a_client_explains_installation_and_shows_no_address(ui):
+    from big_remote_play.ui.network_dashboard import NetworkDashboardPage
+
     ui._vpn_choice = "tailscale"
     ui.navigate_to("create_private")
-    drain()
     page = ui.content_stack.get_child_by_name("create_private").get_child()
-    page._apply_logged_in(True)
-    drain()
+    assert isinstance(page, NetworkDashboardPage)
+    # The hermetic service reports no client: the page must say so, not hang.
+    assert _wait_for(lambda: page.status is not None)
+    assert page.status.state.value == "unavailable"
+    assert not page._return_to_game.get_visible()
+    # API/account/router administration is intentionally absent in simple mode.
+    assert not page._maintenance_group.get_visible()
 
-    assert page._title.get_label() == "Devices on this private network"
-    assert page._maintenance_group.get_visible()
-    assert page._return_to_game.get_visible()
+
+def test_home_always_opens_the_connection_hub_first(ui):
+    # The hub decides the next step; a remembered method is not the first page.
+    ui._vpn_choice = "zerotier"
+    ui.current_page = "welcome"
+    ui._go_to_private_network_setup()
+    assert ui.current_page == "vpn_selector"
 
 
-def test_network_token_help_is_visible_only_when_missing(ui, monkeypatch):
+def test_join_page_never_prefills_a_secret_from_old_history(ui, monkeypatch):
     import big_remote_play.ui.private_network_view as pnv
 
-    monkeypatch.setattr(pnv, "_load_history", lambda: [])
-    monkeypatch.setattr(pnv.threading, "Thread", InlineThread)
-    monkeypatch.setattr(pnv, "_has_zerotier_api_token", lambda: False)
-    without_token = pnv.ConnectPage("zerotier", ui)
-    drain()
-    assert without_token._token_help_row.get_visible()
-
-    monkeypatch.setattr(pnv, "_has_zerotier_api_token", lambda: True)
-    with_token = pnv.ConnectPage("zerotier", ui)
-    drain()
-    assert not with_token._token_help_row.get_visible()
+    old = [{"vpn": "headscale", "domain": "vpn.example.test", "auth_key": "hskey-auth-OLD"}]
+    monkeypatch.setattr(pnv, "_load_history", lambda: old)
+    page = pnv.ConnectPage("headscale", ui)
+    assert page._e_domain.get_text() == "vpn.example.test"
+    assert page._e_key.get_text() == ""
 
 
 @pytest.mark.parametrize(
@@ -676,7 +678,7 @@ def test_reused_network_page_updates_return_label_for_current_role(ui, monkeypat
 
     monkeypatch.setattr(pnv, "_load_history", lambda: [])
     ui._vpn_choice = "tailscale"
-    for role, title in (("host", "Share my game"), ("guest", "Access shared game")):
+    for role, title in (("host", "Share"), ("guest", "Connect")):
         ui.navigate_to(role)
         ui.navigate_to("connect_private")
         page = ui.connect_private_view.get_child()
@@ -713,7 +715,6 @@ def test_primary_switchers_have_titles_distinct_icons_and_native_tab_role(ui):
     ui._vpn_choice = "tailscale"
     stacks = {
         "host": ui.host_view.view_stack,
-        "network": ui.network_navigation_stack,
     }
     for stack in stacks.values():
         pages = _view_stack_pages(stack)
@@ -723,8 +724,6 @@ def test_primary_switchers_have_titles_distinct_icons_and_native_tab_role(ui):
     assert ui.header_view_switcher.get_accessible_role() == Gtk.AccessibleRole.TAB_LIST
     ui.navigate_to("host")
     assert ui.header_view_switcher.get_stack() is ui.host_view.view_stack
-    ui.navigate_to("create_private")
-    assert ui.header_view_switcher.get_stack() is ui.network_navigation_stack
 
 
 def test_header_switcher_moves_to_bottom_only_in_compact_mode(ui):

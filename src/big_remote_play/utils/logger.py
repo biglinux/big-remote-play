@@ -48,6 +48,11 @@ class Logger:
         if not self.logger.handlers:
             self.logger.addHandler(fh)
             self.logger.addHandler(ch)
+        # Credentials must never reach a log file or the terminal, whichever
+        # module formats the message. See private_network/redaction.py.
+        from big_remote_play.private_network.redaction import install_log_redaction
+
+        install_log_redaction(self.logger)
 
     def info(self, message):
         """Log info"""

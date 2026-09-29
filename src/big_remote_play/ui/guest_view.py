@@ -17,9 +17,15 @@ from big_remote_play.utils.config import Config
 from big_remote_play.guest.moonlight_client import MoonlightClient
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget
-from big_remote_play.integration_contracts import BRP_DISCOVERY_CODE_LENGTH
+from big_remote_play.integration_contracts import BRP_DISCOVERY_CODE_LENGTH, SUNSHINE_DEFAULT_BASE_PORT
 from big_remote_play.utils.moonlight_config import MoonlightConfigManager
 from .components import action_row, content_dialog, icon_tile, intro, note, set_row_icon, name_icon_button, preferences_dialog
+from .network_common import RowGroup, Worker, path_summary
+
+PRIVATE_PROVIDER_NAMES = {"tailscale": "Tailscale", "headscale": "Headscale", "zerotier": "ZeroTier"}
+# Private peers are re-read at most this often while Connect is visible.
+PRIVATE_REFRESH_SECONDS = 30
+_CODEC_NAMES = {"0": "", "1": "H.264", "2": "HEVC", "4": "AV1"}
 
 
 class GuestView(Gtk.Box):
@@ -38,6 +44,14 @@ class GuestView(Gtk.Box):
         self._attempt_cancel = threading.Event()
         self._closed = False
         self._stopping = False
+        # Computers the private-network clients know about, merged into the
+        # same list as local discovery. Their readiness comes from a probe.
+        self._lan_hosts: list[dict] = []
+        self._private_hosts: list[dict] = []
+        self._private_refreshed_at = 0.0
+        self._private_worker = Worker()
+        self._history_worker = Worker()
+        self._session_id = ""
 
         from big_remote_play.utils.logger import Logger
 
@@ -548,10 +562,17 @@ class GuestView(Gtk.Box):
         methods = Adw.PreferencesGroup(title=_("Other ways to connect"))
         methods.add(self.search_code_row)
         methods.add(self.address_row)
+        self.history_row = action_row(
+            _("Connection history"),
+            _("Computers this PC streamed from, kept only on this computer"),
+            "brp-document-open-recent-symbolic",
+            self.show_history,
+        )
+        methods.add(self.history_row)
         methods.add(
             action_row(
-                _("Internet play"),
-                _("Set up Private Network"),
+                _("Play over the internet"),
+                _("For a computer in another house: connect your devices first."),
                 "brp-network-private-symbolic",
                 self._go_to_private_network,
             )
@@ -560,6 +581,9 @@ class GuestView(Gtk.Box):
         for row in (self.image_row, self.audio_settings_row, self.input_settings_row, self.host_connection_row, help_row):
             settings.add(row)
         content.append(self.connect_card)
+        self.recent_group = RowGroup(title=_("Connect again"))
+        self.recent_group.set_visible(False)
+        content.append(self.recent_group)
         content.append(methods)
         content.append(settings)
         self.load_guest_settings()
@@ -752,6 +776,8 @@ class GuestView(Gtk.Box):
                     self.perf_monitor.start_monitoring()
 
             else:
+                if self.is_connected or self._session_id:
+                    self._record_session_end()
                 if self.is_connected:
                     # Detected disconnection
                     self.is_connected = False
@@ -982,6 +1008,7 @@ class GuestView(Gtk.Box):
         # as an idle result (which would create a continuous discovery loop).
         def discover_once() -> bool:
             self._auto_discover()
+            self.refresh_recent_hosts()
             return False
 
         GLib.idle_add(discover_once)
@@ -994,6 +1021,8 @@ class GuestView(Gtk.Box):
         busy = getattr(self, "is_connecting", False) or self.is_connected
         if self.get_mapped() and not busy:
             self.discover_hosts(silent=True)
+            if time.monotonic() - self._private_refreshed_at >= PRIVATE_REFRESH_SECONDS:
+                self.refresh_private_hosts()
         return True
 
     def discover_hosts(self, silent: bool = False):
@@ -1052,8 +1081,59 @@ class GuestView(Gtk.Box):
             return False
 
         NetworkDiscovery().discover_hosts(callback=on_hosts_discovered)
+        self.refresh_private_hosts()
+
+    # ── private-network computers ──────────────────────────────────────────
+    def refresh_private_hosts(self) -> None:
+        """Ask the connected VPN clients for their peers, then probe Sunshine.
+
+        Only addresses the providers themselves report are contacted, on the
+        Sunshine port only; no subnet is scanned.
+        """
+        from big_remote_play.private_network.service import default_service
+
+        self._private_refreshed_at = time.monotonic()
+
+        def load():
+            from concurrent.futures import ThreadPoolExecutor
+
+            service = default_service()
+            candidates = service.candidate_hosts()
+            hosts = []
+            with ThreadPoolExecutor(max_workers=4) as pool:
+                ready = list(pool.map(lambda c: service.sunshine_ready(c.address, c.port) if c.online is not False else False, candidates))
+            for candidate, sharing in zip(candidates, ready):
+                host = candidate.as_host()
+                if candidate.online is False:
+                    host["readiness"] = "offline"
+                elif sharing:
+                    host["readiness"] = "sharing"
+                else:
+                    host["readiness"] = "no_sharing"
+                hosts.append(host)
+            return hosts
+
+        def apply(hosts) -> None:
+            if self._closed or self.is_connected or getattr(self, "is_connecting", False):
+                return
+            self._private_hosts = hosts
+            self.update_hosts_list(list(self._lan_hosts), keep_selection=True)
+
+        self._private_worker.submit(load, apply)
+
+    def _merge_private(self, hosts: list[dict]) -> list[dict]:
+        known = {str(host.get("ip")) for host in hosts}
+        merged = list(hosts)
+        # Ready computers first; an offline peer is listed so its state is visible.
+        order = {"sharing": 0, "no_sharing": 1, "offline": 2}
+        for host in sorted(self._private_hosts, key=lambda item: order.get(item.get("readiness", ""), 1)):
+            if str(host.get("ip")) not in known:
+                merged.append(host)
+        return merged
 
     def update_hosts_list(self, hosts, keep_selection: bool = False):
+        self._lan_hosts = [host for host in hosts if host.get("source") != "provider"]
+        hosts = self._merge_private(self._lan_hosts)
         previous = self.selected_host_card_data if keep_selection else None
         if keep_selection and (hosts or self._empty_container.get_visible()):
             listed = [getattr(self.hosts_list.get_row_at_index(index), "_brp_host", None) for index in range(len(hosts) + 1)]
@@ -1103,16 +1183,32 @@ class GuestView(Gtk.Box):
         self.selected_host_card_data = getattr(row, "_brp_host", None) if row is not None else None
         self._update_all_buttons_state()
 
+    @staticmethod
+    def _readiness_text(host: dict) -> str:
+        return {
+            "sharing": _("Sharing found"),
+            "no_sharing": _("Sharing not found"),
+            "offline": _("Offline"),
+        }.get(str(host.get("readiness", "")), "")
+
     def create_host_row_custom(self, host):
         name = str(host.get("name") or host["ip"])
-        row = Adw.ActionRow(title=name, subtitle=str(host["ip"]), use_markup=False, activatable=True)
+        provider = PRIVATE_PROVIDER_NAMES.get(str(host.get("provider", "")))
+        readiness = self._readiness_text(host)
+        subtitle = " · ".join(value for value in (provider, str(host["ip"]), readiness) if value)
+        row = Adw.ActionRow(title=name, subtitle=subtitle, use_markup=False, activatable=True)
         row.set_title_lines(2)
-        row.set_subtitle_lines(1)
+        row.set_subtitle_lines(2)
         row._brp_host = host
         row.add_prefix(icon_tile("brp-computer-symbolic"))
+        description = _("Available at {}").format(host["ip"])
+        if provider:
+            description = _("On your {provider} private network at {address}").format(provider=provider, address=host["ip"])
+        if readiness:
+            description = f"{description}. {readiness}"
         row.update_property(
             [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
-            [name, _("Available at {}").format(host["ip"])],
+            [name, description],
         )
         row.connect("activated", lambda selected_row: self.hosts_list.select_row(selected_row))
         return row
@@ -1263,15 +1359,6 @@ class GuestView(Gtk.Box):
     _RESOLUTION_BY_INDEX = {0: "1280x720", 1: "1920x1080", 2: "2560x1440", 3: "3840x2160"}
     _FPS_BY_INDEX = {0: "30", 1: "60", 2: "120"}
 
-    def _wait_until_paired(self, host_ip: str, retries: int, port: int = 47989) -> bool:
-        """Poll Moonlight until the host reports as paired, up to `retries` times."""
-        for attempt in range(retries):
-            if bool(self.moonlight.list_apps(host_ip, port=port)):
-                return True
-            if attempt < retries - 1:
-                time.sleep(1.0)  # allow the host to sync after a fresh pairing
-        return False
-
     def _attempt_valid(self, attempt: int) -> bool:
         return not self._closed and attempt == self._attempt_id
 
@@ -1318,35 +1405,53 @@ class GuestView(Gtk.Box):
         def failed(message):
             if self._attempt_valid(attempt):
                 self.show_loading(False)
-                self.show_error_dialog(_("Could not connect"), message)
+                if host.get("provider") in PRIVATE_PROVIDER_NAMES:
+                    self.show_diagnosable_error(host, message)
+                else:
+                    self.show_error_dialog(_("Could not connect"), message)
             return False
+
+        requested = {"resolution": f"{width}x{height}", "fps": fps, "bitrate": opts["bitrate"]}
 
         def succeeded():
             if self._attempt_valid(attempt):
                 self.show_loading(False)
                 self.perf_monitor.set_connection_status(host["name"], _("Active Stream"), True)
                 self.perf_monitor.start_monitoring()
+                self._record_session_start(host, requested)
+            return False
+
+        def not_started():
+            if self._attempt_valid(attempt):
+                self.show_loading(False)
+                self.show_pair_again_dialog(host)
             return False
 
         def run(host=dict(host)):
+            from big_remote_play.private_network.diagnostics import probe_sunshine
+            from big_remote_play.utils.moonlight_config import paired_host_certificate
+
             try:
                 if not paired_retry:
-                    apps = []
+                    # Fast, reliable signals only: `moonlight list` can take
+                    # about 20 seconds with current Moonlight Qt.
+                    reachable = ""
                     candidates = list(dict.fromkeys([host["ip"], *host.get("addresses", [])]))
                     for address in candidates[:3]:
                         if not self._attempt_valid(attempt):
                             return
-                        apps = self.moonlight.list_apps(address, port=opts["port"])
-                        if apps is None or apps:
-                            host = dict(host, ip=address)
+                        probe = probe_sunshine(address, int(opts["port"]))
+                        if probe.answered or probe.listening:
+                            reachable = address
                             break
                     if not self._attempt_valid(attempt):
                         return
-                    if apps is None:
-                        GLib.idle_add(start_pairing, host)
-                        return
-                    if not apps:
+                    if not reachable:
                         GLib.idle_add(failed, _("Check that sharing is running on the game PC and that both computers can reach each other."))
+                        return
+                    host = dict(host, ip=reachable)
+                    if not paired_host_certificate(reachable):
+                        GLib.idle_add(start_pairing, host)
                         return
                 if not self._attempt_valid(attempt):
                     return
@@ -1356,10 +1461,18 @@ class GuestView(Gtk.Box):
                     # process too; the UI blocks new starts until this settles.
                     self.moonlight.disconnect()
                     return
-                if ok:
-                    GLib.idle_add(succeeded)
-                else:
+                if not ok:
                     GLib.idle_add(failed, _("Failed to connect. Verify if Moonlight is paired."))
+                    return
+                # A Moonlight window can be an error message: success is the
+                # video stream actually starting.
+                if self.moonlight.wait_for_stream(30.0):
+                    GLib.idle_add(succeeded)
+                    return
+                if not self._attempt_valid(attempt):
+                    return
+                self.moonlight.disconnect()
+                GLib.idle_add(not_started)
             except Exception as exc:
                 _log.warning("Connection attempt failed: %s", exc)
                 GLib.idle_add(failed, _("Check that sharing is running on the game PC and that both computers can reach each other."))
@@ -1554,6 +1667,153 @@ class GuestView(Gtk.Box):
             _("No computer answered this search code. Check the code or connect using its address."),
         )
 
+    # ── history ────────────────────────────────────────────────────────────
+    def _history(self):
+        from big_remote_play.private_network.service import default_service
+
+        return default_service().history
+
+    def _record_session_start(self, host: dict, requested: dict) -> None:
+        """Record a stream that really started (Moonlight is running)."""
+        import socket
+
+        context = getattr(self, "current_host_ctx", {}) or {}
+        provider = str(host.get("provider") or ("manual" if context.get("type") == "manual" else "lan"))
+        codec = _CODEC_NAMES.get(str(self.moonlight_config.get("videocfg") or "0"), "")
+        fields = {
+            "host_name": str(host.get("name") or host.get("ip")),
+            "host_address": str(host.get("ip")),
+            "port": int(host.get("port", SUNSHINE_DEFAULT_BASE_PORT)),
+            "provider": provider,
+            "client_name": socket.gethostname(),
+            "app": "Desktop",
+            "resolution": requested.get("resolution", ""),
+            "fps": int(str(requested.get("fps") or 0)) if str(requested.get("fps") or "0").isdigit() else 0,
+            "bitrate_kbps": int(requested.get("bitrate") or 0),
+            "codec": codec,
+            "connection_path": "lan" if provider in ("lan", "manual") else "unknown",
+        }
+        history = self._history()
+        moonlight = self.moonlight
+
+        def work() -> str:
+            # A running Moonlight process can be an error window; only a stream
+            # that really started belongs in the history.
+            if not moonlight.wait_for_stream(30.0):
+                return ""
+            return history.start(**fields)
+
+        def done(session_id: str) -> None:
+            self._session_id = session_id
+
+        self._history_worker.submit(work, done, failed=lambda error: _log.warning("History not recorded: %s", error))
+
+    def _record_session_end(self) -> None:
+        session_id, self._session_id = self._session_id, ""
+        if not session_id:
+            return
+        process = getattr(self.moonlight, "process", None)
+        code = process.poll() if process is not None else 0
+        history = self._history()
+        self._history_worker.submit(lambda: history.finish(session_id, failed=code not in (0, None)), lambda _value: self.refresh_recent_hosts(), keep_previous=True)
+
+    def refresh_recent_hosts(self) -> None:
+        history = self._history()
+
+        def apply(hosts) -> None:
+            rows = []
+            for candidate in hosts[:3]:
+                host = candidate.as_host()
+                provider = PRIVATE_PROVIDER_NAMES.get(candidate.provider, "")
+                row = Adw.ActionRow(title=candidate.name, subtitle=" · ".join(value for value in (provider, candidate.address) if value), use_markup=False)
+                row.add_prefix(icon_tile("brp-document-open-recent-symbolic"))
+                button = Gtk.Button(label=_("Connect"), valign=Gtk.Align.CENTER)
+                button.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Connect to {name} again").format(name=candidate.name)])
+                button.connect("clicked", lambda _button, item=host: self.connect_to_host(dict(item)))
+                row.add_suffix(button)
+                row.set_activatable_widget(button)
+                rows.append(row)
+            self.recent_group.replace(rows)
+            self.recent_group.set_visible(bool(rows))
+
+        self._history_worker.submit(lambda: history.recent_hosts(3), apply, keep_previous=True)
+
+    def show_history(self) -> None:
+        from .history_dialog import HistoryDialog
+
+        def reconnect(record) -> None:
+            self.connect_to_host({"name": record.host_name or record.host_address, "ip": record.host_address, "port": record.port, "provider": record.provider})
+
+        HistoryDialog(self, self._history(), on_reconnect=reconnect, show_toast=self.show_toast).present()
+
+    # ── diagnosis ──────────────────────────────────────────────────────────
+    def show_diagnosable_error(self, host: dict, message: str) -> None:
+        dialog = Adw.AlertDialog(heading=_("Could not connect"), body=message)
+        dialog.set_body_use_markup(False)
+        dialog.add_response("close", _("Close"))
+        dialog.add_response("diagnose", _("Diagnose"))
+        dialog.set_response_appearance("diagnose", Adw.ResponseAppearance.SUGGESTED)
+        dialog.set_default_response("diagnose")
+        dialog.set_close_response("close")
+        dialog.connect("response", lambda _dialog, response: self.diagnose_host(host) if response == "diagnose" else None)
+        dialog.present(self)
+
+    def diagnose_host(self, host: dict) -> None:
+        from big_remote_play.private_network.models import HostCandidate
+        from big_remote_play.private_network.service import default_service
+        from .network_common import loading_row, message_row
+
+        candidate = HostCandidate(
+            str(host.get("name") or host["ip"]), str(host["ip"]), int(host.get("port", SUNSHINE_DEFAULT_BASE_PORT)), provider=str(host.get("provider", "lan")), dns_name=str(host.get("dns_name", ""))
+        )
+        group = RowGroup(title=GLib.markup_escape_text(candidate.name))
+        group.replace([loading_row(_("Checking the network, the computer and Sunshine…"))])
+        dialog = content_dialog(_("Diagnosis"), group, description=_("Quick read-only checks. Nothing is changed."), width=560, height=460)
+        worker = Worker()
+        dialog.connect("closed", lambda *_args: worker.close())
+
+        def apply(result) -> None:
+            def check(ok, good, bad, unknown=_("Not checked")):
+                if ok is None:
+                    return message_row(unknown, "", "brp-network-idle-symbolic")
+                return message_row(good if ok else bad, "", "brp-emblem-ok-symbolic" if ok else "dialog-warning-symbolic")
+
+            rows = [
+                check(result.network_ok, _("Private network connected"), _("The private network is not connected on this computer")),
+                check(result.host_online, _("Computer online"), _("The computer seems to be offline")),
+                check(result.sunshine_ok, _("Sunshine answers"), _("Sunshine does not answer. Start sharing on the game PC.")),
+            ]
+            if result.path is not None:
+                title, subtitle = path_summary(result.path)
+                rows.append(message_row(title, subtitle, "brp-network-transmit-receive-symbolic"))
+            if result.ready:
+                rows.append(message_row(_("Ready to connect"), "", "brp-emblem-ok-symbolic"))
+            technical = Adw.ExpanderRow(title=_("Technical details"), use_markup=False)
+            detail = Adw.ActionRow(title="\n".join(result.details) or _("No details reported."), use_markup=False)
+            detail.set_title_lines(0)
+            detail.set_title_selectable(True)
+            technical.add_row(detail)
+            rows.append(technical)
+            group.replace(rows)
+
+        worker.submit(lambda: default_service().diagnose(candidate), apply, failed=lambda _error: group.replace([message_row(_("The checks could not run."), "", "dialog-warning-symbolic")]))
+        dialog.present(self)
+
+    def show_pair_again_dialog(self, host: dict) -> None:
+        """The stream did not start; the usual cause is a removed pairing."""
+        dialog = Adw.AlertDialog(
+            heading=_("The stream did not start"),
+            body=_("The game PC answered, but no video arrived. If this computer was removed from its paired devices, pair it again."),
+        )
+        dialog.set_body_use_markup(False)
+        dialog.add_response("close", _("Close"))
+        dialog.add_response("pair", _("Pair again"))
+        dialog.set_response_appearance("pair", Adw.ResponseAppearance.SUGGESTED)
+        dialog.set_default_response("pair")
+        dialog.set_close_response("close")
+        dialog.connect("response", lambda _dialog, response: self.start_pairing_flow(dict(host)) if response == "pair" else None)
+        dialog.present(self)
+
     def show_error_dialog(self, title, message):
         dialog = Adw.AlertDialog(heading=title, body=message)
         dialog.add_response("ok", _("OK"))
@@ -1661,6 +1921,9 @@ class GuestView(Gtk.Box):
 
     def cleanup(self):
         self._closed = True
+        for worker in (getattr(self, "_private_worker", None), getattr(self, "_history_worker", None)):
+            if worker is not None:
+                worker.close()
         self._attempt_cancel.set()
         self._attempt_id += 1
         for attribute in ("_connection_timer", "_discovery_timer"):
