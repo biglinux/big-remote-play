@@ -410,7 +410,11 @@ class HostView(Gtk.Box):
         # The picture the other computer sees, before any compression.
         self.hdr_sdr_row = Adw.SwitchRow(use_markup=False)
         self.hdr_sdr_row.set_title(_("Correct colors of HDR screens"))
-        self.hdr_sdr_row.set_subtitle(_("While sharing with a device that does not use HDR, the shared screen switches to SDR and back afterwards. Without it, colors look grey and washed out there."))
+        self.hdr_sdr_row.set_subtitle(
+            _(
+                "While sharing, the shared screen uses SDR and returns to HDR afterwards, so every device sees correct colors; devices that ask for HDR get SDR. Without it, devices without HDR see grey, washed-out colors."
+            )
+        )
         self.hdr_sdr_row.set_active(True)
         self.hardware_group.add(self.hdr_sdr_row)
         # Scaling a large screen down to a TV or car screen blurs small text
@@ -1043,7 +1047,7 @@ class HostView(Gtk.Box):
         if not hdr_outputs or (target is not None and target not in hdr_outputs):
             return ""
         if self.hdr_sdr_row.get_active():
-            return _("HDR screen: shared in SDR for devices without HDR")
+            return _("HDR screen: shared in SDR")
         return _("HDR screen: colors will look washed out on devices without HDR")
 
     def _probe_hdr_outputs(self) -> None:
