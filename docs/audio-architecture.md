@@ -8,6 +8,8 @@ How the game PC's sound reaches the other computer, what Big Remote Play changes
 
 Sunshine records the *monitor* of an output — a copy of the sound going to a device — and never a microphone, line-in or other input. Big Remote Play never configures a microphone for Sunshine, never loops a microphone into an output and never enables microphone monitoring. Voice chat keeps working in its own apps; it is not carried by Sunshine.
 
+One kind of playback is kept out as well: a **voice call**. A call program plays the voices of everyone in the call, including the person connecting, so the monitor carried their own voice back to them. See [Voice calls](#voice-calls-stay-out-of-the-stream).
+
 ## How Sunshine captures sound on Linux
 
 Measured with Sunshine 2026.914 on PipeWire 1.6.8 (pipewire-pulse, WirePlumber 0.5.17), matching Sunshine's `src/audio.cpp` and `src/platform/linux/audio.cpp`:
@@ -28,6 +30,7 @@ Sunshine creates its three virtual outputs when it starts. `virtual_sink` is not
 | Default output | never changed by Big Remote Play | Sunshine switches it during sessions and restores it | Sunshine switches it during sessions and restores it |
 | Application streams | never moved | never moved | never moved |
 | Port links | only while a client mutes the host (below) | only for a surround client (below) | only while a client mutes the host (below) |
+| While a call program plays into the recorded output | its own output with every other program linked into it; Sunshine records it | the same | the same |
 
 `sunshine.conf` is merged, never replaced: unknown options, the apps file, pairings and credentials stay as they are, and the previous file is kept as `sunshine.conf.previous` (0600) whenever the content changes.
 
@@ -43,6 +46,32 @@ Two measured Sunshine behaviors need help. A *bridge* links the monitor ports of
 Bridges target only hardware/Bluetooth devices or Sunshine's own outputs, and a cycle check refuses any bridge that would reach its own source. A bridge into a virtual output is refused (it would feed itself); the details say so and this computer stays silent for that client.
 
 Port links, not `module-loopback`: on the test machine JamesDSP pulled *every* new playback stream — even one created with an explicit target — into its own sink, which forwarded to the default output, which was Sunshine's virtual output. A loopback stream therefore formed a feedback loop. A port link is not a stream, so no effects program can capture it.
+
+## Voice calls stay out of the stream
+
+A call program on this computer (Discord and its clients, Fluxer, Zoom, Teams, Skype, Slack, Telegram, Signal, Element, Mumble, TeamSpeak, Jami, WhatsApp clients…) plays everyone's voice, the other person's included. Measured in an isolated PipeWire 1.6.8 instance: with a call playing through an effects program into the recorded device, Sunshine's capture carried the call at −14 dB next to the game.
+
+While Sunshine records and a call program's sound reaches the output Sunshine records:
+
+1. Big Remote Play loads its own output, `big-remote-play-stream` (`module-null-sink`, same channels as the recorded output, `big-remote-play.owner=<session token>`, shown in the sound settings as “Big Remote Play: sound sent to the other computer”).
+2. Every other program whose sound reaches the recorded output gets port links from its output ports into that output (by port id, tagged with the token). Only programs themselves: a node that others play into (an effects filter) or one half of a loopback, combined output or filter chain (they share a `node.link-group`) forwards sound that is linked already, the call included.
+3. Sunshine's capture stream is moved to `big-remote-play-stream.monitor`, a monitor like any other.
+
+No application stream is moved and no default changes: this computer hears the call, the game and its effects as before. Whether a sound reaches the recorded output is read from PipeWire's own graph (`pw-dump`: links, plus the internal connection of a link group); `pw-dump` runs only while a call program has a stream. A call on another device (headphones Sunshine does not record) is left alone: it was never sent.
+
+Call programs are recognized by `media.role` `phone`/`communication`, or by executable, application name or Flatpak id against a fixed list. A call in a web browser is part of the browser's single stream and cannot be separated; it is still sent.
+
+When the call ends (the program closes its stream) or the client disconnects, the capture is moved back to the monitor of the output Sunshine had chosen, and only then the output is removed: removing it while Sunshine records it would leave the choice of a new source to the session manager. Streams starting or ending (`sink-input` `new`/`remove` events) trigger a check; their volume changes do not.
+
+Measured in the isolated instance (tone levels on Sunshine's capture; this computer's device in the last column):
+
+| Scenario | Call | Game | This computer |
+|---|---|---|---|
+| Before | −14 dB | −8 dB | both |
+| Call program playing through an effects program (port links) | −284 dB | −8 dB | both at the same level |
+| The same through a `module-loopback` (link group) | −284 dB | −8 dB | both |
+| Client muted the host, **Also play sound on this computer** on | −297 dB | −23 dB, unchanged | both, through the bridge |
+| The call ended | −283 dB (none) | −8 dB | — ; capture back on the device monitor, output removed |
 
 Links carry `big-remote-play.owner=<session token>`. Their ids and exact port names are kept in the session record and are removed only while each id still joins the same two ports. Other programs' links, loopbacks and virtual outputs are never removed.
 
@@ -62,7 +91,7 @@ An effects program such as JamesDSP links its own output ports to the default ou
 
 Therefore, while a Sunshine output exists (each reconcile and once more right before **Stop sharing** stops Sunshine), the session records the **port names** of other programs' outputs that play into a Sunshine output: not Sunshine's own ports, not our bridges. After Sunshine stops, each recorded port that still exists and still has no link at all after 2 s — enough for the program to follow the output by itself — is linked to the default output's playback port of the same channel (front channels into a mono device). Only when the default output is a device (hardware or Bluetooth): a virtual default usually forwards to the program itself. These links restore the person's own chain, so they are not tagged as ours and are never removed; the program replaces them the next time it moves (JamesDSP did, measured). A port that is linked anywhere is left alone.
 
-The session record lives at `$XDG_RUNTIME_DIR/big-remote-play/audio-session.json` (0600): owner PID, token, previous output, mode, link ids and the recorded port names. No other object id is stored. On the next start, a record whose owner is gone is either **adopted** (Sunshine still sharing) or **cleaned up** (links removed, output restored). Null sinks and loopbacks named `SunshineGameSink`, `SunshineStereo`, `SunshineHybrid` or `SunshineLoopback` are left only by Big Remote Play 2.x; they are removed on start when Sunshine is not sharing.
+The session record lives at `$XDG_RUNTIME_DIR/big-remote-play/audio-session.json` (0600): owner PID, token, previous output, mode, link ids, the recorded port names and the module index of the call-free output (removed only while its arguments still carry the token). No other object id is stored; which output a moved capture came from is kept in memory only, and an adopted session uses the output in use. On the next start, a record whose owner is gone is either **adopted** (Sunshine still sharing) or **cleaned up** (links removed, output restored). Null sinks and loopbacks named `SunshineGameSink`, `SunshineStereo`, `SunshineHybrid` or `SunshineLoopback` are left only by Big Remote Play 2.x; they are removed on start when Sunshine is not sharing, as is a `big-remote-play-stream` output left by a window that crashed together with its record.
 
 ## Identifying outputs, monitors and streams
 
@@ -88,4 +117,5 @@ The previous explicit routing moved every application stream back into `Sunshine
 
 - A client that mutes the host while the person uses a virtual output as default (EasyEffects/JamesDSP) leaves this computer silent for that session; a bridge would feed itself.
 - Surround bridged into stereo keeps only the front pair.
+- During a voice call the other computer hears each program before the effects of EasyEffects or JamesDSP, and a call in a web browser is still sent.
 - Measurements were made on one machine (KDE Plasma 6.7 on Wayland, AMD GPUs, USB outputs, JamesDSP). X11 sessions, Bluetooth, HDMI, EasyEffects and a real Steam Remote Play Together session still need target-machine testing; see [audio testing](audio-testing.md).

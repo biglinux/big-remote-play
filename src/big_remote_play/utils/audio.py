@@ -7,17 +7,20 @@ Contract (see docs/audio-architecture.md):
   says so ("Monitor of Sink"), never because its name ends in ``.monitor``.
 - Automatic mode writes nothing to the sound server: Sunshine records the
   monitor of whatever output is current when a client connects.
-- The only thing Big Remote Play ever adds is a "bridge": direct PipeWire port
-  links from a Sunshine virtual output's monitor into a device. Port links are
-  not streams, so effect programs that capture every new stream (EasyEffects,
+- Big Remote Play adds a "bridge": direct PipeWire port links from a
+  Sunshine virtual output's monitor into a device. Port links are not
+  streams, so effect programs that capture every new stream (EasyEffects,
   JamesDSP) cannot pull them into a feedback loop. Application streams are
   never moved, so per-process capture by other programs (Steam Remote Play,
   OBS, recorders) keeps working.
+- While a voice call program plays into what Sunshine records, it adds its
+  own output with every other program linked into it, and Sunshine records
+  that instead: the person connecting no longer hears their own voice.
 - After Sunshine exits, another program's output that played into a Sunshine
   output and is left linked to nothing is linked to the default device again,
   as that program would have done itself.
-- Object ids are never persisted except the ids of links this app created,
-  always re-verified against their exact ports before removal.
+- Object ids are never persisted except the ids of links and of the output
+  this app created, always re-verified (ports, token) before removal.
 """
 
 from __future__ import annotations
@@ -35,6 +38,8 @@ import secrets
 import subprocess
 import threading
 import time
+
+from big_remote_play.utils.i18n import _
 
 _log = logging.getLogger("big-remoteplay")
 
@@ -104,6 +109,7 @@ class AudioOutput:
     monitor: str  # as announced by the sink; verified by AudioGraph.monitor_of
     state: str
     kind: str
+    channel_map: str = ""  # "front-left,front-right", as pactl reports it
 
     @property
     def is_real(self) -> bool:
@@ -229,7 +235,9 @@ def build_graph(sinks: str, sources: str, sink_inputs: str, source_outputs: str,
         if not name:
             continue
         description = f.get("Description", "") or p.get("device.description", "") or name
-        outputs.append(AudioOutput(item["index"], name, description, f.get("Monitor Source", ""), f.get("State", ""), classify_output(name, description, p, f.get("Flags", ""))))
+        outputs.append(
+            AudioOutput(item["index"], name, description, f.get("Monitor Source", ""), f.get("State", ""), classify_output(name, description, p, f.get("Flags", "")), f.get("Channel Map", ""))
+        )
     source_list = []
     for item in parse_pactl_list(sources):
         f, p = item["fields"], item["properties"]
@@ -437,6 +445,7 @@ class AudioStatus:
     bridges: tuple[Bridge, ...] = ()
     host_muted_by_client: bool = False
     notes: tuple[str, ...] = ()
+    calls_kept_out: tuple[str, ...] = ()  # call programs playing here but not sent
 
 
 def audio_status(graph: AudioGraph | None, manual_output: str = "", bridges: Iterable[Bridge] = ()) -> AudioStatus:
@@ -461,7 +470,7 @@ def audio_status(graph: AudioGraph | None, manual_output: str = "", bridges: Ite
     )
 
 
-def desired_bridges(graph: AudioGraph, *, original_sink: str, play_on_host: bool) -> tuple[list[Bridge], list[str]]:
+def desired_bridges(graph: AudioGraph, *, original_sink: str, play_on_host: bool, origins: Mapping[str, str] | None = None) -> tuple[list[Bridge], list[str]]:
     """Loopbacks needed right now, plus notes about ones refused as unsafe.
 
     Two measured Sunshine behaviors need help:
@@ -479,6 +488,9 @@ def desired_bridges(graph: AudioGraph, *, original_sink: str, play_on_host: bool
     Targets are limited to devices and Sunshine's own outputs: a virtual output
     usually forwards to the default output, which here is the bridge source,
     so a loopback into it would feed itself.
+
+    ``origins`` maps a capture that records Big Remote Play's call-free mix
+    to the output Sunshine chose for it, which is what these rules are about.
     """
     bridges: list[Bridge] = []
     notes: list[str] = []
@@ -487,7 +499,7 @@ def desired_bridges(graph: AudioGraph, *, original_sink: str, play_on_host: bool
         return bridges, notes
     default = graph.output(graph.default_sink)
     for capture in captures:
-        recorded = graph.recorded_output(capture)
+        recorded = (origins or {}).get(capture.index) or graph.recorded_output(capture)
         recorded_output = graph.output(recorded) if recorded else None
         if recorded_output is None:
             continue
@@ -523,6 +535,182 @@ def _creates_cycle(bridge: Bridge, bridges: list[Bridge]) -> bool:
         seen.add(node)
         stack.extend(edges.get(node, ()))
     return False
+
+
+# --------------------------------------------------------------------------
+# Voice calls stay out of the stream.
+#
+# A call program on this computer plays the voices of everyone in the call,
+# including the person connecting. Sunshine records everything this computer
+# plays, so that person heard their own voice come back through the stream.
+# While a call program plays into the output Sunshine records, Sunshine
+# records Big Remote Play's own output instead, which receives every other
+# program's sound through port links. Nothing is moved: every program keeps
+# playing where it played, so this computer hears the call and the game as
+# before.
+# --------------------------------------------------------------------------
+
+CALL_MIX_SINK = "big-remote-play-stream"
+
+# Executable, application name or last part of a Flatpak id, lowercased with
+# everything but letters and digits removed.
+# fmt: off
+CALL_PROGRAMS = frozenset(
+    {
+        "discord", "discordptb", "discordcanary", "vesktop", "webcord", "armcord", "legcord", "equibop", "goofcord", "dorion",
+        "webrtcvoiceengine",  # the name of Discord's voice stream
+        "fluxer", "zoom", "teams", "teamsforlinux", "msteams", "skype", "skypeforlinux", "slack",
+        "telegram", "telegramdesktop", "ayugramdesktop", "kotatogramdesktop", "64gram",
+        "signal", "signaldesktop", "element", "elementdesktop", "riot", "mumble",
+        "teamspeak", "teamspeak3", "teamspeakclient", "ts3client", "ts3clientlinuxamd64", "ts3clientlinuxx86",
+        "jami", "jamiqt", "jamignome", "linphone", "gnomecalls", "zapzap", "whatsapp", "whatsie",
+        "revolt", "revoltdesktop", "jitsimeet", "mattermost", "mattermostdesktop", "rocketchat", "rocketchatdesktop",
+        "nheko", "wire", "wiredesktop",
+    }
+)
+# fmt: on
+# Flatpak ids whose last part is too generic to list above.
+CALL_APP_IDS = frozenset({"com.skype.client", "org.telegram.desktop", "com.mattermost.desktop", "com.rocketchat.rocket.chat"})
+_CALL_ROLES = frozenset({"phone", "communication"})
+
+
+def _simplified(text: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", (text or "").lower())
+
+
+def is_call_stream(stream: AudioStream) -> bool:
+    """A call program's playback: the voices of the people in the call.
+
+    A call in a web browser is part of the browser's single stream and
+    cannot be told apart from the rest of its sound.
+    """
+    props = stream.properties
+    if props.get("media.role", "").lower() in _CALL_ROLES:
+        return True
+    names = [stream.binary, stream.app]
+    for key in ("pipewire.access.portal.app_id", "application.id"):
+        app_id = props.get(key, "").lower()
+        if app_id in CALL_APP_IDS:
+            return True
+        if app_id:
+            names.append(app_id.rsplit(".", 1)[-1])
+    return any(_simplified(name) in CALL_PROGRAMS for name in names if name)
+
+
+def call_program_name(stream: AudioStream) -> str:
+    return stream.app or stream.binary or "?"
+
+
+@dataclass(frozen=True)
+class PwPort:
+    node: int
+    direction: str  # "output" | "input"
+    channel: str
+    monitor: bool = False
+
+
+@dataclass(frozen=True)
+class PwLink:
+    output_node: int
+    output_port: int
+    input_node: int
+    input_port: int
+    owner: str = ""
+
+
+@dataclass(frozen=True)
+class PipeWireGraph:
+    """Nodes, ports and links as PipeWire itself reports them (``pw-dump``)."""
+
+    nodes: Mapping[int, Mapping[str, object]] = field(default_factory=dict)
+    ports: Mapping[int, PwPort] = field(default_factory=dict)
+    links: Mapping[int, PwLink] = field(default_factory=dict)
+
+    def node_named(self, name: str) -> int | None:
+        return next((node for node, props in self.nodes.items() if props.get("node.name") == name), None)
+
+    def ports_of(self, node: int, direction: str) -> dict[str, int]:
+        """``{channel: port id}``; a sink's monitor ports are left out of its outputs."""
+        return {port.channel: port_id for port_id, port in sorted(self.ports.items()) if port.node == node and port.direction == direction and not port.monitor and port.channel}
+
+    def is_fed(self, node: int) -> bool:
+        """Whether other nodes play into ``node``: then it forwards their sound."""
+        return any(link.input_node == node for link in self.links.values())
+
+    def link_group(self, node: int) -> str:
+        return str(self.nodes.get(node, {}).get("node.link-group") or "")
+
+    def reaches(self, start: int, target: int) -> bool:
+        """Whether sound leaving ``start`` ends up in ``target``.
+
+        Follows links, and the internal connection between the halves of a
+        loopback, combined output or filter chain (they share a link group).
+        """
+        groups: dict[str, list[int]] = {}
+        for node in self.nodes:
+            group = self.link_group(node)
+            if group:
+                groups.setdefault(group, []).append(node)
+        seen: set[int] = set()
+        stack = [start]
+        while stack:
+            node = stack.pop()
+            if node == target:
+                return True
+            if node in seen:
+                continue
+            seen.add(node)
+            stack.extend(link.input_node for link in self.links.values() if link.output_node == node)
+            stack.extend(groups.get(self.link_group(node), ()))
+        return False
+
+
+def parse_pw_dump(text: str) -> PipeWireGraph | None:
+    try:
+        objects = json.loads(text or "[]")
+    except ValueError:
+        return None
+    if not isinstance(objects, list):
+        return None
+    nodes: dict[int, Mapping[str, object]] = {}
+    ports: dict[int, PwPort] = {}
+    links: dict[int, PwLink] = {}
+    for item in objects:
+        object_id = item.get("id") if isinstance(item, dict) else None
+        if not isinstance(item, dict) or not isinstance(object_id, int):
+            continue
+        raw_info = item.get("info")
+        info: dict = raw_info if isinstance(raw_info, dict) else {}
+        raw_props = info.get("props")
+        props: dict = raw_props if isinstance(raw_props, dict) else {}
+        kind = str(item.get("type", ""))
+        node = props.get("node.id")
+        if kind.endswith(":Node"):
+            nodes[object_id] = props
+        elif kind.endswith(":Port") and isinstance(node, int):
+            ports[object_id] = PwPort(node, str(info.get("direction") or ""), str(props.get("audio.channel") or ""), bool(props.get("port.monitor")))
+        elif kind.endswith(":Link"):
+            ids = [value for value in (info.get(key) for key in ("output-node-id", "output-port-id", "input-node-id", "input-port-id")) if isinstance(value, int)]
+            if len(ids) == 4:
+                links[object_id] = PwLink(*ids, owner=str(props.get(OWNER_PROPERTY) or ""))
+    return PipeWireGraph(nodes, ports, links)
+
+
+def mix_channels(channel: str, inputs: Iterable[str]) -> list[str]:
+    """Where a program's ``channel`` goes in the mix: same channel, mono into both fronts."""
+    available = set(inputs)
+    if channel in available:
+        return [channel]
+    if channel == "MONO":
+        return [c for c in ("FL", "FR") if c in available]
+    if available == {"MONO"} and channel in ("FL", "FR"):
+        return ["MONO"]
+    return []
+
+
+def _stream_node(stream: AudioStream) -> int | None:
+    value = stream.properties.get("object.id", "")
+    return int(value) if value.isdigit() else None
 
 
 # --------------------------------------------------------------------------
@@ -643,6 +831,64 @@ class AudioManager:
     def move_capture(self, stream_index: str, source: str) -> bool:
         result = self._pactl("move-source-output", stream_index, source)
         return result is not None and result.returncode == 0
+
+    def pipewire(self) -> PipeWireGraph | None:
+        """PipeWire's own nodes, ports and links; ``None`` when unreadable."""
+        try:
+            result = self._run(["pw-dump"], capture_output=True, text=True, timeout=_COMMAND_TIMEOUT, env={**os.environ, "LC_ALL": "C"}, stdin=subprocess.DEVNULL)
+        except (OSError, subprocess.SubprocessError) as exc:
+            _log.warning("pw-dump failed: %s", exc)
+            return None
+        return parse_pw_dump(result.stdout) if result.returncode == 0 else None
+
+    def create_call_mix(self, token: str, channel_map: str, description: str) -> str:
+        """Load Big Remote Play's output for the call-free mix; its module index, or ``""``."""
+        # Both quote levels of pipewire-pulse's module arguments; a quote or a
+        # backslash in the description would end them early.
+        description = re.sub(r'["\\]', "", description)
+        args = ["load-module", "module-null-sink", f"sink_name={CALL_MIX_SINK}"]
+        if re.fullmatch(r"[a-z0-9-]+(,[a-z0-9-]+)*", channel_map or ""):
+            args.append(f"channel_map={channel_map}")
+        args.append(f'sink_properties="device.description=\\"{description}\\" {OWNER_PROPERTY}={token}"')
+        result = self._pactl(*args)
+        index = result.stdout.strip() if result is not None and result.returncode == 0 else ""
+        return index if index.isdigit() else ""
+
+    def unload_owned_module(self, index: str, token: str) -> bool:
+        """Unload module ``index`` only while its arguments still carry ``token``."""
+        result = self._pactl("list", "short", "modules")
+        if result is None or result.returncode != 0:
+            return False
+        mark = f"{OWNER_PROPERTY}={token}"
+        for line in result.stdout.splitlines():
+            parts = line.split("\t")
+            if len(parts) >= 3 and parts[0].strip() == index and mark in parts[2]:
+                unloaded = self._pactl("unload-module", index)
+                return unloaded is not None and unloaded.returncode == 0
+        return False
+
+    def unload_call_mixes(self) -> list[str]:
+        """Remove every call-free mix output, whoever's token it has; only when nothing shares."""
+        result = self._pactl("list", "short", "modules")
+        if result is None or result.returncode != 0:
+            return []
+        removed = []
+        for line in result.stdout.splitlines():
+            parts = line.split("\t")
+            if len(parts) >= 3 and parts[1].strip() == "module-null-sink" and f"sink_name={CALL_MIX_SINK}" in parts[2] and OWNER_PROPERTY in parts[2]:
+                unloaded = self._pactl("unload-module", parts[0].strip())
+                if unloaded is not None and unloaded.returncode == 0:
+                    removed.append(parts[0].strip())
+        return removed
+
+    def link_port_ids(self, pairs: Iterable[tuple[int, int]], token: str) -> None:
+        props = json.dumps({OWNER_PROPERTY: token, "object.linger": True})
+        for out_port, in_port in pairs:
+            self._pw_link("-p", props, str(out_port), str(in_port))
+
+    def unlink_ids(self, link_ids: Iterable[int]) -> None:
+        for link_id in link_ids:
+            self._pw_link("-d", str(link_id))
 
     # ------------------------------------------------------------------
     # "Test audio": a short generated tone, measured on the captured monitor.
@@ -768,6 +1014,14 @@ class AudioRoutingSession:
         self.original_sink = ""
         self.links: dict[Bridge, list[dict[str, str]]] = {}
         self.feeders: set[str] = set()  # port names only, re-checked before use
+        # The call-free mix: its module index while it exists, and for each
+        # capture moved into it the output Sunshine had chosen (in memory
+        # only: stream ids are never persisted).
+        self.mix_module = ""
+        self.capture_origins: dict[str, str] = {}
+        self.calls_kept_out: tuple[str, ...] = ()
+        # Shown in the desktop's sound settings while the mix exists.
+        self.mix_description = _("Big Remote Play: sound sent to the other computer")
         self.notes: tuple[str, ...] = ()
         self._owner_pid = os.getpid()
         self._lock = threading.Lock()
@@ -784,6 +1038,7 @@ class AudioRoutingSession:
             "play_on_host": self.play_on_host,
             "bridges": [{"source": b.source_sink, "target": b.target_sink, "reason": b.reason, "links": links} for b, links in self.links.items()],
             "feeders": sorted(self.feeders),
+            "mix_module": self.mix_module,
         }
         try:
             secure_write_text(str(self.state_path), json.dumps(state))
@@ -824,6 +1079,8 @@ class AudioRoutingSession:
         if isinstance(feeders, list):
             session.feeders = {port for port in feeders if isinstance(port, str) and ":" in port and len(port) <= 256}
             session.feeders = set(sorted(session.feeders)[: cls._MAX_FEEDERS])
+        mix_module = str(state.get("mix_module") or "")
+        session.mix_module = mix_module if mix_module.isdigit() else ""
         try:
             session._owner_pid = int(state.get("owner_pid") or 0)
         except (TypeError, ValueError):
@@ -850,6 +1107,12 @@ class AudioRoutingSession:
                 self.original_sink = default.name  # the person's latest choice
             for capture in graph.sunshine_captures():
                 recorded = graph.recorded_output(capture)
+                if recorded == CALL_MIX_SINK:
+                    # Our call-free mix; below, it follows the person's output.
+                    origin = graph.output(self.capture_origins.get(capture.index, ""))
+                    if not self.manual_output and default is not None and default.is_real and origin is not None and origin.is_real and origin.name != default.name:
+                        self.capture_origins[capture.index] = default.name
+                    continue
                 if not recorded and plan.monitor:
                     if self.manager.move_capture(capture.index, plan.monitor):
                         notes.append("microphone-replaced")
@@ -861,7 +1124,9 @@ class AudioRoutingSession:
                         notes.append("followed-output")
             if notes:
                 graph = self.manager.snapshot() or graph
-            wanted, refused = desired_bridges(graph, original_sink=self.original_sink, play_on_host=self.play_on_host)
+            graph, call_notes = self._keep_calls_out(graph)
+            notes += call_notes
+            wanted, refused = desired_bridges(graph, original_sink=self.original_sink, play_on_host=self.play_on_host, origins=self.capture_origins)
             notes += refused
             if wanted or self.links:
                 current = self.manager.links() or {}
@@ -881,7 +1146,104 @@ class AudioRoutingSession:
                 self._note_feeders()
             self.notes = tuple(dict.fromkeys(notes))
             self._save()
-            return replace(audio_status(graph, self.manual_output, tuple(self.links)), notes=self.notes)
+            return replace(audio_status(graph, self.manual_output, tuple(self.links)), notes=self.notes, calls_kept_out=self.calls_kept_out)
+
+    def _keep_calls_out(self, graph: AudioGraph) -> tuple[AudioGraph, list[str]]:
+        """While a call program plays into what Sunshine records, record the call-free mix.
+
+        Every other program's sound is linked into the mix too, so the other
+        computer still hears it; nothing is moved, so this computer hears
+        everything as before. Without a call, Sunshine records the output
+        again and the mix is removed.
+        """
+        captures = graph.sunshine_captures()
+        origins: dict[str, str] = {}  # capture index -> the output Sunshine chose
+        on_mix: set[str] = set()
+        for capture in captures:
+            recorded = graph.recorded_output(capture)
+            if recorded == CALL_MIX_SINK:
+                on_mix.add(capture.index)
+                # Unknown after adopting a session: the output in use.
+                fallback = capture_plan(graph, self.manual_output).output
+                recorded = self.capture_origins.get(capture.index) or (fallback.name if fallback else "")
+            if recorded and graph.output(recorded) is not None:
+                origins[capture.index] = recorded
+        # Only a capture in the mix needs its origin remembered.
+        self.capture_origins = {index: origin for index, origin in origins.items() if index in on_mix}
+        candidates = [s for s in graph.playback if is_call_stream(s)]
+        pw = self.manager.pipewire() if candidates and origins else None
+        targets = {node for node in (pw.node_named(name) for name in set(origins.values())) if node is not None} if pw is not None else set()
+
+        def reaching(stream: AudioStream) -> bool:
+            node = _stream_node(stream)
+            return pw is not None and node is not None and any(pw.reaches(node, target) for target in targets)
+
+        calls = [s for s in candidates if reaching(s)]
+        if not calls or pw is None:
+            self.calls_kept_out = ()
+            return self._release_mix(graph, captures, origins), (["calls-unreadable"] if candidates and origins and pw is None else [])
+        if graph.output(CALL_MIX_SINK) is None:
+            origin = graph.output(next(iter(origins.values())))
+            self.mix_module = self.manager.create_call_mix(self.token, origin.channel_map if origin else "", self.mix_description)
+            self._save()
+            fresh, fresh_pw = self.manager.snapshot(), self.manager.pipewire()
+            if not self.mix_module or fresh is None or fresh_pw is None or fresh.output(CALL_MIX_SINK) is None:
+                self.calls_kept_out = ()
+                return self._release_mix(fresh or graph, captures, origins), ["calls-not-separated"]
+            graph, pw = fresh, fresh_pw
+            targets = {node for node in (pw.node_named(name) for name in set(origins.values())) if node is not None}
+        mix = graph.output(CALL_MIX_SINK)
+        mix_node = pw.node_named(CALL_MIX_SINK)
+        if mix is None or mix.kind != OWNED or mix_node is None:
+            self.calls_kept_out = ()
+            return graph, ["calls-not-separated"]  # someone else's output with our name
+        inputs = pw.ports_of(mix_node, "input")
+        wanted: set[tuple[int, int]] = set()
+        for stream in graph.playback:
+            node = _stream_node(stream)
+            # Only programs themselves: a node others play into, or half of a
+            # loopback or filter chain, forwards sound that is linked already.
+            if node is None or is_call_stream(stream) or _is_sunshine_process(stream) or pw.is_fed(node) or pw.link_group(node) or not reaching(stream):
+                continue
+            for channel, port in pw.ports_of(node, "output").items():
+                wanted |= {(port, inputs[target]) for target in mix_channels(channel, inputs)}
+        into_mix = {link_id: link for link_id, link in pw.links.items() if link.input_node == mix_node}
+        present = {(link.output_port, link.input_port) for link in into_mix.values()}
+        self.manager.unlink_ids(link_id for link_id, link in into_mix.items() if link.owner == self.token and (link.output_port, link.input_port) not in wanted)
+        self.manager.link_port_ids(sorted(wanted - present), self.token)
+        notes = []
+        for capture in captures:
+            if capture.index in origins and graph.recorded_output(capture) != CALL_MIX_SINK:
+                if self.manager.move_capture(capture.index, f"{CALL_MIX_SINK}.monitor"):
+                    self.capture_origins[capture.index] = origins[capture.index]
+                else:
+                    notes.append("calls-not-separated")
+        self.calls_kept_out = tuple(dict.fromkeys(call_program_name(s) for s in calls))
+        self._save()
+        return self.manager.snapshot() or graph, notes
+
+    def _release_mix(self, graph: AudioGraph, captures: Iterable[AudioStream], origins: Mapping[str, str]) -> AudioGraph:
+        """Put Sunshine back on the output it chose, then remove the mix.
+
+        The mix is removed only when no capture records it any more: a capture
+        whose source disappears is moved by the session manager, and that
+        choice is not ours to leave to chance.
+        """
+        moved = False
+        on_mix = [c for c in captures if graph.recorded_output(c) == CALL_MIX_SINK]
+        for capture in on_mix:
+            monitor = graph.monitor_of(origins.get(capture.index, "")) or capture_plan(graph, self.manual_output).monitor
+            if monitor and self.manager.move_capture(capture.index, monitor):
+                moved = True
+        if moved:
+            graph = self.manager.snapshot() or graph
+        if self.mix_module and not any(graph.recorded_output(c) == CALL_MIX_SINK for c in graph.sunshine_captures()):
+            if self.manager.unload_owned_module(self.mix_module, self.token) or graph.output(CALL_MIX_SINK) is None:
+                self.mix_module = ""
+                self.capture_origins = {}
+                self._save()
+                graph = self.manager.snapshot() or graph
+        return graph
 
     def remember_feeders(self) -> None:
         """Record who plays into Sunshine's outputs; call right before stopping Sunshine."""
@@ -909,6 +1271,9 @@ class AudioRoutingSession:
                         self.manager.unlink_owned(links, current)
                 self.links.clear()
             graph = self.manager.snapshot()
+            if graph is not None and self.mix_module:
+                graph = self._release_mix(graph, graph.sunshine_captures(), self.capture_origins)
+            self.calls_kept_out = ()
             if graph is not None:
                 self._restore_output(graph, sunshine_stopped)
             if sunshine_stopped and self.feeders:
@@ -966,6 +1331,8 @@ class AudioRoutingSession:
         if graph is not None and graph.legacy_modules() and not sunshine_running:
             manager.unload_legacy(graph)
             graph = manager.snapshot()
+        if graph is not None and graph.output(CALL_MIX_SINK) is not None and not sunshine_running:
+            manager.unload_call_mixes()  # left by a window that crashed with its state
         if session is None:
             return None
         owner = session._owner_pid
@@ -993,9 +1360,12 @@ class AudioWatcher:
     No polling of application streams.
     """
 
-    # Default output changes arrive as "server" events; sink-input events
-    # (volume, new application streams) do not affect what Sunshine records.
+    # Default output changes arrive as "server" events. Of the application
+    # streams, only a new or closed one matters: a call program starting or
+    # ending, or a program to add to the call-free mix. Their volume changes
+    # ("change" events) do not affect what Sunshine records.
     RELEVANT = frozenset({"server", "sink", "source", "source-output"})
+    STREAMS = frozenset({"sink-input"})
     _EVENT = re.compile(r"^Event '(new|change|remove)' on ([a-z-]+) #")
 
     def __init__(self, on_change: Callable[[], None], *, debounce: float = 0.4, safety_interval: float = 15.0, spawn: Callable[[], subprocess.Popen] | None = None) -> None:
@@ -1039,7 +1409,7 @@ class AudioWatcher:
                 if self._stop.is_set():
                     return
                 match = self._EVENT.match(line.strip())
-                if match and match.group(2) in self.RELEVANT:
+                if match and (match.group(2) in self.RELEVANT or (match.group(2) in self.STREAMS and match.group(1) != "change")):
                     self._pending.set()
             if self._stop.wait(2.0):  # the server restarted; subscribe again
                 return

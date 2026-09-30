@@ -63,13 +63,18 @@ The 2.x enforcer also moved Telegram, speech and browser streams into the shared
 
 The first bridge attempt used `module-loopback`. JamesDSP captured the loopback's stream and forwarded it to the default output — Sunshine's virtual output — which the loopback read: a feedback loop, measured as a louder stream and a silent speaker. Bridges are now PipeWire port links, which effects programs do not capture.
 
+### Voice calls kept out of the stream
+
+Measured on 2026-09-29 in an isolated PipeWire 1.6.8 + WirePlumber 0.5 instance (private `XDG_RUNTIME_DIR`, ALSA and Bluetooth monitors disabled, so no real device was touched). Outputs were null sinks, the call a tone played by an executable named `fluxer`, the game another tone, and Sunshine's capture a `parecord` with Sunshine's client and stream names; the real `AudioRoutingSession` reconciled. Results are in the [architecture](audio-architecture.md#voice-calls-stay-out-of-the-stream). Also measured there: `pipewire-pulse` takes `sink_properties="device.description=\"…\" key=value"` and nothing simpler with spaces; a capture whose source is removed was moved by WirePlumber to the default output's monitor, not to the default microphone, even with one present.
+
 ## Automated coverage
 
 - Discovery: parser, non-ASCII descriptions, output kinds from properties, verified monitors, a microphone that carries a monitor-like name, no server, no outputs, unreadable server.
 - Configuration: `audio_sink` for each mode, never a microphone or `@DEFAULT_AUDIO_SOURCE@`; unknown `sunshine.conf` options and `virtual_sink` preserved; previous file kept.
 - Bridges: each measured Sunshine behavior, refusal into virtual outputs, no microphone source, cycle check, surround to stereo.
 - Session: no writes in Automatic, idempotent reconcile, only our links removed (id and ports re-checked), restoring the output after a Sunshine crash, never overriding a newer choice, reconnecting a program left without an output when Sunshine exits (only when still unlinked after the wait, never into a virtual output, mono devices, also after a crash, recorded before **Stop sharing**), following an output change, moving a microphone capture back, leaving Steam's capture alone, private session record, crash recovery and adoption, removal of 2.x leftovers, corrupt records.
-- Watcher: reacts to default and capture events, ignores application streams.
+- Watcher: reacts to default and capture events and to programs starting or stopping, ignores their volume changes.
+- Voice calls: recognition by executable, application name, Flatpak id and role, never browsers; PipeWire graph reading (links, link groups, monitors); the call kept out while every other program is linked and nothing is moved; idempotent; a program added during the call; filters and loopbacks never added; a call on a device Sunshine does not record changes nothing; no `pw-dump` without a call program; back to the device and the output removed when the call ends, in that order; the output kept while Sunshine still records it; a host-muting client keeps its bridge; removal on end and after a crash; module arguments that a description cannot break.
 - Interface: labels, migration of the old "Other computer" choice, virtual outputs not offered, stale status rejected, test-tone results in words.
 - Sunshine process: a zombie no longer blocks a new start; a Sunshine that ignores SIGTERM is killed and collected.
 
@@ -90,3 +95,4 @@ Use an isolated Sunshine directory. **Set `file_state`, `credentials_file` and `
 - HDMI/DisplayPort output of each GPU, Bluetooth headphones (A2DP and headset profiles), EasyEffects as default output.
 - A physical second computer over the LAN and over a private network.
 - 7.1 clients.
+- Voice calls with real call programs (Discord, Zoom, Teams) and a real second computer; whether each one's stream carries the names Big Remote Play recognizes.
