@@ -53,6 +53,18 @@ replaces=('big-remote-play-together')
 conflicts=('big-remote-play-together')
 provides=('big-remote-play-together')
 
+# makepkg run from pkgbuild/ inside a checkout packages that checkout. The git
+# source below is upstream's main branch: from a fork or an unmerged branch it
+# installs an older application under today's version, with nothing to show
+# it. BIGREMOTEPLAY_FROM_GIT=1 builds upstream main anyway.
+if [ -z "${BIGREMOTEPLAY_LOCAL_ROOT:-}" ] && [ "${BIGREMOTEPLAY_FROM_GIT:-0}" != 1 ]; then
+	_recipe=$(realpath -qe -- "${BUILDFILE:-PKGBUILD}")
+	_recipe_dir=${_recipe%/*}
+	if [ -n "${_recipe}" ] && [ -f "${_recipe_dir}/../pyproject.toml" ] && [ -d "${_recipe_dir}/../src/big_remote_play" ]; then
+		BIGREMOTEPLAY_LOCAL_ROOT="${_recipe_dir}/.."
+	fi
+fi
+
 if [ -n "${BIGREMOTEPLAY_LOCAL_ROOT:-}" ]; then
 	_local_root=$(realpath -e -- "${BIGREMOTEPLAY_LOCAL_ROOT}") || {
 		printf 'BIGREMOTEPLAY_LOCAL_ROOT does not exist: %s\n' \
@@ -91,7 +103,14 @@ prepare() {
 			   -type d -name .ruff_cache -o \
 			   -type d -name '*.egg-info' -o \
 			   -type f -name '*.pyc' \) -prune -exec rm -rf {} +
-		printf 'Building %s from local checkout: %s\n' "${pkgname}" "${_local_root}"
+		local commit state=""
+		commit=$(git -C "${_local_root}" rev-parse --short HEAD 2>/dev/null) || commit="unknown"
+		if [ -n "$(git -C "${_local_root}" status --porcelain --untracked-files=no -- \
+			src usr locale tools pyproject.toml 2>/dev/null)" ]; then
+			state=", with uncommitted changes"
+		fi
+		printf 'Building %s from local checkout: %s (commit %s%s)\n' \
+			"${pkgname}" "${_local_root}" "${commit}" "${state}"
 	else
 		printf 'Building %s from upstream branch main\n' "${pkgname}"
 	fi
