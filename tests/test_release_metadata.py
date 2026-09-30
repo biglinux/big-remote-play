@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import os
 import re
+import shutil
+import subprocess
 import tomllib
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -65,3 +68,39 @@ def test_pkgbuild_derives_version_from_build_date() -> None:
     # turns the command substitution into a syntax error on the next load.
     assert re.search(r"(?m)^pkgver\(\)", pkgbuild) is None
     assert "for item in src usr locale tools" in pkgbuild
+
+
+def _pkgbuild_source(recipe: Path, **env: str) -> dict[str, str]:
+    """What makepkg sees after loading ``recipe`` the way it does."""
+    script = 'source "$BUILDFILE" || exit 1; printf "%s\\n" "${_use_local_source}" "${_local_root:-}" "${source[*]}"'
+    result = subprocess.run(
+        ["bash", "-c", script],
+        cwd=recipe.parent,
+        env={"PATH": os.environ["PATH"], "BUILDFILE": recipe.name, **env},
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    local, root, source = result.stdout.splitlines()
+    return {"local": local, "root": root, "source": source}
+
+
+def test_pkgbuild_in_a_checkout_packages_that_checkout() -> None:
+    """`makepkg -si` in pkgbuild/ must install the code next to it.
+
+    It used to clone upstream main instead, so a fork or an unmerged branch
+    installed an older application stamped with today's version."""
+    loaded = _pkgbuild_source(ROOT / "pkgbuild" / "PKGBUILD")
+
+    assert loaded["local"] == "1"
+    assert Path(loaded["root"]) == ROOT.resolve()
+    assert loaded["source"] == ""
+
+
+def test_pkgbuild_alone_or_forced_builds_upstream_main(tmp_path: Path) -> None:
+    alone = tmp_path / "PKGBUILD"
+    shutil.copy(ROOT / "pkgbuild" / "PKGBUILD", alone)
+
+    for loaded in (_pkgbuild_source(alone), _pkgbuild_source(ROOT / "pkgbuild" / "PKGBUILD", BIGREMOTEPLAY_FROM_GIT="1")):
+        assert loaded["local"] == "0"
+        assert loaded["source"].startswith("git+https://github.com/biglinux/big-remote-play.git#branch=main")
