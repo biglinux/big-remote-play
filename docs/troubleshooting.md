@@ -81,6 +81,7 @@ Sunshine probes every display and encoder when capture and encoder are set to au
 
 - **No game windows found**: open the game first and select **Refresh**. Minimized windows are not listed (they have no picture); restore the game. For emulators and programs the list does not recognize, turn on **Show all open windows**.
 - **Game Window is not available here**: the line below names what is missing. Game Window needs KDE Plasma on Wayland or an X11 desktop with window effects (compositing) on, `kwin_wayland` and the GStreamer plugins `gst-plugin-pipewire`, `gst-plugins-bad` and `gst-plugins-good`. It is not available in the Flatpak.
+- **The other device gets sound but a black picture** (Moonlight: *No video traffic was ever received from the host*): the sharing computer needs Sunshine v2026.516 or newer for Game Window. Update Sunshine; Big Remote Play also reports an older Sunshine in the Game window list.
 - **The game window was not confirmed**: KDE's **Share screen with** dialog was cancelled or closed. Start again and choose the same game.
 - **The window chosen in the system dialog is not the selected game**: a different window was chosen in KDE's dialog; start again and choose the game selected in Big Remote Play.
 - **The game window closed**: the game exited or crashed. Nothing else was shown; open the game and share again.
