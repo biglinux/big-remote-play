@@ -13,6 +13,14 @@ The game runs on the **sharing computer**. The person playing remotely uses the 
 - Moonlight Qt is required on the connecting computer.
 - Pair only devices and people you trust.
 
+## Choose the appearance
+
+Open the application menu and use **Appearance**. **Gamer** is the dark
+violet/cyan preset; **Automatic** follows the desktop; **Light** and **Dark**
+force the corresponding system appearance. The choice takes effect immediately
+and is restored the next time Big Remote Play opens. High contrast temporarily
+uses the native high-contrast appearance while keeping the saved choice.
+
 ## Guided setup
 
 Not sure where to start? On Home, choose **Guided setup**. It asks two questions and opens the right page; it never installs or changes anything by itself.
@@ -82,6 +90,10 @@ The connection cards on Connect and Share measure the network round trip with on
 | **Not responding** | the last replies did not arrive (a firewall may also block them) |
 
 The word is always written next to its colour. The path (**Local network**, **ZeroTier**, **Tailscale**, **Headscale** or **Internet**) comes from the route the computer really uses. The **(i)** button shows the address, the variation (jitter) and lost replies. This is the network, not Moonlight's own end-to-end latency; details in [connection status](connection-status.md).
+
+## Services in the sidebar
+
+On Share and Connect the bottom of the sidebar shows, under **Streaming**, Sunshine (Share) or Moonlight (Connect), and under **Secure connection**, Tailscale, ZeroTier and Headscale. Each card always stays in its place and says its state in words: for example **Running**, **Stopped** or **Ready** for streaming, and **Connected**, **Not connected**, **Sign-in needed**, **Waiting for approval** or **Not installed** for a secure connection. A connected method also shows how many other devices are online (Tailscale, Headscale) or the network name (ZeroTier). Select a card to open its controls or its setup page. Details in [service status cards](service-status-cards.md).
 
 ## Pairing code versus search code
 
@@ -184,7 +196,7 @@ Test public access from a genuinely different network. See [host and network pol
 
 Application data is under `$XDG_CONFIG_HOME/big-remote-play` (normally `~/.config/big-remote-play`). App-managed Sunshine configuration is stored below its `sunshine/` directory. Moonlight keeps its own native or Flatpak configuration.
 
-Backups may contain private certificates and other sensitive native configuration. Treat them as secrets. Keyring secrets are not exported. Restore validates paths and replaces files individually; it is not an all-or-nothing transaction across the whole archive.
+Backups may contain private certificates, Moonlight identity and other sensitive native configuration. Treat them as secrets. Keyring passwords, API tokens and authentication keys are not exported, so a restored setup may ask you to sign in again. Restore validates the complete archive before changing anything and rolls back changes if a file cannot be applied. Logs, caches and temporary session data are not included.
 
 Do not run the UI with `sudo`. Privileged operations request narrowly scoped authorization when you choose them.
 

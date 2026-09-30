@@ -19,6 +19,8 @@ from .host_view import HostView
 from .guest_view import GuestView
 from .installer_window import InstallerWindow
 from .components import name_icon_button, action_row, boxed_rows, icon_tile
+from .service_status_card import ServiceStatusCard, provider_presentation, streaming_presentation, unknown_presentation
+from big_remote_play.private_network.models import ProviderStatus
 from big_remote_play.utils.config import Config
 from big_remote_play.utils.network import NetworkDiscovery
 from big_remote_play.utils.system_check import SystemCheck
@@ -80,15 +82,6 @@ SERVICE_METADATA = {
         "type": "app",
         "bin": "moonlight-qt",
     },
-    "docker": {
-        "name": "DOCKER",
-        "full_name": _("Docker Engine"),
-        "description": _("Only needed to run your own Headscale server."),
-        "icon": "brp-service-symbolic",
-        "type": "service",
-        "unit": "docker.service",
-        "user": False,
-    },
     "tailscale": {
         "name": "TAILSCALE",
         "full_name": _("Tailscale"),
@@ -106,6 +99,13 @@ SERVICE_METADATA = {
         "type": "service",
         "unit": "zerotier-one.service",
         "user": False,
+    },
+    "headscale": {
+        "name": "HEADSCALE",
+        "full_name": "Headscale",
+        "description": _("Use your own Headscale server. Advanced setup."),
+        "icon": "brp-headscale-symbolic",
+        "type": "network",
     },
 }
 
@@ -165,13 +165,15 @@ class MainWindow(Adw.ApplicationWindow):
         self.current_page = "welcome"
         self._network_return_page = "guest"
         self._polling_status = False
+        self._network_polling = False
+        self._network_poll_ticks = 0
+        self._network_statuses: dict[str, ProviderStatus] = {}
         self._vpn_choice = load_vpn_choice()  # None if not yet chosen
         self._vpn_add_account = False
         self.network_advanced_mode = bool(self.config.get("network_advanced_mode", False))
         self._nav_page_by_row: dict[Gtk.ListBoxRow, str] = {}
         self._service_by_row: dict[Gtk.Widget, str] = {}
-        self._status_dots: dict[str, Gtk.Widget] = {}
-        self._status_rows: dict[str, Adw.ActionRow] = {}
+        self._status_rows: dict[str, ServiceStatusCard] = {}
         # Installed and running are probed by separate passes; a row shows one
         # combined state, so both halves are kept until they can be merged.
         self._service_installed: dict[str, bool] = {}
@@ -465,12 +467,13 @@ class MainWindow(Adw.ApplicationWindow):
         )
         return row
 
-    def create_status_footer(self):
-        """The services this path needs, each with its own state, shown directly.
+    # Streaming first, then every secure-connection method, in a fixed order.
+    _STREAMING_SERVICES = ("sunshine", "moonlight")
+    _NETWORK_SERVICES = ("tailscale", "zerotier", "headscale")
 
-        Only the services relevant to the chosen path appear (one or two), so a
-        summary row would hide the answer behind a click without adding
-        anything the rows do not already say in words."""
+    def create_status_footer(self):
+        """Service cards for the task on screen: its streaming component, then
+        every private-network method with its real state."""
         footer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         footer.set_margin_start(12)
         footer.set_margin_end(12)
@@ -479,92 +482,89 @@ class MainWindow(Adw.ApplicationWindow):
 
         status_list = Gtk.ListBox()
         status_list.set_selection_mode(Gtk.SelectionMode.NONE)
-        status_list.add_css_class("boxed-list")
-        self._service_label: dict[str, str] = {}
+        status_list.add_css_class("brp-service-list")
+        status_list.set_header_func(self._service_header)
+        # TRANSLATORS: accessible name of the list of streaming and private-network cards.
+        status_list.update_property([Gtk.AccessibleProperty.LABEL], [_("Services")])
+        self.service_list = status_list
 
-        def add_status_row(label_text: str, service_id: str) -> None:
+        for service_id, label_text in (("sunshine", "Sunshine"), ("moonlight", "Moonlight"), ("tailscale", "Tailscale"), ("zerotier", "ZeroTier"), ("headscale", "Headscale")):
             meta = SERVICE_METADATA.get(service_id, {})
-            row = Adw.ActionRow(title=label_text, subtitle=_("Checking..."))
+            row = ServiceStatusCard(
+                service_id,
+                label_text,
+                meta.get("icon", "brp-service-symbolic"),
+                meta.get("description", ""),
+                primary=service_id in self._STREAMING_SERVICES,
+            )
             row.set_activatable(True)
             self._service_by_row[row] = service_id
             row.connect("activated", lambda _r, sid=service_id: self.on_service_clicked(sid))
-
-            icon_frame = Gtk.Box()
-            icon_frame.add_css_class("service-icon-frame")
-            service_icon = create_icon_widget(meta.get("icon", "brp-service-symbolic"), size=18)
-            service_icon.set_valign(Gtk.Align.CENTER)
-            for margin in ("top", "bottom", "start", "end"):
-                getattr(service_icon, f"set_margin_{margin}")(6)
-            icon_frame.append(service_icon)
-            row.add_prefix(icon_frame)
-
-            dot = create_icon_widget("brp-media-record-symbolic", size=9, css_class=["status-dot"])
-            dot.set_valign(Gtk.Align.CENTER)
-            self._status_dots[service_id] = dot
-            row.add_suffix(dot)
-
-            description = meta.get("description", "")
-            if description:
-                row.set_tooltip_text(description)
             self._service_full_name[service_id] = meta.get("full_name", label_text)
-            self._service_label[service_id] = label_text
             self._status_rows[service_id] = row
             status_list.append(row)
-
-        add_status_row("Sunshine", "sunshine")
-        add_status_row("Moonlight", "moonlight")
-        add_status_row("Docker", "docker")
-        add_status_row("Tailscale", "tailscale")
-        add_status_row("ZeroTier", "zerotier")
 
         footer.append(status_list)
         self._filter_status_rows()
         return footer
 
+    def _service_header(self, row: Gtk.ListBoxRow, before: Gtk.ListBoxRow | None) -> None:
+        """“Streaming” above Sunshine/Moonlight, “Secure connection” above the VPNs."""
+        service_id = self._service_by_row.get(row)
+        if service_id in self._STREAMING_SERVICES:
+            # TRANSLATORS: sidebar heading above the Sunshine or Moonlight card.
+            text = _("Streaming")
+        elif service_id in self._NETWORK_SERVICES and self._service_by_row.get(before) not in self._NETWORK_SERVICES:
+            # TRANSLATORS: sidebar heading above the Tailscale, ZeroTier and Headscale cards.
+            text = _("Secure connection")
+        else:
+            row.set_header(None)
+            return
+        header = row.get_header()
+        if isinstance(header, Gtk.Label) and header.get_label() == text:
+            return
+        label = Gtk.Label(label=text, xalign=0, accessible_role=Gtk.AccessibleRole.HEADING)
+        label.add_css_class("caption-heading")
+        label.add_css_class("brp-service-heading")
+        row.set_header(label)
+
     def _relevant_service_ids(self) -> list[str]:
         # Home is a doorway, not a component dashboard. A missing dependency is
         # explained on its task card; service details belong to the chosen page.
-        role = self.current_page if self.current_page in ("host", "guest") else None
-        relevant = ["sunshine" if role == "host" else "moonlight"] if role in ("host", "guest") else []
-        # Network pages say the connection state in words on the page itself;
-        # a daemon's "Running" beside "Turned off" would contradict it.
-        return relevant
+        if self.current_page not in ("host", "guest"):
+            return []
+        # Every method keeps its card while it is off, so turning one on or off
+        # changes that card in place instead of adding or removing a row.
+        return ["sunshine" if self.current_page == "host" else "moonlight", *self._NETWORK_SERVICES]
 
     def _filter_status_rows(self) -> None:
-        """Show only the services needed by the selected path."""
+        """Show the streaming component of the task and the network methods."""
         relevant = set(self._relevant_service_ids())
         for service_id, row in self._status_rows.items():
             row.set_visible(service_id in relevant)
+        service_list = getattr(self, "service_list", None)
+        if service_list is not None:
+            service_list.invalidate_headers()
+
+    def _refresh_network_card(self, service_id: str) -> None:
+        row = self._status_rows.get(service_id)
+        status = self._network_statuses.get(service_id)
+        if row is not None and status is not None:
+            row.set_presentation(provider_presentation(status))
 
     def _refresh_service_state(self, service_id: str) -> None:
-        """Show one state per row: the row subtitle says it, the dot colours it.
+        """One state per card, from the installed and running probes.
 
-        The dot used to carry "running" while a separate label carried
-        "installed", so a stopped service read as a green "Installed" beside a
-        red dot. Both now follow the same state, and the words are the carrier
-        so the state survives without colour vision or with a screen reader."""
-        installed = self._service_installed.get(service_id)
-        if installed is None:
-            return  # still checking; the row keeps its "checking" subtitle
-        if not installed:
-            text, dot_state = _("Missing"), "status-offline"
-        elif self._service_running.get(service_id):
-            text, dot_state = _("Running"), "status-online"
-        else:
-            text, dot_state = _("Stopped"), "status-idle"
-
+        Both halves are probed separately; until both are known the card keeps
+        saying “Checking...”. The words carry the state, so it survives without
+        colour vision and is what a screen reader announces."""
+        if service_id in self._NETWORK_SERVICES:
+            self._refresh_network_card(service_id)
+            return
         row = self._status_rows.get(service_id)
-        if row:
-            # The subtitle is the state: AT-SPI exposes it as a label inside the
-            # row, so a screen reader reads "SUNSHINE, Stopped" off the row
-            # itself and the dot only colours what the words already say.
-            row.set_subtitle(text)
-
-        dot = self._status_dots.get(service_id)
-        if dot:
-            for css in ("status-online", "status-idle", "status-offline"):
-                dot.remove_css_class(css)
-            dot.add_css_class(dot_state)
+        if row is None or self._service_installed.get(service_id) is None:
+            return
+        row.set_presentation(streaming_presentation(service_id, self._service_installed.get(service_id), self._service_running.get(service_id)))
 
     def update_server_status(self, run_sun, run_moon, run_docker, run_tailscale, run_zt=False):
         for service_id, running in [("sunshine", run_sun), ("moonlight", run_moon), ("docker", run_docker), ("tailscale", run_tailscale), ("zerotier", run_zt)]:
@@ -672,10 +672,12 @@ class MainWindow(Adw.ApplicationWindow):
         menu_button.set_tooltip_text(_("Application menu"))
         menu_button.update_property([Gtk.AccessibleProperty.LABEL], [_("Application menu")])
         menu = Gio.Menu()
-        # Appearance is one choice with three values: a radio section in the
+        # Appearance is one choice with four values: a radio section in the
         # menu shows the current one, instead of a window built for it.
         appearance = Gio.Menu()
-        for label, value in ((_("Automatic"), "auto"), (_("Light"), "light"), (_("Dark"), "dark")):
+        # TRANSLATORS: Gamer is the proper name of the violet/cyan appearance preset.
+        gamer_label = _("Gamer")
+        for label, value in ((gamer_label, "gamer"), (_("Automatic"), "auto"), (_("Light"), "light"), (_("Dark"), "dark")):
             item = Gio.MenuItem.new(label, None)
             item.set_action_and_target_value("app.theme", GLib.Variant.new_string(value))
             appearance.append_item(item)
@@ -799,7 +801,6 @@ class MainWindow(Adw.ApplicationWindow):
             old = self.content_stack.get_child_by_name(name)
             if old:
                 self.content_stack.remove(old)
-        self._filter_status_rows()
         self.navigate_to(destination)
 
     def _ensure_private_view(self, name: str) -> None:
@@ -1211,6 +1212,8 @@ class MainWindow(Adw.ApplicationWindow):
         self.content_headerbar.set_show_back_button(True)
         self._remember_role(pid)
         self._filter_status_rows()
+        if pid in ("host", "guest"):
+            self._refresh_private_network_status()
 
         if pid == "host":
             self._set_header_context("host")
@@ -1254,12 +1257,49 @@ class MainWindow(Adw.ApplicationWindow):
         if self._status_timer_id is None:
             self._status_timer_id = GLib.timeout_add_seconds(3, self.p_check)
 
+    def _refresh_private_network_status(self) -> None:
+        """Fetch provider membership off the GTK thread, with no overlap."""
+        if self._network_polling or self.current_page not in ("host", "guest"):
+            return
+        self._network_polling = True
+
+        def finish(statuses):
+            self._network_polling = False
+            if self._status_timer_id is None:
+                return False  # the window is closing
+            if statuses is not None:
+                self._network_statuses = {status.provider.value: status for status in statuses}
+                for provider in self._NETWORK_SERVICES:
+                    self._refresh_network_card(provider)
+            elif not self._network_statuses:
+                # Never leave the cards on "Checking..." after a failed read.
+                for provider in self._NETWORK_SERVICES:
+                    self._status_rows[provider].set_presentation(unknown_presentation())
+            return False
+
+        def check():
+            statuses = None
+            try:
+                from big_remote_play.private_network.service import default_service
+
+                statuses = default_service().overview()
+            except Exception:
+                _log.exception("Cannot refresh private network status")
+            finally:
+                GLib.idle_add(finish, statuses)
+
+        threading.Thread(target=check, daemon=True).start()
+
     def p_check(self):
         """Refresh only the service rows the current page shows.
 
         Home and the network pages show none, so they start no process at all;
         Share and Connect check one service each.
         """
+        self._network_poll_ticks += 1
+        if self._network_poll_ticks >= 2:
+            self._network_poll_ticks = 0
+            self._refresh_private_network_status()
         if self._polling_status:
             return True
         probes = {
@@ -1269,7 +1309,7 @@ class MainWindow(Adw.ApplicationWindow):
             "tailscale": self.system_check.is_tailscale_running,
             "zerotier": self.system_check.is_zerotier_running,
         }
-        wanted = [service_id for service_id in self._relevant_service_ids() if service_id in probes]
+        wanted = [service_id for service_id in self._relevant_service_ids() if service_id in ("sunshine", "moonlight")]
         if not wanted:
             return True
         self._polling_status = True
@@ -1338,6 +1378,11 @@ class MainWindow(Adw.ApplicationWindow):
         """Open service control dialog"""
         meta = SERVICE_METADATA.get(service_id)
         if not meta:
+            return
+
+        if service_id in ("tailscale", "zerotier", "headscale"):
+            destination = "create_private" if self.current_page == "host" else "connect_private"
+            self._apply_vpn_selection(service_id, destination=destination)
             return
 
         if probe_result is None:

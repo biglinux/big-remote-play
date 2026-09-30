@@ -134,6 +134,6 @@ Check file ownership and permissions. An unreadable or malformed Moonlight/Sunsh
 
 ## Backup and rollback
 
-Back up before testing a new build. Backups may contain native private keys. Keyring secrets are separate. Restore checks archive paths and sizes and writes to the actual configuration locations, including Flatpak Moonlight, but does not provide a transaction spanning every file. Preserve the archive and check remaining files if restore is interrupted.
+Back up before testing a new build. Backups may contain native private keys and Moonlight identity; keyring secrets are separate. Restore checks the versioned inventory, paths, types, sizes and hashes before writing to the actual configuration locations, including Flatpak Moonlight. If applying any file fails, files already changed are rolled back and the error reports that the previous settings were restored.
 
 If both legacy and current Big Remote Play config directories exist, the migration preserves conflicting old files rather than deleting them. Keep those files until a maintainer or administrator confirms which version is needed.

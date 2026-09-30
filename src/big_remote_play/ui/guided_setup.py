@@ -41,7 +41,7 @@ def choice_card(title: str, description: str, icon: str, on_click: Callable[[], 
     button.add_css_class("brp-guided-choice")
     content = Gtk.Box(spacing=16)
     content.append(icon_tile(icon, large=True, tone=tone))
-    texts = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, hexpand=True, valign=Gtk.Align.CENTER)
+    texts = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4, hexpand=True, valign=Gtk.Align.CENTER)
     heading = Gtk.Box(spacing=8)
     label = Gtk.Label(label=title, xalign=0, wrap=True)
     label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
@@ -59,7 +59,9 @@ def choice_card(title: str, description: str, icon: str, on_click: Callable[[], 
     body.add_css_class("dim-label")
     texts.append(body)
     content.append(texts)
-    content.append(create_icon_widget("go-next-symbolic", size=16))
+    arrow = create_icon_widget("go-next-symbolic", size=16, css_class="brp-choice-arrow")
+    arrow.set_valign(Gtk.Align.CENTER)
+    content.append(arrow)
     button.set_child(content)
     accessible = f"{title}. {badge}" if badge else title
     button.update_property([Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION], [accessible, description])
@@ -69,7 +71,7 @@ def choice_card(title: str, description: str, icon: str, on_click: Callable[[], 
 
 
 def question_page(tag: str, title: str, question: str, explanation: str, *children: Gtk.Widget) -> Adw.NavigationPage:
-    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
     for edge in ("top", "bottom", "start", "end"):
         getattr(box, f"set_margin_{edge}")(24)
     heading = Gtk.Label(label=question, xalign=0, wrap=True)
@@ -81,8 +83,12 @@ def question_page(tag: str, title: str, question: str, explanation: str, *childr
         text.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
         text.add_css_class("dim-label")
         box.append(text)
+    # The answers sit together, a little apart from the question.
+    choices = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+    choices.add_css_class("brp-guided-choices")
     for child in children:
-        box.append(child)
+        choices.append(child)
+    box.append(choices)
     clamp = Adw.Clamp(maximum_size=720, tightening_threshold=520, child=box)
     scroll = Gtk.ScrolledWindow(vexpand=True, child=clamp)
     scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -201,7 +207,7 @@ class GuidedSetup:
         network = (status.network_name or next((item.name for item in status.networks if item.state is ConnectionState.CONNECTED), "")) if status is not None else ""
         name = network or plan.provider.display_name
         row = Adw.ActionRow(title=plan.provider.display_name, subtitle=name if name != plan.provider.display_name else "", use_markup=False)
-        row.add_prefix(create_icon_widget(PROVIDER_ICONS[plan.provider], size=24))
+        row.add_prefix(icon_tile(PROVIDER_ICONS[plan.provider]))
         buttons = Gtk.Box(spacing=12)
         other = Gtk.Button(label=_("Choose another option"))
         other.add_css_class("pill")

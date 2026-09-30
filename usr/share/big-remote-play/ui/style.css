@@ -23,26 +23,43 @@
     background: alpha(@window_fg_color, 0.045);
     border: 1px solid alpha(@window_fg_color, 0.07);
 }
+/* Major choices (Home and Guided setup). One 1px boundary in every state;
+ * the keyboard focus ring is separate from it and appears only for keyboard
+ * focus (:focus-visible). Plain :focus also matches the card a page focuses
+ * for you, which drew a permanent accent frame after every mouse click. */
 .role-card {
     padding: 22px;
     border-radius: 20px;
-    border: 1px solid alpha(@borders, 0.7);
+    border: 1px solid alpha(@window_fg_color, 0.1);
     background: @card_bg_color;
-    box-shadow: 0 4px 16px alpha(#000000, 0.05);
-}
-.role-card.role-host { border-color: alpha(@accent_bg_color, 0.3); }
-.role-card.role-guest { border-color: alpha(@success_bg_color, 0.3); }
-.role-card:hover {
-    border-color: alpha(@accent_bg_color, 0.55);
-    background: mix(@card_bg_color, @accent_bg_color, 0.055);
-}
-.role-card:active { background: mix(@card_bg_color, @accent_bg_color, 0.12); }
-.role-card:focus, .role-card:focus-visible {
-    border-color: @accent_color;
-    outline: 3px solid @accent_color;
+    box-shadow: 0 1px 3px alpha(#000000, 0.06);
+    outline: 0 solid transparent;
     outline-offset: 3px;
-    box-shadow: 0 0 0 3px alpha(@accent_color, 0.55);
+    transition: background-color 180ms ease-out, border-color 180ms ease-out, box-shadow 180ms ease-out, outline-color 180ms ease-out;
 }
+.role-card.role-host { border-color: alpha(@accent_bg_color, 0.26); }
+.role-card.role-guest { border-color: alpha(@success_bg_color, 0.26); }
+.role-card:hover {
+    border-color: alpha(@accent_bg_color, 0.42);
+    background: mix(@card_bg_color, @accent_bg_color, 0.05);
+    box-shadow: 0 2px 8px alpha(#000000, 0.07);
+}
+.role-card:active {
+    background: mix(@card_bg_color, @accent_bg_color, 0.1);
+    box-shadow: none;
+    transition-duration: 80ms;
+}
+.role-card:focus-visible {
+    outline: 2px solid alpha(@accent_color, 0.6);
+    outline-offset: 3px;
+}
+.role-card:disabled, .role-card:disabled:hover {
+    background: alpha(@card_bg_color, 0.5);
+    border-color: alpha(@window_fg_color, 0.06);
+    box-shadow: none;
+}
+.role-card .brp-choice-arrow { opacity: 0.55; }
+.role-card:hover .brp-choice-arrow { opacity: 0.9; }
 .role-flow { margin-top: 2px; }
 .role-flow-node {
     padding: 8px;
@@ -56,7 +73,7 @@
     color: @success_color;
     background: alpha(@success_bg_color, 0.12);
 }
-.brp-icon-tile, .hero-icon-chip, .service-icon-frame, .icon-chip {
+.brp-icon-tile, .hero-icon-chip, .icon-chip {
     border-radius: 14px;
     color: @accent_color;
     background-image: linear-gradient(135deg, alpha(@accent_bg_color, 0.17), alpha(@accent_bg_color, 0.07));
@@ -64,7 +81,6 @@
 }
 .brp-icon-tile.guest { color: @success_color; background: alpha(@success_bg_color, 0.14); box-shadow: inset 0 0 0 1px alpha(@success_bg_color, 0.16); }
 .hero-icon-chip { min-width: 48px; min-height: 48px; }
-.service-icon-frame { min-width: 28px; min-height: 28px; border-radius: 10px; }
 .icon-chip { min-width: 32px; min-height: 32px; }
 .brp-intro { padding: 8px 0; }
 .session-hero, .network-hero {
@@ -102,7 +118,6 @@
 .state-pill.attention { color: @warning_color; background: alpha(@warning_bg_color, 0.14); }
 .status-dot { opacity: 0.55; }
 .status-dot.status-online { color: @success_color; opacity: 1; }
-.status-dot.status-idle { color: @window_fg_color; opacity: 0.65; }
 .status-dot.status-offline { color: @warning_color; opacity: 1; }
 .card.padded { padding: 18px 20px; }
 .brp-metric { padding: 12px; border-radius: 12px; background: alpha(@window_fg_color, 0.035); }
@@ -129,7 +144,12 @@
     box-shadow: none;
 }
 .high-contrast .dim-label { opacity: 1; }
-.high-contrast .role-card:focus, .high-contrast .role-card:focus-visible { box-shadow: 0 0 0 3px @window_fg_color; }
+.high-contrast .role-card:focus-visible {
+    outline: 2px solid @window_fg_color;
+    outline-offset: 3px;
+    box-shadow: none;
+}
+.high-contrast .role-card .brp-choice-arrow { opacity: 1; }
 
 .role-card label.dim-label { font-weight: 400; }
 
@@ -156,10 +176,6 @@
     color: inherit;
 }
 
-.role-card:checked {
-    box-shadow: inset 0 0 0 2px @accent_bg_color;
-}
-
 /* Sidebar groups: Home · Share and Connect · Play over the internet. */
 .brp-nav-separator { margin: 6px 10px 10px; opacity: 0.6; }
 
@@ -169,7 +185,97 @@
 .state-pill.online image, .state-pill.attention image { opacity: 1; }
 /* Guided setup: the easiest way to begin, one step above the two tasks. */
 .brp-guided-choice { padding: 18px 20px; }
+.brp-guided-choices { margin-top: 8px; }
 .role-card.brp-guided-banner {
+    border-color: alpha(@accent_bg_color, 0.3);
+    background-image: linear-gradient(110deg, alpha(@accent_bg_color, 0.1), transparent 72%);
+}
+
+/* Service cards (sidebar of Share and Connect): the streaming component and
+ * every secure-connection method. One card per service in every state; the
+ * state changes the surface, the icon tile and the words, never the size.
+ * Active is recognisable at a glance (accent surface, accent tile, check
+ * icon); off is neutral but fully legible, not faded. */
+list.brp-service-list {
+    background: transparent;
+    box-shadow: none;
+}
+.brp-service-heading {
+    margin: 10px 4px 2px;
+    opacity: 0.75;
+}
+list.brp-service-list > row.brp-service-card {
+    margin: 4px 0;
+    border: 1px solid alpha(@window_fg_color, 0.09);
+    border-radius: 14px;
+    background: alpha(@card_bg_color, 0.75);
+    box-shadow: none;
+    outline: 0 solid transparent;
+    outline-offset: 1px;
+    transition: background-color 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out;
+}
+list.brp-service-list > row.brp-service-card.primary .title { font-weight: 700; }
+list.brp-service-list > row.brp-service-card:hover {
+    background: @card_bg_color;
+    border-color: alpha(@window_fg_color, 0.15);
+}
+list.brp-service-list > row.brp-service-card:active {
+    background: mix(@card_bg_color, @window_fg_color, 0.05);
+    transition-duration: 80ms;
+}
+list.brp-service-list > row.brp-service-card:focus-visible {
+    outline: 2px solid alpha(@accent_color, 0.6);
+    outline-offset: 1px;
+    box-shadow: none;
+}
+list.brp-service-list > row.brp-service-card .brp-icon-tile {
+    border-radius: 11px;
+    transition: background-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out;
+}
+/* Off, missing and still checking: neutral tile, readable icon. */
+list.brp-service-list > row.brp-service-card.inactive .brp-icon-tile,
+list.brp-service-list > row.brp-service-card.missing .brp-icon-tile,
+list.brp-service-list > row.brp-service-card.checking .brp-icon-tile {
+    color: alpha(@window_fg_color, 0.78);
+    background-image: none;
+    background-color: alpha(@window_fg_color, 0.06);
+    box-shadow: inset 0 0 0 1px alpha(@window_fg_color, 0.07);
+}
+.brp-service-state { color: alpha(@window_fg_color, 0.4); }
+list.brp-service-list > row.brp-service-card.ready .brp-service-state { color: @accent_color; }
+/* On: an accent surface that stays still after one short acknowledgement. */
+list.brp-service-list > row.brp-service-card.active {
+    background: mix(@card_bg_color, @accent_bg_color, 0.08);
     border-color: alpha(@accent_bg_color, 0.45);
-    background-image: linear-gradient(110deg, alpha(@accent_bg_color, 0.11), transparent 72%);
+    animation: brp-service-on 420ms ease-out 1;
+}
+list.brp-service-list > row.brp-service-card.active .brp-service-state { color: @success_color; }
+list.brp-service-list > row.brp-service-card.starting { border-color: alpha(@accent_bg_color, 0.28); }
+list.brp-service-list > row.brp-service-card.starting .brp-service-state { color: @accent_color; }
+list.brp-service-list > row.brp-service-card.attention { border-color: alpha(@warning_bg_color, 0.5); }
+list.brp-service-list > row.brp-service-card.attention .brp-service-state { color: @warning_color; }
+list.brp-service-list > row.brp-service-card.error { border-color: alpha(@error_bg_color, 0.5); }
+list.brp-service-list > row.brp-service-card.error .brp-service-state { color: @error_color; }
+@keyframes brp-service-on {
+    from { box-shadow: 0 0 0 0 alpha(@accent_bg_color, 0.35); }
+    to { box-shadow: 0 0 0 4px alpha(@accent_bg_color, 0); }
+}
+.high-contrast list.brp-service-list > row.brp-service-card {
+    background: @window_bg_color;
+    border: 1px solid @window_fg_color;
+}
+.high-contrast list.brp-service-list > row.brp-service-card.active { box-shadow: inset 0 0 0 1px @window_fg_color; }
+.high-contrast list.brp-service-list > row.brp-service-card .brp-icon-tile { color: @window_fg_color; }
+.high-contrast .brp-service-heading, .high-contrast .brp-service-state { opacity: 1; color: @window_fg_color; }
+.high-contrast list.brp-service-list > row.brp-service-card:focus-visible { outline: 2px solid @window_fg_color; }
+
+/* Reduced motion: every state is still in words, surface and icon. GTK also
+ * drops these transitions when animations are disabled system-wide. */
+@media (prefers-reduced-motion: reduce) {
+    .role-card, .role-card .brp-choice-arrow,
+    list.brp-service-list > row.brp-service-card,
+    list.brp-service-list > row.brp-service-card .brp-icon-tile {
+        transition: none;
+        animation: none;
+    }
 }
