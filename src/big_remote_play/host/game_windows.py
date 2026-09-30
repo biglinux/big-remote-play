@@ -23,6 +23,7 @@ from pathlib import Path
 import re
 import secrets
 import shutil
+import subprocess
 import tempfile
 
 _log = logging.getLogger("big-remoteplay")
@@ -664,12 +665,33 @@ def session_backend(env: Mapping[str, str] | None = None) -> str:
     return "x11" if env.get("DISPLAY") else ""
 
 
+# Sunshine reads the private game screen with its KWin capture method, which
+# first shipped in Sunshine v2026.516. An older Sunshine starts without any
+# video source: devices connect, get sound and wait for a picture forever.
+SUNSHINE_KWIN_CAPTURE = (2026, 516)
+_SUNSHINE_VERSION_RE = re.compile(r"Sunshine version: v?(\d{4})\.(\d{1,4})\.")
+
+
+def sunshine_version(*, which: Callable[[str], str | None] = shutil.which, run: Callable[..., subprocess.CompletedProcess] = subprocess.run) -> tuple[int, int] | None:
+    """``(year, month*100+day)`` of the installed Sunshine, or ``None`` if unknown."""
+    tool = which("sunshine")
+    if not tool:
+        return None
+    try:
+        result = run([tool, "--version"], capture_output=True, text=True, timeout=10, check=False)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    match = _SUNSHINE_VERSION_RE.search(f"{result.stdout or ''}\n{result.stderr or ''}")
+    return (int(match.group(1)), int(match.group(2))) if match else None
+
+
 def capture_support(
     env: Mapping[str, str] | None = None,
     *,
     which: Callable[[str], str | None] = shutil.which,
     has_element: Callable[[str], bool] | None = None,
     sandboxed: bool | None = None,
+    version: Callable[[], tuple[int, int] | None] | None = None,
 ) -> CaptureSupport:
     """Whether Game Window can work in this session, and what is missing."""
     backend = session_backend(env)
@@ -677,6 +699,9 @@ def capture_support(
         return CaptureSupport(backend, "sandboxed")
     if not backend:
         return CaptureSupport("", "unsupported-session")
+    installed = (version or (lambda: sunshine_version(which=which)))()
+    if installed is not None and installed < SUNSHINE_KWIN_CAPTURE:
+        return CaptureSupport(backend, "sunshine-too-old")
     missing = []
     if not which("kwin_wayland"):
         missing.append("kwin")

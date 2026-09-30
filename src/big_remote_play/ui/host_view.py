@@ -1150,6 +1150,8 @@ class HostView(Gtk.Box):
         title = _("Game Window is not available here")
         if support.problem == "missing-packages":
             return title, _("Install these packages, then open Big Remote Play again: {packages}").format(packages=", ".join(support.missing))
+        if support.problem == "sunshine-too-old":
+            return title, _("It needs Sunshine {version} or newer, which can capture the private game screen. Update Sunshine, then open Big Remote Play again.").format(version="2026.516")
         if support.problem == "sandboxed":
             return title, _("It cannot see other apps' windows from inside the Flatpak sandbox. Use the native package.")
         return title, _("It needs KDE Plasma on Wayland, or an X11 desktop with window effects (compositing) on.")
