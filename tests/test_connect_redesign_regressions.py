@@ -71,14 +71,18 @@ def test_quality_choice_starts_at_automatic_inside_the_image_dialog() -> None:
 
 def test_service_status_buttons_do_not_shadow_vpn_card_names() -> None:
     src = MAIN.read_text()
+    card = Path("src/big_remote_play/ui/service_status_card.py").read_text()
     assert "label_text, desc])" not in src
     # One state per row, spelled out for screen readers instead of colour-only.
     assert "Service status: {}" not in src
-    # The state lives in the ActionRow subtitle, which AT-SPI reads out.
-    assert 'Adw.ActionRow(title=label_text, subtitle=_("Checking..."))' in src
-    assert "row.set_subtitle(text)" in src
-    assert 'status_list.add_css_class("boxed-list")' in src
-    assert '_("Stopped"), "status-idle"' in src
+    # The reusable card keeps its state in the ActionRow subtitle and AT-SPI
+    # description (behaviour: tests/test_service_status_cards.py); the state
+    # icon is only redundant visual reinforcement.
+    assert "self.set_subtitle(" in card
+    assert "Gtk.AccessibleProperty.DESCRIPTION" in card
+    assert 'status_list.add_css_class("brp-service-list")' in src
+    assert "streaming_presentation(" in src
+    assert "provider_presentation(status)" in src
     assert "_refresh_service_state" in src
 
 

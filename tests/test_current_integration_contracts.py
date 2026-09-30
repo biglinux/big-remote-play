@@ -232,8 +232,7 @@ def test_firewall_dry_run_uses_only_expected_ports(base):
 
 
 def test_secret_backup_permissions_are_not_controlled_by_umask(tmp_path):
-    from big_remote_play.ui.preferences import PreferencesWindow
-    from types import SimpleNamespace
+    from big_remote_play.utils.backup_restore import BackupManager
 
     source = tmp_path / "config"
     source.mkdir()
@@ -241,7 +240,7 @@ def test_secret_backup_permissions_are_not_controlled_by_umask(tmp_path):
     destination = source / "backup.tar.gz"
     old = os.umask(0)
     try:
-        PreferencesWindow._write_backup(SimpleNamespace(_backup_sources=lambda: [source]), destination)
+        BackupManager(source, source / "sunshine", None).create(destination)
     finally:
         os.umask(old)
     assert stat.S_IMODE(destination.stat().st_mode) == 0o600
@@ -249,7 +248,7 @@ def test_secret_backup_permissions_are_not_controlled_by_umask(tmp_path):
 
     with tarfile.open(destination) as archive:
         assert not any("backup" in name or ".brp-backup" in name for name in archive.getnames())
-        assert "config/key.pem" in archive.getnames()
+        assert "application/key.pem" in archive.getnames()
 
 
 def test_reset_streaming_preferences_keeps_pairing_identity(mooncfg):
@@ -264,12 +263,10 @@ def test_reset_streaming_preferences_keeps_pairing_identity(mooncfg):
 def test_restore_uses_actual_flatpak_destination(tmp_path, monkeypatch, mooncfg):
     import io
     import tarfile
-    from types import SimpleNamespace
-    from big_remote_play import paths
-    from big_remote_play.ui.preferences import PreferencesWindow
+    from big_remote_play.utils.backup_restore import BackupManager
 
-    for name, directory in [("CONFIG_DIR", "brp"), ("SUNSHINE_CONFIG_DIR", "sunshine")]:
-        monkeypatch.setitem(paths.__dict__, name, tmp_path / directory)
+    config = tmp_path / "brp"
+    sunshine = tmp_path / "sunshine"
     mooncfg.config_file = tmp_path / ".var/app/moonlight/config/Moonlight Game Streaming Project/Moonlight.conf"
     archive_path = tmp_path / "backup.tar.gz"
     with tarfile.open(archive_path, "w:gz") as archive:
@@ -277,11 +274,7 @@ def test_restore_uses_actual_flatpak_destination(tmp_path, monkeypatch, mooncfg)
         info = tarfile.TarInfo("Moonlight Game Streaming Project/Moonlight.conf")
         info.size = len(data)
         archive.addfile(info, io.BytesIO(data))
-    app, error = Mock(), Mock()
-    window = SimpleNamespace(_show_error=error, get_application=lambda: app)
-    PreferencesWindow._restore_backup(window, archive_path)
-    error.assert_not_called()
-    app.quit.assert_called_once()
+    BackupManager(config, sunshine, mooncfg.config_file).restore(archive_path)
     assert mooncfg.config_file.read_bytes() == data
     assert stat.S_IMODE(mooncfg.config_file.stat().st_mode) == 0o600
 
@@ -289,25 +282,19 @@ def test_restore_uses_actual_flatpak_destination(tmp_path, monkeypatch, mooncfg)
 def test_restore_refuses_existing_symlink_parent(tmp_path, monkeypatch, mooncfg):
     import io
     import tarfile
-    from types import SimpleNamespace
-    from big_remote_play import paths
-    from big_remote_play.ui.preferences import PreferencesWindow
+    from big_remote_play.utils.backup_restore import BackupManager, BackupValidationError
 
     target = tmp_path / "outside"
     target.mkdir()
     config = tmp_path / "brp"
     config.symlink_to(target, target_is_directory=True)
-    monkeypatch.setitem(paths.__dict__, "CONFIG_DIR", config)
-    monkeypatch.setitem(paths.__dict__, "SUNSHINE_CONFIG_DIR", tmp_path / "sunshine")
     archive_path = tmp_path / "malicious.tar.gz"
     with tarfile.open(archive_path, "w:gz") as archive:
         info = tarfile.TarInfo("brp/config.json")
         info.size = 2
         archive.addfile(info, io.BytesIO(b"{}"))
-    app, error = Mock(), Mock()
-    PreferencesWindow._restore_backup(SimpleNamespace(_show_error=error, get_application=lambda: app), archive_path)
-    error.assert_called_once()
-    app.quit.assert_not_called()
+    with pytest.raises(BackupValidationError):
+        BackupManager(config, tmp_path / "sunshine", mooncfg.config_file).restore(archive_path)
     assert not (target / "config.json").exists()
 
 

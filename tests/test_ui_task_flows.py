@@ -476,7 +476,8 @@ def test_backup_round_trips_and_refuses_a_crafted_archive(ui, tmp_path, monkeypa
     window._write_backup(archive)
     assert archive.exists()
     with tarfile.open(archive) as handle:
-        assert f"{paths.CONFIG_DIR.name}/config.json" in handle.getnames()
+        assert "manifest.json" in handle.getnames()
+        assert "application/config.json" in handle.getnames()
     # The partial file used while writing must not survive.
     assert not archive.with_name(archive.name + ".part").exists()
 
@@ -486,10 +487,11 @@ def test_backup_round_trips_and_refuses_a_crafted_archive(ui, tmp_path, monkeypa
     payload.write_text("x")
     with tarfile.open(hostile, "w:gz") as handle:
         handle.add(payload, arcname=f"{paths.CONFIG_DIR.name}/../escaped")
-    errors = []
-    monkeypatch.setattr(window, "_show_error", lambda heading, body: errors.append(heading))
-    window._restore_backup(hostile)
-    assert errors and not (paths.CONFIG_DIR.parent / "escaped").exists()
+    from big_remote_play.utils.backup_restore import BackupValidationError
+
+    with pytest.raises(BackupValidationError):
+        window._restore_backup(hostile)
+    assert not (paths.CONFIG_DIR.parent / "escaped").exists()
     window.close()
     drain()
 
@@ -782,3 +784,4 @@ def test_sunshine_without_a_systemd_unit_is_driven_by_its_own_manager(ui, monkey
         GLib.usleep(5000)
     drain()
     started.assert_called_once()
+
