@@ -6,6 +6,7 @@ Run under Xvfb and a session D-Bus; no screenshot matching, internet or GPU need
 from __future__ import annotations
 
 from pathlib import Path
+import json
 from types import SimpleNamespace
 from unittest.mock import Mock
 import xml.etree.ElementTree as ET
@@ -785,3 +786,193 @@ def test_sunshine_without_a_systemd_unit_is_driven_by_its_own_manager(ui, monkey
     drain()
     started.assert_called_once()
 
+
+# ── Game Window ─────────────────────────────────────────────────────────────
+
+
+def _game(n: int, name: str, *, steam: str = ""):
+    from big_remote_play.host import game_windows as gw
+
+    raw = gw.RawWindow("kwin", "{%08d-2222-3333-4444-555555555555}" % n, name, 4000 + n, app_id=f"steam_app_{n}", width=1280, height=720, decoration=(0, 30, 0, 0))
+    return gw.GameWindow(window=raw, name=name, launch=gw.Launch(launcher="steam", steam_app_id=steam, proton=True, wine=True), is_game=True)
+
+
+@pytest.fixture
+def open_games(monkeypatch):
+    """The games KWin reports as open; each refresh reads this list again."""
+    from big_remote_play.host import game_windows as gw
+
+    state = {"windows": [], "refreshes": 0}
+
+    def refresh(backend, **kwargs):
+        state["refreshes"] += 1
+        return list(state["windows"])
+
+    monkeypatch.setattr(gw, "capture_support", lambda *args, **kwargs: gw.CaptureSupport("kwin"))
+    monkeypatch.setattr(gw, "refresh", refresh)
+    return state
+
+
+def _refreshed(host) -> None:
+    host.refresh_game_windows()
+    assert _wait_for(lambda: not host._game_window_busy)
+
+
+def _choose(host, name: str) -> None:
+    row = next(row for row in host._game_window_rows if row.get_title() == name)
+    row.get_activatable_widget().set_active(True)
+
+
+def test_game_window_is_a_source_and_needs_an_open_game_before_starting(ui, open_games):
+    host = ui.host_view
+    model = host.game_mode_row.get_model()
+    assert [model.get_string(i) for i in range(model.get_n_items())] == ["Full Desktop", "Game Window", "Steam", "Lutris", "Custom App"]
+    host._select_source("game_window")
+    assert host.game_window_expander.get_visible()
+    assert _wait_for(lambda: open_games["refreshes"] >= 1 and not host._game_window_busy)
+    [empty] = host._game_window_rows
+    assert empty.get_title() == "No game windows found"
+    assert "Refresh" in empty.get_subtitle()
+    # No valid source: sharing cannot start, and nothing falls back to the desktop.
+    assert not host.overview_start_button.get_sensitive()
+    with pytest.raises(ValueError):
+        host._collect_hosting_config()
+    assert "stay on this computer" in host.game_group.get_description()
+
+
+def test_refresh_adds_new_games_drops_closed_ones_and_keeps_the_choice(ui, open_games):
+    host = ui.host_view
+    host._select_source("game_window")
+    open_games["windows"] = [_game(1, "Alpha"), _game(2, "Beta")]
+    _refreshed(host)
+    _choose(host, "Beta")
+    assert host._selected_game_window().name == "Beta"
+    assert host.overview_start_button.get_sensitive()
+    assert host.game_window_expander.get_subtitle() == "Beta"
+
+    open_games["windows"] = [_game(3, "Gamma"), _game(2, "Beta")]
+    _refreshed(host)
+    assert [row.get_title() for row in host._game_window_rows] == ["Gamma", "Beta"]
+    assert host._selected_game_window().name == "Beta"
+
+    open_games["windows"] = [_game(3, "Gamma")]
+    _refreshed(host)
+    assert host._selected_game_window() is None
+    assert not host.overview_start_button.get_sensitive()
+    assert host.game_window_expander.get_subtitle() == "Choose the game to share"
+
+
+def test_refresh_button_has_a_name_and_never_blocks_the_window(ui, open_games):
+    host = ui.host_view
+    button = host.game_window_refresh_button
+    assert button.get_tooltip_text() == "Refresh"
+    host._select_source("game_window")
+    assert _wait_for(lambda: not host._game_window_busy)
+    host.refresh_game_windows()
+    # The list is read by a worker; the GTK thread returns at once.
+    assert host._game_window_busy
+    assert _wait_for(lambda: not host._game_window_busy)
+    assert button.get_sensitive()
+
+
+def test_restarted_game_is_found_again_only_by_its_saved_identity(ui, open_games):
+    host = ui.host_view
+    host._select_source("game_window")
+    open_games["windows"] = [_game(1, "Alpha", steam="42")]
+    _refreshed(host)
+    _choose(host, "Alpha")
+    host.save_host_settings()
+    saved = host.config.get("host")
+    assert saved["source"] == "game_window" and saved["game_window_identity"] == "steam:42"
+    assert "{" not in json.dumps(saved.get("game_window_identity"))  # no window id is stored
+
+    # A new window of the same Steam game is chosen again; an unknown one is not.
+    open_games["windows"] = [_game(7, "Alpha", steam="42")]
+    _refreshed(host)
+    assert host._selected_game_window().window.handle.startswith("{00000007")
+    open_games["windows"] = [_game(8, "Other")]
+    _refreshed(host)
+    assert host._selected_game_window() is None
+
+
+def test_old_saved_positions_keep_their_source(ui):
+    host = ui.host_view
+    for position, key in ((0, "desktop"), (1, "steam"), (2, "lutris"), (3, "custom")):
+        host.config.set("host", {"mode_idx": position})
+        host.load_settings()
+        assert host._source() == key
+
+
+def test_game_window_shares_only_its_private_screen(ui, open_games, monkeypatch):
+    from big_remote_play.host import window_capture
+
+    host = ui.host_view
+    host._select_source("game_window")
+    open_games["windows"] = [_game(1, "Alpha")]
+    _refreshed(host)
+    _choose(host, "Alpha")
+    cfg = host._collect_hosting_config()
+    sunshine = cfg["sunshine_config"]
+    assert sunshine["capture"] == "kwin" and sunshine["output_name"] is None
+    assert cfg["game_window"]["spec"].handle == _game(1, "Alpha").window.handle
+
+    started = window_capture.Started(4321, "brp-game-0123456789ab", "/dev/dri/renderD129", 1280, 720)
+    monkeypatch.setattr(window_capture, "start_helper", lambda spec: (started, None))
+    configured, starts = [], []
+    monkeypatch.setattr(NetworkDiscovery, "start_pin_listener", lambda *a: lambda: None)
+    monkeypatch.setattr(host.sunshine, "ensure_desktop_app", lambda: True)
+    monkeypatch.setattr(host.sunshine, "configure", lambda values: configured.append(dict(values)) or True)
+    monkeypatch.setattr(host.sunshine, "start", lambda **kwargs: starts.append(kwargs) or (True, None))
+    monkeypatch.setattr(GLib, "idle_add", lambda *a, **kw: 0)
+    host._run_start_hosting(cfg)
+    assert starts == [{"wayland_display": "brp-game-0123456789ab"}]
+    assert configured[0]["capture"] == "kwin" and configured[0]["adapter_name"] == "/dev/dri/renderD129"
+
+
+def test_unconfirmed_game_window_never_starts_the_server(ui, open_games, monkeypatch):
+    from big_remote_play.host import window_capture
+
+    host = ui.host_view
+    host._select_source("game_window")
+    open_games["windows"] = [_game(1, "Alpha")]
+    _refreshed(host)
+    _choose(host, "Alpha")
+    cfg = host._collect_hosting_config()
+
+    def refuse(spec):
+        raise window_capture.CaptureError("portal-cancelled")
+
+    errors, starts = [], []
+    monkeypatch.setattr(window_capture, "start_helper", refuse)
+    monkeypatch.setattr(NetworkDiscovery, "start_pin_listener", lambda *a: lambda: None)
+    monkeypatch.setattr(host.sunshine, "ensure_desktop_app", lambda: True)
+    monkeypatch.setattr(host.sunshine, "start", lambda **kwargs: starts.append(kwargs) or (True, None))
+    monkeypatch.setattr(GLib, "idle_add", lambda callback, *args: errors.append(args) if callback == host._on_hosting_error else 0)
+    host._run_start_hosting(cfg)
+    assert starts == []
+    assert errors == [("The game window was not confirmed, so sharing did not start.",)]
+
+
+def test_closed_game_stops_sharing_and_never_falls_back_to_the_desktop(ui, monkeypatch):
+    from big_remote_play.host import window_capture
+
+    host = ui.host_view
+    host.is_hosting = True
+    host._game_window_session = {"name": "Alpha"}
+    monkeypatch.setattr(window_capture, "read_state", lambda path=None: {"state": "ended", "reason": "window-closed", "pid": 1})
+    stops, starts, dialogs = [], [], []
+    monkeypatch.setattr(host, "stop_hosting", lambda *a: stops.append(True))
+    monkeypatch.setattr(host, "start_hosting", lambda *a: starts.append(True))
+    monkeypatch.setattr(host, "show_error_dialog", lambda title, message: dialogs.append((title, message)))
+    assert host._check_capture() is False
+    assert stops == [True] and starts == []
+    assert dialogs[0][0] == "The game window closed"
+    assert host._game_window_session is None
+    host.is_hosting = False
+
+
+def test_game_window_session_is_described_by_the_game(ui):
+    host = ui.host_view
+    host._game_window_session = {"name": "Alpha"}
+    assert host._describe_session().startswith("Game Window: Alpha")
+    host._game_window_session = None

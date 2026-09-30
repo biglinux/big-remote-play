@@ -77,6 +77,18 @@ The first appears when you enter a code on the game PC but no Moonlight is waiti
 
 Sunshine probes every display and encoder when capture and encoder are set to automatic. On some multi-GPU, multi-monitor machines that probe can stall for minutes. In **Share → Image and capture**, choose the screen, the capture method and the encoder explicitly.
 
+## Game Window: the game is not listed, or sharing stops
+
+- **No game windows found**: open the game first and select **Refresh**. Minimized windows are not listed (they have no picture); restore the game. For emulators and programs the list does not recognize, turn on **Show all open windows**.
+- **Game Window is not available here**: the line below names what is missing. Game Window needs KDE Plasma on Wayland or an X11 desktop with window effects (compositing) on, `kwin_wayland` and the GStreamer plugins `gst-plugin-pipewire`, `gst-plugins-bad` and `gst-plugins-good`. It is not available in the Flatpak.
+- **The game window was not confirmed**: KDE's **Share screen with** dialog was cancelled or closed. Start again and choose the same game.
+- **The window chosen in the system dialog is not the selected game**: a different window was chosen in KDE's dialog; start again and choose the game selected in Big Remote Play.
+- **The game window closed**: the game exited or crashed. Nothing else was shown; open the game and share again.
+- On X11, **Window effects (compositing) are off**: many games suspend compositing in fullscreen. In **System Settings → Display and Monitor → Compositor**, turn off *Allow applications to block compositing*, or play in borderless windowed mode.
+- Keys from the other device reach another program: Sunshine sends input to the active window. Click the game once on this computer.
+
+See [Game Window](game-window.md) for what it guarantees and its limits.
+
 ## A device says “The computer is currently in a game” or asks to close the game
 
 Moonlight pairs only when Sunshine has no stream open, and Sunshine counts the shared **Desktop** as a game while it is open — also after every device disconnected, until it is closed. While a stream is open, **Share → 3. Connect the other PC** says **A stream is open on this computer** with **End for everyone**, and a PIN sent then offers the same action instead of only **No computer is waiting**. **End for everyone** asks first, closes the stream on every device (Sunshine's own close, as in its web panel) and checks that nothing is open any more; then start pairing again on the new device and enter its new code. The devices already paired reconnect afterwards without a new PIN.

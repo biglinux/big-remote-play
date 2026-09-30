@@ -44,6 +44,7 @@ for screenshots must be labeled as simulated.
 | Native package | Clean install/upgrade/removal on supported BigLinux/Manjaro; private Python layout, resources and launchers intact |
 | Streaming | Sunshine → Moonlight connection, pairing, stop/reconnect, custom port and invalid credentials |
 | Capture/audio | Wayland/X11 sessions, actual GPU encoding/decoding, display changes, host/client sound |
+| Game Window | On KDE Plasma Wayland and X11: a native game, a Steam/Proton game and a Gamescope game listed by name; first-share confirmation and silent restore; terminal, browser, Dolphin, a notification and the Plasma menu over the game never reach the client; closing and crashing the game stop sharing with no desktop shown; windowed, borderless and fullscreen; two and three monitors; AMD, Intel and NVIDIA (hybrid laptops included) with hardware encoding; controllers, keyboard and mouse; host and client sound. See [Game Window](game-window.md) |
 | Internet | Real Tailscale browser authorization and machine sharing, ZeroTier join/approval/managed IP, Headscale server (0.27+) with API key, registration approval and pre-auth key; Share ↔ Connect over each provider, including a relayed path. Track results in the [private-network test matrix](private-network-test-matrix.md) |
 | Privileges | PolicyKit allow/cancel/failure and desktop keyring locked/unavailable states |
 | Accessibility | Orca/AT-SPI navigation and announcements, keyboard-only use, touch targets and text scaling |

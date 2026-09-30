@@ -10,6 +10,7 @@ There is no single "host wins" rule. These settings control different parts of t
 | Requested video bitrate | Set on Connect → Image. UI Mbps are converted to Kbps for Moonlight/Sunshine. It is a target, not a live traffic measurement. |
 | Maximum video bitrate | Host ceiling in Share → Image and capture. Zero adds no ceiling; a positive value limits a higher client request. A 40 Mbps request with a 25 Mbps ceiling is capped to 25 Mbps video, not 25 Mbps total network traffic. |
 | GPU, screen and capture | Host-local choices. Automatic leaves probing to Sunshine when it starts. The automatic summary describes configured policy, not a measured active encoder. |
+| Game Window | Overrides screen and capture for that session: Sunshine gets `capture = kwin`, no `output_name`, the private screen's GPU as `adapter_name` and only that screen's Wayland socket. HDR correction and the sharing resolution do not apply. The encoder choice is kept. No fallback to another capture method. See [Game Window](game-window.md). |
 | Codec / HDR | The client requests a format the host advertises and the devices can use. Unsupported combinations can fail or require a compatible choice; no universal fallback guarantee is made. |
 | V-Sync / decoding | Client-local display/decoding behavior, not the host encoder. |
 | Extra FEC | Host packet-loss redundancy. Adds network traffic; not a cure for a slow route. |
