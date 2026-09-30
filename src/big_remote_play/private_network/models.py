@@ -204,7 +204,7 @@ class HostDiagnosis:
     host_online: bool | None = None
     sunshine_ok: bool | None = None
     path: PathReport | None = None
-    problem: str = ""  # "" | network_down | host_offline | sunshine_missing | timeout
+    problem: str = ""  # "" | network_down | host_offline | sunshine_missing | firewall | timeout
     details: tuple[str, ...] = field(default_factory=tuple)
 
     @property

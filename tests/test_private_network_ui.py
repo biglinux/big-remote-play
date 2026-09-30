@@ -679,8 +679,10 @@ def test_connect_decides_with_fast_real_signals(ui, monkeypatch, answers, certif
     import big_remote_play.private_network.diagnostics as diagnostics
     import big_remote_play.utils.moonlight_config as moonlight_config
 
-    monkeypatch.setattr(diagnostics, "probe_sunshine", lambda address, port, **kw: SimpleNamespace(answered=answers, listening=answers))
-    monkeypatch.setattr(moonlight_config, "paired_host_certificate", lambda address, paths=None: certificate)
+    monkeypatch.setattr(
+        diagnostics, "probe_sunshine", lambda address, port, **kw: SimpleNamespace(answered=answers, listening=answers, uniqueid="UUID-1" if answers else "", tcp="open" if answers else "timeout")
+    )
+    monkeypatch.setattr(moonlight_config, "paired_host_certificate", lambda address, paths=None, uuid="": certificate if uuid in ("", "UUID-1") else "")
     guest = ui.guest_view
     guest.moonlight = FakeMoonlight(streams)
     outcomes = []
@@ -738,3 +740,26 @@ def test_simple_join_pages_ask_for_one_thing_in_plain_words(ui):
 
     headscale = pnv.ConnectPage("headscale", ui)
     assert "I don't have a server yet" in texts(headscale)
+
+
+def test_a_failed_pairing_explains_and_offers_to_try_again(ui, monkeypatch):
+    """After Sunshine refused a retry ("a pairing session already exists"), the
+    game PC clears the abandoned attempt within seconds; trying again works."""
+    guest = ui.guest_view
+    attempts = []
+
+    class Moonlight(FakeMoonlight):
+        def pair(self, host_ip, on_pin_callback=None, *, port=47989, cancel_event=None):
+            attempts.append(host_ip)
+            if on_pin_callback:
+                on_pin_callback("1234")
+            return False
+
+    guest.moonlight = Moonlight(False)
+    guest.start_pairing_flow({"name": "desk", "ip": "100.64.0.2", "port": 47989})
+    assert wait_for(lambda: ui.get_visible_dialog() is not None and ui.get_visible_dialog().has_response("retry"))
+    dialog = ui.get_visible_dialog()
+    assert "already exists" in dialog.get_body() and "Share" in dialog.get_body()
+    dialog.emit("response", "retry")
+    dialog.close()
+    assert wait_for(lambda: len(attempts) == 2)

@@ -54,6 +54,13 @@ The network is private: its owner must authorize this computer. Send them the **
 
 **Not found** comes from the network's controller: the network does not exist (a typo in a real owner's code, or a deleted network). **Has not answered yet** after a minute usually means the code points to no controller at all, so nobody can say “not found”; check the code, or choose **Cancel the request** so the computer stops trying.
 
+## “Could not connect” over ZeroTier, Tailscale or Headscale: the game PC's firewall
+
+The private network can work (both computers listed, pings answered) while the game PC's firewall drops Sunshine's ports; the connecting computer then sees exactly what it would see if sharing were off. Big Remote Play now tells the two apart:
+
+- **On the game PC**, while sharing, **Share → 3. Connect the other PC** says **The firewall blocks other computers**, naming the firewall (ufw or firewalld), the blocked ports and the networks affected (the local network, ZeroTier, Tailscale or Headscale). **Allow in firewall** first lists the ports it will open — TCP 47984, 47989, 48010 and UDP 47998–48000 for the default base port; never the administration page — then asks for your password. The check only reads: ufw's own rule files (`/etc/ufw/ufw.conf`, `/etc/default/ufw`, `/etc/ufw/user.rules`) or firewalld's zone queries. The first ufw rule that matches decides, as in ufw; a rule limited to the local network does not cover ZeroTier; an interface rule such as `allow in on tailscale0` covers only that interface. Plain nftables/iptables rules need root to read, so they are never reported as blocking.
+- **On the connecting computer**, a refused connection means the game PC answered but sharing is not running; silence from a game PC that still answers a ping means its firewall filters the ports, and the message and **Diagnose** say so.
+
 ## A computer shows “Sign-in expired” or “Sharing not found”
 
 “Sign-in expired” means that device's Tailscale key expired: sign in again on that device. “Sharing not found” means the private network reaches the computer but Sunshine did not answer: start sharing on it, and check its firewall allows the streaming ports on the VPN interface. Use **Diagnose** for details.
@@ -78,9 +85,15 @@ To pair several new devices, pair them one at a time, each while nobody is playi
 
 When a device asks to close the game although nothing seems to be open, it asked for a different app than the one running for the other devices. Choose the app that is already running (usually **Desktop**) to join it; closing it ends the other devices' streams. A device that remembers an app the computer no longer offers (for example an old **Steam Big Picture** entry) fails to start it: refresh the app list on that device.
 
-## Pairing does not finish
+## Pairing does not finish, or Moonlight says “GeForce Experience returned error”
 
-The connecting PC displays Moonlight's four-digit code. Enter it on the game PC under Share, not into the search-code field. Keep the connecting window open while approving. If approval fails, check the administrative credentials or complete pairing through Sunshine's official web interface. Cancellation must end the pending attempt before retrying.
+The connecting PC displays Moonlight's four-digit code. Enter it on the game PC under Share, not into the search-code field. Keep the connecting window open while approving.
+
+A pairing that was cut before its code was entered — cancelled, dropped by the network or by a firewall — stays waiting in Sunshine until it restarts. Measured with Sunshine 2026.914: the next attempt of the same Moonlight is then refused at once with “A pairing session with this uniqueid already exists” (Moonlight shows it as *GeForce Experience returned error*), and a code entered on the game PC goes to the dead request. While sharing, Big Remote Play cancels such requests: a device that is really waiting keeps its connection to Sunshine's HTTP port open, one that gave up has none; with several requests from one address, only the newest is kept. It also does this right before sending a code. On the connecting computer, a failed pairing says where the code goes and offers **Try again**; after a refusal like this, wait a few seconds so the game PC has cleared the earlier attempt. The fix works on the game PC: the version installed there must include it.
+
+Approving a device needs Sunshine's user and password. When they are not saved, or Sunshine rejects the saved ones, Share says so as soon as sharing starts, with **Enter Sunshine password**: they are checked with Sunshine before they are kept in the system keyring, so the code is approved the moment you type it instead of while the device waits.
+
+On the connecting computer, a host that Moonlight only contacted — listed, discovered, or whose pairing failed — is recorded without a certificate (`srvcert=@ByteArray()`). Earlier versions took that record for a pairing and started the stream, which Moonlight refused with “Computer … has not been paired. Please open Moonlight to pair before streaming.” Now only a stored certificate for the same host (its Sunshine `uniqueid`) counts, and pairing starts instead.
 
 ## Incorrect resolution, frame rate or sound
 

@@ -22,6 +22,8 @@ address instead of guessing one.
 
 from __future__ import annotations
 
+from collections import Counter
+
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 import os
@@ -163,6 +165,26 @@ def handshake_peers(ss_output: str, rtsp_port: int) -> list[str]:
         peer = valid_address(_normalize(_split_endpoint(parts[4])[0]))
         if peer and peer not in peers:
             peers.append(peer)
+    return peers
+
+
+def established_peers(ss_output: str, port: int) -> Counter[str]:
+    """Open TCP connections to a local ``port`` per peer, from ``ss -tan``.
+
+    A device that is pairing keeps its request to Sunshine's HTTP port open
+    until the PIN is entered (measured with Sunshine 2026.914); one that gave
+    up has none.
+    """
+    peers: Counter[str] = Counter()
+    for line in ss_output.splitlines():
+        parts = line.split()
+        if len(parts) < 5 or parts[0] != "ESTAB":
+            continue
+        if _split_endpoint(parts[3])[1] != str(port):
+            continue
+        peer = valid_address(_normalize(_split_endpoint(parts[4])[0]))
+        if peer:
+            peers[peer] += 1
     return peers
 
 

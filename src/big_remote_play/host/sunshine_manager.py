@@ -10,6 +10,7 @@ import ssl
 import time
 import urllib.parse
 from pathlib import Path
+from collections.abc import Callable
 from typing import NamedTuple
 from big_remote_play import paths
 from big_remote_play.integration_contracts import sunshine_web_ui_port
@@ -553,6 +554,56 @@ class SunshineHost:
             if isinstance(item, dict) and _PAIRING_ID_RE.fullmatch(str(item.get("id") or ""))
         ]
         return pending, status
+
+    def cancel_pairing(self, pairing_id: str, auth: tuple[str, str] | None = None) -> bool:
+        """Drop one waiting pairing (DELETE /api/pin), as Sunshine's web panel does."""
+        if not _PAIRING_ID_RE.fullmatch(pairing_id or ""):
+            return False
+        status, data = self._api_request("DELETE", "/api/pin", {"pairing_id": pairing_id}, auth)
+        try:
+            return status == 200 and json.loads(data or b"{}").get("status") is True
+        except (ValueError, AttributeError):
+            return False
+
+    def discard_abandoned_pairings(self, auth: tuple[str, str] | None = None, *, ss: Callable[[list[str]], str] | None = None) -> int:
+        """Cancel waiting pairings whose device is no longer waiting.
+
+        Sunshine keeps a pairing request that the device abandoned (it was
+        cancelled, the network dropped, a firewall cut it) until it restarts.
+        Meanwhile the same Moonlight is refused with "A pairing session with
+        this uniqueid already exists" and a PIN goes to the dead request. A
+        device that is really waiting keeps its connection to the HTTP port
+        open, so only requests without one are cancelled; if the connections
+        cannot be read, nothing is.
+        """
+        from big_remote_play.host.sunshine_sessions import _ss, established_peers
+        from big_remote_play.utils.connection_health import valid_address
+
+        pending, status = self.pending_pairings(auth)
+        if not pending or status != 200:
+            return 0
+        try:
+            port = int(self._config_value("port", "47989"))
+        except ValueError:
+            port = 47989
+        output = (ss or _ss)(["ss", "-tan"])
+        if not output.strip():
+            return 0
+        waiting = established_peers(output, port)
+        by_address: dict[str, list[PendingPairing]] = {}
+        for item in pending:
+            address = valid_address(item.address.split("%", 1)[0].removeprefix("::ffff:")) or item.address
+            by_address.setdefault(address, []).append(item)
+        cancelled = 0
+        for address, items in by_address.items():
+            # Sunshine lists requests oldest first; more requests than open
+            # connections from one address means the oldest were abandoned.
+            for item in items[: max(0, len(items) - waiting[address])]:
+                if self.cancel_pairing(item.pairing_id, auth):
+                    cancelled += 1
+        if cancelled:
+            _log.info("Cancelled %d abandoned pairing request(s).", cancelled)
+        return cancelled
 
     def send_pin(self, pin: str, name: str | None = None, auth: tuple[str, str] | None = None, pairing_id: str | None = None) -> PinResult:
         """Sends a pairing PIN to Sunshine (POST /api/pin).

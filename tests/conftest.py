@@ -53,6 +53,8 @@ def _isolated_user_config(tmp_path_factory, monkeypatch):
     from big_remote_play.host.sunshine_manager import SunshineHost
 
     monkeypatch.setattr(SunshineHost, "running_app_id", lambda self, timeout=2.0: None)
+    # Its administration API answers nothing unless a test captures the call.
+    monkeypatch.setattr(SunshineHost, "_api_request", lambda self, method, path, payload=None, auth=None, timeout=5.0: (0, b""))
 
 
 def _offline_audio_init(original):
