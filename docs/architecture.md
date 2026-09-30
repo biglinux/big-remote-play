@@ -13,6 +13,8 @@ software, start sharing or change a network.
 
 Home's **Guided setup** (`ui/guided_setup.py`) only asks and hands over: it pushes question pages on Home's navigation view and ends in Share, Connect, the internet page or a provider's connection page; it implements no flow of its own. Connection cards (`ui/connection_cards.py`) render `utils/connection_health.py` values; Share's live sessions come from `host/sunshine_sessions.py` through the existing `PerformanceMonitor` worker. See [connection status](connection-status.md). `host/stream_display.py` is Sunshine's `global_prep_cmd`: it switches an HDR screen to SDR for SDR clients and optionally to the client's resolution, and restores it; see [video quality](video-quality.md).
 
+**Game Window** shares one game window without the desktop. `host/game_windows.py` lists open, capturable game windows (KWin scripting on Wayland, EWMH through `host/x11_windows.py` on X11), classifies their process trees and never persists window ids. `host/window_capture.py` is a helper process that owns the ScreenCast portal session (or X11 source), a private headless `kwin_wayland --virtual` screen and the GStreamer mirror, and tears them down together; Sunshine is started with `capture = kwin` and only that screen's `WAYLAND_DISPLAY`. `StreamDisplay` keeps owning the real monitors and is not used by this mode. See [Game Window](game-window.md).
+
 ## Settings ownership
 
 | Owner | Values |
