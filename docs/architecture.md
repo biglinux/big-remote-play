@@ -1,10 +1,19 @@
 # Architecture and ownership
 
-`app.py` owns the GTK application and theme. `ui/main_window.py` owns permanent Home, role-specific instructions, task navigation and lazy private-network pages. Home presents Share and Connect before the secondary internet-access path; technical component names appear there only when setup is required. Role selection itself does not install software, start sharing or change a network.
+`app.py` owns the GTK application and theme. The base stylesheet remains loaded
+for the application lifetime; the Gamer preset is one higher-priority provider
+held by identity and removed when another appearance or high contrast is active.
+`ui/main_window.py` owns permanent Home, role-specific instructions, task
+navigation and lazy private-network pages. Home presents Share and Connect
+before the secondary internet-access path; technical component names appear
+there only when setup is required. Role selection itself does not install
+software, start sharing or change a network.
 
 `HostView` gathers GTK values on the main thread, then uses a worker for Sunshine/audio/process work. `GuestView` distinguishes discovery, pairing and streaming, uses attempt generations/cancellation events, and applies UI results through the main loop. Background discovery is passive while Connect is visible; explicit Search may perform the bounded subnet scan. Home does not start that scan.
 
 Home's **Guided setup** (`ui/guided_setup.py`) only asks and hands over: it pushes question pages on Home's navigation view and ends in Share, Connect, the internet page or a provider's connection page; it implements no flow of its own. Connection cards (`ui/connection_cards.py`) render `utils/connection_health.py` values; Share's live sessions come from `host/sunshine_sessions.py` through the existing `PerformanceMonitor` worker. See [connection status](connection-status.md). `host/stream_display.py` is Sunshine's `global_prep_cmd`: it switches an HDR screen to SDR for SDR clients and optionally to the client's resolution, and restores it; see [video quality](video-quality.md).
+
+**Game Window** shares one game window without the desktop. `host/game_windows.py` lists open, capturable game windows (KWin scripting on Wayland, EWMH through `host/x11_windows.py` on X11), classifies their process trees and never persists window ids. `host/window_capture.py` is a helper process that owns the ScreenCast portal session (or X11 source), a private headless `kwin_wayland --virtual` screen and the GStreamer mirror, and tears them down together; Sunshine is started with `capture = kwin` and only that screen's `WAYLAND_DISPLAY`. `StreamDisplay` keeps owning the real monitors and is not used by this mode. See [Game Window](game-window.md).
 
 ## Settings ownership
 
@@ -52,7 +61,7 @@ Official references:
 
 Writes of sensitive files use temporary files, owner-only permissions and atomic replacement. JSON writers merge independent key updates under a process lock. The legacy config-directory migration moves missing descendants but retains conflicting legacy files; it never deletes a conflicting library automatically.
 
-Backup restore checks size, entry types and destination paths before writing, respects Moonlight's actual location, and atomically replaces each file. This is not a transactional rollback mechanism for the entire archive.
+Backup/restore is owned by `utils/backup_restore.py`. It writes a versioned, hashed archive in separate application/Sunshine/Moonlight namespaces, checks bounded size, entry types and destination paths before writing, respects Moonlight's actual location, atomically replaces each file and rolls the complete affected set back after an apply failure. The preferences window only selects files, confirms destructive actions and marshals worker results to GTK.
 
 ## External boundary
 

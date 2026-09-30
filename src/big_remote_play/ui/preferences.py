@@ -10,11 +10,13 @@ import logging
 
 _log = logging.getLogger("big-remoteplay")
 
-import os, shutil, sys, tarfile
+import os, shutil, threading
 from datetime import datetime
 from pathlib import Path
 
+from big_remote_play import __version__
 import big_remote_play.utils.logger as logger
+from big_remote_play.utils.backup_restore import BackupManager, BackupValidationError
 from big_remote_play.utils.i18n import _
 from big_remote_play import paths
 from .components import action_row
@@ -48,7 +50,10 @@ class PreferencesWindow(Adw.Window):
         page = Adw.PreferencesPage(title=_("Backup"), name="backup", icon_name="brp-document-properties-symbolic")
         # The window header already carries the title; repeating it as a page
         # heading printed the same words twice.
-        backup_group = Adw.PreferencesGroup(title=_("Backup"), description=_("Your settings, paired networks and preferences, in a single file."))
+        backup_group = Adw.PreferencesGroup(
+            title=_("Backup"),
+            description=f"{_('Your settings, paired networks and preferences, in a single file.')} {_('Backups can contain private certificates. Keep the file safe.')}",
+        )
         backup_group.add(action_row(_("Create a backup"), _("Save your settings to a file you choose"), "brp-document-properties-symbolic", self.on_create_backup_clicked))
         backup_group.add(action_row(_("Restore a backup"), _("Replace the current settings with a saved file"), "brp-edit-undo-symbolic", self.on_restore_backup_clicked))
         page.add(backup_group)
@@ -77,21 +82,46 @@ class PreferencesWindow(Adw.Window):
         toolbar.set_content(page)
         self.toast_overlay.set_child(toolbar)
         self.set_content(self.toast_overlay)
+        self._preferences_page = page
 
     def add_toast(self, toast: Adw.Toast) -> None:
         self.toast_overlay.add_toast(toast)
 
     # ── Backup ────────────────────────────────────────────────────────────
 
-    def _backup_sources(self) -> list[Path]:
-        """Directories worth carrying to another machine or another install."""
+    def _backup_manager(self) -> BackupManager:
         from big_remote_play.utils.moonlight_config import MoonlightConfigManager
 
-        moonlight = MoonlightConfigManager().config_file
-        sources = [paths.CONFIG_DIR, paths.SUNSHINE_CONFIG_DIR]
-        if moonlight is not None:
-            sources.append(Path(moonlight).parent)
-        return [path for path in sources if path.exists()]
+        return BackupManager(paths.CONFIG_DIR, paths.SUNSHINE_CONFIG_DIR, MoonlightConfigManager().config_file, app_version=__version__)
+
+    def _run_storage_task(self, operation, *, progress: str, success: str, error_heading: str, on_success=None) -> None:
+        """Run filesystem work away from GTK and marshal the result back."""
+        self._preferences_page.set_sensitive(False)
+        self.add_toast(Adw.Toast.new(progress))
+
+        def finish(error):
+            self._preferences_page.set_sensitive(True)
+            if error is not None:
+                _log.error("Storage operation failed: %s", error)
+                body = str(error)
+                if isinstance(error, BackupValidationError):
+                    body = _("Choose a file created by “Create a backup”.")
+                self._show_error(error_heading, body)
+            else:
+                self.add_toast(Adw.Toast.new(success))
+                if on_success is not None:
+                    on_success()
+            return False
+
+        def work():
+            error = None
+            try:
+                operation()
+            except Exception as caught:
+                error = caught
+            GLib.idle_add(finish, error)
+
+        threading.Thread(target=work, daemon=True).start()
 
     def on_create_backup_clicked(self) -> None:
         dialog = Gtk.FileDialog(title=_("Create a backup"), initial_name=f"big-remote-play-{datetime.now():%Y-%m-%d}.tar.gz")
@@ -103,44 +133,18 @@ class PreferencesWindow(Adw.Window):
                 return  # cancelled
             if target is None or target.get_path() is None:
                 return
-            try:
-                self._write_backup(Path(target.get_path()))
-                self.add_toast(Adw.Toast.new(_("Backup saved.")))
-            except OSError as error:
-                _log.error(f"Backup failed: {error}")
-                self._show_error(_("Could not create the backup"), str(error))
+            destination = Path(target.get_path())
+            self._run_storage_task(
+                lambda: self._write_backup(destination),
+                progress=_("Create a backup"),
+                success=_("Backup saved."),
+                error_heading=_("Could not create the backup"),
+            )
 
         dialog.save(self, None, on_chosen)
 
     def _write_backup(self, destination: Path) -> None:
-        """Write the archive beside the target, then replace it in one step, so
-        an interrupted write never leaves a truncated backup behind."""
-        import tempfile
-
-        fd, filename = tempfile.mkstemp(prefix=".brp-backup-", dir=destination.parent)
-        temporary = Path(filename)
-        try:
-            # Backups include native TLS keys; keep them owner-only even when
-            # the caller's umask is permissive. Do not follow a predictable .part.
-            with os.fdopen(fd, "wb") as output:
-                with tarfile.open(fileobj=output, mode="w:gz") as archive:
-                    for source in self._backup_sources():
-
-                        def include(info, root=source):
-                            relative = Path(info.name).relative_to(root.name)
-                            original = root / relative
-                            # Saving inside the config directory must not archive
-                            # the output recursively or external files via links.
-                            if info.issym() or info.islnk() or original.resolve() in (temporary.resolve(), destination.resolve()):
-                                return None
-                            return info if info.isfile() or info.isdir() else None
-
-                        archive.add(source, arcname=source.name, filter=include)
-                output.flush()
-                os.fsync(output.fileno())
-            os.replace(temporary, destination)
-        finally:
-            temporary.unlink(missing_ok=True)
+        self._backup_manager().create(destination)
 
     def on_restore_backup_clicked(self) -> None:
         dialog = Gtk.FileDialog(title=_("Restore a backup"))
@@ -166,70 +170,27 @@ class PreferencesWindow(Adw.Window):
         confirm.set_response_appearance("restore", Adw.ResponseAppearance.DESTRUCTIVE)
         confirm.set_default_response("cancel")
         confirm.set_close_response("cancel")
-        confirm.connect("response", lambda _dialog, response: self._restore_backup(archive_path) if response == "restore" else None)
+        confirm.connect("response", lambda _dialog, response: self._start_restore(archive_path) if response == "restore" else None)
         confirm.present(self)
 
     def _restore_backup(self, archive_path: Path) -> None:
-        try:
-            with tarfile.open(archive_path, "r:gz") as archive:
-                members = archive.getmembers()
-                from big_remote_play.utils.moonlight_config import MoonlightConfigManager
+        self._backup_manager().restore(archive_path)
 
-                moonlight_file = MoonlightConfigManager().config_file
-                destinations = {source.name: source for source in (paths.CONFIG_DIR, paths.SUNSHINE_CONFIG_DIR)}
-                if moonlight_file is not None:
-                    destinations[Path(moonlight_file).parent.name] = Path(moonlight_file).parent
-                if len(members) > 10000 or sum(member.size for member in members) > 128 * 1024 * 1024:
-                    raise ValueError("Backup exceeds the supported size limit")
-                names = {Path(member.name).parts[0] for member in members if member.name}
-                if not names or not names.issubset(destinations):
-                    self._show_error(_("This file is not a Big Remote Play backup"), _("Choose a file created by “Create a backup”."))
-                    return
-                for member in members:
-                    # A crafted archive must not write outside the restore root.
-                    if not (member.isfile() or member.isdir()) or os.path.isabs(member.name) or ".." in Path(member.name).parts:
-                        self._show_error(_("This backup cannot be restored"), _("The file contains unexpected paths."))
-                        return
-                # Preflight against actual destinations, including Moonlight's
-                # Flatpak or XDG path, not a guessed common parent directory.
-                targets = []
-                for member in members:
-                    parts = Path(member.name).parts
-                    target = destinations[parts[0]].joinpath(*parts[1:])
-                    if target.is_symlink() or any(parent.is_symlink() for parent in target.parents):
-                        raise ValueError("Restore path contains a symbolic link")
-                    targets.append((member, target))
-                import tempfile
+    def _start_restore(self, archive_path: Path) -> None:
+        def close_after_restore() -> None:
+            application = self.get_application()
+            if application is not None:
+                application.quit()
+            else:
+                self.close()
 
-                for member, target in targets:
-                    if member.isdir():
-                        target.mkdir(parents=True, exist_ok=True, mode=0o700)
-                        continue
-                    data = archive.extractfile(member)
-                    if data is None:
-                        raise ValueError("Backup file could not be read")
-                    target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-                    fd, temporary = tempfile.mkstemp(prefix=".brp-restore-", dir=target.parent)
-                    try:
-                        with os.fdopen(fd, "wb") as output, data:
-                            shutil.copyfileobj(data, output)
-                            output.flush()
-                            os.fsync(output.fileno())
-                        os.replace(temporary, target)
-                    finally:
-                        if os.path.exists(temporary):
-                            os.unlink(temporary)
-
-        except (OSError, ValueError, tarfile.TarError) as error:
-            _log.error(f"Restore failed: {error}")
-            self._show_error(_("Could not restore the backup"), str(error))
-            return
-
-        application = self.get_application()
-        if application is not None:
-            application.quit()
-        else:
-            sys.exit(0)
+        self._run_storage_task(
+            lambda: self._restore_backup(archive_path),
+            progress=_("Restore a backup"),
+            success=_("Settings restored! Restart the application to apply all changes."),
+            error_heading=_("Could not restore the backup"),
+            on_success=close_after_restore,
+        )
 
     def _show_error(self, heading: str, body: str) -> None:
         dialog = Adw.AlertDialog(heading=heading, body=body)
@@ -267,13 +228,10 @@ class PreferencesWindow(Adw.Window):
         def on_response(d, r):
             if r == "restore":
                 try:
-                    # 1. Reset Main Config (config.json)
-                    # We load defaults and apply them.
-                    # Ideally we should clear unknown keys too, but setting defaults covers most.
-                    default_conf = self.config.default_config()
-                    for k, v in default_conf.items():
-                        self.config.set(k, v)
-                    self.config.save()
+                    # Replace the file, including removal of obsolete keys.
+                    if not self.config.reset_defaults():
+                        raise OSError("Could not write the default application settings")
+                    (paths.CONFIG_DIR / "vpn_choice.json").unlink(missing_ok=True)
 
                     # 2. Reset Sunshine Config (sunshine.conf)
                     # Delete the file so it regenerates cleanly or starts empty
@@ -359,10 +317,33 @@ class PreferencesWindow(Adw.Window):
             _log.error(f"Error clearing history secrets: {exc}")
 
     def _perform_clear_all(self):
+        def close_after_clear() -> None:
+            app = self.get_application()
+            if app:
+                app.quit()
+            else:
+                self.close()
+
+        self._run_storage_task(
+            self._clear_all_data,
+            progress=_("Clear Everything"),
+            success=_("Clear Everything"),
+            error_heading=_("Error Clearing"),
+            on_success=close_after_clear,
+        )
+
+    def _clear_all_data(self) -> None:
         try:
             # 0. Keyring secrets (Sunshine password, ZeroTier token, per-network
             #    auth keys) — before the files that reference them are removed.
             self._wipe_keyring_secrets()
+
+            # Moonlight owns its paired hosts and client identity. Clear only
+            # the streaming preferences managed by Big Remote Play.
+            from big_remote_play.utils.moonlight_config import MoonlightConfigManager
+
+            if not MoonlightConfigManager().reset_streaming_settings():
+                raise OSError("Could not reset Moonlight preferences")
 
             # 1. Config Dir (canonical + any leftover legacy dir)
             for config_dir in (paths.CONFIG_DIR, paths.legacy_config_dir()):
@@ -374,23 +355,7 @@ class PreferencesWindow(Adw.Window):
                 if cache_dir.exists():
                     shutil.rmtree(cache_dir)
 
-            # 3. Moonlight Config (~/.config/Moonlight Game Streaming Project)
-            moon_dir = Path.home() / ".config" / "Moonlight Game Streaming Project"
-            if moon_dir.exists():
-                shutil.rmtree(moon_dir)
-
-            # 4. Moonlight Flatpak/Var Config (if any)
-            # Not deleting global flatpak data to be safe, but can check specific paths if needed.
-
             _log.info("All data cleared.")
-            # Quit app
-            app = self.get_application()
-            if app:
-                app.quit()
-            else:
-                sys.exit(0)
-
-        except Exception as e:
-            err_dlg = Adw.AlertDialog(heading=_("Error Clearing"), body=str(e))
-            err_dlg.add_response("ok", _("OK"))
-            err_dlg.present(self)
+        except Exception:
+            _log.exception("Could not clear all Big Remote Play data")
+            raise

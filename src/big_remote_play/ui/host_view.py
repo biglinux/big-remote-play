@@ -32,6 +32,15 @@ from .components import physical_size, action_row, boxed_rows, intro, preference
 _HOST_FPS_BY_INDEX = {0: 30, 1: 60, 2: 120, 3: 144, 4: 60}
 _HOST_FPS_INDEX_BY_VALUE = {30: 0, 60: 1, 120: 2, 144: 3}
 
+# Source row order. Saved as the key, so a new source never shifts old choices.
+# Full Desktop and Game Window share what is open; the others start something.
+_SOURCE_KEYS = ("desktop", "game_window", "steam", "lutris", "custom")
+# Versions before Game Window saved only the row position.
+_LEGACY_SOURCE_BY_INDEX = {0: "desktop", 1: "steam", 2: "lutris", 3: "custom"}
+_LAUNCH_PLATFORMS = {"steam": "Steam", "lutris": "Lutris"}
+# The list follows games opening and closing while it is on screen.
+_GAME_WINDOW_REFRESH_SECONDS = 8
+
 
 def _parse_xrandr_monitor_names(output: str) -> list[str]:
     names: list[str] = []
@@ -75,6 +84,19 @@ class HostView(Gtk.Box):
         self._hosting_started_at = None
         self._monitor_identifier_windows: list[Gtk.Window] = []
         self._monitor_identifier_timeout_id = None
+        # Game Window: the open windows last listed, the chosen one (this
+        # session only) and the saved game identity used to find it again.
+        self._game_windows: list = []
+        self._game_window_key = ""
+        self._game_window_identity = ""
+        self._game_window_support = None
+        self._game_window_busy = False
+        self._game_window_error = False
+        self._game_window_timer_id = None
+        self._game_window_rows: list[Gtk.Widget] = []
+        self._capture_process = None
+        self._capture_watch_id = None
+        self._game_window_session: dict | None = None
 
         from big_remote_play.host.sunshine_manager import SunshineHost
 
@@ -89,6 +111,7 @@ class HostView(Gtk.Box):
 
         self.game_detector = GameDetector()
         self.detected_games = {"Steam": [], "Lutris": []}
+        self._steam_names: dict[str, str] | None = None
         self._auto_signature = ""
         self._hdr_outputs: set[str] = set()
         self.load_settings()
@@ -105,6 +128,9 @@ class HostView(Gtk.Box):
 
         self.sync_ui_state()
         self._recover_audio_session()
+        self._recover_game_window_capture()
+        if self._source() == "game_window":
+            self.refresh_game_windows()
 
     def _recover_audio_session(self) -> None:
         """Adopt the audio session of a sharing that is still running, or undo
@@ -122,6 +148,24 @@ class HostView(Gtk.Box):
             GLib.idle_add(self._adopt_audio_session, session)
 
         threading.Thread(target=work, daemon=True).start()
+
+    def _recover_game_window_capture(self) -> None:
+        """Adopt a Game Window share still running, or end one whose game went away meanwhile."""
+        from big_remote_play.host import window_capture
+
+        state = window_capture.read_state()
+        if not state:
+            return
+        if self.is_hosting:
+            # Running: adopt it. Ended (the game closed while this window was
+            # closed) or a helper that died: the watch stops Sunshine and says why.
+            if state.get("state") == "running" or state.get("reason") not in (None, "stopped"):
+                self._game_window_session = {"name": str(state.get("name") or "")}
+                self.sync_ui_state()
+                self._watch_capture()
+        else:
+            # A private screen without a server serves nobody.
+            threading.Thread(target=window_capture.stop_helper, args=(state,), daemon=True).start()
 
     def _adopt_audio_session(self, session) -> bool:
         if self._closed:
@@ -270,12 +314,13 @@ class HostView(Gtk.Box):
         self.game_mode_row.set_title(_("Source"))
         self.game_mode_row.set_use_subtitle(True)
         modes = Gtk.StringList()
-        for m in [_("Full Desktop"), "Steam", "Lutris", _("Custom App")]:
+        for m in [_("Full Desktop"), _("Game Window"), "Steam", "Lutris", _("Custom App")]:
             modes.append(m)
         self.game_mode_row.set_model(modes)
         self.game_mode_row.set_selected(0)
         self.game_mode_row.connect("notify::selected", self.on_game_mode_changed)
         game_group.add(self.game_mode_row)
+        self._create_game_window_selector(game_group)
 
         self.platform_games_expander = Adw.ExpanderRow()
         self.platform_games_expander.set_title(_("Game Selection"))
@@ -990,6 +1035,312 @@ class HostView(Gtk.Box):
         scroll.set_child(clamp)
         self.append(scroll)
 
+    # ------------------------------------------------------------------
+    # Game Window: choose one open game; only that window is sent.
+    # ------------------------------------------------------------------
+    def _create_game_window_selector(self, group: Adw.PreferencesGroup) -> None:
+        from .network_common import Worker
+
+        self._game_window_worker = Worker()
+        self.game_window_expander = Adw.ExpanderRow(title=_("Game window"), use_markup=False)
+        self.game_window_expander.set_subtitle_lines(0)
+        set_row_icon(self.game_window_expander, "brp-input-gaming-symbolic")
+        self.game_window_expander.set_visible(False)
+
+        self.game_window_refresh_button = Gtk.Button(valign=Gtk.Align.CENTER)
+        self.game_window_refresh_button.add_css_class("flat")
+        self.game_window_refresh_icon = create_icon_widget("brp-view-refresh-symbolic", size=16)
+        self.game_window_refresh_button.set_child(self.game_window_refresh_icon)
+        name_icon_button(self.game_window_refresh_button, _("Refresh"), _("Look again for open games"))
+        self.game_window_refresh_button.connect("clicked", lambda _button: self.refresh_game_windows())
+        self.game_window_expander.add_suffix(self.game_window_refresh_button)
+
+        # Emulators and games the list does not recognise are still shareable.
+        self.game_window_all_row = Adw.SwitchRow(title=_("Show all open windows"), subtitle=_("For games that are not listed, such as emulators."), use_markup=False)
+        self.game_window_all_row.set_subtitle_lines(0)
+        self.game_window_all_row.connect("notify::active", lambda *_args: self.refresh_game_windows())
+        self.game_window_expander.add_row(self.game_window_all_row)
+        group.add(self.game_window_expander)
+        # The list follows games opening and closing only while it is visible.
+        self.game_window_expander.connect("map", lambda *_args: self._sync_game_window_timer())
+        self.game_window_expander.connect("unmap", lambda *_args: self._sync_game_window_timer())
+
+    def _source(self) -> str:
+        index = self.game_mode_row.get_selected()
+        return _SOURCE_KEYS[index] if 0 <= index < len(_SOURCE_KEYS) else "desktop"
+
+    def _select_source(self, key: str) -> None:
+        self.game_mode_row.set_selected(_SOURCE_KEYS.index(key) if key in _SOURCE_KEYS else 0)
+
+    def _sync_game_window_timer(self) -> None:
+        wanted = self._source() == "game_window" and not self.is_hosting and not self._closed and self.game_window_expander.get_mapped()
+        if wanted and self._game_window_timer_id is None:
+            self._game_window_timer_id = GLib.timeout_add_seconds(_GAME_WINDOW_REFRESH_SECONDS, self._on_game_window_tick)
+        elif not wanted and self._game_window_timer_id is not None:
+            GLib.source_remove(self._game_window_timer_id)
+            self._game_window_timer_id = None
+
+    def _on_game_window_tick(self) -> bool:
+        if not self._game_window_busy:
+            self.refresh_game_windows(quiet=True)
+        return True
+
+    def refresh_game_windows(self, *, quiet: bool = False) -> None:
+        """List open games off the GTK thread; the selection survives if the game is still open."""
+        if self._closed or self._source() != "game_window" or self.is_hosting:
+            return
+        from big_remote_play.host import game_windows
+
+        self._game_window_busy = True
+        if not quiet:
+            self.game_window_refresh_button.set_sensitive(False)
+            self.game_window_refresh_button.set_child(Adw.Spinner())
+            if not self._game_windows:
+                self.game_window_expander.set_subtitle(_("Looking for open games…"))
+        include_all = self.game_window_all_row.get_active()
+        support = self._game_window_support
+        names = self._steam_names
+
+        def work():
+            found_support = support or game_windows.capture_support()
+            if not found_support.available:
+                return found_support, None, names
+            steam = names
+            if steam is None:
+                steam = {game["id"]: game["name"] for game in self.game_detector.detect_steam() if game.get("id")}
+            return found_support, game_windows.refresh(found_support.backend, include_other_windows=include_all, steam_names=steam), steam
+
+        self._game_window_worker.submit(work, self._show_game_windows, failed=self._show_game_window_failure)
+
+    def _finish_game_window_refresh(self) -> None:
+        self._game_window_busy = False
+        self.game_window_refresh_button.set_sensitive(True)
+        self.game_window_refresh_button.set_child(self.game_window_refresh_icon)
+
+    def _show_game_window_failure(self, error: BaseException) -> None:
+        _log.warning("Game Window: could not list windows: %s", error)
+        self._finish_game_window_refresh()
+        self._game_window_error = True
+        self._game_windows = []
+        self._show_game_window_rows([], problem=(_("Could not read the open windows"), _("Select Refresh to try again.")))
+
+    def _show_game_windows(self, result) -> None:
+        from big_remote_play.host import game_windows
+
+        support, windows, steam_names = result
+        self._finish_game_window_refresh()
+        self._game_window_support = support
+        self._steam_names = steam_names
+        self._game_window_error = False
+        if windows is None:
+            self._game_windows = []
+            self._game_window_key = ""
+            self._show_game_window_rows([], problem=self._game_window_unavailable_text(support))
+            return
+        previous = self._game_window_key
+        chosen = game_windows.reselect(previous, self._game_window_identity, windows)
+        if previous and chosen is None:
+            _log.info("Game Window: the chosen window is no longer open")
+        self._game_windows = list(windows)
+        self._game_window_key = chosen.key if chosen is not None else ""
+        self._show_game_window_rows(self._game_windows)
+
+    @staticmethod
+    def _game_window_unavailable_text(support) -> tuple[str, str]:
+        title = _("Game Window is not available here")
+        if support.problem == "missing-packages":
+            return title, _("Install these packages, then open Big Remote Play again: {packages}").format(packages=", ".join(support.missing))
+        if support.problem == "sandboxed":
+            return title, _("It cannot see other apps' windows from inside the Flatpak sandbox. Use the native package.")
+        return title, _("It needs KDE Plasma on Wayland, or an X11 desktop with window effects (compositing) on.")
+
+    def _game_window_subtitle(self, item) -> str:
+        tags = item.tags()
+        if item.is_game and not (item.launch.wine or item.launch.proton):
+            tags.append(_("Linux native"))
+        if not item.is_game:
+            tags.append(_("Not recognized as a game"))
+        return " · ".join(tags)
+
+    def _game_window_icon(self, item) -> Gtk.Widget:
+        display = Gdk.Display.get_default()
+        theme = Gtk.IconTheme.get_for_display(display) if display is not None else None
+        if item.icon_name and theme is not None and theme.has_icon(item.icon_name):
+            image = Gtk.Image.new_from_icon_name(item.icon_name)
+            image.set_pixel_size(32)
+        else:
+            image = create_icon_widget("brp-input-gaming-symbolic", size=18, css_class="brp-row-icon")
+        image.set_valign(Gtk.Align.CENTER)
+        image.set_accessible_role(Gtk.AccessibleRole.PRESENTATION)
+        return image
+
+    def _show_game_window_rows(self, windows, *, problem: tuple[str, str] | None = None) -> None:
+        """Replace the listed rows, keeping keyboard focus on the chosen game when possible."""
+        focus_key = ""
+        root = self.get_root()
+        focused = root.get_focus() if isinstance(root, Gtk.Window) else None
+        for row in self._game_window_rows:
+            if focused is not None and (focused is row or focused.is_ancestor(row)):
+                focus_key = getattr(row, "_brp_game_window_key", "") or "empty"
+            self.game_window_expander.remove(row)
+        self._game_window_rows = []
+        rows: list[Gtk.Widget] = []
+        if problem is not None or not windows:
+            title, subtitle = problem or (_("No game windows found"), _("Open the game you want to share, then select Refresh."))
+            row = Adw.ActionRow(title=title, subtitle=subtitle, use_markup=False)
+            row.set_title_lines(0)
+            row.set_subtitle_lines(0)
+            rows.append(row)
+        group_leader = None
+        for item in windows:
+            row = Adw.ActionRow(title=item.name, subtitle=self._game_window_subtitle(item), use_markup=False)
+            row.set_title_lines(2)
+            row.set_subtitle_lines(0)
+            row.set_tooltip_text(item.details())
+            check = Gtk.CheckButton(valign=Gtk.Align.CENTER)
+            if group_leader is None:
+                group_leader = check
+            else:
+                check.set_group(group_leader)
+            check.set_active(item.key == self._game_window_key)
+            check.update_property([Gtk.AccessibleProperty.LABEL], [item.name])
+            check.connect("toggled", self._on_game_window_toggled, item.key)
+            # add_prefix places each new widget first: the choice reads [○] [icon] Name.
+            row.add_prefix(self._game_window_icon(item))
+            row.add_prefix(check)
+            row.set_activatable_widget(check)
+            row._brp_game_window_key = item.key
+            rows.append(row)
+        for row in rows:
+            # Rows go above the "Show all open windows" switch.
+            self.game_window_expander.add_row(row)
+            self._game_window_rows.append(row)
+        self._reorder_game_window_switch()
+        if focus_key:
+            target = next((row for row in rows if getattr(row, "_brp_game_window_key", "") == focus_key), rows[0] if rows else None)
+            if target is not None:
+                target.grab_focus()
+        self._sync_game_window_summary()
+
+    def _reorder_game_window_switch(self) -> None:
+        self.game_window_expander.remove(self.game_window_all_row)
+        self.game_window_expander.add_row(self.game_window_all_row)
+
+    def _on_game_window_toggled(self, check: Gtk.CheckButton, key: str) -> None:
+        if not check.get_active():
+            return
+        self._game_window_key = key
+        item = self._selected_game_window()
+        if item is not None:
+            self._game_window_identity = item.identity
+            _log.info("Game Window: selected %s (pid %s)", item.name, item.window.pid)
+        self._sync_game_window_summary()
+        self._schedule_save_host_settings()
+
+    def _selected_game_window(self):
+        return next((item for item in self._game_windows if item.key == self._game_window_key), None)
+
+    def _sync_game_window_summary(self) -> None:
+        item = self._selected_game_window()
+        support = self._game_window_support
+        unavailable = support is not None and not support.available
+        self.game_window_all_row.set_visible(not unavailable)
+        self.game_window_refresh_button.set_visible(not unavailable)
+        if unavailable:
+            self.game_window_expander.set_subtitle(_("Not available"))
+        elif item is not None:
+            self.game_window_expander.set_subtitle(item.name)
+        elif self._game_windows:
+            self.game_window_expander.set_subtitle(_("Choose the game to share"))
+        elif not self._game_window_busy:
+            self.game_window_expander.set_subtitle(_("No game windows found"))
+        self._sync_source_description()
+        self._sync_start_availability()
+
+    def _sync_source_description(self) -> None:
+        if self._source() == "game_window":
+            self.game_group.set_description(_("Only the chosen game is sent. The desktop, other windows and notifications stay on this computer."))
+        else:
+            self.game_group.set_description(_("Sharing the whole screen also shows notifications and other open windows."))
+
+    def _sync_start_availability(self) -> None:
+        """Game Window starts only with a chosen, still open game: nothing else is ever shared instead."""
+        if self.is_hosting or not hasattr(self, "overview_start_button") or self.loading_bar.get_visible():
+            return  # sharing, or starting: the start sequence owns the button and the status
+        waiting = self._source() == "game_window" and self._selected_game_window() is None
+        self.overview_start_button.set_sensitive(not waiting)
+        if waiting:
+            self.overview_status_label.set_label(_("Choose the game window to share."))
+        else:
+            self.overview_status_label.set_label(_("Choose a source, then start sharing."))
+
+    def _game_window_spec(self, item):
+        from big_remote_play.host.window_capture import Spec
+
+        window = item.window
+        return Spec(
+            backend=window.backend,
+            handle=window.handle,
+            width=window.width,
+            height=window.height,
+            scale=window.scale,
+            decoration=window.decoration,
+            identity=item.identity,
+            display=os.environ.get("DISPLAY", "") if window.backend == "x11" else "",
+            name=item.name,
+        )
+
+    @staticmethod
+    def _capture_start_error(reason: str) -> str:
+        texts = {
+            "portal-cancelled": _("The game window was not confirmed, so sharing did not start."),
+            "different-window": _("The window chosen in the system dialog is not the selected game. Try again and choose the same game."),
+            "portal-unavailable": _("This desktop cannot share a single window. Update KDE Plasma, or choose Full Desktop."),
+            "window-closed": _("The game closed before sharing started. Open it again, then select Refresh."),
+            "portal-closed": _("The game closed before sharing started. Open it again, then select Refresh."),
+            "compositing-off": _("Window effects (compositing) are off, so the game cannot be shown on its own. Turn them on, then share again."),
+        }
+        return texts.get(reason, _("The private game screen could not start. Check that KDE Plasma (kwin_wayland) and the GStreamer plugins are installed."))
+
+    @staticmethod
+    def _capture_stop_text(reason: str) -> tuple[str, str]:
+        if reason in ("window-closed", "portal-closed", "window-unknown"):
+            return _("The game window closed"), _("Sharing stopped so nothing else on this computer is shown. Open the game again to share it.")
+        if reason == "compositing-off":
+            return _("Sharing stopped to protect your privacy"), _("Window effects (compositing) are off, so the game cannot be shown on its own. Turn them on, then share again.")
+        return _("Sharing stopped to protect your privacy"), _("The game window could no longer be captured on its own, so sharing stopped. Nothing else on this computer was shown.")
+
+    def _watch_capture(self) -> None:
+        """While Game Window is shared: stop everything as soon as its helper stops."""
+        if self._capture_watch_id is None:
+            self._capture_watch_id = GLib.timeout_add_seconds(1, self._check_capture)
+
+    def _stop_capture_watch(self) -> None:
+        if self._capture_watch_id is not None:
+            GLib.source_remove(self._capture_watch_id)
+            self._capture_watch_id = None
+
+    def _check_capture(self) -> bool:
+        from big_remote_play.host import window_capture
+
+        if self._closed or not self.is_hosting or self._game_window_session is None:
+            self._capture_watch_id = None
+            return False
+        process = self._capture_process
+        if process is not None:
+            process.poll()  # collects the helper once it exits
+        state = window_capture.read_state()
+        if window_capture.helper_running(state):
+            return True
+        reason = str(state.get("reason") or "capture-failed") if state else "capture-failed"
+        self._capture_watch_id = None
+        _log.warning("Game Window: capture ended (%s); stopping the server", reason)
+        heading, body = self._capture_stop_text(reason)
+        self._game_window_session = None
+        self.stop_hosting()
+        self.show_error_dialog(heading, body)
+        return False
+
     def _create_app_diagnostics_group(self) -> Adw.PreferencesGroup:
         """Log switch, log cleanup and the config path, beside the other
         troubleshooting tools instead of in a separate settings window."""
@@ -1098,9 +1449,10 @@ class HostView(Gtk.Box):
         limit = self.bandwidth_row.get_value()
         cap = _("No video bitrate ceiling") if limit <= 0 else _("Video limit: {mbps:g} Mbps").format(mbps=limit)
         mode = _("Automatic capture and encoding") if self.auto_quality_row.get_active() else _("Manual capture and encoding")
-        screen = _("Screen: {value}").format(value=self._choice_text(self.monitor_row))
+        shown = _("Game Window") if self._source() == "game_window" else self._choice_text(self.monitor_row)
+        screen = _("Screen: {value}").format(value=shown)
         quality = _("{mode} · {limit}").format(mode=mode, limit=cap)
-        hdr = self._hdr_summary()
+        hdr = self._hdr_summary() if self._source() != "game_window" else ""
         return f"{screen} · {quality}" + (f" · {hdr}" if hdr else "")
 
     def _none_waiting_message(self, message: str) -> str:
@@ -1383,8 +1735,15 @@ class HostView(Gtk.Box):
         for row in (self.fps_row, self.gpu_row, self.platform_row, self.codecs_row, self.wifi_row, self.optimization_row):
             row.set_sensitive(not automatic)
         self.bandwidth_row.set_sensitive(True)
+        # Game Window has its own private screen: the real monitors, their HDR
+        # and resolution, and the capture method are not used.
+        desktop_screen = self._source() != "game_window"
+        for row in (self.monitor_row, self.identify_monitors_row, self.hdr_sdr_row):
+            row.set_sensitive(desktop_screen)
+        if not desktop_screen:
+            self.platform_row.set_sensitive(False)
         # Matching needs one known screen; Automatic lets Sunshine pick it.
-        self.share_resolution_row.set_sensitive(self.monitor_row.get_selected() > 0)
+        self.share_resolution_row.set_sensitive(desktop_screen and self.monitor_row.get_selected() > 0)
         self.redetect_row.set_visible(automatic)
         self.auto_quality_row.set_subtitle(_("Sunshine chooses compatible capture and encoding at startup. You can still set a video bitrate ceiling."))
         configured = [
@@ -2074,7 +2433,11 @@ class HostView(Gtk.Box):
 
     def _describe_session(self) -> str:
         """What this PC is sending right now, in one line."""
-        source = self.game_mode_row.get_subtitle() or self._selected_source_name()
+        session = self._game_window_session
+        if session is not None:
+            source = _("Game Window: {game}").format(game=session.get("name") or _("Game Window"))
+        else:
+            source = self.game_mode_row.get_subtitle() or self._selected_source_name()
         return _("{source} · {quality}").format(source=source, quality=self._quality_summary())
 
     def _selected_source_name(self) -> str:
@@ -2179,6 +2542,8 @@ class HostView(Gtk.Box):
                 _("Start sharing to show paired devices"),
                 _("Paired devices appear here."),
             )
+            self._sync_start_availability()
+        self._sync_game_window_timer()
 
     def _refresh_internet_access(self) -> None:
         """Show the address of this PC on each connected private network."""
@@ -2402,18 +2767,18 @@ class HostView(Gtk.Box):
         threading.Thread(target=self._run_start_hosting, args=(cfg,), daemon=True).start()
 
     def _resolve_game_launch_info(self) -> dict | None:
-        """Read the selected game/app into a launch descriptor, or None (Desktop)."""
-        mode_idx = self.game_mode_row.get_selected()
-        if mode_idx in (1, 2):  # Steam / Lutris
-            platform = "Steam" if mode_idx == 1 else "Lutris"
+        """Read the selected game/app into a launch descriptor, or None (nothing to launch)."""
+        source = self._source()
+        if source in _LAUNCH_PLATFORMS:
+            platform = _LAUNCH_PLATFORMS[source]
             idx = self.game_list_row.get_selected()
             games = self.detected_games.get(platform, [])
             if idx != Gtk.INVALID_LIST_POSITION and 0 <= idx < len(games):
                 game = games[idx]
-                if mode_idx == 1:
+                if source == "steam":
                     return {"type": "steam", "app_id": game.get("id", ""), "name": game["name"]}
                 return {"type": "lutris", "cmd": game["cmd"], "name": game["name"]}
-        elif mode_idx == 3:  # Custom App
+        elif source == "custom":
             name, cmd = self.custom_name_entry.get_text().strip(), self.custom_cmd_entry.get_text().strip()
             if name and cmd:
                 return {"type": "custom", "cmd": cmd, "name": name}
@@ -2475,18 +2840,39 @@ class HostView(Gtk.Box):
 
     def _collect_hosting_config(self) -> dict:
         """Main-thread snapshot of every widget value the start sequence needs."""
-        self.pin_code = "".join(random.choices(string.digits, k=BRP_DISCOVERY_CODE_LENGTH))
-        self._game_launch_info = self._resolve_game_launch_info()
-        if self.game_mode_row.get_selected() != 0 and self._game_launch_info is None:
-            raise ValueError(_("Select a game or complete the app name and command. To share the whole screen instead, choose Full Desktop."))
+        source = self._source()
+        game_window = None
+        if source == "game_window":
+            item = self._selected_game_window()
+            if item is None:
+                raise ValueError(_("Choose the game window to share."))
+            game_window = {"spec": self._game_window_spec(item), "name": item.name}
+            self._game_launch_info = None
+        else:
+            self._game_launch_info = self._resolve_game_launch_info()
+            if source != "desktop" and self._game_launch_info is None:
+                raise ValueError(_("Select a game or complete the app name and command. To share the whole screen instead, choose Full Desktop."))
         if self._game_launch_info and self._game_launch_info["type"] in ("custom", "lutris") and not _split_launch_command(self._game_launch_info["cmd"]):
             raise ValueError(_("The app command is not valid. Check its quotation marks and try again."))
+        self.pin_code = "".join(random.choices(string.digits, k=BRP_DISCOVERY_CODE_LENGTH))
         self._game_processes: list[subprocess.Popen[bytes]] = []
+        sunshine_config = self._build_sunshine_config()
+        if game_window is not None:
+            from big_remote_play.host.stream_display import prep_command
+
+            # Only the private game screen exists for Sunshine: KWin capture of
+            # that one screen, no fallback to another method (KMS would read
+            # the real monitors). The real monitors are not changed either.
+            sunshine_config["capture"] = "kwin"
+            sunshine_config["output_name"] = None
+            sunshine_config["adapter_name"] = None  # the private screen's GPU, set by the worker
+            sunshine_config["brp_stream_display"] = prep_command(target=None, sdr_for_sdr_clients=False)
         return {
-            "sunshine_config": self._build_sunshine_config(),
+            "sunshine_config": sunshine_config,
             "pin_code": self.pin_code,
             "audio_output_name": self._selected_audio_sink(),
             "audio_play_on_host": self.audio_play_here_row.get_active(),
+            "game_window": game_window,
         }
 
     def _run_start_hosting(self, cfg: dict) -> None:
@@ -2531,9 +2917,28 @@ class HostView(Gtk.Box):
             if self._closed:
                 self._rollback_start()
                 return
+            from big_remote_play.host import window_capture
+
+            wayland_display = None
+            game_window = cfg.get("game_window")
+            if game_window:
+                GLib.idle_add(self._show_capture_starting)
+                try:
+                    started, self._capture_process = window_capture.start_helper(game_window["spec"])
+                except window_capture.CaptureError as error:
+                    raise RuntimeError(self._capture_start_error(error.reason)) from error
+                wayland_display = started.socket
+                sunshine_config["adapter_name"] = started.render_node or None
+            else:
+                # A desktop share never keeps a private game screen around.
+                window_capture.stop_helper()
+                window_capture.clear_state()
+            if self._closed:
+                self._rollback_start()
+                return
             if not self.sunshine.configure(sunshine_config):
                 raise OSError(_("Could not save the server configuration."))
-            success, msg = self.sunshine.start()
+            success, msg = self.sunshine.start(wayland_display=wayland_display) if wayland_display else self.sunshine.start()
             if self._closed:
                 if success:
                     self.sunshine.stop()
@@ -2541,7 +2946,7 @@ class HostView(Gtk.Box):
                 return
             if not success:
                 self._rollback_start()
-            GLib.idle_add(self._on_hosting_started, {"success": success, "msg": msg})
+            GLib.idle_add(self._on_hosting_started, {"success": success, "msg": msg, "game_window": game_window["name"] if game_window else None})
         except Exception as e:
             self._rollback_start()
             GLib.idle_add(self._on_hosting_error, str(e))
@@ -2551,6 +2956,11 @@ class HostView(Gtk.Box):
         listener, self.stop_pin_listener = self.stop_pin_listener, None
         if callable(listener):
             listener()
+        if self._capture_process is not None:
+            from big_remote_play.host import window_capture
+
+            self._capture_process = None
+            window_capture.stop_helper()
         session, self.audio_session = self.audio_session, None
         if session is not None:
             try:
@@ -2572,12 +2982,22 @@ class HostView(Gtk.Box):
             return False
 
         self.is_hosting = True
+        name = result.get("game_window")
+        self._game_window_session = {"name": name} if name is not None else None
+        if self._game_window_session is not None:
+            self._watch_capture()
         self._start_audio_watch()
         self._sync_audio_controls()
 
         self.sync_ui_state()
         self.show_toast(_("Server started"))
         self._launch_game_direct()
+        return False
+
+    def _show_capture_starting(self) -> bool:
+        if not self._closed:
+            # KDE asks once per game; afterwards it is restored silently.
+            self.overview_status_label.set_label(_("Preparing the game window. If your system asks, choose the same game and select Share."))
         return False
 
     def _on_hosting_error(self, message: str) -> bool:
@@ -2694,6 +3114,8 @@ class HostView(Gtk.Box):
         # the PIN listener. The blocking audio-restore + server stop go to a worker.
         self._stop_game_direct()
         self._stop_audio_watch()
+        self._stop_capture_watch()
+        self._game_window_session = None
 
         if hasattr(self, "stop_pin_listener") and self.stop_pin_listener:
             try:
@@ -2716,6 +3138,16 @@ class HostView(Gtk.Box):
             self.sunshine.stop()
         except Exception as exc:
             _log.error("Error stopping Sunshine: %s", exc)
+        try:
+            # After Sunshine: its private game screen may go only once it stopped.
+            from big_remote_play.host import window_capture
+
+            window_capture.stop_helper()
+            process, self._capture_process = self._capture_process, None
+            if process is not None:
+                process.poll()
+        except Exception as exc:
+            _log.error("Error stopping the game window capture: %s", exc)
         try:
             # Normally Sunshine's "undo" already did this; after a crash it did not.
             from big_remote_play.host.stream_display import StreamDisplay
@@ -3407,19 +3839,26 @@ class HostView(Gtk.Box):
         threading.Thread(target=work, daemon=True).start()
 
     def on_game_mode_changed(self, row, _param):
-        idx = row.get_selected()
-        self.platform_games_expander.set_visible(idx in [1, 2])
-        self.platform_games_expander.set_expanded(idx in [1, 2])
-        self.custom_app_expander.set_visible(idx == 3)
-        self.custom_app_expander.set_expanded(idx == 3)
-        if idx in [1, 2]:
-            plat = {1: "Steam", 2: "Lutris"}[idx]
+        source = self._source()
+        launch = source in _LAUNCH_PLATFORMS
+        self.platform_games_expander.set_visible(launch)
+        self.platform_games_expander.set_expanded(launch)
+        self.custom_app_expander.set_visible(source == "custom")
+        self.custom_app_expander.set_expanded(source == "custom")
+        self.game_window_expander.set_visible(source == "game_window")
+        self.game_window_expander.set_expanded(source == "game_window")
+        if launch:
+            plat = _LAUNCH_PLATFORMS[source]
             self.platform_games_expander.set_title(f"{plat} Games")
-            self.populate_game_list(idx)
+            self.populate_game_list(plat)
+        if source == "game_window" and not self.loading_settings:
+            self.refresh_game_windows()
+        self._sync_game_window_timer()
+        self._sync_game_window_summary()
+        self._sync_quality_controls()
 
-    def populate_game_list(self, mode_idx):
-        plat = {1: "Steam", 2: "Lutris"}.get(mode_idx)
-        if not plat:
+    def populate_game_list(self, plat):
+        if plat not in self.detected_games:
             return
         if not self.detected_games[plat]:
             if plat == "Steam":
@@ -3448,9 +3887,15 @@ class HostView(Gtk.Box):
             game_list_idx = 0
         monitor_idx = self.monitor_row.get_selected()
         monitor_output_name = self.available_monitors[monitor_idx][1] if 0 <= monitor_idx < len(self.available_monitors) else "auto"
+        source = self._source()
+        legacy_index = {value: key for key, value in _LEGACY_SOURCE_BY_INDEX.items()}
         h.update(
             {
-                "mode_idx": self.game_mode_row.get_selected(),
+                "source": source,
+                # Older versions read only this position; Game Window did not exist there.
+                "mode_idx": legacy_index.get(source, 0),
+                "game_window_identity": self._game_window_identity,
+                "game_window_all": self.game_window_all_row.get_active(),
                 "game_list_idx": game_list_idx,
                 "custom_name": self.custom_name_entry.get_text(),
                 "custom_cmd": self.custom_cmd_entry.get_text(),
@@ -3565,11 +4010,17 @@ class HostView(Gtk.Box):
                 h = {}
             if not h:
                 return
-            self._select_saved_index(self.game_mode_row, h.get("mode_idx", 0))
+            source = h.get("source")
+            if source not in _SOURCE_KEYS:
+                source = _LEGACY_SOURCE_BY_INDEX.get(h.get("mode_idx", 0), "desktop")
+            identity = h.get("game_window_identity", "")
+            # Only a game identity is kept, never a window id from another session.
+            self._game_window_identity = identity if isinstance(identity, str) and len(identity) <= 200 else ""
+            self.game_window_all_row.set_active(h.get("game_window_all") is True)
+            self._select_source(source)
             # Restore game list selection after populating
-            mode_idx = h.get("mode_idx", 0)
-            if mode_idx in [1, 2]:
-                self.populate_game_list(mode_idx)
+            if source in _LAUNCH_PLATFORMS:
+                self.populate_game_list(_LAUNCH_PLATFORMS[source])
                 game_list_idx = h.get("game_list_idx", 0)
                 model = self.game_list_row.get_model()
                 count = model.get_n_items() if model is not None else 0
@@ -3634,7 +4085,7 @@ class HostView(Gtk.Box):
             self.loading_settings = False
 
     def connect_settings_signals(self):
-        for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row, self.audio_play_here_row, self.hdr_sdr_row]:
+        for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row, self.audio_play_here_row, self.hdr_sdr_row, self.game_window_all_row]:
             r.connect("notify::active", self._schedule_save_host_settings)
 
         for r in [
@@ -3706,6 +4157,14 @@ class HostView(Gtk.Box):
 
     def cleanup(self):
         self._close_monitor_identifiers()
+        # A Game Window share goes on like Sunshine does; only this window's
+        # list refresh and its watch stop (the next window adopts the share).
+        if hasattr(self, "_game_window_worker"):
+            self._game_window_worker.close()
+        if self._game_window_timer_id is not None:
+            GLib.source_remove(self._game_window_timer_id)
+            self._game_window_timer_id = None
+        self._stop_capture_watch()
         if hasattr(self, "_internet_worker"):
             self._internet_worker.close()
         if hasattr(self, "_pair_busy_worker"):

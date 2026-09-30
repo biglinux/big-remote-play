@@ -25,7 +25,17 @@ make release-check
 
 ## Visual matrix
 
-Run the native interface in Portuguese and English, light/dark themes, compact width, large text and high contrast. Inspect Home with both roles, Share stopped/active, pairing, no computers/one computer, manual address, quality sheets, support, each network provider, installation and backup errors. Check that text is not obscured, primary actions are reachable, tabs retain names, and symbols follow the theme. Data injected for screenshots must be labeled as simulated.
+Run the native interface in Portuguese and English, Gamer/Automatic/Light/Dark
+appearances, compact width, large text and high contrast. Switch repeatedly
+between Gamer and every base appearance and check that no Gamer surface remains.
+Inspect Home with both roles, Share stopped/active, pairing, no computers/one
+computer, manual address, quality sheets, support, each network provider,
+installation and backup errors. On Share/Connect, verify that all three network
+cards stay in place while a method connects and disconnects, several connected
+methods at once, and the keyboard-only focus ring on cards and guided choices.
+Check that text is not obscured, primary actions
+are reachable, tabs retain names, and symbols follow the theme. Data injected
+for screenshots must be labeled as simulated.
 
 ## Required target-machine checks
 
@@ -34,10 +44,11 @@ Run the native interface in Portuguese and English, light/dark themes, compact w
 | Native package | Clean install/upgrade/removal on supported BigLinux/Manjaro; private Python layout, resources and launchers intact |
 | Streaming | Sunshine → Moonlight connection, pairing, stop/reconnect, custom port and invalid credentials |
 | Capture/audio | Wayland/X11 sessions, actual GPU encoding/decoding, display changes, host/client sound |
+| Game Window | On KDE Plasma Wayland and X11: a native game, a Steam/Proton game and a Gamescope game listed by name; first-share confirmation and silent restore; terminal, browser, Dolphin, a notification and the Plasma menu over the game never reach the client; closing and crashing the game stop sharing with no desktop shown; windowed, borderless and fullscreen; two and three monitors; AMD, Intel and NVIDIA (hybrid laptops included) with hardware encoding; controllers, keyboard and mouse; host and client sound. See [Game Window](game-window.md) |
 | Internet | Real Tailscale browser authorization and machine sharing, ZeroTier join/approval/managed IP, Headscale server (0.27+) with API key, registration approval and pre-auth key; Share ↔ Connect over each provider, including a relayed path. Track results in the [private-network test matrix](private-network-test-matrix.md) |
 | Privileges | PolicyKit allow/cancel/failure and desktop keyring locked/unavailable states |
 | Accessibility | Orca/AT-SPI navigation and announcements, keyboard-only use, touch targets and text scaling |
-| Safety | Real backup/restore with native certificates, cancelled startup, preserved libraries and devices |
+| Safety | Real backup/restore with native certificates, corrupt/legacy archives, forced apply failure and preserved libraries, Moonlight identity and devices; follow the [backup/service validation matrix](backup-service-validation.md) |
 | Usability | First-time participants completing Share/Connect without developer guidance |
 
 Store exact component versions and the result of each scenario. Do not infer these results from a screenshot or a mock. Nix packaging and service paths also require target-system testing; the included expression is not a claim of a completed NixOS integration test.

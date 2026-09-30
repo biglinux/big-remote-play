@@ -51,6 +51,7 @@ class Config:
                     f.flush()
                     os.fsync(f.fileno())
                 os.replace(tmp_path, self.config_file)
+                return True
             except Exception:
                 try:
                     os.unlink(tmp_path)
@@ -59,6 +60,7 @@ class Config:
                 raise
         except Exception as e:
             _log.error(f"Error saving configuration: {e}")
+            return False
 
     def get(self, key, default=None):
         """Gets configuration value"""
@@ -102,3 +104,13 @@ class Config:
                 "auto_start_sunshine": False,
             },
         }
+
+    def reset_defaults(self):
+        """Replace the complete app configuration with canonical defaults."""
+        with self._write_lock:
+            previous = self.config
+            self.config = self.default_config()
+            if self.save():
+                return True
+            self.config = previous
+            return False

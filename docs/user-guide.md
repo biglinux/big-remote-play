@@ -13,6 +13,14 @@ The game runs on the **sharing computer**. The person playing remotely uses the 
 - Moonlight Qt is required on the connecting computer.
 - Pair only devices and people you trust.
 
+## Choose the appearance
+
+Open the application menu and use **Appearance**. **Gamer** is the dark
+violet/cyan preset; **Automatic** follows the desktop; **Light** and **Dark**
+force the corresponding system appearance. The choice takes effect immediately
+and is restored the next time Big Remote Play opens. High contrast temporarily
+uses the native high-contrast appearance while keeping the saved choice.
+
 ## Guided setup
 
 Not sure where to start? On Home, choose **Guided setup**. It asks two questions and opens the right page; it never installs or changes anything by itself.
@@ -29,13 +37,26 @@ The back arrow goes one question back. After a connection is set up from the gui
 ## Share a game
 
 1. On Home, choose **Share** — the option that says this computer runs the game.
-2. In **Overview**, choose a game or the whole desktop.
+2. In **Overview**, under **Source**, choose **Full Desktop**, **Game Window** (only one open game is sent, see below), or a game or app to start.
 3. Open **Image and capture** only when the default display, GPU, encoder or host video ceiling needs to change. If displays have the same name, choose **Identify monitors** to show 01, 02 and 03 on the physical screens; the chosen screen then appears in the **Image and capture** summary.
 4. Sound works without setup: the other computer hears what this computer plays. **Preferences → Audio** has **Test audio** and the options below.
 5. Start sharing and leave the game computer running.
 6. When the other computer shows a Moonlight pairing code, enter the four digits on the sharing page and approve the device.
 
 Opening Share does not start the server, install software or change network/firewall settings by itself.
+
+### Share only a game window
+
+**Full Desktop** sends everything on the screen, including notifications and other windows. **Game Window** sends one game and nothing else: windows above it, the panel, pop-ups and notifications stay on this computer.
+
+1. Open the game first.
+2. Under **Source**, choose **Game Window**. The **Game window** list shows the open games, for example *Shadow of the Tomb Raider — Steam · Proton* or *SuperTuxKart — Linux native*. Select the game.
+3. If the game is not listed, select **Refresh** (the circular arrow). The list also follows games opening and closing while it is on screen. For an emulator or a game the list does not recognize, turn on **Show all open windows**.
+4. Select **Start sharing**. The first time you share a game, KDE asks you to confirm it: choose the same game, keep **Allow restoring on future sessions** on and select **Share**. Next time it is not asked again.
+
+**Start sharing** stays unavailable until a game is chosen, so nothing else is ever shared instead. If the game closes or crashes while sharing, sharing stops at once with **The game window closed**; open the game and start again.
+
+While sharing, keep the game as the active window: keyboard and mouse input from the other device goes to the active window of this computer. Game Window needs KDE Plasma on Wayland (or an X11 desktop with window effects on) and some GStreamer plugins; if anything is missing, the list says what to install. Details and limits are in [Game Window](game-window.md).
 
 While sharing, **3. Connect the other PC** also tells you, before any device waits:
 
@@ -82,6 +103,10 @@ The connection cards on Connect and Share measure the network round trip with on
 | **Not responding** | the last replies did not arrive (a firewall may also block them) |
 
 The word is always written next to its colour. The path (**Local network**, **ZeroTier**, **Tailscale**, **Headscale** or **Internet**) comes from the route the computer really uses. The **(i)** button shows the address, the variation (jitter) and lost replies. This is the network, not Moonlight's own end-to-end latency; details in [connection status](connection-status.md).
+
+## Services in the sidebar
+
+On Share and Connect the bottom of the sidebar shows, under **Streaming**, Sunshine (Share) or Moonlight (Connect), and under **Secure connection**, Tailscale, ZeroTier and Headscale. Each card always stays in its place and says its state in words: for example **Running**, **Stopped** or **Ready** for streaming, and **Connected**, **Not connected**, **Sign-in needed**, **Waiting for approval** or **Not installed** for a secure connection. A connected method also shows how many other devices are online (Tailscale, Headscale) or the network name (ZeroTier). Select a card to open its controls or its setup page. Details in [service status cards](service-status-cards.md).
 
 ## Pairing code versus search code
 
@@ -184,7 +209,7 @@ Test public access from a genuinely different network. See [host and network pol
 
 Application data is under `$XDG_CONFIG_HOME/big-remote-play` (normally `~/.config/big-remote-play`). App-managed Sunshine configuration is stored below its `sunshine/` directory. Moonlight keeps its own native or Flatpak configuration.
 
-Backups may contain private certificates and other sensitive native configuration. Treat them as secrets. Keyring secrets are not exported. Restore validates paths and replaces files individually; it is not an all-or-nothing transaction across the whole archive.
+Backups may contain private certificates, Moonlight identity and other sensitive native configuration. Treat them as secrets. Keyring passwords, API tokens and authentication keys are not exported, so a restored setup may ask you to sign in again. Restore validates the complete archive before changing anything and rolls back changes if a file cannot be applied. Logs, caches and temporary session data are not included.
 
 Do not run the UI with `sudo`. Privileged operations request narrowly scoped authorization when you choose them.
 
