@@ -107,7 +107,18 @@ For sound, open **Share → Preferences → Audio** on the game PC:
 4. No sound anywhere after sharing stopped unexpectedly: start Big Remote Play again; it puts back the output Sunshine left on its silent output and reconnects an effects program (JamesDSP, EasyEffects) left without an output. Otherwise choose your output in the system sound settings; if the right output is already chosen and there is still no sound, restart the effects program.
 5. Steam Remote Play Together has no sound while sharing: the technical details show which source Steam records. Big Remote Play no longer moves application sound, so Steam's own capture is not undone. See [audio architecture](audio-architecture.md#coexisting-with-steam-remote-play-together).
 
+6. The person connecting hears their own voice during a voice call with this computer: the call app here plays their voice, and Sunshine sends what this computer plays. **Voice calls** under Audio names the call apps kept out of the stream; if yours is not named, the call runs in a web browser (its sound cannot be separated) or in an app Big Remote Play does not recognize. Use the call app's desktop version, or headphones plugged into another output than the shared one.
+
 A configured value in the monitor is not a measured frame rate. Network ping is not end-to-end gaming latency. Test wired networking and the actual encoder/decoder before attributing low FPS to the interface.
+
+## The other computer's controller does nothing in the game
+
+Sunshine gives each controller of the connecting computer a virtual controller on the game PC. While sharing, **Share → 3. Connect the other PC** says when something on the game PC keeps it out of the game:
+
+- **This computer's controller comes first**: a controller is plugged into the game PC. A game that uses one controller reads that one instead of the virtual one, which is always found after it. Unplug the game PC's controller while the other person plays, or choose the “Sunshine” controller in the game's settings. Games made for several players give the virtual controller the next player.
+- **Controllers of the other computer cannot work**: this user cannot open `/dev/uinput` or `/dev/uhid`, so Sunshine cannot create the virtual controller. Sunshine's package loads `uhid` and opens it to the `input` group at startup; restart the game PC once after installing or updating Sunshine.
+
+If neither appears, check on the connecting computer that Moonlight sees the controller (**Connect → Input → Controllers**) and that the Moonlight window is focused, or turn on **Keep controller input active in the background**.
 
 ## Unable to save credentials
 
