@@ -1,6 +1,13 @@
 # Architecture and ownership
 
-`app.py` owns the GTK application and theme. `ui/main_window.py` owns permanent Home, role-specific instructions, task navigation and lazy private-network pages. Home presents Share and Connect before the secondary internet-access path; technical component names appear there only when setup is required. Role selection itself does not install software, start sharing or change a network.
+`app.py` owns the GTK application and theme. The base stylesheet remains loaded
+for the application lifetime; the Gamer preset is one higher-priority provider
+held by identity and removed when another appearance or high contrast is active.
+`ui/main_window.py` owns permanent Home, role-specific instructions, task
+navigation and lazy private-network pages. Home presents Share and Connect
+before the secondary internet-access path; technical component names appear
+there only when setup is required. Role selection itself does not install
+software, start sharing or change a network.
 
 `HostView` gathers GTK values on the main thread, then uses a worker for Sunshine/audio/process work. `GuestView` distinguishes discovery, pairing and streaming, uses attempt generations/cancellation events, and applies UI results through the main loop. Background discovery is passive while Connect is visible; explicit Search may perform the bounded subnet scan. Home does not start that scan.
 
@@ -52,7 +59,7 @@ Official references:
 
 Writes of sensitive files use temporary files, owner-only permissions and atomic replacement. JSON writers merge independent key updates under a process lock. The legacy config-directory migration moves missing descendants but retains conflicting legacy files; it never deletes a conflicting library automatically.
 
-Backup restore checks size, entry types and destination paths before writing, respects Moonlight's actual location, and atomically replaces each file. This is not a transactional rollback mechanism for the entire archive.
+Backup/restore is owned by `utils/backup_restore.py`. It writes a versioned, hashed archive in separate application/Sunshine/Moonlight namespaces, checks bounded size, entry types and destination paths before writing, respects Moonlight's actual location, atomically replaces each file and rolls the complete affected set back after an apply failure. The preferences window only selects files, confirms destructive actions and marshals worker results to GTK.
 
 ## External boundary
 

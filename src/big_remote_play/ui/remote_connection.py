@@ -32,7 +32,8 @@ from .components import action_row, content_dialog, icon_tile, intro
 if TYPE_CHECKING:
     from big_remote_play.private_network.service import PrivateNetworkService
 
-from .network_common import PROVIDER_ICONS, RowGroup, Worker, confirm, copy_row, message_row, state_label, state_pill
+from .network_common import PROVIDER_ICONS, RowGroup, Worker, confirm, copy_row, message_row, state_pill
+from .service_status_card import PILL_TONES, checking_presentation, provider_presentation
 
 # Plain descriptions for the method dialog; the product name is the title.
 METHOD_DESCRIPTIONS = {
@@ -694,17 +695,13 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
         by_provider = {status.provider: status for status in self._statuses}
         for provider in (ProviderId.TAILSCALE, ProviderId.ZEROTIER, ProviderId.HEADSCALE):
             status = by_provider.get(provider)
-            if status is None:
-                state = _("Checking...")
-            elif status.connected:
-                state = state_label(ConnectionState.CONNECTED)
-            else:
-                state = _("Installed") if status.installed else _("Not installed")
+            # The same words as the service cards in Share and Connect.
+            presentation = provider_presentation(status) if status is not None else checking_presentation()
             title = provider.display_name if provider is not ProviderId.HEADSCALE else _("{name} (advanced)").format(name=provider.display_name)
-            pill = Gtk.Label(label=state, valign=Gtk.Align.CENTER)
+            pill = Gtk.Label(label=presentation.text, valign=Gtk.Align.CENTER, wrap=True)
             pill.add_css_class("state-pill")
             pill.add_css_class("caption")
-            pill.add_css_class("online" if status is not None and status.connected else "offline")
+            pill.add_css_class(PILL_TONES.get(presentation.tone, "offline"))
 
             def choose(p: ProviderId = provider) -> None:
                 dialog.close()

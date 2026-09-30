@@ -39,8 +39,9 @@ def test_shell_has_product_identity_dynamic_context_and_system_readiness() -> No
     assert "self.content_title.set_title(title)" in source
     assert "self.content_title.set_subtitle(subtitle)" in source
 
-    assert 'status_list.add_css_class("boxed-list")' in source
-    assert "service-icon-frame" in source
+    assert 'status_list.add_css_class("brp-service-list")' in source
+    # Service cards use the same icon tile as the Connection method choices.
+    assert "icon_tile(icon_name)" in Path("src/big_remote_play/ui/service_status_card.py").read_text()
 
     # Typography remains scalable: relative sizing is allowed for the temporary
     # full-screen monitor identifier, but fixed pixel fonts are not.
