@@ -494,6 +494,14 @@ class HostView(Gtk.Box):
         set_row_icon(microphone_row, "brp-media-record-symbolic")
         audio_group.add(microphone_row)
 
+        # A call program here plays everyone's voice, the other person's too:
+        # sent back to them, they would hear themselves.
+        self.audio_calls_row = Adw.ActionRow(title=_("Voice calls"), use_markup=False)
+        self.audio_calls_row.set_subtitle_lines(0)
+        set_row_icon(self.audio_calls_row, "brp-audio-x-generic-symbolic")
+        audio_group.add(self.audio_calls_row)
+        self._show_calls_kept_out(())
+
         self.audio_test_row = Adw.ActionRow(title=_("Test audio"), subtitle=_("Plays a short tone and checks that it reaches the shared sound."), use_markup=False)
         self.audio_test_row.set_subtitle_lines(0)
         set_row_icon(self.audio_test_row, "brp-audio-volume-high-symbolic")
@@ -514,6 +522,7 @@ class HostView(Gtk.Box):
             ("microphone", _("Default microphone")),
             ("mic_sent", _("Microphone sent to Sunshine")),
             ("steam", _("Steam Remote Play")),
+            ("calls", _("Calls kept out of the stream")),
             ("bridges", _("Routing added by Big Remote Play")),
         ):
             row = Adw.ActionRow(title=title, subtitle="…", use_markup=False)
@@ -803,6 +812,18 @@ class HostView(Gtk.Box):
         pin_group.add(self.firewall_allow_row)
         self._firewall_worker = Worker()
         self._show_firewall_report(None)
+
+        # Neither problem shows on the other computer: its controller simply
+        # does nothing in the game.
+        self.controller_local_row = Adw.ActionRow(title=_("This computer's controller comes first"), use_markup=False)
+        self.controller_blocked_row = Adw.ActionRow(title=_("Controllers of the other computer cannot work"), use_markup=False)
+        for row in (self.controller_local_row, self.controller_blocked_row):
+            row.set_title_lines(0)
+            row.set_subtitle_lines(0)
+            set_row_icon(row, "brp-input-keyboard-symbolic")
+            pin_group.add(row)
+        self._controllers_worker = Worker()
+        self._show_controller_report(None)
 
         self.pair_entry = Adw.EntryRow(title=_("Pairing code shown on the other PC"))
         self.pair_entry.set_input_purpose(Gtk.InputPurpose.DIGITS)
@@ -1154,6 +1175,34 @@ class HostView(Gtk.Box):
         base = self.sunshine.api_port - 1
         self._firewall_worker.submit(lambda: check_firewall(base), self._show_firewall_report, failed=lambda _error: self._show_firewall_report(None))
 
+    def _show_controller_report(self, report) -> None:
+        local = bool(report is not None and report.local and self.is_hosting)
+        blocked = bool(report is not None and report.unusable and self.is_hosting)
+        if local and report is not None:
+            self.controller_local_row.set_subtitle(
+                _(
+                    "{controllers} is connected here. A game that uses one controller reads it instead of the controller of the person connecting. Unplug it while they play, or choose the “Sunshine” controller in the game's settings."
+                ).format(controllers=", ".join(report.local))
+            )
+        if blocked and report is not None:
+            self.controller_blocked_row.set_subtitle(
+                _("Sunshine cannot create their virtual controller: this user cannot open {devices}. Restart this computer once after installing or updating Sunshine.").format(
+                    devices=", ".join(report.unusable)
+                )
+            )
+        self.controller_local_row.set_visible(local)
+        self.controller_blocked_row.set_visible(blocked)
+
+    def _check_controllers(self) -> None:
+        """Read-only: what would keep the other computer's controller out of games here."""
+        if not self.is_hosting:
+            self._controllers_worker.cancel()
+            self._show_controller_report(None)
+            return
+        from big_remote_play.host.controllers import controller_report
+
+        self._controllers_worker.submit(controller_report, self._show_controller_report, failed=lambda _error: self._show_controller_report(None))
+
     def _pairing_upkeep(self) -> tuple[int | None, str]:
         """Worker: the open app, and whether devices can be approved right away.
 
@@ -1173,6 +1222,7 @@ class HostView(Gtk.Box):
 
     def _check_pairing_busy(self) -> None:
         """Show the way out when an open stream would block pairing (off the GTK thread)."""
+        self._check_controllers()
         if not self.is_hosting:
             self._pair_busy_worker.cancel()
             self._pair_busy_checking = False
@@ -2234,12 +2284,16 @@ class HostView(Gtk.Box):
         generation = self._audio_generation
 
         def work() -> None:
+            from dataclasses import replace
+
             from big_remote_play.utils.audio import audio_status
 
             try:
                 session = self.audio_session
                 graph = self.audio_manager.snapshot()
                 status = audio_status(graph, session.manual_output if session else manual, tuple(session.links) if session else ())
+                if session is not None:
+                    status = replace(status, calls_kept_out=session.calls_kept_out)
             except Exception as exc:  # pragma: no cover - defensive
                 _log.error("Could not read audio status: %s", exc)
                 status = None
@@ -2274,6 +2328,8 @@ class HostView(Gtk.Box):
             rows["steam"].set_subtitle("\n".join(self._describe_source(s, monitor) for s, monitor in status.steam_sources))
         else:
             rows["steam"].set_subtitle(_("Steam is not recording sound"))
+        rows["calls"].set_subtitle(", ".join(status.calls_kept_out) if status.calls_kept_out else _("No call app is playing into the shared sound"))
+        self._show_calls_kept_out(status.calls_kept_out)
         if status.bridges:
             rows["bridges"].set_subtitle("\n".join(_("{source} → {target}").format(source=b.source, target=b.target_sink) for b in status.bridges))
         else:
@@ -2283,6 +2339,16 @@ class HostView(Gtk.Box):
         else:
             self.audio_play_here_row.set_subtitle(_("When off, only the other computer hears the game."))
         return False
+
+    def _show_calls_kept_out(self, programs) -> None:
+        if programs:
+            self.audio_calls_row.set_subtitle(_("Not sent now: {programs}. The call plays only on this computer.").format(programs=", ".join(programs)))
+        else:
+            self.audio_calls_row.set_subtitle(
+                _(
+                    "Not sent. Calls in Discord, Zoom, Teams and other call apps play only on this computer, so nobody hears their own voice come back. A call in a web browser is sent with the browser's sound."
+                )
+            )
 
     @staticmethod
     def _describe_source(source: str, is_monitor: bool) -> str:
@@ -3647,6 +3713,7 @@ class HostView(Gtk.Box):
             self._end_stream_worker.close()
             self._credentials_worker.close()
             self._firewall_worker.close()
+            self._controllers_worker.close()
         self._closed = True
         if hasattr(self, "perf_monitor"):
             self.perf_monitor.stop_monitoring()

@@ -238,3 +238,33 @@ def test_a_firewall_that_blocks_sunshine_is_shown_with_the_way_to_allow_it(host,
     host.is_hosting = False
     host._check_firewall()
     assert not host.firewall_allow_row.get_visible()
+
+
+def test_controller_problems_on_this_computer_are_shown_while_sharing(host, monkeypatch):
+    """Neither shows on the other computer: its controller just does nothing in the game."""
+    from big_remote_play.host import controllers
+
+    report = controllers.ControllerReport(("Microsoft X-Box One pad (Firmware 2015)",), ("/dev/uhid",))
+    monkeypatch.setattr(controllers, "controller_report", lambda read=None: report)
+    host._check_controllers()
+    assert wait_for(lambda: host.controller_local_row.get_visible() and host.controller_blocked_row.get_visible())
+    assert "Microsoft X-Box One pad (Firmware 2015)" in host.controller_local_row.get_subtitle()
+    assert "/dev/uhid" in host.controller_blocked_row.get_subtitle()
+    monkeypatch.setattr(controllers, "controller_report", lambda read=None: controllers.ControllerReport())
+    host._check_controllers()
+    assert wait_for(lambda: not host.controller_local_row.get_visible() and not host.controller_blocked_row.get_visible())
+    monkeypatch.setattr(controllers, "controller_report", lambda read=None: report)
+    host.is_hosting = False
+    host._check_controllers()
+    assert not host.controller_local_row.get_visible() and not host.controller_blocked_row.get_visible()
+
+
+def test_voice_calls_kept_out_are_named_in_the_audio_settings(host):
+    from big_remote_play.utils.audio import AudioStatus, CapturePlan
+
+    general = host.audio_calls_row.get_subtitle()
+    host._apply_audio_status(AudioStatus(CapturePlan(None, None, "no-output"), calls_kept_out=("Discord",)), host._audio_generation)
+    assert "Discord" in host.audio_calls_row.get_subtitle()
+    assert host.audio_detail_rows["calls"].get_subtitle() == "Discord"
+    host._apply_audio_status(AudioStatus(CapturePlan(None, None, "no-output")), host._audio_generation)
+    assert host.audio_calls_row.get_subtitle() == general

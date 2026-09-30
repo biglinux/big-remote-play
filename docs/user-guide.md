@@ -158,10 +158,12 @@ Displayed configuration is not a live measurement. Network ping is not end-to-en
 
 The other computer hears the sound this computer plays — games, the desktop and effects such as EasyEffects. **The microphone is not sent.** Voice chat keeps working in its own apps.
 
+**Voice calls are not sent either.** A call app on this computer plays the voices of everyone in the call, including the person connecting, who would otherwise hear their own voice come back. While Discord, Zoom, Teams, Telegram, Fluxer or another call app plays here, the other computer receives every other sound without it, and this computer still hears the call and the game. **Voice calls** in the audio settings names the apps kept out. A call in a web browser cannot be separated from the rest of the browser's sound, so it is still sent. During the call, the other computer hears programs without the effects of EasyEffects or JamesDSP.
+
 - **Server output — Automatic — use the current output** (recommended): shares whatever output you are using. If you switch output during a stream, the stream follows. Nothing in the sound settings changes.
 - **Also play sound on this computer** (on by default): keeps the game audible here even when the connecting computer asks for silence on the game PC. Turn it off to make only the other computer hear the game; Sunshine then switches this computer's output to its own silent output during sessions and switches it back afterwards.
 - **Server output — a device**: always share that device (headphones, HDMI, Bluetooth). Sunshine makes it the output during the session, so it also plays here. Effect outputs are not listed; use Automatic for them.
-- **Test audio** plays a short tone and says whether it reached the sound that is shared. **Technical audio details** shows what is recorded right now, the default microphone and the line **Microphone sent to Sunshine: No**.
+- **Test audio** plays a short tone and says whether it reached the sound that is shared. **Technical audio details** shows what is recorded right now, the default microphone, the line **Microphone sent to Sunshine: No** and the calls kept out of the stream.
 
 Changes apply the next time you start sharing. The volume on this computer does not change the volume heard on the other computer.
 
