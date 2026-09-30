@@ -181,8 +181,17 @@ class SunshineHost:
         except (OSError, ValueError):
             return False
 
-    def start(self, **kwargs):
+    def start(self, *, wayland_display: str | None = None, **kwargs):
+        """Start Sunshine; ``wayland_display`` makes it see only that compositor.
+
+        Game Window passes its private screen here: Sunshine then has no
+        connection to the desktop's compositor at all.
+        """
         if self.is_running():
+            # A server already running sees the desktop: never report it as
+            # the private Game Window server.
+            if wayland_display:
+                return False, "Sunshine is already running"
             return True, "Already running"
 
         sc = shutil.which("sunshine")
@@ -215,6 +224,9 @@ class SunshineHost:
             # Pass WAYLAND_DISPLAY if exists
             if "WAYLAND_DISPLAY" in os.environ:
                 env["WAYLAND_DISPLAY"] = os.environ["WAYLAND_DISPLAY"]
+            if wayland_display:
+                env["WAYLAND_DISPLAY"] = wayland_display
+                env.pop("WAYLAND_SOCKET", None)
 
             cmd = [sc, str(config_file)]
 

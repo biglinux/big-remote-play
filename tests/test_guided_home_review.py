@@ -93,7 +93,7 @@ def test_task_specific_client_rows_write_native_values(ui):
 
 def test_incomplete_custom_app_does_not_fall_back_to_full_desktop(ui):
     host = ui.host_view
-    host.game_mode_row.set_selected(3)
+    host._select_source("custom")
     host.custom_name_entry.set_text("")
     host.custom_cmd_entry.set_text("")
     with pytest.raises(ValueError):
