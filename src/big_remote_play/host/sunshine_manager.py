@@ -1,5 +1,5 @@
 import logging
-import subprocess, signal, os, shutil
+import subprocess, signal, os
 import base64
 import hashlib
 import http.client
@@ -50,6 +50,13 @@ API_HOST = "127.0.0.1"
 API_PORT = 47990
 
 
+def sunshine_executable() -> str | None:
+    """The Sunshine executable, also outside a desktop session's PATH."""
+    from big_remote_play.utils.dependencies import COMPONENTS, find_executable
+
+    return find_executable(COMPONENTS["sunshine"].executables)
+
+
 def _cert_fingerprint(cert_der: bytes) -> str:
     """SHA-256 hex of a DER-encoded certificate."""
     return hashlib.sha256(cert_der).hexdigest()
@@ -88,6 +95,8 @@ STARTUP_PROBE_INTERVAL = 0.1
 
 
 PIN_CHOOSE = 300
+# Seconds Sunshine may take to answer a PIN (it waits for the device's check).
+PIN_ANSWER_TIMEOUT = 20.0
 PIN_NONE_WAITING = 409
 _PAIRING_ID_RE = re.compile(r"^[0-9a-fA-F]{32}$")
 _CURRENT_GAME_RE = re.compile(r"<currentgame>\s*(\d{1,10})\s*</currentgame>")
@@ -194,7 +203,7 @@ class SunshineHost:
                 return False, _("Sunshine is already running.")
             return True, _("Sunshine is already running.")
 
-        sc = shutil.which("sunshine")
+        sc = sunshine_executable()
         if not sc:
             return False, _("Sunshine executable not found")
         try:
@@ -646,7 +655,9 @@ class SunshineHost:
         elif name:
             payload["name"] = name
 
-        status, data = self._api_request("POST", "/api/pin", payload, auth)
+        # Sunshine answers only after the device checked the PIN: measured with
+        # Sunshine 2026.914, a wrong PIN is refused after about 10 seconds.
+        status, data = self._api_request("POST", "/api/pin", payload, auth, timeout=PIN_ANSWER_TIMEOUT)
         if status == 200:
             try:
                 reply = json.loads(data)
@@ -655,7 +666,7 @@ class SunshineHost:
                 accepted = False
             if accepted:
                 return PinResult(True, 200, _("PIN sent successfully"))
-            return PinResult(False, 200, _("Sunshine rejected the PIN"))
+            return PinResult(False, 200, _("The PIN did not match. On the other computer, start pairing again and type the new PIN here."))
         return self._pin_failure(status)
 
     @staticmethod
@@ -711,7 +722,7 @@ class SunshineHost:
         """
         if not new_username or not new_password:
             return False, _("Username and password cannot be empty.")
-        sc = shutil.which("sunshine")
+        sc = sunshine_executable()
         if not sc:
             return False, _("Sunshine executable not found")
         env = os.environ.copy()

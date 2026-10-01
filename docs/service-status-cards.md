@@ -15,7 +15,13 @@ Streaming                         Secure connection
                                     Headscale
 ```
 
-- Home and the private-network pages show no cards.
+- Home and the private-network pages show two indicators instead of
+  cards: **Streaming** (the component of the remembered task, for example
+  *Sunshine · Running*) and **Secure connection** (the connected method, or
+  the one the internet page would set up next, for example
+  *Tailscale · Connected* or *Tailscale · Not installed*). Selecting one opens
+  its task or the internet page. They use the same presentations as the
+  cards below.
 - Share shows Sunshine, Connect shows Moonlight, and both always show
   Tailscale, ZeroTier and Headscale in that order.
 - A card never appears or disappears because its service changed state. It
@@ -47,9 +53,12 @@ on those pages and are never duplicated in the card.
 
 No second source of truth is created.
 
-- Sunshine and Moonlight: `SystemCheck` installed probes at startup and the
-  running probe (`pgrep`) that `MainWindow.p_check` runs every 3 s, only for
-  the streaming card of the visible task.
+- Sunshine and Moonlight: `SystemCheck` installed probes at startup, again
+  whenever the window comes back to the front (at most every 10 s) and before
+  a task whose program was missing opens; the running probe (`pgrep`) that
+  `MainWindow.p_check` runs every 3 s, only for the streaming card or
+  indicator of the visible page, and not while the window is in the
+  background.
 - Network methods: `PrivateNetworkService.overview()` (`ProviderStatus` per
   provider), read on a background thread when Share or Connect opens and then
   every 6 s while one of them is visible. Overlapping reads are refused and

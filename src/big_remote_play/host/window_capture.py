@@ -190,6 +190,25 @@ def fast_mode_commands(payload: object, width: int, height: int, tool: str) -> l
     return []
 
 
+def activate_game(spec: Spec) -> bool:
+    """Bring the shared game to the front (worker thread).
+
+    Sunshine sends keyboard and mouse to the active window, and many games
+    slow down or mute themselves while they are not the active window. Done
+    when sharing starts and again whenever a device starts playing: approving
+    that device in Big Remote Play moved the focus away from the game.
+    """
+    from big_remote_play.host import game_windows, x11_windows
+
+    if spec.backend == "kwin":
+        activated = game_windows.activate_kwin_window(spec.handle)
+    else:
+        activated = x11_windows.activate_window(spec.display, int(spec.handle, 16))
+    if not activated:
+        _log.info("Game Window: could not bring the game to the front; click it once so it receives the keyboard")
+    return bool(activated)
+
+
 def compositor_argv(socket: str, width: int, height: int, *, which: Callable[[str], str | None] = shutil.which) -> list[str]:
     """The isolated screen. Its own D-Bus keeps it from taking desktop services."""
     if not _SOCKET_RE.fullmatch(socket):
@@ -549,14 +568,7 @@ class CaptureSession:
     def _activate_game(self) -> None:
         """Give the game the keyboard: Sunshine types into the active window,
         which is Big Remote Play itself right after Start sharing."""
-        from big_remote_play.host import game_windows, x11_windows
-
-        if self.spec.backend == "kwin":
-            activated = game_windows.activate_kwin_window(self.spec.handle)
-        else:
-            activated = x11_windows.activate_window(self.spec.display, int(self.spec.handle, 16))
-        if not activated:
-            _log.info("Game Window: could not bring the game to the front; click it once so it receives the keyboard")
+        activate_game(self.spec)
 
     def _check_x11(self) -> None:
         from big_remote_play.host import x11_windows

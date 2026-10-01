@@ -56,18 +56,16 @@ def run_start(host, monkeypatch):
     return cfg, configured
 
 
-def test_home_prioritizes_the_two_roles_before_optional_internet_setup(ui):
-    assert isinstance(ui.home_network_action, Gtk.ListBox)
-    row = ui.home_network_action.get_first_child()
-    assert row.get_title() == "Play over the internet"
-    assert ui.welcome_cards_box.get_next_sibling() is ui.home_network_section
+def test_home_is_one_hero_with_the_guided_start_then_the_two_roles(ui):
     labels = text(ui.home_navigation)
     assert "Your games. Any screen. Anywhere." in labels
-    assert "What do you want to do?" in labels
-    assert labels.index("Share") < labels.index("Playing over the internet?")
-    assert labels.index("Connect") < labels.index("Playing over the internet?")
-    assert "same home network" in labels
+    assert "Start with the guided setup" in labels
+    assert labels.index("Start with the guided setup") < labels.index("Share") < labels.index("Connect")
+    # Internet play is a sidebar destination and a guided question; Home does
+    # not repeat it, and never names the technology.
+    assert "Playing over the internet?" not in labels
     assert "virtual private network" not in labels.lower()
+    assert ui.home_logo.is_ancestor(ui.welcome_main_box)
     assert ui.home_navigation.find_page("guide") is None
 
 
@@ -75,11 +73,14 @@ def test_home_hides_working_component_details_but_explains_missing_ones(ui):
     ui.update_dependency_ui(True, True, True, True, True)
     assert not ui._role_card_ui["host"]["state"].get_visible()
     assert not ui._role_card_ui["guest"]["state"].get_visible()
-    assert not any(row.get_visible() for row in ui._status_rows.values())
+    # Only the two indicators; no per-service cards on Home.
+    assert [service for service, row in ui._status_rows.items() if row.get_visible()] == ["summary-streaming", "summary-network"]
 
     ui.update_dependency_ui(False, True, True, True, True)
     assert ui._role_card_ui["host"]["state"].get_visible()
-    assert "Sunshine" in ui._role_card_ui["host"]["label"].get_text()
+    # Words for the person, the product name for whoever needs it.
+    assert "Sunshine" not in ui._role_card_ui["host"]["label"].get_text()
+    assert "Sunshine" in ui.host_card.get_tooltip_text()
     assert ui.host_card.get_sensitive()
 
 
