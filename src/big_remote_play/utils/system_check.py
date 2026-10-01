@@ -51,16 +51,13 @@ class SystemCheck:
         return ["tailscale"]
 
     def has_sunshine(self) -> bool:
-        """Sunshine as Big Remote Play starts it: a native executable."""
-        from big_remote_play.utils.dependencies import COMPONENTS, find_executable
-
-        return find_executable(COMPONENTS["sunshine"].executables) is not None
+        """Checks if Sunshine is installed"""
+        return shutil.which("sunshine") is not None
 
     def has_moonlight(self) -> bool:
-        """Moonlight under either of its executable names."""
-        from big_remote_play.utils.dependencies import COMPONENTS, find_executable
-
-        return find_executable(COMPONENTS["moonlight"].executables) is not None
+        """Checks if Moonlight is installed"""
+        # Moonlight may have different names
+        return shutil.which("moonlight") is not None or shutil.which("moonlight-qt") is not None
 
     def has_avahi(self) -> bool:
         """Checks if Avahi is installed"""

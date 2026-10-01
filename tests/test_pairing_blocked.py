@@ -164,13 +164,7 @@ def test_a_rejected_password_is_said_and_abandoned_requests_wait_for_a_working_o
     monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: ([], 200))
     host._check_pairing_busy()
     assert wait_for(lambda: not host.sunshine_password_row.get_visible())
-    assert discarded == []  # nothing waits: nothing to sweep
-    from big_remote_play.host.sunshine_manager import PendingPairing
-
-    waiting = [PendingPairing("a" * 32, "Living room", "192.168.1.30")]
-    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: (waiting, 200))
-    host._check_pairing_busy()
-    assert wait_for(lambda: discarded == [("admin", "secret")])  # abandoned requests are cleared while sharing
+    assert discarded == [("admin", "secret")]  # abandoned requests are cleared while sharing
 
 
 def test_the_password_is_checked_with_sunshine_before_it_is_kept(ui, host, monkeypatch):

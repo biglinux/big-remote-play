@@ -125,6 +125,16 @@ headerbar {
     background-image: linear-gradient(120deg, alpha(@brp_gamer_violet, 0.28), alpha(@brp_gamer_magenta, 0.10) 58%, alpha(@brp_gamer_cyan, 0.09));
     box-shadow: 0 12px 32px @brp_gamer_shadow;
 }
+.welcome-hero .accent { color: @brp_gamer_cyan; }
+.home-stream-flow {
+    color: @brp_gamer_cyan;
+    background: alpha(@brp_gamer_bg_deep, 0.72);
+    border-color: alpha(@brp_gamer_cyan, 0.26);
+}
+.home-benefit {
+    background: alpha(@brp_gamer_surface_elevated, 0.72);
+    border-color: @brp_gamer_border;
+}
 
 /* Major choices, guided setup and task heroes. */
 .role-card {
@@ -146,20 +156,12 @@ headerbar {
     outline-offset: 3px;
 }
 .role-card:disabled, .role-card:disabled:hover { background: alpha(@brp_gamer_surface, 0.6); border-color: @brp_gamer_border; box-shadow: none; }
-.brp-computer-card {
-    background: @brp_gamer_surface;
-    border-color: @brp_gamer_border;
-    box-shadow: 0 4px 14px @brp_gamer_shadow;
+.role-host .role-flow-node { color: @brp_gamer_focus; background: alpha(@brp_gamer_violet, 0.18); }
+.role-guest .role-flow-node { color: @brp_gamer_cyan; background: alpha(@brp_gamer_cyan, 0.13); }
+.role-card.brp-guided-banner {
+    border-color: alpha(@brp_gamer_cyan, 0.32);
+    background-image: linear-gradient(110deg, alpha(@brp_gamer_violet, 0.26), alpha(@brp_gamer_magenta, 0.08) 58%, alpha(@brp_gamer_cyan, 0.10));
 }
-.brp-computer-card:hover { background: @brp_gamer_surface_secondary; border-color: @brp_gamer_border_active; }
-.brp-computer-card:focus-visible { outline-color: alpha(@brp_gamer_focus, 0.8); }
-.brp-computer-card.selected, .brp-computer-card.selected:disabled {
-    border-color: alpha(@brp_gamer_cyan, 0.55);
-    background-image: linear-gradient(135deg, alpha(@brp_gamer_cyan, 0.10), alpha(@brp_gamer_violet, 0.16));
-}
-.brp-request-group list.boxed-list { box-shadow: 0 0 0 2px alpha(@brp_gamer_cyan, 0.5), 0 4px 14px @brp_gamer_shadow; }
-.brp-check-icon.success { color: @brp_gamer_success; }
-.brp-check-icon.warning { color: @brp_gamer_warning; }
 .session-hero, .network-hero {
     border-color: @brp_gamer_border_active;
     background-color: @brp_gamer_surface;

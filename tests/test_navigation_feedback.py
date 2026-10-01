@@ -205,6 +205,19 @@ def test_compact_home_and_tasks_use_only_the_native_sidebar_back(ui):
     assert ui.content_headerbar.get_show_back_button()
 
 
+def test_installer_without_vte_uses_the_explicit_fallback(ui, monkeypatch):
+    import big_remote_play.ui.installer_window as module
+
+    dialog = module.InstallerWindow(parent=ui)
+    calls = []
+    monkeypatch.setattr(module, "Vte", None)
+    monkeypatch.setattr(dialog, "start_external_installation", lambda: calls.append("external"))
+    dialog.start_installation()
+    assert calls == ["external"]
+    assert not hasattr(dialog, "terminal")
+    dialog.close()
+
+
 def test_missing_connection_widgets_during_teardown_do_not_raise(ui):
     g = ui.guest_view
     original = g.manual_btn_spinner
