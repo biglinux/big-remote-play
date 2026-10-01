@@ -210,7 +210,7 @@ class NetworkDiscovery:
         def check(ip):
             if self.check_sunshine_port(ip):
                 # User reported Moonlight CLI on Linux prefers raw IP without brackets
-                return {"name": _("Host ({})").format(ip), "ip": ip, "port": 47989, "status": "online"}
+                return {"name": _("Host ({address})").format(address=ip), "ip": ip, "port": 47989, "status": "online"}
             return None
 
         with ThreadPoolExecutor(max_workers=32) as ex:

@@ -399,7 +399,7 @@ def test_tailscale_stopped_client_offers_no_peers_as_reachable():
         ("pong from notebook (100.64.0.2) via DERP(fra) in 48ms\npong from notebook (100.64.0.2) via 192.0.2.4:41641 in 9ms", "direct", 9.0, ""),
         ("pong from notebook (100.64.0.2, 42001) via peer-relay(192.0.2.9:7777:vni:3) in 20ms", "peer_relay", 20.0, ""),
         # Real output from a lab node on 2026-09-28: sub-millisecond paths print "0s".
-        ("pong from ruscher-big (100.64.0.1) via 10.200.0.2:41641 in 0s", "direct", 0.0, ""),
+        ("pong from game-pc (100.64.0.1) via 10.200.0.2:41641 in 0s", "direct", 0.0, ""),
         ("pong from pc (100.64.0.1) via 192.0.2.4:41641 in 523µs", "direct", 0.523, ""),
         ("pong from pc (100.64.0.1) via DERP(fra) in 1.2s", "relay", 1200.0, "fra"),
     ],

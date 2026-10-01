@@ -250,7 +250,7 @@ class PreferencesWindow(Adw.Window):
                     self.close()
                 except Exception as e:
                     _log.error(f"Error resetting configs: {e}")
-                    self.add_toast(Adw.Toast.new(_("Error restoring: {}").format(e)))
+                    self.add_toast(Adw.Toast.new(_("Error restoring: {error}").format(error=e)))
 
         dialog.connect("response", on_response)
         dialog.present(self)

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-10-01 02:11+0000\n"
+"POT-Creation-Date: 2026-10-01 11:05+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Croatian\n"
@@ -17,7 +17,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: src/big_remote_play/ui/host_view.py:413
+#: src/big_remote_play/ui/host_view.py:420
 msgid ""
 "0 follows the other computer’s request. This limits video, not total network "
 "traffic."
@@ -33,7 +33,7 @@ msgstr "1. Račun"
 msgid "1. Check internet reachability"
 msgstr "1. Provjerite dostupnost interneta"
 
-#: src/big_remote_play/ui/host_view.py:316
+#: src/big_remote_play/ui/host_view.py:323
 msgid "1. Choose what to share"
 msgstr "1. Odaberite što želite dijeliti"
 
@@ -59,7 +59,7 @@ msgstr "1. Instalirajte Headscale na poslužitelj"
 msgid "1080p · 60 FPS · 20 Mbps"
 msgstr "1080p · 60 FPS · 20 Mbps"
 
-#: src/big_remote_play/ui/host_view.py:496
+#: src/big_remote_play/ui/host_view.py:503
 msgid "1280 × 720 — slow connections"
 msgstr "1280 × 720 — spore veze"
 
@@ -67,7 +67,7 @@ msgstr "1280 × 720 — spore veze"
 msgid "1440p · 60 FPS · 40 Mbps"
 msgstr "1440p · 60 FPS · 40 Mbps"
 
-#: src/big_remote_play/ui/host_view.py:494
+#: src/big_remote_play/ui/host_view.py:501
 msgid "1920 × 1080 — best for TVs"
 msgstr "1920 × 1080 — najbolje za televizore"
 
@@ -93,7 +93,7 @@ msgstr "2. Pridruži se"
 msgid "2. Network"
 msgstr "2. Mreža"
 
-#: src/big_remote_play/ui/host_view.py:981
+#: src/big_remote_play/ui/host_view.py:988
 msgid "2. Start sharing"
 msgstr "2. Pokrenite dijeljenje"
 
@@ -109,7 +109,7 @@ msgstr "3. Autorizacija"
 msgid "3. Connect"
 msgstr "3. Poveži"
 
-#: src/big_remote_play/ui/host_view.py:800
+#: src/big_remote_play/ui/host_view.py:807
 msgid "3. Connect the other PC"
 msgstr "3. Povežite drugo računalo"
 
@@ -195,12 +195,12 @@ msgstr "Mrežni kod ima 16 slova i brojeva, npr. {example}."
 msgid "A new device cannot use the network until it is approved."
 msgstr "Novi uređaj ne može koristiti mrežu dok ne bude odobren."
 
-#: src/big_remote_play/ui/network_dashboard.py:226
-#: src/big_remote_play/ui/network_dashboard.py:231
+#: src/big_remote_play/ui/network_dashboard.py:234
+#: src/big_remote_play/ui/network_dashboard.py:239
 msgid "A new private ZeroTier network, ready for your computers."
 msgstr "Nova privatna ZeroTier mreža, spremna za vaša računala."
 
-#: src/big_remote_play/ui/host_view.py:486
+#: src/big_remote_play/ui/host_view.py:493
 msgid ""
 "A screen larger than the other device is scaled down, which blurs small "
 "text. For TVs and car screens, 1920 × 1080 is sharpest. The chosen screen "
@@ -211,7 +211,7 @@ msgstr ""
 "Odabrani se zaslon poslije vraća u uobičajeno stanje. Najprije gore "
 "odaberite zaslon."
 
-#: src/big_remote_play/ui/host_view.py:816
+#: src/big_remote_play/ui/host_view.py:823
 msgid "A stream is open on this computer"
 msgstr "Na ovom računalu otvoren je prijenos"
 
@@ -263,17 +263,8 @@ msgstr "AMF Korištenje"
 msgid "AMF Variance Based Adaptive Quantization (VBAQ)"
 msgstr "AMF adaptivna kvantizacija temeljena na varijanci (VBAQ)"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 313
-# line: 349
-#: src/big_remote_play/host/sunshine_manager.py:668
-#: src/big_remote_play/host/sunshine_manager.py:699
-#, python-brace-format
-msgid "API Error: {}"
-msgstr "API pogreška: {}"
-
 #: src/big_remote_play/ui/api_access_dialog.py:71
-#: src/big_remote_play/ui/network_dashboard.py:312
+#: src/big_remote_play/ui/network_dashboard.py:320
 #: src/big_remote_play/ui/private_network_view.py:666
 #: src/big_remote_play/ui/remote_connection.py:269
 msgid "API access"
@@ -285,6 +276,12 @@ msgstr "API pristup"
 msgid "API access token"
 msgstr "API pristupni token"
 
+#: src/big_remote_play/host/sunshine_manager.py:668
+#: src/big_remote_play/host/sunshine_manager.py:699
+#, python-brace-format
+msgid "API error: {status}"
+msgstr "API pogreška: {status}"
+
 #: src/big_remote_play/ui/api_access_dialog.py:254
 msgid "API key"
 msgstr "API ključ"
@@ -294,7 +291,7 @@ msgid "API token"
 msgstr "Token za API"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 273
-#: src/big_remote_play/ui/main_window.py:686
+#: src/big_remote_play/ui/main_window.py:689
 msgid "About"
 msgstr "O aplikaciji"
 
@@ -308,7 +305,7 @@ msgstr "O ovom VPN-u"
 msgid "Access Tailscale"
 msgstr "Pristupite Tailscale"
 
-#: src/big_remote_play/ui/network_dashboard.py:349
+#: src/big_remote_play/ui/network_dashboard.py:357
 msgid "Access allowed"
 msgstr "Pristup dopušten"
 
@@ -329,7 +326,7 @@ msgstr "Račun je promijenjen"
 msgid "Account switching is unavailable"
 msgstr "Promjena računa nije dostupna"
 
-#: src/big_remote_play/ui/network_dashboard.py:314
+#: src/big_remote_play/ui/network_dashboard.py:322
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "Accounts and networks"
 msgstr "Računi i mreže"
@@ -342,12 +339,11 @@ msgstr ""
 "Račune čuvaju VPN klijenti. Big Remote Play sprema samo neobavezne nazive "
 "prikazane ovdje."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 557
-#: src/big_remote_play/ui/main_window.py:1371
-#: src/big_remote_play/ui/main_window.py:1517
+#: src/big_remote_play/ui/main_window.py:1374
+#: src/big_remote_play/ui/main_window.py:1520
 #, python-brace-format
-msgid "Action {} sent to {}"
-msgstr "Akcija {} poslana {}"
+msgid "Action {action} sent to {service}"
+msgstr "Akcija {action} poslana {service}"
 
 #: src/big_remote_play/ui/remote_connection.py:456
 #: src/big_remote_play/ui/remote_connection.py:488
@@ -367,8 +363,8 @@ msgid "Active - No devices"
 msgstr "Aktivno - Nema uređaja"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 864
-#: src/big_remote_play/ui/host_view.py:2477
-#: src/big_remote_play/ui/host_view.py:2493
+#: src/big_remote_play/ui/host_view.py:2484
+#: src/big_remote_play/ui/host_view.py:2500
 msgid "Active - Waiting for Connections"
 msgstr "Aktivan - Čekanje na veze"
 
@@ -389,15 +385,13 @@ msgstr "Aktivna sesija"
 msgid "Active Stream"
 msgstr "Aktivni tok"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 198
 #: src/big_remote_play/ui/performance_monitor.py:242
 #, python-brace-format
-msgid "Active devices: {}"
-msgstr "Aktivni uređaji: {}"
+msgid "Active devices: {count}"
+msgstr "Aktivni uređaji: {count}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:3513
+#: src/big_remote_play/ui/host_view.py:3520
 msgid "Add Detected Games"
 msgstr "Dodaj otkrivene igre"
 
@@ -409,7 +403,7 @@ msgstr "Dodaj Headscale račun"
 msgid "Add Tailscale account"
 msgstr "Dodaj Tailscale račun"
 
-#: src/big_remote_play/ui/network_dashboard.py:430
+#: src/big_remote_play/ui/network_dashboard.py:438
 msgid "Add a ZeroTier API token first."
 msgstr "Najprije dodajte ZeroTier API token."
 
@@ -469,7 +463,7 @@ msgstr ""
 msgid "Add {name} to favorites"
 msgstr "Dodaj {name} u favorite"
 
-#: src/big_remote_play/ui/host_view.py:1005
+#: src/big_remote_play/ui/host_view.py:1012
 msgid "Additional settings"
 msgstr "Dodatne postavke"
 
@@ -490,7 +484,7 @@ msgstr "Adresa, varijacija i izgubljeni odgovori"
 msgid "Address: {address}"
 msgstr "Adresa: {address}"
 
-#: src/big_remote_play/ui/host_view.py:523
+#: src/big_remote_play/ui/host_view.py:530
 msgid ""
 "Adds error-correction data (FEC). Uses more bandwidth and does not fix a "
 "slow connection."
@@ -516,13 +510,13 @@ msgstr "Napredno"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 174
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 255
-#: src/big_remote_play/ui/host_view.py:596
+#: src/big_remote_play/ui/host_view.py:603
 msgid "Advanced Settings"
 msgstr "Napredne postavke"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 814
-#: src/big_remote_play/ui/host_view.py:650
+#: src/big_remote_play/ui/host_view.py:657
 msgid "Advanced administration"
 msgstr "Napredno upravljanje"
 
@@ -553,23 +547,23 @@ msgstr "Napredne opcije"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 174
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 255
-#: src/big_remote_play/ui/host_view.py:702
+#: src/big_remote_play/ui/host_view.py:709
 #: src/big_remote_play/ui/sunshine_preferences.py:89
 msgid "Advanced server settings"
 msgstr "Napredne postavke poslužitelja"
 
-#: src/big_remote_play/ui/host_view.py:675
+#: src/big_remote_play/ui/host_view.py:682
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "Napredne postavke u pregledniku (Sunshine)"
 
-#: src/big_remote_play/ui/host_view.py:2245
+#: src/big_remote_play/ui/host_view.py:2252
 msgid ""
 "Advanced: IP addresses for manual connection when automatic discovery fails."
 msgstr ""
 "Napredno: IP adrese za ručno povezivanje kada automatsko otkrivanje ne "
 "uspije."
 
-#: src/big_remote_play/ui/host_view.py:2207
+#: src/big_remote_play/ui/host_view.py:2214
 msgid "After step 2, the other PC appears here."
 msgstr "Nakon koraka 2 ovdje se pojavljuje drugo računalo."
 
@@ -588,10 +582,10 @@ msgstr ""
 "Sve vaše promjene u Big Remote Playu bit će vraćene! To uključuje postavke "
 "Sunshinea i Moonlighta."
 
-#: src/big_remote_play/ui/host_view.py:2335
+#: src/big_remote_play/ui/host_view.py:2342
 #: src/big_remote_play/ui/network_common.py:141
 #: src/big_remote_play/ui/network_common.py:165
-#: src/big_remote_play/ui/network_dashboard.py:291
+#: src/big_remote_play/ui/network_dashboard.py:299
 #: src/big_remote_play/ui/remote_connection.py:64
 #: src/big_remote_play/ui/tailscale_accounts.py:71
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:141
@@ -599,11 +593,11 @@ msgstr ""
 msgid "Allow"
 msgstr "Dopusti"
 
-#: src/big_remote_play/ui/network_dashboard.py:283
+#: src/big_remote_play/ui/network_dashboard.py:291
 msgid "Allow Big Remote Play to read ZeroTier"
 msgstr "Dopusti Big Remote Playu čitanje ZeroTiera"
 
-#: src/big_remote_play/ui/host_view.py:506
+#: src/big_remote_play/ui/host_view.py:513
 msgid ""
 "Allow HEVC/AV1 when supported. The other computer chooses a compatible codec."
 msgstr ""
@@ -625,7 +619,7 @@ msgstr ""
 msgid "Allow Slow HEVC Encoding"
 msgstr "Dopusti sporo HEVC kodiranje"
 
-#: src/big_remote_play/ui/host_view.py:2332
+#: src/big_remote_play/ui/host_view.py:2339
 msgid "Allow Sunshine through the firewall?"
 msgstr "Dopustiti Sunshine kroz vatrozid?"
 
@@ -635,11 +629,11 @@ msgstr "Dopustiti Sunshine kroz vatrozid?"
 msgid "Allow fallback to software encoding"
 msgstr "Dopusti povratak na softversko kodiranje"
 
-#: src/big_remote_play/ui/host_view.py:863
+#: src/big_remote_play/ui/host_view.py:870
 msgid "Allow in firewall"
 msgstr "Dopusti u vatrozidu"
 
-#: src/big_remote_play/ui/host_view.py:621
+#: src/big_remote_play/ui/host_view.py:628
 msgid "Allow internet access to administration"
 msgstr "Dopusti upravljanje putem interneta"
 
@@ -676,12 +670,12 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 398
-#: src/big_remote_play/ui/host_view.py:2219
+#: src/big_remote_play/ui/host_view.py:2226
 #: src/big_remote_play/ui/sunshine_preferences.py:624
 msgid "Allowed"
 msgstr "Dopušteno"
 
-#: src/big_remote_play/ui/network_dashboard.py:287
+#: src/big_remote_play/ui/network_dashboard.py:295
 msgid ""
 "Allowing copies that key to a private file in your home folder, as ZeroTier "
 "documents for desktop users. After that, networks can be listed and joined "
@@ -742,11 +736,11 @@ msgstr "Već povezano"
 msgid "Also play sound on the game PC"
 msgstr "Reproduciraj zvuk i na računalu za igranje"
 
-#: src/big_remote_play/ui/host_view.py:542
+#: src/big_remote_play/ui/host_view.py:549
 msgid "Also play sound on this computer"
 msgstr "Reproduciraj zvuk i na ovom računalu"
 
-#: src/big_remote_play/ui/host_view.py:615
+#: src/big_remote_play/ui/host_view.py:622
 msgid "Also use IPv6"
 msgstr "Koristi i IPv6"
 
@@ -777,11 +771,15 @@ msgstr ""
 "prikaz uređaja, njihovo odobravanje i stvaranje pozivnica. Razlikuju se od "
 "ključa za autentifikaciju, koji samo dodaje jedno računalo u mrežu."
 
-#: src/big_remote_play/ui/network_dashboard.py:258
+#: src/big_remote_play/ui/network_dashboard.py:266
 msgid "An administrator must approve this computer"
 msgstr "Administrator mora odobriti ovo računalo"
 
-#: src/big_remote_play/ui/host_view.py:1477
+#: src/big_remote_play/ui/sunshine_preferences.py:652
+msgid "Animation"
+msgstr "Animacija"
+
+#: src/big_remote_play/ui/host_view.py:1484
 msgid ""
 "Another device is playing now, and Moonlight pairs only when nobody is "
 "playing: the new device shows “The computer is currently in a game”. End the "
@@ -798,7 +796,7 @@ msgstr ""
 msgid "Another way to connect distant PCs."
 msgstr "Još jedan način povezivanja udaljenih računala."
 
-#: src/big_remote_play/ui/main_window.py:684
+#: src/big_remote_play/ui/main_window.py:687
 msgid "Appearance"
 msgstr "Izgled"
 
@@ -809,28 +807,28 @@ msgid "Apple Encoder"
 msgstr "Apple koder"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 150
-#: src/big_remote_play/ui/host_view.py:352
+#: src/big_remote_play/ui/host_view.py:359
 msgid "Application Details"
 msgstr "Detalji aplikacije"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 155
-#: src/big_remote_play/ui/host_view.py:357
+#: src/big_remote_play/ui/host_view.py:364
 msgid "Application Name"
 msgstr "Naziv aplikacije"
 
-#: src/big_remote_play/ui/host_view.py:1366
+#: src/big_remote_play/ui/host_view.py:1373
 msgid "Application diagnostics"
 msgstr "Dijagnostika aplikacije"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 155
-#: src/big_remote_play/ui/main_window.py:672
-#: src/big_remote_play/ui/main_window.py:673
+#: src/big_remote_play/ui/main_window.py:675
+#: src/big_remote_play/ui/main_window.py:676
 msgid "Application menu"
 msgstr "Izbornik aplikacije"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 770
 #: src/big_remote_play/ui/guest_view.py:1982
-#: src/big_remote_play/ui/host_view.py:386
+#: src/big_remote_play/ui/host_view.py:393
 #: src/big_remote_play/ui/sunshine_preferences.py:317
 msgid "Apply"
 msgstr "Primijeni"
@@ -848,10 +846,9 @@ msgstr "Primijeni ili ponovno učitaj"
 msgid "Apply to Running Server"
 msgstr "Primijeni na pokrenuti poslužitelj"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 231
 #: src/big_remote_play/ui/guest_view.py:910
-msgid "Applying settings..."
-msgstr "Primjena postavki..."
+msgid "Applying settings…"
+msgstr "Primjena postavki…"
 
 #: src/big_remote_play/ui/network_devices.py:266
 #: src/big_remote_play/ui/network_devices.py:317
@@ -938,7 +935,7 @@ msgstr ""
 "nitko nema mrežu, jedno od vas je besplatno stvara u ZeroTier Centralu – ili "
 "koristite Tailscale, najjednostavniji način za početak."
 
-#: src/big_remote_play/ui/network_dashboard.py:346
+#: src/big_remote_play/ui/network_dashboard.py:354
 #: src/big_remote_play/ui/zerotier_join.py:51
 msgid "Asking for permission…"
 msgstr "Traženje dopuštenja…"
@@ -960,12 +957,12 @@ msgstr ""
 #: src/big_remote_play/ui/guest_view.py:410
 #: src/big_remote_play/ui/guest_view.py:540
 #: src/big_remote_play/ui/guest_view.py:567
-#: src/big_remote_play/ui/host_view.py:530
+#: src/big_remote_play/ui/host_view.py:537
 msgid "Audio"
 msgstr "Zvuk"
 
-#: src/big_remote_play/ui/host_view.py:2283
-#: src/big_remote_play/ui/host_view.py:2316
+#: src/big_remote_play/ui/host_view.py:2290
+#: src/big_remote_play/ui/host_view.py:2323
 msgid ""
 "Audio changes apply the next time you start sharing. The current output is "
 "unchanged."
@@ -993,8 +990,8 @@ msgid "Auth Key"
 msgstr "Ključ za autentifikaciju"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1641
-#: src/big_remote_play/ui/host_view.py:2009
+#: src/big_remote_play/ui/host_view.py:1648
+#: src/big_remote_play/ui/host_view.py:2016
 msgid "Authentication Failed"
 msgstr "Autentifikacija nije uspjela"
 
@@ -1009,18 +1006,6 @@ msgstr "Autentifikacija nije uspjela. Provjerite trenutačnu lozinku."
 #: src/big_remote_play/host/sunshine_manager.py:666
 msgid "Authentication Failed. Configure a user in Sunshine."
 msgstr "Autentifikacija nije uspjela. Konfigurirajte korisnika u Sunshineu."
-
-# File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
-# line: 365
-# line: 388
-# line: 395
-# line: 398
-#: src/big_remote_play/ui/sunshine_preferences.py:553
-#: src/big_remote_play/ui/sunshine_preferences.py:611
-#: src/big_remote_play/ui/sunshine_preferences.py:618
-#: src/big_remote_play/ui/sunshine_preferences.py:624
-msgid "Auto"
-msgstr "Automatski"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 365
@@ -1042,10 +1027,14 @@ msgstr "Automatsko otkrivanje (Preporučeno)"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 757
 #: src/big_remote_play/ui/guest_view.py:253
 #: src/big_remote_play/ui/host_view.py:204
-#: src/big_remote_play/ui/host_view.py:289
-#: src/big_remote_play/ui/host_view.py:462
-#: src/big_remote_play/ui/host_view.py:1745
-#: src/big_remote_play/ui/main_window.py:680
+#: src/big_remote_play/ui/host_view.py:296
+#: src/big_remote_play/ui/host_view.py:469
+#: src/big_remote_play/ui/host_view.py:1752
+#: src/big_remote_play/ui/main_window.py:683
+#: src/big_remote_play/ui/sunshine_preferences.py:553
+#: src/big_remote_play/ui/sunshine_preferences.py:611
+#: src/big_remote_play/ui/sunshine_preferences.py:618
+#: src/big_remote_play/ui/sunshine_preferences.py:624
 msgid "Automatic"
 msgstr "Automatski"
 
@@ -1056,8 +1045,8 @@ msgstr "Automatski"
 msgid "Automatic (Recommended)"
 msgstr "Automatski (Preporučeno)"
 
-#: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/host_view.py:1466
+#: src/big_remote_play/ui/host_view.py:386
+#: src/big_remote_play/ui/host_view.py:1473
 msgid "Automatic capture and encoding"
 msgstr "Automatsko snimanje i kodiranje"
 
@@ -1065,7 +1054,7 @@ msgstr "Automatsko snimanje i kodiranje"
 msgid "Automatic mode chooses the best format supported by both computers."
 msgstr "Automatski način odabire najbolji format koji podržavaju oba računala."
 
-#: src/big_remote_play/ui/host_view.py:1016
+#: src/big_remote_play/ui/host_view.py:1023
 msgid ""
 "Automatic options below are chosen by Sunshine when sharing starts, not "
 "measurements of an active stream."
@@ -1081,11 +1070,11 @@ msgstr ""
 "Opcija Automatski bira onaj koji već radi na ovom računalu. Drugi odaberite "
 "samo ako vam je potreban."
 
-#: src/big_remote_play/ui/host_view.py:1014
+#: src/big_remote_play/ui/host_view.py:1021
 msgid "Automatic settings and video limit"
 msgstr "Automatske postavke i ograničenje videa"
 
-#: src/big_remote_play/ui/host_view.py:535
+#: src/big_remote_play/ui/host_view.py:542
 msgid ""
 "Automatic shares the output you are using now, including effects such as "
 "EasyEffects. Choose a device only to always share that one."
@@ -1093,7 +1082,7 @@ msgstr ""
 "Automatski dijeli izlaz koji trenutačno koristite, uključujući efekte poput "
 "EasyEffects. Uređaj odaberite samo ako uvijek želite dijeliti baš njega."
 
-#: src/big_remote_play/ui/host_view.py:459
+#: src/big_remote_play/ui/host_view.py:466
 msgid ""
 "Automatic works across desktops. Select a specific method only for "
 "troubleshooting."
@@ -1106,18 +1095,16 @@ msgstr ""
 msgid "Automatic · {resolution} · {frame_rate} · {bitrate}"
 msgstr "Automatski · {resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:2300
+#: src/big_remote_play/ui/host_view.py:2307
 msgid "Automatic — use the current output"
 msgstr "Automatski — koristi trenutačni izlaz"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
-# line: 112
 #: src/big_remote_play/ui/guest_view.py:1252
 #, python-brace-format
-msgid "Available at {}"
-msgstr "Dostupno na {}"
+msgid "Available at {address}"
+msgstr "Dostupno na {address}"
 
-#: src/big_remote_play/ui/host_view.py:946
+#: src/big_remote_play/ui/host_view.py:953
 msgid "Available over the internet"
 msgstr "Dostupno preko interneta"
 
@@ -1126,8 +1113,8 @@ msgstr "Dostupno preko interneta"
 msgid "BW (target)"
 msgstr "Propusnost (cilj)"
 
-#: src/big_remote_play/ui/main_window.py:602
-#: src/big_remote_play/ui/main_window.py:608
+#: src/big_remote_play/ui/main_window.py:605
+#: src/big_remote_play/ui/main_window.py:611
 msgid "Back"
 msgstr "Natrag"
 
@@ -1137,15 +1124,15 @@ msgstr "Natrag"
 msgid "Back Button as Touchpad Click"
 msgstr "Gumb za povratak kao klik na dodirnu podlogu"
 
-#: src/big_remote_play/ui/main_window.py:608
+#: src/big_remote_play/ui/main_window.py:611
 msgid "Back to Connect your devices"
 msgstr "Natrag na „Povežite svoje uređaje”"
 
-#: src/big_remote_play/ui/main_window.py:827
+#: src/big_remote_play/ui/main_window.py:830
 msgid "Back to Home"
 msgstr "Natrag na početnu stranicu"
 
-#: src/big_remote_play/ui/main_window.py:602
+#: src/big_remote_play/ui/main_window.py:605
 msgid "Back to the previous question"
 msgstr "Natrag na prethodno pitanje"
 
@@ -1154,7 +1141,7 @@ msgstr "Natrag na prethodno pitanje"
 msgid "Backup"
 msgstr "Sigurnosna kopija"
 
-#: src/big_remote_play/ui/main_window.py:685
+#: src/big_remote_play/ui/main_window.py:688
 #: src/big_remote_play/ui/preferences.py:33
 msgid "Backup and restore"
 msgstr "Sigurnosna kopija i vraćanje"
@@ -1176,7 +1163,7 @@ msgid "Balanced"
 msgstr "Izbalansirano"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 248
-#: src/big_remote_play/ui/host_view.py:515
+#: src/big_remote_play/ui/host_view.py:522
 msgid "Balanced (Default)"
 msgstr "Izbalansirano (Zadano)"
 
@@ -1194,6 +1181,17 @@ msgid "Big Remote Play can start it for you. Your password may be requested."
 msgstr ""
 "Big Remote Play ju može pokrenuti umjesto vas. Možda će se tražiti vaša "
 "lozinka."
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:9
+msgid ""
+"Big Remote Play guides a host and guest through game streaming with Sunshine "
+"and Moonlight. It also helps connect distant computers through an existing "
+"VPN or a guided Tailscale, ZeroTier, or Headscale setup."
+msgstr ""
+"Big Remote Play vodi računalo koje dijeli i računalo koje se povezuje kroz "
+"strujanje igara uz Sunshine i Moonlight. Pomaže i povezati udaljena računala "
+"putem VPN-a koji već koristite ili vođenog postavljanja Tailscalea, "
+"ZeroTiera ili Headscalea."
 
 #: src/big_remote_play/ui/remote_connection.py:68
 msgid "Big Remote Play installs it for you. Your password may be requested."
@@ -1223,11 +1221,11 @@ msgstr "Big Remote Play: zvuk poslan drugom računalu"
 msgid "Bind Address"
 msgstr "Adresa vezivanja"
 
-#: src/big_remote_play/ui/host_view.py:2219
+#: src/big_remote_play/ui/host_view.py:2226
 msgid "Blocked"
 msgstr "Blokirano"
 
-#: src/big_remote_play/ui/host_view.py:2216
+#: src/big_remote_play/ui/host_view.py:2223
 msgid "Blocked until enabled again"
 msgstr "Blokirano dok se ponovno ne omogući"
 
@@ -1247,11 +1245,11 @@ msgstr "Oba računala moraju koristiti istu opciju."
 msgid "Both devices are connected to the same Wi-Fi or router."
 msgstr "Oba su uređaja spojena na isti Wi-Fi ili usmjernik."
 
-#: src/big_remote_play/ui/host_view.py:367
+#: src/big_remote_play/ui/host_view.py:374
 msgid "Browse files on this computer"
 msgstr "Pregledaj datoteke na ovom računalu"
 
-#: src/big_remote_play/ui/host_view.py:366
+#: src/big_remote_play/ui/host_view.py:373
 msgid "Browse this computer for an executable"
 msgstr "Potraži izvršnu datoteku na ovom računalu"
 
@@ -1280,7 +1278,7 @@ msgstr ""
 msgid "CGNAT"
 msgstr "CGNAT"
 
-#: src/big_remote_play/ui/network_dashboard.py:319
+#: src/big_remote_play/ui/network_dashboard.py:327
 msgid "CGNAT, IPv6, UPnP and when a VPN is the better choice."
 msgstr "CGNAT, IPv6, UPnP i kada je VPN bolji izbor."
 
@@ -1294,14 +1292,14 @@ msgstr "CGNAT, IPv6, UPnP i kada je privatna mreža bolji izbor."
 msgid "CPU Encoding"
 msgstr "Kodiranje na CPU-u"
 
-#: src/big_remote_play/ui/host_view.py:583
+#: src/big_remote_play/ui/host_view.py:590
 msgid "Calls kept out of the stream"
 msgstr "Pozivi izostavljeni iz prijenosa"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 227
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 434
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 458
-#: src/big_remote_play/ui/host_view.py:2216
+#: src/big_remote_play/ui/host_view.py:2223
 msgid "Can connect without a new PIN"
 msgstr "Može se povezati bez novog PIN-a"
 
@@ -1321,18 +1319,18 @@ msgstr "Može se povezati bez novog PIN-a"
 #: src/big_remote_play/ui/guest_view.py:1615
 #: src/big_remote_play/ui/guest_view.py:1981
 #: src/big_remote_play/ui/guest_view.py:2207
-#: src/big_remote_play/ui/host_view.py:1628
-#: src/big_remote_play/ui/host_view.py:1980
-#: src/big_remote_play/ui/host_view.py:2074
-#: src/big_remote_play/ui/host_view.py:2104
-#: src/big_remote_play/ui/host_view.py:2334
-#: src/big_remote_play/ui/host_view.py:3297
-#: src/big_remote_play/ui/host_view.py:3392
-#: src/big_remote_play/ui/host_view.py:3797
-#: src/big_remote_play/ui/host_view.py:4157
-#: src/big_remote_play/ui/main_window.py:1140
+#: src/big_remote_play/ui/host_view.py:1635
+#: src/big_remote_play/ui/host_view.py:1987
+#: src/big_remote_play/ui/host_view.py:2081
+#: src/big_remote_play/ui/host_view.py:2111
+#: src/big_remote_play/ui/host_view.py:2341
+#: src/big_remote_play/ui/host_view.py:3304
+#: src/big_remote_play/ui/host_view.py:3399
+#: src/big_remote_play/ui/host_view.py:3804
+#: src/big_remote_play/ui/host_view.py:4166
+#: src/big_remote_play/ui/main_window.py:1143
 #: src/big_remote_play/ui/network_common.py:310
-#: src/big_remote_play/ui/network_dashboard.py:397
+#: src/big_remote_play/ui/network_dashboard.py:405
 #: src/big_remote_play/ui/performance_monitor.py:567
 #: src/big_remote_play/ui/preferences.py:168
 #: src/big_remote_play/ui/preferences.py:222
@@ -1350,12 +1348,12 @@ msgstr "Otkaži"
 msgid "Cancel the request"
 msgstr "Otkaži zahtjev"
 
-#: src/big_remote_play/ui/host_view.py:3691
+#: src/big_remote_play/ui/host_view.py:3698
 msgid "Cannot browse (no access or credentials)"
 msgstr "Nije moguće pregledavati (nema pristupa ili vjerodajnica)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 211
-#: src/big_remote_play/ui/host_view.py:458
+#: src/big_remote_play/ui/host_view.py:465
 msgid "Capture Method"
 msgstr "Metoda snimanja"
 
@@ -1363,7 +1361,7 @@ msgstr "Metoda snimanja"
 msgid "Capture, compression and stream limits"
 msgstr "Snimanje, kompresija i ograničenja prijenosa"
 
-#: src/big_remote_play/ui/host_view.py:1767
+#: src/big_remote_play/ui/host_view.py:1774
 #, python-brace-format
 msgid "Capture: {value}"
 msgstr "Snimanje: {value}"
@@ -1373,11 +1371,6 @@ msgstr "Snimanje: {value}"
 #: src/big_remote_play/ui/sunshine_preferences.py:252
 msgid "Certificate"
 msgstr "Certifikat"
-
-#: src/big_remote_play/host/sunshine_manager.py:505
-#, python-brace-format
-msgid "Certificate trust error: {}"
-msgstr "Pogreška povjerenja certifikata: {}"
 
 #: src/big_remote_play/ui/remote_connection.py:226
 msgid "Change"
@@ -1414,7 +1407,7 @@ msgid "Check for blocked connections automatically"
 msgstr "Automatski provjeri blokirane veze"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1203
-#: src/big_remote_play/ui/host_view.py:3234
+#: src/big_remote_play/ui/host_view.py:3241
 msgid "Check logs for details."
 msgstr "Provjerite zapise za detalje."
 
@@ -1434,7 +1427,7 @@ msgid ""
 msgstr ""
 "Provjerite kod i pokušajte ponovno. Ako je točan, mreža je možda izbrisana."
 
-#: src/big_remote_play/ui/host_view.py:1032
+#: src/big_remote_play/ui/host_view.py:1039
 msgid "Check the connection first. Open server tools only when needed."
 msgstr ""
 "Najprije provjerite vezu. Alate poslužitelja otvarajte samo kada je potrebno."
@@ -1472,19 +1465,18 @@ msgstr "Provjera ovog računala…"
 msgid "Checking what this network allows…"
 msgstr "Provjera što ova mreža dopušta…"
 
-#: src/big_remote_play/ui/host_view.py:3322
+#: src/big_remote_play/ui/host_view.py:3329
 msgid "Checking which devices are already allowed."
 msgstr "Provjera koji su uređaji već dopušteni."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 224
 #: src/big_remote_play/ui/guest_view.py:562
-#: src/big_remote_play/ui/host_view.py:380
-#: src/big_remote_play/ui/host_view.py:963
-#: src/big_remote_play/ui/host_view.py:973
-#: src/big_remote_play/ui/main_window.py:1087
+#: src/big_remote_play/ui/host_view.py:387
+#: src/big_remote_play/ui/host_view.py:970
+#: src/big_remote_play/ui/host_view.py:980
+#: src/big_remote_play/ui/main_window.py:1090
 #: src/big_remote_play/ui/service_status_card.py:51
-msgid "Checking..."
-msgstr "Provjera..."
+msgid "Checking…"
+msgstr "Provjera…"
 
 #: src/big_remote_play/ui/connection_guides.py:132
 msgid ""
@@ -1510,9 +1502,9 @@ msgid "Choose a method to see its sign-in, network and device details."
 msgstr ""
 "Odaberite način da biste vidjeli pojedinosti o prijavi, mreži i uređajima."
 
-#: src/big_remote_play/ui/host_view.py:768
-#: src/big_remote_play/ui/host_view.py:1290
-#: src/big_remote_play/ui/host_view.py:2520
+#: src/big_remote_play/ui/host_view.py:775
+#: src/big_remote_play/ui/host_view.py:1297
+#: src/big_remote_play/ui/host_view.py:2527
 msgid "Choose a source, then start sharing."
 msgstr "Odaberite izvor i pokrenite dijeljenje."
 
@@ -1522,13 +1514,13 @@ msgstr "Odaberi drugu opciju"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 138
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 143
-#: src/big_remote_play/ui/host_view.py:340
-#: src/big_remote_play/ui/host_view.py:345
+#: src/big_remote_play/ui/host_view.py:347
+#: src/big_remote_play/ui/host_view.py:352
 msgid "Choose game from list"
 msgstr "Odaberite igru s popisa"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 203
-#: src/big_remote_play/ui/host_view.py:449
+#: src/big_remote_play/ui/host_view.py:456
 msgid "Choose hardware for video encoding"
 msgstr "Odaberite hardver za video kodiranje"
 
@@ -1560,12 +1552,12 @@ msgstr ""
 "Na računalu za igranje odaberite zaslon pod Dijeli → Postavke → Hardver i "
 "snimanje. Nakon promjene ponovno se povežite."
 
-#: src/big_remote_play/ui/host_view.py:1269
+#: src/big_remote_play/ui/host_view.py:1276
 msgid "Choose the game to share"
 msgstr "Odaberite igru za dijeljenje"
 
-#: src/big_remote_play/ui/host_view.py:1288
-#: src/big_remote_play/ui/host_view.py:2863
+#: src/big_remote_play/ui/host_view.py:1295
+#: src/big_remote_play/ui/host_view.py:2870
 msgid "Choose the game window to share."
 msgstr "Odaberite prozor igre za dijeljenje."
 
@@ -1577,11 +1569,11 @@ msgstr ""
 "Odaberite format zvuka koji se koristi na ovom računalu i treba li se zvuk "
 "reproducirati i na računalu za igranje."
 
-#: src/big_remote_play/ui/host_view.py:805
+#: src/big_remote_play/ui/host_view.py:812
 msgid "Choose this computer from the list."
 msgstr "Odaberite ovo računalo s popisa."
 
-#: src/big_remote_play/ui/host_view.py:1382
+#: src/big_remote_play/ui/host_view.py:1389
 msgid "Clear"
 msgstr "Očisti"
 
@@ -1597,7 +1589,7 @@ msgid "Clear Everything"
 msgstr "Očisti sve"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 97
-#: src/big_remote_play/ui/host_view.py:1381
+#: src/big_remote_play/ui/host_view.py:1388
 msgid "Clear Logs"
 msgstr "Očisti dnevnike"
 
@@ -1619,8 +1611,8 @@ msgstr "Očistiti povijest veza?"
 #: src/big_remote_play/ui/guest_view.py:1869
 #: src/big_remote_play/ui/guest_view.py:1884
 #: src/big_remote_play/ui/guided_setup.py:311
-#: src/big_remote_play/ui/host_view.py:1833
-#: src/big_remote_play/ui/host_view.py:3239
+#: src/big_remote_play/ui/host_view.py:1840
+#: src/big_remote_play/ui/host_view.py:3246
 #: src/big_remote_play/ui/installer_window.py:76
 msgid "Close"
 msgstr "Zatvori"
@@ -1633,7 +1625,7 @@ msgstr "Zatvorite i ponovno otvorite ovaj prozor da biste nastavili tražiti."
 msgid "Close the game on the game PC when streaming ends"
 msgstr "Zatvori igru na računalu za igranje po završetku prijenosa"
 
-#: src/big_remote_play/ui/host_view.py:831
+#: src/big_remote_play/ui/host_view.py:838
 msgid "Close the stream on every device so a new device can pair"
 msgstr ""
 "Zatvori prijenos na svim uređajima kako bi se novi uređaj mogao upariti"
@@ -1643,7 +1635,7 @@ msgstr ""
 msgid "Cloudflare DNS-only documentation"
 msgstr "Dokumentacija za Cloudflare samo-DNS"
 
-#: src/big_remote_play/ui/network_dashboard.py:245
+#: src/big_remote_play/ui/network_dashboard.py:253
 #: src/big_remote_play/ui/network_devices.py:218
 msgid "Code for this computer"
 msgstr "Kod ovog računala"
@@ -1652,7 +1644,7 @@ msgstr "Kod ovog računala"
 msgid "Codec, HDR, data limit and connection warnings"
 msgstr "Kodek, HDR, ograničenje podataka i upozorenja o vezi"
 
-#: src/big_remote_play/ui/host_view.py:703
+#: src/big_remote_play/ui/host_view.py:710
 msgid "Codecs, network, capture and recovery tools"
 msgstr "Kodeci, mreža, snimanje i alati za oporavak"
 
@@ -1667,7 +1659,7 @@ msgstr ""
 "Sunshineove ugrađene zadane postavke localhosta."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 159
-#: src/big_remote_play/ui/host_view.py:361
+#: src/big_remote_play/ui/host_view.py:368
 #: src/big_remote_play/ui/network_devices.py:636
 #: src/big_remote_play/ui/network_devices.py:667
 #: src/big_remote_play/ui/network_devices.py:695
@@ -1693,11 +1685,11 @@ msgid ""
 "Components are still missing. Finish the installation, then check again."
 msgstr "Još nedostaju komponente. Dovršite instalaciju i ponovno provjerite."
 
-#: src/big_remote_play/ui/host_view.py:1768
+#: src/big_remote_play/ui/host_view.py:1775
 msgid "Compression: H.264 only"
 msgstr "Kompresija: samo H.264"
 
-#: src/big_remote_play/ui/host_view.py:1768
+#: src/big_remote_play/ui/host_view.py:1775
 msgid "Compression: HEVC/AV1 when supported"
 msgstr "Kompresija: HEVC/AV1 kada je podržan"
 
@@ -1725,7 +1717,7 @@ msgstr "Konfiguracijske datoteke"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 226
-#: src/big_remote_play/ui/host_view.py:1389
+#: src/big_remote_play/ui/host_view.py:1396
 msgid "Configuration Directory"
 msgstr "Mapa konfiguracije"
 
@@ -1748,17 +1740,17 @@ msgstr ""
 "ažurirane vrijednosti."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 288
-#: src/big_remote_play/ui/host_view.py:631
+#: src/big_remote_play/ui/host_view.py:638
 msgid "Configure"
 msgstr "Konfiguriraj"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 284
-#: src/big_remote_play/ui/host_view.py:627
+#: src/big_remote_play/ui/host_view.py:634
 msgid "Configure Firewall (IPv6)"
 msgstr "Konfiguriraj vatrozid (IPv6)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 151
-#: src/big_remote_play/ui/host_view.py:353
+#: src/big_remote_play/ui/host_view.py:360
 msgid "Configure name and command"
 msgstr "Konfigurirajte ime i naredbu"
 
@@ -1766,17 +1758,16 @@ msgstr "Konfigurirajte ime i naredbu"
 msgid "Configured"
 msgstr "Konfigurirano"
 
-#: src/big_remote_play/ui/host_view.py:390
+#: src/big_remote_play/ui/host_view.py:397
 msgid "Configured for the next sharing session"
 msgstr "Postavljeno za sljedeću sesiju dijeljenja"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 776
-#: src/big_remote_play/ui/host_view.py:2343
-msgid "Configuring firewall... (Password may be requested)"
-msgstr "Konfiguriranje vatrozida... (Možda će biti zatražena lozinka)"
+#: src/big_remote_play/ui/host_view.py:2350
+msgid "Configuring the firewall… Your password may be requested."
+msgstr "Konfiguriranje vatrozida… (Možda će biti zatražena lozinka)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:3779
+#: src/big_remote_play/ui/host_view.py:3786
 msgid "Confirm New Password"
 msgstr "Potvrdite novu lozinku"
 
@@ -1790,14 +1781,18 @@ msgstr "Potvrdite novu lozinku"
 #: src/big_remote_play/ui/guest_view.py:1022
 #: src/big_remote_play/ui/guest_view.py:1334
 #: src/big_remote_play/ui/guest_view.py:1782
-#: src/big_remote_play/ui/main_window.py:115
-#: src/big_remote_play/ui/main_window.py:828
-#: src/big_remote_play/ui/main_window.py:993
-#: src/big_remote_play/ui/main_window.py:1221
 #: src/big_remote_play/ui/private_network_view.py:596
 #: src/big_remote_play/ui/private_network_view.py:598
 #: src/big_remote_play/ui/remote_connection.py:454
 #: src/big_remote_play/ui/remote_connection.py:482
+msgid "Connect"
+msgstr "Poveži"
+
+#: src/big_remote_play/ui/main_window.py:118
+#: src/big_remote_play/ui/main_window.py:831
+#: src/big_remote_play/ui/main_window.py:996
+#: src/big_remote_play/ui/main_window.py:1224
+msgctxt "navigation"
 msgid "Connect"
 msgstr "Poveži"
 
@@ -1811,8 +1806,12 @@ msgstr "Poveži ponovno"
 msgid "Connect by address"
 msgstr "Poveži putem adrese"
 
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:16
+msgid "Connect from another computer with Moonlight and pair it with a PIN"
+msgstr "Povežite se s drugog računala putem Moonlighta i uparite ga PIN-om"
+
 #: src/big_remote_play/ui/network_common.py:164
-#: src/big_remote_play/ui/network_dashboard.py:217
+#: src/big_remote_play/ui/network_dashboard.py:225
 #: src/big_remote_play/ui/private_network_view.py:566
 msgid "Connect this computer"
 msgstr "Poveži ovo računalo"
@@ -1852,6 +1851,11 @@ msgstr "Poveži se s drugim računalom"
 msgid "Connect to this server"
 msgstr "Poveži se s ovim poslužiteljem"
 
+#: src/big_remote_play/ui/guest_view.py:897
+#, python-brace-format
+msgid "Connect to {name}"
+msgstr "Poveži se s {name}"
+
 #: src/big_remote_play/ui/guest_view.py:1783
 #: src/big_remote_play/ui/history_dialog.py:127
 #: src/big_remote_play/ui/remote_connection.py:483
@@ -1859,17 +1863,11 @@ msgstr "Poveži se s ovim poslužiteljem"
 msgid "Connect to {name} again"
 msgstr "Ponovno se poveži s {name}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 220
-#: src/big_remote_play/ui/guest_view.py:897
-#, python-brace-format
-msgid "Connect to {}"
-msgstr "Poveži se s {}"
-
-#: src/big_remote_play/ui/host_view.py:612
+#: src/big_remote_play/ui/host_view.py:619
 msgid "Connect without a VPN"
 msgstr "Poveži se bez VPN-a"
 
-#: src/big_remote_play/ui/main_window.py:1225
+#: src/big_remote_play/ui/main_window.py:1228
 #: src/big_remote_play/ui/remote_connection.py:183
 msgid "Connect your devices"
 msgstr "Povežite svoje uređaje"
@@ -1887,10 +1885,10 @@ msgstr "Povezani uređaj"
 
 #: src/big_remote_play/ui/performance_monitor.py:790
 #, python-brace-format
-msgid "Connected devices: {}"
-msgstr "Povezani uređaji: {}"
+msgid "Connected devices: {count}"
+msgstr "Povezani uređaji: {count}"
 
-#: src/big_remote_play/ui/host_view.py:2118
+#: src/big_remote_play/ui/host_view.py:2125
 msgid "Connected now"
 msgstr "Trenutačno povezani"
 
@@ -1902,22 +1900,18 @@ msgstr "Trenutačno povezani"
 msgid "Connected successfully!"
 msgstr "Uspješno povezano!"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 722
 #: src/big_remote_play/ui/performance_monitor.py:820
 #, python-brace-format
-msgid "Connected to {}"
-msgstr "Povezano s {}"
+msgid "Connected to {name}"
+msgstr "Povezano s {name}"
 
 #: src/big_remote_play/ui/zerotier_join.py:62
 msgid "Connecting to the network…"
 msgstr "Povezivanje s mrežom…"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1848
 #: src/big_remote_play/ui/private_network_view.py:798
-msgid "Connecting..."
-msgstr "Povezivanje..."
+msgid "Connecting…"
+msgstr "Povezivanje…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
@@ -1956,7 +1950,7 @@ msgid "Connection history"
 msgstr "Povijest veza"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 381
-#: src/big_remote_play/ui/host_view.py:2244
+#: src/big_remote_play/ui/host_view.py:2251
 msgid "Connection information"
 msgstr "Informacije o vezi"
 
@@ -2004,7 +1998,7 @@ msgid "Contacting the service…"
 msgstr "Povezivanje s uslugom…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 582
-#: src/big_remote_play/ui/main_window.py:1516
+#: src/big_remote_play/ui/main_window.py:1519
 msgid "Containers"
 msgstr "Kontejneri"
 
@@ -2023,7 +2017,7 @@ msgstr "Nastavlja obrađivati kontroler kada Moonlight nije aktivni prozor."
 msgid "Controllers"
 msgstr "Kontroleri"
 
-#: src/big_remote_play/ui/host_view.py:877
+#: src/big_remote_play/ui/host_view.py:884
 msgid "Controllers of the other computer cannot work"
 msgstr "Kontroleri drugog računala ne mogu raditi"
 
@@ -2046,20 +2040,20 @@ msgid "Copied"
 msgstr "Kopirano"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 843
-#: src/big_remote_play/ui/host_view.py:2432
-#: src/big_remote_play/ui/host_view.py:3501
+#: src/big_remote_play/ui/host_view.py:2439
+#: src/big_remote_play/ui/host_view.py:3508
 msgid "Copied!"
 msgstr "Kopirano!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:3447
+#: src/big_remote_play/ui/host_view.py:3454
 #: src/big_remote_play/ui/network_common.py:229
 #: src/big_remote_play/ui/network_common.py:246
 msgid "Copy"
 msgstr "Kopiraj"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:1394
+#: src/big_remote_play/ui/host_view.py:1401
 msgid "Copy Path"
 msgstr "Kopiraj putanju"
 
@@ -2067,13 +2061,13 @@ msgstr "Kopiraj putanju"
 msgid "Copy address"
 msgstr "Kopiraj adresu"
 
-#: src/big_remote_play/ui/host_view.py:912
-#: src/big_remote_play/ui/host_view.py:915
+#: src/big_remote_play/ui/host_view.py:919
+#: src/big_remote_play/ui/host_view.py:922
 msgid "Copy code"
 msgstr "Kopiraj kod"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:3448
+#: src/big_remote_play/ui/host_view.py:3455
 msgid "Copy logs"
 msgstr "Kopiraj dnevnike"
 
@@ -2086,27 +2080,26 @@ msgstr "Kopiraj tehničke detalje"
 msgid "Copy the private address of {name}"
 msgstr "Kopiraj privatnu adresu uređaja {name}"
 
-#: src/big_remote_play/ui/host_view.py:2404
+#: src/big_remote_play/ui/host_view.py:2411
 #, python-brace-format
-msgid "Copy the {} value to clipboard"
-msgstr "Kopiraj vrijednost {} u međuspremnik"
+msgid "Copy the {field} value to the clipboard"
+msgstr "Kopiraj vrijednost {field} u međuspremnik"
 
-#: src/big_remote_play/ui/host_view.py:915
+#: src/big_remote_play/ui/host_view.py:922
 msgid "Copy this PC's discovery code to the clipboard"
 msgstr "Kopiraj kod za pretraživanje ovog računala u međuspremnik"
+
+#: src/big_remote_play/ui/host_view.py:2410
+#, python-brace-format
+msgid "Copy {field}"
+msgstr "Kopiraj {field}"
 
 #: src/big_remote_play/ui/network_common.py:246
 #, python-brace-format
 msgid "Copy {name} to the clipboard"
 msgstr "Kopiraj u međuspremnik: {name}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:2403
-#, python-brace-format
-msgid "Copy {}"
-msgstr "Kopiraj {}"
-
-#: src/big_remote_play/ui/host_view.py:470
+#: src/big_remote_play/ui/host_view.py:477
 msgid "Correct colors of HDR screens"
 msgstr "Ispravi boje HDR zaslona"
 
@@ -2124,10 +2117,6 @@ msgstr "Nije moguće stvoriti sigurnosnu kopiju"
 msgid "Could not install ${pkg}."
 msgstr "Nije moguće instalirati ${pkg}."
 
-#: src/big_remote_play/app.py:114
-msgid "Could not load icon theme: no GTK display"
-msgstr "Nije moguće učitati temu ikona: nema GTK zaslona"
-
 #: src/big_remote_play/ui/guest_view.py:1865
 msgid ""
 "Could not pair with the game PC. Check that the code was entered on the game "
@@ -2144,7 +2133,7 @@ msgstr ""
 msgid "Could not read server configuration."
 msgstr "Nije moguće pročitati konfiguraciju poslužitelja."
 
-#: src/big_remote_play/ui/host_view.py:1138
+#: src/big_remote_play/ui/host_view.py:1145
 msgid "Could not read the open windows"
 msgstr "Otvorene prozore nije moguće pročitati"
 
@@ -2166,7 +2155,7 @@ msgstr "Promjenu nije moguće spremiti."
 msgid "Could not save the connection settings. Check file permissions."
 msgstr "Nije moguće spremiti postavke veze. Provjerite dozvole datoteka."
 
-#: src/big_remote_play/ui/host_view.py:2955
+#: src/big_remote_play/ui/host_view.py:2962
 msgid "Could not save the server configuration."
 msgstr "Postavke poslužitelja nije moguće spremiti."
 
@@ -2174,7 +2163,7 @@ msgstr "Postavke poslužitelja nije moguće spremiti."
 msgid "Could not turn it on. Check the connection details."
 msgstr "Uključivanje nije uspjelo. Provjerite pojedinosti veze."
 
-#: src/big_remote_play/ui/host_view.py:2909
+#: src/big_remote_play/ui/host_view.py:2916
 msgid "Could not update the game library. Existing games were preserved."
 msgstr "Biblioteku igara nije moguće ažurirati. Postojeće igre su sačuvane."
 
@@ -2185,7 +2174,7 @@ msgid "Create Account"
 msgstr "Stvori račun"
 
 #: src/big_remote_play/ui/guided_setup.py:312
-#: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/network_dashboard.py:403
 #: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "Stvori ZeroTier mrežu"
@@ -2202,8 +2191,8 @@ msgid ""
 "this."
 msgstr "Stvorite besplatan račun ili se prijavite. To radi samo vlasnik mreže."
 
-#: src/big_remote_play/ui/network_dashboard.py:226
-#: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/network_dashboard.py:234
+#: src/big_remote_play/ui/network_dashboard.py:238
 #: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "Stvori mrežu"
@@ -2216,7 +2205,7 @@ msgstr "Stvori jednokratni ključ za prijavu koji istječe za jedan sat."
 msgid "Create invitation"
 msgstr "Stvori pozivnicu"
 
-#: src/big_remote_play/ui/network_dashboard.py:398
+#: src/big_remote_play/ui/network_dashboard.py:406
 msgid "Create network"
 msgstr "Stvori mrežu"
 
@@ -2232,7 +2221,7 @@ msgstr "Stvorite API ključ na poslužitelju"
 msgid "Creates a private network between several devices."
 msgstr "Stvara privatnu mrežu između više uređaja."
 
-#: src/big_remote_play/ui/network_dashboard.py:406
+#: src/big_remote_play/ui/network_dashboard.py:414
 msgid "Creating the network…"
 msgstr "Stvaranje mreže…"
 
@@ -2264,7 +2253,7 @@ msgstr ""
 msgid "Credentials reset successfully"
 msgstr "Podaci za prijavu uspješno su resetirani"
 
-#: src/big_remote_play/ui/network_dashboard.py:312
+#: src/big_remote_play/ui/network_dashboard.py:320
 #: src/big_remote_play/ui/private_network_view.py:666
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr ""
@@ -2282,16 +2271,16 @@ msgid "Credentials updated successfully"
 msgstr "Podaci za prijavu uspješno su ažurirani"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:3773
+#: src/big_remote_play/ui/host_view.py:3780
 msgid "Current Password"
 msgstr "Trenutačna lozinka"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 685
-#: src/big_remote_play/ui/host_view.py:3771
+#: src/big_remote_play/ui/host_view.py:3778
 msgid "Current Username"
 msgstr "Trenutačno korisničko ime"
 
-#: src/big_remote_play/ui/host_view.py:577
+#: src/big_remote_play/ui/host_view.py:584
 msgid "Current output"
 msgstr "Trenutačni izlaz"
 
@@ -2302,14 +2291,12 @@ msgstr "Trenutačni izlaz"
 #: src/big_remote_play/ui/guest_view.py:258
 #: src/big_remote_play/ui/guest_view.py:267
 #: src/big_remote_play/ui/guest_view.py:292
-#: src/big_remote_play/ui/guest_view.py:1904
-#: src/big_remote_play/ui/guest_view.py:1933
-#: src/big_remote_play/ui/host_view.py:402
+#: src/big_remote_play/ui/host_view.py:409
 msgid "Custom"
 msgstr "Prilagođeno"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 133
-#: src/big_remote_play/ui/host_view.py:330
+#: src/big_remote_play/ui/host_view.py:337
 msgid "Custom App"
 msgstr "Prilagođena aplikacija"
 
@@ -2322,7 +2309,7 @@ msgid "Custom Frame Rate"
 msgstr "Prilagođena brzina kadrova"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 744
-#: src/big_remote_play/ui/guest_view.py:1921
+#: src/big_remote_play/ui/guest_view.py:1923
 msgid "Custom Resolution"
 msgstr "Prilagođena razlučivost"
 
@@ -2330,11 +2317,11 @@ msgstr "Prilagođena razlučivost"
 msgid "Custom image settings"
 msgstr "Prilagođene postavke slike"
 
-#: src/big_remote_play/ui/main_window.py:680
+#: src/big_remote_play/ui/main_window.py:683
 msgid "Dark"
 msgstr "Tamno"
 
-#: src/big_remote_play/ui/host_view.py:580
+#: src/big_remote_play/ui/host_view.py:587
 msgid "Default microphone"
 msgstr "Zadani mikrofon"
 
@@ -2362,7 +2349,7 @@ msgid "Delete this saved network"
 msgstr "Izbriši ovu spremljenu mrežu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:1369
+#: src/big_remote_play/ui/host_view.py:1376
 msgid "Detailed Logs"
 msgstr "Detaljni dnevnici"
 
@@ -2376,11 +2363,11 @@ msgid "Device ID"
 msgstr "ID uređaja"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:2051
+#: src/big_remote_play/ui/host_view.py:2058
 msgid "Device Name"
 msgstr "Naziv uređaja"
 
-#: src/big_remote_play/ui/network_dashboard.py:258
+#: src/big_remote_play/ui/network_dashboard.py:266
 msgid ""
 "Device approval is enabled for this tailnet. It is done in the admin console."
 msgstr ""
@@ -2400,7 +2387,7 @@ msgid "Device at {address}"
 msgstr "Uređaj na adresi {address}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:3356
+#: src/big_remote_play/ui/host_view.py:3363
 msgid "Device enabled"
 msgstr "Uređaj omogućen"
 
@@ -2420,7 +2407,7 @@ msgstr "Uređaji"
 msgid "Devices online now: {count}"
 msgstr "Uređaji trenutačno na mreži: {count}"
 
-#: src/big_remote_play/ui/host_view.py:3292
+#: src/big_remote_play/ui/host_view.py:3299
 msgid ""
 "Devices paired with Sunshine. Disable to block access without re-pairing; "
 "remove to revoke (a new PIN will be required)."
@@ -2429,12 +2416,12 @@ msgstr ""
 "ponovnog uparivanja; uklonite ih da biste opozvali pristup (bit će potreban "
 "novi PIN)."
 
-#: src/big_remote_play/ui/host_view.py:2118
+#: src/big_remote_play/ui/host_view.py:2125
 msgid "Devices playing on this computer at this moment."
 msgstr "Uređaji koji upravo igraju na ovom računalu."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:3425
+#: src/big_remote_play/ui/host_view.py:3432
 msgid "Devices updated"
 msgstr "Uređaji ažurirani"
 
@@ -2476,11 +2463,11 @@ msgstr ""
 "internetu."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 576
-#: src/big_remote_play/ui/main_window.py:1536
+#: src/big_remote_play/ui/main_window.py:1539
 msgid "Disable"
 msgstr "Onemogući"
 
-#: src/big_remote_play/ui/host_view.py:2186
+#: src/big_remote_play/ui/host_view.py:2193
 msgid "Disable or remove devices that should no longer connect."
 msgstr ""
 "Onemogućite ili uklonite uređaje koji se više ne bi trebali povezivati."
@@ -2498,19 +2485,11 @@ msgstr ""
 msgid "Disabled"
 msgstr "Onemogućeno"
 
-#: src/big_remote_play/ui/network_dashboard.py:451
+#: src/big_remote_play/ui/network_dashboard.py:459
 msgid "Disconnect"
 msgstr "Prekini vezu"
 
-# #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 325
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 159
-#: src/big_remote_play/ui/performance_monitor.py:562
-msgid "Disconnect Guest"
-msgstr "Prekini vezu s gostom"
-
-#: src/big_remote_play/ui/network_dashboard.py:324
+#: src/big_remote_play/ui/network_dashboard.py:332
 msgid "Disconnect every ZeroTier network on this computer"
 msgstr "Prekini vezu sa svim ZeroTier mrežama na ovom računalu"
 
@@ -2518,15 +2497,16 @@ msgstr "Prekini vezu sa svim ZeroTier mrežama na ovom računalu"
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 325
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 159
+#: src/big_remote_play/ui/performance_monitor.py:562
 #: src/big_remote_play/ui/performance_monitor.py:812
 msgid "Disconnect guest"
 msgstr "Prekini vezu s gostom"
 
-#: src/big_remote_play/ui/network_dashboard.py:326
+#: src/big_remote_play/ui/network_dashboard.py:334
 msgid "Disconnect temporarily"
 msgstr "Privremeno prekini vezu"
 
-#: src/big_remote_play/ui/network_dashboard.py:449
+#: src/big_remote_play/ui/network_dashboard.py:457
 msgid "Disconnect temporarily?"
 msgstr "Privremeno prekinuti vezu?"
 
@@ -2545,11 +2525,9 @@ msgstr "Prekini ovu specifičnu gostujuću vezu (Admin)"
 msgid "Disconnected"
 msgstr "Prekinuto"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 883
-#: src/big_remote_play/ui/network_dashboard.py:455
-msgid "Disconnecting..."
-msgstr "Prekidanje veze..."
+#: src/big_remote_play/ui/network_dashboard.py:463
+msgid "Disconnecting…"
+msgstr "Prekidanje veze…"
 
 #: src/big_remote_play/ui/guest_view.py:510
 msgid "Discover game PCs automatically"
@@ -2565,7 +2543,7 @@ msgstr ""
 "Prikazuje kašnjenje, brzinu kadrova i podatke o dekodiranju preko prijenosa."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1443
-#: src/big_remote_play/ui/host_view.py:4156
+#: src/big_remote_play/ui/host_view.py:4165
 msgid "Do you want to restore default settings?"
 msgstr "Želite li vratiti zadane postavke?"
 
@@ -2576,7 +2554,7 @@ msgstr "Želite li vratiti zadane postavke?"
 msgid "Domain"
 msgstr "Domena"
 
-#: src/big_remote_play/ui/host_view.py:612
+#: src/big_remote_play/ui/host_view.py:619
 msgid "Domain, router ports and security precautions."
 msgstr "Domena, priključci usmjerivača i sigurnosne mjere."
 
@@ -2584,11 +2562,9 @@ msgstr "Domena, priključci usmjerivača i sigurnosne mjere."
 msgid "Done"
 msgstr "Gotovo"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 77
 #: src/big_remote_play/ui/installer_window.py:123
-msgid "Done! Press Enter to close..."
-msgstr "Gotovo! Pritisnite Enter za zatvaranje..."
+msgid "Done. Press Enter to close."
+msgstr "Gotovo! Pritisnite Enter za zatvaranje."
 
 #: src/big_remote_play/ui/network_devices.py:441
 msgid ""
@@ -2625,14 +2601,12 @@ msgstr "Uredi prilagođenu razlučivost"
 msgid "Edit this saved network"
 msgstr "Uredi ovu spremljenu mrežu"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1796
 #: src/big_remote_play/ui/private_network_view.py:1033
 #, python-brace-format
-msgid "Edit – {}"
-msgstr "Uredi – {}"
+msgid "Edit – {name}"
+msgstr "Uredi – {name}"
 
-#: src/big_remote_play/ui/host_view.py:505
+#: src/big_remote_play/ui/host_view.py:512
 msgid "Efficient video compression"
 msgstr "Učinkovita kompresija videa"
 
@@ -2657,7 +2631,7 @@ msgid "Emulate touchpad as DS4"
 msgstr "Emuliraj touchpad kao DS4"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 576
-#: src/big_remote_play/ui/main_window.py:1536
+#: src/big_remote_play/ui/main_window.py:1539
 msgid "Enable"
 msgstr "Omogući"
 
@@ -2694,11 +2668,11 @@ msgid "Enable YUV 4:4:4"
 msgstr "Omogući YUV 4:4:4"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 273
-#: src/big_remote_play/ui/host_view.py:616
+#: src/big_remote_play/ui/host_view.py:623
 msgid "Enable simultaneous IPv4 and IPv6 support on server"
 msgstr "Omogući istovremenu podršku za IPv4 i IPv6 na poslužitelju"
 
-#: src/big_remote_play/ui/host_view.py:1369
+#: src/big_remote_play/ui/host_view.py:1376
 msgid "Enable verbose logging for debugging"
 msgstr "Omogući opširno zapisivanje za otklanjanje pogrešaka"
 
@@ -2712,7 +2686,7 @@ msgstr ""
 "Omogućavanje ove opcije može spriječiti gubitak okvira tijekom promjena "
 "scena, ali kvaliteta videa može biti smanjena tijekom pokreta."
 
-#: src/big_remote_play/ui/host_view.py:1769
+#: src/big_remote_play/ui/host_view.py:1776
 #, python-brace-format
 msgid "Encoding priority: {value}"
 msgstr "Prioritet kodiranja: {value}"
@@ -2722,8 +2696,8 @@ msgstr "Prioritet kodiranja: {value}"
 msgid "End Game"
 msgstr "Završi igru"
 
-#: src/big_remote_play/ui/host_view.py:827
-#: src/big_remote_play/ui/host_view.py:1662
+#: src/big_remote_play/ui/host_view.py:834
+#: src/big_remote_play/ui/host_view.py:1669
 msgid "End for everyone"
 msgstr "Zaustavi za sve"
 
@@ -2735,7 +2709,7 @@ msgstr ""
 "Želite li blago završiti pokrenutu igru ili prisilno izbaciti mrežnu adresu? "
 "Završetak igre zadržava uređaj uparenim."
 
-#: src/big_remote_play/ui/host_view.py:1658
+#: src/big_remote_play/ui/host_view.py:1665
 msgid "End the stream for everyone?"
 msgstr "Zaustaviti prijenos za sve?"
 
@@ -2744,11 +2718,11 @@ msgstr "Zaustaviti prijenos za sve?"
 msgid "Enter ID"
 msgstr "Unesite ID"
 
-#: src/big_remote_play/ui/host_view.py:850
+#: src/big_remote_play/ui/host_view.py:857
 msgid "Enter Sunshine password"
 msgstr "Unesi Sunshine lozinku"
 
-#: src/big_remote_play/ui/guest_view.py:1922
+#: src/big_remote_play/ui/guest_view.py:1924
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Unesite ŠIRINAxVISINA (npr. 1920x1080):"
 
@@ -2774,8 +2748,8 @@ msgstr "Unesite drugi ID mreže od 16 znakova"
 
 #: src/big_remote_play/ui/guest_view.py:1358
 #: src/big_remote_play/ui/guest_view.py:1675
-#: src/big_remote_play/ui/host_view.py:1927
-#: src/big_remote_play/ui/host_view.py:2088
+#: src/big_remote_play/ui/host_view.py:1934
+#: src/big_remote_play/ui/host_view.py:2095
 msgid "Enter exactly four digits."
 msgstr "Unesite točno četiri znamenke."
 
@@ -2784,7 +2758,7 @@ msgstr "Unesite točno četiri znamenke."
 msgid "Enter frames per second (e.g. 75):"
 msgstr "Unesite broj sličica u sekundi (npr. 75):"
 
-#: src/big_remote_play/ui/host_view.py:1505
+#: src/big_remote_play/ui/host_view.py:1512
 msgid ""
 "Enter it now, so a device is approved the moment you type its code. "
 "Otherwise Moonlight on the device may give up while you type it."
@@ -2807,7 +2781,7 @@ msgstr "Unesite adresu Headscale poslužitelja."
 msgid "Enter the ID on this page and choose Connect."
 msgstr "Unesite ID na ovoj stranici i odaberite Poveži."
 
-#: src/big_remote_play/ui/host_view.py:2036
+#: src/big_remote_play/ui/host_view.py:2043
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr "Unesite PIN koji Moonlight prikazuje na drugom računalu."
 
@@ -2815,15 +2789,15 @@ msgstr "Unesite PIN koji Moonlight prikazuje na drugom računalu."
 msgid "Enter the code here"
 msgstr "Ovdje unesite kod"
 
-#: src/big_remote_play/ui/host_view.py:1509
+#: src/big_remote_play/ui/host_view.py:1516
 msgid ""
 "Enter the current Sunshine user and password, so devices can be approved."
 msgstr ""
 "Unesite trenutačnog Sunshine korisnika i lozinku kako bi se uređaji mogli "
 "odobravati."
 
-#: src/big_remote_play/ui/host_view.py:891
-#: src/big_remote_play/ui/host_view.py:2048
+#: src/big_remote_play/ui/host_view.py:898
+#: src/big_remote_play/ui/host_view.py:2055
 msgid "Enter the four digits shown by Moonlight on the other computer."
 msgstr "Unesite četiri znamenke koje Moonlight prikazuje na drugom računalu."
 
@@ -2859,8 +2833,8 @@ msgstr "Unos ažuriran"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1246
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 550
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 578
-#: src/big_remote_play/ui/host_view.py:2350
-#: src/big_remote_play/ui/host_view.py:3024
+#: src/big_remote_play/ui/host_view.py:2357
+#: src/big_remote_play/ui/host_view.py:3031
 msgid "Error"
 msgstr "Greška"
 
@@ -2869,50 +2843,36 @@ msgstr "Greška"
 msgid "Error Clearing"
 msgstr "Greška pri čišćenju"
 
-#: src/big_remote_play/ui/host_view.py:1770
+#: src/big_remote_play/ui/host_view.py:1777
 #, python-brace-format
 msgid "Error correction: {value}%"
 msgstr "Ispravljanje pogrešaka: {value}%"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 561
-#: src/big_remote_play/ui/main_window.py:1521
+#: src/big_remote_play/ui/main_window.py:1524
 #, python-brace-format
-msgid "Error executing command: {}"
-msgstr "Greška prilikom izvršavanja naredbe: {}"
+msgid "Error executing command: {error}"
+msgstr "Greška prilikom izvršavanja naredbe: {error}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 807
-#: src/big_remote_play/ui/host_view.py:2374
+#: src/big_remote_play/ui/host_view.py:2381
 #, python-brace-format
-msgid "Error executing script: {}"
-msgstr "Greška prilikom izvršavanja skripte: {}"
+msgid "Error executing script: {error}"
+msgstr "Greška prilikom izvršavanja skripte: {error}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1403
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1435
-#: src/big_remote_play/ui/host_view.py:3064
-#: src/big_remote_play/ui/host_view.py:3096
+#: src/big_remote_play/ui/host_view.py:3071
+#: src/big_remote_play/ui/host_view.py:3103
 #, python-brace-format
-msgid "Error launching game: {}"
-msgstr "Greška prilikom pokretanja igre: {}"
+msgid "Error launching game: {error}"
+msgstr "Greška prilikom pokretanja igre: {error}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 255
 #: src/big_remote_play/ui/preferences.py:253
 #, python-brace-format
-msgid "Error restoring: {}"
-msgstr "Greška prilikom vraćanja: {}"
+msgid "Error restoring: {error}"
+msgstr "Greška prilikom vraćanja: {error}"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 109
-#: src/big_remote_play/host/sunshine_manager.py:289
-#, python-brace-format
-msgid "Error starting Sunshine: {}"
-msgstr "Greška pri pokretanju Sunshine: {}"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 91
 #: src/big_remote_play/ui/installer_window.py:158
 #, python-brace-format
-msgid "Error: {}"
-msgstr "Greška: {}"
+msgid "Error: {error}"
+msgstr "Greška: {error}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 555
@@ -2920,7 +2880,7 @@ msgstr "Greška: {}"
 msgid "Establish Connection"
 msgstr "Uspostavi vezu"
 
-#: src/big_remote_play/ui/network_dashboard.py:447
+#: src/big_remote_play/ui/network_dashboard.py:455
 msgid ""
 "Every ZeroTier network on this computer will disconnect. Saved network "
 "memberships are kept."
@@ -2932,7 +2892,7 @@ msgstr ""
 msgid "Every device on the network, approvals and removal."
 msgstr "Svi uređaji na mreži, odobravanje i uklanjanje."
 
-#: src/big_remote_play/ui/host_view.py:1659
+#: src/big_remote_play/ui/host_view.py:1666
 msgid ""
 "Every device playing now is disconnected. Then start pairing again on the "
 "new device and enter its code here. Devices already paired can reconnect "
@@ -2968,9 +2928,14 @@ msgid "Excellent"
 msgstr "Izvrsno"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:2361
+#: src/big_remote_play/ui/host_view.py:2368
 msgid "Execution failed or cancelled."
 msgstr "Izvršenje je neuspjelo ili otkazano."
+
+#: src/big_remote_play/host/sunshine_manager.py:278
+#, python-brace-format
+msgid "Exit code {code}"
+msgstr "Izlazni kod {code}"
 
 #: src/big_remote_play/ui/sunshine_preferences.py:98
 msgid ""
@@ -3009,11 +2974,15 @@ msgid "Failed to connect. Verify if Moonlight is paired."
 msgstr "Povezivanje nije uspjelo. Provjerite je li Moonlight uparen."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1154
-#: src/big_remote_play/ui/host_view.py:3383
+#: src/big_remote_play/ui/host_view.py:3390
 msgid "Failed to update device"
 msgstr "Ažuriranje uređaja nije uspjelo"
 
-#: src/big_remote_play/ui/host_view.py:512
+#: src/big_remote_play/ui/sunshine_preferences.py:655
+msgid "Fast decoding"
+msgstr "Brzo dekodiranje"
+
+#: src/big_remote_play/ui/host_view.py:519
 msgid "Faster response, or better picture"
 msgstr "Brži odziv ili bolja slika"
 
@@ -3024,6 +2993,15 @@ msgstr "Favorit"
 #: src/big_remote_play/ui/private_network_view.py:1092
 msgid "Fill in the form"
 msgstr "Ispunite obrazac"
+
+#. TRANSLATORS: x264 tuning presets for kinds of picture.
+#: src/big_remote_play/ui/sunshine_preferences.py:651
+msgid "Film"
+msgstr "Film"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:653
+msgid "Film grain"
+msgstr "Filmsko zrno"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1291
@@ -3050,13 +3028,13 @@ msgid ""
 "Finish or cancel the package transaction in the terminal before closing."
 msgstr "Dovršite ili otkažite instalaciju u terminalu prije zatvaranja."
 
-#: src/big_remote_play/ui/network_dashboard.py:214
+#: src/big_remote_play/ui/network_dashboard.py:222
 msgid "Finish signing in"
 msgstr "Dovršite prijavu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:2327
-#: src/big_remote_play/ui/host_view.py:2361
+#: src/big_remote_play/ui/host_view.py:2334
+#: src/big_remote_play/ui/host_view.py:2368
 msgid "Firewall Error"
 msgstr "Pogreška vatrozida"
 
@@ -3078,7 +3056,7 @@ msgstr "Popravi"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 302
-#: src/big_remote_play/ui/host_view.py:3241
+#: src/big_remote_play/ui/host_view.py:3248
 msgid "Fix Dependencies"
 msgstr "Popravi ovisnosti"
 
@@ -3092,7 +3070,7 @@ msgstr ""
 "Debian/Ubuntu, koji instalira systemd uslugu. Konfiguraciju držite u /etc/"
 "headscale/config.yaml i postavite server_url na svoju https adresu."
 
-#: src/big_remote_play/ui/main_window.py:116
+#: src/big_remote_play/ui/main_window.py:119
 msgid "For PCs in different houses"
 msgstr "Za računala u različitim domovima"
 
@@ -3116,11 +3094,11 @@ msgstr ""
 "Za administratore koji žele pokrenuti vlastiti VPN. Ovo je odvojeno od "
 "izravnog igranja preko interneta putem javne domene."
 
-#: src/big_remote_play/ui/main_window.py:839
+#: src/big_remote_play/ui/main_window.py:842
 msgid "For computers in different houses. Not needed on the same home network."
 msgstr "Za računala u različitim kućama. Nije potrebno na istoj kućnoj mreži."
 
-#: src/big_remote_play/ui/host_view.py:604
+#: src/big_remote_play/ui/host_view.py:611
 msgid "For direct internet access only"
 msgstr "Samo za izravan pristup preko interneta"
 
@@ -3128,7 +3106,7 @@ msgstr "Samo za izravan pristup preko interneta"
 msgid "For example: 192.168.1.20 or gaming-pc.local"
 msgstr "Na primjer: 192.168.1.20 ili gaming-pc.local"
 
-#: src/big_remote_play/ui/host_view.py:1072
+#: src/big_remote_play/ui/host_view.py:1079
 msgid "For games that are not listed, such as emulators."
 msgstr "Za igre koje nisu na popisu, primjerice emulatore."
 
@@ -3152,20 +3130,17 @@ msgstr "Prisili određenu metodu snimanja"
 msgid "Forced"
 msgstr "Prisiljen"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1772
-# line: 1787
 #: src/big_remote_play/ui/private_network_view.py:999
 #: src/big_remote_play/ui/private_network_view.py:1005
 #, python-brace-format
-msgid "Form filled for {}"
-msgstr "Obrazac ispunjen za {}"
+msgid "Form filled for {name}"
+msgstr "Obrazac ispunjen za {name}"
 
 # #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 90
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 96
-#: src/big_remote_play/ui/host_view.py:399
+#: src/big_remote_play/ui/host_view.py:406
 msgid "Frame Rate (FPS)"
 msgstr "Brzina okvira (FPS)"
 
@@ -3178,13 +3153,13 @@ msgid "Frame rate"
 msgstr "Brzina kadrova"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 182
-#: src/big_remote_play/ui/host_view.py:400
+#: src/big_remote_play/ui/host_view.py:407
 msgid "Frames per second"
 msgstr "Okviri po sekundi"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 133
-#: src/big_remote_play/ui/host_view.py:330
-#: src/big_remote_play/ui/host_view.py:2461
+#: src/big_remote_play/ui/host_view.py:337
+#: src/big_remote_play/ui/host_view.py:2468
 msgid "Full Desktop"
 msgstr "Cijela radna površina"
 
@@ -3196,8 +3171,8 @@ msgstr "Cijela radna površina"
 msgid "Fullscreen"
 msgstr "Cijeli zaslon"
 
-#: src/big_remote_play/ui/host_view.py:688
-#: src/big_remote_play/ui/host_view.py:3532
+#: src/big_remote_play/ui/host_view.py:695
+#: src/big_remote_play/ui/host_view.py:3539
 msgid "Game Library"
 msgstr "Biblioteka igara"
 
@@ -3212,48 +3187,50 @@ msgstr "Računalo za igranje i veza"
 
 #: src/big_remote_play/ui/guest_view.py:1710
 #, python-brace-format
-msgid "Game PC found: {}"
-msgstr "Pronađeno računalo za igranje: {}"
+msgid "Game PC found: {name}"
+msgstr "Pronađeno računalo za igranje: {name}"
 
 #: src/big_remote_play/ui/guest_view.py:1718
 msgid "Game PC not found"
 msgstr "Računalo za igranje nije pronađeno"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 137
-#: src/big_remote_play/ui/host_view.py:339
+#: src/big_remote_play/ui/host_view.py:346
 msgid "Game Selection"
 msgstr "Odabir igre"
 
-#: src/big_remote_play/ui/host_view.py:330
-#: src/big_remote_play/ui/host_view.py:1467
-#: src/big_remote_play/ui/host_view.py:2453
+#. TRANSLATORS: Generic application category shown by app menus and software centers.
+#: build-aux/i18n/br.com.biglinux.remoteplay.desktop.in:4
+msgid "Game Streaming"
+msgstr "Strujanje igara"
+
+#: src/big_remote_play/ui/host_view.py:337
+#: src/big_remote_play/ui/host_view.py:1065
+#: src/big_remote_play/ui/host_view.py:1474
+#: src/big_remote_play/ui/host_view.py:2460
 msgid "Game Window"
 msgstr "Prozor igre"
 
-#: src/big_remote_play/ui/host_view.py:1163
+#: src/big_remote_play/ui/host_view.py:1170
 msgid "Game Window is not available here"
 msgstr "Prozor igre ovdje nije dostupan"
 
-#: src/big_remote_play/ui/host_view.py:2453
+#: src/big_remote_play/ui/host_view.py:2460
 #, python-brace-format
 msgid "Game Window: {game}"
 msgstr "Prozor igre: {game}"
 
-#: src/big_remote_play/ui/host_view.py:1058
-msgid "Game window"
-msgstr "Prozor igre"
-
 #. TRANSLATORS: Gamer is the proper name of the violet/cyan appearance preset.
-#: src/big_remote_play/ui/main_window.py:679
+#: src/big_remote_play/ui/main_window.py:682
 msgid "Gamer"
 msgstr "Gamer"
 
-#: src/big_remote_play/ui/host_view.py:3625
+#: src/big_remote_play/ui/host_view.py:3632
 #, python-brace-format
-msgid "Games added: {}"
-msgstr "Dodano igara: {}"
+msgid "Games added: {count}"
+msgstr "Dodano igara: {count}"
 
-#: src/big_remote_play/ui/host_view.py:3532
+#: src/big_remote_play/ui/host_view.py:3539
 msgid ""
 "Games shown on the other computer in Moonlight. Add detected games or remove "
 "entries."
@@ -3261,7 +3238,7 @@ msgstr ""
 "Igre prikazane u Moonlightu na drugom računalu. Dodajte otkrivene igre ili "
 "uklonite stavke."
 
-#: src/big_remote_play/ui/network_dashboard.py:392
+#: src/big_remote_play/ui/network_dashboard.py:400
 msgid "Gaming network"
 msgstr "Mreža za igranje"
 
@@ -3295,11 +3272,11 @@ msgstr ""
 "Jednokratno odobrite pristup za čitanje mreža postavljenih u usluzi ZeroTier."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 202
-#: src/big_remote_play/ui/host_view.py:448
+#: src/big_remote_play/ui/host_view.py:455
 msgid "Graphics Card / Encoder"
 msgstr "Grafička kartica / koder"
 
-#: src/big_remote_play/ui/host_view.py:1766
+#: src/big_remote_play/ui/host_view.py:1773
 #, python-brace-format
 msgid "Graphics card: {value}"
 msgstr "Grafička kartica: {value}"
@@ -3310,20 +3287,20 @@ msgstr "Grafička kartica: {value}"
 #: src/big_remote_play/ui/guided_setup.py:176
 #: src/big_remote_play/ui/guided_setup.py:247
 #: src/big_remote_play/ui/guided_setup.py:288
-#: src/big_remote_play/ui/main_window.py:968
+#: src/big_remote_play/ui/main_window.py:971
 msgid "Guided setup"
 msgstr "Vođeno postavljanje"
 
-#: src/big_remote_play/ui/host_view.py:1719
+#: src/big_remote_play/ui/host_view.py:1726
 msgid "HDR screen: colors will look washed out on devices without HDR"
 msgstr "HDR zaslon: boje će na uređajima bez HDR-a izgledati izblijedjelo"
 
-#: src/big_remote_play/ui/host_view.py:1718
+#: src/big_remote_play/ui/host_view.py:1725
 msgid "HDR screen: shared in SDR"
 msgstr "HDR zaslon: dijeli se u SDR-u"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 188
-#: src/big_remote_play/ui/host_view.py:420
+#: src/big_remote_play/ui/host_view.py:427
 msgid "Hardware and Capture"
 msgstr "Hardver i snimanje"
 
@@ -3355,18 +3332,18 @@ msgstr "Headscale koristi običan Tailscale klijent."
 msgid "Hidden. Use Copy."
 msgstr "Skriveno. Koristite Kopiraj."
 
-#: src/big_remote_play/ui/host_view.py:2395
-#: src/big_remote_play/ui/host_view.py:2422
+#: src/big_remote_play/ui/host_view.py:2402
+#: src/big_remote_play/ui/host_view.py:2429
 #, python-brace-format
-msgid "Hide {}"
-msgstr "Sakrij {}"
+msgid "Hide {field}"
+msgstr "Sakrij {field}"
 
 #: src/big_remote_play/ui/network_common.py:195
 msgid "High"
 msgstr "Visoko"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 249
-#: src/big_remote_play/ui/host_view.py:516
+#: src/big_remote_play/ui/host_view.py:523
 msgid "High Quality (Best Image)"
 msgstr "Visoka kvaliteta (Najbolja slika)"
 
@@ -3404,16 +3381,16 @@ msgstr ""
 "ovu funkciju."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 54
-#: src/big_remote_play/ui/main_window.py:118
-#: src/big_remote_play/ui/main_window.py:668
-#: src/big_remote_play/ui/main_window.py:1018
-#: src/big_remote_play/ui/main_window.py:1042
-#: src/big_remote_play/ui/main_window.py:1044
+#: src/big_remote_play/ui/main_window.py:121
+#: src/big_remote_play/ui/main_window.py:671
+#: src/big_remote_play/ui/main_window.py:1021
+#: src/big_remote_play/ui/main_window.py:1045
+#: src/big_remote_play/ui/main_window.py:1047
 msgid "Home"
 msgstr "Početna"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 56
-#: src/big_remote_play/ui/main_window.py:118
+#: src/big_remote_play/ui/main_window.py:121
 msgid "Home Page"
 msgstr "Početna stranica"
 
@@ -3431,11 +3408,10 @@ msgstr "Vrijeme držanja tipke Home/Guide (ms)"
 msgid "Host"
 msgstr "Domaćin"
 
-# File: big-remote-play/usr/share/big-remote-play/utils/network.py, line: 156
 #: src/big_remote_play/utils/network.py:213
 #, python-brace-format
-msgid "Host ({})"
-msgstr "Domaćin ({})"
+msgid "Host ({address})"
+msgstr "Domaćin ({address})"
 
 #: src/big_remote_play/ui/connection_guides.py:136
 msgid "Host a Headscale VPN server"
@@ -3463,11 +3439,10 @@ msgstr "Kako odobriti"
 msgid "How to create a free network, step by step."
 msgstr "Kako stvoriti besplatnu mrežu, korak po korak."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 266
 #: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
-msgid "How to install {}"
-msgstr "Kako instalirati {}"
+msgid "How to install {name}"
+msgstr "Kako instalirati {name}"
 
 #: src/big_remote_play/ui/private_network_view.py:732
 msgid "How to run Headscale on your own server, step by step."
@@ -3490,7 +3465,7 @@ msgstr "Nemam kod"
 msgid "I don't have a server yet"
 msgstr "Još nemam poslužitelj"
 
-#: src/big_remote_play/ui/host_view.py:3769
+#: src/big_remote_play/ui/host_view.py:3776
 msgid "I forgot the current password"
 msgstr "Zaboravio/la sam trenutačnu lozinku"
 
@@ -3532,13 +3507,8 @@ msgstr "IPv6"
 msgid "IPv6 only"
 msgstr "Samo IPv6"
 
-# File: big-remote-play/usr/share/big-remote-play/main.py, line: 54
-#: src/big_remote_play/app.py:123
-msgid "Icon and image paths added"
-msgstr "Dodane putanje ikona i slika"
-
-#: src/big_remote_play/ui/host_view.py:433
 #: src/big_remote_play/ui/host_view.py:440
+#: src/big_remote_play/ui/host_view.py:447
 msgid "Identify monitors"
 msgstr "Identificiraj monitore"
 
@@ -3556,13 +3526,13 @@ msgstr ""
 msgid "Image"
 msgstr "Slika"
 
-#: src/big_remote_play/ui/host_view.py:962
-#: src/big_remote_play/ui/host_view.py:1007
-#: src/big_remote_play/ui/host_view.py:1017
+#: src/big_remote_play/ui/host_view.py:969
+#: src/big_remote_play/ui/host_view.py:1014
+#: src/big_remote_play/ui/host_view.py:1024
 msgid "Image and capture"
 msgstr "Slika i snimanje"
 
-#: src/big_remote_play/ui/host_view.py:1002
+#: src/big_remote_play/ui/host_view.py:1009
 msgid "Image and capture settings are on Overview, next to Start sharing."
 msgstr ""
 "Postavke slike i snimanja nalaze se na Pregledu, pokraj mogućnosti Pokreni "
@@ -3600,7 +3570,7 @@ msgstr ""
 "U Big Remote Playu odaberite Headscale → Pridruži se mreži i unesite adresu "
 "poslužitelja ili pokrenite naredbu u nastavku."
 
-#: src/big_remote_play/ui/host_view.py:921
+#: src/big_remote_play/ui/host_view.py:928
 msgid ""
 "In Big Remote Play on the other PC, choose Find by code. This is not the "
 "pairing code."
@@ -3647,7 +3617,7 @@ msgid "In use now"
 msgstr "Trenutačno u upotrebi"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 890
-#: src/big_remote_play/ui/host_view.py:2512
+#: src/big_remote_play/ui/host_view.py:2519
 msgid "Inactive"
 msgstr "Neaktivan"
 
@@ -3672,18 +3642,18 @@ msgid "Input"
 msgstr "Ulaz"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 256
-#: src/big_remote_play/ui/host_view.py:596
+#: src/big_remote_play/ui/host_view.py:603
 msgid "Input, Network, and Access"
 msgstr "Ulaz, Mreža i Pristup"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 569
-#: src/big_remote_play/ui/host_view.py:2036
+#: src/big_remote_play/ui/host_view.py:2043
 msgid "Insert PIN"
 msgstr "Unesite PIN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 464
 #: src/big_remote_play/ui/installer_window.py:78
-#: src/big_remote_play/ui/main_window.py:1141
+#: src/big_remote_play/ui/main_window.py:1144
 #: src/big_remote_play/ui/network_common.py:158
 #: src/big_remote_play/ui/remote_connection.py:68
 msgid "Install"
@@ -3716,25 +3686,24 @@ msgstr "Instalirajte samo komponente potrebne za vaš zadatak."
 #, python-brace-format
 msgid ""
 "Install these packages with your distribution's tools:\n"
-"{}"
+"{packages}"
 msgstr ""
 "Instalirajte ove pakete alatima svoje distribucije:\n"
-"{}"
+"{packages}"
 
-#: src/big_remote_play/ui/host_view.py:1165
+#: src/big_remote_play/ui/host_view.py:1172
 #, python-brace-format
 msgid "Install these packages, then open Big Remote Play again: {packages}"
 msgstr ""
 "Instalirajte ove pakete, a zatim ponovno otvorite Big Remote Play: {packages}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 464
-#: src/big_remote_play/ui/main_window.py:1130
-#: src/big_remote_play/ui/main_window.py:1139
+#: src/big_remote_play/ui/main_window.py:1133
+#: src/big_remote_play/ui/main_window.py:1142
 #: src/big_remote_play/ui/private_network_view.py:458
 #: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
-msgid "Install {}"
-msgstr "Instaliraj {}"
+msgid "Install {name}"
+msgstr "Instaliraj {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
@@ -3757,18 +3726,16 @@ msgstr "Instalacija je uspješno završena!"
 msgid "Installation failed. Check the log."
 msgstr "Instalacija nije uspjela. Provjerite zapisnik."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 124
 #: src/big_remote_play/ui/installer_window.py:198
 #, python-brace-format
-msgid "Installation failed. Exit code: {}"
-msgstr "Instalacija nije uspjela. Izlazni kod: {}"
+msgid "Installation failed. Exit code: {code}"
+msgstr "Instalacija nije uspjela. Izlazni kod: {code}"
 
 #: usr/share/big-remote-play/scripts/install-vpn.sh:69
 msgid "Installation finished."
 msgstr "Instalacija je dovršena."
 
-#: src/big_remote_play/ui/main_window.py:1138
+#: src/big_remote_play/ui/main_window.py:1141
 #: src/big_remote_play/ui/network_common.py:145
 msgid "Installation needed"
 msgstr "Potrebna je instalacija"
@@ -3778,24 +3745,14 @@ msgstr "Potrebna je instalacija"
 msgid "Installing ${pkg}…"
 msgstr "Instalira se ${pkg}…"
 
-# #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 89
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1077
 #: src/big_remote_play/ui/installer_window.py:153
 #, python-brace-format
-msgid "Installing {}..."
-msgstr "Instaliranje {}..."
+msgid "Installing {packages}…"
+msgstr "Instaliranje {packages}…"
 
-# #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 89
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1077
 #: src/big_remote_play/ui/private_network_view.py:472
-msgid "Installing..."
-msgstr "Instaliranje..."
+msgid "Installing…"
+msgstr "Instaliranje…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 83
@@ -3818,7 +3775,7 @@ msgid "Internet protocols"
 msgstr "Internetski protokoli"
 
 #: src/big_remote_play/ui/connection_guides.py:228
-#: src/big_remote_play/ui/network_dashboard.py:319
+#: src/big_remote_play/ui/network_dashboard.py:327
 #: src/big_remote_play/ui/remote_connection.py:270
 msgid "Internet, router and firewall"
 msgstr "Internet, usmjerivač i vatrozid"
@@ -3833,13 +3790,13 @@ msgid "Invalid IP address: ${ip}"
 msgstr "Neispravna IP adresa: ${ip}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 704
-#: src/big_remote_play/ui/host_view.py:2088
+#: src/big_remote_play/ui/host_view.py:2095
 msgid "Invalid PIN"
 msgstr "Nevažeći PIN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 352
-#: src/big_remote_play/ui/guest_view.py:1912
+#: src/big_remote_play/ui/guest_view.py:1914
 msgid "Invalid Resolution"
 msgstr "Nevaljana razlučivost"
 
@@ -3851,8 +3808,8 @@ msgstr "Neispravna adresa"
 msgid "Invalid code"
 msgstr "Nevažeći kod"
 
-#: src/big_remote_play/ui/host_view.py:3074
-#: src/big_remote_play/ui/host_view.py:3087
+#: src/big_remote_play/ui/host_view.py:3081
+#: src/big_remote_play/ui/host_view.py:3094
 msgid "Invalid launch command"
 msgstr "Nevaljana naredba za pokretanje"
 
@@ -3861,8 +3818,8 @@ msgid "Invalid port"
 msgstr "Neispravan priključak"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1641
-#: src/big_remote_play/ui/host_view.py:2009
+#: src/big_remote_play/ui/host_view.py:1648
+#: src/big_remote_play/ui/host_view.py:2016
 msgid "Invalid username or password."
 msgstr "Nevažeće korisničko ime ili lozinka."
 
@@ -3889,7 +3846,7 @@ msgstr ""
 "Odgovara na mreži, ali ne na Sunshineovu priključku. Na računalu s igrom "
 "otvorite Dijeli i odaberite Dopusti u vatrozidu."
 
-#: src/big_remote_play/ui/host_view.py:1169
+#: src/big_remote_play/ui/host_view.py:1176
 msgid ""
 "It cannot see other apps' windows from inside the Flatpak sandbox. Use the "
 "native package."
@@ -3912,7 +3869,7 @@ msgstr ""
 "Prikazuje se samo sada i ne sprema se. Spremite ga u datoteku navedenu u "
 "naredbi, pokrenite naredbu, a zatim izbrišite datoteku."
 
-#: src/big_remote_play/ui/host_view.py:1170
+#: src/big_remote_play/ui/host_view.py:1177
 msgid ""
 "It needs KDE Plasma on Wayland, or an X11 desktop with window effects "
 "(compositing) on."
@@ -3920,7 +3877,7 @@ msgstr ""
 "Potreban je KDE Plasma na Waylandu ili X11 radna površina s uključenim "
 "efektima prozora (kompozicijom)."
 
-#: src/big_remote_play/ui/host_view.py:1167
+#: src/big_remote_play/ui/host_view.py:1174
 #, python-brace-format
 msgid ""
 "It needs Sunshine {version} or newer, which can capture the private game "
@@ -3965,7 +3922,7 @@ msgstr "Pridruži se ZeroTier mreži"
 msgid "Join again to send a new request."
 msgstr "Ponovno se pridružite kako biste poslali novi zahtjev."
 
-#: src/big_remote_play/ui/network_dashboard.py:218
+#: src/big_remote_play/ui/network_dashboard.py:226
 msgid "Join an existing network or sign in."
 msgstr "Pridružite se postojećoj mreži ili se prijavite."
 
@@ -3996,7 +3953,7 @@ msgid "Joining the network…"
 msgstr "Pridruživanje mreži…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 214
-#: src/big_remote_play/ui/host_view.py:462
+#: src/big_remote_play/ui/host_view.py:469
 msgid "KMS (Direct)"
 msgstr "KMS (Izravno)"
 
@@ -4008,7 +3965,7 @@ msgstr "Drži unos kontrolera aktivnim u pozadini"
 msgid "Keep history"
 msgstr "Čuvaj povijest"
 
-#: src/big_remote_play/ui/host_view.py:606
+#: src/big_remote_play/ui/host_view.py:613
 msgid ""
 "Keep off for local play or a VPN. UPnP must be enabled on the router; it "
 "does not bypass CGNAT, double NAT or the computer’s firewall. Restart "
@@ -4018,7 +3975,7 @@ msgstr ""
 "usmjerivaču; ne zaobilazi CGNAT, dvostruki NAT ni vatrozid računala. Ponovno "
 "pokrenite dijeljenje i ispitajte iz druge mreže."
 
-#: src/big_remote_play/ui/host_view.py:622
+#: src/big_remote_play/ui/host_view.py:629
 msgid ""
 "Keep off for normal play. If enabled together with UPnP, Sunshine may also "
 "open the administration port on the router."
@@ -4026,7 +3983,7 @@ msgstr ""
 "Ostavite isključeno za uobičajeno igranje. Ako je omogućeno zajedno s UPnP-"
 "om, Sunshine može otvoriti i administracijski priključak na usmjerivaču."
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1026
 msgid ""
 "Keep router port forwarding off when using a VPN. Changes apply when sharing "
 "starts again."
@@ -4034,7 +3991,7 @@ msgstr ""
 "Kada koristite VPN, prosljeđivanje priključaka na usmjerivaču ostavite "
 "isključeno. Promjene se primjenjuju pri ponovnom pokretanju dijeljenja."
 
-#: src/big_remote_play/ui/network_dashboard.py:326
+#: src/big_remote_play/ui/network_dashboard.py:334
 msgid "Keep saved accounts so you can reconnect without signing in again"
 msgstr ""
 "Zadrži spremljene račune kako biste se mogli ponovno povezati bez ponovne "
@@ -4044,11 +4001,11 @@ msgstr ""
 msgid "Keep this screen active during streaming"
 msgstr "Drži ovaj zaslon aktivnim tijekom prijenosa"
 
-#: src/big_remote_play/ui/host_view.py:492
+#: src/big_remote_play/ui/host_view.py:499
 msgid "Keep this screen's resolution"
 msgstr "Zadrži razlučivost ovog zaslona"
 
-#: src/big_remote_play/ui/host_view.py:384
+#: src/big_remote_play/ui/host_view.py:391
 msgid "Keeps your screen choice and video bitrate ceiling."
 msgstr "Zadržava vaš odabir zaslona i gornju granicu brzine prijenosa videa."
 
@@ -4089,18 +4046,15 @@ msgstr "Kašnjenje"
 
 #: src/big_remote_play/ui/performance_monitor.py:149
 #, python-brace-format
-msgid "Latency {}, FPS {} (target), bandwidth {} (target)"
-msgstr "Kašnjenje {}, FPS {} (cilj), propusnost {} (cilj)"
+msgid "Latency {latency}, FPS {fps} (target), bandwidth {bandwidth} (target)"
+msgstr "Kašnjenje {latency}, FPS {fps} (cilj), propusnost {bandwidth} (cilj)"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1399
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1431
-#: src/big_remote_play/ui/host_view.py:3060
-#: src/big_remote_play/ui/host_view.py:3079
-#: src/big_remote_play/ui/host_view.py:3092
+#: src/big_remote_play/ui/host_view.py:3067
+#: src/big_remote_play/ui/host_view.py:3086
+#: src/big_remote_play/ui/host_view.py:3099
 #, python-brace-format
-msgid "Launching {}..."
-msgstr "Pokrećem {}..."
+msgid "Launching {game}…"
+msgstr "Pokrećem {game}…"
 
 #: src/big_remote_play/ui/api_access_dialog.py:151
 msgid "Least privilege"
@@ -4170,11 +4124,11 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/host_view.py:3630
+#: src/big_remote_play/ui/host_view.py:3637
 msgid "Library updated"
 msgstr "Biblioteka ažurirana"
 
-#: src/big_remote_play/ui/main_window.py:680
+#: src/big_remote_play/ui/main_window.py:683
 msgid "Light"
 msgstr "Svijetlo"
 
@@ -4190,7 +4144,7 @@ msgstr ""
 msgid "Linux command"
 msgstr "Naredba za Linux"
 
-#: src/big_remote_play/ui/host_view.py:1175
+#: src/big_remote_play/ui/host_view.py:1182
 msgid "Linux native"
 msgstr "Izvorno za Linux"
 
@@ -4211,15 +4165,15 @@ msgstr "Učitavanje povijesti…"
 msgid "Loading networks…"
 msgstr "Učitavanje mreža…"
 
-#: src/big_remote_play/ui/host_view.py:3321
+#: src/big_remote_play/ui/host_view.py:3328
 msgid "Loading paired devices…"
 msgstr "Učitavanje uparenih uređaja…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 712
-#: src/big_remote_play/ui/host_view.py:3284
-#: src/big_remote_play/ui/host_view.py:3474
-#: src/big_remote_play/ui/host_view.py:3520
+#: src/big_remote_play/ui/host_view.py:3291
+#: src/big_remote_play/ui/host_view.py:3481
+#: src/big_remote_play/ui/host_view.py:3527
 msgid "Loading…"
 msgstr "Učitavanje..."
 
@@ -4256,7 +4210,7 @@ msgstr "Poslužitelj za prijavu (ostavite prazno za tailscale.com)"
 msgid "Logs Cleared"
 msgstr "Zapisi očišćeni"
 
-#: src/big_remote_play/ui/host_view.py:1067
+#: src/big_remote_play/ui/host_view.py:1074
 msgid "Look again for open games"
 msgstr "Ponovno potraži otvorene igre"
 
@@ -4272,7 +4226,7 @@ msgstr "Traži se veza koja već radi."
 msgid "Looking for new devices…"
 msgstr "Traženje novih uređaja…"
 
-#: src/big_remote_play/ui/host_view.py:1112
+#: src/big_remote_play/ui/host_view.py:1119
 msgid "Looking for open games…"
 msgstr "Traženje otvorenih igara…"
 
@@ -4282,9 +4236,17 @@ msgid "Lost replies: {percent}%"
 msgstr "Izgubljeni odgovori: {percent}%"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 247
-#: src/big_remote_play/ui/host_view.py:514
+#: src/big_remote_play/ui/host_view.py:521
 msgid "Low Latency (Fastest)"
 msgstr "Niska latencija (najbrže)"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:568
+msgid "Low latency"
+msgstr "Niska latencija"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:567
+msgid "Low latency, high quality"
+msgstr "Niska latencija, visoka kvaliteta"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 310
@@ -4302,7 +4264,7 @@ msgstr "Prilagođava pokret pokazivača radu na radnoj površini, umjesto igrama
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1215
-#: src/big_remote_play/ui/host_view.py:2190
+#: src/big_remote_play/ui/host_view.py:2197
 msgid "Manage"
 msgstr "Upravljaj"
 
@@ -4310,7 +4272,7 @@ msgstr "Upravljaj"
 msgid "Manage accounts and networks"
 msgstr "Upravljaj računima i mrežama"
 
-#: src/big_remote_play/ui/host_view.py:689
+#: src/big_remote_play/ui/host_view.py:696
 msgid "Manage games shown on the other computer"
 msgstr "Upravljaj igrama prikazanim na drugom računalu"
 
@@ -4322,12 +4284,12 @@ msgid "Manage network"
 msgstr "Upravljaj mrežom"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 246
-#: src/big_remote_play/ui/host_view.py:2185
-#: src/big_remote_play/ui/host_view.py:2194
+#: src/big_remote_play/ui/host_view.py:2192
+#: src/big_remote_play/ui/host_view.py:2201
 msgid "Manage paired devices"
 msgstr "Upravljaj uparenim uređajima"
 
-#: src/big_remote_play/ui/host_view.py:1466
+#: src/big_remote_play/ui/host_view.py:1473
 msgid "Manual capture and encoding"
 msgstr "Ručno snimanje i kodiranje"
 
@@ -4345,7 +4307,7 @@ msgstr ""
 "Prilagođava prijenos fizičkoj razlučivosti zaslona koji se koristi za "
 "reprodukciju."
 
-#: src/big_remote_play/ui/host_view.py:412
+#: src/big_remote_play/ui/host_view.py:419
 msgid "Maximum video bitrate (Mbps)"
 msgstr "Najveća brzina prijenosa videa (Mbps)"
 
@@ -4364,11 +4326,11 @@ msgstr "Mjerenja: {count}"
 msgid "Measuring…"
 msgstr "Mjerenje…"
 
-#: src/big_remote_play/ui/host_view.py:550
+#: src/big_remote_play/ui/host_view.py:557
 msgid "Microphone"
 msgstr "Mikrofon"
 
-#: src/big_remote_play/ui/host_view.py:581
+#: src/big_remote_play/ui/host_view.py:588
 msgid "Microphone sent to Sunshine"
 msgstr "Mikrofon poslan u Sunshine"
 
@@ -4405,13 +4367,13 @@ msgstr "Način 2"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 193
 #: src/big_remote_play/ui/host_view.py:244
 #: src/big_remote_play/ui/host_view.py:257
-#: src/big_remote_play/ui/host_view.py:423
-#: src/big_remote_play/ui/host_view.py:1799
+#: src/big_remote_play/ui/host_view.py:430
+#: src/big_remote_play/ui/host_view.py:1806
 msgid "Monitor / Display"
 msgstr "Monitor / Prikaz"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 189
-#: src/big_remote_play/ui/host_view.py:420
+#: src/big_remote_play/ui/host_view.py:427
 msgid "Monitor, GPU, and Capture Method"
 msgstr "Monitor, GPU i Metoda snimanja"
 
@@ -4430,7 +4392,7 @@ msgid "Moonlight internet setup guide"
 msgstr "Vodič za postavljanje Moonlighta preko interneta"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 541
-#: src/big_remote_play/ui/main_window.py:1498
+#: src/big_remote_play/ui/main_window.py:1501
 msgid "Moonlight not found"
 msgstr "Moonlight nije pronađen"
 
@@ -4505,12 +4467,12 @@ msgstr "Naziv na mreži"
 msgid "Name shown in Big Remote Play"
 msgstr "Naziv prikazan u Big Remote Playu"
 
-#: src/big_remote_play/ui/main_window.py:380
-#: src/big_remote_play/ui/main_window.py:639
+#: src/big_remote_play/ui/main_window.py:383
+#: src/big_remote_play/ui/main_window.py:642
 msgid "Navigation"
 msgstr "Navigacija"
 
-#: src/big_remote_play/ui/network_dashboard.py:231
+#: src/big_remote_play/ui/network_dashboard.py:239
 msgid "Needs a ZeroTier API token. Add one under API access."
 msgstr "Potreban je ZeroTier API token. Dodajte ga pod API pristup."
 
@@ -4524,10 +4486,10 @@ msgstr "Potrebna je pažnja"
 msgid "Needs to sign in again"
 msgstr "Potrebna je ponovna prijava"
 
-#: src/big_remote_play/ui/main_window.py:1129
+#: src/big_remote_play/ui/main_window.py:1132
 #, python-brace-format
-msgid "Needs {}"
-msgstr "Zahtijeva {}"
+msgid "Needs {name}"
+msgstr "Zahtijeva {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 77
@@ -4542,7 +4504,7 @@ msgstr "Mreža"
 # line: 1069
 # line: 1666
 #: src/big_remote_play/ui/network_dashboard.py:179
-#: src/big_remote_play/ui/network_dashboard.py:256
+#: src/big_remote_play/ui/network_dashboard.py:264
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
 #: src/big_remote_play/ui/private_network_view.py:974
@@ -4556,12 +4518,12 @@ msgstr "ID mreže"
 msgid "Network ID (16 characters)"
 msgstr "ID mreže (16 znakova)"
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1026
 msgid "Network and access"
 msgstr "Mreža i pristup"
 
 #: src/big_remote_play/ui/network_dashboard.py:179
-#: src/big_remote_play/ui/network_dashboard.py:256
+#: src/big_remote_play/ui/network_dashboard.py:264
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
 #: src/big_remote_play/ui/zerotier_join.py:155
@@ -4574,11 +4536,11 @@ msgstr "Mrežni kod nije pronađen"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 505
-#: src/big_remote_play/ui/network_dashboard.py:434
+#: src/big_remote_play/ui/network_dashboard.py:442
 msgid "Network created"
 msgstr "Mreža je stvorena"
 
-#: src/big_remote_play/ui/main_window.py:1229
+#: src/big_remote_play/ui/main_window.py:1232
 #: src/big_remote_play/ui/network_dashboard.py:68
 #: src/big_remote_play/ui/network_dashboard.py:136
 #: src/big_remote_play/ui/remote_connection.py:519
@@ -4589,7 +4551,7 @@ msgstr "Pojedinosti mreže"
 msgid "Network left"
 msgstr "Mreža napuštena"
 
-#: src/big_remote_play/ui/network_dashboard.py:391
+#: src/big_remote_play/ui/network_dashboard.py:399
 msgid "Network name"
 msgstr "Naziv mreže"
 
@@ -4610,12 +4572,12 @@ msgid "New Central"
 msgstr "New Central"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:3778
+#: src/big_remote_play/ui/host_view.py:3785
 msgid "New Password"
 msgstr "Nova lozinka"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 641
-#: src/big_remote_play/ui/host_view.py:3776
+#: src/big_remote_play/ui/host_view.py:3783
 msgid "New Username"
 msgstr "Novi korisnik"
 
@@ -4627,7 +4589,7 @@ msgstr "Vlasnik novih računala"
 msgid "New devices appear here while this window is open."
 msgstr "Novi se uređaji ovdje prikazuju dok je ovaj prozor otvoren."
 
-#: src/big_remote_play/ui/host_view.py:818
+#: src/big_remote_play/ui/host_view.py:825
 msgid ""
 "New devices can pair only when no stream is open: they show “The computer is "
 "currently in a game”. End the stream for everyone, then start pairing again "
@@ -4638,16 +4600,16 @@ msgstr ""
 "a zatim ponovno pokrenite uparivanje na novom uređaju. Već upareni uređaji "
 "mogu se odmah nakon toga ponovno povezati."
 
-#: src/big_remote_play/ui/host_view.py:3820
+#: src/big_remote_play/ui/host_view.py:3827
 msgid "New passwords do not match."
 msgstr "Nove lozinke se ne podudaraju."
 
-#: src/big_remote_play/ui/host_view.py:2706
+#: src/big_remote_play/ui/host_view.py:2713
 msgid "No"
 msgstr "Ne"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 617
-#: src/big_remote_play/ui/host_view.py:2103
+#: src/big_remote_play/ui/host_view.py:2110
 msgid "No Sunshine user exists. Configure one in the browser."
 msgstr ""
 "Nijedan korisnik nije kreiran u Sunshineu. Potrebno je konfigurirati "
@@ -4662,15 +4624,15 @@ msgstr "Nije pronađen nijedan račun"
 msgid "No active connection found"
 msgstr "Nije pronađena aktivna veza"
 
-#: src/big_remote_play/ui/host_view.py:3559
+#: src/big_remote_play/ui/host_view.py:3566
 msgid "No apps configured"
 msgstr "Nema konfiguriranih aplikacija"
 
-#: src/big_remote_play/ui/host_view.py:2711
+#: src/big_remote_play/ui/host_view.py:2718
 msgid "No call app is playing into the shared sound"
 msgstr "Nijedna aplikacija za pozive ne reproducira u dijeljeni zvuk"
 
-#: src/big_remote_play/ui/host_view.py:2704
+#: src/big_remote_play/ui/host_view.py:2711
 msgid "No client is receiving sound right now"
 msgstr "Trenutačno nijedan klijent ne prima zvuk"
 
@@ -4682,7 +4644,7 @@ msgstr ""
 "Nijedno računalo nije odgovorilo na ovaj kod za pretraživanje. Provjerite "
 "kod ili koristite adresu."
 
-#: src/big_remote_play/ui/host_view.py:1487
+#: src/big_remote_play/ui/host_view.py:1494
 msgid "No computer is waiting"
 msgstr "Nijedno računalo ne čeka"
 
@@ -4694,7 +4656,7 @@ msgstr ""
 "Nijedno računalo ne čeka uparivanje. Na drugom računalu u odjeljku „Poveži” "
 "odaberite ovo računalo, a zatim unesite kod koji ono prikaže."
 
-#: src/big_remote_play/ui/host_view.py:1861
+#: src/big_remote_play/ui/host_view.py:1868
 msgid "No connected monitor could be identified."
 msgstr "Nije bilo moguće identificirati nijedan povezani monitor."
 
@@ -4708,7 +4670,7 @@ msgstr "Još nema veza"
 msgid "No details reported."
 msgstr "Nisu prijavljeni detalji."
 
-#: src/big_remote_play/ui/host_view.py:1492
+#: src/big_remote_play/ui/host_view.py:1499
 msgid ""
 "No device is waiting for this code because a stream is open on this "
 "computer: the new device shows “The computer is currently in a game”. End "
@@ -4728,12 +4690,18 @@ msgstr "Još nijedan uređaj ne čeka…"
 msgid "No game PC found yet"
 msgstr "Još nije pronađeno nijedno računalo za igranje"
 
-#: src/big_remote_play/ui/host_view.py:1204
-#: src/big_remote_play/ui/host_view.py:1271
+#: src/big_remote_play/ui/host_view.py:1211
+#: src/big_remote_play/ui/host_view.py:1278
 msgid "No game windows found"
 msgstr "Nije pronađen nijedan prozor igre"
 
-#: src/big_remote_play/ui/host_view.py:3489
+#. TRANSLATORS: {platform} is Steam or Lutris.
+#: src/big_remote_play/ui/host_view.py:3897
+#, python-brace-format
+msgid "No games found in {platform}"
+msgstr "Nema pronađenih igara u {platform}"
+
+#: src/big_remote_play/ui/host_view.py:3496
 msgid "No logs available (Sunshine not running or no credentials)."
 msgstr "Nema dostupnih zapisa (Sunshine nije pokrenut ili nema vjerodajnica)."
 
@@ -4745,7 +4713,7 @@ msgstr "Nemate mrežni kod?"
 msgid "No network found"
 msgstr "Nije pronađena nijedna mreža"
 
-#: src/big_remote_play/ui/host_view.py:2139
+#: src/big_remote_play/ui/host_view.py:2146
 msgid "No one is playing yet"
 msgstr "Još nitko ne igra"
 
@@ -4760,11 +4728,11 @@ msgstr "Još nema drugih uređaja"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 576
-#: src/big_remote_play/ui/host_view.py:3341
+#: src/big_remote_play/ui/host_view.py:3348
 msgid "No paired devices"
 msgstr "Nema uparenih uređaja"
 
-#: src/big_remote_play/ui/host_view.py:2206
+#: src/big_remote_play/ui/host_view.py:2213
 msgid "No paired devices yet"
 msgstr "Još nema uparenih uređaja"
 
@@ -4780,7 +4748,7 @@ msgid "No saved Tailscale or Headscale account was found on this computer."
 msgstr ""
 "Na ovom računalu nije pronađen spremljeni Tailscale ili Headscale račun."
 
-#: src/big_remote_play/ui/host_view.py:1693
+#: src/big_remote_play/ui/host_view.py:1700
 msgid "No stream is open now. Start pairing again on the new device."
 msgstr ""
 "Sada nije otvoren nijedan prijenos. Ponovno pokrenite uparivanje na novom "
@@ -4794,12 +4762,12 @@ msgstr "Nije pronađen podržani alat za vatrozid."
 #, python-brace-format
 msgid ""
 "No terminal found. Run this command:\n"
-"{}"
+"{command}"
 msgstr ""
 "Terminal nije pronađen. Pokrenite ovu naredbu:\n"
-"{}"
+"{command}"
 
-#: src/big_remote_play/ui/host_view.py:1465
+#: src/big_remote_play/ui/host_view.py:1472
 msgid "No video bitrate ceiling"
 msgstr "Bez gornje granice brzine prijenosa videa"
 
@@ -4809,13 +4777,13 @@ msgstr "Bez gornje granice brzine prijenosa videa"
 msgid "Node ID"
 msgstr "ID čvora"
 
-#: src/big_remote_play/ui/network_dashboard.py:245
+#: src/big_remote_play/ui/network_dashboard.py:253
 msgid "Node ID of this computer"
 msgstr "ID čvora ovog računala"
 
 #: src/big_remote_play/ui/connection_guides.py:211
-#: src/big_remote_play/ui/host_view.py:2699
-#: src/big_remote_play/ui/host_view.py:2705
+#: src/big_remote_play/ui/host_view.py:2706
+#: src/big_remote_play/ui/host_view.py:2712
 msgid "None"
 msgstr "Nijedan"
 
@@ -4823,11 +4791,11 @@ msgstr "Nijedan"
 msgid "None detected (firewalld and ufw checked)"
 msgstr "Ništa nije otkriveno (provjereni firewalld i ufw)"
 
-#: src/big_remote_play/ui/host_view.py:2716
+#: src/big_remote_play/ui/host_view.py:2723
 msgid "None: the sound is captured directly"
 msgstr "Nijedno: zvuk se hvata izravno"
 
-#: src/big_remote_play/ui/host_view.py:1265
+#: src/big_remote_play/ui/host_view.py:1272
 #: src/big_remote_play/ui/network_common.py:96
 #: src/big_remote_play/ui/remote_connection.py:611
 msgid "Not available"
@@ -4856,11 +4824,11 @@ msgstr ""
 msgid "Not installed"
 msgstr "Nije instalirano"
 
-#: src/big_remote_play/ui/host_view.py:1661
+#: src/big_remote_play/ui/host_view.py:1668
 msgid "Not now"
 msgstr "Ne sada"
 
-#: src/big_remote_play/ui/host_view.py:1177
+#: src/big_remote_play/ui/host_view.py:1184
 msgid "Not recognized as a game"
 msgstr "Nije prepoznato kao igra"
 
@@ -4872,19 +4840,19 @@ msgstr "Ne odgovara"
 msgid "Not seen recently"
 msgstr "Nedavno nije viđen"
 
-#: src/big_remote_play/ui/host_view.py:550
+#: src/big_remote_play/ui/host_view.py:557
 msgid "Not sent by Big Remote Play. Voice chat apps keep using it normally."
 msgstr ""
 "Big Remote Play ga ne šalje. Aplikacije za glasovni chat nastavljaju ga "
 "normalno koristiti."
 
-#: src/big_remote_play/ui/host_view.py:2725
+#: src/big_remote_play/ui/host_view.py:2732
 #, python-brace-format
 msgid "Not sent now: {programs}. The call plays only on this computer."
 msgstr ""
 "Trenutačno se ne šalje: {programs}. Poziv se čuje samo na ovom računalu."
 
-#: src/big_remote_play/ui/host_view.py:2729
+#: src/big_remote_play/ui/host_view.py:2736
 msgid ""
 "Not sent. Calls in Discord, Zoom, Teams and other call apps play only on "
 "this computer, so nobody hears their own voice come back. A call in a web "
@@ -4898,7 +4866,7 @@ msgstr ""
 msgid "Not signed in"
 msgstr "Niste prijavljeni"
 
-#: src/big_remote_play/ui/main_window.py:969
+#: src/big_remote_play/ui/main_window.py:972
 msgid ""
 "Not sure where to start? Answer a few questions and Big Remote Play sets up "
 "the way for you."
@@ -4917,7 +4885,7 @@ msgstr "Obavijesti o novim predizdanjima Sunshinea"
 msgid "Now using {method}."
 msgstr "Sada se koristi {method}."
 
-#: src/big_remote_play/ui/host_view.py:2692
+#: src/big_remote_play/ui/host_view.py:2699
 #, python-brace-format
 msgid "Now: {output}"
 msgstr "Sada: {output}"
@@ -4940,6 +4908,7 @@ msgstr "Tajna OAuth klijenta"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 671
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 735
 #: src/big_remote_play/ui/guest_view.py:1894
+#: src/big_remote_play/ui/host_view.py:3267
 #: src/big_remote_play/ui/preferences.py:197
 #: src/big_remote_play/ui/preferences.py:210
 msgid "OK"
@@ -4953,10 +4922,18 @@ msgstr "U redu"
 msgid "Offline"
 msgstr "Izvan mreže"
 
-#: src/big_remote_play/ui/host_view.py:1384
+#: src/big_remote_play/ui/host_view.py:1391
 #: src/big_remote_play/ui/preferences.py:209
 msgid "Old log files have been removed."
 msgstr "Stare datoteke zapisa su uklonjene."
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:18
+msgid ""
+"On KDE Plasma, share only the game window and keep the rest of the desktop "
+"private"
+msgstr ""
+"U KDE Plasmi dijelite samo prozor igre, a ostatak radne površine ostaje "
+"privatan"
 
 #: src/big_remote_play/ui/guest_view.py:1608
 msgid ""
@@ -5054,7 +5031,7 @@ msgstr ""
 msgid "Only in fullscreen"
 msgstr "Samo na cijelom zaslonu"
 
-#: src/big_remote_play/ui/host_view.py:1367
+#: src/big_remote_play/ui/host_view.py:1374
 msgid "Only needed when reporting a problem."
 msgstr "Potrebno samo pri prijavi problema."
 
@@ -5079,7 +5056,7 @@ msgstr ""
 msgid "Only secure https addresses are accepted."
 msgstr "Prihvaćaju se samo sigurne https adrese."
 
-#: src/big_remote_play/ui/host_view.py:1277
+#: src/big_remote_play/ui/host_view.py:1284
 msgid ""
 "Only the chosen game is sent. The desktop, other windows and notifications "
 "stay on this computer."
@@ -5099,18 +5076,18 @@ msgstr "Novi naziv koristi samo ovo računalo."
 # line: 322
 # line: 347
 # line: 1295
-#: src/big_remote_play/ui/host_view.py:437
+#: src/big_remote_play/ui/host_view.py:444
 #: src/big_remote_play/ui/private_network_view.py:755
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "Otvori"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 621
-#: src/big_remote_play/ui/host_view.py:2105
+#: src/big_remote_play/ui/host_view.py:2112
 msgid "Open Configuration"
 msgstr "Otvori konfiguraciju"
 
-#: src/big_remote_play/ui/host_view.py:801
+#: src/big_remote_play/ui/host_view.py:808
 msgid ""
 "Open Connect on the other PC, then approve its code here. This is needed "
 "only the first time."
@@ -5118,7 +5095,7 @@ msgstr ""
 "Na drugom računalu otvorite „Poveži” i ovdje odobrite njegov kod. Potrebno "
 "samo prvi put."
 
-#: src/big_remote_play/ui/host_view.py:804
+#: src/big_remote_play/ui/host_view.py:811
 msgid "Open Connect on the other computer"
 msgstr "Otvorite „Poveži” na drugom računalu"
 
@@ -5127,7 +5104,7 @@ msgid "Open Share to start sharing a game from this computer"
 msgstr "Otvorite „Dijeli” da biste počeli dijeliti igru s ovog računala"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 285
-#: src/big_remote_play/ui/host_view.py:628
+#: src/big_remote_play/ui/host_view.py:635
 msgid "Open TCP/UDP ports required for external connection"
 msgstr "Otvorite TCP/UDP portove potrebne za vanjsku vezu"
 
@@ -5146,7 +5123,7 @@ msgstr "Otvori konzolu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 621
-#: src/big_remote_play/ui/host_view.py:3717
+#: src/big_remote_play/ui/host_view.py:3724
 msgid "Open folder"
 msgstr "Otvori mapu"
 
@@ -5155,15 +5132,15 @@ msgstr "Otvori mapu"
 msgid "Open guide"
 msgstr "Otvori vodič"
 
-#: src/big_remote_play/ui/host_view.py:2231
+#: src/big_remote_play/ui/host_view.py:2238
 msgid "Open management to view all paired devices."
 msgstr "Otvorite upravljanje da biste vidjeli sve uparene uređaje."
 
-#: src/big_remote_play/ui/host_view.py:2194
+#: src/big_remote_play/ui/host_view.py:2201
 msgid "Open paired device management"
 msgstr "Otvori upravljanje uparenim uređajima"
 
-#: src/big_remote_play/ui/host_view.py:3702
+#: src/big_remote_play/ui/host_view.py:3709
 msgid "Open parent folder"
 msgstr "Otvori nadređenu mapu"
 
@@ -5175,7 +5152,7 @@ msgstr ""
 "Otvorite web-mjesto ZeroTiera u nastavku i dopustite novi uređaj. Do tada ne "
 "može koristiti mrežu."
 
-#: src/big_remote_play/ui/network_dashboard.py:260
+#: src/big_remote_play/ui/network_dashboard.py:268
 msgid "Open the admin console"
 msgstr "Otvori administratorsku konzolu"
 
@@ -5183,18 +5160,17 @@ msgstr "Otvori administratorsku konzolu"
 msgid "Open the connection details to see what is wrong."
 msgstr "Otvorite pojedinosti veze da biste vidjeli što nije u redu."
 
-#: src/big_remote_play/ui/host_view.py:1204
+#: src/big_remote_play/ui/host_view.py:1211
 msgid "Open the game you want to share, then select Refresh."
 msgstr "Otvorite igru koju želite dijeliti, a zatim odaberite Osvježi."
 
-#: src/big_remote_play/ui/network_dashboard.py:214
+#: src/big_remote_play/ui/network_dashboard.py:222
 msgid "Open the sign-in page again in your browser."
 msgstr "Ponovno otvorite stranicu za prijavu u pregledniku."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1386
-#: src/big_remote_play/ui/host_view.py:3050
-msgid "Opening Steam Big Picture..."
-msgstr "Otvaranje Steam Big Picture..."
+#: src/big_remote_play/ui/host_view.py:3057
+msgid "Opening Steam Big Picture…"
+msgstr "Otvaranje Steam Big Picture…"
 
 #: src/big_remote_play/ui/connection_guides.py:35
 msgid "Opens the official website"
@@ -5202,24 +5178,24 @@ msgstr "Otvara službenu web-stranicu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/host_view.py:3425
-#: src/big_remote_play/ui/host_view.py:3630
-#: src/big_remote_play/ui/network_dashboard.py:473
+#: src/big_remote_play/ui/host_view.py:3432
+#: src/big_remote_play/ui/host_view.py:3637
+#: src/big_remote_play/ui/network_dashboard.py:481
 msgid "Operation failed"
 msgstr "Radnja nije uspjela"
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:300
 #, python-brace-format
-msgid "Operation failed: {}"
-msgstr "Radnja nije uspjela: {}"
+msgid "Operation failed: {error}"
+msgstr "Radnja nije uspjela: {error}"
 
 #: src/big_remote_play/ui/guest_view.py:418
 msgid "Optimize the mouse for remote desktop"
 msgstr "Optimiziraj miš za udaljenu radnu površinu"
 
 #: src/big_remote_play/ui/guest_view.py:833
-#: src/big_remote_play/ui/host_view.py:1969
-#: src/big_remote_play/ui/host_view.py:1985
+#: src/big_remote_play/ui/host_view.py:1976
+#: src/big_remote_play/ui/host_view.py:1992
 msgid "Other computer"
 msgstr "Drugo računalo"
 
@@ -5237,12 +5213,12 @@ msgstr ""
 "sučelju. Dijeli → Napredno može, nakon vaše potvrde, dodati pravila samo za "
 "priključke za prijenos; administracijska ploča ostaje zatvorena."
 
-#: src/big_remote_play/ui/host_view.py:997
+#: src/big_remote_play/ui/host_view.py:1004
 msgid "Overview"
 msgstr "Pregled"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 609
-#: src/big_remote_play/ui/host_view.py:2017
+#: src/big_remote_play/ui/host_view.py:2024
 msgid "PIN Error"
 msgstr "Greška PIN-a"
 
@@ -5253,11 +5229,11 @@ msgstr "Greška PIN-a"
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 307
 #: src/big_remote_play/host/sunshine_manager.py:657
-#: src/big_remote_play/ui/host_view.py:2006
+#: src/big_remote_play/ui/host_view.py:2013
 msgid "PIN sent successfully"
 msgstr "PIN uspješno poslan"
 
-#: src/big_remote_play/ui/host_view.py:2043
+#: src/big_remote_play/ui/host_view.py:2050
 msgid "PIN shown by Moonlight"
 msgstr "PIN prikazan u Moonlightu"
 
@@ -5265,9 +5241,9 @@ msgstr "PIN prikazan u Moonlightu"
 msgid "Packet Size"
 msgstr "Veličina paketa"
 
-#: src/big_remote_play/ui/host_view.py:893
-#: src/big_remote_play/ui/host_view.py:894
-#: src/big_remote_play/ui/host_view.py:1989
+#: src/big_remote_play/ui/host_view.py:900
+#: src/big_remote_play/ui/host_view.py:901
+#: src/big_remote_play/ui/host_view.py:1996
 msgid "Pair"
 msgstr "Upari"
 
@@ -5289,24 +5265,19 @@ msgstr ""
 "izvan kućne mreže. Uklonite javna prosljeđivanja priključaka kada više nisu "
 "potrebna."
 
-#: src/big_remote_play/ui/host_view.py:897
+#: src/big_remote_play/ui/host_view.py:904
 msgid "Pair this device"
 msgstr "Upari ovaj uređaj"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 198
-#: src/big_remote_play/ui/host_view.py:3293
-msgid "Paired Devices"
-msgstr "Upareni uređaji"
-
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 982
-#: src/big_remote_play/ui/host_view.py:2152
+#: src/big_remote_play/ui/host_view.py:2159
+#: src/big_remote_play/ui/host_view.py:3300
 msgid "Paired devices"
 msgstr "Upareni uređaji"
 
-#: src/big_remote_play/ui/host_view.py:2157
-#: src/big_remote_play/ui/host_view.py:2558
+#: src/big_remote_play/ui/host_view.py:2164
+#: src/big_remote_play/ui/host_view.py:2565
 msgid "Paired devices appear here."
 msgstr "Upareni uređaji pojavit će se ovdje."
 
@@ -5322,17 +5293,17 @@ msgstr "Uspješno upareno!"
 msgid "Pairing Error"
 msgstr "Pogreška u uparivanju"
 
-#: src/big_remote_play/ui/host_view.py:886
+#: src/big_remote_play/ui/host_view.py:893
 msgid "Pairing code shown on the other PC"
 msgstr "Kod za uparivanje prikazan na drugom računalu"
 
 #: src/big_remote_play/ui/guest_view.py:1613
 #, python-brace-format
-msgid "Pairing code: {}"
-msgstr "Kod za uparivanje: {}"
+msgid "Pairing code: {code}"
+msgstr "Kod za uparivanje: {code}"
 
-#: src/big_remote_play/ui/host_view.py:1942
-#: src/big_remote_play/ui/host_view.py:1959
+#: src/big_remote_play/ui/host_view.py:1949
+#: src/big_remote_play/ui/host_view.py:1966
 msgid "Pairing failed"
 msgstr "Uparivanje nije uspjelo"
 
@@ -5368,7 +5339,7 @@ msgid "Path"
 msgstr "Put"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 148
-#: src/big_remote_play/ui/host_view.py:1395
+#: src/big_remote_play/ui/host_view.py:1402
 #: src/big_remote_play/ui/preferences.py:215
 msgid "Path copied!"
 msgstr "Putanja kopirana!"
@@ -5397,7 +5368,7 @@ msgstr "Za popis ZeroTier mreža potrebna je dozvola"
 msgid "Permission needed"
 msgstr "Potrebno je dopuštenje"
 
-#: src/big_remote_play/ui/network_dashboard.py:349
+#: src/big_remote_play/ui/network_dashboard.py:357
 #: src/big_remote_play/ui/remote_connection.py:649
 msgid "Permission was not granted."
 msgstr "Dopuštenje nije dano."
@@ -5406,7 +5377,7 @@ msgstr "Dopuštenje nije dano."
 msgid "Pick the PC that is sharing the game."
 msgstr "Odaberite računalo koje dijeli igru."
 
-#: src/big_remote_play/ui/host_view.py:373
+#: src/big_remote_play/ui/host_view.py:380
 msgid "Picture"
 msgstr "Slika"
 
@@ -5416,20 +5387,24 @@ msgstr "Slika"
 msgid "Ping Timeout (ms)"
 msgstr "Vrijeme isteka pinga (ms)"
 
-#: src/big_remote_play/ui/main_window.py:115
-#: src/big_remote_play/ui/main_window.py:1221
+#: src/big_remote_play/ui/main_window.py:118
+#: src/big_remote_play/ui/main_window.py:1224
 msgid "Play from another PC"
 msgstr "Igraj s drugog računala"
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.desktop.in:5
+msgid "Play games together over a local or private network"
+msgstr "Igrajte zajedno putem lokalne ili privatne mreže"
 
 #: src/big_remote_play/ui/remote_connection.py:243
 msgid "Play on a computer that is already set up."
 msgstr "Igrajte na računalu koje je već postavljeno."
 
-#: src/big_remote_play/ui/main_window.py:958
+#: src/big_remote_play/ui/main_window.py:961
 msgid "Play on another screen"
 msgstr "Igrajte na drugom zaslonu"
 
-#: src/big_remote_play/ui/main_window.py:994
+#: src/big_remote_play/ui/main_window.py:997
 msgid "Play on this device. Connect to the computer running the game."
 msgstr ""
 "Igrajte na ovom uređaju. Povežite se s računalom na kojem je pokrenuta igra."
@@ -5440,23 +5415,27 @@ msgstr ""
 "Igrajte ili koristite ovo računalo s bilo kojeg mjesta, uz sigurnu vezu."
 
 #: src/big_remote_play/ui/guest_view.py:608
-#: src/big_remote_play/ui/host_view.py:730
-#: src/big_remote_play/ui/host_view.py:732
-#: src/big_remote_play/ui/main_window.py:116
-#: src/big_remote_play/ui/main_window.py:838
-#: src/big_remote_play/ui/main_window.py:1225
+#: src/big_remote_play/ui/host_view.py:737
+#: src/big_remote_play/ui/host_view.py:739
+#: src/big_remote_play/ui/main_window.py:119
+#: src/big_remote_play/ui/main_window.py:841
+#: src/big_remote_play/ui/main_window.py:1228
 msgid "Play over the internet"
 msgstr "Igranje preko interneta"
 
-#: src/big_remote_play/ui/host_view.py:733
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:17
+msgid "Play over the internet through Tailscale, ZeroTier, or Headscale"
+msgstr "Igrajte preko interneta uz Tailscale, ZeroTier ili Headscale"
+
+#: src/big_remote_play/ui/host_view.py:740
 msgid "Play over the internet: connect your devices"
 msgstr "Igranje preko interneta: povežite svoje uređaje"
 
-#: src/big_remote_play/app.py:182 src/big_remote_play/ui/main_window.py:956
+#: src/big_remote_play/app.py:182 src/big_remote_play/ui/main_window.py:959
 msgid "Play together, from anywhere"
 msgstr "Igrajte zajedno, s bilo kojeg mjesta"
 
-#: src/big_remote_play/ui/main_window.py:931
+#: src/big_remote_play/ui/main_window.py:934
 msgid ""
 "Play with friends far away, or use the power of your computer on another "
 "compatible device."
@@ -5468,7 +5447,7 @@ msgstr ""
 msgid "Playback on this computer"
 msgstr "Reprodukcija na ovom računalu"
 
-#: src/big_remote_play/ui/host_view.py:2741
+#: src/big_remote_play/ui/host_view.py:2748
 msgid "Playing a short tone…"
 msgstr "Reproducira se kratki ton…"
 
@@ -5476,12 +5455,12 @@ msgstr "Reproducira se kratki ton…"
 msgid "Playing now"
 msgstr "Upravo se igra"
 
-#: src/big_remote_play/ui/host_view.py:936
-#: src/big_remote_play/ui/main_window.py:1006
+#: src/big_remote_play/ui/host_view.py:943
+#: src/big_remote_play/ui/main_window.py:1009
 msgid "Playing over the internet?"
 msgstr "Igrate preko interneta?"
 
-#: src/big_remote_play/ui/host_view.py:563
+#: src/big_remote_play/ui/host_view.py:570
 msgid "Plays a short tone and checks that it reaches the shared sound."
 msgstr "Reproducira kratki ton i provjerava stiže li do dijeljenog zvuka."
 
@@ -5515,7 +5494,7 @@ msgstr "Port i IPv6"
 msgid "Port forwarding (advanced)"
 msgstr "Prosljeđivanje priključaka (napredno)"
 
-#: src/big_remote_play/ui/host_view.py:462
+#: src/big_remote_play/ui/host_view.py:469
 msgid "Portal (screen picker)"
 msgstr "Portal (odabir zaslona)"
 
@@ -5543,7 +5522,7 @@ msgstr "Preferirajte CAVLC umjesto CABAC u H.264"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 273
 #: src/big_remote_play/ui/components.py:275
-#: src/big_remote_play/ui/host_view.py:1029
+#: src/big_remote_play/ui/host_view.py:1036
 msgid "Preferences"
 msgstr "Postavke"
 
@@ -5551,7 +5530,7 @@ msgstr "Postavke"
 msgid "Prepare this PC"
 msgstr "Pripremite ovo računalo"
 
-#: src/big_remote_play/ui/host_view.py:3015
+#: src/big_remote_play/ui/host_view.py:3022
 msgid ""
 "Preparing the game window. If your system asks, choose the same game and "
 "select Share."
@@ -5574,7 +5553,7 @@ msgstr "Sprječava isključivanje zaslona ovog računala tijekom sesije."
 msgid "Previous Networks"
 msgstr "Prethodne mreže"
 
-#: src/big_remote_play/ui/host_view.py:511
+#: src/big_remote_play/ui/host_view.py:518
 msgid "Priority"
 msgstr "Prioritet"
 
@@ -5585,11 +5564,11 @@ msgid "Private Key"
 msgstr "Privatni ključ"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 619
-#: src/big_remote_play/ui/main_window.py:1549
+#: src/big_remote_play/ui/main_window.py:1552
 msgid "Private Network Containers"
 msgstr "Kontejneri privatne mreže"
 
-#: src/big_remote_play/ui/host_view.py:2576
+#: src/big_remote_play/ui/host_view.py:2583
 #: src/big_remote_play/ui/network_dashboard.py:175
 #: src/big_remote_play/ui/network_devices.py:213
 msgid "Private address"
@@ -5606,6 +5585,10 @@ msgstr "Aktivne privatne mreže"
 #: src/big_remote_play/app.py:189 src/big_remote_play/app.py:205
 msgid "Project Story"
 msgstr "Priča o projektu"
+
+#: src/big_remote_play/app.py:207
+msgid "Project story on YouTube"
+msgstr "Priča o projektu na YouTubeu"
 
 #: src/big_remote_play/ui/sunshine_preferences.py:106
 #: src/big_remote_play/ui/sunshine_preferences.py:316
@@ -5668,7 +5651,7 @@ msgid ""
 "Read from the network interfaces of this computer. Nothing is sent anywhere."
 msgstr "Očitano s mrežnih sučelja ovog računala. Ništa se nikamo ne šalje."
 
-#: src/big_remote_play/ui/host_view.py:573
+#: src/big_remote_play/ui/host_view.py:580
 msgid "Read from the sound server when opened."
 msgstr "Očitano sa zvučnog poslužitelja pri otvaranju."
 
@@ -5711,7 +5694,7 @@ msgstr "Spremno za igranje preko interneta"
 msgid "Ready to play?"
 msgstr "Spremni za igru?"
 
-#: src/big_remote_play/ui/host_view.py:2582
+#: src/big_remote_play/ui/host_view.py:2589
 msgid "Ready. This computer is also reachable over your private network."
 msgstr "Spremno. Ovo je računalo dostupno i preko vaše privatne mreže."
 
@@ -5729,7 +5712,7 @@ msgstr "Praćenje u stvarnom vremenu"
 msgid "Realtime encoding priority"
 msgstr "Prioritet kodiranja u stvarnom vremenu"
 
-#: src/big_remote_play/ui/host_view.py:384
+#: src/big_remote_play/ui/host_view.py:391
 msgid "Reapply automatic settings"
 msgstr "Ponovno primijeni automatske postavke"
 
@@ -5783,20 +5766,20 @@ msgstr "Ponovno se poveži"
 msgid "Reconnect using this saved network"
 msgstr "Ponovno se poveži ovom spremljenom mrežom"
 
-#: src/big_remote_play/ui/host_view.py:578
+#: src/big_remote_play/ui/host_view.py:585
 msgid "Recorded source"
 msgstr "Snimani izvor"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1348
-#: src/big_remote_play/ui/host_view.py:1067
-#: src/big_remote_play/ui/host_view.py:3439
+#: src/big_remote_play/ui/host_view.py:1074
+#: src/big_remote_play/ui/host_view.py:3446
 #: src/big_remote_play/ui/network_dashboard.py:81
 #: src/big_remote_play/ui/network_devices.py:150
 msgid "Refresh"
 msgstr "Osvježi"
 
-#: src/big_remote_play/ui/host_view.py:3440
+#: src/big_remote_play/ui/host_view.py:3447
 msgid "Refresh logs"
 msgstr "Osvježi zapise"
 
@@ -5821,30 +5804,24 @@ msgid "Reload from Running Server"
 msgstr "Ponovno učitaj s pokrenutog poslužitelja"
 
 #: src/big_remote_play/ui/api_access_dialog.py:92
-#: src/big_remote_play/ui/host_view.py:3393
+#: src/big_remote_play/ui/host_view.py:3400
 #: src/big_remote_play/ui/remote_connection.py:779
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:265
 msgid "Remove"
 msgstr "Ukloni"
 
-#: src/big_remote_play/ui/host_view.py:3289
 #: src/big_remote_play/ui/host_view.py:3296
-#: src/big_remote_play/ui/host_view.py:3298
+#: src/big_remote_play/ui/host_view.py:3303
+#: src/big_remote_play/ui/host_view.py:3305
 msgid "Remove All"
 msgstr "Ukloni sve"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 576
-#: src/big_remote_play/ui/host_view.py:3389
-msgid "Remove Device"
-msgstr "Ukloni uređaj"
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:206
 msgid "Remove account from this computer"
 msgstr "Ukloni račun s ovog računala"
 
-#: src/big_remote_play/ui/host_view.py:3580
-#: src/big_remote_play/ui/host_view.py:3581
+#: src/big_remote_play/ui/host_view.py:3587
+#: src/big_remote_play/ui/host_view.py:3588
 msgid "Remove app"
 msgstr "Ukloni aplikaciju"
 
@@ -5852,8 +5829,9 @@ msgstr "Ukloni aplikaciju"
 msgid "Remove credential"
 msgstr "Ukloni podatke za prijavu"
 
-#: src/big_remote_play/ui/host_view.py:3364
-#: src/big_remote_play/ui/host_view.py:3365
+#: src/big_remote_play/ui/host_view.py:3371
+#: src/big_remote_play/ui/host_view.py:3372
+#: src/big_remote_play/ui/host_view.py:3396
 #: src/big_remote_play/ui/network_devices.py:272
 #: src/big_remote_play/ui/network_devices.py:295
 #: src/big_remote_play/ui/network_devices.py:338
@@ -5871,7 +5849,7 @@ msgid "Remove logs, settings, servers and saved data"
 msgstr "Ukloni dnevnike, postavke, poslužitelje i spremljene podatke"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 98
-#: src/big_remote_play/ui/host_view.py:1381
+#: src/big_remote_play/ui/host_view.py:1388
 msgid "Remove old log files"
 msgstr "Ukloni stare datoteke dnevnika"
 
@@ -5910,10 +5888,10 @@ msgstr "Ukloni uređaj {name} iz mreže"
 msgid "Remove {name}?"
 msgstr "Ukloniti {name}?"
 
-#: src/big_remote_play/ui/host_view.py:3390
+#: src/big_remote_play/ui/host_view.py:3397
 #, python-brace-format
-msgid "Remove “{}”? It will need to pair again with a new PIN."
-msgstr "Ukloniti „{}”? Morat će se ponovno upariti novim PIN-om."
+msgid "Remove “{name}”? It will need to pair again with a new PIN."
+msgstr "Ukloniti „{name}”? Morat će se ponovno upariti novim PIN-om."
 
 #: src/big_remote_play/ui/remote_connection.py:452
 #: src/big_remote_play/ui/remote_connection.py:490
@@ -6005,27 +5983,24 @@ msgstr "Vrati na zadane postavke"
 msgid "Reset connection settings"
 msgstr "Vrati postavke veze"
 
-#: src/big_remote_play/ui/host_view.py:3770
+#: src/big_remote_play/ui/host_view.py:3777
 msgid "Reset directly; the server will restart"
 msgstr "Izravno poništi; poslužitelj će se ponovno pokrenuti"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 91
 #: src/big_remote_play/host/sunshine_manager.py:726
 #, python-brace-format
-msgid "Reset error: {}"
-msgstr "Greška pri resetiranju: {}"
+msgid "Reset error: {error}"
+msgstr "Greška pri resetiranju: {error}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 798
 #: src/big_remote_play/host/sunshine_manager.py:724
 msgid "Reset failed"
 msgstr "Resetiranje nije uspjelo"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 725
 #: src/big_remote_play/host/sunshine_manager.py:724
 #, python-brace-format
-msgid "Reset failed: {}"
-msgstr "Resetiranje nije uspjelo: {}"
+msgid "Reset failed: {error}"
+msgstr "Resetiranje nije uspjelo: {error}"
 
 #: src/big_remote_play/ui/guest_view.py:2204
 msgid "Reset settings?"
@@ -6034,7 +6009,7 @@ msgstr "Vratiti postavke?"
 # #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 127
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 83
-#: src/big_remote_play/ui/host_view.py:322
+#: src/big_remote_play/ui/host_view.py:329
 msgid "Reset to Defaults"
 msgstr "Vrati na zadane postavke"
 
@@ -6047,12 +6022,12 @@ msgid "Resolution"
 msgstr "Rezolucija"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 570
-#: src/big_remote_play/ui/main_window.py:1531
+#: src/big_remote_play/ui/main_window.py:1534
 msgid "Restart"
 msgstr "Ponovno pokreni"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 639
-#: src/big_remote_play/ui/main_window.py:1565
+#: src/big_remote_play/ui/main_window.py:1568
 msgid "Restart Containers"
 msgstr "Ponovno pokreni kontejnere"
 
@@ -6065,7 +6040,7 @@ msgstr ""
 "ponovno instalirajte ZeroTier."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1444
-#: src/big_remote_play/ui/host_view.py:4158
+#: src/big_remote_play/ui/host_view.py:4167
 #: src/big_remote_play/ui/preferences.py:63
 #: src/big_remote_play/ui/preferences.py:169
 #: src/big_remote_play/ui/preferences.py:223
@@ -6073,7 +6048,7 @@ msgid "Restore"
 msgstr "Vrati"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1443
-#: src/big_remote_play/ui/host_view.py:4156
+#: src/big_remote_play/ui/host_view.py:4165
 #: src/big_remote_play/ui/preferences.py:62
 msgid "Restore Defaults"
 msgstr "Vrati zadane postavke"
@@ -6093,11 +6068,11 @@ msgstr "Vrati sigurnosnu kopiju"
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Ponovno upotrijebi podatke veze koje je spremio Big Remote Play"
 
-#: src/big_remote_play/ui/host_view.py:2395
-#: src/big_remote_play/ui/host_view.py:2422
+#: src/big_remote_play/ui/host_view.py:2402
+#: src/big_remote_play/ui/host_view.py:2429
 #, python-brace-format
-msgid "Reveal {}"
-msgstr "Prikaži {}"
+msgid "Reveal {field}"
+msgstr "Prikaži {field}"
 
 #: src/big_remote_play/ui/guest_view.py:444
 msgid "Reverse the scroll-wheel direction"
@@ -6132,12 +6107,12 @@ msgstr "Ruta nije izmjerena"
 msgid "Routes approved"
 msgstr "Rute odobrene"
 
-#: src/big_remote_play/ui/host_view.py:584
+#: src/big_remote_play/ui/host_view.py:591
 msgid "Routing added by Big Remote Play"
 msgstr "Usmjeravanje koje je dodao Big Remote Play"
 
-#: src/big_remote_play/ui/main_window.py:114
-#: src/big_remote_play/ui/main_window.py:656
+#: src/big_remote_play/ui/main_window.py:117
+#: src/big_remote_play/ui/main_window.py:659
 msgid "Run the game on this PC"
 msgstr "Pokreni igru na ovom računalu"
 
@@ -6151,14 +6126,14 @@ msgstr ""
 "drugo: registrira jedno računalo."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
-#: src/big_remote_play/ui/host_view.py:2495
-#: src/big_remote_play/ui/main_window.py:1454
+#: src/big_remote_play/ui/host_view.py:2502
+#: src/big_remote_play/ui/main_window.py:1457
 #: src/big_remote_play/ui/service_status_card.py:66
 msgid "Running"
 msgstr "Radi"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 627
-#: src/big_remote_play/ui/main_window.py:1555
+#: src/big_remote_play/ui/main_window.py:1558
 msgid "Running (Caddy + Headscale)"
 msgstr "Radi (Caddy + Headscale)"
 
@@ -6168,11 +6143,11 @@ msgstr "Radi (Caddy + Headscale)"
 msgid "SW Tune"
 msgstr "SW Podešavanje"
 
-#: src/big_remote_play/ui/host_view.py:493
+#: src/big_remote_play/ui/host_view.py:500
 msgid "Same as the first device that connects"
 msgstr "Kao prvi uređaj koji se poveže"
 
-#: src/big_remote_play/ui/host_view.py:937
+#: src/big_remote_play/ui/host_view.py:944
 msgid ""
 "Same home network? Skip this step. For different networks, set up internet "
 "play."
@@ -6183,8 +6158,8 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1077
 #: src/big_remote_play/ui/api_access_dialog.py:86
-#: src/big_remote_play/ui/host_view.py:1629
-#: src/big_remote_play/ui/host_view.py:3799
+#: src/big_remote_play/ui/host_view.py:1636
+#: src/big_remote_play/ui/host_view.py:3806
 #: src/big_remote_play/ui/private_network_view.py:1036
 #: src/big_remote_play/ui/remote_connection.py:751
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:324
@@ -6192,7 +6167,7 @@ msgid "Save"
 msgstr "Spremi"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:2062
+#: src/big_remote_play/ui/host_view.py:2069
 msgid "Save Password"
 msgstr "Spremi lozinku"
 
@@ -6201,7 +6176,7 @@ msgid "Save bandwidth"
 msgstr "Uštedi propusnost"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 670
-#: src/big_remote_play/ui/host_view.py:2063
+#: src/big_remote_play/ui/host_view.py:2070
 msgid "Save credentials to the system keyring"
 msgstr "Spremi podatke za prijavu u privjesak ključeva sustava"
 
@@ -6222,16 +6197,16 @@ msgstr "Skenirajte ga kamerom drugog uređaja."
 msgid "Scan it with the phone of the person you are inviting."
 msgstr "Skenirajte ga telefonom osobe koju pozivate."
 
-#: src/big_remote_play/ui/host_view.py:483
+#: src/big_remote_play/ui/host_view.py:490
 msgid "Screen resolution while sharing"
 msgstr "Razlučivost zaslona tijekom dijeljenja"
 
-#: src/big_remote_play/ui/host_view.py:1015
+#: src/big_remote_play/ui/host_view.py:1022
 msgid "Screen, graphics card and encoding"
 msgstr "Zaslon, grafička kartica i kodiranje"
 
-#: src/big_remote_play/ui/host_view.py:1468
-#: src/big_remote_play/ui/host_view.py:1765
+#: src/big_remote_play/ui/host_view.py:1475
+#: src/big_remote_play/ui/host_view.py:1772
 #, python-brace-format
 msgid "Screen: {value}"
 msgstr "Zaslon: {value}"
@@ -6242,7 +6217,7 @@ msgid "Search again"
 msgstr "Pretraži ponovno"
 
 #: src/big_remote_play/ui/guest_view.py:1354
-#: src/big_remote_play/ui/host_view.py:920
+#: src/big_remote_play/ui/host_view.py:927
 msgid "Search code"
 msgstr "Kod za pretraživanje"
 
@@ -6255,15 +6230,15 @@ msgid "Searches the local network for computers that are sharing a game."
 msgstr "Pretražuje lokalnu mrežu za računala koja dijele igru."
 
 #: src/big_remote_play/ui/guest_view.py:1115
-msgid "Searching for game PCs..."
+msgid "Searching for game PCs…"
 msgstr "Traženje računala za igranje…"
 
 #. TRANSLATORS: sidebar heading above the Tailscale, ZeroTier and Headscale cards.
-#: src/big_remote_play/ui/main_window.py:519
+#: src/big_remote_play/ui/main_window.py:522
 msgid "Secure connection"
 msgstr "Sigurna veza"
 
-#: src/big_remote_play/ui/host_view.py:651
+#: src/big_remote_play/ui/host_view.py:658
 msgid "Security and expert settings that are rarely needed."
 msgstr "Sigurnosne i stručne postavke koje su rijetko potrebne."
 
@@ -6276,20 +6251,15 @@ msgid "Seen in the last few minutes"
 msgstr "Viđen u posljednjih nekoliko minuta"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:3649
-msgid "Select Executable"
-msgstr "Odaberi izvršnu datoteku"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:344
+#: src/big_remote_play/ui/host_view.py:351
 msgid "Select Game"
 msgstr "Odaberi igru"
 
-#: src/big_remote_play/ui/host_view.py:1138
+#: src/big_remote_play/ui/host_view.py:1145
 msgid "Select Refresh to try again."
 msgstr "Odaberite Osvježi za ponovni pokušaj."
 
-#: src/big_remote_play/ui/host_view.py:2869
+#: src/big_remote_play/ui/host_view.py:2876
 msgid ""
 "Select a game or complete the app name and command. To share the whole "
 "screen instead, choose Full Desktop."
@@ -6302,24 +6272,23 @@ msgid "Select a network service and try again."
 msgstr "Odaberite mrežnu uslugu i pokušajte ponovno."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:3725
+#: src/big_remote_play/ui/host_view.py:3656
+#: src/big_remote_play/ui/host_view.py:3732
 msgid "Select executable"
 msgstr "Odaberi izvršnu datoteku"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 194
-#: src/big_remote_play/ui/host_view.py:424
+#: src/big_remote_play/ui/host_view.py:431
 msgid "Select the display to capture"
 msgstr "Odaberite zaslon za snimanje"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 742
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 752
-#: src/big_remote_play/ui/host_view.py:3737
+#: src/big_remote_play/ui/host_view.py:3744
 #, python-brace-format
-msgid "Selected: {}"
-msgstr "Odabrano: {}"
+msgid "Selected: {name}"
+msgstr "Odabrano: {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 588
-#: src/big_remote_play/ui/host_view.py:2075
+#: src/big_remote_play/ui/host_view.py:2082
 msgid "Send"
 msgstr "Pošalji"
 
@@ -6327,7 +6296,7 @@ msgstr "Pošalji"
 msgid "Send invitation"
 msgstr "Pošalji pozivnicu"
 
-#: src/big_remote_play/ui/host_view.py:947
+#: src/big_remote_play/ui/host_view.py:954
 msgid ""
 "Send one of these to the other person, or let them pick this computer under "
 "Connect."
@@ -6339,11 +6308,11 @@ msgstr ""
 msgid "Send system shortcuts to the remote computer"
 msgstr "Šalji sistemske prečace udaljenom računalu"
 
-#: src/big_remote_play/ui/network_dashboard.py:248
+#: src/big_remote_play/ui/network_dashboard.py:256
 msgid "Send the Node ID to the network owner"
 msgstr "Pošaljite ID čvora vlasniku mreže"
 
-#: src/big_remote_play/ui/host_view.py:897
+#: src/big_remote_play/ui/host_view.py:904
 msgid "Send the code shown on the other PC to finish pairing"
 msgstr "Pošaljite kod prikazan na drugom računalu da dovršite uparivanje"
 
@@ -6370,14 +6339,9 @@ msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Domena poslužitelja (npr. vpn.example.com)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1415
-#: src/big_remote_play/ui/host_view.py:3238
+#: src/big_remote_play/ui/host_view.py:3245
 msgid "Server Failed to Start"
 msgstr "Poslužitelj se nije uspio pokrenuti"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:3750
-msgid "Server Password"
-msgstr "Lozinka poslužitelja"
 
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
@@ -6387,41 +6351,42 @@ msgstr "Lozinka poslužitelja"
 msgid "Server address"
 msgstr "Adresa poslužitelja"
 
-#: src/big_remote_play/ui/host_view.py:674
+#: src/big_remote_play/ui/host_view.py:681
 msgid "Server control panel"
 msgstr "Ploča poslužitelja"
 
-#: src/big_remote_play/ui/host_view.py:681
+#: src/big_remote_play/ui/host_view.py:688
 msgid "Server log"
 msgstr "Zapis poslužitelja"
 
-#: src/big_remote_play/ui/host_view.py:534
+#: src/big_remote_play/ui/host_view.py:541
 msgid "Server output"
 msgstr "Izlaz računala za igranje"
 
-#: src/big_remote_play/ui/host_view.py:695
+#: src/big_remote_play/ui/host_view.py:702
+#: src/big_remote_play/ui/host_view.py:3757
 msgid "Server password"
 msgstr "Lozinka poslužitelja"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1197
-#: src/big_remote_play/ui/host_view.py:3008
+#: src/big_remote_play/ui/host_view.py:3015
 msgid "Server started"
 msgstr "Poslužitelj pokrenut"
 
-#: src/big_remote_play/ui/host_view.py:646
+#: src/big_remote_play/ui/host_view.py:653
 msgid "Server tools"
 msgstr "Alati poslužitelja"
 
-#: src/big_remote_play/ui/network_dashboard.py:358
+#: src/big_remote_play/ui/network_dashboard.py:366
 msgid "Service started"
 msgstr "Usluga pokrenuta"
 
 #. TRANSLATORS: accessible name of the list of streaming and private-network cards.
-#: src/big_remote_play/ui/main_window.py:488
+#: src/big_remote_play/ui/main_window.py:491
 msgid "Services"
 msgstr "Usluge"
 
-#: src/big_remote_play/ui/host_view.py:3760
+#: src/big_remote_play/ui/host_view.py:3767
 msgid ""
 "Set the username and password used to manage the Sunshine server. If you "
 "forgot the current password, switch on “I forgot the current password” to "
@@ -6439,11 +6404,11 @@ msgstr "Postavi"
 msgid "Set up a secure connection"
 msgstr "Postavite sigurnu vezu"
 
-#: src/big_remote_play/ui/main_window.py:1229
+#: src/big_remote_play/ui/main_window.py:1232
 msgid "Set up the connection"
 msgstr "Postavi vezu"
 
-#: src/big_remote_play/ui/network_dashboard.py:237
+#: src/big_remote_play/ui/network_dashboard.py:245
 msgid "Set up your own server"
 msgstr "Postavite vlastiti poslužitelj"
 
@@ -6453,7 +6418,7 @@ msgid "Setting up"
 msgstr "Postavljanje"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1452
-#: src/big_remote_play/ui/host_view.py:4173
+#: src/big_remote_play/ui/host_view.py:4182
 msgid "Settings Restored"
 msgstr "Postavke vraćene"
 
@@ -6472,7 +6437,7 @@ msgstr ""
 msgid "Several computers are waiting to pair."
 msgstr "Nekoliko računala čeka uparivanje."
 
-#: src/big_remote_play/ui/host_view.py:1979
+#: src/big_remote_play/ui/host_view.py:1986
 msgid ""
 "Several computers are waiting to pair. Approve only the one that shows the "
 "code you entered."
@@ -6480,22 +6445,29 @@ msgstr ""
 "Nekoliko računala čeka uparivanje. Odobrite samo ono koje prikazuje kod koji "
 "ste unijeli."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 215
-#: src/big_remote_play/ui/main_window.py:114
-#: src/big_remote_play/ui/main_window.py:656
-#: src/big_remote_play/ui/main_window.py:828
-#: src/big_remote_play/ui/main_window.py:985
+#. TRANSLATORS: with context "navigation", Share and Connect name the two
+#. main pages: the computer that shares a game and the one that connects to
+#. it. Buttons that perform the action use the same words without context.
+#: src/big_remote_play/ui/main_window.py:117
+#: src/big_remote_play/ui/main_window.py:659
+#: src/big_remote_play/ui/main_window.py:831
+#: src/big_remote_play/ui/main_window.py:988
+msgctxt "navigation"
 msgid "Share"
 msgstr "Dijeli"
 
-#: src/big_remote_play/ui/host_view.py:761
+#: src/big_remote_play/ui/host_view.py:768
 msgid "Share from this PC"
 msgstr "Dijeli s ovog računala"
 
 #: src/big_remote_play/ui/guided_setup.py:123
 msgid "Share my game"
 msgstr "Dijeli moju igru"
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:15
+msgid "Share the desktop or a single game from this computer with Sunshine"
+msgstr ""
+"Podijelite radnu površinu ili jednu igru s ovog računala putem Sunshinea"
 
 #: src/big_remote_play/ui/network_dashboard.py:188
 msgid "Share this PC"
@@ -6511,8 +6483,8 @@ msgstr "Podijeli ovo računalo"
 msgid "Sharing found"
 msgstr "Dijeljenje pronađeno"
 
-#: src/big_remote_play/ui/host_view.py:3507
-#: src/big_remote_play/ui/host_view.py:3638
+#: src/big_remote_play/ui/host_view.py:3514
+#: src/big_remote_play/ui/host_view.py:3645
 msgid "Sharing is off"
 msgstr "Dijeljenje je isključeno"
 
@@ -6520,21 +6492,21 @@ msgstr "Dijeljenje je isključeno"
 msgid "Sharing not found"
 msgstr "Dijeljenje nije pronađeno"
 
-#: src/big_remote_play/ui/host_view.py:973
+#: src/big_remote_play/ui/host_view.py:980
 msgid "Sharing now"
 msgstr "Dijeli se sada"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 164
-#: src/big_remote_play/ui/main_window.py:656
+#: src/big_remote_play/ui/main_window.py:659
 msgid "Sharing sections"
 msgstr "Odjeljci dijeljenja"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1288
-#: src/big_remote_play/ui/host_view.py:3190
+#: src/big_remote_play/ui/host_view.py:3197
 msgid "Sharing stopped"
 msgstr "Dijeljenje zaustavljeno"
 
-#: src/big_remote_play/ui/host_view.py:1323
+#: src/big_remote_play/ui/host_view.py:1330
 msgid ""
 "Sharing stopped so nothing else on this computer is shown. Open the game "
 "again to share it."
@@ -6542,13 +6514,13 @@ msgstr ""
 "Dijeljenje je zaustavljeno kako se ništa drugo s ovog računala ne bi "
 "prikazalo. Ponovno otvorite igru da biste je dijelili."
 
-#: src/big_remote_play/ui/host_view.py:1325
-#: src/big_remote_play/ui/host_view.py:1326
+#: src/big_remote_play/ui/host_view.py:1332
+#: src/big_remote_play/ui/host_view.py:1333
 msgid "Sharing stopped to protect your privacy"
 msgstr "Dijeljenje zaustavljeno radi zaštite vaše privatnosti"
 
-#: src/big_remote_play/ui/host_view.py:317
-#: src/big_remote_play/ui/host_view.py:1279
+#: src/big_remote_play/ui/host_view.py:324
+#: src/big_remote_play/ui/host_view.py:1286
 msgid ""
 "Sharing the whole screen also shows notifications and other open windows."
 msgstr ""
@@ -6565,11 +6537,11 @@ msgstr "Oštrija slika"
 msgid "Shortcuts & Instructions"
 msgstr "Prečaci i Upute"
 
-#: src/big_remote_play/ui/host_view.py:434
+#: src/big_remote_play/ui/host_view.py:441
 msgid "Show a number on every connected screen"
 msgstr "Prikaži broj na svakom povezanom zaslonu"
 
-#: src/big_remote_play/ui/host_view.py:1072
+#: src/big_remote_play/ui/host_view.py:1079
 msgid "Show all open windows"
 msgstr "Prikaži sve otvorene prozore"
 
@@ -6580,10 +6552,10 @@ msgid "Show icon in system tray and display desktop notifications"
 msgstr ""
 "Prikaži ikonu u sistemskoj traci i prikazuj obavijesti na radnoj površini"
 
-#: src/big_remote_play/ui/host_view.py:2396
+#: src/big_remote_play/ui/host_view.py:2403
 #, python-brace-format
-msgid "Show or hide the {} value"
-msgstr "Prikaži ili sakrij vrijednost {}"
+msgid "Show or hide the {field} value"
+msgstr "Prikaži ili sakrij vrijednost {field}"
 
 #: src/big_remote_play/ui/guest_view.py:361
 msgid "Show performance statistics during streaming"
@@ -6602,7 +6574,7 @@ msgstr "Prikazuje upozorenje kada mreža postane nestabilna ili prespora."
 msgid "Shows network details and tools for experienced users."
 msgstr "Prikazuje pojedinosti mreže i alate za iskusne korisnike."
 
-#: src/big_remote_play/ui/host_view.py:867
+#: src/big_remote_play/ui/host_view.py:874
 msgid "Shows the ports first; your password is requested"
 msgstr "Najprije prikazuje priključke; tražit će se vaša lozinka"
 
@@ -6705,7 +6677,12 @@ msgstr "Povećanje postotka VBV/HRD za jedan okvir"
 msgid "Software"
 msgstr "Softver"
 
-#: src/big_remote_play/ui/host_view.py:1032
+#. TRANSLATORS: video encoding on the processor instead of the graphics card.
+#: src/big_remote_play/ui/host_view.py:292
+msgid "Software (CPU)"
+msgstr "Softverski (CPU)"
+
+#: src/big_remote_play/ui/host_view.py:1039
 msgid "Solve sharing problems"
 msgstr "Riješi probleme s dijeljenjem"
 
@@ -6737,11 +6714,11 @@ msgstr ""
 msgid "Somewhere else"
 msgstr "Negdje drugdje"
 
-#: src/big_remote_play/ui/host_view.py:1002
+#: src/big_remote_play/ui/host_view.py:1009
 msgid "Sound and access on this computer"
 msgstr "Zvuk i pristup na ovom računalu"
 
-#: src/big_remote_play/ui/host_view.py:327
+#: src/big_remote_play/ui/host_view.py:334
 msgid "Source"
 msgstr "Izvor"
 
@@ -6756,12 +6733,12 @@ msgid "Stable"
 msgstr "Stabilno"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 564
-#: src/big_remote_play/ui/main_window.py:1523
+#: src/big_remote_play/ui/main_window.py:1526
 msgid "Start"
 msgstr "Započni"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 633
-#: src/big_remote_play/ui/main_window.py:1559
+#: src/big_remote_play/ui/main_window.py:1562
 msgid "Start Containers"
 msgstr "Pokreni kontejnere"
 
@@ -6775,25 +6752,25 @@ msgid "Start service"
 msgstr "Pokreni uslugu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 612
-#: src/big_remote_play/ui/host_view.py:717
-#: src/big_remote_play/ui/host_view.py:721
 #: src/big_remote_play/ui/host_view.py:724
-#: src/big_remote_play/ui/host_view.py:727
-#: src/big_remote_play/ui/host_view.py:2541
-#: src/big_remote_play/ui/host_view.py:2543
-#: src/big_remote_play/ui/host_view.py:2549
+#: src/big_remote_play/ui/host_view.py:728
+#: src/big_remote_play/ui/host_view.py:731
+#: src/big_remote_play/ui/host_view.py:734
+#: src/big_remote_play/ui/host_view.py:2548
+#: src/big_remote_play/ui/host_view.py:2550
+#: src/big_remote_play/ui/host_view.py:2556
 msgid "Start sharing"
 msgstr "Pokreni dijeljenje"
 
-#: src/big_remote_play/ui/host_view.py:3638
+#: src/big_remote_play/ui/host_view.py:3645
 msgid "Start sharing first to browse this PC."
 msgstr "Najprije pokrenite dijeljenje da biste pregledavali ovo računalo."
 
-#: src/big_remote_play/ui/host_view.py:3507
+#: src/big_remote_play/ui/host_view.py:3514
 msgid "Start sharing first to manage the game library."
 msgstr "Najprije pokrenite dijeljenje da biste upravljali bibliotekom igara."
 
-#: src/big_remote_play/ui/host_view.py:1645
+#: src/big_remote_play/ui/host_view.py:1652
 msgid "Start sharing first, then enter the password again."
 msgstr "Najprije pokrenite dijeljenje, a zatim ponovno unesite lozinku."
 
@@ -6805,13 +6782,13 @@ msgstr "Pokrenite dijeljenje na računalu za igranje i ponovno pretražite."
 msgid "Start sharing on the game PC. It will appear here."
 msgstr "Pokrenite dijeljenje na računalu za igranje. Pojavit će se ovdje."
 
-#: src/big_remote_play/ui/host_view.py:727
-#: src/big_remote_play/ui/host_view.py:2549
+#: src/big_remote_play/ui/host_view.py:734
+#: src/big_remote_play/ui/host_view.py:2556
 msgid "Start sharing the game from this PC"
 msgstr "Počni dijeliti igru s ovog računala"
 
-#: src/big_remote_play/ui/host_view.py:2156
-#: src/big_remote_play/ui/host_view.py:2557
+#: src/big_remote_play/ui/host_view.py:2163
+#: src/big_remote_play/ui/host_view.py:2564
 msgid "Start sharing to show paired devices"
 msgstr "Počni dijeliti da bi se prikazali upareni uređaji"
 
@@ -6824,21 +6801,15 @@ msgstr "Pokretanje ${unit}…"
 msgid "Starting ZeroTier…"
 msgstr "Pokretanje ZeroTiera…"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 612
-#: src/big_remote_play/ui/host_view.py:2435
-msgid "Starting game sharing..."
-msgstr "Pokretanje dijeljenja igre..."
+#: src/big_remote_play/ui/host_view.py:2442
+msgid "Starting game sharing…"
+msgstr "Pokretanje dijeljenja igre…"
 
-#: src/big_remote_play/ui/network_dashboard.py:272
+#: src/big_remote_play/ui/network_dashboard.py:280
 msgid "Starting it asks for your password once."
 msgstr "Pokretanje jednom traži vašu lozinku."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 67
 #: src/big_remote_play/ui/private_network_view.py:800
-msgid "Starting..."
-msgstr "Pokretanje..."
-
 #: src/big_remote_play/ui/remote_connection.py:647
 msgid "Starting…"
 msgstr "Pokretanje…"
@@ -6860,14 +6831,14 @@ msgstr "Stanje nepoznato"
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:241
 #, python-brace-format
-msgid "Status: {}"
-msgstr "Stanje: {}"
+msgid "Status: {status}"
+msgstr "Stanje: {status}"
 
-#: src/big_remote_play/ui/host_view.py:582
+#: src/big_remote_play/ui/host_view.py:589
 msgid "Steam Remote Play"
 msgstr "Steam Remote Play"
 
-#: src/big_remote_play/ui/host_view.py:2710
+#: src/big_remote_play/ui/host_view.py:2717
 msgid "Steam is not recording sound"
 msgstr "Steam ne snima zvuk"
 
@@ -6907,6 +6878,10 @@ msgstr "Stereo"
 msgid "Stereo · This computer only"
 msgstr "Stereo · Samo ovo računalo"
 
+#: src/big_remote_play/ui/sunshine_preferences.py:654
+msgid "Still image"
+msgstr "Statična slika"
+
 # #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 564
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 868
@@ -6914,39 +6889,39 @@ msgstr "Stereo · Samo ovo računalo"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 206
 #: src/big_remote_play/ui/guest_view.py:875
 #: src/big_remote_play/ui/guest_view.py:899
-#: src/big_remote_play/ui/main_window.py:1523
+#: src/big_remote_play/ui/main_window.py:1526
 msgid "Stop"
 msgstr "Zaustavi"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 633
-#: src/big_remote_play/ui/main_window.py:1559
+#: src/big_remote_play/ui/main_window.py:1562
 msgid "Stop Containers"
 msgstr "Zaustavi kontejnere"
 
-#: src/big_remote_play/ui/network_dashboard.py:324
+#: src/big_remote_play/ui/network_dashboard.py:332
 msgid "Stop ZeroTier temporarily"
 msgstr "Privremeno zaustavi ZeroTier"
 
-#: src/big_remote_play/ui/network_dashboard.py:446
+#: src/big_remote_play/ui/network_dashboard.py:454
 msgid "Stop ZeroTier temporarily?"
 msgstr "Privremeno zaustaviti ZeroTier?"
 
-#: src/big_remote_play/ui/host_view.py:2435
-#: src/big_remote_play/ui/host_view.py:2482
-#: src/big_remote_play/ui/host_view.py:2484
-#: src/big_remote_play/ui/host_view.py:2490
+#: src/big_remote_play/ui/host_view.py:2442
+#: src/big_remote_play/ui/host_view.py:2489
+#: src/big_remote_play/ui/host_view.py:2491
+#: src/big_remote_play/ui/host_view.py:2497
 msgid "Stop sharing"
 msgstr "Zaustavi dijeljenje"
 
-#: src/big_remote_play/ui/host_view.py:2490
+#: src/big_remote_play/ui/host_view.py:2497
 msgid "Stop sharing the game from this PC"
 msgstr "Prestani dijeliti igru s ovog računala"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
-#: src/big_remote_play/ui/host_view.py:781
-#: src/big_remote_play/ui/host_view.py:2522
-#: src/big_remote_play/ui/main_window.py:1454
-#: src/big_remote_play/ui/main_window.py:1555
+#: src/big_remote_play/ui/host_view.py:788
+#: src/big_remote_play/ui/host_view.py:2529
+#: src/big_remote_play/ui/main_window.py:1457
+#: src/big_remote_play/ui/main_window.py:1558
 #: src/big_remote_play/ui/service_status_card.py:71
 #: src/big_remote_play/ui/service_status_card.py:90
 msgid "Stopped"
@@ -6956,10 +6931,9 @@ msgstr "Zaustavljeno"
 msgid "Stopped looking for new devices"
 msgstr "Traženje novih uređaja zaustavljeno"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1257
-#: src/big_remote_play/ui/host_view.py:3124
-msgid "Stopping server..."
-msgstr "Zaustavljanje poslužitelja..."
+#: src/big_remote_play/ui/host_view.py:3131
+msgid "Stopping server…"
+msgstr "Zaustavljanje poslužitelja…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 221
@@ -6969,7 +6943,7 @@ msgstr ""
 "Pohrani korisničko ime/lozinku odvojeno od Sunshineove datoteke stanja."
 
 #. TRANSLATORS: sidebar heading above the Sunshine or Moonlight card.
-#: src/big_remote_play/ui/main_window.py:516
+#: src/big_remote_play/ui/main_window.py:519
 msgid "Streaming"
 msgstr "Strujanje"
 
@@ -6980,13 +6954,6 @@ msgid "Strictly enforce frame bitrate limits for H.264/HEVC on AMD GPUs"
 msgstr ""
 "Strogo provodite ograničenja bitratea okvira za H.264/HEVC na AMD GPU-ima"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 88
-#: src/big_remote_play/host/sunshine_manager.py:542
-#, python-brace-format
-msgid "Sunshine API request failed: {}"
-msgstr "Zahtjev prema Sunshine API-ju nije uspio: {}"
-
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 20
 #: src/big_remote_play/ui/main_window.py:70
 msgid "Sunshine Game Stream Host"
@@ -6994,21 +6961,14 @@ msgstr "Sunshine, domaćin za prijenos igara"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 264
-#: src/big_remote_play/ui/host_view.py:3466
+#: src/big_remote_play/ui/host_view.py:3473
 msgid "Sunshine Logs"
 msgstr "Sunshine dnevnici"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 113
-#: src/big_remote_play/ui/host_view.py:312
+#: src/big_remote_play/ui/host_view.py:319
 msgid "Sunshine Offline"
 msgstr "Sunshine izvan mreže"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
-# line: 265
-#: src/big_remote_play/ui/host_view.py:1624
-#: src/big_remote_play/ui/host_view.py:2058
-msgid "Sunshine Password"
-msgstr "Sunshine Lozinka"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 263
@@ -7018,8 +6978,8 @@ msgstr "Sunshineovo izvršno okruženje"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 264
-#: src/big_remote_play/ui/host_view.py:1622
-#: src/big_remote_play/ui/host_view.py:2054
+#: src/big_remote_play/ui/host_view.py:1629
+#: src/big_remote_play/ui/host_view.py:2061
 msgid "Sunshine User"
 msgstr "Sunshine korisnik"
 
@@ -7027,7 +6987,7 @@ msgstr "Sunshine korisnik"
 msgid "Sunshine answers"
 msgstr "Sunshine odgovara"
 
-#: src/big_remote_play/ui/host_view.py:600
+#: src/big_remote_play/ui/host_view.py:607
 msgid ""
 "Sunshine asks a compatible router when it starts. Enabling this does not "
 "confirm that the ports opened."
@@ -7035,7 +6995,7 @@ msgstr ""
 "Sunshine pri pokretanju šalje zahtjev kompatibilnom usmjerivaču. "
 "Omogućivanje ove mogućnosti ne potvrđuje da su priključci otvoreni."
 
-#: src/big_remote_play/ui/host_view.py:1556
+#: src/big_remote_play/ui/host_view.py:1563
 #, python-brace-format
 msgid ""
 "Sunshine cannot create their virtual controller: this user cannot open "
@@ -7045,7 +7005,7 @@ msgstr ""
 "otvoriti {devices}. Ponovno pokrenite ovo računalo jednom nakon instalacije "
 "ili ažuriranja Sunshinea."
 
-#: src/big_remote_play/ui/host_view.py:1763
+#: src/big_remote_play/ui/host_view.py:1770
 msgid ""
 "Sunshine chooses compatible capture and encoding at startup. You can still "
 "set a video bitrate ceiling."
@@ -7053,11 +7013,11 @@ msgstr ""
 "Sunshine pri pokretanju odabire kompatibilno snimanje i kodiranje. I dalje "
 "možete postaviti gornju granicu brzine prijenosa videa."
 
-#: src/big_remote_play/ui/host_view.py:1645
+#: src/big_remote_play/ui/host_view.py:1652
 msgid "Sunshine did not answer"
 msgstr "Sunshine nije odgovorio"
 
-#: src/big_remote_play/ui/host_view.py:1695
+#: src/big_remote_play/ui/host_view.py:1702
 msgid ""
 "Sunshine did not close it. Try again, or stop sharing and start it again."
 msgstr ""
@@ -7070,6 +7030,7 @@ msgstr "Sunshine ne odgovara. Pokrenite dijeljenje na računalu za igranje."
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
+#: src/big_remote_play/host/sunshine_manager.py:199
 #: src/big_remote_play/host/sunshine_manager.py:716
 #: src/big_remote_play/utils/system_check.py:184
 msgid "Sunshine executable not found"
@@ -7081,45 +7042,32 @@ msgstr "Izvršna datoteka Sunshinea nije pronađena"
 msgid "Sunshine failed to report its version"
 msgstr "Sunshine nije uspio prijaviti svoju verziju"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 86
 #: src/big_remote_play/host/sunshine_manager.py:268
 #, python-brace-format
-msgid "Sunshine failed to start (Exit code {}).\n"
-msgstr "Sunshine se nije uspio pokrenuti (Izlazni kod {}).\n"
+msgid "Sunshine failed to start (exit code {code}).\n"
+msgstr "Sunshine se nije uspio pokrenuti (Izlazni kod {code}).\n"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 90
-#: src/big_remote_play/host/sunshine_manager.py:272
-#, python-brace-format
-msgid "Sunshine failed to start (Exit code {}). Check logs."
-msgstr ""
-"Sunshine se nije uspio pokrenuti (Izlazni kod {}). Provjerite dnevnike."
-
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1411
-#: src/big_remote_play/ui/host_view.py:3236
+#: src/big_remote_play/ui/host_view.py:3243
 #, python-brace-format
 msgid ""
 "Sunshine failed to start.\n"
 "\n"
-"Error: {}\n"
+"Error: {error}\n"
 "\n"
 "If this is a dependency issue (missing libraries), try the 'Fix "
 "Dependencies' button."
 msgstr ""
 "Sunshine se nije uspio pokrenuti.\n"
 "\n"
-"Greška: {}\n"
+"Greška: {error}\n"
 "\n"
 "Ako je ovo problem s ovisnostima (nedostajuće biblioteke), pokušajte s "
 "gumbom 'Popravi ovisnosti'."
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 88
-#: src/big_remote_play/host/sunshine_manager.py:270
-#, python-brace-format
-msgid "Sunshine failed to start: {}"
-msgstr "Sunshine se nije uspio pokrenuti: {}"
+#: src/big_remote_play/host/sunshine_manager.py:194
+#: src/big_remote_play/host/sunshine_manager.py:195
+msgid "Sunshine is already running."
+msgstr "Sunshine se već izvodi."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 263
@@ -7135,14 +7083,8 @@ msgstr "Sunshine nije dostupan."
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
-#: src/big_remote_play/host/sunshine_manager.py:300
-msgid "Sunshine is not running"
-msgstr "Sunshine ne radi"
-
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 115
-#: src/big_remote_play/ui/host_view.py:3274
-#: src/big_remote_play/ui/main_window.py:1371
+#: src/big_remote_play/ui/host_view.py:3281
+#: src/big_remote_play/ui/main_window.py:1374
 #: src/big_remote_play/ui/sunshine_preferences.py:367
 msgid "Sunshine is not running."
 msgstr "Sunshine ne radi"
@@ -7153,11 +7095,13 @@ msgstr "Sunshine ne radi"
 msgid "Sunshine is not running. Settings are saved to file."
 msgstr "Sunshine ne radi. Postavke su spremljene u datoteku."
 
-#: src/big_remote_play/ui/host_view.py:1618
+#: src/big_remote_play/ui/host_view.py:1625
+#: src/big_remote_play/ui/host_view.py:1631
+#: src/big_remote_play/ui/host_view.py:2065
 msgid "Sunshine password"
 msgstr "Sunshine lozinka"
 
-#: src/big_remote_play/ui/host_view.py:1638
+#: src/big_remote_play/ui/host_view.py:1645
 msgid "Sunshine password saved. Devices can be approved right away."
 msgstr "Sunshine lozinka spremljena. Uređaji se mogu odmah odobravati."
 
@@ -7166,7 +7110,7 @@ msgstr "Sunshine lozinka spremljena. Uređaji se mogu odmah odobravati."
 msgid "Sunshine port settings"
 msgstr "Postavke Sunshineovih priključaka"
 
-#: src/big_remote_play/ui/host_view.py:579
+#: src/big_remote_play/ui/host_view.py:586
 msgid "Sunshine records now"
 msgstr "Sunshine sada snima"
 
@@ -7182,11 +7126,11 @@ msgstr "Sunshine je odbio PIN"
 msgid "Sunshine rejected the credentials"
 msgstr "Sunshine je odbio podatke za prijavu"
 
-#: src/big_remote_play/ui/host_view.py:1508
+#: src/big_remote_play/ui/host_view.py:1515
 msgid "Sunshine rejected the saved password"
 msgstr "Sunshine je odbio spremljenu lozinku"
 
-#: src/big_remote_play/ui/host_view.py:1950
+#: src/big_remote_play/ui/host_view.py:1957
 msgid "Sunshine rejected the saved password."
 msgstr "Sunshine je odbio spremljenu lozinku."
 
@@ -7194,20 +7138,13 @@ msgstr "Sunshine je odbio spremljenu lozinku."
 msgid "Sunshine runtime is available"
 msgstr "Sunshineovo izvršno okruženje je dostupno"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 105
-#: src/big_remote_play/host/sunshine_manager.py:285
-#, python-brace-format
-msgid "Sunshine started (PID: {})"
-msgstr "Sunshine je pokrenut (PID: {})"
-
-#: src/big_remote_play/ui/host_view.py:1504
+#: src/big_remote_play/ui/host_view.py:1511
 msgid "Sunshine's password is needed to approve devices"
 msgstr "Za odobravanje uređaja potrebna je Sunshine lozinka"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 332
-#: src/big_remote_play/ui/host_view.py:1039
+#: src/big_remote_play/ui/host_view.py:1046
 msgid "Support"
 msgstr "Podrška"
 
@@ -7231,7 +7168,7 @@ msgstr ""
 "Mijenjajte Tailscale ili Headscale račune i upravljajte s više ZeroTier "
 "mreža."
 
-#: src/big_remote_play/ui/network_dashboard.py:315
+#: src/big_remote_play/ui/network_dashboard.py:323
 msgid "Switch Tailscale or Headscale accounts, and see every ZeroTier network."
 msgstr ""
 "Mijenjajte Tailscale ili Headscale račune i pregledajte sve ZeroTier mreže."
@@ -7245,8 +7182,8 @@ msgstr ""
 
 #: src/big_remote_play/ui/tailscale_accounts.py:108
 #, python-brace-format
-msgid "Switch to {}"
-msgstr "Prebaci na {}"
+msgid "Switch to {name}"
+msgstr "Prebaci na {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 997
 #: src/big_remote_play/ui/guest_view.py:2321
@@ -7256,26 +7193,26 @@ msgstr "Prebacivanje monitora"
 #: src/big_remote_play/ui/tailscale_accounts.py:126
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:251
 #, python-brace-format
-msgid "Switching to {}…"
-msgstr "Prebacivanje na {}…"
+msgid "Switching to {name}…"
+msgstr "Prebacivanje na {name}…"
 
 #: src/big_remote_play/ui/remote_connection.py:790
 msgid "System"
 msgstr "Sustav"
 
-#: src/big_remote_play/ui/host_view.py:2700
+#: src/big_remote_play/ui/host_view.py:2707
 msgid "System audio unavailable"
 msgstr "Zvuk sustava nije dostupan"
 
-#: src/big_remote_play/ui/host_view.py:2696
+#: src/big_remote_play/ui/host_view.py:2703
 msgid "System audio unavailable: no output device was found."
 msgstr "Zvuk sustava nije dostupan: nije pronađen nijedan izlazni uređaj."
 
-#: src/big_remote_play/ui/host_view.py:2760
+#: src/big_remote_play/ui/host_view.py:2767
 msgid "System audio unavailable: there is no output to test."
 msgstr "Zvuk sustava nije dostupan: nema izlaza za testiranje."
 
-#: src/big_remote_play/ui/host_view.py:1905
+#: src/big_remote_play/ui/host_view.py:1912
 msgid "System keyring is unavailable. Password was not saved."
 msgstr "Privjesak ključeva sustava nije dostupan. Lozinka nije spremljena."
 
@@ -7328,7 +7265,7 @@ msgstr "Tailscale nije prihvatio promjenu. Pokušajte ponovno."
 msgid "Tailscale download page"
 msgstr "Stranica za preuzimanje Tailscalea"
 
-#: src/big_remote_play/ui/host_view.py:1520
+#: src/big_remote_play/ui/host_view.py:1527
 msgid "Tailscale or Headscale"
 msgstr "Tailscale ili Headscale"
 
@@ -7346,7 +7283,7 @@ msgstr ""
 "uključujući CGNAT, bez otvaranja priključaka i bez izlaganja Sunshinea "
 "internetu."
 
-#: src/big_remote_play/ui/host_view.py:573
+#: src/big_remote_play/ui/host_view.py:580
 msgid "Technical audio details"
 msgstr "Tehnički detalji zvuka"
 
@@ -7357,15 +7294,16 @@ msgid "Technical details"
 msgstr "Tehnički detalji"
 
 #: src/big_remote_play/ui/api_access_dialog.py:331
-msgid "Technical details:"
-msgstr "Tehnički detalji:"
+#, python-brace-format
+msgid "Technical details: {detail}"
+msgstr "Tehnički detalji: {detail}"
 
-#: src/big_remote_play/ui/host_view.py:566
+#: src/big_remote_play/ui/host_view.py:573
 msgid "Test"
 msgstr "Testiraj"
 
-#: src/big_remote_play/ui/host_view.py:563
-#: src/big_remote_play/ui/host_view.py:567
+#: src/big_remote_play/ui/host_view.py:570
+#: src/big_remote_play/ui/host_view.py:574
 msgid "Test audio"
 msgstr "Testiraj zvuk"
 
@@ -7453,7 +7391,7 @@ msgstr ""
 "kooperativno igranje — bez vlasničkih platformi, bez ograničenja, bez limita "
 "na koje igre možete igrati."
 
-#: src/big_remote_play/ui/host_view.py:2327
+#: src/big_remote_play/ui/host_view.py:2334
 msgid "The Sunshine port is outside the supported range."
 msgstr "Sunshineov priključak izvan je podržanog raspona."
 
@@ -7465,7 +7403,7 @@ msgstr ""
 "Usluga ZeroTier ne može pristupiti internetu. Provjerite vezu ili blokira li "
 "vatrozid UDP priključak 9993."
 
-#: src/big_remote_play/ui/network_dashboard.py:450
+#: src/big_remote_play/ui/network_dashboard.py:458
 msgid ""
 "The active VPN connection will stop. Saved accounts are kept so you can "
 "reconnect later."
@@ -7478,7 +7416,7 @@ msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr "Administrator mora podijeliti čvor ili pozvati vašu e-adresu u mrežu."
 
-#: src/big_remote_play/ui/host_view.py:2871
+#: src/big_remote_play/ui/host_view.py:2878
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr ""
 "Naredba aplikacije nije valjana. Provjerite navodnike i pokušajte ponovno."
@@ -7501,7 +7439,7 @@ msgstr ""
 msgid "The checks could not run."
 msgstr "Provjere se nisu mogle pokrenuti."
 
-#: src/big_remote_play/ui/host_view.py:2274
+#: src/big_remote_play/ui/host_view.py:2281
 msgid ""
 "The chosen device plays the sound here too. Choose Automatic to share "
 "without playing it here."
@@ -7517,7 +7455,7 @@ msgstr "Računalo se pojavljuje na popisu uređaja ove mreže."
 msgid "The computer seems to be offline"
 msgstr "Čini se da je računalo izvan mreže"
 
-#: src/big_remote_play/ui/host_view.py:2718
+#: src/big_remote_play/ui/host_view.py:2725
 msgid "The connected client asked Sunshine not to play sound on this computer."
 msgstr ""
 "Povezani klijent zatražio je od Sunshinea da ne reproducira zvuk na ovom "
@@ -7566,15 +7504,20 @@ msgstr "Datoteka u kojoj su pohranjeni trenutni logovi Sunshinea."
 msgid "The file that stores Sunshine's current state."
 msgstr "Datoteka u kojoj je pohranjeno trenutno stanje Sunshine-a"
 
-#: src/big_remote_play/ui/host_view.py:858
+#: src/big_remote_play/ui/host_view.py:865
 msgid "The firewall blocks other computers"
 msgstr "Vatrozid blokira druga računala"
 
-#: src/big_remote_play/ui/host_view.py:2358
+#: src/big_remote_play/ui/host_view.py:2357
+#, python-brace-format
+msgid "The firewall helper was not found: {path}"
+msgstr "Pomoćni program vatrozida nije pronađen: {path}"
+
+#: src/big_remote_play/ui/host_view.py:2365
 msgid "The firewall now allows Sunshine's ports."
 msgstr "Vatrozid sada dopušta Sunshineove priključke."
 
-#: src/big_remote_play/ui/host_view.py:2330
+#: src/big_remote_play/ui/host_view.py:2337
 #, python-brace-format
 msgid ""
 "The firewall will allow incoming TCP {tcp} and UDP {udp}, plus 5353/UDP "
@@ -7622,19 +7565,19 @@ msgstr "Računalo za igranje odlučuje mogu li se ovi zahtjevi primijeniti."
 msgid "The game PC's firewall blocks the game ports"
 msgstr "Vatrozid računala s igrom blokira priključke igre"
 
-#: src/big_remote_play/ui/host_view.py:1314
-#: src/big_remote_play/ui/host_view.py:1315
+#: src/big_remote_play/ui/host_view.py:1321
+#: src/big_remote_play/ui/host_view.py:1322
 msgid ""
 "The game closed before sharing started. Open it again, then select Refresh."
 msgstr ""
 "Igra se zatvorila prije početka dijeljenja. Ponovno je otvorite, a zatim "
 "odaberite Osvježi."
 
-#: src/big_remote_play/ui/host_view.py:1323
+#: src/big_remote_play/ui/host_view.py:1330
 msgid "The game window closed"
 msgstr "Prozor igre je zatvoren"
 
-#: src/big_remote_play/ui/host_view.py:1326
+#: src/big_remote_play/ui/host_view.py:1333
 msgid ""
 "The game window could no longer be captured on its own, so sharing stopped. "
 "Nothing else on this computer was shown."
@@ -7642,7 +7585,7 @@ msgstr ""
 "Prozor igre više se nije mogao snimati zasebno, pa je dijeljenje "
 "zaustavljeno. Ništa drugo s ovog računala nije prikazano."
 
-#: src/big_remote_play/ui/host_view.py:1311
+#: src/big_remote_play/ui/host_view.py:1318
 msgid "The game window was not confirmed, so sharing did not start."
 msgstr "Prozor igre nije potvrđen, pa dijeljenje nije počelo."
 
@@ -7674,7 +7617,7 @@ msgstr "Jezik koji se koristi za korisničko sučelje Sunshinea."
 msgid "The main configuration file for Sunshine."
 msgstr "Glavna konfiguracijska datoteka za Sunshine."
 
-#: src/big_remote_play/ui/network_dashboard.py:438
+#: src/big_remote_play/ui/network_dashboard.py:446
 msgid "The network could not be created."
 msgstr "Mreža se nije mogla stvoriti."
 
@@ -7682,7 +7625,7 @@ msgstr "Mreža se nije mogla stvoriti."
 msgid "The network has not answered yet"
 msgstr "Mreža još nije odgovorila"
 
-#: src/big_remote_play/ui/network_dashboard.py:393
+#: src/big_remote_play/ui/network_dashboard.py:401
 msgid ""
 "The network is private: every new device must be approved. This computer "
 "joins and is approved automatically."
@@ -7700,7 +7643,7 @@ msgstr ""
 
 #: src/big_remote_play/ui/network_common.py:133
 #: src/big_remote_play/ui/network_common.py:151
-#: src/big_remote_play/ui/network_dashboard.py:251
+#: src/big_remote_play/ui/network_dashboard.py:259
 msgid "The network owner still needs to approve this computer."
 msgstr "Vlasnik mreže još mora odobriti ovo računalo."
 
@@ -7719,11 +7662,11 @@ msgstr "Radnja nije uspjela."
 msgid "The operation took longer than expected."
 msgstr "Radnja je trajala dulje od očekivanog."
 
-#: src/big_remote_play/ui/host_view.py:1947
+#: src/big_remote_play/ui/host_view.py:1954
 msgid "The other PC is paired."
 msgstr "Drugo računalo je upareno."
 
-#: src/big_remote_play/ui/host_view.py:531
+#: src/big_remote_play/ui/host_view.py:538
 msgid ""
 "The other computer hears the sound this computer plays. The microphone is "
 "not sent."
@@ -7768,7 +7711,7 @@ msgstr ""
 msgid "The person who created the network gives you this code."
 msgstr "Ovaj kod dobivate od osobe koja je stvorila mrežu."
 
-#: src/big_remote_play/ui/host_view.py:1318
+#: src/big_remote_play/ui/host_view.py:1325
 msgid ""
 "The private game screen could not start. Check that KDE Plasma "
 "(kwin_wayland) and the GStreamer plugins are installed."
@@ -7802,7 +7745,7 @@ msgstr ""
 msgid "The saved credentials could not be read."
 msgstr "Spremljeni podaci za prijavu nisu se mogli pročitati."
 
-#: src/big_remote_play/ui/host_view.py:2918
+#: src/big_remote_play/ui/host_view.py:2925
 msgid ""
 "The selected audio output is unavailable. Choose Automatic or reconnect the "
 "device."
@@ -7810,7 +7753,7 @@ msgstr ""
 "Odabrani zvučni izlaz nije dostupan. Odaberite Automatski ili ponovno "
 "povežite uređaj."
 
-#: src/big_remote_play/ui/host_view.py:2694
+#: src/big_remote_play/ui/host_view.py:2701
 msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr ""
 "Odabrani izlaz nije povezan. Ponovno ga povežite ili odaberite Automatski."
@@ -7847,7 +7790,7 @@ msgid ""
 msgstr ""
 "Usluga nije dostupna. Provjerite internetsku vezu i adresu poslužitelja."
 
-#: src/big_remote_play/ui/network_dashboard.py:358
+#: src/big_remote_play/ui/network_dashboard.py:366
 msgid "The service could not be started."
 msgstr "Usluga se nije mogla pokrenuti."
 
@@ -7867,7 +7810,7 @@ msgstr "Usluga radi"
 msgid "The stream did not start"
 msgstr "Prijenos nije započeo"
 
-#: src/big_remote_play/ui/host_view.py:1695
+#: src/big_remote_play/ui/host_view.py:1702
 msgid "The stream is still open"
 msgstr "Prijenos je još otvoren"
 
@@ -7883,12 +7826,12 @@ msgstr ""
 "Privjesak ključeva sustava zaključan je ili nedostupan. Otključajte ga i "
 "pokušajte ponovno."
 
-#: src/big_remote_play/ui/host_view.py:2762
+#: src/big_remote_play/ui/host_view.py:2769
 #, python-brace-format
 msgid "The tone could not be played on {output}."
 msgstr "Ton se nije mogao reproducirati na uređaju {output}."
 
-#: src/big_remote_play/ui/host_view.py:2766
+#: src/big_remote_play/ui/host_view.py:2773
 #, python-brace-format
 msgid ""
 "The tone did not reach the shared sound. Check the output volume and that "
@@ -7897,13 +7840,13 @@ msgstr ""
 "Ton nije stigao do dijeljenog zvuka. Provjerite glasnoću izlaza i je li "
 "{output} izlaz koji čujete."
 
-#: src/big_remote_play/ui/host_view.py:2764
+#: src/big_remote_play/ui/host_view.py:2771
 #, python-brace-format
 msgid "The tone reached the shared sound ({level:.0f} dB on {output})."
 msgstr ""
 "Ton je stigao do dijeljenog zvuka ({level:.0f} dB na uređaju {output})."
 
-#: src/big_remote_play/ui/host_view.py:1619
+#: src/big_remote_play/ui/host_view.py:1626
 msgid ""
 "The user and password of Sunshine on this computer, the ones of its web "
 "panel. They are kept in the system keyring."
@@ -7911,7 +7854,7 @@ msgstr ""
 "Korisnik i lozinka za Sunshine na ovom računalu, isti kao za njegovu web "
 "ploču. Čuvaju se u privjesku ključeva sustava."
 
-#: src/big_remote_play/ui/host_view.py:1312
+#: src/big_remote_play/ui/host_view.py:1319
 msgid ""
 "The window chosen in the system dialog is not the selected game. Try again "
 "and choose the same game."
@@ -7945,7 +7888,7 @@ msgstr ""
 "Ove postavke šalju zahtjev računalu za igranje ili provjeravaju vezu. "
 "Računalo za igranje može zanemariti zahtjeve koje ne podržava."
 
-#: src/big_remote_play/ui/network_dashboard.py:249
+#: src/big_remote_play/ui/network_dashboard.py:257
 msgid ""
 "They approve it in ZeroTier Central or in Big Remote Play. This page updates "
 "when you refresh."
@@ -7953,14 +7896,14 @@ msgstr ""
 "Vlasnik mreže odobrava ga u ZeroTier Centralu ili u Big Remote Playu. Ova se "
 "stranica ažurira kada je osvježite."
 
-#: src/big_remote_play/ui/host_view.py:931
+#: src/big_remote_play/ui/host_view.py:938
 msgid "This PC did not appear in the list?"
 msgstr "Ovo se računalo nije pojavilo na popisu?"
 
 #: src/big_remote_play/ui/private_network_view.py:550
 #, python-brace-format
-msgid "This PC is on the {} private network."
-msgstr "Ovo računalo je na privatnoj mreži {}."
+msgid "This PC is on the {name} private network."
+msgstr "Ovo računalo je na privatnoj mreži {name}."
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:157
 msgid ""
@@ -7998,7 +7941,7 @@ msgstr "Ovaj kod nije potpun"
 msgid "This computer"
 msgstr "Ovo računalo"
 
-#: src/big_remote_play/ui/host_view.py:1010
+#: src/big_remote_play/ui/host_view.py:1017
 msgid ""
 "This computer captures and encodes the game. Under Connect → Image, the "
 "other computer requests resolution, frame rate and video bitrate. The "
@@ -8037,13 +7980,17 @@ msgstr ""
 "Ovo je računalo odobreno, ali mu mreža još nije dodijelila adresu. Vlasnik "
 "mreže može je dodijeliti."
 
-#: src/big_remote_play/ui/network_dashboard.py:207
+#: src/big_remote_play/ui/network_dashboard.py:210
 #, python-brace-format
-msgid ""
+msgid "This computer is in {count} ZeroTier network. Manage network lists it."
+msgid_plural ""
 "This computer is in {count} ZeroTier networks. Manage network lists them all."
-msgstr ""
-"Broj ZeroTier mreža u kojima je ovo računalo: {count}. Sve su navedene pod "
-"Upravljaj mrežom."
+msgstr[0] ""
+"Ovo je računalo u {count} ZeroTier mreži. Upravljaj mrežom je prikazuje."
+msgstr[1] ""
+"Ovo je računalo u {count} ZeroTier mreže. Upravljaj mrežom prikazuje ih sve."
+msgstr[2] ""
+"Ovo je računalo u {count} ZeroTier mreža. Upravljaj mrežom prikazuje ih sve."
 
 #: src/big_remote_play/ui/remote_connection.py:52
 msgid "This computer is not connected to the internet"
@@ -8052,6 +7999,10 @@ msgstr "Ovo računalo nije povezano s internetom"
 #: src/big_remote_play/ui/network_devices.py:228
 msgid "This computer is not connected to this network."
 msgstr "Ovo računalo nije povezano s ovom mrežom."
+
+#: src/big_remote_play/ui/network_devices.py:594
+msgid "This computer is not in the Tailscale device list yet."
+msgstr "Ovo računalo još nije na popisu uređaja Tailscalea."
 
 #: src/big_remote_play/ui/network_common.py:130
 #, python-brace-format
@@ -8083,7 +8034,7 @@ msgstr ""
 msgid "This computer only"
 msgstr "Samo ovo računalo"
 
-#: src/big_remote_play/ui/main_window.py:986
+#: src/big_remote_play/ui/main_window.py:989
 msgid "This computer runs the game. Share a game or your whole desktop."
 msgstr ""
 "Igra se izvodi na ovom računalu. Dijelite igru ili cijelu radnu površinu."
@@ -8114,7 +8065,7 @@ msgstr ""
 msgid "This computer's address"
 msgstr "Adresa ovog računala"
 
-#: src/big_remote_play/ui/host_view.py:876
+#: src/big_remote_play/ui/host_view.py:883
 msgid "This computer's controller comes first"
 msgstr "Kontroler ovog računala ima prednost"
 
@@ -8140,7 +8091,7 @@ msgstr "Ovi se podaci za prijavu nisu mogli spremiti."
 msgid "This credential is of a different type than the one selected."
 msgstr "Ovi su podaci za prijavu druge vrste od odabrane."
 
-#: src/big_remote_play/ui/host_view.py:1313
+#: src/big_remote_play/ui/host_view.py:1320
 msgid ""
 "This desktop cannot share a single window. Update KDE Plasma, or choose Full "
 "Desktop."
@@ -8366,24 +8317,23 @@ msgstr ""
 msgid "Traffic passes through a relay server, which can add latency."
 msgstr "Promet prolazi kroz relejni poslužitelj, što može povećati kašnjenje."
 
+#: src/big_remote_play/ui/sunshine_preferences.py:565
+msgid "Transcoding"
+msgstr "Transkodiranje"
+
 #: src/big_remote_play/ui/sunshine_preferences.py:411
 msgid "Trusted Web UI Origins"
 msgstr "Pouzdani izvori web-sučelja"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1118
-#: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:913
-msgid "Try Again"
-msgstr "Pokušajte ponovo"
-
 #: src/big_remote_play/ui/guest_view.py:1870
-#: src/big_remote_play/ui/network_dashboard.py:295
+#: src/big_remote_play/ui/installer_window.py:200
+#: src/big_remote_play/ui/network_dashboard.py:303
+#: src/big_remote_play/ui/private_network_view.py:913
 #: src/big_remote_play/ui/zerotier_join.py:109
 msgid "Try again"
 msgstr "Pokušaj ponovno"
 
-#: src/big_remote_play/ui/network_dashboard.py:300
+#: src/big_remote_play/ui/network_dashboard.py:308
 msgid "Try again. If it keeps happening, check the technical details."
 msgstr ""
 "Pokušajte ponovno. Ako se problem ponavlja, provjerite tehničke detalje."
@@ -8393,13 +8343,13 @@ msgid "Try again. Technical details show what ZeroTier answered."
 msgstr ""
 "Pokušajte ponovno. Tehnički detalji pokazuju što je ZeroTier odgovorio."
 
-#: src/big_remote_play/ui/host_view.py:599
+#: src/big_remote_play/ui/host_view.py:606
 msgid "Try automatic port forwarding (UPnP)"
 msgstr "Pokušaj automatskog prosljeđivanja priključaka (UPnP)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 416
-#: src/big_remote_play/ui/sunshine_preferences.py:650
+#: src/big_remote_play/ui/sunshine_preferences.py:658
 msgid ""
 "Tuning options, which are applied after the preset. Defaults to zerolatency."
 msgstr ""
@@ -8436,13 +8386,17 @@ msgstr "UDP priključci"
 msgid "UPnP"
 msgstr "UPnP"
 
+#: src/big_remote_play/ui/sunshine_preferences.py:569
+msgid "Ultra-low latency"
+msgstr "Iznimno niska latencija"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 112
-#: src/big_remote_play/ui/host_view.py:2626
+#: src/big_remote_play/ui/host_view.py:2633
 msgid "Unavailable"
 msgstr "Nedostupno"
 
-#: src/big_remote_play/ui/host_view.py:2304
+#: src/big_remote_play/ui/host_view.py:2311
 #, python-brace-format
 msgid "Unavailable: {device}"
 msgstr "Nedostupno: {device}"
@@ -8456,8 +8410,8 @@ msgstr "Nedostupno: {device}"
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 215
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 226
 #: src/big_remote_play/ui/host_view.py:226
-#: src/big_remote_play/ui/host_view.py:1787
-#: src/big_remote_play/ui/host_view.py:1792
+#: src/big_remote_play/ui/host_view.py:1794
+#: src/big_remote_play/ui/host_view.py:1799
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:241
 #: src/big_remote_play/utils/system_check.py:176
 #: src/big_remote_play/utils/system_check.py:179
@@ -8479,8 +8433,8 @@ msgstr "Nepoznata VPN usluga: ${provider}"
 # 147
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 215
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 226
-#: src/big_remote_play/ui/host_view.py:2214
-#: src/big_remote_play/ui/host_view.py:3348
+#: src/big_remote_play/ui/host_view.py:2221
+#: src/big_remote_play/ui/host_view.py:3355
 msgid "Unknown device"
 msgstr "Nepoznat uređaj"
 
@@ -8497,11 +8451,11 @@ msgid "Unlock the bitrate limit"
 msgstr "Ukloni ograničenje brzine prijenosa"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 685
-#: src/big_remote_play/ui/host_view.py:3567
+#: src/big_remote_play/ui/host_view.py:3574
 msgid "Unnamed"
 msgstr "Bez naziva"
 
-#: src/big_remote_play/ui/host_view.py:1988
+#: src/big_remote_play/ui/host_view.py:1995
 msgid "Unnamed device"
 msgstr "Uređaj bez naziva"
 
@@ -8510,11 +8464,11 @@ msgstr "Uređaj bez naziva"
 msgid "Unstable"
 msgstr "Nestabilno"
 
-#: src/big_remote_play/ui/host_view.py:522
+#: src/big_remote_play/ui/host_view.py:529
 msgid "Unstable network mode"
 msgstr "Način rada za nestabilnu mrežu"
 
-#: src/big_remote_play/ui/host_view.py:3700
+#: src/big_remote_play/ui/host_view.py:3707
 msgid "Up one level"
 msgstr "Jednu razinu gore"
 
@@ -8607,7 +8561,7 @@ msgstr "Koristite samo kada oba računala i zaslon podržavaju HDR."
 msgid "Use the controller to move the mouse"
 msgstr "Koristi kontroler za pomicanje miša"
 
-#: src/big_remote_play/ui/guest_view.py:1912
+#: src/big_remote_play/ui/guest_view.py:1914
 msgid "Use the form WIDTHxHEIGHT, e.g. 1920x1080."
 msgstr "Upotrijebite oblik ŠIRINAxVISINA, npr. 1920x1080."
 
@@ -8620,7 +8574,7 @@ msgstr ""
 msgid "Use the touchscreen as a virtual trackpad"
 msgstr "Koristi dodirni zaslon kao virtualnu dodirnu pločicu"
 
-#: src/big_remote_play/ui/host_view.py:647
+#: src/big_remote_play/ui/host_view.py:654
 msgid "Use these when you need to inspect or manage Sunshine."
 msgstr "Ove mogućnosti koristite za provjeru ili upravljanje Sunshineom."
 
@@ -8640,7 +8594,7 @@ msgstr "Koristi razlučivost ovog zaslona"
 msgid "Use this when the controller labels do not match the game."
 msgstr "Koristite kada oznake kontrolera ne odgovaraju igri."
 
-#: src/big_remote_play/ui/main_window.py:957
+#: src/big_remote_play/ui/main_window.py:960
 msgid "Use your gaming PC from anywhere"
 msgstr "Koristite svoje računalo za igranje s bilo kojeg mjesta"
 
@@ -8649,7 +8603,7 @@ msgstr "Koristite svoje računalo za igranje s bilo kojeg mjesta"
 msgid "Use your own Headscale server. Advanced setup."
 msgstr "Koristite vlastiti Headscale poslužitelj. Napredno postavljanje."
 
-#: src/big_remote_play/ui/host_view.py:696
+#: src/big_remote_play/ui/host_view.py:703
 msgid "Used by this app to talk to the server"
 msgstr "Koristi je ova aplikacija za razgovor s poslužiteljem"
 
@@ -8668,16 +8622,13 @@ msgid "User"
 msgstr "Korisnik"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 616
-#: src/big_remote_play/ui/host_view.py:2103
+#: src/big_remote_play/ui/host_view.py:2110
 msgid "User Not Found"
 msgstr "Korisnik nije pronađen"
 
-#: src/big_remote_play/host/sunshine_manager.py:713
-msgid "Username and password cannot be empty"
-msgstr "Korisničko ime i lozinka ne mogu biti prazni"
-
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 636
-#: src/big_remote_play/ui/host_view.py:3815
+#: src/big_remote_play/host/sunshine_manager.py:713
+#: src/big_remote_play/ui/host_view.py:3822
 msgid "Username and password cannot be empty."
 msgstr "Korisničko ime i lozinka ne mogu biti prazni."
 
@@ -8713,12 +8664,27 @@ msgstr "VA-API"
 msgid "VA-API Encoder (Linux)"
 msgstr "VA-API koder (Linux)"
 
+#. TRANSLATORS: {device} is a render node name such as renderD129.
+#: src/big_remote_play/ui/host_view.py:285
+#, python-brace-format
+msgid "VAAPI (device {device})"
+msgstr "VAAPI (uređaj {device})"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:580
+msgid "VBR, latency constrained"
+msgstr "VBR, ograničen latencijom"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:580
+msgid "VBR, peak constrained"
+msgstr "VBR, ograničen vršnom vrijednošću"
+
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:61
 msgid "VPN accounts and networks"
 msgstr "VPN računi i mreže"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 765
 #: src/big_remote_play/ui/guest_view.py:1975
+#: src/big_remote_play/ui/host_view.py:2427
 msgid "Value"
 msgstr "Vrijednost"
 
@@ -8735,7 +8701,7 @@ msgstr "Video kodek"
 msgid "Video format and diagnostics"
 msgstr "Videoformat i dijagnostika"
 
-#: src/big_remote_play/ui/host_view.py:1465
+#: src/big_remote_play/ui/host_view.py:1472
 #, python-brace-format
 msgid "Video limit: {mbps:g} Mbps"
 msgstr "Ograničenje videa: {mbps:g} Mbps"
@@ -8770,13 +8736,17 @@ msgid "VideoToolbox Software Encoding"
 msgstr "VideoToolbox softversko kodiranje"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:3240
+#: src/big_remote_play/ui/host_view.py:3247
 msgid "View Logs"
 msgstr "Pogledaj dnevnike"
 
-#: src/big_remote_play/ui/host_view.py:557
+#: src/big_remote_play/ui/host_view.py:564
 msgid "Voice calls"
 msgstr "Glasovni pozivi"
+
+#: src/big_remote_play/ui/host_view.py:290
+msgid "Vulkan (experimental)"
+msgstr "Vulkan (eksperimentalno)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 289
@@ -8804,8 +8774,8 @@ msgid "Wait for it to appear"
 msgstr "Pričekajte da se pojavi"
 
 #: src/big_remote_play/ui/network_common.py:95
-#: src/big_remote_play/ui/network_dashboard.py:241
-#: src/big_remote_play/ui/network_dashboard.py:248
+#: src/big_remote_play/ui/network_dashboard.py:249
+#: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:117
 #: src/big_remote_play/ui/network_devices.py:129
 #: src/big_remote_play/ui/network_devices.py:461
@@ -8818,11 +8788,9 @@ msgstr "Čeka odobrenje"
 msgid "Waiting for authorization"
 msgstr "Čekanje na odobrenje"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 166
 #: src/big_remote_play/ui/performance_monitor.py:208
-msgid "Waiting for data..."
-msgstr "Čekam na podatke..."
+msgid "Waiting for data…"
+msgstr "Čekam na podatke…"
 
 #: src/big_remote_play/ui/remote_connection.py:649
 msgid "Waiting for permission…"
@@ -8855,12 +8823,16 @@ msgstr "Treba popraviti jednu postavku"
 msgid "Web UI"
 msgstr "Web korisničko sučelje"
 
+#: src/big_remote_play/ui/sunshine_preferences.py:566
+msgid "Webcam"
+msgstr "Web-kamera"
+
 #: src/big_remote_play/ui/zerotier_join.py:225
 msgid "What ZeroTier answered, to share with someone helping you."
 msgstr "Što je ZeroTier odgovorio, za dijeljenje s osobom koja vam pomaže."
 
 #: src/big_remote_play/ui/guided_setup.py:121
-#: src/big_remote_play/ui/main_window.py:976
+#: src/big_remote_play/ui/main_window.py:979
 #: src/big_remote_play/ui/remote_connection.py:241
 msgid "What do you want to do?"
 msgstr "Što želite učiniti?"
@@ -8869,7 +8841,7 @@ msgstr "Što želite učiniti?"
 msgid "What is the network code?"
 msgstr "Koji je mrežni kod?"
 
-#: src/big_remote_play/ui/host_view.py:682
+#: src/big_remote_play/ui/host_view.py:689
 msgid "What the server recorded, for troubleshooting"
 msgstr "Što je poslužitelj zabilježio, za istraživanje problema"
 
@@ -8882,12 +8854,12 @@ msgstr "Što prikazuje ovo računalo"
 msgid "What you need"
 msgstr "Što vam je potrebno"
 
-#: src/big_remote_play/ui/network_dashboard.py:237
+#: src/big_remote_play/ui/network_dashboard.py:245
 msgid "What you need and the steps to run Headscale on a Linux server."
 msgstr ""
 "Što vam je potrebno i koraci za pokretanje Headscalea na Linux poslužitelju."
 
-#: src/big_remote_play/ui/host_view.py:2139
+#: src/big_remote_play/ui/host_view.py:2146
 msgid ""
 "When another device starts playing, it appears here with its connection "
 "quality."
@@ -8912,9 +8884,9 @@ msgstr ""
 "Kada je uključeno, zvuk se nastavlja reproducirati na računalu za igranje. "
 "Isključivanje može uzrokovati da ga Sunshine prebaci na virtualni izlaz."
 
-#: src/big_remote_play/ui/host_view.py:543
-#: src/big_remote_play/ui/host_view.py:2276
-#: src/big_remote_play/ui/host_view.py:2720
+#: src/big_remote_play/ui/host_view.py:550
+#: src/big_remote_play/ui/host_view.py:2283
+#: src/big_remote_play/ui/host_view.py:2727
 msgid "When off, only the other computer hears the game."
 msgstr "Kada je isključeno, igru čuje samo drugo računalo."
 
@@ -8930,11 +8902,11 @@ msgstr "Gdje stvoriti token"
 msgid "Where to create it"
 msgstr "Gdje ga stvoriti"
 
-#: src/big_remote_play/ui/host_view.py:1979
+#: src/big_remote_play/ui/host_view.py:1986
 msgid "Which computer shows this code?"
 msgstr "Koje računalo prikazuje ovaj kod?"
 
-#: src/big_remote_play/ui/host_view.py:473
+#: src/big_remote_play/ui/host_view.py:480
 msgid ""
 "While sharing, the shared screen uses SDR and returns to HDR afterwards, so "
 "every device sees correct colors; devices that ask for HDR get SDR. Without "
@@ -8956,8 +8928,8 @@ msgstr ""
 "Zašto veza preko interneta može ne uspjeti i najsigurniji način za "
 "zaobilaženje svakog problema."
 
-#: src/big_remote_play/ui/host_view.py:1316
-#: src/big_remote_play/ui/host_view.py:1325
+#: src/big_remote_play/ui/host_view.py:1323
+#: src/big_remote_play/ui/host_view.py:1332
 msgid ""
 "Window effects (compositing) are off, so the game cannot be shown on its "
 "own. Turn them on, then share again."
@@ -9015,7 +8987,7 @@ msgstr ""
 "Da — ovo računalo ima carrier-grade NAT adresu. Prosljeđivanje priključaka "
 "ovdje ne može raditi; koristite privatnu mrežu."
 
-#: src/big_remote_play/ui/host_view.py:2706
+#: src/big_remote_play/ui/host_view.py:2713
 msgid "Yes — this is an error; stop sharing and report it"
 msgstr "Da — ovo je pogreška; zaustavite dijeljenje i prijavite je"
 
@@ -9077,7 +9049,7 @@ msgstr ""
 "Vaš prijatelj instalira Tailscale, otvara poveznicu i prijavljuje se "
 "vlastitim računom. Vidjet će samo ovo računalo."
 
-#: src/big_remote_play/ui/main_window.py:939
+#: src/big_remote_play/ui/main_window.py:942
 msgid "Your games. Any screen. Anywhere."
 msgstr "Vaše igre. Bilo koji zaslon. Bilo gdje."
 
@@ -9106,6 +9078,10 @@ msgstr "Vaše postavke, uparene mreže i preferencije u jednoj datoteci."
 #: src/big_remote_play/ui/private_network_view.py:1132
 msgid "ZT Panel"
 msgstr "ZT ploča"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:656
+msgid "Zero latency"
+msgstr "Nulta latencija"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 82
 #: src/big_remote_play/ui/main_window.py:96
@@ -9151,7 +9127,7 @@ msgstr "ZeroTier nije pokrenut"
 msgid "ZeroTier is receiving the network settings."
 msgstr "ZeroTier prima postavke mreže."
 
-#: src/big_remote_play/ui/network_dashboard.py:286
+#: src/big_remote_play/ui/network_dashboard.py:294
 msgid "ZeroTier keeps its control key readable only by the system."
 msgstr "ZeroTier svoj upravljački ključ drži čitljivim samo sustavu."
 
@@ -9175,20 +9151,20 @@ msgstr "Pogreška usluge ZeroTier"
 msgid "ZeroTier shows its 16-character network code. Copy it."
 msgstr "ZeroTier prikazuje mrežni kod od 16 znakova. Kopirajte ga."
 
+#. TRANSLATORS: Search terms separated by semicolons; keep the final semicolon. Keep Sunshine, Moonlight and VPN, add common local words.
+#: build-aux/i18n/br.com.biglinux.remoteplay.desktop.in:14
+msgid "game;remote;play;stream;streaming;Sunshine;Moonlight;VPN;"
+msgstr "igra;udaljeno;igrati;strujanje;stream;streaming;Sunshine;Moonlight;VPN;"
+
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
 msgstr "nije prepoznato"
 
-#: src/big_remote_play/ui/host_view.py:1520
+#: src/big_remote_play/ui/host_view.py:1527
 msgid "the local network"
 msgstr "lokalne mreže"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 765
-#: src/big_remote_play/ui/host_view.py:2420
-msgid "value"
-msgstr "vrijednost"
-
-#: src/big_remote_play/ui/host_view.py:1551
+#: src/big_remote_play/ui/host_view.py:1558
 #, python-brace-format
 msgid ""
 "{controllers} is connected here. A game that uses one controller reads it "
@@ -9198,6 +9174,14 @@ msgstr ""
 "{controllers} je priključen ovdje. Igra koja koristi jedan kontroler čita "
 "njega umjesto kontrolera osobe koja se povezuje. Isključite ga dok ona igra "
 "ili u postavkama igre odaberite kontroler „Sunshine”."
+
+#: src/big_remote_play/ui/host_view.py:2237
+#, python-brace-format
+msgid "{count} more paired device"
+msgid_plural "{count} more paired devices"
+msgstr[0] "Još {count} upareni uređaj"
+msgstr[1] "Još {count} uparena uređaja"
+msgstr[2] "Još {count} uparenih uređaja"
 
 #: src/big_remote_play/ui/network_dashboard.py:182
 #, python-brace-format
@@ -9219,7 +9203,7 @@ msgstr "{layout} · {location}"
 msgid "{minutes} min"
 msgstr "{minutes} min"
 
-#: src/big_remote_play/ui/host_view.py:1469
+#: src/big_remote_play/ui/host_view.py:1476
 #, python-brace-format
 msgid "{mode} · {limit}"
 msgstr "{mode} · {limit}"
@@ -9239,6 +9223,11 @@ msgstr "{name} (napredno)"
 msgid "{name} (this computer)"
 msgstr "{name} (ovo računalo)"
 
+#: src/big_remote_play/ui/private_network_view.py:477
+#, python-brace-format
+msgid "{name} installed"
+msgstr "{name} instaliran"
+
 #: src/big_remote_play/ui/network_common.py:123
 #, python-brace-format
 msgid ""
@@ -9252,6 +9241,15 @@ msgstr ""
 #, python-brace-format
 msgid "{name} is not installed on this computer."
 msgstr "{name} nije instaliran na ovom računalu."
+
+#: src/big_remote_play/ui/private_network_view.py:448
+#, python-brace-format
+msgid ""
+"{name} is not installed yet. Install it below to continue (asks for your "
+"password)."
+msgstr ""
+"{name} još nije instaliran. Instalirajte ga u nastavku za nastavak (tražit "
+"će vašu lozinku)."
 
 #: src/big_remote_play/ui/network_common.py:131
 #, python-brace-format
@@ -9277,27 +9275,33 @@ msgstr ""
 "Uređaj {name} bit će uklonjen iz mreže i morat će se ponovno dodati da bi se "
 "vratio."
 
+#. TRANSLATORS: {platform} is Steam or Lutris.
+#: src/big_remote_play/ui/host_view.py:3877
+#, python-brace-format
+msgid "{platform} games"
+msgstr "Igre na {platform}"
+
 #: src/big_remote_play/ui/guest_view.py:186
 #, python-brace-format
 msgid "{resolution} · {frame_rate} · {bitrate}"
 msgstr "{resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:2737
+#: src/big_remote_play/ui/host_view.py:2744
 #, python-brace-format
 msgid "{source} (a microphone)"
 msgstr "{source} (mikrofon)"
 
-#: src/big_remote_play/ui/host_view.py:2736
+#: src/big_remote_play/ui/host_view.py:2743
 #, python-brace-format
 msgid "{source} (sound this computer plays)"
 msgstr "{source} (zvuk koji reproducira ovo računalo)"
 
-#: src/big_remote_play/ui/host_view.py:2456
+#: src/big_remote_play/ui/host_view.py:2463
 #, python-brace-format
 msgid "{source} · {quality}"
 msgstr "{source} · {quality}"
 
-#: src/big_remote_play/ui/host_view.py:2714
+#: src/big_remote_play/ui/host_view.py:2721
 #, python-brace-format
 msgid "{source} → {target}"
 msgstr "{source} → {target}"
@@ -9307,7 +9311,7 @@ msgstr "{source} → {target}"
 msgid "{state} · {ms} ms"
 msgstr "{state} · {ms} ms"
 
-#: src/big_remote_play/ui/host_view.py:1527
+#: src/big_remote_play/ui/host_view.py:1534
 #, python-brace-format
 msgid ""
 "{tool} is on and does not allow Sunshine's ports ({ports}) from {networks}. "
@@ -9320,28 +9324,6 @@ msgstr ""
 #, python-brace-format
 msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 259
-#: src/big_remote_play/ui/private_network_view.py:477
-#, python-brace-format
-msgid "{} installed"
-msgstr "{} instaliran"
-
-#: src/big_remote_play/ui/private_network_view.py:448
-#, python-brace-format
-msgid ""
-"{} is not installed yet. Install it below to continue (asks for your "
-"password)."
-msgstr ""
-"{} još nije instaliran. Instalirajte ga u nastavku za nastavak (tražit će "
-"vašu lozinku)."
-
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 198
-#: src/big_remote_play/ui/host_view.py:2230
-#, python-brace-format
-msgid "{} more paired devices"
-msgstr "Još uparenih uređaja: {}"
 
 #: src/big_remote_play/ui/remote_connection.py:609
 #, python-brace-format
