@@ -464,6 +464,35 @@ def test_join_page_states_the_connection_instead_of_asking_to_sign_in_again(ui, 
     assert page._c_title.get_label() == "Already connected"
 
 
+def test_a_connected_tailscale_page_still_offers_another_tailnet(ui, monkeypatch):
+    """`tailscale up` never asks which tailnet: a new sign-in is the way to a friend's."""
+    import big_remote_play.ui.private_network_view as pnv
+
+    monkeypatch.setattr(pnv, "_load_history", lambda: [])
+    monkeypatch.setattr(pnv, "provider_connected", lambda *args: True)
+    monkeypatch.setattr(pnv.threading, "Thread", InlineThread)
+    selected = []
+    monkeypatch.setattr(ui, "_apply_vpn_selection", lambda provider, **kwargs: selected.append((provider, kwargs)))
+    page = pnv.ConnectPage("tailscale", ui)
+    drain()
+    assert page._other_tailnet.get_visible()
+    row = page._other_tailnet.get_first_child()
+    assert row.get_title() == "Use another tailnet"
+    row.emit("activated")
+    drain()
+    assert selected == [("tailscale", {"add_account": True})]
+
+    for provider in ("headscale", "zerotier"):
+        other = pnv.ConnectPage(provider, ui)
+        drain()
+        assert not other._other_tailnet.get_visible()
+
+    monkeypatch.setattr(pnv, "provider_connected", lambda *args: False)
+    signed_out = pnv.ConnectPage("tailscale", ui)
+    drain()
+    assert not signed_out._other_tailnet.get_visible()  # the normal sign-in already asks
+
+
 def test_backup_round_trips_and_refuses_a_crafted_archive(ui, tmp_path, monkeypatch):
     import tarfile
 

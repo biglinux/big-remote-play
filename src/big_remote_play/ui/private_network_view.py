@@ -542,6 +542,7 @@ class ConnectPage(Adw.Bin):
                 self._c_description.set_label(_("This computer is already on a ZeroTier network. To join another one, type its code."))
             return False
         self._connect_form.set_visible(not connected)
+        self._other_tailnet.set_visible(connected and self.vpn_id == "tailscale")
         if connected:
             self._c_title.set_label(_("Already connected"))
             self._c_description.set_label(_("This PC is on the {} private network.").format(self.vpn["name"]))
@@ -625,6 +626,19 @@ class ConnectPage(Adw.Bin):
         )
         self._open_dashboard.set_visible(False)
         conn_box.append(self._open_dashboard)
+        # `tailscale up` reconnects the current tailnet and never asks which one.
+        # A friend's tailnet you were invited to needs a new sign-in, where
+        # Tailscale shows "Select a tailnet" (or another account).
+        self._other_tailnet = boxed_rows(
+            action_row(
+                _("Use another tailnet"),
+                _("For a friend's tailnet you were invited to, or another account. Tailscale asks which tailnet to use; the current one stays saved."),
+                "brp-accounts-symbolic",
+                self._use_another_tailnet,
+            )
+        )
+        self._other_tailnet.set_visible(False)
+        conn_box.append(self._other_tailnet)
 
         extras = Adw.PreferencesGroup(title=_("More options"))
         self._hist_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
@@ -654,6 +668,12 @@ class ConnectPage(Adw.Bin):
 
         toolbar.set_content(conn_scroll)
         self.set_child(toolbar)
+
+    def _use_another_tailnet(self) -> None:
+        # The new sign-in page replaces this one: never from inside its own handler.
+        select = getattr(self.main_window, "_apply_vpn_selection", None)
+        if callable(select):
+            GLib.idle_add(lambda: select("tailscale", add_account=True) and False)
 
     def _show_hosting_guide(self) -> None:
         from .connection_guides import build_headscale_hosting_dialog
