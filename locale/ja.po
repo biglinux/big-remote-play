@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-10-01 01:32+0000\n"
+"POT-Creation-Date: 2026-10-01 02:11+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Japanese\n"
@@ -40,13 +40,13 @@ msgstr "1. 共有する内容を選ぶ"
 # line: 804
 # line: 811
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1094
+#: src/big_remote_play/ui/private_network_view.py:1109
 msgid "1. Create Account"
 msgstr "1. アカウントを作成"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1801
-#: src/big_remote_play/ui/private_network_view.py:1110
+#: src/big_remote_play/ui/private_network_view.py:1125
 msgid "1. Identification"
 msgstr "1. 識別"
 
@@ -80,11 +80,11 @@ msgstr "2. ドメインと HTTPS"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1795
-#: src/big_remote_play/ui/private_network_view.py:1101
+#: src/big_remote_play/ui/private_network_view.py:1116
 msgid "2. Invitation"
 msgstr "2. 招待"
 
-#: src/big_remote_play/ui/private_network_view.py:1111
+#: src/big_remote_play/ui/private_network_view.py:1126
 msgid "2. Join"
 msgstr "2. 参加"
 
@@ -98,13 +98,13 @@ msgstr "2. 共有を開始する"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1803
-#: src/big_remote_play/ui/private_network_view.py:1113
+#: src/big_remote_play/ui/private_network_view.py:1128
 msgid "3. Authorization"
 msgstr "3. 認証"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:1102
+#: src/big_remote_play/ui/private_network_view.py:1117
 msgid "3. Connect"
 msgstr "3. 接続する"
 
@@ -275,7 +275,7 @@ msgstr "APIエラー：{}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:71
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:660
+#: src/big_remote_play/ui/private_network_view.py:666
 #: src/big_remote_play/ui/remote_connection.py:269
 msgid "API access"
 msgstr "API アクセス"
@@ -299,13 +299,13 @@ msgstr "API トークン"
 msgid "About"
 msgstr "このアプリについて"
 
-#: src/big_remote_play/ui/private_network_view.py:619
+#: src/big_remote_play/ui/private_network_view.py:621
 msgid "About this VPN"
 msgstr "この VPN について"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1794
-#: src/big_remote_play/ui/private_network_view.py:1095
+#: src/big_remote_play/ui/private_network_view.py:1110
 msgid "Access Tailscale"
 msgstr "Tailscaleにアクセスする"
 
@@ -317,15 +317,16 @@ msgstr "アクセス許可済み"
 msgid "Access revoked"
 msgstr "アクセスを取り消しました"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:257
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:275
 msgid "Account removed from this computer"
 msgstr "このコンピューターからアカウントを削除しました"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:237
+#: src/big_remote_play/ui/tailscale_accounts.py:127
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:255
 msgid "Account switched"
 msgstr "アカウントを切り替えました"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:145
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:156
 msgid "Account switching is unavailable"
 msgstr "アカウントの切り替えは利用できません"
 
@@ -355,7 +356,8 @@ msgstr "アクション {} が {} に送信されました。"
 msgid "Actions for {name}"
 msgstr "{name} の操作"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:177
+#: src/big_remote_play/ui/tailscale_accounts.py:102
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:188
 msgid "Active"
 msgstr "有効"
 
@@ -542,8 +544,8 @@ msgstr "詳細モード"
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 79
 #: src/big_remote_play/ui/guided_setup.py:252
-#: src/big_remote_play/ui/private_network_view.py:706
-#: src/big_remote_play/ui/private_network_view.py:722
+#: src/big_remote_play/ui/private_network_view.py:721
+#: src/big_remote_play/ui/private_network_view.py:737
 #: src/big_remote_play/ui/sunshine_preferences.py:104
 msgid "Advanced options"
 msgstr "詳細オプション"
@@ -570,7 +572,7 @@ msgstr "詳細設定：自動検出に失敗した場合に手動接続で使用
 msgid "After step 2, the other PC appears here."
 msgstr "手順2のあと、もう一方のPCがここに表示されます。"
 
-#: src/big_remote_play/ui/private_network_view.py:1096
+#: src/big_remote_play/ui/private_network_view.py:1111
 msgid ""
 "All participants need to sign in so their PCs join the same Private Network."
 msgstr ""
@@ -590,6 +592,8 @@ msgstr ""
 #: src/big_remote_play/ui/network_common.py:165
 #: src/big_remote_play/ui/network_dashboard.py:291
 #: src/big_remote_play/ui/remote_connection.py:64
+#: src/big_remote_play/ui/tailscale_accounts.py:71
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:141
 #: src/big_remote_play/ui/zerotier_join.py:107
 msgid "Allow"
 msgstr "許可"
@@ -662,6 +666,15 @@ msgstr ""
 "このコンピューターで ZeroTier を使えるよう、一度だけ許可してください。パス"
 "ワードを求められることがあります。"
 
+#: src/big_remote_play/ui/tailscale_accounts.py:70
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:138
+msgid ""
+"Allow it once. Your password is requested; afterwards Tailscale works "
+"without it."
+msgstr ""
+"一度だけ許可してください。パスワードを求められます。以降は Tailscale がパス"
+"ワードなしで動作します。"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 398
 #: src/big_remote_play/ui/host_view.py:2219
@@ -722,7 +735,7 @@ msgstr ""
 msgid "Almost there"
 msgstr "もう少しです"
 
-#: src/big_remote_play/ui/private_network_view.py:547
+#: src/big_remote_play/ui/private_network_view.py:549
 msgid "Already connected"
 msgstr "接続済み"
 
@@ -857,7 +870,7 @@ msgstr "待機中のコンピューターを承認"
 msgid "Approve each computer"
 msgstr "各コンピューターを承認"
 
-#: src/big_remote_play/ui/private_network_view.py:1080
+#: src/big_remote_play/ui/private_network_view.py:1095
 msgid "Approve if needed"
 msgstr "必要に応じて承認"
 
@@ -905,7 +918,7 @@ msgstr "本当によろしいですか？"
 msgid "Ask the game PC to optimize the game for streaming"
 msgstr "ストリーミング向けにゲームを最適化するようゲーム PC に要求する"
 
-#: src/big_remote_play/ui/private_network_view.py:1072
+#: src/big_remote_play/ui/private_network_view.py:1087
 msgid ""
 "Ask the network administrator for the server address and, optionally, a one-"
 "time auth key."
@@ -913,7 +926,7 @@ msgstr ""
 "ネットワーク管理者に、サーバーのアドレスと、必要に応じてワンタイム認証キーを"
 "尋ねてください。"
 
-#: src/big_remote_play/ui/private_network_view.py:737
+#: src/big_remote_play/ui/private_network_view.py:752
 msgid "Ask the network owner, or look in ZeroTier Central → Networks"
 msgstr ""
 "ネットワークの所有者に尋ねるか、ZeroTier Central →「Networks」で確認してくだ"
@@ -976,10 +989,10 @@ msgstr "音声/映像"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 865
-#: src/big_remote_play/ui/private_network_view.py:704
-#: src/big_remote_play/ui/private_network_view.py:706
+#: src/big_remote_play/ui/private_network_view.py:719
 #: src/big_remote_play/ui/private_network_view.py:721
-#: src/big_remote_play/ui/private_network_view.py:722
+#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:737
 msgid "Auth Key"
 msgstr "認証キー"
 
@@ -1329,11 +1342,11 @@ msgstr "新しい PIN なしで接続できます"
 #: src/big_remote_play/ui/preferences.py:222
 #: src/big_remote_play/ui/preferences.py:266
 #: src/big_remote_play/ui/preferences.py:276
-#: src/big_remote_play/ui/private_network_view.py:1020
-#: src/big_remote_play/ui/private_network_view.py:1048
+#: src/big_remote_play/ui/private_network_view.py:1035
+#: src/big_remote_play/ui/private_network_view.py:1063
 #: src/big_remote_play/ui/remote_connection.py:750
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:246
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:266
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:264
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:284
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -1675,7 +1688,7 @@ msgstr "ストリーミング中に使用される一般的なショートカッ
 msgid "Complete the installation in the external terminal, then check again."
 msgstr "外部端末でインストールを完了し、もう一度確認してください。"
 
-#: src/big_remote_play/ui/private_network_view.py:837
+#: src/big_remote_play/ui/private_network_view.py:852
 msgid "Complete the sign-in in your browser."
 msgstr "ブラウザーでサインインを完了してください。"
 
@@ -1787,8 +1800,8 @@ msgstr "新しいパスワードの確認"
 #: src/big_remote_play/ui/main_window.py:828
 #: src/big_remote_play/ui/main_window.py:993
 #: src/big_remote_play/ui/main_window.py:1221
-#: src/big_remote_play/ui/private_network_view.py:594
 #: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:598
 #: src/big_remote_play/ui/remote_connection.py:454
 #: src/big_remote_play/ui/remote_connection.py:482
 msgid "Connect"
@@ -1806,7 +1819,7 @@ msgstr "アドレスで接続"
 
 #: src/big_remote_play/ui/network_common.py:164
 #: src/big_remote_play/ui/network_dashboard.py:217
-#: src/big_remote_play/ui/private_network_view.py:564
+#: src/big_remote_play/ui/private_network_view.py:566
 msgid "Connect this computer"
 msgstr "このコンピューターを接続"
 
@@ -1869,7 +1882,7 @@ msgstr "デバイスをつなぐ"
 
 #: src/big_remote_play/ui/network_common.py:91
 #: src/big_remote_play/ui/remote_connection.py:645
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:224
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:235
 #: src/big_remote_play/ui/zerotier_join.py:78
 msgid "Connected"
 msgstr "接続済み"
@@ -1889,9 +1902,9 @@ msgstr "現在接続中"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1907
-#: src/big_remote_play/ui/private_network_view.py:816
-#: src/big_remote_play/ui/private_network_view.py:853
-#: src/big_remote_play/ui/private_network_view.py:888
+#: src/big_remote_play/ui/private_network_view.py:831
+#: src/big_remote_play/ui/private_network_view.py:868
+#: src/big_remote_play/ui/private_network_view.py:903
 msgid "Connected successfully!"
 msgstr "接続に成功しました！"
 
@@ -1908,21 +1921,21 @@ msgstr "ネットワークに接続しています…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1848
-#: src/big_remote_play/ui/private_network_view.py:783
+#: src/big_remote_play/ui/private_network_view.py:798
 msgid "Connecting..."
 msgstr "接続中..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
-#: src/big_remote_play/ui/private_network_view.py:580
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:582
+#: src/big_remote_play/ui/private_network_view.py:1013
 msgid "Connection Details"
 msgstr "接続の詳細"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
-#: src/big_remote_play/ui/private_network_view.py:582
-#: src/big_remote_play/ui/private_network_view.py:1063
+#: src/big_remote_play/ui/private_network_view.py:584
+#: src/big_remote_play/ui/private_network_view.py:1078
 msgid "Connection Log"
 msgstr "接続ログ"
 
@@ -1938,7 +1951,7 @@ msgstr "接続エラー：Sunshineに到達できないか、証明書が一致�
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/private_network_view.py:895
+#: src/big_remote_play/ui/private_network_view.py:910
 msgid "Connection failed"
 msgstr "接続に失敗しました"
 
@@ -2036,7 +2049,7 @@ msgstr "Alt+Tab や Super キーなどのショートカットの扱いを制御
 
 #: src/big_remote_play/ui/network_common.py:213
 #: src/big_remote_play/ui/network_common.py:224
-#: src/big_remote_play/ui/private_network_view.py:1130
+#: src/big_remote_play/ui/private_network_view.py:1145
 msgid "Copied"
 msgstr "コピーしました"
 
@@ -2190,7 +2203,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1255
-#: src/big_remote_play/ui/private_network_view.py:1098
+#: src/big_remote_play/ui/private_network_view.py:1113
 msgid "Create Account"
 msgstr "アカウントを作成"
 
@@ -2276,7 +2289,7 @@ msgid "Credentials reset successfully"
 msgstr "認証情報をリセットしました"
 
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:660
+#: src/big_remote_play/ui/private_network_view.py:666
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr "Big Remote Play がこのネットワークを管理するための認証情報です。"
 
@@ -2349,8 +2362,8 @@ msgstr "既定のマイク"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1263
-#: src/big_remote_play/ui/private_network_view.py:951
-#: src/big_remote_play/ui/private_network_view.py:1049
+#: src/big_remote_play/ui/private_network_view.py:966
+#: src/big_remote_play/ui/private_network_view.py:1064
 msgid "Delete"
 msgstr "削除"
 
@@ -2362,11 +2375,11 @@ msgstr "すべて削除"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1701
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1062
 msgid "Delete entry?"
 msgstr "エントリを削除しますか？"
 
-#: src/big_remote_play/ui/private_network_view.py:951
+#: src/big_remote_play/ui/private_network_view.py:966
 msgid "Delete this saved network"
 msgstr "この保存済みネットワークを削除"
 
@@ -2447,7 +2460,7 @@ msgstr "今このコンピューターで遊んでいるデバイスです。"
 msgid "Devices updated"
 msgstr "デバイスを更新しました"
 
-#: src/big_remote_play/ui/private_network_view.py:625
+#: src/big_remote_play/ui/private_network_view.py:627
 msgid "Devices, private address and how to add another computer."
 msgstr "デバイス、プライベートアドレス、別のコンピューターを追加する方法。"
 
@@ -2578,8 +2591,8 @@ msgstr "デフォルト設定を復元しますか？"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1137
-#: src/big_remote_play/ui/private_network_view.py:958
-#: src/big_remote_play/ui/private_network_view.py:1003
+#: src/big_remote_play/ui/private_network_view.py:973
+#: src/big_remote_play/ui/private_network_view.py:1018
 msgid "Domain"
 msgstr "ドメイン"
 
@@ -2615,7 +2628,7 @@ msgstr "設定がかんたんで、自分のデバイスどうしをつなぐの
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1704
-#: src/big_remote_play/ui/private_network_view.py:943
+#: src/big_remote_play/ui/private_network_view.py:958
 msgid "Edit"
 msgstr "編集"
 
@@ -2627,13 +2640,13 @@ msgstr "カスタムフレームレートを編集"
 msgid "Edit custom resolution"
 msgstr "カスタム解像度を編集"
 
-#: src/big_remote_play/ui/private_network_view.py:943
+#: src/big_remote_play/ui/private_network_view.py:958
 msgid "Edit this saved network"
 msgstr "この保存済みネットワークを編集"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:1018
+#: src/big_remote_play/ui/private_network_view.py:1033
 #, python-brace-format
 msgid "Edit – {}"
 msgstr "編集 – {}"
@@ -2747,7 +2760,7 @@ msgid "End the stream for everyone?"
 msgstr "全員のストリームを終了しますか？"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 325
-#: src/big_remote_play/ui/private_network_view.py:1111
+#: src/big_remote_play/ui/private_network_view.py:1126
 msgid "Enter ID"
 msgstr "ID を入力"
 
@@ -2759,7 +2772,7 @@ msgstr "Sunshine のパスワードを入力"
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "幅x高さを入力してください（例：1920x1080）："
 
-#: src/big_remote_play/ui/private_network_view.py:1033
+#: src/big_remote_play/ui/private_network_view.py:1048
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "16文字の16進数でネットワークIDを入力してください。"
 
@@ -2807,12 +2820,12 @@ msgstr ""
 "ZeroTier ネットワークに参加するには、16 文字のネットワーク ID を入力してくだ"
 "さい。"
 
-#: src/big_remote_play/ui/private_network_view.py:795
+#: src/big_remote_play/ui/private_network_view.py:810
 msgid "Enter the Headscale server address."
 msgstr "Headscale サーバーのアドレスを入力してください。"
 
 #: src/big_remote_play/ui/network_devices.py:442
-#: src/big_remote_play/ui/private_network_view.py:1111
+#: src/big_remote_play/ui/private_network_view.py:1126
 msgid "Enter the ID on this page and choose Connect."
 msgstr "このページで ID を入力し、「接続」を選んでください。"
 
@@ -2860,7 +2873,7 @@ msgstr "エントロピー符号化モード"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/private_network_view.py:1041
+#: src/big_remote_play/ui/private_network_view.py:1056
 msgid "Entry updated"
 msgstr "エントリが更新されました"
 
@@ -2931,7 +2944,7 @@ msgstr "エラー: {}"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 937
 # line: 1908
-#: src/big_remote_play/ui/private_network_view.py:1102
+#: src/big_remote_play/ui/private_network_view.py:1117
 msgid "Establish Connection"
 msgstr "接続を確立する"
 
@@ -3036,14 +3049,14 @@ msgstr "応答速度を優先、または画質を優先"
 msgid "Favorite"
 msgstr "お気に入り"
 
-#: src/big_remote_play/ui/private_network_view.py:1077
+#: src/big_remote_play/ui/private_network_view.py:1092
 msgid "Fill in the form"
 msgstr "フォームに入力"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1291
 # line: 1293
-#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:751
 msgid "Find Network ID"
 msgstr "ネットワークIDを見つける"
 
@@ -3115,7 +3128,7 @@ msgstr "別の家にあるPC向け"
 msgid "For a computer in another house: connect your devices first."
 msgstr "別の家にあるコンピューターの場合は、まずデバイスをつないでください。"
 
-#: src/big_remote_play/ui/private_network_view.py:635
+#: src/big_remote_play/ui/tailscale_accounts.py:37
 msgid ""
 "For a friend's tailnet you were invited to, or another account. Tailscale "
 "asks which tailnet to use; the current one stays saved."
@@ -3172,8 +3185,8 @@ msgstr "強制された"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1772
 # line: 1787
-#: src/big_remote_play/ui/private_network_view.py:984
-#: src/big_remote_play/ui/private_network_view.py:990
+#: src/big_remote_play/ui/private_network_view.py:999
+#: src/big_remote_play/ui/private_network_view.py:1005
 #, python-brace-format
 msgid "Form filled for {}"
 msgstr "{}のフォームが記入されました。"
@@ -3292,7 +3305,7 @@ msgstr "一般"
 # line: 1023
 # line: 1069
 # line: 1666
-#: src/big_remote_play/ui/private_network_view.py:1110
+#: src/big_remote_play/ui/private_network_view.py:1125
 msgid "Get Network ID"
 msgstr "ネットワーク ID を取得"
 
@@ -3301,11 +3314,11 @@ msgstr "ネットワーク ID を取得"
 msgid "Good"
 msgstr "良好"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:157
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:168
 msgid "Grant access"
 msgstr "アクセスを許可"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:154
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:165
 msgid ""
 "Grant access once to read the networks configured by the ZeroTier service."
 msgstr ""
@@ -3475,7 +3488,7 @@ msgstr "ストリームを終了するまでに Moonlight からのデータを�
 msgid "How to approve"
 msgstr "承認の方法"
 
-#: src/big_remote_play/ui/private_network_view.py:750
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "How to create a free network, step by step."
 msgstr "無料のネットワークを作成する手順です。"
 
@@ -3485,11 +3498,11 @@ msgstr "無料のネットワークを作成する手順です。"
 msgid "How to install {}"
 msgstr "{} のインストール方法"
 
-#: src/big_remote_play/ui/private_network_view.py:717
+#: src/big_remote_play/ui/private_network_view.py:732
 msgid "How to run Headscale on your own server, step by step."
 msgstr "自分のサーバーで Headscale を動かす方法を順番に説明します。"
 
-#: src/big_remote_play/ui/private_network_view.py:619
+#: src/big_remote_play/ui/private_network_view.py:621
 msgid "How to use the selected private network service."
 msgstr "選択したプライベートネットワークサービスの使い方です。"
 
@@ -3498,11 +3511,11 @@ msgid "I already use ZeroTier"
 msgstr "ZeroTier をすでに使っている"
 
 #: src/big_remote_play/ui/guided_setup.py:284
-#: src/big_remote_play/ui/private_network_view.py:750
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "I don't have a code"
 msgstr "コードを持っていない"
 
-#: src/big_remote_play/ui/private_network_view.py:717
+#: src/big_remote_play/ui/private_network_view.py:732
 msgid "I don't have a server yet"
 msgstr "まだサーバーを持っていません"
 
@@ -3967,7 +3980,7 @@ msgstr ""
 "ブラウザーログインでTailscaleに参加するか、誰かから認証キーを受け取っている場"
 "合はそれを使用してください。"
 
-#: src/big_remote_play/ui/private_network_view.py:1067
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "Join a Headscale VPN"
 msgstr "Headscale VPN に参加"
 
@@ -4123,15 +4136,15 @@ msgstr "最小権限"
 
 #: src/big_remote_play/ui/network_devices.py:222
 #: src/big_remote_play/ui/network_devices.py:235
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:267
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:285
 msgid "Leave network"
 msgstr "ネットワークから退出"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:215
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:226
 msgid "Leave this ZeroTier network"
 msgstr "この ZeroTier ネットワークから退出"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:263
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:281
 msgid "Leave this ZeroTier network?"
 msgstr "この ZeroTier ネットワークから退出しますか？"
 
@@ -4209,6 +4222,7 @@ msgstr "Linux コマンド"
 msgid "Linux native"
 msgstr "Linux ネイティブ"
 
+#: src/big_remote_play/ui/tailscale_accounts.py:52
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:99
 msgid "Loading accounts…"
 msgstr "アカウントを読み込んでいます…"
@@ -4256,13 +4270,13 @@ msgstr "ログファイルパス"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1831
-#: src/big_remote_play/ui/private_network_view.py:1003
+#: src/big_remote_play/ui/private_network_view.py:1018
 msgid "Login Server"
 msgstr "ログインサーバー"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1284
-#: src/big_remote_play/ui/private_network_view.py:720
+#: src/big_remote_play/ui/private_network_view.py:735
 msgid "Login Server (leave empty for tailscale.com)"
 msgstr "ログインサーバー（tailscale.comの場合は空白のままにしてください）"
 
@@ -4320,7 +4334,7 @@ msgstr "ポインターの動きを、ゲームよりデスクトップ操作に
 msgid "Manage"
 msgstr "管理"
 
-#: src/big_remote_play/ui/private_network_view.py:654
+#: src/big_remote_play/ui/private_network_view.py:660
 msgid "Manage accounts and networks"
 msgstr "アカウントとネットワークを管理"
 
@@ -4456,7 +4470,7 @@ msgid "More exposed than a private VPN"
 msgstr "プライベート VPN より公開範囲が広い"
 
 #: src/big_remote_play/ui/network_dashboard.py:95
-#: src/big_remote_play/ui/private_network_view.py:643
+#: src/big_remote_play/ui/private_network_view.py:649
 msgid "More options"
 msgstr "その他のオプション"
 
@@ -4487,7 +4501,7 @@ msgstr "Moonlight がアクティブウィンドウでないときにミュー�
 msgid "My devices"
 msgstr "マイデバイス"
 
-#: src/big_remote_play/ui/private_network_view.py:625
+#: src/big_remote_play/ui/private_network_view.py:627
 msgid "My network"
 msgstr "マイネットワーク"
 
@@ -4513,7 +4527,7 @@ msgstr "名前"
 msgid "Name on the network"
 msgstr "ネットワーク上の名前"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:301
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:319
 msgid "Name shown in Big Remote Play"
 msgstr "Big Remote Play に表示する名前"
 
@@ -4557,8 +4571,8 @@ msgstr "ネットワーク"
 #: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
-#: src/big_remote_play/ui/private_network_view.py:959
-#: src/big_remote_play/ui/private_network_view.py:1008
+#: src/big_remote_play/ui/private_network_view.py:974
+#: src/big_remote_play/ui/private_network_view.py:1023
 msgid "Network ID"
 msgstr "ネットワーク ID"
 
@@ -4605,11 +4619,11 @@ msgstr "ネットワークから退出しました"
 msgid "Network name"
 msgstr "ネットワーク名"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:227
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:238
 msgid "Network not found"
 msgstr "ネットワークが見つかりません"
 
-#: src/big_remote_play/ui/private_network_view.py:648
+#: src/big_remote_play/ui/private_network_view.py:654
 msgid "Networks this PC joined before."
 msgstr "このPCが以前に参加したネットワーク。"
 
@@ -4665,7 +4679,8 @@ msgstr ""
 "Sunshineでユーザーが作成されていません。ブラウザを通じてユーザーを設定する必"
 "要があります。"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:137
+#: src/big_remote_play/ui/tailscale_accounts.py:78
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:148
 msgid "No account found"
 msgstr "アカウントが見つかりません"
 
@@ -4754,7 +4769,7 @@ msgstr ""
 msgid "No network code?"
 msgstr "ネットワークコードがありませんか？"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:164
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:175
 msgid "No network found"
 msgstr "ネットワークが見つかりません"
 
@@ -4783,11 +4798,12 @@ msgstr "ペアリング済みデバイスはまだありません"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1629
-#: src/big_remote_play/ui/private_network_view.py:910
+#: src/big_remote_play/ui/private_network_view.py:925
 msgid "No previous networks"
 msgstr "以前のネットワークはありません"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:136
+#: src/big_remote_play/ui/tailscale_accounts.py:78
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:147
 msgid "No saved Tailscale or Headscale account was found on this computer."
 msgstr ""
 "このコンピューターに保存済みの Tailscale または Headscale アカウントがありま"
@@ -4908,6 +4924,10 @@ msgstr ""
 "ターでのみ聞こえるため、誰も自分の声が戻ってくるのを聞きません。Web ブラウ"
 "ザーでの通話は、ブラウザーの音声と一緒に送信されます。"
 
+#: src/big_remote_play/ui/tailscale_accounts.py:94
+msgid "Not signed in"
+msgstr "未ログイン"
+
 #: src/big_remote_play/ui/main_window.py:969
 msgid ""
 "Not sure where to start? Answer a few questions and Big Remote Play sets up "
@@ -5020,7 +5040,7 @@ msgstr "このコンピューター"
 msgid "On your {provider} private network at {address}"
 msgstr "{provider} のプライベートネットワーク上（{address}）"
 
-#: src/big_remote_play/ui/private_network_view.py:1102
+#: src/big_remote_play/ui/private_network_view.py:1117
 msgid ""
 "Once both computers are on the same private network, return to Connect to "
 "find the game PC."
@@ -5072,6 +5092,10 @@ msgstr ""
 "このコンピューターにのみ保存されます。どこにも送信されず、パスワード、キー、"
 "コードは保存されません。"
 
+#: src/big_remote_play/ui/tailscale_accounts.py:28
+msgid "Only one is active at a time. Switch to use another tailnet."
+msgstr "同時に有効なのは 1 つだけです。別の tailnet を使うには切り替えます。"
+
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:45
 msgid "Only one of these accounts can be active at a time on this computer."
 msgstr "このコンピューターで同時に有効にできるアカウントは 1 つだけです。"
@@ -5101,7 +5125,7 @@ msgstr "新しい名前はこのコンピューターでだけ使われます。
 # line: 347
 # line: 1295
 #: src/big_remote_play/ui/host_view.py:437
-#: src/big_remote_play/ui/private_network_view.py:740
+#: src/big_remote_play/ui/private_network_view.py:755
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "開く"
@@ -5209,7 +5233,7 @@ msgstr "公式 Web サイトを開きます"
 msgid "Operation failed"
 msgstr "操作に失敗しました"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:282
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:300
 #, python-brace-format
 msgid "Operation failed: {}"
 msgstr "操作に失敗しました: {}"
@@ -5353,7 +5377,7 @@ msgstr ""
 msgid "Paste the credential first."
 msgstr "まず認証情報を貼り付けてください。"
 
-#: src/big_remote_play/ui/private_network_view.py:1077
+#: src/big_remote_play/ui/private_network_view.py:1092
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "このページの入力欄に、サーバーのアドレスとキーを貼り付けます。"
 
@@ -5396,7 +5420,12 @@ msgstr "パフォーマンスプリセット"
 msgid "Permission granted"
 msgstr "許可されました"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:153
+#: src/big_remote_play/ui/tailscale_accounts.py:70
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:137
+msgid "Permission is needed to see your Tailscale accounts"
+msgstr "Tailscale アカウントを表示するには許可が必要です"
+
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:164
 msgid "Permission is required to list ZeroTier networks"
 msgstr "ZeroTier ネットワークの一覧表示には権限が必要です"
 
@@ -5579,8 +5608,8 @@ msgstr "セッション中にこのコンピューターの画面がオフにな
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1031
-#: src/big_remote_play/ui/private_network_view.py:646
-#: src/big_remote_play/ui/private_network_view.py:650
+#: src/big_remote_play/ui/private_network_view.py:652
+#: src/big_remote_play/ui/private_network_view.py:656
 msgid "Previous Networks"
 msgstr "以前のネットワーク"
 
@@ -5717,7 +5746,7 @@ msgid "Ready to play over the internet"
 msgstr "インターネット経由で遊ぶ準備ができました"
 
 #: src/big_remote_play/ui/network_dashboard.py:91
-#: src/big_remote_play/ui/private_network_view.py:621
+#: src/big_remote_play/ui/private_network_view.py:623
 msgid "Ready to play?"
 msgstr "プレイの準備はできましたか？"
 
@@ -5786,7 +5815,7 @@ msgstr "おすすめ：プライベートネットワーク"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1111
 #: src/big_remote_play/ui/network_common.py:163
-#: src/big_remote_play/ui/private_network_view.py:936
+#: src/big_remote_play/ui/private_network_view.py:951
 msgid "Reconnect"
 msgstr "再接続"
 
@@ -5794,7 +5823,7 @@ msgstr "再接続"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 855
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 78
-#: src/big_remote_play/ui/private_network_view.py:936
+#: src/big_remote_play/ui/private_network_view.py:951
 msgid "Reconnect using this saved network"
 msgstr "この保存済みネットワークで再接続"
 
@@ -5838,7 +5867,7 @@ msgstr "実行中のサーバーから再読み込み"
 #: src/big_remote_play/ui/api_access_dialog.py:92
 #: src/big_remote_play/ui/host_view.py:3393
 #: src/big_remote_play/ui/remote_connection.py:779
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:247
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:265
 msgid "Remove"
 msgstr "削除"
 
@@ -5854,7 +5883,7 @@ msgstr "すべて削除"
 msgid "Remove Device"
 msgstr "デバイスを削除"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:195
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:206
 msgid "Remove account from this computer"
 msgstr "このコンピューターからアカウントを削除"
 
@@ -5890,7 +5919,7 @@ msgstr "ログ、設定、サーバー、および保存されたデータを削
 msgid "Remove old log files"
 msgstr "古いログファイルを削除"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:243
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:261
 msgid "Remove this account from this computer?"
 msgstr "このコンピューターからアカウントを削除しますか？"
 
@@ -5904,7 +5933,7 @@ msgstr "このデバイスを削除しますか？"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1702
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1062
 msgid "Remove this network from history?"
 msgstr "このネットワークを履歴から削除しますか？"
 
@@ -5935,7 +5964,7 @@ msgstr "「{}」を削除しますか？新しいPINで再度ペアリングす�
 msgid "Rename"
 msgstr "名前を変更"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:288
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:306
 msgid "Rename account locally"
 msgstr "アカウントの表示名を変更"
 
@@ -5943,12 +5972,12 @@ msgstr "アカウントの表示名を変更"
 msgid "Rename device"
 msgstr "デバイスの名前を変更"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:188
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:209
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:199
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:220
 msgid "Rename locally"
 msgstr "ローカル名を変更"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:295
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:313
 msgid "Rename network locally"
 msgstr "ネットワークの表示名を変更"
 
@@ -5965,7 +5994,7 @@ msgstr "現在の設定を保存済みファイルで置き換える"
 msgid "Replace the current settings?"
 msgstr "現在の設定を置き換えますか？"
 
-#: src/big_remote_play/ui/private_network_view.py:1101
+#: src/big_remote_play/ui/private_network_view.py:1116
 msgid "Request Access"
 msgstr "アクセスをリクエスト"
 
@@ -5975,7 +6004,7 @@ msgstr "リクエストを取り消しました"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:1110
+#: src/big_remote_play/ui/private_network_view.py:1125
 msgid "Request the 16-character ID from the network owner."
 msgstr "ネットワークの所有者に 16 文字の ID を尋ねてください。"
 
@@ -5984,7 +6013,7 @@ msgstr "ネットワークの所有者に 16 文字の ID を尋ねてくださ�
 msgid "Requested: {settings}"
 msgstr "要求：{settings}"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:226
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:237
 msgid "Requesting configuration"
 msgstr "設定を要求しています"
 
@@ -6104,7 +6133,7 @@ msgstr "デフォルトに戻しますか？"
 msgid "Restore a backup"
 msgstr "バックアップを復元"
 
-#: src/big_remote_play/ui/private_network_view.py:650
+#: src/big_remote_play/ui/private_network_view.py:656
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Big Remote Play が保存した接続情報を再利用"
 
@@ -6201,9 +6230,9 @@ msgstr ""
 #: src/big_remote_play/ui/api_access_dialog.py:86
 #: src/big_remote_play/ui/host_view.py:1629
 #: src/big_remote_play/ui/host_view.py:3799
-#: src/big_remote_play/ui/private_network_view.py:1021
+#: src/big_remote_play/ui/private_network_view.py:1036
 #: src/big_remote_play/ui/remote_connection.py:751
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:306
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:324
 msgid "Save"
 msgstr "保存"
 
@@ -6314,7 +6343,7 @@ msgstr ""
 "ゲームを選ぶか、アプリ名とコマンドを入力してください。画面全体を共有するには"
 "「フルデスクトップ」を選びます。"
 
-#: src/big_remote_play/ui/private_network_view.py:807
+#: src/big_remote_play/ui/private_network_view.py:822
 msgid "Select a network service and try again."
 msgstr "ネットワークサービスを選び、もう一度お試しください。"
 
@@ -6382,7 +6411,7 @@ msgstr "ネットワークにリクエストを送信しています。"
 msgid "Sends your game to the other PC."
 msgstr "ゲームをもう一方の PC に送信します。"
 
-#: src/big_remote_play/ui/private_network_view.py:703
+#: src/big_remote_play/ui/private_network_view.py:718
 msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "サーバーのドメイン（例：vpn.example.com）"
 
@@ -6399,8 +6428,8 @@ msgstr "サーバーのパスワード"
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
 #: src/big_remote_play/ui/network_devices.py:692
-#: src/big_remote_play/ui/private_network_view.py:703
-#: src/big_remote_play/ui/private_network_view.py:1071
+#: src/big_remote_play/ui/private_network_view.py:718
+#: src/big_remote_play/ui/private_network_view.py:1086
 msgid "Server address"
 msgstr "サーバーのアドレス"
 
@@ -6649,8 +6678,8 @@ msgstr "続行するには {name} にサインインしてください。"
 msgid "Sign in with another Tailscale account"
 msgstr "別の Tailscale アカウントでサインイン"
 
-#: src/big_remote_play/ui/private_network_view.py:594
 #: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:598
 msgid "Sign in with browser"
 msgstr "ブラウザーでサインイン"
 
@@ -6662,7 +6691,7 @@ msgstr "同じアカウントでサインイン"
 msgid "Sign in with your account and connect your devices."
 msgstr "アカウントでサインインして、デバイスを接続します。"
 
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:569
 msgid "Sign in with your browser. Use the same account on all your devices."
 msgstr ""
 "ブラウザーでサインインしてください。すべてのデバイスで同じアカウントを使って"
@@ -6680,9 +6709,13 @@ msgstr "そのコンピューターに表示されたサインインリンク"
 msgid "Sign-in needed"
 msgstr "サインインが必要"
 
-#: src/big_remote_play/ui/private_network_view.py:895
+#: src/big_remote_play/ui/private_network_view.py:910
 msgid "Sign-in was not completed in the browser."
 msgstr "ブラウザーでのサインインが完了しませんでした。"
+
+#: src/big_remote_play/ui/tailscale_accounts.py:96
+msgid "Sign-in was not finished on this account."
+msgstr "このアカウントのログインは完了していません。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 356
@@ -6848,7 +6881,7 @@ msgstr "開始時にパスワードを一度だけ求められます。"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 67
-#: src/big_remote_play/ui/private_network_view.py:785
+#: src/big_remote_play/ui/private_network_view.py:800
 msgid "Starting..."
 msgstr "開始中..."
 
@@ -6871,7 +6904,7 @@ msgstr "状態不明"
 msgid "Status unknown"
 msgstr "状態不明"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:230
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:241
 #, python-brace-format
 msgid "Status: {}"
 msgstr "状態: {}"
@@ -6886,19 +6919,19 @@ msgstr "Steam は音声を録音していません"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1765
-#: src/big_remote_play/ui/private_network_view.py:1070
+#: src/big_remote_play/ui/private_network_view.py:1085
 msgid "Step 1: Get credentials"
 msgstr "ステップ 1: 認証情報を取得する"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1771
-#: src/big_remote_play/ui/private_network_view.py:1077
+#: src/big_remote_play/ui/private_network_view.py:1092
 msgid "Step 2: Enter details"
 msgstr "ステップ2：詳細を入力してください"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1777
-#: src/big_remote_play/ui/private_network_view.py:1079
+#: src/big_remote_play/ui/private_network_view.py:1094
 msgid "Step 3: Connect"
 msgstr "ステップ3：接続"
 
@@ -7229,7 +7262,8 @@ msgstr "A/B ボタンと X/Y ボタンを入れ替える"
 msgid "Swap the left and right mouse buttons"
 msgstr "マウスの左右ボタンを入れ替える"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:182
+#: src/big_remote_play/ui/tailscale_accounts.py:107
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:193
 msgid "Switch"
 msgstr "切り替え"
 
@@ -7246,19 +7280,25 @@ msgstr ""
 "Tailscale や Headscale のアカウントを切り替え、すべての ZeroTier ネットワーク"
 "を確認します。"
 
-#: src/big_remote_play/ui/private_network_view.py:655
+#: src/big_remote_play/ui/private_network_view.py:661
 msgid ""
 "Switch saved accounts or leave networks without deleting online accounts."
 msgstr ""
 "オンラインアカウントを削除せずに、保存済みアカウントの切り替えやネットワーク"
 "からの退出ができます。"
 
+#: src/big_remote_play/ui/tailscale_accounts.py:108
+#, python-brace-format
+msgid "Switch to {}"
+msgstr "{} に切り替え"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 997
 #: src/big_remote_play/ui/guest_view.py:2321
 msgid "Switching Monitors"
 msgstr "モニターの切り替え"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:233
+#: src/big_remote_play/ui/tailscale_accounts.py:126
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:251
 #, python-brace-format
 msgid "Switching to {}…"
 msgstr "{} に切り替えています…"
@@ -7305,9 +7345,13 @@ msgstr "Tailscale"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 803
 # line: 1793
-#: src/big_remote_play/ui/private_network_view.py:1091
+#: src/big_remote_play/ui/private_network_view.py:1106
 msgid "Tailscale Instructions"
 msgstr "Tailscale の手順"
+
+#: src/big_remote_play/ui/tailscale_accounts.py:28
+msgid "Tailscale accounts and tailnets"
+msgstr "Tailscale のアカウントと tailnet"
 
 #: src/big_remote_play/ui/api_access_dialog.py:133
 msgid ""
@@ -7321,6 +7365,10 @@ msgstr ""
 msgid "Tailscale and Headscale accounts"
 msgstr "Tailscale と Headscale のアカウント"
 
+#: src/big_remote_play/ui/tailscale_accounts.py:155
+msgid "Tailscale did not accept the change. Try again."
+msgstr "Tailscale は変更を受け付けませんでした。もう一度お試しください。"
+
 #: src/big_remote_play/ui/network_devices.py:633
 msgid "Tailscale download page"
 msgstr "Tailscale ダウンロードページ"
@@ -7328,6 +7376,11 @@ msgstr "Tailscale ダウンロードページ"
 #: src/big_remote_play/ui/host_view.py:1520
 msgid "Tailscale or Headscale"
 msgstr "Tailscale または Headscale"
+
+#: src/big_remote_play/ui/tailscale_accounts.py:73
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:246
+msgid "Tailscale works without your password now"
+msgstr "Tailscale はパスワードなしで動作するようになりました"
 
 #: src/big_remote_play/ui/connection_guides.py:165
 msgid ""
@@ -7460,7 +7513,7 @@ msgstr ""
 "有効な VPN 接続を停止します。後で再接続できるよう、保存済みアカウントは保持さ"
 "れます。"
 
-#: src/big_remote_play/ui/private_network_view.py:1101
+#: src/big_remote_play/ui/private_network_view.py:1116
 msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr ""
@@ -7679,7 +7732,7 @@ msgstr ""
 "このネットワークはプライベートです。新しいデバイスはすべて承認が必要です。こ"
 "のコンピューターは参加すると自動的に承認されます。"
 
-#: src/big_remote_play/ui/private_network_view.py:1115
+#: src/big_remote_play/ui/private_network_view.py:1130
 msgid ""
 "The network owner must approve this computer, in Big Remote Play or in "
 "ZeroTier Central."
@@ -7693,7 +7746,7 @@ msgstr ""
 msgid "The network owner still needs to approve this computer."
 msgstr "ネットワークの所有者がまだこのコンピューターを承認していません。"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:244
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:262
 msgid "The online account is not deleted. You can add it again by signing in."
 msgstr ""
 "オンラインアカウントは削除されません。再度サインインすれば追加できます。"
@@ -7756,7 +7809,7 @@ msgstr ""
 "相手はあなたのプライベートネットワークに参加し、あなたが許可したデバイスを見"
 "ることができます。"
 
-#: src/big_remote_play/ui/private_network_view.py:746
+#: src/big_remote_play/ui/private_network_view.py:761
 msgid "The person who created the network gives you this code."
 msgstr "このコードは、ネットワークを作った人から受け取ります。"
 
@@ -7807,7 +7860,7 @@ msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr ""
 "選択した出力が接続されていません。接続し直すか、「自動」を選んでください。"
 
-#: src/big_remote_play/ui/private_network_view.py:713
+#: src/big_remote_play/ui/private_network_view.py:728
 msgid "The server administrator then approves this computer."
 msgstr "その後、サーバー管理者がこのコンピューターを承認します。"
 
@@ -7949,12 +8002,12 @@ msgstr ""
 msgid "This PC did not appear in the list?"
 msgstr "このPCが一覧に出ませんでしたか？"
 
-#: src/big_remote_play/ui/private_network_view.py:548
+#: src/big_remote_play/ui/private_network_view.py:550
 #, python-brace-format
 msgid "This PC is on the {} private network."
 msgstr "このPCはプライベートネットワーク {} にあります。"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:146
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:157
 msgid ""
 "This Tailscale version can show the active account, but cannot list or "
 "switch saved accounts."
@@ -7976,7 +8029,7 @@ msgstr ""
 "これにより、古いIntel GPUでHEVCエンコーディングを有効にできますが、GPUの使用"
 "率が高くなり、パフォーマンスが低下します。"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:305
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:323
 msgid "This changes only the name shown by Big Remote Play."
 msgstr "変更されるのは Big Remote Play に表示する名前だけです。"
 
@@ -8003,7 +8056,7 @@ msgstr ""
 "デックと HDR も両方のコンピューターに依存します。変更は共有を再開したときに適"
 "用されます。"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:163
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:174
 msgid "This computer has not joined a ZeroTier network yet."
 msgstr "このコンピューターはまだ ZeroTier ネットワークに参加していません。"
 
@@ -8088,7 +8141,7 @@ msgstr ""
 "このコンピューターはこのネットワークの使用を停止します。ネットワーク自体は削"
 "除されません。"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:264
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:282
 msgid ""
 "This computer will no longer see devices on this network until it joins "
 "again."
@@ -8370,7 +8423,7 @@ msgstr "信頼済みWeb UIオリジン"
 # line: 1769
 # line: 1914
 #: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:898
+#: src/big_remote_play/ui/private_network_view.py:913
 msgid "Try Again"
 msgstr "再試行してください"
 
@@ -8414,14 +8467,14 @@ msgstr "オンにしています…"
 msgid "Type"
 msgstr "種類"
 
-#: src/big_remote_play/ui/private_network_view.py:568
+#: src/big_remote_play/ui/private_network_view.py:570
 msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr ""
 "サーバーのアドレスを入力してください。サーバーの管理者がこのコンピューターを"
 "承認します。"
 
-#: src/big_remote_play/ui/private_network_view.py:566
+#: src/big_remote_play/ui/private_network_view.py:568
 msgid "Type the network code you received."
 msgstr "受け取ったネットワークコードを入力してください。"
 
@@ -8455,7 +8508,7 @@ msgstr "利用不可: {device}"
 #: src/big_remote_play/ui/host_view.py:226
 #: src/big_remote_play/ui/host_view.py:1787
 #: src/big_remote_play/ui/host_view.py:1792
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:230
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:241
 #: src/big_remote_play/utils/system_check.py:176
 #: src/big_remote_play/utils/system_check.py:179
 #: src/big_remote_play/utils/system_check.py:204
@@ -8481,7 +8534,7 @@ msgstr "不明な VPN サービス: ${provider}"
 msgid "Unknown device"
 msgstr "不明なデバイス"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:282
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:300
 msgid "Unknown error"
 msgstr "不明なエラー"
 
@@ -8583,7 +8636,7 @@ msgstr ""
 "き状況、更新規則、利用条件に応じて無料の公開ドメイン名を提供しています。これ"
 "は任意です。到達可能な公開 IP アドレスがあれば、ドメインなしでも動作します。"
 
-#: src/big_remote_play/ui/private_network_view.py:634
+#: src/big_remote_play/ui/tailscale_accounts.py:36
 msgid "Use another tailnet"
 msgstr "別の tailnet を使う"
 
@@ -8788,7 +8841,7 @@ msgstr ""
 "ワード（Sunshine、ZeroTier、ネットワーク認証キー）もシステムのキーリングから"
 "削除されます。アプリケーションは終了します。"
 
-#: src/big_remote_play/ui/private_network_view.py:1114
+#: src/big_remote_play/ui/private_network_view.py:1129
 msgid "Wait for Approval"
 msgstr "承認を待つ"
 
@@ -8806,7 +8859,7 @@ msgstr "表示されるのを待つ"
 msgid "Waiting for approval"
 msgstr "承認待ち"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:225
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:236
 #: src/big_remote_play/ui/zerotier_join.py:72
 msgid "Waiting for authorization"
 msgstr "認証を待っています"
@@ -8845,8 +8898,8 @@ msgstr "設定を 1 つ直す必要があります"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1668
-#: src/big_remote_play/ui/private_network_view.py:960
-#: src/big_remote_play/ui/private_network_view.py:1013
+#: src/big_remote_play/ui/private_network_view.py:975
+#: src/big_remote_play/ui/private_network_view.py:1028
 msgid "Web UI"
 msgstr "ウェブユーザーインターフェース"
 
@@ -8873,7 +8926,7 @@ msgid "What this computer shows"
 msgstr "このコンピューターで検出された内容"
 
 #: src/big_remote_play/ui/connection_guides.py:100
-#: src/big_remote_play/ui/private_network_view.py:580
+#: src/big_remote_play/ui/private_network_view.py:582
 msgid "What you need"
 msgstr "必要なもの"
 
@@ -8980,7 +9033,7 @@ msgstr ""
 msgid "Without a browser (advanced)"
 msgstr "ブラウザーを使わない方法（上級者向け）"
 
-#: src/big_remote_play/ui/private_network_view.py:1081
+#: src/big_remote_play/ui/private_network_view.py:1096
 msgid ""
 "Without a key, a sign-in link opens; the administrator approves this "
 "computer on the server."
@@ -8992,7 +9045,7 @@ msgstr ""
 msgid "Without a private network"
 msgstr "プライベートネットワークを使わない場合"
 
-#: src/big_remote_play/ui/private_network_view.py:712
+#: src/big_remote_play/ui/private_network_view.py:727
 msgid "Without an auth key, a sign-in link opens"
 msgstr "認証キーがない場合はサインインリンクが開きます"
 
@@ -9049,7 +9102,7 @@ msgstr "Big Remote Play で遊び始めると、ここに接続が表示され�
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1631
-#: src/big_remote_play/ui/private_network_view.py:910
+#: src/big_remote_play/ui/private_network_view.py:925
 msgid "Your created/connected networks will appear here."
 msgstr "作成した/接続したネットワークはここに表示されます。"
 
@@ -9095,7 +9148,7 @@ msgstr "設定・ペアリング済みネットワーク・好みを1つのフ�
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 650
-#: src/big_remote_play/ui/private_network_view.py:1117
+#: src/big_remote_play/ui/private_network_view.py:1132
 msgid "ZT Panel"
 msgstr "ZT パネル"
 
@@ -9111,7 +9164,7 @@ msgstr "ZeroTier API トークン"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 810
 # line: 1800
-#: src/big_remote_play/ui/private_network_view.py:1108
+#: src/big_remote_play/ui/private_network_view.py:1123
 msgid "ZeroTier Instructions"
 msgstr "ZeroTier の手順"
 
@@ -9151,7 +9204,7 @@ msgstr "ZeroTier は制御キーをシステムだけが読み取れるように
 msgid "ZeroTier needs an update"
 msgstr "ZeroTier の更新が必要です"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:277
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:295
 msgid "ZeroTier network left"
 msgstr "ZeroTier ネットワークから退出しました"
 
@@ -9159,7 +9212,7 @@ msgstr "ZeroTier ネットワークから退出しました"
 msgid "ZeroTier networks"
 msgstr "ZeroTier ネットワーク"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:228
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:239
 msgid "ZeroTier service error"
 msgstr "ZeroTier サービスエラー"
 

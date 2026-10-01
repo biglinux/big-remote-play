@@ -72,6 +72,8 @@ _PERMISSION_MARKERS = (
 )
 
 _METADATA_FILE = paths.CONFIG_DIR / "private_network" / "accounts.json"
+# Privileged Tailscale commands go through PolicyKit with an absolute path.
+_ROOT_TAILSCALE = ("pkexec", "/usr/bin/tailscale")
 
 
 @dataclass(frozen=True)
@@ -103,6 +105,8 @@ class TailscaleProfiles:
     profiles: tuple[TailscaleProfile, ...]
     switching_supported: bool
     error: str = ""
+    # The active profile has no operator: this user may not even list them.
+    needs_permission: bool = False
 
     @property
     def selected(self) -> TailscaleProfile | None:
@@ -244,7 +248,7 @@ def normalize_login_server(value: str) -> str:
     return urllib.parse.urlunsplit(("https", parsed.netloc, parsed.path.rstrip("/"), "", ""))
 
 
-def tailscale_connect_argv(tailscale_cmd: Sequence[str], *, login_server: str = "", auth_key_path: str = "", timeout: float = 300.0, add_account: bool = False) -> list[str]:
+def tailscale_connect_argv(tailscale_cmd: Sequence[str], *, login_server: str = "", auth_key_path: str = "", timeout: float = 300.0, add_account: bool = False, operator: str = "") -> list[str]:
     """Argv that joins a tailnet: ``up`` normally, ``login`` for a new account.
 
     ``up`` is what connects — ``login`` alone authenticates and can leave the
@@ -255,6 +259,8 @@ def tailscale_connect_argv(tailscale_cmd: Sequence[str], *, login_server: str = 
     the CLI, so no watchdog is needed.
     """
     argv = [*tailscale_cmd, "login" if add_account else "up", f"--timeout={int(timeout)}s"]
+    if operator:
+        argv.append(f"--operator={operator}")
     if login_server:
         argv.append(f"--login-server={login_server}")
     if auth_key_path:
@@ -377,6 +383,8 @@ class VPNAccountManager:
         metadata = self._metadata()["tailscale_profiles"]
         command = [*self.system_check.tailscale_cmd(), "switch", "--list", "--json"]
         result = self._run(command, timeout=15)
+        if result.returncode != 0 and self._permission_error(result):
+            return TailscaleProfiles((), switching_supported=True, needs_permission=True)
         if result.returncode == 0:
             try:
                 payload = json.loads(result.stdout)
@@ -446,10 +454,24 @@ class VPNAccountManager:
         )
         return TailscaleProfiles((profile,), switching_supported=False)
 
+    def grant_tailscale_operator(self) -> CommandResult:
+        """Make this user the operator of the active profile (one password).
+
+        Tailscale keeps the operator per account profile, so a profile that
+        was created without one denies even listing profiles to this user.
+        """
+        return self._run([*_ROOT_TAILSCALE, "set", f"--operator={getpass.getuser()}"], timeout=120)
+
     def switch_tailscale_profile(self, profile_id: str) -> CommandResult:
         if profile_id.startswith("-") or _PROFILE_ID_RE.fullmatch(profile_id) is None:
             return CommandResult(2, "", "invalid profile id")
-        return self._run([*self.system_check.tailscale_cmd(), "switch", profile_id], timeout=45)
+        result = self._run([*self.system_check.tailscale_cmd(), "switch", profile_id], timeout=45)
+        if result.returncode != 0 and self._permission_error(result):
+            result = self._run([*_ROOT_TAILSCALE, "switch", profile_id], timeout=120)
+        if result.returncode == 0 and self._permission_error(self._run([*self.system_check.tailscale_cmd(), "status", "--json"], timeout=15)):
+            # The account switched to has no operator yet: give it this user.
+            self.grant_tailscale_operator()
+        return result
 
     def remove_tailscale_profile(self, profile_id: str) -> CommandResult:
         if profile_id.startswith("-") or _PROFILE_ID_RE.fullmatch(profile_id) is None or profile_id == "current":
@@ -531,7 +553,15 @@ class VPNAccountManager:
         self._ensure_tailscaled(on_output)
         key_path = self._write_auth_key(auth_key)
         try:
-            argv = tailscale_connect_argv(self.system_check.tailscale_cmd(), login_server=server, auth_key_path=key_path, timeout=timeout, add_account=add_account)
+            if add_account and self.system_check.tailscale_cmd()[0] != "flatpak":
+                # A new account becomes a new profile, and Tailscale keeps the
+                # operator per profile: logged in as this user, the CLI loses
+                # access to the half-created profile and leaves it empty
+                # ("profiles access denied"). Signing in as administrator once,
+                # with this user as the new profile's operator, avoids that.
+                argv = [*_ROOT_TAILSCALE, *tailscale_connect_argv([], login_server=server, auth_key_path=key_path, timeout=timeout, add_account=True, operator=getpass.getuser())]
+            else:
+                argv = tailscale_connect_argv(self.system_check.tailscale_cmd(), login_server=server, auth_key_path=key_path, timeout=timeout, add_account=add_account)
             output, auth_url = self._stream(argv, on_auth_url=on_auth_url, on_output=on_output)
             if self._permission_error(CommandResult(1, output)):
                 # Documented remedy: make this user the tailscaled operator once,

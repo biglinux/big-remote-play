@@ -56,7 +56,9 @@ The network is private: its owner must authorize this computer. Send them the **
 
 ## Tailscale never shows “Select a tailnet”
 
-Reconnecting (`tailscale up`) reuses the tailnet this computer is already on, so Tailscale has nothing to ask. To use a friend's tailnet, first accept their invitation with the same account, then on the Tailscale page choose **Use another tailnet**. The new sign-in shows **Select a tailnet** when your account belongs to more than one. To play with a single friend, sharing one computer from their tailnet (**Share this computer**) avoids switching tailnets at all.
+Reconnecting (`tailscale up`) reuses the tailnet this computer is already on, so Tailscale has nothing to ask. To use a friend's tailnet, first accept their invitation with the same account, then on the Tailscale page choose **Use another tailnet**. The new sign-in shows **Select a tailnet** when your account belongs to more than one.
+
+**“Access denied: profiles access denied”** (or *checkprefs access denied*) after `tailscale login`: Tailscale keeps its operator — the user allowed to use it without `sudo` — per account, and a sign-in started as a normal user creates a new account entry without one, then loses access to it halfway. The Tailscale page then shows **Permission is needed to see your Tailscale accounts**: choose **Allow** (your password is requested once), then **Switch** back to your account or finish the sign-in. **Use another tailnet** avoids the problem by signing in as administrator once, with you as the new account's operator. To play with a single friend, sharing one computer from their tailnet (**Share this computer**) avoids switching tailnets at all.
 
 ## “Could not connect” over ZeroTier, Tailscale or Headscale: the game PC's firewall
 
