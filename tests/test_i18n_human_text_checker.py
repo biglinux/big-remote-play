@@ -35,6 +35,19 @@ def test_video_preset_is_not_human_text() -> None:
     assert not checker.human("1080p · 60 FPS · 20 Mbps")
 
 
+def test_unit_only_template_is_not_human_text() -> None:
+    assert not checker.human("↓ {down} Mbps · ↑ {up} Mbps")
+    assert checker.human("Variation (jitter): {ms} ms")
+
+
+def test_a_reviewed_identical_translation_is_accepted_only_in_its_catalog(tmp_path: Path) -> None:
+    (tmp_path / "locale").mkdir()
+    entry = 'msgid "Start ZeroTier"\nmsgstr "Start ZeroTier"\n'
+    for name in ("da", "pt_BR"):
+        (tmp_path / "locale" / f"{name}.po").write_text(entry, encoding="utf-8")
+    assert checker.findings(tmp_path) == [("pt_BR.po", "Start ZeroTier")]
+
+
 def test_technical_codec_label_is_not_human_text() -> None:
     assert not checker.human("Spatial AQ")
 
