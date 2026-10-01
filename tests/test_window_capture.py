@@ -459,3 +459,36 @@ def test_a_game_that_stops_drawing_is_reported_once_and_resuming_too(caplog):
         item._note_frames(start + 6 + wc.STALL_SECONDS)
         item._note_frames(start + 7 + wc.STALL_SECONDS)
         assert caplog.text.count("no new picture") == 1
+
+
+def _fake_sunshine(socket: str) -> subprocess.Popen:
+    """A process named "sunshine" whose WAYLAND_DISPLAY is ``socket``."""
+    code = "import ctypes, time; ctypes.CDLL(None).prctl(15, b'sunshine', 0, 0, 0); time.sleep(30)"
+    env = dict(os.environ, WAYLAND_DISPLAY=socket)
+    process = subprocess.Popen([sys.executable, "-c", code], env=env)
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline and wc.Path(f"/proc/{process.pid}/comm").read_text().strip() != "sunshine":
+        time.sleep(0.05)
+    return process
+
+
+def test_the_capture_stops_only_the_sunshine_of_its_private_screen():
+    ours, desktop = _fake_sunshine(SOCKET), _fake_sunshine("wayland-0")
+    try:
+        assert wc.stop_private_sunshine(SOCKET, grace=5) == 1
+        assert ours.wait(timeout=5) == -signal.SIGTERM
+        assert desktop.poll() is None
+        assert wc.stop_private_sunshine("wayland-0") == 0  # not a private screen name
+    finally:
+        for process in (ours, desktop):
+            if process.poll() is None:
+                process.kill()
+                process.wait()
+
+
+def test_without_the_application_the_capture_ends_its_sunshine_after_the_hold(monkeypatch):
+    stopped = []
+    monkeypatch.setattr(wc, "stop_private_sunshine", lambda socket: stopped.append(socket) or 1)
+    item = session()
+    assert item._stop_sunshine_and_quit() is False
+    assert stopped == [SOCKET]
