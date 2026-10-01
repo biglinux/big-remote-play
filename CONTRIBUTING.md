@@ -78,16 +78,16 @@ Update screenshots only after implementation and translations are stable. Simula
 
 ## Translation changes
 
-Visible text belongs in gettext. Preserve placeholders and protocol tokens exactly. Keep regional catalogs genuinely distinct, especially `pt`/`pt_BR` and `zh_CN`/`zh_TW`.
+Write visible text in English and wrap it in gettext, with named placeholders, `ngettext` for counts and `pgettext` for ambiguous words. Preserve placeholders and protocol tokens exactly. Keep regional catalogs genuinely distinct, especially `pt`/`pt_BR` and `zh_CN`/`zh_TW`.
 
 After a source-string or PO edit:
 
 ```bash
-python3 tools/i18n/update_catalogs.py
-python3 tools/i18n/validate_catalogs.py
+make update-po
+make check-i18n
 ```
 
-Commit PO and compiled MO changes together. Structural validation does not replace native editorial review. See [docs/translations.md](docs/translations.md).
+Translate new messages in every catalog. Commit PO and compiled MO changes together, with the regenerated desktop entry and metainfo. Structural validation does not replace native editorial review. See [docs/translations.md](docs/translations.md).
 
 ## Documentation changes
 
