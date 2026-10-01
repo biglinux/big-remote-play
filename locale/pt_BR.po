@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Big Remote Play 26.07.18\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-10-01 02:11+0000\n"
+"POT-Creation-Date: 2026-10-01 11:05+0000\n"
 "PO-Revision-Date: 2026-09-18 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Portuguese (Brazil)\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: src/big_remote_play/ui/host_view.py:413
+#: src/big_remote_play/ui/host_view.py:420
 msgid ""
 "0 follows the other computer’s request. This limits video, not total network "
 "traffic."
@@ -30,7 +30,7 @@ msgstr "1. Conta"
 msgid "1. Check internet reachability"
 msgstr "1. Verifique se sua conexão aceita acesso externo"
 
-#: src/big_remote_play/ui/host_view.py:316
+#: src/big_remote_play/ui/host_view.py:323
 msgid "1. Choose what to share"
 msgstr "1. Escolha o que compartilhar"
 
@@ -50,7 +50,7 @@ msgstr "1. Instale o Headscale no servidor"
 msgid "1080p · 60 FPS · 20 Mbps"
 msgstr "1080p · 60 FPS · 20 Mbps"
 
-#: src/big_remote_play/ui/host_view.py:496
+#: src/big_remote_play/ui/host_view.py:503
 msgid "1280 × 720 — slow connections"
 msgstr "1280 × 720 — conexões lentas"
 
@@ -58,7 +58,7 @@ msgstr "1280 × 720 — conexões lentas"
 msgid "1440p · 60 FPS · 40 Mbps"
 msgstr "1440p · 60 FPS · 40 Mbps"
 
-#: src/big_remote_play/ui/host_view.py:494
+#: src/big_remote_play/ui/host_view.py:501
 msgid "1920 × 1080 — best for TVs"
 msgstr "1920 × 1080 — ideal para TVs"
 
@@ -82,7 +82,7 @@ msgstr "2. Entrar na rede"
 msgid "2. Network"
 msgstr "2. Rede"
 
-#: src/big_remote_play/ui/host_view.py:981
+#: src/big_remote_play/ui/host_view.py:988
 msgid "2. Start sharing"
 msgstr "2. Inicie o compartilhamento"
 
@@ -94,7 +94,7 @@ msgstr "3. Autorização"
 msgid "3. Connect"
 msgstr "3. Conectar"
 
-#: src/big_remote_play/ui/host_view.py:800
+#: src/big_remote_play/ui/host_view.py:807
 msgid "3. Connect the other PC"
 msgstr "3. Conecte o outro PC"
 
@@ -182,12 +182,12 @@ msgstr "Um código da rede tem 16 letras e números, como {example}."
 msgid "A new device cannot use the network until it is approved."
 msgstr "Um novo dispositivo só pode usar a rede depois de ser aprovado."
 
-#: src/big_remote_play/ui/network_dashboard.py:226
-#: src/big_remote_play/ui/network_dashboard.py:231
+#: src/big_remote_play/ui/network_dashboard.py:234
+#: src/big_remote_play/ui/network_dashboard.py:239
 msgid "A new private ZeroTier network, ready for your computers."
 msgstr "Uma nova rede privada ZeroTier, pronta para seus computadores."
 
-#: src/big_remote_play/ui/host_view.py:486
+#: src/big_remote_play/ui/host_view.py:493
 msgid ""
 "A screen larger than the other device is scaled down, which blurs small "
 "text. For TVs and car screens, 1920 × 1080 is sharpest. The chosen screen "
@@ -197,7 +197,7 @@ msgstr ""
 "pequenos borrados. Para TVs e telas de carro, 1920 × 1080 é a mais nítida. "
 "Depois, a tela escolhida volta ao normal. Escolha uma tela acima primeiro."
 
-#: src/big_remote_play/ui/host_view.py:816
+#: src/big_remote_play/ui/host_view.py:823
 msgid "A stream is open on this computer"
 msgstr "Há uma transmissão aberta neste computador"
 
@@ -249,14 +249,8 @@ msgstr "Uso do AMF"
 msgid "AMF Variance Based Adaptive Quantization (VBAQ)"
 msgstr "Quantização Adaptativa Baseada em Variância AMF (VBAQ)"
 
-#: src/big_remote_play/host/sunshine_manager.py:668
-#: src/big_remote_play/host/sunshine_manager.py:699
-#, python-brace-format
-msgid "API Error: {}"
-msgstr "Erro de API: {}"
-
 #: src/big_remote_play/ui/api_access_dialog.py:71
-#: src/big_remote_play/ui/network_dashboard.py:312
+#: src/big_remote_play/ui/network_dashboard.py:320
 #: src/big_remote_play/ui/private_network_view.py:666
 #: src/big_remote_play/ui/remote_connection.py:269
 msgid "API access"
@@ -268,6 +262,12 @@ msgstr "Acesso à API"
 msgid "API access token"
 msgstr "Token de acesso à API"
 
+#: src/big_remote_play/host/sunshine_manager.py:668
+#: src/big_remote_play/host/sunshine_manager.py:699
+#, python-brace-format
+msgid "API error: {status}"
+msgstr "Erro de API: {status}"
+
 #: src/big_remote_play/ui/api_access_dialog.py:254
 msgid "API key"
 msgstr "Chave da API"
@@ -277,7 +277,7 @@ msgid "API token"
 msgstr "Token da API"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 273
-#: src/big_remote_play/ui/main_window.py:686
+#: src/big_remote_play/ui/main_window.py:689
 msgid "About"
 msgstr "Sobre"
 
@@ -289,7 +289,7 @@ msgstr "Sobre esta VPN"
 msgid "Access Tailscale"
 msgstr "Acessar o Tailscale"
 
-#: src/big_remote_play/ui/network_dashboard.py:349
+#: src/big_remote_play/ui/network_dashboard.py:357
 msgid "Access allowed"
 msgstr "Acesso permitido"
 
@@ -310,7 +310,7 @@ msgstr "Conta alterada"
 msgid "Account switching is unavailable"
 msgstr "A troca de conta não está disponível"
 
-#: src/big_remote_play/ui/network_dashboard.py:314
+#: src/big_remote_play/ui/network_dashboard.py:322
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "Accounts and networks"
 msgstr "Contas e redes"
@@ -323,12 +323,11 @@ msgstr ""
 "As contas são mantidas pelos clientes de VPN. O Big Remote Play armazena "
 "somente os nomes opcionais exibidos aqui."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 557
-#: src/big_remote_play/ui/main_window.py:1371
-#: src/big_remote_play/ui/main_window.py:1517
+#: src/big_remote_play/ui/main_window.py:1374
+#: src/big_remote_play/ui/main_window.py:1520
 #, python-brace-format
-msgid "Action {} sent to {}"
-msgstr "Ação {} enviada para {}"
+msgid "Action {action} sent to {service}"
+msgstr "Ação {action} enviada para {service}"
 
 #: src/big_remote_play/ui/remote_connection.py:456
 #: src/big_remote_play/ui/remote_connection.py:488
@@ -348,8 +347,8 @@ msgid "Active - No devices"
 msgstr "Ativo - Nenhum dispositivo"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 864
-#: src/big_remote_play/ui/host_view.py:2477
-#: src/big_remote_play/ui/host_view.py:2493
+#: src/big_remote_play/ui/host_view.py:2484
+#: src/big_remote_play/ui/host_view.py:2500
 msgid "Active - Waiting for Connections"
 msgstr "Ativo - Aguardando Conexões"
 
@@ -370,14 +369,12 @@ msgstr "Sessão Ativa"
 msgid "Active Stream"
 msgstr "Fluxo Ativo"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 198
 #: src/big_remote_play/ui/performance_monitor.py:242
 #, python-brace-format
-msgid "Active devices: {}"
-msgstr "{} Dispositivos Ativos"
+msgid "Active devices: {count}"
+msgstr "{count} Dispositivos Ativos"
 
-#: src/big_remote_play/ui/host_view.py:3513
+#: src/big_remote_play/ui/host_view.py:3520
 msgid "Add Detected Games"
 msgstr "Adicionar jogos detectados"
 
@@ -389,7 +386,7 @@ msgstr "Adicionar conta do Headscale"
 msgid "Add Tailscale account"
 msgstr "Adicionar conta do Tailscale"
 
-#: src/big_remote_play/ui/network_dashboard.py:430
+#: src/big_remote_play/ui/network_dashboard.py:438
 msgid "Add a ZeroTier API token first."
 msgstr "Adicione primeiro um token da API do ZeroTier."
 
@@ -449,7 +446,7 @@ msgstr "Adicione seu celular, notebook, TV ou outro computador."
 msgid "Add {name} to favorites"
 msgstr "Adicionar {name} aos favoritos"
 
-#: src/big_remote_play/ui/host_view.py:1005
+#: src/big_remote_play/ui/host_view.py:1012
 msgid "Additional settings"
 msgstr "Configurações adicionais"
 
@@ -470,7 +467,7 @@ msgstr "Endereço, variação e respostas perdidas"
 msgid "Address: {address}"
 msgstr "Endereço: {address}"
 
-#: src/big_remote_play/ui/host_view.py:523
+#: src/big_remote_play/ui/host_view.py:530
 msgid ""
 "Adds error-correction data (FEC). Uses more bandwidth and does not fix a "
 "slow connection."
@@ -496,11 +493,11 @@ msgstr "Avançado"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 174
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 255
-#: src/big_remote_play/ui/host_view.py:596
+#: src/big_remote_play/ui/host_view.py:603
 msgid "Advanced Settings"
 msgstr "Configurações Avançadas"
 
-#: src/big_remote_play/ui/host_view.py:650
+#: src/big_remote_play/ui/host_view.py:657
 msgid "Advanced administration"
 msgstr "Administração avançada"
 
@@ -528,23 +525,23 @@ msgstr "Modo avançado"
 msgid "Advanced options"
 msgstr "Opções avançadas"
 
-#: src/big_remote_play/ui/host_view.py:702
+#: src/big_remote_play/ui/host_view.py:709
 #: src/big_remote_play/ui/sunshine_preferences.py:89
 msgid "Advanced server settings"
 msgstr "Configurações avançadas do servidor"
 
-#: src/big_remote_play/ui/host_view.py:675
+#: src/big_remote_play/ui/host_view.py:682
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "Ajustes avançados no navegador (Sunshine)"
 
-#: src/big_remote_play/ui/host_view.py:2245
+#: src/big_remote_play/ui/host_view.py:2252
 msgid ""
 "Advanced: IP addresses for manual connection when automatic discovery fails."
 msgstr ""
 "Avançado: endereços IP para conexão manual quando a descoberta automática "
 "falhar."
 
-#: src/big_remote_play/ui/host_view.py:2207
+#: src/big_remote_play/ui/host_view.py:2214
 msgid "After step 2, the other PC appears here."
 msgstr "Depois do passo 2, o outro PC aparece aqui."
 
@@ -563,10 +560,10 @@ msgstr ""
 "Todas as suas alterações no Big Remote Play serão restauradas! Isso inclui "
 "as configurações do Sunshine e do Moonlight."
 
-#: src/big_remote_play/ui/host_view.py:2335
+#: src/big_remote_play/ui/host_view.py:2342
 #: src/big_remote_play/ui/network_common.py:141
 #: src/big_remote_play/ui/network_common.py:165
-#: src/big_remote_play/ui/network_dashboard.py:291
+#: src/big_remote_play/ui/network_dashboard.py:299
 #: src/big_remote_play/ui/remote_connection.py:64
 #: src/big_remote_play/ui/tailscale_accounts.py:71
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:141
@@ -574,11 +571,11 @@ msgstr ""
 msgid "Allow"
 msgstr "Permitir"
 
-#: src/big_remote_play/ui/network_dashboard.py:283
+#: src/big_remote_play/ui/network_dashboard.py:291
 msgid "Allow Big Remote Play to read ZeroTier"
 msgstr "Permitir que o Big Remote Play leia o ZeroTier"
 
-#: src/big_remote_play/ui/host_view.py:506
+#: src/big_remote_play/ui/host_view.py:513
 msgid ""
 "Allow HEVC/AV1 when supported. The other computer chooses a compatible codec."
 msgstr ""
@@ -602,7 +599,7 @@ msgstr ""
 msgid "Allow Slow HEVC Encoding"
 msgstr "Permitir Codificação HEVC Lenta"
 
-#: src/big_remote_play/ui/host_view.py:2332
+#: src/big_remote_play/ui/host_view.py:2339
 msgid "Allow Sunshine through the firewall?"
 msgstr "Liberar o Sunshine no firewall?"
 
@@ -612,11 +609,11 @@ msgstr "Liberar o Sunshine no firewall?"
 msgid "Allow fallback to software encoding"
 msgstr "Permitir retorno para codificação de software"
 
-#: src/big_remote_play/ui/host_view.py:863
+#: src/big_remote_play/ui/host_view.py:870
 msgid "Allow in firewall"
 msgstr "Liberar no firewall"
 
-#: src/big_remote_play/ui/host_view.py:621
+#: src/big_remote_play/ui/host_view.py:628
 msgid "Allow internet access to administration"
 msgstr "Permitir acesso à administração pela internet"
 
@@ -651,12 +648,12 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 398
-#: src/big_remote_play/ui/host_view.py:2219
+#: src/big_remote_play/ui/host_view.py:2226
 #: src/big_remote_play/ui/sunshine_preferences.py:624
 msgid "Allowed"
 msgstr "Permitido"
 
-#: src/big_remote_play/ui/network_dashboard.py:287
+#: src/big_remote_play/ui/network_dashboard.py:295
 msgid ""
 "Allowing copies that key to a private file in your home folder, as ZeroTier "
 "documents for desktop users. After that, networks can be listed and joined "
@@ -718,11 +715,11 @@ msgstr "Já conectado"
 msgid "Also play sound on the game PC"
 msgstr "Reproduzir o som também no computador do jogo"
 
-#: src/big_remote_play/ui/host_view.py:542
+#: src/big_remote_play/ui/host_view.py:549
 msgid "Also play sound on this computer"
 msgstr "Reproduzir o som também neste computador"
 
-#: src/big_remote_play/ui/host_view.py:615
+#: src/big_remote_play/ui/host_view.py:622
 msgid "Also use IPv6"
 msgstr "Usar também IPv6"
 
@@ -753,11 +750,15 @@ msgstr ""
 "rede: listar dispositivos, aprová-los e criar convites. Ela é diferente de "
 "uma chave de autenticação, que apenas adiciona um computador a uma rede."
 
-#: src/big_remote_play/ui/network_dashboard.py:258
+#: src/big_remote_play/ui/network_dashboard.py:266
 msgid "An administrator must approve this computer"
 msgstr "Um administrador precisa aprovar este computador"
 
-#: src/big_remote_play/ui/host_view.py:1477
+#: src/big_remote_play/ui/sunshine_preferences.py:652
+msgid "Animation"
+msgstr "Animação"
+
+#: src/big_remote_play/ui/host_view.py:1484
 msgid ""
 "Another device is playing now, and Moonlight pairs only when nobody is "
 "playing: the new device shows “The computer is currently in a game”. End the "
@@ -774,7 +775,7 @@ msgstr ""
 msgid "Another way to connect distant PCs."
 msgstr "Outra forma de conectar PCs distantes."
 
-#: src/big_remote_play/ui/main_window.py:684
+#: src/big_remote_play/ui/main_window.py:687
 msgid "Appearance"
 msgstr "Aparência"
 
@@ -785,27 +786,27 @@ msgid "Apple Encoder"
 msgstr "Codificador Apple"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 150
-#: src/big_remote_play/ui/host_view.py:352
+#: src/big_remote_play/ui/host_view.py:359
 msgid "Application Details"
 msgstr "Detalhes do Aplicativo"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 155
-#: src/big_remote_play/ui/host_view.py:357
+#: src/big_remote_play/ui/host_view.py:364
 msgid "Application Name"
 msgstr "Nome do Aplicativo"
 
-#: src/big_remote_play/ui/host_view.py:1366
+#: src/big_remote_play/ui/host_view.py:1373
 msgid "Application diagnostics"
 msgstr "Diagnóstico do aplicativo"
 
-#: src/big_remote_play/ui/main_window.py:672
-#: src/big_remote_play/ui/main_window.py:673
+#: src/big_remote_play/ui/main_window.py:675
+#: src/big_remote_play/ui/main_window.py:676
 msgid "Application menu"
 msgstr "Menu do aplicativo"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 785
 #: src/big_remote_play/ui/guest_view.py:1982
-#: src/big_remote_play/ui/host_view.py:386
+#: src/big_remote_play/ui/host_view.py:393
 #: src/big_remote_play/ui/sunshine_preferences.py:317
 msgid "Apply"
 msgstr "Aplicar"
@@ -822,10 +823,9 @@ msgstr "Aplicar ou recarregar"
 msgid "Apply to Running Server"
 msgstr "Aplicar ao servidor em execução"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 231
 #: src/big_remote_play/ui/guest_view.py:910
-msgid "Applying settings..."
-msgstr "Aplicando configurações..."
+msgid "Applying settings…"
+msgstr "Aplicando configurações…"
 
 #: src/big_remote_play/ui/network_devices.py:266
 #: src/big_remote_play/ui/network_devices.py:317
@@ -912,7 +912,7 @@ msgstr ""
 "um de vocês a cria de graça no ZeroTier Central, ou vocês usam o Tailscale, "
 "o jeito mais simples de começar."
 
-#: src/big_remote_play/ui/network_dashboard.py:346
+#: src/big_remote_play/ui/network_dashboard.py:354
 #: src/big_remote_play/ui/zerotier_join.py:51
 msgid "Asking for permission…"
 msgstr "Pedindo permissão…"
@@ -930,12 +930,12 @@ msgstr ""
 #: src/big_remote_play/ui/guest_view.py:410
 #: src/big_remote_play/ui/guest_view.py:540
 #: src/big_remote_play/ui/guest_view.py:567
-#: src/big_remote_play/ui/host_view.py:530
+#: src/big_remote_play/ui/host_view.py:537
 msgid "Audio"
 msgstr "Áudio"
 
-#: src/big_remote_play/ui/host_view.py:2283
-#: src/big_remote_play/ui/host_view.py:2316
+#: src/big_remote_play/ui/host_view.py:2290
+#: src/big_remote_play/ui/host_view.py:2323
 msgid ""
 "Audio changes apply the next time you start sharing. The current output is "
 "unchanged."
@@ -963,8 +963,8 @@ msgid "Auth Key"
 msgstr "Chave de Autenticação"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1641
-#: src/big_remote_play/ui/host_view.py:2009
+#: src/big_remote_play/ui/host_view.py:1648
+#: src/big_remote_play/ui/host_view.py:2016
 msgid "Authentication Failed"
 msgstr "Falha na autenticação"
 
@@ -980,18 +980,6 @@ msgstr "Falha na autenticação. Configure um usuário no Sunshine."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 365
-# line: 388
-# line: 395
-# line: 398
-#: src/big_remote_play/ui/sunshine_preferences.py:553
-#: src/big_remote_play/ui/sunshine_preferences.py:611
-#: src/big_remote_play/ui/sunshine_preferences.py:618
-#: src/big_remote_play/ui/sunshine_preferences.py:624
-msgid "Auto"
-msgstr "Automático"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
-# line: 365
 #: src/big_remote_play/ui/sunshine_preferences.py:489
 msgid "Auto / Primary"
 msgstr "Automático / Primário"
@@ -1004,10 +992,14 @@ msgstr "Detecção automática (Recomendado)"
 
 #: src/big_remote_play/ui/guest_view.py:253
 #: src/big_remote_play/ui/host_view.py:204
-#: src/big_remote_play/ui/host_view.py:289
-#: src/big_remote_play/ui/host_view.py:462
-#: src/big_remote_play/ui/host_view.py:1745
-#: src/big_remote_play/ui/main_window.py:680
+#: src/big_remote_play/ui/host_view.py:296
+#: src/big_remote_play/ui/host_view.py:469
+#: src/big_remote_play/ui/host_view.py:1752
+#: src/big_remote_play/ui/main_window.py:683
+#: src/big_remote_play/ui/sunshine_preferences.py:553
+#: src/big_remote_play/ui/sunshine_preferences.py:611
+#: src/big_remote_play/ui/sunshine_preferences.py:618
+#: src/big_remote_play/ui/sunshine_preferences.py:624
 msgid "Automatic"
 msgstr "Automático"
 
@@ -1015,8 +1007,8 @@ msgstr "Automático"
 msgid "Automatic (Recommended)"
 msgstr "Automático (recomendado)"
 
-#: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/host_view.py:1466
+#: src/big_remote_play/ui/host_view.py:386
+#: src/big_remote_play/ui/host_view.py:1473
 msgid "Automatic capture and encoding"
 msgstr "Ajustar captura e compressão automaticamente"
 
@@ -1025,7 +1017,7 @@ msgid "Automatic mode chooses the best format supported by both computers."
 msgstr ""
 "Automático escolhe o melhor formato compatível com os dois computadores."
 
-#: src/big_remote_play/ui/host_view.py:1016
+#: src/big_remote_play/ui/host_view.py:1023
 msgid ""
 "Automatic options below are chosen by Sunshine when sharing starts, not "
 "measurements of an active stream."
@@ -1042,11 +1034,11 @@ msgstr ""
 "O modo automático escolhe o que já funciona neste computador. Escolha outro "
 "só se precisar."
 
-#: src/big_remote_play/ui/host_view.py:1014
+#: src/big_remote_play/ui/host_view.py:1021
 msgid "Automatic settings and video limit"
 msgstr "Ajustes automáticos e limite do vídeo"
 
-#: src/big_remote_play/ui/host_view.py:535
+#: src/big_remote_play/ui/host_view.py:542
 msgid ""
 "Automatic shares the output you are using now, including effects such as "
 "EasyEffects. Choose a device only to always share that one."
@@ -1055,7 +1047,7 @@ msgstr ""
 "efeitos como os do EasyEffects. Escolha um dispositivo apenas para "
 "compartilhar sempre esse mesmo."
 
-#: src/big_remote_play/ui/host_view.py:459
+#: src/big_remote_play/ui/host_view.py:466
 msgid ""
 "Automatic works across desktops. Select a specific method only for "
 "troubleshooting."
@@ -1068,18 +1060,16 @@ msgstr ""
 msgid "Automatic · {resolution} · {frame_rate} · {bitrate}"
 msgstr "Automático · {resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:2300
+#: src/big_remote_play/ui/host_view.py:2307
 msgid "Automatic — use the current output"
 msgstr "Automático — usar a saída atual"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
-# line: 112
 #: src/big_remote_play/ui/guest_view.py:1252
 #, python-brace-format
-msgid "Available at {}"
-msgstr "Disponível em {}"
+msgid "Available at {address}"
+msgstr "Disponível em {address}"
 
-#: src/big_remote_play/ui/host_view.py:946
+#: src/big_remote_play/ui/host_view.py:953
 msgid "Available over the internet"
 msgstr "Disponível pela internet"
 
@@ -1088,8 +1078,8 @@ msgstr "Disponível pela internet"
 msgid "BW (target)"
 msgstr "Banda (alvo)"
 
-#: src/big_remote_play/ui/main_window.py:602
-#: src/big_remote_play/ui/main_window.py:608
+#: src/big_remote_play/ui/main_window.py:605
+#: src/big_remote_play/ui/main_window.py:611
 msgid "Back"
 msgstr "Voltar"
 
@@ -1099,15 +1089,15 @@ msgstr "Voltar"
 msgid "Back Button as Touchpad Click"
 msgstr "Botão Voltar como Clique do Touchpad"
 
-#: src/big_remote_play/ui/main_window.py:608
+#: src/big_remote_play/ui/main_window.py:611
 msgid "Back to Connect your devices"
 msgstr "Voltar para Conecte seus dispositivos"
 
-#: src/big_remote_play/ui/main_window.py:827
+#: src/big_remote_play/ui/main_window.py:830
 msgid "Back to Home"
 msgstr "Voltar ao início"
 
-#: src/big_remote_play/ui/main_window.py:602
+#: src/big_remote_play/ui/main_window.py:605
 msgid "Back to the previous question"
 msgstr "Voltar à pergunta anterior"
 
@@ -1116,7 +1106,7 @@ msgstr "Voltar à pergunta anterior"
 msgid "Backup"
 msgstr "Backup"
 
-#: src/big_remote_play/ui/main_window.py:685
+#: src/big_remote_play/ui/main_window.py:688
 #: src/big_remote_play/ui/preferences.py:33
 msgid "Backup and restore"
 msgstr "Backup e restauração"
@@ -1136,7 +1126,7 @@ msgid "Balanced"
 msgstr "Equilibrado"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 248
-#: src/big_remote_play/ui/host_view.py:515
+#: src/big_remote_play/ui/host_view.py:522
 msgid "Balanced (Default)"
 msgstr "Equilibrado (Padrão)"
 
@@ -1154,6 +1144,17 @@ msgid "Big Remote Play can start it for you. Your password may be requested."
 msgstr ""
 "O Big Remote Play pode iniciar o serviço para você. Sua senha pode ser "
 "pedida."
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:9
+msgid ""
+"Big Remote Play guides a host and guest through game streaming with Sunshine "
+"and Moonlight. It also helps connect distant computers through an existing "
+"VPN or a guided Tailscale, ZeroTier, or Headscale setup."
+msgstr ""
+"O Big Remote Play guia quem compartilha e quem se conecta pela transmissão "
+"de jogos com Sunshine e Moonlight. Ele também ajuda a conectar computadores "
+"distantes por uma VPN que você já usa ou por uma configuração guiada do "
+"Tailscale, ZeroTier ou Headscale."
 
 #: src/big_remote_play/ui/remote_connection.py:68
 msgid "Big Remote Play installs it for you. Your password may be requested."
@@ -1183,11 +1184,11 @@ msgstr "Big Remote Play: som enviado ao outro computador"
 msgid "Bind Address"
 msgstr "Endereço de Ligação"
 
-#: src/big_remote_play/ui/host_view.py:2219
+#: src/big_remote_play/ui/host_view.py:2226
 msgid "Blocked"
 msgstr "Bloqueado"
 
-#: src/big_remote_play/ui/host_view.py:2216
+#: src/big_remote_play/ui/host_view.py:2223
 msgid "Blocked until enabled again"
 msgstr "Bloqueado até ser ativado novamente"
 
@@ -1205,11 +1206,11 @@ msgstr ""
 "Os dois dispositivos estão conectados à mesma rede Wi-Fi ou ao mesmo "
 "roteador."
 
-#: src/big_remote_play/ui/host_view.py:367
+#: src/big_remote_play/ui/host_view.py:374
 msgid "Browse files on this computer"
 msgstr "Procurar arquivos neste computador"
 
-#: src/big_remote_play/ui/host_view.py:366
+#: src/big_remote_play/ui/host_view.py:373
 msgid "Browse this computer for an executable"
 msgstr "Procurar um executável neste computador"
 
@@ -1238,7 +1239,7 @@ msgstr ""
 msgid "CGNAT"
 msgstr "CGNAT"
 
-#: src/big_remote_play/ui/network_dashboard.py:319
+#: src/big_remote_play/ui/network_dashboard.py:327
 msgid "CGNAT, IPv6, UPnP and when a VPN is the better choice."
 msgstr "CGNAT, IPv6, UPnP e quando uma VPN é a melhor escolha."
 
@@ -1252,29 +1253,29 @@ msgstr "CGNAT, IPv6, UPnP e quando uma rede privada é a melhor escolha."
 msgid "CPU Encoding"
 msgstr "Codificação da CPU"
 
-#: src/big_remote_play/ui/host_view.py:583
+#: src/big_remote_play/ui/host_view.py:590
 msgid "Calls kept out of the stream"
 msgstr "Chamadas fora da transmissão"
 
-#: src/big_remote_play/ui/host_view.py:2216
+#: src/big_remote_play/ui/host_view.py:2223
 msgid "Can connect without a new PIN"
 msgstr "Pode conectar sem um novo PIN"
 
 #: src/big_remote_play/ui/guest_view.py:1615
 #: src/big_remote_play/ui/guest_view.py:1981
 #: src/big_remote_play/ui/guest_view.py:2207
-#: src/big_remote_play/ui/host_view.py:1628
-#: src/big_remote_play/ui/host_view.py:1980
-#: src/big_remote_play/ui/host_view.py:2074
-#: src/big_remote_play/ui/host_view.py:2104
-#: src/big_remote_play/ui/host_view.py:2334
-#: src/big_remote_play/ui/host_view.py:3297
-#: src/big_remote_play/ui/host_view.py:3392
-#: src/big_remote_play/ui/host_view.py:3797
-#: src/big_remote_play/ui/host_view.py:4157
-#: src/big_remote_play/ui/main_window.py:1140
+#: src/big_remote_play/ui/host_view.py:1635
+#: src/big_remote_play/ui/host_view.py:1987
+#: src/big_remote_play/ui/host_view.py:2081
+#: src/big_remote_play/ui/host_view.py:2111
+#: src/big_remote_play/ui/host_view.py:2341
+#: src/big_remote_play/ui/host_view.py:3304
+#: src/big_remote_play/ui/host_view.py:3399
+#: src/big_remote_play/ui/host_view.py:3804
+#: src/big_remote_play/ui/host_view.py:4166
+#: src/big_remote_play/ui/main_window.py:1143
 #: src/big_remote_play/ui/network_common.py:310
-#: src/big_remote_play/ui/network_dashboard.py:397
+#: src/big_remote_play/ui/network_dashboard.py:405
 #: src/big_remote_play/ui/performance_monitor.py:567
 #: src/big_remote_play/ui/preferences.py:168
 #: src/big_remote_play/ui/preferences.py:222
@@ -1292,12 +1293,12 @@ msgstr "Cancelar"
 msgid "Cancel the request"
 msgstr "Cancelar a solicitação"
 
-#: src/big_remote_play/ui/host_view.py:3691
+#: src/big_remote_play/ui/host_view.py:3698
 msgid "Cannot browse (no access or credentials)"
 msgstr "Não é possível navegar (sem acesso ou credenciais)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 211
-#: src/big_remote_play/ui/host_view.py:458
+#: src/big_remote_play/ui/host_view.py:465
 msgid "Capture Method"
 msgstr "Método de Captura"
 
@@ -1305,7 +1306,7 @@ msgstr "Método de Captura"
 msgid "Capture, compression and stream limits"
 msgstr "Captura, compressão e limites da transmissão"
 
-#: src/big_remote_play/ui/host_view.py:1767
+#: src/big_remote_play/ui/host_view.py:1774
 #, python-brace-format
 msgid "Capture: {value}"
 msgstr "Captura: {value}"
@@ -1315,11 +1316,6 @@ msgstr "Captura: {value}"
 #: src/big_remote_play/ui/sunshine_preferences.py:252
 msgid "Certificate"
 msgstr "Certificado"
-
-#: src/big_remote_play/host/sunshine_manager.py:505
-#, python-brace-format
-msgid "Certificate trust error: {}"
-msgstr "Erro de confiança no certificado: {}"
 
 #: src/big_remote_play/ui/remote_connection.py:226
 msgid "Change"
@@ -1356,7 +1352,7 @@ msgid "Check for blocked connections automatically"
 msgstr "Verifique automaticamente as conexões bloqueadas"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1202
-#: src/big_remote_play/ui/host_view.py:3234
+#: src/big_remote_play/ui/host_view.py:3241
 msgid "Check logs for details."
 msgstr "Verifique os logs para mais detalhes."
 
@@ -1377,7 +1373,7 @@ msgstr ""
 "Confira o código e tente novamente. Se estiver certo, a rede pode ter sido "
 "excluída."
 
-#: src/big_remote_play/ui/host_view.py:1032
+#: src/big_remote_play/ui/host_view.py:1039
 msgid "Check the connection first. Open server tools only when needed."
 msgstr ""
 "Verifique primeiro a conexão. Abra as ferramentas do servidor apenas quando "
@@ -1416,19 +1412,18 @@ msgstr "Verificando este computador…"
 msgid "Checking what this network allows…"
 msgstr "Verificando o que esta rede permite…"
 
-#: src/big_remote_play/ui/host_view.py:3322
+#: src/big_remote_play/ui/host_view.py:3329
 msgid "Checking which devices are already allowed."
 msgstr "Verificando quais dispositivos já estão permitidos."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 224
 #: src/big_remote_play/ui/guest_view.py:562
-#: src/big_remote_play/ui/host_view.py:380
-#: src/big_remote_play/ui/host_view.py:963
-#: src/big_remote_play/ui/host_view.py:973
-#: src/big_remote_play/ui/main_window.py:1087
+#: src/big_remote_play/ui/host_view.py:387
+#: src/big_remote_play/ui/host_view.py:970
+#: src/big_remote_play/ui/host_view.py:980
+#: src/big_remote_play/ui/main_window.py:1090
 #: src/big_remote_play/ui/service_status_card.py:51
-msgid "Checking..."
-msgstr "Verificando..."
+msgid "Checking…"
+msgstr "Verificando…"
 
 #: src/big_remote_play/ui/connection_guides.py:132
 msgid ""
@@ -1453,9 +1448,9 @@ msgstr "Escolha um arquivo criado em “Criar um backup”."
 msgid "Choose a method to see its sign-in, network and device details."
 msgstr "Escolha um método para ver os detalhes de login, rede e dispositivos."
 
-#: src/big_remote_play/ui/host_view.py:768
-#: src/big_remote_play/ui/host_view.py:1290
-#: src/big_remote_play/ui/host_view.py:2520
+#: src/big_remote_play/ui/host_view.py:775
+#: src/big_remote_play/ui/host_view.py:1297
+#: src/big_remote_play/ui/host_view.py:2527
 msgid "Choose a source, then start sharing."
 msgstr "Escolha uma origem e inicie o compartilhamento."
 
@@ -1465,13 +1460,13 @@ msgstr "Escolher outra opção"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 138
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 143
-#: src/big_remote_play/ui/host_view.py:340
-#: src/big_remote_play/ui/host_view.py:345
+#: src/big_remote_play/ui/host_view.py:347
+#: src/big_remote_play/ui/host_view.py:352
 msgid "Choose game from list"
 msgstr "Escolha um jogo da lista"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 203
-#: src/big_remote_play/ui/host_view.py:449
+#: src/big_remote_play/ui/host_view.py:456
 msgid "Choose hardware for video encoding"
 msgstr "Escolha hardware para codificação de vídeo"
 
@@ -1505,12 +1500,12 @@ msgstr ""
 "Escolha o monitor no PC do jogo em Compartilhar → Preferências → Hardware e "
 "captura. Conecte novamente após a alteração."
 
-#: src/big_remote_play/ui/host_view.py:1269
+#: src/big_remote_play/ui/host_view.py:1276
 msgid "Choose the game to share"
 msgstr "Escolha o jogo para compartilhar"
 
-#: src/big_remote_play/ui/host_view.py:1288
-#: src/big_remote_play/ui/host_view.py:2863
+#: src/big_remote_play/ui/host_view.py:1295
+#: src/big_remote_play/ui/host_view.py:2870
 msgid "Choose the game window to share."
 msgstr "Escolha a janela do jogo para compartilhar."
 
@@ -1522,11 +1517,11 @@ msgstr ""
 "Escolha os canais de áudio usados neste computador e se o som também deve "
 "tocar no computador do jogo."
 
-#: src/big_remote_play/ui/host_view.py:805
+#: src/big_remote_play/ui/host_view.py:812
 msgid "Choose this computer from the list."
 msgstr "Escolha este computador na lista."
 
-#: src/big_remote_play/ui/host_view.py:1382
+#: src/big_remote_play/ui/host_view.py:1389
 msgid "Clear"
 msgstr "Limpar"
 
@@ -1541,7 +1536,7 @@ msgstr "Limpar TUDO?"
 msgid "Clear Everything"
 msgstr "Limpar tudo"
 
-#: src/big_remote_play/ui/host_view.py:1381
+#: src/big_remote_play/ui/host_view.py:1388
 msgid "Clear Logs"
 msgstr "Limpar logs"
 
@@ -1563,8 +1558,8 @@ msgstr "Limpar o histórico de conexões?"
 #: src/big_remote_play/ui/guest_view.py:1869
 #: src/big_remote_play/ui/guest_view.py:1884
 #: src/big_remote_play/ui/guided_setup.py:311
-#: src/big_remote_play/ui/host_view.py:1833
-#: src/big_remote_play/ui/host_view.py:3239
+#: src/big_remote_play/ui/host_view.py:1840
+#: src/big_remote_play/ui/host_view.py:3246
 #: src/big_remote_play/ui/installer_window.py:76
 msgid "Close"
 msgstr "Fechar"
@@ -1577,7 +1572,7 @@ msgstr "Feche e abra esta janela novamente para continuar procurando."
 msgid "Close the game on the game PC when streaming ends"
 msgstr "Fechar o jogo no computador do jogo ao encerrar a transmissão"
 
-#: src/big_remote_play/ui/host_view.py:831
+#: src/big_remote_play/ui/host_view.py:838
 msgid "Close the stream on every device so a new device can pair"
 msgstr ""
 "Fechar a transmissão em todos os dispositivos para que um novo dispositivo "
@@ -1588,7 +1583,7 @@ msgstr ""
 msgid "Cloudflare DNS-only documentation"
 msgstr "Documentação do modo Somente DNS da Cloudflare"
 
-#: src/big_remote_play/ui/network_dashboard.py:245
+#: src/big_remote_play/ui/network_dashboard.py:253
 #: src/big_remote_play/ui/network_devices.py:218
 msgid "Code for this computer"
 msgstr "Código deste computador"
@@ -1597,7 +1592,7 @@ msgstr "Código deste computador"
 msgid "Codec, HDR, data limit and connection warnings"
 msgstr "Codec, HDR, limite de dados e avisos de conexão"
 
-#: src/big_remote_play/ui/host_view.py:703
+#: src/big_remote_play/ui/host_view.py:710
 msgid "Codecs, network, capture and recovery tools"
 msgstr "Codecs, rede, captura e ferramentas de recuperação"
 
@@ -1612,7 +1607,7 @@ msgstr ""
 "padrões locais embutidos do Sunshine."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 159
-#: src/big_remote_play/ui/host_view.py:361
+#: src/big_remote_play/ui/host_view.py:368
 #: src/big_remote_play/ui/network_devices.py:636
 #: src/big_remote_play/ui/network_devices.py:667
 #: src/big_remote_play/ui/network_devices.py:695
@@ -1638,11 +1633,11 @@ msgid ""
 "Components are still missing. Finish the installation, then check again."
 msgstr "Ainda faltam componentes. Conclua a instalação e verifique novamente."
 
-#: src/big_remote_play/ui/host_view.py:1768
+#: src/big_remote_play/ui/host_view.py:1775
 msgid "Compression: H.264 only"
 msgstr "Compressão: apenas H.264"
 
-#: src/big_remote_play/ui/host_view.py:1768
+#: src/big_remote_play/ui/host_view.py:1775
 msgid "Compression: HEVC/AV1 when supported"
 msgstr "Compressão: HEVC/AV1 quando houver suporte"
 
@@ -1668,7 +1663,7 @@ msgstr ""
 msgid "Config Files"
 msgstr "Arquivos de Configuração"
 
-#: src/big_remote_play/ui/host_view.py:1389
+#: src/big_remote_play/ui/host_view.py:1396
 msgid "Configuration Directory"
 msgstr "Diretório de configuração"
 
@@ -1691,17 +1686,17 @@ msgstr ""
 "atualizados."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 288
-#: src/big_remote_play/ui/host_view.py:631
+#: src/big_remote_play/ui/host_view.py:638
 msgid "Configure"
 msgstr "Configurar"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 284
-#: src/big_remote_play/ui/host_view.py:627
+#: src/big_remote_play/ui/host_view.py:634
 msgid "Configure Firewall (IPv6)"
 msgstr "Configurar Firewall (IPv6)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 151
-#: src/big_remote_play/ui/host_view.py:353
+#: src/big_remote_play/ui/host_view.py:360
 msgid "Configure name and command"
 msgstr "Configurar nome e comando"
 
@@ -1709,16 +1704,15 @@ msgstr "Configurar nome e comando"
 msgid "Configured"
 msgstr "Configurado"
 
-#: src/big_remote_play/ui/host_view.py:390
+#: src/big_remote_play/ui/host_view.py:397
 msgid "Configured for the next sharing session"
 msgstr "Configuração para o próximo compartilhamento"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 776
-#: src/big_remote_play/ui/host_view.py:2343
-msgid "Configuring firewall... (Password may be requested)"
-msgstr "Configurando o firewall... (A senha pode ser solicitada)"
+#: src/big_remote_play/ui/host_view.py:2350
+msgid "Configuring the firewall… Your password may be requested."
+msgstr "Configurando o firewall… (A senha pode ser solicitada)"
 
-#: src/big_remote_play/ui/host_view.py:3779
+#: src/big_remote_play/ui/host_view.py:3786
 msgid "Confirm New Password"
 msgstr "Confirmar nova senha"
 
@@ -1732,14 +1726,18 @@ msgstr "Confirmar nova senha"
 #: src/big_remote_play/ui/guest_view.py:1022
 #: src/big_remote_play/ui/guest_view.py:1334
 #: src/big_remote_play/ui/guest_view.py:1782
-#: src/big_remote_play/ui/main_window.py:115
-#: src/big_remote_play/ui/main_window.py:828
-#: src/big_remote_play/ui/main_window.py:993
-#: src/big_remote_play/ui/main_window.py:1221
 #: src/big_remote_play/ui/private_network_view.py:596
 #: src/big_remote_play/ui/private_network_view.py:598
 #: src/big_remote_play/ui/remote_connection.py:454
 #: src/big_remote_play/ui/remote_connection.py:482
+msgid "Connect"
+msgstr "Conectar"
+
+#: src/big_remote_play/ui/main_window.py:118
+#: src/big_remote_play/ui/main_window.py:831
+#: src/big_remote_play/ui/main_window.py:996
+#: src/big_remote_play/ui/main_window.py:1224
+msgctxt "navigation"
 msgid "Connect"
 msgstr "Conectar"
 
@@ -1753,8 +1751,12 @@ msgstr "Conectar novamente"
 msgid "Connect by address"
 msgstr "Conectar pelo endereço"
 
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:16
+msgid "Connect from another computer with Moonlight and pair it with a PIN"
+msgstr "Conecte-se de outro computador com o Moonlight e pareie-o com um PIN"
+
 #: src/big_remote_play/ui/network_common.py:164
-#: src/big_remote_play/ui/network_dashboard.py:217
+#: src/big_remote_play/ui/network_dashboard.py:225
 #: src/big_remote_play/ui/private_network_view.py:566
 msgid "Connect this computer"
 msgstr "Conectar este computador"
@@ -1794,6 +1796,11 @@ msgstr "Conectar a outro computador"
 msgid "Connect to this server"
 msgstr "Conectar a este servidor"
 
+#: src/big_remote_play/ui/guest_view.py:897
+#, python-brace-format
+msgid "Connect to {name}"
+msgstr "Conectar a {name}"
+
 #: src/big_remote_play/ui/guest_view.py:1783
 #: src/big_remote_play/ui/history_dialog.py:127
 #: src/big_remote_play/ui/remote_connection.py:483
@@ -1801,17 +1808,11 @@ msgstr "Conectar a este servidor"
 msgid "Connect to {name} again"
 msgstr "Conectar a {name} novamente"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 220
-#: src/big_remote_play/ui/guest_view.py:897
-#, python-brace-format
-msgid "Connect to {}"
-msgstr "Conectar a {}"
-
-#: src/big_remote_play/ui/host_view.py:612
+#: src/big_remote_play/ui/host_view.py:619
 msgid "Connect without a VPN"
 msgstr "Conectar sem VPN"
 
-#: src/big_remote_play/ui/main_window.py:1225
+#: src/big_remote_play/ui/main_window.py:1228
 #: src/big_remote_play/ui/remote_connection.py:183
 msgid "Connect your devices"
 msgstr "Conecte seus dispositivos"
@@ -1829,10 +1830,10 @@ msgstr "Dispositivo conectado"
 
 #: src/big_remote_play/ui/performance_monitor.py:790
 #, python-brace-format
-msgid "Connected devices: {}"
-msgstr "Dispositivos conectados: {}"
+msgid "Connected devices: {count}"
+msgstr "Dispositivos conectados: {count}"
 
-#: src/big_remote_play/ui/host_view.py:2118
+#: src/big_remote_play/ui/host_view.py:2125
 msgid "Connected now"
 msgstr "Conectados agora"
 
@@ -1844,22 +1845,18 @@ msgstr "Conectados agora"
 msgid "Connected successfully!"
 msgstr "Conectado com sucesso!"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 722
 #: src/big_remote_play/ui/performance_monitor.py:820
 #, python-brace-format
-msgid "Connected to {}"
-msgstr "Conectado a {}"
+msgid "Connected to {name}"
+msgstr "Conectado a {name}"
 
 #: src/big_remote_play/ui/zerotier_join.py:62
 msgid "Connecting to the network…"
 msgstr "Conectando à rede…"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1848
 #: src/big_remote_play/ui/private_network_view.py:798
-msgid "Connecting..."
-msgstr "Conectando..."
+msgid "Connecting…"
+msgstr "Conectando…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
@@ -1897,7 +1894,7 @@ msgstr "Conexão falhou"
 msgid "Connection history"
 msgstr "Histórico da conexão"
 
-#: src/big_remote_play/ui/host_view.py:2244
+#: src/big_remote_play/ui/host_view.py:2251
 msgid "Connection information"
 msgstr "Informações da conexão"
 
@@ -1945,7 +1942,7 @@ msgid "Contacting the service…"
 msgstr "Contatando o serviço…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 582
-#: src/big_remote_play/ui/main_window.py:1516
+#: src/big_remote_play/ui/main_window.py:1519
 msgid "Containers"
 msgstr "Contêineres"
 
@@ -1966,7 +1963,7 @@ msgstr ""
 msgid "Controllers"
 msgstr "Controles"
 
-#: src/big_remote_play/ui/host_view.py:877
+#: src/big_remote_play/ui/host_view.py:884
 msgid "Controllers of the other computer cannot work"
 msgstr "Os controles do outro computador não podem funcionar"
 
@@ -1989,18 +1986,18 @@ msgid "Copied"
 msgstr "Copiado"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 843
-#: src/big_remote_play/ui/host_view.py:2432
-#: src/big_remote_play/ui/host_view.py:3501
+#: src/big_remote_play/ui/host_view.py:2439
+#: src/big_remote_play/ui/host_view.py:3508
 msgid "Copied!"
 msgstr "Copiado!"
 
-#: src/big_remote_play/ui/host_view.py:3447
+#: src/big_remote_play/ui/host_view.py:3454
 #: src/big_remote_play/ui/network_common.py:229
 #: src/big_remote_play/ui/network_common.py:246
 msgid "Copy"
 msgstr "Copiar"
 
-#: src/big_remote_play/ui/host_view.py:1394
+#: src/big_remote_play/ui/host_view.py:1401
 msgid "Copy Path"
 msgstr "Copiar caminho"
 
@@ -2008,12 +2005,12 @@ msgstr "Copiar caminho"
 msgid "Copy address"
 msgstr "Copiar endereço"
 
-#: src/big_remote_play/ui/host_view.py:912
-#: src/big_remote_play/ui/host_view.py:915
+#: src/big_remote_play/ui/host_view.py:919
+#: src/big_remote_play/ui/host_view.py:922
 msgid "Copy code"
 msgstr "Copiar código"
 
-#: src/big_remote_play/ui/host_view.py:3448
+#: src/big_remote_play/ui/host_view.py:3455
 msgid "Copy logs"
 msgstr "Copiar logs"
 
@@ -2026,26 +2023,26 @@ msgstr "Copiar detalhes técnicos"
 msgid "Copy the private address of {name}"
 msgstr "Copiar o endereço privado de {name}"
 
-#: src/big_remote_play/ui/host_view.py:2404
+#: src/big_remote_play/ui/host_view.py:2411
 #, python-brace-format
-msgid "Copy the {} value to clipboard"
-msgstr "Copiar o valor {} para a área de transferência"
+msgid "Copy the {field} value to the clipboard"
+msgstr "Copiar o valor {field} para a área de transferência"
 
-#: src/big_remote_play/ui/host_view.py:915
+#: src/big_remote_play/ui/host_view.py:922
 msgid "Copy this PC's discovery code to the clipboard"
 msgstr "Copiar o código de busca deste PC para a área de transferência"
+
+#: src/big_remote_play/ui/host_view.py:2410
+#, python-brace-format
+msgid "Copy {field}"
+msgstr "Copiar {field}"
 
 #: src/big_remote_play/ui/network_common.py:246
 #, python-brace-format
 msgid "Copy {name} to the clipboard"
 msgstr "Copiar {name} para a área de transferência"
 
-#: src/big_remote_play/ui/host_view.py:2403
-#, python-brace-format
-msgid "Copy {}"
-msgstr "Copiar {}"
-
-#: src/big_remote_play/ui/host_view.py:470
+#: src/big_remote_play/ui/host_view.py:477
 msgid "Correct colors of HDR screens"
 msgstr "Corrigir as cores de telas HDR"
 
@@ -2063,10 +2060,6 @@ msgstr "Não foi possível criar o backup"
 msgid "Could not install ${pkg}."
 msgstr "Não foi possível instalar ${pkg}."
 
-#: src/big_remote_play/app.py:114
-msgid "Could not load icon theme: no GTK display"
-msgstr "Não foi possível carregar o tema de ícones: sem display GTK"
-
 #: src/big_remote_play/ui/guest_view.py:1865
 msgid ""
 "Could not pair with the game PC. Check that the code was entered on the game "
@@ -2083,7 +2076,7 @@ msgstr ""
 msgid "Could not read server configuration."
 msgstr "Não foi possível ler a configuração do servidor."
 
-#: src/big_remote_play/ui/host_view.py:1138
+#: src/big_remote_play/ui/host_view.py:1145
 msgid "Could not read the open windows"
 msgstr "Não foi possível ler as janelas abertas"
 
@@ -2109,7 +2102,7 @@ msgstr ""
 "Não foi possível salvar as configurações de conexão. Verifique as permissões "
 "do arquivo."
 
-#: src/big_remote_play/ui/host_view.py:2955
+#: src/big_remote_play/ui/host_view.py:2962
 msgid "Could not save the server configuration."
 msgstr "Não foi possível salvar a configuração do servidor."
 
@@ -2117,7 +2110,7 @@ msgstr "Não foi possível salvar a configuração do servidor."
 msgid "Could not turn it on. Check the connection details."
 msgstr "Não foi possível ativar a conexão. Verifique os detalhes da conexão."
 
-#: src/big_remote_play/ui/host_view.py:2909
+#: src/big_remote_play/ui/host_view.py:2916
 msgid "Could not update the game library. Existing games were preserved."
 msgstr ""
 "Não foi possível atualizar a biblioteca. Os jogos existentes foram "
@@ -2128,7 +2121,7 @@ msgid "Create Account"
 msgstr "Criar conta"
 
 #: src/big_remote_play/ui/guided_setup.py:312
-#: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/network_dashboard.py:403
 #: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "Criar uma rede ZeroTier"
@@ -2146,8 +2139,8 @@ msgid ""
 msgstr ""
 "Crie uma conta gratuita ou entre na sua. Só quem é dono da rede faz isso."
 
-#: src/big_remote_play/ui/network_dashboard.py:226
-#: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/network_dashboard.py:234
+#: src/big_remote_play/ui/network_dashboard.py:238
 #: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "Criar uma rede"
@@ -2160,7 +2153,7 @@ msgstr "Crie uma chave de login de uso único que expira em uma hora."
 msgid "Create invitation"
 msgstr "Criar convite"
 
-#: src/big_remote_play/ui/network_dashboard.py:398
+#: src/big_remote_play/ui/network_dashboard.py:406
 msgid "Create network"
 msgstr "Criar rede"
 
@@ -2176,7 +2169,7 @@ msgstr "Crie a chave da API no servidor"
 msgid "Creates a private network between several devices."
 msgstr "Cria uma rede privada entre vários dispositivos."
 
-#: src/big_remote_play/ui/network_dashboard.py:406
+#: src/big_remote_play/ui/network_dashboard.py:414
 msgid "Creating the network…"
 msgstr "Criando a rede…"
 
@@ -2202,7 +2195,7 @@ msgstr ""
 msgid "Credentials reset successfully"
 msgstr "Credenciais redefinidas com sucesso"
 
-#: src/big_remote_play/ui/network_dashboard.py:312
+#: src/big_remote_play/ui/network_dashboard.py:320
 #: src/big_remote_play/ui/private_network_view.py:666
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr "Credenciais que permitem ao Big Remote Play gerenciar esta rede."
@@ -2215,29 +2208,27 @@ msgstr "Credenciais que permitem ao Big Remote Play gerenciar suas redes."
 msgid "Credentials updated successfully"
 msgstr "Credenciais atualizadas com sucesso"
 
-#: src/big_remote_play/ui/host_view.py:3773
+#: src/big_remote_play/ui/host_view.py:3780
 msgid "Current Password"
 msgstr "Senha atual"
 
-#: src/big_remote_play/ui/host_view.py:3771
+#: src/big_remote_play/ui/host_view.py:3778
 msgid "Current Username"
 msgstr "Usuário atual"
 
-#: src/big_remote_play/ui/host_view.py:577
+#: src/big_remote_play/ui/host_view.py:584
 msgid "Current output"
 msgstr "Saída atual"
 
 #: src/big_remote_play/ui/guest_view.py:258
 #: src/big_remote_play/ui/guest_view.py:267
 #: src/big_remote_play/ui/guest_view.py:292
-#: src/big_remote_play/ui/guest_view.py:1904
-#: src/big_remote_play/ui/guest_view.py:1933
-#: src/big_remote_play/ui/host_view.py:402
+#: src/big_remote_play/ui/host_view.py:409
 msgid "Custom"
 msgstr "Personalizado"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 133
-#: src/big_remote_play/ui/host_view.py:330
+#: src/big_remote_play/ui/host_view.py:337
 msgid "Custom App"
 msgstr "Aplicativo Personalizado"
 
@@ -2250,7 +2241,7 @@ msgid "Custom Frame Rate"
 msgstr "Taxa de quadros personalizada"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 759
-#: src/big_remote_play/ui/guest_view.py:1921
+#: src/big_remote_play/ui/guest_view.py:1923
 msgid "Custom Resolution"
 msgstr "Resolução Personalizada"
 
@@ -2258,11 +2249,11 @@ msgstr "Resolução Personalizada"
 msgid "Custom image settings"
 msgstr "Personalizar a imagem"
 
-#: src/big_remote_play/ui/main_window.py:680
+#: src/big_remote_play/ui/main_window.py:683
 msgid "Dark"
 msgstr "Escuro"
 
-#: src/big_remote_play/ui/host_view.py:580
+#: src/big_remote_play/ui/host_view.py:587
 msgid "Default microphone"
 msgstr "Microfone padrão"
 
@@ -2287,7 +2278,7 @@ msgstr "Excluir entrada?"
 msgid "Delete this saved network"
 msgstr "Excluir esta rede salva"
 
-#: src/big_remote_play/ui/host_view.py:1369
+#: src/big_remote_play/ui/host_view.py:1376
 msgid "Detailed Logs"
 msgstr "Logs detalhados"
 
@@ -2301,11 +2292,11 @@ msgid "Device ID"
 msgstr "ID do dispositivo"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:2051
+#: src/big_remote_play/ui/host_view.py:2058
 msgid "Device Name"
 msgstr "Nome do Dispositivo"
 
-#: src/big_remote_play/ui/network_dashboard.py:258
+#: src/big_remote_play/ui/network_dashboard.py:266
 msgid ""
 "Device approval is enabled for this tailnet. It is done in the admin console."
 msgstr ""
@@ -2324,7 +2315,7 @@ msgstr "Dispositivo aprovado"
 msgid "Device at {address}"
 msgstr "Dispositivo em {address}"
 
-#: src/big_remote_play/ui/host_view.py:3356
+#: src/big_remote_play/ui/host_view.py:3363
 msgid "Device enabled"
 msgstr "Dispositivo ativado"
 
@@ -2344,7 +2335,7 @@ msgstr "Dispositivos"
 msgid "Devices online now: {count}"
 msgstr "Dispositivos online agora: {count}"
 
-#: src/big_remote_play/ui/host_view.py:3292
+#: src/big_remote_play/ui/host_view.py:3299
 msgid ""
 "Devices paired with Sunshine. Disable to block access without re-pairing; "
 "remove to revoke (a new PIN will be required)."
@@ -2352,11 +2343,11 @@ msgstr ""
 "Dispositivos pareados com o Sunshine. Desative para bloquear o acesso sem "
 "refazer o pareamento; remova para revogar (será necessário um novo PIN)."
 
-#: src/big_remote_play/ui/host_view.py:2118
+#: src/big_remote_play/ui/host_view.py:2125
 msgid "Devices playing on this computer at this moment."
 msgstr "Dispositivos jogando neste computador agora."
 
-#: src/big_remote_play/ui/host_view.py:3425
+#: src/big_remote_play/ui/host_view.py:3432
 msgid "Devices updated"
 msgstr "Dispositivos atualizados"
 
@@ -2397,11 +2388,11 @@ msgstr ""
 "Conexão direta por domínio e portas do roteador. Maior exposição à internet."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 576
-#: src/big_remote_play/ui/main_window.py:1536
+#: src/big_remote_play/ui/main_window.py:1539
 msgid "Disable"
 msgstr "Desativar"
 
-#: src/big_remote_play/ui/host_view.py:2186
+#: src/big_remote_play/ui/host_view.py:2193
 msgid "Disable or remove devices that should no longer connect."
 msgstr "Desative ou remova dispositivos que não devem mais se conectar."
 
@@ -2418,27 +2409,24 @@ msgstr "Desative ou remova dispositivos que não devem mais se conectar."
 msgid "Disabled"
 msgstr "Desativado"
 
-#: src/big_remote_play/ui/network_dashboard.py:451
+#: src/big_remote_play/ui/network_dashboard.py:459
 msgid "Disconnect"
 msgstr "Desconectar"
 
-#: src/big_remote_play/ui/performance_monitor.py:562
-msgid "Disconnect Guest"
-msgstr "Desconectar convidado"
-
-#: src/big_remote_play/ui/network_dashboard.py:324
+#: src/big_remote_play/ui/network_dashboard.py:332
 msgid "Disconnect every ZeroTier network on this computer"
 msgstr "Desconectar todas as redes ZeroTier deste computador"
 
+#: src/big_remote_play/ui/performance_monitor.py:562
 #: src/big_remote_play/ui/performance_monitor.py:812
 msgid "Disconnect guest"
 msgstr "Desconectar convidado"
 
-#: src/big_remote_play/ui/network_dashboard.py:326
+#: src/big_remote_play/ui/network_dashboard.py:334
 msgid "Disconnect temporarily"
 msgstr "Desconectar temporariamente"
 
-#: src/big_remote_play/ui/network_dashboard.py:449
+#: src/big_remote_play/ui/network_dashboard.py:457
 msgid "Disconnect temporarily?"
 msgstr "Desconectar temporariamente?"
 
@@ -2457,11 +2445,9 @@ msgstr "Desconectar este convidado específico (Admin)"
 msgid "Disconnected"
 msgstr "Desconectado"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 898
-#: src/big_remote_play/ui/network_dashboard.py:455
-msgid "Disconnecting..."
-msgstr "Desconectando..."
+#: src/big_remote_play/ui/network_dashboard.py:463
+msgid "Disconnecting…"
+msgstr "Desconectando…"
 
 #: src/big_remote_play/ui/guest_view.py:510
 msgid "Discover game PCs automatically"
@@ -2478,7 +2464,7 @@ msgstr ""
 "transmissão."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1442
-#: src/big_remote_play/ui/host_view.py:4156
+#: src/big_remote_play/ui/host_view.py:4165
 msgid "Do you want to restore default settings?"
 msgstr "Você deseja restaurar as configurações padrão?"
 
@@ -2489,7 +2475,7 @@ msgstr "Você deseja restaurar as configurações padrão?"
 msgid "Domain"
 msgstr "Domínio"
 
-#: src/big_remote_play/ui/host_view.py:612
+#: src/big_remote_play/ui/host_view.py:619
 msgid "Domain, router ports and security precautions."
 msgstr "Domínio, portas do roteador e cuidados com a segurança."
 
@@ -2497,11 +2483,9 @@ msgstr "Domínio, portas do roteador e cuidados com a segurança."
 msgid "Done"
 msgstr "Concluído"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 77
 #: src/big_remote_play/ui/installer_window.py:123
-msgid "Done! Press Enter to close..."
-msgstr "Concluído! Pressione Enter para fechar..."
+msgid "Done. Press Enter to close."
+msgstr "Concluído! Pressione Enter para fechar."
 
 #: src/big_remote_play/ui/network_devices.py:441
 msgid ""
@@ -2535,14 +2519,12 @@ msgstr "Editar resolução personalizada"
 msgid "Edit this saved network"
 msgstr "Editar esta rede salva"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1796
 #: src/big_remote_play/ui/private_network_view.py:1033
 #, python-brace-format
-msgid "Edit – {}"
-msgstr "Editar – {}"
+msgid "Edit – {name}"
+msgstr "Editar – {name}"
 
-#: src/big_remote_play/ui/host_view.py:505
+#: src/big_remote_play/ui/host_view.py:512
 msgid "Efficient video compression"
 msgstr "Compressão de vídeo eficiente"
 
@@ -2567,7 +2549,7 @@ msgid "Emulate touchpad as DS4"
 msgstr "Emular touchpad como DS4"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 576
-#: src/big_remote_play/ui/main_window.py:1536
+#: src/big_remote_play/ui/main_window.py:1539
 msgid "Enable"
 msgstr "Ativar"
 
@@ -2604,11 +2586,11 @@ msgid "Enable YUV 4:4:4"
 msgstr "Ativar YUV 4:4:4"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 273
-#: src/big_remote_play/ui/host_view.py:616
+#: src/big_remote_play/ui/host_view.py:623
 msgid "Enable simultaneous IPv4 and IPv6 support on server"
 msgstr "Ativar suporte simultâneo a IPv4 e IPv6 no servidor"
 
-#: src/big_remote_play/ui/host_view.py:1369
+#: src/big_remote_play/ui/host_view.py:1376
 msgid "Enable verbose logging for debugging"
 msgstr "Ativar logs detalhados para depuração"
 
@@ -2622,7 +2604,7 @@ msgstr ""
 "Ativar esta opção pode evitar quadros perdidos na rede durante as mudanças "
 "de cena, mas a qualidade do vídeo pode ser reduzida durante o movimento."
 
-#: src/big_remote_play/ui/host_view.py:1769
+#: src/big_remote_play/ui/host_view.py:1776
 #, python-brace-format
 msgid "Encoding priority: {value}"
 msgstr "Prioridade de compressão: {value}"
@@ -2631,8 +2613,8 @@ msgstr "Prioridade de compressão: {value}"
 msgid "End Game"
 msgstr "Encerrar jogo"
 
-#: src/big_remote_play/ui/host_view.py:827
-#: src/big_remote_play/ui/host_view.py:1662
+#: src/big_remote_play/ui/host_view.py:834
+#: src/big_remote_play/ui/host_view.py:1669
 msgid "End for everyone"
 msgstr "Encerrar para todos"
 
@@ -2644,7 +2626,7 @@ msgstr ""
 "Encerrar o jogo em execução de forma suave ou expulsar à força o endereço de "
 "rede? Encerrar o jogo mantém o dispositivo pareado."
 
-#: src/big_remote_play/ui/host_view.py:1658
+#: src/big_remote_play/ui/host_view.py:1665
 msgid "End the stream for everyone?"
 msgstr "Encerrar a transmissão para todos?"
 
@@ -2652,11 +2634,11 @@ msgstr "Encerrar a transmissão para todos?"
 msgid "Enter ID"
 msgstr "Inserir ID"
 
-#: src/big_remote_play/ui/host_view.py:850
+#: src/big_remote_play/ui/host_view.py:857
 msgid "Enter Sunshine password"
 msgstr "Digitar a senha do Sunshine"
 
-#: src/big_remote_play/ui/guest_view.py:1922
+#: src/big_remote_play/ui/guest_view.py:1924
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Digite LARGURAxALTURA (por exemplo 1920x1080):"
 
@@ -2682,8 +2664,8 @@ msgstr "Digite outro ID de rede com 16 caracteres"
 
 #: src/big_remote_play/ui/guest_view.py:1358
 #: src/big_remote_play/ui/guest_view.py:1675
-#: src/big_remote_play/ui/host_view.py:1927
-#: src/big_remote_play/ui/host_view.py:2088
+#: src/big_remote_play/ui/host_view.py:1934
+#: src/big_remote_play/ui/host_view.py:2095
 msgid "Enter exactly four digits."
 msgstr "Digite exatamente quatro dígitos."
 
@@ -2692,7 +2674,7 @@ msgstr "Digite exatamente quatro dígitos."
 msgid "Enter frames per second (e.g. 75):"
 msgstr "Digite os quadros por segundo (por exemplo, 75):"
 
-#: src/big_remote_play/ui/host_view.py:1505
+#: src/big_remote_play/ui/host_view.py:1512
 msgid ""
 "Enter it now, so a device is approved the moment you type its code. "
 "Otherwise Moonlight on the device may give up while you type it."
@@ -2717,7 +2699,7 @@ msgstr "Digite o endereço do servidor Headscale."
 msgid "Enter the ID on this page and choose Connect."
 msgstr "Digite o ID nesta página e escolha Conectar."
 
-#: src/big_remote_play/ui/host_view.py:2036
+#: src/big_remote_play/ui/host_view.py:2043
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr "Digite o PIN exibido pelo Moonlight no outro computador."
 
@@ -2725,15 +2707,15 @@ msgstr "Digite o PIN exibido pelo Moonlight no outro computador."
 msgid "Enter the code here"
 msgstr "Digite o código aqui"
 
-#: src/big_remote_play/ui/host_view.py:1509
+#: src/big_remote_play/ui/host_view.py:1516
 msgid ""
 "Enter the current Sunshine user and password, so devices can be approved."
 msgstr ""
 "Digite o usuário e a senha atuais do Sunshine, para que os aparelhos possam "
 "ser aprovados."
 
-#: src/big_remote_play/ui/host_view.py:891
-#: src/big_remote_play/ui/host_view.py:2048
+#: src/big_remote_play/ui/host_view.py:898
+#: src/big_remote_play/ui/host_view.py:2055
 msgid "Enter the four digits shown by Moonlight on the other computer."
 msgstr "Digite os quatro números exibidos pelo Moonlight no outro computador."
 
@@ -2772,8 +2754,8 @@ msgstr "Entrada atualizada"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1245
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 562
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 600
-#: src/big_remote_play/ui/host_view.py:2350
-#: src/big_remote_play/ui/host_view.py:3024
+#: src/big_remote_play/ui/host_view.py:2357
+#: src/big_remote_play/ui/host_view.py:3031
 msgid "Error"
 msgstr "Erro"
 
@@ -2781,49 +2763,36 @@ msgstr "Erro"
 msgid "Error Clearing"
 msgstr "Erro ao limpar"
 
-#: src/big_remote_play/ui/host_view.py:1770
+#: src/big_remote_play/ui/host_view.py:1777
 #, python-brace-format
 msgid "Error correction: {value}%"
 msgstr "Correção de erros: {value}%"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 561
-#: src/big_remote_play/ui/main_window.py:1521
+#: src/big_remote_play/ui/main_window.py:1524
 #, python-brace-format
-msgid "Error executing command: {}"
-msgstr "Erro ao executar o comando: {}"
+msgid "Error executing command: {error}"
+msgstr "Erro ao executar o comando: {error}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 807
-#: src/big_remote_play/ui/host_view.py:2374
+#: src/big_remote_play/ui/host_view.py:2381
 #, python-brace-format
-msgid "Error executing script: {}"
-msgstr "Erro ao executar o script: {}"
+msgid "Error executing script: {error}"
+msgstr "Erro ao executar o script: {error}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1403
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1435
-#: src/big_remote_play/ui/host_view.py:3064
-#: src/big_remote_play/ui/host_view.py:3096
+#: src/big_remote_play/ui/host_view.py:3071
+#: src/big_remote_play/ui/host_view.py:3103
 #, python-brace-format
-msgid "Error launching game: {}"
-msgstr "Erro ao iniciar o jogo: {}"
+msgid "Error launching game: {error}"
+msgstr "Erro ao iniciar o jogo: {error}"
 
 #: src/big_remote_play/ui/preferences.py:253
 #, python-brace-format
-msgid "Error restoring: {}"
-msgstr "Erro ao restaurar: {}"
+msgid "Error restoring: {error}"
+msgstr "Erro ao restaurar: {error}"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 109
-#: src/big_remote_play/host/sunshine_manager.py:289
-#, python-brace-format
-msgid "Error starting Sunshine: {}"
-msgstr "Erro ao iniciar Sunshine: {}"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 91
 #: src/big_remote_play/ui/installer_window.py:158
 #, python-brace-format
-msgid "Error: {}"
-msgstr "Erro: {}"
+msgid "Error: {error}"
+msgstr "Erro: {error}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 937
@@ -2832,7 +2801,7 @@ msgstr "Erro: {}"
 msgid "Establish Connection"
 msgstr "Estabelecer Conexão"
 
-#: src/big_remote_play/ui/network_dashboard.py:447
+#: src/big_remote_play/ui/network_dashboard.py:455
 msgid ""
 "Every ZeroTier network on this computer will disconnect. Saved network "
 "memberships are kept."
@@ -2844,7 +2813,7 @@ msgstr ""
 msgid "Every device on the network, approvals and removal."
 msgstr "Todos os dispositivos da rede, aprovações e remoção."
 
-#: src/big_remote_play/ui/host_view.py:1659
+#: src/big_remote_play/ui/host_view.py:1666
 msgid ""
 "Every device playing now is disconnected. Then start pairing again on the "
 "new device and enter its code here. Devices already paired can reconnect "
@@ -2880,9 +2849,14 @@ msgid "Excellent"
 msgstr "Excelente"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:2361
+#: src/big_remote_play/ui/host_view.py:2368
 msgid "Execution failed or cancelled."
 msgstr "A execução falhou ou foi cancelada."
+
+#: src/big_remote_play/host/sunshine_manager.py:278
+#, python-brace-format
+msgid "Exit code {code}"
+msgstr "Código de saída {code}"
 
 #: src/big_remote_play/ui/sunshine_preferences.py:98
 msgid ""
@@ -2918,11 +2892,15 @@ msgstr "Falha ao aplicar as configurações (verifique as credenciais)."
 msgid "Failed to connect. Verify if Moonlight is paired."
 msgstr "Falha ao conectar. Verifique se o Moonlight está pareado."
 
-#: src/big_remote_play/ui/host_view.py:3383
+#: src/big_remote_play/ui/host_view.py:3390
 msgid "Failed to update device"
 msgstr "Falha ao atualizar o dispositivo"
 
-#: src/big_remote_play/ui/host_view.py:512
+#: src/big_remote_play/ui/sunshine_preferences.py:655
+msgid "Fast decoding"
+msgstr "Decodificação rápida"
+
+#: src/big_remote_play/ui/host_view.py:519
 msgid "Faster response, or better picture"
 msgstr "Resposta mais rápida ou imagem melhor"
 
@@ -2933,6 +2911,15 @@ msgstr "Favorito"
 #: src/big_remote_play/ui/private_network_view.py:1092
 msgid "Fill in the form"
 msgstr "Preencha o formulário"
+
+#. TRANSLATORS: x264 tuning presets for kinds of picture.
+#: src/big_remote_play/ui/sunshine_preferences.py:651
+msgid "Film"
+msgstr "Filme"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:653
+msgid "Film grain"
+msgstr "Granulação de filme"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1314
@@ -2957,13 +2944,13 @@ msgid ""
 "Finish or cancel the package transaction in the terminal before closing."
 msgstr "Conclua ou cancele a instalação no terminal antes de fechar."
 
-#: src/big_remote_play/ui/network_dashboard.py:214
+#: src/big_remote_play/ui/network_dashboard.py:222
 msgid "Finish signing in"
 msgstr "Conclua o login"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:2327
-#: src/big_remote_play/ui/host_view.py:2361
+#: src/big_remote_play/ui/host_view.py:2334
+#: src/big_remote_play/ui/host_view.py:2368
 msgid "Firewall Error"
 msgstr "Erro de Firewall"
 
@@ -2985,7 +2972,7 @@ msgstr "Corrigir"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 302
-#: src/big_remote_play/ui/host_view.py:3241
+#: src/big_remote_play/ui/host_view.py:3248
 msgid "Fix Dependencies"
 msgstr "Corrigir Dependências"
 
@@ -2999,7 +2986,7 @@ msgstr ""
 "recomendado e instala um serviço do systemd. Mantenha a configuração em /etc/"
 "headscale/config.yaml e defina server_url com o seu endereço https."
 
-#: src/big_remote_play/ui/main_window.py:116
+#: src/big_remote_play/ui/main_window.py:119
 msgid "For PCs in different houses"
 msgstr "Para PCs em casas diferentes"
 
@@ -3023,13 +3010,13 @@ msgstr ""
 "Para administradores que desejam manter sua própria VPN. Esta opção é "
 "diferente do acesso direto ao jogo por um domínio público."
 
-#: src/big_remote_play/ui/main_window.py:839
+#: src/big_remote_play/ui/main_window.py:842
 msgid "For computers in different houses. Not needed on the same home network."
 msgstr ""
 "Para computadores em casas diferentes. Não é necessário na mesma rede de "
 "casa."
 
-#: src/big_remote_play/ui/host_view.py:604
+#: src/big_remote_play/ui/host_view.py:611
 msgid "For direct internet access only"
 msgstr "Apenas para acesso direto pela internet"
 
@@ -3037,7 +3024,7 @@ msgstr "Apenas para acesso direto pela internet"
 msgid "For example: 192.168.1.20 or gaming-pc.local"
 msgstr "Por exemplo: 192.168.1.20 ou pc-de-jogos.local"
 
-#: src/big_remote_play/ui/host_view.py:1072
+#: src/big_remote_play/ui/host_view.py:1079
 msgid "For games that are not listed, such as emulators."
 msgstr "Para jogos que não aparecem na lista, como emuladores."
 
@@ -3061,20 +3048,17 @@ msgstr "Forçar um Método de Captura Específico"
 msgid "Forced"
 msgstr "Forçado"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1772
-# line: 1787
 #: src/big_remote_play/ui/private_network_view.py:999
 #: src/big_remote_play/ui/private_network_view.py:1005
 #, python-brace-format
-msgid "Form filled for {}"
-msgstr "Formulário preenchido para {}"
+msgid "Form filled for {name}"
+msgstr "Formulário preenchido para {name}"
 
 # #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 90
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 96
-#: src/big_remote_play/ui/host_view.py:399
+#: src/big_remote_play/ui/host_view.py:406
 msgid "Frame Rate (FPS)"
 msgstr "Taxa de Quadros (FPS)"
 
@@ -3087,13 +3071,13 @@ msgid "Frame rate"
 msgstr "Taxa de quadros"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 182
-#: src/big_remote_play/ui/host_view.py:400
+#: src/big_remote_play/ui/host_view.py:407
 msgid "Frames per second"
 msgstr "Quadros por segundo"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 133
-#: src/big_remote_play/ui/host_view.py:330
-#: src/big_remote_play/ui/host_view.py:2461
+#: src/big_remote_play/ui/host_view.py:337
+#: src/big_remote_play/ui/host_view.py:2468
 msgid "Full Desktop"
 msgstr "Área de Trabalho Completa"
 
@@ -3101,8 +3085,8 @@ msgstr "Área de Trabalho Completa"
 msgid "Fullscreen"
 msgstr "Tela cheia"
 
-#: src/big_remote_play/ui/host_view.py:688
-#: src/big_remote_play/ui/host_view.py:3532
+#: src/big_remote_play/ui/host_view.py:695
+#: src/big_remote_play/ui/host_view.py:3539
 msgid "Game Library"
 msgstr "Biblioteca de jogos"
 
@@ -3117,48 +3101,50 @@ msgstr "Computador do jogo e conexão"
 
 #: src/big_remote_play/ui/guest_view.py:1710
 #, python-brace-format
-msgid "Game PC found: {}"
-msgstr "Computador do jogo encontrado: {}"
+msgid "Game PC found: {name}"
+msgstr "Computador do jogo encontrado: {name}"
 
 #: src/big_remote_play/ui/guest_view.py:1718
 msgid "Game PC not found"
 msgstr "Computador do jogo não encontrado"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 137
-#: src/big_remote_play/ui/host_view.py:339
+#: src/big_remote_play/ui/host_view.py:346
 msgid "Game Selection"
 msgstr "Seleção de Jogo"
 
-#: src/big_remote_play/ui/host_view.py:330
-#: src/big_remote_play/ui/host_view.py:1467
-#: src/big_remote_play/ui/host_view.py:2453
+#. TRANSLATORS: Generic application category shown by app menus and software centers.
+#: build-aux/i18n/br.com.biglinux.remoteplay.desktop.in:4
+msgid "Game Streaming"
+msgstr "Transmissão de jogos"
+
+#: src/big_remote_play/ui/host_view.py:337
+#: src/big_remote_play/ui/host_view.py:1065
+#: src/big_remote_play/ui/host_view.py:1474
+#: src/big_remote_play/ui/host_view.py:2460
 msgid "Game Window"
 msgstr "Janela do Jogo"
 
-#: src/big_remote_play/ui/host_view.py:1163
+#: src/big_remote_play/ui/host_view.py:1170
 msgid "Game Window is not available here"
 msgstr "Janela do Jogo não está disponível aqui"
 
-#: src/big_remote_play/ui/host_view.py:2453
+#: src/big_remote_play/ui/host_view.py:2460
 #, python-brace-format
 msgid "Game Window: {game}"
 msgstr "Janela do Jogo: {game}"
 
-#: src/big_remote_play/ui/host_view.py:1058
-msgid "Game window"
-msgstr "Janela do jogo"
-
 #. TRANSLATORS: Gamer is the proper name of the violet/cyan appearance preset.
-#: src/big_remote_play/ui/main_window.py:679
+#: src/big_remote_play/ui/main_window.py:682
 msgid "Gamer"
 msgstr "Gamer"
 
-#: src/big_remote_play/ui/host_view.py:3625
+#: src/big_remote_play/ui/host_view.py:3632
 #, python-brace-format
-msgid "Games added: {}"
-msgstr "{} jogo(s) adicionado(s)"
+msgid "Games added: {count}"
+msgstr "{count} jogo(s) adicionado(s)"
 
-#: src/big_remote_play/ui/host_view.py:3532
+#: src/big_remote_play/ui/host_view.py:3539
 msgid ""
 "Games shown on the other computer in Moonlight. Add detected games or remove "
 "entries."
@@ -3166,7 +3152,7 @@ msgstr ""
 "Jogos exibidos no outro computador pelo Moonlight. Adicione jogos detectados "
 "ou remova entradas."
 
-#: src/big_remote_play/ui/network_dashboard.py:392
+#: src/big_remote_play/ui/network_dashboard.py:400
 msgid "Gaming network"
 msgstr "Rede de jogos"
 
@@ -3196,11 +3182,11 @@ msgstr ""
 "Conceda acesso uma vez para ler as redes configuradas pelo serviço ZeroTier."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 202
-#: src/big_remote_play/ui/host_view.py:448
+#: src/big_remote_play/ui/host_view.py:455
 msgid "Graphics Card / Encoder"
 msgstr "Placa de Vídeo / Codificador"
 
-#: src/big_remote_play/ui/host_view.py:1766
+#: src/big_remote_play/ui/host_view.py:1773
 #, python-brace-format
 msgid "Graphics card: {value}"
 msgstr "Placa de vídeo: {value}"
@@ -3211,20 +3197,20 @@ msgstr "Placa de vídeo: {value}"
 #: src/big_remote_play/ui/guided_setup.py:176
 #: src/big_remote_play/ui/guided_setup.py:247
 #: src/big_remote_play/ui/guided_setup.py:288
-#: src/big_remote_play/ui/main_window.py:968
+#: src/big_remote_play/ui/main_window.py:971
 msgid "Guided setup"
 msgstr "Assistente Guiado"
 
-#: src/big_remote_play/ui/host_view.py:1719
+#: src/big_remote_play/ui/host_view.py:1726
 msgid "HDR screen: colors will look washed out on devices without HDR"
 msgstr "Tela HDR: as cores vão parecer desbotadas em dispositivos sem HDR"
 
-#: src/big_remote_play/ui/host_view.py:1718
+#: src/big_remote_play/ui/host_view.py:1725
 msgid "HDR screen: shared in SDR"
 msgstr "Tela HDR: compartilhada em SDR"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 188
-#: src/big_remote_play/ui/host_view.py:420
+#: src/big_remote_play/ui/host_view.py:427
 msgid "Hardware and Capture"
 msgstr "Hardware e Captura"
 
@@ -3256,18 +3242,18 @@ msgstr "O Headscale usa o cliente normal do Tailscale."
 msgid "Hidden. Use Copy."
 msgstr "Oculto. Use Copiar."
 
-#: src/big_remote_play/ui/host_view.py:2395
-#: src/big_remote_play/ui/host_view.py:2422
+#: src/big_remote_play/ui/host_view.py:2402
+#: src/big_remote_play/ui/host_view.py:2429
 #, python-brace-format
-msgid "Hide {}"
-msgstr "Ocultar {}"
+msgid "Hide {field}"
+msgstr "Ocultar {field}"
 
 #: src/big_remote_play/ui/network_common.py:195
 msgid "High"
 msgstr "Alta"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 249
-#: src/big_remote_play/ui/host_view.py:516
+#: src/big_remote_play/ui/host_view.py:523
 msgid "High Quality (Best Image)"
 msgstr "Alta Qualidade (Melhor Imagem)"
 
@@ -3303,16 +3289,16 @@ msgid ""
 msgstr "Segure Voltar/Selecionar para emular o botão Guia. < 0 para desativar."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 54
-#: src/big_remote_play/ui/main_window.py:118
-#: src/big_remote_play/ui/main_window.py:668
-#: src/big_remote_play/ui/main_window.py:1018
-#: src/big_remote_play/ui/main_window.py:1042
-#: src/big_remote_play/ui/main_window.py:1044
+#: src/big_remote_play/ui/main_window.py:121
+#: src/big_remote_play/ui/main_window.py:671
+#: src/big_remote_play/ui/main_window.py:1021
+#: src/big_remote_play/ui/main_window.py:1045
+#: src/big_remote_play/ui/main_window.py:1047
 msgid "Home"
 msgstr "Início"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 56
-#: src/big_remote_play/ui/main_window.py:118
+#: src/big_remote_play/ui/main_window.py:121
 msgid "Home Page"
 msgstr "Página inicial"
 
@@ -3330,11 +3316,10 @@ msgstr "Tempo limite (ms) Home/Guia"
 msgid "Host"
 msgstr "Computador host"
 
-# File: big-remote-play/usr/share/big-remote-play/utils/network.py, line: 156
 #: src/big_remote_play/utils/network.py:213
 #, python-brace-format
-msgid "Host ({})"
-msgstr "Computador host ({})"
+msgid "Host ({address})"
+msgstr "Computador host ({address})"
 
 #: src/big_remote_play/ui/connection_guides.py:136
 msgid "Host a Headscale VPN server"
@@ -3362,8 +3347,8 @@ msgstr "Como criar uma rede gratuita, passo a passo."
 
 #: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
-msgid "How to install {}"
-msgstr "Como instalar {}"
+msgid "How to install {name}"
+msgstr "Como instalar {name}"
 
 #: src/big_remote_play/ui/private_network_view.py:732
 msgid "How to run Headscale on your own server, step by step."
@@ -3386,7 +3371,7 @@ msgstr "Não tenho um código"
 msgid "I don't have a server yet"
 msgstr "Ainda não tenho um servidor"
 
-#: src/big_remote_play/ui/host_view.py:3769
+#: src/big_remote_play/ui/host_view.py:3776
 msgid "I forgot the current password"
 msgstr "Esqueci a senha atual"
 
@@ -3428,13 +3413,8 @@ msgstr "IPv6"
 msgid "IPv6 only"
 msgstr "Somente IPv6"
 
-# File: big-remote-play/usr/share/big-remote-play/main.py, line: 52
-#: src/big_remote_play/app.py:123
-msgid "Icon and image paths added"
-msgstr "Caminhos dos ícones e das imagens adicionados"
-
-#: src/big_remote_play/ui/host_view.py:433
 #: src/big_remote_play/ui/host_view.py:440
+#: src/big_remote_play/ui/host_view.py:447
 msgid "Identify monitors"
 msgstr "Identificar monitores"
 
@@ -3452,13 +3432,13 @@ msgstr ""
 msgid "Image"
 msgstr "Imagem"
 
-#: src/big_remote_play/ui/host_view.py:962
-#: src/big_remote_play/ui/host_view.py:1007
-#: src/big_remote_play/ui/host_view.py:1017
+#: src/big_remote_play/ui/host_view.py:969
+#: src/big_remote_play/ui/host_view.py:1014
+#: src/big_remote_play/ui/host_view.py:1024
 msgid "Image and capture"
 msgstr "Imagem e captura"
 
-#: src/big_remote_play/ui/host_view.py:1002
+#: src/big_remote_play/ui/host_view.py:1009
 msgid "Image and capture settings are on Overview, next to Start sharing."
 msgstr ""
 "Os ajustes de imagem e captura estão na Visão geral, ao lado de Iniciar "
@@ -3496,7 +3476,7 @@ msgstr ""
 "No Big Remote Play, escolha Headscale → Entrar em uma rede e digite o "
 "endereço do servidor, ou execute o comando abaixo."
 
-#: src/big_remote_play/ui/host_view.py:921
+#: src/big_remote_play/ui/host_view.py:928
 msgid ""
 "In Big Remote Play on the other PC, choose Find by code. This is not the "
 "pairing code."
@@ -3542,7 +3522,7 @@ msgid "In use now"
 msgstr "Em uso agora"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 890
-#: src/big_remote_play/ui/host_view.py:2512
+#: src/big_remote_play/ui/host_view.py:2519
 msgid "Inactive"
 msgstr "Inativo"
 
@@ -3566,18 +3546,18 @@ msgid "Input"
 msgstr "Entrada"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 256
-#: src/big_remote_play/ui/host_view.py:596
+#: src/big_remote_play/ui/host_view.py:603
 msgid "Input, Network, and Access"
 msgstr "Entrada, Rede e Acesso"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 569
-#: src/big_remote_play/ui/host_view.py:2036
+#: src/big_remote_play/ui/host_view.py:2043
 msgid "Insert PIN"
 msgstr "Insira o PIN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 464
 #: src/big_remote_play/ui/installer_window.py:78
-#: src/big_remote_play/ui/main_window.py:1141
+#: src/big_remote_play/ui/main_window.py:1144
 #: src/big_remote_play/ui/network_common.py:158
 #: src/big_remote_play/ui/remote_connection.py:68
 msgid "Install"
@@ -3610,23 +3590,23 @@ msgstr "Instale apenas os componentes necessários para o que você quer fazer."
 #, python-brace-format
 msgid ""
 "Install these packages with your distribution's tools:\n"
-"{}"
+"{packages}"
 msgstr ""
 "Instale estes pacotes com as ferramentas da sua distribuição:\n"
-"{}"
+"{packages}"
 
-#: src/big_remote_play/ui/host_view.py:1165
+#: src/big_remote_play/ui/host_view.py:1172
 #, python-brace-format
 msgid "Install these packages, then open Big Remote Play again: {packages}"
 msgstr "Instale estes pacotes e abra o Big Remote Play novamente: {packages}"
 
-#: src/big_remote_play/ui/main_window.py:1130
-#: src/big_remote_play/ui/main_window.py:1139
+#: src/big_remote_play/ui/main_window.py:1133
+#: src/big_remote_play/ui/main_window.py:1142
 #: src/big_remote_play/ui/private_network_view.py:458
 #: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
-msgid "Install {}"
-msgstr "Instalar {}"
+msgid "Install {name}"
+msgstr "Instalar {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
@@ -3649,19 +3629,16 @@ msgstr "Instalação concluída com sucesso!"
 msgid "Installation failed. Check the log."
 msgstr "A instalação falhou. Verifique o log."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 113
-# line: 124
 #: src/big_remote_play/ui/installer_window.py:198
 #, python-brace-format
-msgid "Installation failed. Exit code: {}"
-msgstr "A instalação falhou. Código de saída: {}"
+msgid "Installation failed. Exit code: {code}"
+msgstr "A instalação falhou. Código de saída: {code}"
 
 #: usr/share/big-remote-play/scripts/install-vpn.sh:69
 msgid "Installation finished."
 msgstr "Instalação concluída."
 
-#: src/big_remote_play/ui/main_window.py:1138
+#: src/big_remote_play/ui/main_window.py:1141
 #: src/big_remote_play/ui/network_common.py:145
 msgid "Installation needed"
 msgstr "É necessário instalar"
@@ -3671,24 +3648,14 @@ msgstr "É necessário instalar"
 msgid "Installing ${pkg}…"
 msgstr "Instalando ${pkg}…"
 
-# #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 89
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1669
 #: src/big_remote_play/ui/installer_window.py:153
 #, python-brace-format
-msgid "Installing {}..."
-msgstr "Instalando {}..."
+msgid "Installing {packages}…"
+msgstr "Instalando {packages}…"
 
-# #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 89
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1669
 #: src/big_remote_play/ui/private_network_view.py:472
-msgid "Installing..."
-msgstr "Instalando..."
+msgid "Installing…"
+msgstr "Instalando…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 83
@@ -3711,7 +3678,7 @@ msgid "Internet protocols"
 msgstr "Protocolos de internet"
 
 #: src/big_remote_play/ui/connection_guides.py:228
-#: src/big_remote_play/ui/network_dashboard.py:319
+#: src/big_remote_play/ui/network_dashboard.py:327
 #: src/big_remote_play/ui/remote_connection.py:270
 msgid "Internet, router and firewall"
 msgstr "Internet, roteador e firewall"
@@ -3726,11 +3693,11 @@ msgid "Invalid IP address: ${ip}"
 msgstr "Endereço IP inválido: ${ip}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 719
-#: src/big_remote_play/ui/host_view.py:2088
+#: src/big_remote_play/ui/host_view.py:2095
 msgid "Invalid PIN"
 msgstr "PIN inválido"
 
-#: src/big_remote_play/ui/guest_view.py:1912
+#: src/big_remote_play/ui/guest_view.py:1914
 msgid "Invalid Resolution"
 msgstr "Resolução inválida"
 
@@ -3742,8 +3709,8 @@ msgstr "Endereço inválido"
 msgid "Invalid code"
 msgstr "Código inválido"
 
-#: src/big_remote_play/ui/host_view.py:3074
-#: src/big_remote_play/ui/host_view.py:3087
+#: src/big_remote_play/ui/host_view.py:3081
+#: src/big_remote_play/ui/host_view.py:3094
 msgid "Invalid launch command"
 msgstr "Comando de inicialização inválido"
 
@@ -3752,8 +3719,8 @@ msgid "Invalid port"
 msgstr "Porta inválida"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1641
-#: src/big_remote_play/ui/host_view.py:2009
+#: src/big_remote_play/ui/host_view.py:1648
+#: src/big_remote_play/ui/host_view.py:2016
 msgid "Invalid username or password."
 msgstr "Nome de usuário ou senha inválidos."
 
@@ -3780,7 +3747,7 @@ msgstr ""
 "Ele responde na rede, mas não na porta do Sunshine. No PC do jogo, abra "
 "Compartilhar e escolha Liberar no firewall."
 
-#: src/big_remote_play/ui/host_view.py:1169
+#: src/big_remote_play/ui/host_view.py:1176
 msgid ""
 "It cannot see other apps' windows from inside the Flatpak sandbox. Use the "
 "native package."
@@ -3804,7 +3771,7 @@ msgstr ""
 "Ela é exibida só agora e não fica guardada. Salve-a em um arquivo com o nome "
 "indicado no comando, execute o comando e depois apague o arquivo."
 
-#: src/big_remote_play/ui/host_view.py:1170
+#: src/big_remote_play/ui/host_view.py:1177
 msgid ""
 "It needs KDE Plasma on Wayland, or an X11 desktop with window effects "
 "(compositing) on."
@@ -3812,7 +3779,7 @@ msgstr ""
 "Precisa do KDE Plasma no Wayland, ou de uma área de trabalho X11 com os "
 "efeitos de janela (composição) ligados."
 
-#: src/big_remote_play/ui/host_view.py:1167
+#: src/big_remote_play/ui/host_view.py:1174
 #, python-brace-format
 msgid ""
 "It needs Sunshine {version} or newer, which can capture the private game "
@@ -3857,7 +3824,7 @@ msgstr "Entrar em uma rede ZeroTier"
 msgid "Join again to send a new request."
 msgstr "Entre novamente para enviar uma nova solicitação."
 
-#: src/big_remote_play/ui/network_dashboard.py:218
+#: src/big_remote_play/ui/network_dashboard.py:226
 msgid "Join an existing network or sign in."
 msgstr "Entre em uma rede existente ou faça login."
 
@@ -3887,7 +3854,7 @@ msgid "Joining the network…"
 msgstr "Entrando na rede…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 214
-#: src/big_remote_play/ui/host_view.py:462
+#: src/big_remote_play/ui/host_view.py:469
 msgid "KMS (Direct)"
 msgstr "KMS (Direto)"
 
@@ -3899,7 +3866,7 @@ msgstr "Manter a entrada do controle ativa em segundo plano"
 msgid "Keep history"
 msgstr "Manter histórico"
 
-#: src/big_remote_play/ui/host_view.py:606
+#: src/big_remote_play/ui/host_view.py:613
 msgid ""
 "Keep off for local play or a VPN. UPnP must be enabled on the router; it "
 "does not bypass CGNAT, double NAT or the computer’s firewall. Restart "
@@ -3910,7 +3877,7 @@ msgstr ""
 "firewall do computador. Reinicie o compartilhamento e teste a partir de "
 "outra rede."
 
-#: src/big_remote_play/ui/host_view.py:622
+#: src/big_remote_play/ui/host_view.py:629
 msgid ""
 "Keep off for normal play. If enabled together with UPnP, Sunshine may also "
 "open the administration port on the router."
@@ -3918,7 +3885,7 @@ msgstr ""
 "Deixe desativado para jogar. Se esta opção e o UPnP estiverem ativados, o "
 "Sunshine também poderá abrir a porta de administração no roteador."
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1026
 msgid ""
 "Keep router port forwarding off when using a VPN. Changes apply when sharing "
 "starts again."
@@ -3926,7 +3893,7 @@ msgstr ""
 "Deixe o encaminhamento de portas desativado ao usar VPN. As mudanças valem "
 "no próximo compartilhamento."
 
-#: src/big_remote_play/ui/network_dashboard.py:326
+#: src/big_remote_play/ui/network_dashboard.py:334
 msgid "Keep saved accounts so you can reconnect without signing in again"
 msgstr "Manter as contas salvas para reconectar sem entrar novamente"
 
@@ -3934,11 +3901,11 @@ msgstr "Manter as contas salvas para reconectar sem entrar novamente"
 msgid "Keep this screen active during streaming"
 msgstr "Manter esta tela ligada durante a transmissão"
 
-#: src/big_remote_play/ui/host_view.py:492
+#: src/big_remote_play/ui/host_view.py:499
 msgid "Keep this screen's resolution"
 msgstr "Manter a resolução desta tela"
 
-#: src/big_remote_play/ui/host_view.py:384
+#: src/big_remote_play/ui/host_view.py:391
 msgid "Keeps your screen choice and video bitrate ceiling."
 msgstr "Mantém a tela escolhida e o limite de bitrate do vídeo."
 
@@ -3978,18 +3945,15 @@ msgstr "Latência"
 
 #: src/big_remote_play/ui/performance_monitor.py:149
 #, python-brace-format
-msgid "Latency {}, FPS {} (target), bandwidth {} (target)"
-msgstr "Latência {}, FPS {} (alvo), banda {} (alvo)"
+msgid "Latency {latency}, FPS {fps} (target), bandwidth {bandwidth} (target)"
+msgstr "Latência {latency}, FPS {fps} (alvo), banda {bandwidth} (alvo)"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1399
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1431
-#: src/big_remote_play/ui/host_view.py:3060
-#: src/big_remote_play/ui/host_view.py:3079
-#: src/big_remote_play/ui/host_view.py:3092
+#: src/big_remote_play/ui/host_view.py:3067
+#: src/big_remote_play/ui/host_view.py:3086
+#: src/big_remote_play/ui/host_view.py:3099
 #, python-brace-format
-msgid "Launching {}..."
-msgstr "Iniciando {}..."
+msgid "Launching {game}…"
+msgstr "Iniciando {game}…"
 
 #: src/big_remote_play/ui/api_access_dialog.py:151
 msgid "Least privilege"
@@ -4056,11 +4020,11 @@ msgstr ""
 "Permite que o Big Remote Play leia usuários e dispositivos e crie chaves de "
 "pré-autenticação de uso único no seu servidor."
 
-#: src/big_remote_play/ui/host_view.py:3630
+#: src/big_remote_play/ui/host_view.py:3637
 msgid "Library updated"
 msgstr "Biblioteca atualizada"
 
-#: src/big_remote_play/ui/main_window.py:680
+#: src/big_remote_play/ui/main_window.py:683
 msgid "Light"
 msgstr "Claro"
 
@@ -4076,7 +4040,7 @@ msgstr ""
 msgid "Linux command"
 msgstr "Comando para Linux"
 
-#: src/big_remote_play/ui/host_view.py:1175
+#: src/big_remote_play/ui/host_view.py:1182
 msgid "Linux native"
 msgstr "Nativo do Linux"
 
@@ -4097,13 +4061,13 @@ msgstr "Carregando histórico…"
 msgid "Loading networks…"
 msgstr "Carregando redes…"
 
-#: src/big_remote_play/ui/host_view.py:3321
+#: src/big_remote_play/ui/host_view.py:3328
 msgid "Loading paired devices…"
 msgstr "Carregando dispositivos pareados…"
 
-#: src/big_remote_play/ui/host_view.py:3284
-#: src/big_remote_play/ui/host_view.py:3474
-#: src/big_remote_play/ui/host_view.py:3520
+#: src/big_remote_play/ui/host_view.py:3291
+#: src/big_remote_play/ui/host_view.py:3481
+#: src/big_remote_play/ui/host_view.py:3527
 msgid "Loading…"
 msgstr "Carregando…"
 
@@ -4140,7 +4104,7 @@ msgstr "Servidor de Login (deixe em branco para tailscale.com)"
 msgid "Logs Cleared"
 msgstr "Logs limpos"
 
-#: src/big_remote_play/ui/host_view.py:1067
+#: src/big_remote_play/ui/host_view.py:1074
 msgid "Look again for open games"
 msgstr "Procurar jogos abertos novamente"
 
@@ -4156,7 +4120,7 @@ msgstr "Procurando uma conexão que já funcione."
 msgid "Looking for new devices…"
 msgstr "Procurando novos dispositivos…"
 
-#: src/big_remote_play/ui/host_view.py:1112
+#: src/big_remote_play/ui/host_view.py:1119
 msgid "Looking for open games…"
 msgstr "Procurando jogos abertos…"
 
@@ -4166,9 +4130,17 @@ msgid "Lost replies: {percent}%"
 msgstr "Respostas perdidas: {percent}%"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 247
-#: src/big_remote_play/ui/host_view.py:514
+#: src/big_remote_play/ui/host_view.py:521
 msgid "Low Latency (Fastest)"
 msgstr "Baixa Latência (Mais Rápido)"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:568
+msgid "Low latency"
+msgstr "Baixa latência"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:567
+msgid "Low latency, high quality"
+msgstr "Baixa latência, alta qualidade"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 310
@@ -4186,7 +4158,7 @@ msgstr ""
 "Torna o movimento do ponteiro mais adequado ao uso da área de trabalho do "
 "que aos jogos."
 
-#: src/big_remote_play/ui/host_view.py:2190
+#: src/big_remote_play/ui/host_view.py:2197
 msgid "Manage"
 msgstr "Gerenciar"
 
@@ -4194,7 +4166,7 @@ msgstr "Gerenciar"
 msgid "Manage accounts and networks"
 msgstr "Gerenciar contas e redes"
 
-#: src/big_remote_play/ui/host_view.py:689
+#: src/big_remote_play/ui/host_view.py:696
 msgid "Manage games shown on the other computer"
 msgstr "Gerenciar os jogos exibidos no outro computador"
 
@@ -4205,12 +4177,12 @@ msgstr "Gerenciar os jogos exibidos no outro computador"
 msgid "Manage network"
 msgstr "Gerenciar rede"
 
-#: src/big_remote_play/ui/host_view.py:2185
-#: src/big_remote_play/ui/host_view.py:2194
+#: src/big_remote_play/ui/host_view.py:2192
+#: src/big_remote_play/ui/host_view.py:2201
 msgid "Manage paired devices"
 msgstr "Gerenciar dispositivos pareados"
 
-#: src/big_remote_play/ui/host_view.py:1466
+#: src/big_remote_play/ui/host_view.py:1473
 msgid "Manual capture and encoding"
 msgstr "Captura e compressão manuais"
 
@@ -4226,7 +4198,7 @@ msgid ""
 "playback."
 msgstr "Usa a resolução física da tela em que o jogo será exibido."
 
-#: src/big_remote_play/ui/host_view.py:412
+#: src/big_remote_play/ui/host_view.py:419
 msgid "Maximum video bitrate (Mbps)"
 msgstr "Bitrate máximo do vídeo (Mbps)"
 
@@ -4245,11 +4217,11 @@ msgstr "Medições: {count}"
 msgid "Measuring…"
 msgstr "Medindo…"
 
-#: src/big_remote_play/ui/host_view.py:550
+#: src/big_remote_play/ui/host_view.py:557
 msgid "Microphone"
 msgstr "Microfone"
 
-#: src/big_remote_play/ui/host_view.py:581
+#: src/big_remote_play/ui/host_view.py:588
 msgid "Microphone sent to Sunshine"
 msgstr "Microfone enviado ao Sunshine"
 
@@ -4286,13 +4258,13 @@ msgstr "Modo 2"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 193
 #: src/big_remote_play/ui/host_view.py:244
 #: src/big_remote_play/ui/host_view.py:257
-#: src/big_remote_play/ui/host_view.py:423
-#: src/big_remote_play/ui/host_view.py:1799
+#: src/big_remote_play/ui/host_view.py:430
+#: src/big_remote_play/ui/host_view.py:1806
 msgid "Monitor / Display"
 msgstr "Monitor / Exibição"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 189
-#: src/big_remote_play/ui/host_view.py:420
+#: src/big_remote_play/ui/host_view.py:427
 msgid "Monitor, GPU, and Capture Method"
 msgstr "Monitor, GPU e Método de Captura"
 
@@ -4311,7 +4283,7 @@ msgid "Moonlight internet setup guide"
 msgstr "Guia de acesso pela internet do Moonlight"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 541
-#: src/big_remote_play/ui/main_window.py:1498
+#: src/big_remote_play/ui/main_window.py:1501
 msgid "Moonlight not found"
 msgstr "Moonlight não encontrado"
 
@@ -4386,12 +4358,12 @@ msgstr "Nome na rede"
 msgid "Name shown in Big Remote Play"
 msgstr "Nome exibido no Big Remote Play"
 
-#: src/big_remote_play/ui/main_window.py:380
-#: src/big_remote_play/ui/main_window.py:639
+#: src/big_remote_play/ui/main_window.py:383
+#: src/big_remote_play/ui/main_window.py:642
 msgid "Navigation"
 msgstr "Navegação"
 
-#: src/big_remote_play/ui/network_dashboard.py:231
+#: src/big_remote_play/ui/network_dashboard.py:239
 msgid "Needs a ZeroTier API token. Add one under API access."
 msgstr "Requer um token da API do ZeroTier. Adicione um em Acesso à API."
 
@@ -4405,10 +4377,10 @@ msgstr "Precisa de atenção"
 msgid "Needs to sign in again"
 msgstr "Precisa entrar novamente"
 
-#: src/big_remote_play/ui/main_window.py:1129
+#: src/big_remote_play/ui/main_window.py:1132
 #, python-brace-format
-msgid "Needs {}"
-msgstr "Precisa de {}"
+msgid "Needs {name}"
+msgstr "Precisa de {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 77
@@ -4424,7 +4396,7 @@ msgstr "Rede"
 # line: 1721
 # line: 1842
 #: src/big_remote_play/ui/network_dashboard.py:179
-#: src/big_remote_play/ui/network_dashboard.py:256
+#: src/big_remote_play/ui/network_dashboard.py:264
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
 #: src/big_remote_play/ui/private_network_view.py:974
@@ -4438,12 +4410,12 @@ msgstr "ID da Rede"
 msgid "Network ID (16 characters)"
 msgstr "ID da Rede (16 caracteres)"
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1026
 msgid "Network and access"
 msgstr "Rede e acesso"
 
 #: src/big_remote_play/ui/network_dashboard.py:179
-#: src/big_remote_play/ui/network_dashboard.py:256
+#: src/big_remote_play/ui/network_dashboard.py:264
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
 #: src/big_remote_play/ui/zerotier_join.py:155
@@ -4456,11 +4428,11 @@ msgstr "Código da rede não encontrado"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 520
-#: src/big_remote_play/ui/network_dashboard.py:434
+#: src/big_remote_play/ui/network_dashboard.py:442
 msgid "Network created"
 msgstr "Rede criada"
 
-#: src/big_remote_play/ui/main_window.py:1229
+#: src/big_remote_play/ui/main_window.py:1232
 #: src/big_remote_play/ui/network_dashboard.py:68
 #: src/big_remote_play/ui/network_dashboard.py:136
 #: src/big_remote_play/ui/remote_connection.py:519
@@ -4471,7 +4443,7 @@ msgstr "Detalhes da rede"
 msgid "Network left"
 msgstr "Você saiu da rede"
 
-#: src/big_remote_play/ui/network_dashboard.py:391
+#: src/big_remote_play/ui/network_dashboard.py:399
 msgid "Network name"
 msgstr "Nome da rede"
 
@@ -4492,11 +4464,11 @@ msgid "New Central"
 msgstr "New Central"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:3778
+#: src/big_remote_play/ui/host_view.py:3785
 msgid "New Password"
 msgstr "Nova Senha"
 
-#: src/big_remote_play/ui/host_view.py:3776
+#: src/big_remote_play/ui/host_view.py:3783
 msgid "New Username"
 msgstr "Novo usuário"
 
@@ -4508,7 +4480,7 @@ msgstr "Novos computadores pertencem a"
 msgid "New devices appear here while this window is open."
 msgstr "Novos dispositivos aparecem aqui enquanto esta janela estiver aberta."
 
-#: src/big_remote_play/ui/host_view.py:818
+#: src/big_remote_play/ui/host_view.py:825
 msgid ""
 "New devices can pair only when no stream is open: they show “The computer is "
 "currently in a game”. End the stream for everyone, then start pairing again "
@@ -4519,16 +4491,16 @@ msgstr ""
 "depois comece o pareamento de novo no novo dispositivo. Os dispositivos já "
 "pareados podem se conectar novamente logo em seguida."
 
-#: src/big_remote_play/ui/host_view.py:3820
+#: src/big_remote_play/ui/host_view.py:3827
 msgid "New passwords do not match."
 msgstr "As novas senhas não coincidem."
 
-#: src/big_remote_play/ui/host_view.py:2706
+#: src/big_remote_play/ui/host_view.py:2713
 msgid "No"
 msgstr "Não"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 617
-#: src/big_remote_play/ui/host_view.py:2103
+#: src/big_remote_play/ui/host_view.py:2110
 msgid "No Sunshine user exists. Configure one in the browser."
 msgstr ""
 "Nenhum usuário foi criado no Sunshine. É necessário configurar um usuário "
@@ -4543,15 +4515,15 @@ msgstr "Nenhuma conta encontrada"
 msgid "No active connection found"
 msgstr "Nenhuma conexão ativa encontrada"
 
-#: src/big_remote_play/ui/host_view.py:3559
+#: src/big_remote_play/ui/host_view.py:3566
 msgid "No apps configured"
 msgstr "Nenhum aplicativo configurado"
 
-#: src/big_remote_play/ui/host_view.py:2711
+#: src/big_remote_play/ui/host_view.py:2718
 msgid "No call app is playing into the shared sound"
 msgstr "Nenhum aplicativo de chamada está tocando no som compartilhado"
 
-#: src/big_remote_play/ui/host_view.py:2704
+#: src/big_remote_play/ui/host_view.py:2711
 msgid "No client is receiving sound right now"
 msgstr "Nenhum cliente está recebendo som agora"
 
@@ -4563,7 +4535,7 @@ msgstr ""
 "Nenhum computador respondeu a esse código. Confira o código ou conecte pelo "
 "endereço."
 
-#: src/big_remote_play/ui/host_view.py:1487
+#: src/big_remote_play/ui/host_view.py:1494
 msgid "No computer is waiting"
 msgstr "Nenhum computador aguardando"
 
@@ -4575,7 +4547,7 @@ msgstr ""
 "Nenhum computador está aguardando pareamento. No outro PC, escolha este "
 "computador em Conectar e depois digite o código exibido."
 
-#: src/big_remote_play/ui/host_view.py:1861
+#: src/big_remote_play/ui/host_view.py:1868
 msgid "No connected monitor could be identified."
 msgstr "Não foi possível identificar nenhum monitor conectado."
 
@@ -4589,7 +4561,7 @@ msgstr "Nenhuma conexão ainda"
 msgid "No details reported."
 msgstr "Nenhum detalhe informado."
 
-#: src/big_remote_play/ui/host_view.py:1492
+#: src/big_remote_play/ui/host_view.py:1499
 msgid ""
 "No device is waiting for this code because a stream is open on this "
 "computer: the new device shows “The computer is currently in a game”. End "
@@ -4609,12 +4581,18 @@ msgstr "Nenhum dispositivo aguardando ainda…"
 msgid "No game PC found yet"
 msgstr "Nenhum computador do jogo foi encontrado ainda"
 
-#: src/big_remote_play/ui/host_view.py:1204
-#: src/big_remote_play/ui/host_view.py:1271
+#: src/big_remote_play/ui/host_view.py:1211
+#: src/big_remote_play/ui/host_view.py:1278
 msgid "No game windows found"
 msgstr "Nenhuma janela de jogo encontrada"
 
-#: src/big_remote_play/ui/host_view.py:3489
+#. TRANSLATORS: {platform} is Steam or Lutris.
+#: src/big_remote_play/ui/host_view.py:3897
+#, python-brace-format
+msgid "No games found in {platform}"
+msgstr "Nenhum jogo encontrado no {platform}"
+
+#: src/big_remote_play/ui/host_view.py:3496
 msgid "No logs available (Sunshine not running or no credentials)."
 msgstr ""
 "Nenhum log disponível (Sunshine não está em execução ou sem credenciais)."
@@ -4627,7 +4605,7 @@ msgstr "Não tem um código da rede?"
 msgid "No network found"
 msgstr "Nenhuma rede encontrada"
 
-#: src/big_remote_play/ui/host_view.py:2139
+#: src/big_remote_play/ui/host_view.py:2146
 msgid "No one is playing yet"
 msgstr "Ninguém está jogando ainda"
 
@@ -4640,11 +4618,11 @@ msgstr "Nenhum outro dispositivo online para medir"
 msgid "No other device yet"
 msgstr "Nenhum outro dispositivo ainda"
 
-#: src/big_remote_play/ui/host_view.py:3341
+#: src/big_remote_play/ui/host_view.py:3348
 msgid "No paired devices"
 msgstr "Nenhum dispositivo pareado"
 
-#: src/big_remote_play/ui/host_view.py:2206
+#: src/big_remote_play/ui/host_view.py:2213
 msgid "No paired devices yet"
 msgstr "Nenhum dispositivo pareado ainda"
 
@@ -4661,7 +4639,7 @@ msgstr ""
 "Nenhuma conta salva do Tailscale ou Headscale foi encontrada neste "
 "computador."
 
-#: src/big_remote_play/ui/host_view.py:1693
+#: src/big_remote_play/ui/host_view.py:1700
 msgid "No stream is open now. Start pairing again on the new device."
 msgstr ""
 "Não há transmissão aberta agora. Comece o pareamento de novo no novo "
@@ -4675,12 +4653,12 @@ msgstr "Nenhuma ferramenta de firewall compatível foi encontrada."
 #, python-brace-format
 msgid ""
 "No terminal found. Run this command:\n"
-"{}"
+"{command}"
 msgstr ""
 "Nenhum terminal encontrado. Execute este comando:\n"
-"{}"
+"{command}"
 
-#: src/big_remote_play/ui/host_view.py:1465
+#: src/big_remote_play/ui/host_view.py:1472
 msgid "No video bitrate ceiling"
 msgstr "Sem limite de bitrate do vídeo"
 
@@ -4690,13 +4668,13 @@ msgstr "Sem limite de bitrate do vídeo"
 msgid "Node ID"
 msgstr "ID do nó"
 
-#: src/big_remote_play/ui/network_dashboard.py:245
+#: src/big_remote_play/ui/network_dashboard.py:253
 msgid "Node ID of this computer"
 msgstr "ID do nó deste computador"
 
 #: src/big_remote_play/ui/connection_guides.py:211
-#: src/big_remote_play/ui/host_view.py:2699
-#: src/big_remote_play/ui/host_view.py:2705
+#: src/big_remote_play/ui/host_view.py:2706
+#: src/big_remote_play/ui/host_view.py:2712
 msgid "None"
 msgstr "Nenhuma"
 
@@ -4704,11 +4682,11 @@ msgstr "Nenhuma"
 msgid "None detected (firewalld and ufw checked)"
 msgstr "Nenhum detectado (firewalld e ufw verificados)"
 
-#: src/big_remote_play/ui/host_view.py:2716
+#: src/big_remote_play/ui/host_view.py:2723
 msgid "None: the sound is captured directly"
 msgstr "Nenhum: o som é capturado diretamente"
 
-#: src/big_remote_play/ui/host_view.py:1265
+#: src/big_remote_play/ui/host_view.py:1272
 #: src/big_remote_play/ui/network_common.py:96
 #: src/big_remote_play/ui/remote_connection.py:611
 msgid "Not available"
@@ -4737,11 +4715,11 @@ msgstr ""
 msgid "Not installed"
 msgstr "Não instalado"
 
-#: src/big_remote_play/ui/host_view.py:1661
+#: src/big_remote_play/ui/host_view.py:1668
 msgid "Not now"
 msgstr "Agora não"
 
-#: src/big_remote_play/ui/host_view.py:1177
+#: src/big_remote_play/ui/host_view.py:1184
 msgid "Not recognized as a game"
 msgstr "Não reconhecido como jogo"
 
@@ -4753,19 +4731,19 @@ msgstr "Sem resposta"
 msgid "Not seen recently"
 msgstr "Não visto recentemente"
 
-#: src/big_remote_play/ui/host_view.py:550
+#: src/big_remote_play/ui/host_view.py:557
 msgid "Not sent by Big Remote Play. Voice chat apps keep using it normally."
 msgstr ""
 "Não é enviado pelo Big Remote Play. Os aplicativos de chat de voz continuam "
 "usando-o normalmente."
 
-#: src/big_remote_play/ui/host_view.py:2725
+#: src/big_remote_play/ui/host_view.py:2732
 #, python-brace-format
 msgid "Not sent now: {programs}. The call plays only on this computer."
 msgstr ""
 "Fora da transmissão agora: {programs}. A chamada toca só neste computador."
 
-#: src/big_remote_play/ui/host_view.py:2729
+#: src/big_remote_play/ui/host_view.py:2736
 msgid ""
 "Not sent. Calls in Discord, Zoom, Teams and other call apps play only on "
 "this computer, so nobody hears their own voice come back. A call in a web "
@@ -4779,7 +4757,7 @@ msgstr ""
 msgid "Not signed in"
 msgstr "Sem login"
 
-#: src/big_remote_play/ui/main_window.py:969
+#: src/big_remote_play/ui/main_window.py:972
 msgid ""
 "Not sure where to start? Answer a few questions and Big Remote Play sets up "
 "the way for you."
@@ -4799,7 +4777,7 @@ msgstr ""
 msgid "Now using {method}."
 msgstr "Agora usando {method}."
 
-#: src/big_remote_play/ui/host_view.py:2692
+#: src/big_remote_play/ui/host_view.py:2699
 #, python-brace-format
 msgid "Now: {output}"
 msgstr "Agora: {output}"
@@ -4818,6 +4796,7 @@ msgid "OAuth client secret"
 msgstr "Segredo do cliente OAuth"
 
 #: src/big_remote_play/ui/guest_view.py:1894
+#: src/big_remote_play/ui/host_view.py:3267
 #: src/big_remote_play/ui/preferences.py:197
 #: src/big_remote_play/ui/preferences.py:210
 msgid "OK"
@@ -4831,10 +4810,18 @@ msgstr "OK"
 msgid "Offline"
 msgstr "Offline"
 
-#: src/big_remote_play/ui/host_view.py:1384
+#: src/big_remote_play/ui/host_view.py:1391
 #: src/big_remote_play/ui/preferences.py:209
 msgid "Old log files have been removed."
 msgstr "Os arquivos de log antigos foram removidos."
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:18
+msgid ""
+"On KDE Plasma, share only the game window and keep the rest of the desktop "
+"private"
+msgstr ""
+"No KDE Plasma, compartilhe só a janela do jogo e mantenha o resto da área de "
+"trabalho privado"
 
 #: src/big_remote_play/ui/guest_view.py:1608
 msgid ""
@@ -4931,7 +4918,7 @@ msgstr ""
 msgid "Only in fullscreen"
 msgstr "Somente em tela cheia"
 
-#: src/big_remote_play/ui/host_view.py:1367
+#: src/big_remote_play/ui/host_view.py:1374
 msgid "Only needed when reporting a problem."
 msgstr "Só é necessário ao relatar um problema."
 
@@ -4955,7 +4942,7 @@ msgstr "Somente uma destas contas pode ficar ativa por vez neste computador."
 msgid "Only secure https addresses are accepted."
 msgstr "Somente endereços https seguros são aceitos."
 
-#: src/big_remote_play/ui/host_view.py:1277
+#: src/big_remote_play/ui/host_view.py:1284
 msgid ""
 "Only the chosen game is sent. The desktop, other windows and notifications "
 "stay on this computer."
@@ -4975,18 +4962,18 @@ msgstr "Só este computador usa o novo nome."
 # line: 337
 # line: 362
 # line: 1318
-#: src/big_remote_play/ui/host_view.py:437
+#: src/big_remote_play/ui/host_view.py:444
 #: src/big_remote_play/ui/private_network_view.py:755
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "Abrir"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 621
-#: src/big_remote_play/ui/host_view.py:2105
+#: src/big_remote_play/ui/host_view.py:2112
 msgid "Open Configuration"
 msgstr "Abrir Configuração"
 
-#: src/big_remote_play/ui/host_view.py:801
+#: src/big_remote_play/ui/host_view.py:808
 msgid ""
 "Open Connect on the other PC, then approve its code here. This is needed "
 "only the first time."
@@ -4994,7 +4981,7 @@ msgstr ""
 "Abra Conectar no outro PC e autorize o código dele aqui. Só é necessário na "
 "primeira conexão."
 
-#: src/big_remote_play/ui/host_view.py:804
+#: src/big_remote_play/ui/host_view.py:811
 msgid "Open Connect on the other computer"
 msgstr "Abra Conectar no outro computador"
 
@@ -5003,7 +4990,7 @@ msgid "Open Share to start sharing a game from this computer"
 msgstr "Abra Compartilhar para começar a compartilhar um jogo deste computador"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 285
-#: src/big_remote_play/ui/host_view.py:628
+#: src/big_remote_play/ui/host_view.py:635
 msgid "Open TCP/UDP ports required for external connection"
 msgstr "Abra as portas TCP/UDP necessárias para conexão externa."
 
@@ -5020,7 +5007,7 @@ msgstr "Abrir o ZeroTier Central"
 msgid "Open console"
 msgstr "Abrir console"
 
-#: src/big_remote_play/ui/host_view.py:3717
+#: src/big_remote_play/ui/host_view.py:3724
 msgid "Open folder"
 msgstr "Abrir pasta"
 
@@ -5029,15 +5016,15 @@ msgstr "Abrir pasta"
 msgid "Open guide"
 msgstr "Abrir guia"
 
-#: src/big_remote_play/ui/host_view.py:2231
+#: src/big_remote_play/ui/host_view.py:2238
 msgid "Open management to view all paired devices."
 msgstr "Abra o gerenciamento para ver todos os dispositivos pareados."
 
-#: src/big_remote_play/ui/host_view.py:2194
+#: src/big_remote_play/ui/host_view.py:2201
 msgid "Open paired device management"
 msgstr "Abrir gerenciamento de dispositivos pareados"
 
-#: src/big_remote_play/ui/host_view.py:3702
+#: src/big_remote_play/ui/host_view.py:3709
 msgid "Open parent folder"
 msgstr "Abrir a pasta superior"
 
@@ -5049,7 +5036,7 @@ msgstr ""
 "Abra o site do ZeroTier abaixo e permita o novo dispositivo. Antes disso, "
 "ele não pode usar a rede."
 
-#: src/big_remote_play/ui/network_dashboard.py:260
+#: src/big_remote_play/ui/network_dashboard.py:268
 msgid "Open the admin console"
 msgstr "Abrir o console de administração"
 
@@ -5057,41 +5044,40 @@ msgstr "Abrir o console de administração"
 msgid "Open the connection details to see what is wrong."
 msgstr "Abra os detalhes da conexão para ver o que está errado."
 
-#: src/big_remote_play/ui/host_view.py:1204
+#: src/big_remote_play/ui/host_view.py:1211
 msgid "Open the game you want to share, then select Refresh."
 msgstr "Abra o jogo que deseja compartilhar e clique em Atualizar."
 
-#: src/big_remote_play/ui/network_dashboard.py:214
+#: src/big_remote_play/ui/network_dashboard.py:222
 msgid "Open the sign-in page again in your browser."
 msgstr "Abra a página de login novamente no navegador."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1386
-#: src/big_remote_play/ui/host_view.py:3050
-msgid "Opening Steam Big Picture..."
-msgstr "Abrindo o Steam Big Picture..."
+#: src/big_remote_play/ui/host_view.py:3057
+msgid "Opening Steam Big Picture…"
+msgstr "Abrindo o Steam Big Picture…"
 
 #: src/big_remote_play/ui/connection_guides.py:35
 msgid "Opens the official website"
 msgstr "Abre o site oficial"
 
-#: src/big_remote_play/ui/host_view.py:3425
-#: src/big_remote_play/ui/host_view.py:3630
-#: src/big_remote_play/ui/network_dashboard.py:473
+#: src/big_remote_play/ui/host_view.py:3432
+#: src/big_remote_play/ui/host_view.py:3637
+#: src/big_remote_play/ui/network_dashboard.py:481
 msgid "Operation failed"
 msgstr "A operação falhou"
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:300
 #, python-brace-format
-msgid "Operation failed: {}"
-msgstr "Falha na operação: {}"
+msgid "Operation failed: {error}"
+msgstr "Falha na operação: {error}"
 
 #: src/big_remote_play/ui/guest_view.py:418
 msgid "Optimize the mouse for remote desktop"
 msgstr "Otimizar o mouse para área de trabalho remota"
 
 #: src/big_remote_play/ui/guest_view.py:833
-#: src/big_remote_play/ui/host_view.py:1969
-#: src/big_remote_play/ui/host_view.py:1985
+#: src/big_remote_play/ui/host_view.py:1976
+#: src/big_remote_play/ui/host_view.py:1992
 msgid "Other computer"
 msgstr "Outro computador"
 
@@ -5110,12 +5096,12 @@ msgstr ""
 "para as portas de transmissão, após sua confirmação; o painel de "
 "administração continua fechado."
 
-#: src/big_remote_play/ui/host_view.py:997
+#: src/big_remote_play/ui/host_view.py:1004
 msgid "Overview"
 msgstr "Visão geral"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 609
-#: src/big_remote_play/ui/host_view.py:2017
+#: src/big_remote_play/ui/host_view.py:2024
 msgid "PIN Error"
 msgstr "Erro de PIN"
 
@@ -5126,11 +5112,11 @@ msgstr "Erro de PIN"
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 307
 #: src/big_remote_play/host/sunshine_manager.py:657
-#: src/big_remote_play/ui/host_view.py:2006
+#: src/big_remote_play/ui/host_view.py:2013
 msgid "PIN sent successfully"
 msgstr "PIN enviado com sucesso"
 
-#: src/big_remote_play/ui/host_view.py:2043
+#: src/big_remote_play/ui/host_view.py:2050
 msgid "PIN shown by Moonlight"
 msgstr "PIN exibido pelo Moonlight"
 
@@ -5138,9 +5124,9 @@ msgstr "PIN exibido pelo Moonlight"
 msgid "Packet Size"
 msgstr "Tamanho do pacote"
 
-#: src/big_remote_play/ui/host_view.py:893
-#: src/big_remote_play/ui/host_view.py:894
-#: src/big_remote_play/ui/host_view.py:1989
+#: src/big_remote_play/ui/host_view.py:900
+#: src/big_remote_play/ui/host_view.py:901
+#: src/big_remote_play/ui/host_view.py:1996
 msgid "Pair"
 msgstr "Parear"
 
@@ -5162,20 +5148,17 @@ msgstr ""
 "ela seja diferente da padrão. Teste fora da sua rede doméstica e remova os "
 "encaminhamentos de portas que não forem mais necessários."
 
-#: src/big_remote_play/ui/host_view.py:897
+#: src/big_remote_play/ui/host_view.py:904
 msgid "Pair this device"
 msgstr "Parear este dispositivo"
 
-#: src/big_remote_play/ui/host_view.py:3293
-msgid "Paired Devices"
-msgstr "Dispositivos pareados"
-
-#: src/big_remote_play/ui/host_view.py:2152
+#: src/big_remote_play/ui/host_view.py:2159
+#: src/big_remote_play/ui/host_view.py:3300
 msgid "Paired devices"
 msgstr "Dispositivos pareados"
 
-#: src/big_remote_play/ui/host_view.py:2157
-#: src/big_remote_play/ui/host_view.py:2558
+#: src/big_remote_play/ui/host_view.py:2164
+#: src/big_remote_play/ui/host_view.py:2565
 msgid "Paired devices appear here."
 msgstr "Os dispositivos pareados aparecem aqui."
 
@@ -5189,17 +5172,17 @@ msgstr "Pareado com sucesso!"
 msgid "Pairing Error"
 msgstr "Erro de pareamento"
 
-#: src/big_remote_play/ui/host_view.py:886
+#: src/big_remote_play/ui/host_view.py:893
 msgid "Pairing code shown on the other PC"
 msgstr "Código de pareamento exibido no outro PC"
 
 #: src/big_remote_play/ui/guest_view.py:1613
 #, python-brace-format
-msgid "Pairing code: {}"
-msgstr "Código de pareamento: {}"
+msgid "Pairing code: {code}"
+msgstr "Código de pareamento: {code}"
 
-#: src/big_remote_play/ui/host_view.py:1942
-#: src/big_remote_play/ui/host_view.py:1959
+#: src/big_remote_play/ui/host_view.py:1949
+#: src/big_remote_play/ui/host_view.py:1966
 msgid "Pairing failed"
 msgstr "Falha ao parear"
 
@@ -5233,7 +5216,7 @@ msgstr "Cole o link de login completo exibido no outro computador."
 msgid "Path"
 msgstr "Caminho"
 
-#: src/big_remote_play/ui/host_view.py:1395
+#: src/big_remote_play/ui/host_view.py:1402
 #: src/big_remote_play/ui/preferences.py:215
 msgid "Path copied!"
 msgstr "Caminho copiado!"
@@ -5262,7 +5245,7 @@ msgstr "É necessário conceder permissão para listar as redes ZeroTier"
 msgid "Permission needed"
 msgstr "Permissão necessária"
 
-#: src/big_remote_play/ui/network_dashboard.py:349
+#: src/big_remote_play/ui/network_dashboard.py:357
 #: src/big_remote_play/ui/remote_connection.py:649
 msgid "Permission was not granted."
 msgstr "A permissão não foi concedida."
@@ -5271,7 +5254,7 @@ msgstr "A permissão não foi concedida."
 msgid "Pick the PC that is sharing the game."
 msgstr "Escolha o PC que está compartilhando o jogo."
 
-#: src/big_remote_play/ui/host_view.py:373
+#: src/big_remote_play/ui/host_view.py:380
 msgid "Picture"
 msgstr "Imagem"
 
@@ -5281,20 +5264,24 @@ msgstr "Imagem"
 msgid "Ping Timeout (ms)"
 msgstr "Tempo limite de Ping (ms)"
 
-#: src/big_remote_play/ui/main_window.py:115
-#: src/big_remote_play/ui/main_window.py:1221
+#: src/big_remote_play/ui/main_window.py:118
+#: src/big_remote_play/ui/main_window.py:1224
 msgid "Play from another PC"
 msgstr "Jogar a partir de outro PC"
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.desktop.in:5
+msgid "Play games together over a local or private network"
+msgstr "Jogue junto em uma rede local ou privada"
 
 #: src/big_remote_play/ui/remote_connection.py:243
 msgid "Play on a computer that is already set up."
 msgstr "Jogue em um computador que já está configurado."
 
-#: src/big_remote_play/ui/main_window.py:958
+#: src/big_remote_play/ui/main_window.py:961
 msgid "Play on another screen"
 msgstr "Jogar em outra tela"
 
-#: src/big_remote_play/ui/main_window.py:994
+#: src/big_remote_play/ui/main_window.py:997
 msgid "Play on this device. Connect to the computer running the game."
 msgstr ""
 "Jogue neste dispositivo. Conecte-se ao computador que está executando o jogo."
@@ -5305,23 +5292,27 @@ msgstr ""
 "Jogue ou use este computador de qualquer lugar, com uma conexão segura."
 
 #: src/big_remote_play/ui/guest_view.py:608
-#: src/big_remote_play/ui/host_view.py:730
-#: src/big_remote_play/ui/host_view.py:732
-#: src/big_remote_play/ui/main_window.py:116
-#: src/big_remote_play/ui/main_window.py:838
-#: src/big_remote_play/ui/main_window.py:1225
+#: src/big_remote_play/ui/host_view.py:737
+#: src/big_remote_play/ui/host_view.py:739
+#: src/big_remote_play/ui/main_window.py:119
+#: src/big_remote_play/ui/main_window.py:841
+#: src/big_remote_play/ui/main_window.py:1228
 msgid "Play over the internet"
 msgstr "Jogar pela internet"
 
-#: src/big_remote_play/ui/host_view.py:733
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:17
+msgid "Play over the internet through Tailscale, ZeroTier, or Headscale"
+msgstr "Jogue pela internet com Tailscale, ZeroTier ou Headscale"
+
+#: src/big_remote_play/ui/host_view.py:740
 msgid "Play over the internet: connect your devices"
 msgstr "Jogar pela internet: conecte seus dispositivos"
 
-#: src/big_remote_play/app.py:182 src/big_remote_play/ui/main_window.py:956
+#: src/big_remote_play/app.py:182 src/big_remote_play/ui/main_window.py:959
 msgid "Play together, from anywhere"
 msgstr "Jogue junto, de qualquer lugar"
 
-#: src/big_remote_play/ui/main_window.py:931
+#: src/big_remote_play/ui/main_window.py:934
 msgid ""
 "Play with friends far away, or use the power of your computer on another "
 "compatible device."
@@ -5333,7 +5324,7 @@ msgstr ""
 msgid "Playback on this computer"
 msgstr "Exibição neste computador"
 
-#: src/big_remote_play/ui/host_view.py:2741
+#: src/big_remote_play/ui/host_view.py:2748
 msgid "Playing a short tone…"
 msgstr "Reproduzindo um tom curto…"
 
@@ -5341,12 +5332,12 @@ msgstr "Reproduzindo um tom curto…"
 msgid "Playing now"
 msgstr "Jogando agora"
 
-#: src/big_remote_play/ui/host_view.py:936
-#: src/big_remote_play/ui/main_window.py:1006
+#: src/big_remote_play/ui/host_view.py:943
+#: src/big_remote_play/ui/main_window.py:1009
 msgid "Playing over the internet?"
 msgstr "Jogando pela internet?"
 
-#: src/big_remote_play/ui/host_view.py:563
+#: src/big_remote_play/ui/host_view.py:570
 msgid "Plays a short tone and checks that it reaches the shared sound."
 msgstr "Reproduz um tom curto e verifica se ele chega ao som compartilhado."
 
@@ -5380,7 +5371,7 @@ msgstr "Porta e IPv6"
 msgid "Port forwarding (advanced)"
 msgstr "Encaminhamento de portas (avançado)"
 
-#: src/big_remote_play/ui/host_view.py:462
+#: src/big_remote_play/ui/host_view.py:469
 msgid "Portal (screen picker)"
 msgstr "Portal (seleção de tela)"
 
@@ -5408,7 +5399,7 @@ msgstr "Prefira CAVLC em vez de CABAC no H.264."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 273
 #: src/big_remote_play/ui/components.py:275
-#: src/big_remote_play/ui/host_view.py:1029
+#: src/big_remote_play/ui/host_view.py:1036
 msgid "Preferences"
 msgstr "Preferências"
 
@@ -5416,7 +5407,7 @@ msgstr "Preferências"
 msgid "Prepare this PC"
 msgstr "Prepare este PC"
 
-#: src/big_remote_play/ui/host_view.py:3015
+#: src/big_remote_play/ui/host_view.py:3022
 msgid ""
 "Preparing the game window. If your system asks, choose the same game and "
 "select Share."
@@ -5439,7 +5430,7 @@ msgstr "Impede que a tela deste computador seja desligada durante a sessão."
 msgid "Previous Networks"
 msgstr "Redes Anteriores"
 
-#: src/big_remote_play/ui/host_view.py:511
+#: src/big_remote_play/ui/host_view.py:518
 msgid "Priority"
 msgstr "Prioridade"
 
@@ -5450,11 +5441,11 @@ msgid "Private Key"
 msgstr "Chave Privada"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 619
-#: src/big_remote_play/ui/main_window.py:1549
+#: src/big_remote_play/ui/main_window.py:1552
 msgid "Private Network Containers"
 msgstr "Contêineres de Rede Privada"
 
-#: src/big_remote_play/ui/host_view.py:2576
+#: src/big_remote_play/ui/host_view.py:2583
 #: src/big_remote_play/ui/network_dashboard.py:175
 #: src/big_remote_play/ui/network_devices.py:213
 msgid "Private address"
@@ -5471,6 +5462,10 @@ msgstr "Redes privadas ativas"
 #: src/big_remote_play/app.py:189 src/big_remote_play/app.py:205
 msgid "Project Story"
 msgstr "História do projeto"
+
+#: src/big_remote_play/app.py:207
+msgid "Project story on YouTube"
+msgstr "História do projeto no YouTube"
 
 #: src/big_remote_play/ui/sunshine_preferences.py:106
 #: src/big_remote_play/ui/sunshine_preferences.py:316
@@ -5534,7 +5529,7 @@ msgstr ""
 "Lido das interfaces de rede deste computador. Nada é enviado para lugar "
 "nenhum."
 
-#: src/big_remote_play/ui/host_view.py:573
+#: src/big_remote_play/ui/host_view.py:580
 msgid "Read from the sound server when opened."
 msgstr "Lido do servidor de som ao abrir."
 
@@ -5577,7 +5572,7 @@ msgstr "Pronto para jogar pela internet"
 msgid "Ready to play?"
 msgstr "Tudo pronto para jogar?"
 
-#: src/big_remote_play/ui/host_view.py:2582
+#: src/big_remote_play/ui/host_view.py:2589
 msgid "Ready. This computer is also reachable over your private network."
 msgstr ""
 "Pronto. Este computador também pode ser acessado pela sua rede privada."
@@ -5596,7 +5591,7 @@ msgstr "Monitoramento em tempo real"
 msgid "Realtime encoding priority"
 msgstr "Prioridade de codificação em tempo real"
 
-#: src/big_remote_play/ui/host_view.py:384
+#: src/big_remote_play/ui/host_view.py:391
 msgid "Reapply automatic settings"
 msgstr "Reaplicar os ajustes automáticos"
 
@@ -5649,18 +5644,18 @@ msgstr "Reconectar"
 msgid "Reconnect using this saved network"
 msgstr "Reconectar usando esta rede salva"
 
-#: src/big_remote_play/ui/host_view.py:578
+#: src/big_remote_play/ui/host_view.py:585
 msgid "Recorded source"
 msgstr "Fonte gravada"
 
-#: src/big_remote_play/ui/host_view.py:1067
-#: src/big_remote_play/ui/host_view.py:3439
+#: src/big_remote_play/ui/host_view.py:1074
+#: src/big_remote_play/ui/host_view.py:3446
 #: src/big_remote_play/ui/network_dashboard.py:81
 #: src/big_remote_play/ui/network_devices.py:150
 msgid "Refresh"
 msgstr "Atualizar"
 
-#: src/big_remote_play/ui/host_view.py:3440
+#: src/big_remote_play/ui/host_view.py:3447
 msgid "Refresh logs"
 msgstr "Atualizar logs"
 
@@ -5685,28 +5680,24 @@ msgid "Reload from Running Server"
 msgstr "Recarregar do servidor em execução"
 
 #: src/big_remote_play/ui/api_access_dialog.py:92
-#: src/big_remote_play/ui/host_view.py:3393
+#: src/big_remote_play/ui/host_view.py:3400
 #: src/big_remote_play/ui/remote_connection.py:779
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:265
 msgid "Remove"
 msgstr "Remover"
 
-#: src/big_remote_play/ui/host_view.py:3289
 #: src/big_remote_play/ui/host_view.py:3296
-#: src/big_remote_play/ui/host_view.py:3298
+#: src/big_remote_play/ui/host_view.py:3303
+#: src/big_remote_play/ui/host_view.py:3305
 msgid "Remove All"
 msgstr "Remover tudo"
-
-#: src/big_remote_play/ui/host_view.py:3389
-msgid "Remove Device"
-msgstr "Remover dispositivo"
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:206
 msgid "Remove account from this computer"
 msgstr "Remover conta deste computador"
 
-#: src/big_remote_play/ui/host_view.py:3580
-#: src/big_remote_play/ui/host_view.py:3581
+#: src/big_remote_play/ui/host_view.py:3587
+#: src/big_remote_play/ui/host_view.py:3588
 msgid "Remove app"
 msgstr "Remover aplicativo"
 
@@ -5714,8 +5705,9 @@ msgstr "Remover aplicativo"
 msgid "Remove credential"
 msgstr "Remover credencial"
 
-#: src/big_remote_play/ui/host_view.py:3364
-#: src/big_remote_play/ui/host_view.py:3365
+#: src/big_remote_play/ui/host_view.py:3371
+#: src/big_remote_play/ui/host_view.py:3372
+#: src/big_remote_play/ui/host_view.py:3396
 #: src/big_remote_play/ui/network_devices.py:272
 #: src/big_remote_play/ui/network_devices.py:295
 #: src/big_remote_play/ui/network_devices.py:338
@@ -5731,7 +5723,7 @@ msgstr "Remover das conexões recentes"
 msgid "Remove logs, settings, servers and saved data"
 msgstr "Remove logs, configurações, servidores e dados salvos"
 
-#: src/big_remote_play/ui/host_view.py:1381
+#: src/big_remote_play/ui/host_view.py:1388
 msgid "Remove old log files"
 msgstr "Remove arquivos de log antigos"
 
@@ -5770,10 +5762,10 @@ msgstr "Remover {name} da rede"
 msgid "Remove {name}?"
 msgstr "Remover {name}?"
 
-#: src/big_remote_play/ui/host_view.py:3390
+#: src/big_remote_play/ui/host_view.py:3397
 #, python-brace-format
-msgid "Remove “{}”? It will need to pair again with a new PIN."
-msgstr "Remover “{}”? Será necessário parear novamente com um novo PIN."
+msgid "Remove “{name}”? It will need to pair again with a new PIN."
+msgstr "Remover “{name}”? Será necessário parear novamente com um novo PIN."
 
 #: src/big_remote_play/ui/remote_connection.py:452
 #: src/big_remote_play/ui/remote_connection.py:490
@@ -5860,14 +5852,14 @@ msgstr "Redefinir todas as configurações para o padrão"
 msgid "Reset connection settings"
 msgstr "Restaurar ajustes da conexão"
 
-#: src/big_remote_play/ui/host_view.py:3770
+#: src/big_remote_play/ui/host_view.py:3777
 msgid "Reset directly; the server will restart"
 msgstr "Redefinir diretamente; o servidor será reiniciado"
 
 #: src/big_remote_play/host/sunshine_manager.py:726
 #, python-brace-format
-msgid "Reset error: {}"
-msgstr "Erro ao redefinir: {}"
+msgid "Reset error: {error}"
+msgstr "Erro ao redefinir: {error}"
 
 #: src/big_remote_play/host/sunshine_manager.py:724
 msgid "Reset failed"
@@ -5875,14 +5867,14 @@ msgstr "Falha ao redefinir"
 
 #: src/big_remote_play/host/sunshine_manager.py:724
 #, python-brace-format
-msgid "Reset failed: {}"
-msgstr "Falha ao redefinir: {}"
+msgid "Reset failed: {error}"
+msgstr "Falha ao redefinir: {error}"
 
 #: src/big_remote_play/ui/guest_view.py:2204
 msgid "Reset settings?"
 msgstr "Restaurar ajustes?"
 
-#: src/big_remote_play/ui/host_view.py:322
+#: src/big_remote_play/ui/host_view.py:329
 msgid "Reset to Defaults"
 msgstr "Restaurar padrões"
 
@@ -5891,12 +5883,12 @@ msgid "Resolution"
 msgstr "Resolução"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 570
-#: src/big_remote_play/ui/main_window.py:1531
+#: src/big_remote_play/ui/main_window.py:1534
 msgid "Restart"
 msgstr "Reiniciar"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 639
-#: src/big_remote_play/ui/main_window.py:1565
+#: src/big_remote_play/ui/main_window.py:1568
 msgid "Restart Containers"
 msgstr "Reiniciar Contêineres"
 
@@ -5909,7 +5901,7 @@ msgstr ""
 "o ZeroTier."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1443
-#: src/big_remote_play/ui/host_view.py:4158
+#: src/big_remote_play/ui/host_view.py:4167
 #: src/big_remote_play/ui/preferences.py:63
 #: src/big_remote_play/ui/preferences.py:169
 #: src/big_remote_play/ui/preferences.py:223
@@ -5917,7 +5909,7 @@ msgid "Restore"
 msgstr "Restaurar"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1442
-#: src/big_remote_play/ui/host_view.py:4156
+#: src/big_remote_play/ui/host_view.py:4165
 #: src/big_remote_play/ui/preferences.py:62
 msgid "Restore Defaults"
 msgstr "Restaurar padrões"
@@ -5936,11 +5928,11 @@ msgstr "Restaurar um backup"
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Reutilizar os dados de conexão salvos pelo Big Remote Play"
 
-#: src/big_remote_play/ui/host_view.py:2395
-#: src/big_remote_play/ui/host_view.py:2422
+#: src/big_remote_play/ui/host_view.py:2402
+#: src/big_remote_play/ui/host_view.py:2429
 #, python-brace-format
-msgid "Reveal {}"
-msgstr "Mostrar {}"
+msgid "Reveal {field}"
+msgstr "Mostrar {field}"
 
 #: src/big_remote_play/ui/guest_view.py:444
 msgid "Reverse the scroll-wheel direction"
@@ -5974,12 +5966,12 @@ msgstr "Rota não medida"
 msgid "Routes approved"
 msgstr "Rotas aprovadas"
 
-#: src/big_remote_play/ui/host_view.py:584
+#: src/big_remote_play/ui/host_view.py:591
 msgid "Routing added by Big Remote Play"
 msgstr "Roteamento adicionado pelo Big Remote Play"
 
-#: src/big_remote_play/ui/main_window.py:114
-#: src/big_remote_play/ui/main_window.py:656
+#: src/big_remote_play/ui/main_window.py:117
+#: src/big_remote_play/ui/main_window.py:659
 msgid "Run the game on this PC"
 msgstr "Executar o jogo neste PC"
 
@@ -5993,14 +5985,14 @@ msgstr ""
 "computador."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
-#: src/big_remote_play/ui/host_view.py:2495
-#: src/big_remote_play/ui/main_window.py:1454
+#: src/big_remote_play/ui/host_view.py:2502
+#: src/big_remote_play/ui/main_window.py:1457
 #: src/big_remote_play/ui/service_status_card.py:66
 msgid "Running"
 msgstr "Executando"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 627
-#: src/big_remote_play/ui/main_window.py:1555
+#: src/big_remote_play/ui/main_window.py:1558
 msgid "Running (Caddy + Headscale)"
 msgstr "Executando (Caddy + Headscale)"
 
@@ -6010,11 +6002,11 @@ msgstr "Executando (Caddy + Headscale)"
 msgid "SW Tune"
 msgstr "Ajuste de SW"
 
-#: src/big_remote_play/ui/host_view.py:493
+#: src/big_remote_play/ui/host_view.py:500
 msgid "Same as the first device that connects"
 msgstr "Igual à do primeiro dispositivo que se conectar"
 
-#: src/big_remote_play/ui/host_view.py:937
+#: src/big_remote_play/ui/host_view.py:944
 msgid ""
 "Same home network? Skip this step. For different networks, set up internet "
 "play."
@@ -6026,8 +6018,8 @@ msgstr ""
 # line: 1092
 # line: 1859
 #: src/big_remote_play/ui/api_access_dialog.py:86
-#: src/big_remote_play/ui/host_view.py:1629
-#: src/big_remote_play/ui/host_view.py:3799
+#: src/big_remote_play/ui/host_view.py:1636
+#: src/big_remote_play/ui/host_view.py:3806
 #: src/big_remote_play/ui/private_network_view.py:1036
 #: src/big_remote_play/ui/remote_connection.py:751
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:324
@@ -6035,7 +6027,7 @@ msgid "Save"
 msgstr "Salvar"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:2062
+#: src/big_remote_play/ui/host_view.py:2069
 msgid "Save Password"
 msgstr "Salvar Senha"
 
@@ -6044,7 +6036,7 @@ msgid "Save bandwidth"
 msgstr "Economizar banda"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 670
-#: src/big_remote_play/ui/host_view.py:2063
+#: src/big_remote_play/ui/host_view.py:2070
 msgid "Save credentials to the system keyring"
 msgstr "Salvar as credenciais no chaveiro do sistema"
 
@@ -6065,16 +6057,16 @@ msgstr "Escaneie com a câmera do outro dispositivo."
 msgid "Scan it with the phone of the person you are inviting."
 msgstr "Escaneie com o celular da pessoa que você está convidando."
 
-#: src/big_remote_play/ui/host_view.py:483
+#: src/big_remote_play/ui/host_view.py:490
 msgid "Screen resolution while sharing"
 msgstr "Resolução da tela durante o compartilhamento"
 
-#: src/big_remote_play/ui/host_view.py:1015
+#: src/big_remote_play/ui/host_view.py:1022
 msgid "Screen, graphics card and encoding"
 msgstr "Tela, placa de vídeo e compressão"
 
-#: src/big_remote_play/ui/host_view.py:1468
-#: src/big_remote_play/ui/host_view.py:1765
+#: src/big_remote_play/ui/host_view.py:1475
+#: src/big_remote_play/ui/host_view.py:1772
 #, python-brace-format
 msgid "Screen: {value}"
 msgstr "Tela: {value}"
@@ -6085,7 +6077,7 @@ msgid "Search again"
 msgstr "Procurar novamente"
 
 #: src/big_remote_play/ui/guest_view.py:1354
-#: src/big_remote_play/ui/host_view.py:920
+#: src/big_remote_play/ui/host_view.py:927
 msgid "Search code"
 msgstr "Código de busca"
 
@@ -6098,15 +6090,15 @@ msgid "Searches the local network for computers that are sharing a game."
 msgstr "Procura na rede local computadores que estejam compartilhando um jogo."
 
 #: src/big_remote_play/ui/guest_view.py:1115
-msgid "Searching for game PCs..."
-msgstr "Procurando computadores do jogo..."
+msgid "Searching for game PCs…"
+msgstr "Procurando computadores do jogo…"
 
 #. TRANSLATORS: sidebar heading above the Tailscale, ZeroTier and Headscale cards.
-#: src/big_remote_play/ui/main_window.py:519
+#: src/big_remote_play/ui/main_window.py:522
 msgid "Secure connection"
 msgstr "Conexão segura"
 
-#: src/big_remote_play/ui/host_view.py:651
+#: src/big_remote_play/ui/host_view.py:658
 msgid "Security and expert settings that are rarely needed."
 msgstr "Configurações de segurança e especializadas, raramente necessárias."
 
@@ -6118,20 +6110,16 @@ msgstr "Ver detalhes"
 msgid "Seen in the last few minutes"
 msgstr "Visto nos últimos minutos"
 
-#: src/big_remote_play/ui/host_view.py:3649
-msgid "Select Executable"
-msgstr "Selecionar executável"
-
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:344
+#: src/big_remote_play/ui/host_view.py:351
 msgid "Select Game"
 msgstr "Selecionar Jogo"
 
-#: src/big_remote_play/ui/host_view.py:1138
+#: src/big_remote_play/ui/host_view.py:1145
 msgid "Select Refresh to try again."
 msgstr "Clique em Atualizar para tentar de novo."
 
-#: src/big_remote_play/ui/host_view.py:2869
+#: src/big_remote_play/ui/host_view.py:2876
 msgid ""
 "Select a game or complete the app name and command. To share the whole "
 "screen instead, choose Full Desktop."
@@ -6143,22 +6131,23 @@ msgstr ""
 msgid "Select a network service and try again."
 msgstr "Escolha um serviço de rede e tente novamente."
 
-#: src/big_remote_play/ui/host_view.py:3725
+#: src/big_remote_play/ui/host_view.py:3656
+#: src/big_remote_play/ui/host_view.py:3732
 msgid "Select executable"
 msgstr "Selecionar executável"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 194
-#: src/big_remote_play/ui/host_view.py:424
+#: src/big_remote_play/ui/host_view.py:431
 msgid "Select the display to capture"
 msgstr "Selecione a tela para capturar"
 
-#: src/big_remote_play/ui/host_view.py:3737
+#: src/big_remote_play/ui/host_view.py:3744
 #, python-brace-format
-msgid "Selected: {}"
-msgstr "Selecionado: {}"
+msgid "Selected: {name}"
+msgstr "Selecionado: {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 588
-#: src/big_remote_play/ui/host_view.py:2075
+#: src/big_remote_play/ui/host_view.py:2082
 msgid "Send"
 msgstr "Enviar"
 
@@ -6166,7 +6155,7 @@ msgstr "Enviar"
 msgid "Send invitation"
 msgstr "Enviar convite"
 
-#: src/big_remote_play/ui/host_view.py:947
+#: src/big_remote_play/ui/host_view.py:954
 msgid ""
 "Send one of these to the other person, or let them pick this computer under "
 "Connect."
@@ -6178,11 +6167,11 @@ msgstr ""
 msgid "Send system shortcuts to the remote computer"
 msgstr "Enviar atalhos do sistema ao computador remoto"
 
-#: src/big_remote_play/ui/network_dashboard.py:248
+#: src/big_remote_play/ui/network_dashboard.py:256
 msgid "Send the Node ID to the network owner"
 msgstr "Envie o ID do nó ao dono da rede"
 
-#: src/big_remote_play/ui/host_view.py:897
+#: src/big_remote_play/ui/host_view.py:904
 msgid "Send the code shown on the other PC to finish pairing"
 msgstr "Enviar o código mostrado no outro PC para concluir o pareamento"
 
@@ -6209,13 +6198,9 @@ msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Domínio do servidor (ex.: vpn.example.com)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1415
-#: src/big_remote_play/ui/host_view.py:3238
+#: src/big_remote_play/ui/host_view.py:3245
 msgid "Server Failed to Start"
 msgstr "O servidor falhou ao iniciar."
-
-#: src/big_remote_play/ui/host_view.py:3750
-msgid "Server Password"
-msgstr "Senha do servidor"
 
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
@@ -6225,41 +6210,42 @@ msgstr "Senha do servidor"
 msgid "Server address"
 msgstr "Endereço do servidor"
 
-#: src/big_remote_play/ui/host_view.py:674
+#: src/big_remote_play/ui/host_view.py:681
 msgid "Server control panel"
 msgstr "Painel do servidor"
 
-#: src/big_remote_play/ui/host_view.py:681
+#: src/big_remote_play/ui/host_view.py:688
 msgid "Server log"
 msgstr "Registro do servidor"
 
-#: src/big_remote_play/ui/host_view.py:534
+#: src/big_remote_play/ui/host_view.py:541
 msgid "Server output"
 msgstr "Saída do servidor"
 
-#: src/big_remote_play/ui/host_view.py:695
+#: src/big_remote_play/ui/host_view.py:702
+#: src/big_remote_play/ui/host_view.py:3757
 msgid "Server password"
 msgstr "Senha do servidor"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1196
-#: src/big_remote_play/ui/host_view.py:3008
+#: src/big_remote_play/ui/host_view.py:3015
 msgid "Server started"
 msgstr "Servidor iniciado"
 
-#: src/big_remote_play/ui/host_view.py:646
+#: src/big_remote_play/ui/host_view.py:653
 msgid "Server tools"
 msgstr "Ferramentas do servidor"
 
-#: src/big_remote_play/ui/network_dashboard.py:358
+#: src/big_remote_play/ui/network_dashboard.py:366
 msgid "Service started"
 msgstr "Serviço iniciado"
 
 #. TRANSLATORS: accessible name of the list of streaming and private-network cards.
-#: src/big_remote_play/ui/main_window.py:488
+#: src/big_remote_play/ui/main_window.py:491
 msgid "Services"
 msgstr "Serviços"
 
-#: src/big_remote_play/ui/host_view.py:3760
+#: src/big_remote_play/ui/host_view.py:3767
 msgid ""
 "Set the username and password used to manage the Sunshine server. If you "
 "forgot the current password, switch on “I forgot the current password” to "
@@ -6276,11 +6262,11 @@ msgstr "Configurar"
 msgid "Set up a secure connection"
 msgstr "Configure uma conexão segura"
 
-#: src/big_remote_play/ui/main_window.py:1229
+#: src/big_remote_play/ui/main_window.py:1232
 msgid "Set up the connection"
 msgstr "Configurar a conexão"
 
-#: src/big_remote_play/ui/network_dashboard.py:237
+#: src/big_remote_play/ui/network_dashboard.py:245
 msgid "Set up your own server"
 msgstr "Configure seu próprio servidor"
 
@@ -6290,7 +6276,7 @@ msgid "Setting up"
 msgstr "Configurando"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1451
-#: src/big_remote_play/ui/host_view.py:4173
+#: src/big_remote_play/ui/host_view.py:4182
 msgid "Settings Restored"
 msgstr "Configurações Restauradas"
 
@@ -6309,7 +6295,7 @@ msgstr ""
 msgid "Several computers are waiting to pair."
 msgstr "Vários computadores estão aguardando pareamento."
 
-#: src/big_remote_play/ui/host_view.py:1979
+#: src/big_remote_play/ui/host_view.py:1986
 msgid ""
 "Several computers are waiting to pair. Approve only the one that shows the "
 "code you entered."
@@ -6317,22 +6303,30 @@ msgstr ""
 "Vários computadores estão aguardando pareamento. Aprove apenas aquele que "
 "exibe o código que você digitou."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 215
-#: src/big_remote_play/ui/main_window.py:114
-#: src/big_remote_play/ui/main_window.py:656
-#: src/big_remote_play/ui/main_window.py:828
-#: src/big_remote_play/ui/main_window.py:985
+#. TRANSLATORS: with context "navigation", Share and Connect name the two
+#. main pages: the computer that shares a game and the one that connects to
+#. it. Buttons that perform the action use the same words without context.
+#: src/big_remote_play/ui/main_window.py:117
+#: src/big_remote_play/ui/main_window.py:659
+#: src/big_remote_play/ui/main_window.py:831
+#: src/big_remote_play/ui/main_window.py:988
+msgctxt "navigation"
 msgid "Share"
 msgstr "Compartilhar"
 
-#: src/big_remote_play/ui/host_view.py:761
+#: src/big_remote_play/ui/host_view.py:768
 msgid "Share from this PC"
 msgstr "Compartilhar a partir deste PC"
 
 #: src/big_remote_play/ui/guided_setup.py:123
 msgid "Share my game"
 msgstr "Compartilhar meu jogo"
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:15
+msgid "Share the desktop or a single game from this computer with Sunshine"
+msgstr ""
+"Compartilhe a área de trabalho ou um único jogo deste computador com o "
+"Sunshine"
 
 #: src/big_remote_play/ui/network_dashboard.py:188
 msgid "Share this PC"
@@ -6348,8 +6342,8 @@ msgstr "Compartilhar este computador"
 msgid "Sharing found"
 msgstr "Compartilhamento encontrado"
 
-#: src/big_remote_play/ui/host_view.py:3507
-#: src/big_remote_play/ui/host_view.py:3638
+#: src/big_remote_play/ui/host_view.py:3514
+#: src/big_remote_play/ui/host_view.py:3645
 msgid "Sharing is off"
 msgstr "Compartilhamento desativado"
 
@@ -6357,19 +6351,19 @@ msgstr "Compartilhamento desativado"
 msgid "Sharing not found"
 msgstr "Compartilhamento não encontrado"
 
-#: src/big_remote_play/ui/host_view.py:973
+#: src/big_remote_play/ui/host_view.py:980
 msgid "Sharing now"
 msgstr "Compartilhando agora"
 
-#: src/big_remote_play/ui/main_window.py:656
+#: src/big_remote_play/ui/main_window.py:659
 msgid "Sharing sections"
 msgstr "Seções de compartilhamento"
 
-#: src/big_remote_play/ui/host_view.py:3190
+#: src/big_remote_play/ui/host_view.py:3197
 msgid "Sharing stopped"
 msgstr "Compartilhamento parado"
 
-#: src/big_remote_play/ui/host_view.py:1323
+#: src/big_remote_play/ui/host_view.py:1330
 msgid ""
 "Sharing stopped so nothing else on this computer is shown. Open the game "
 "again to share it."
@@ -6377,13 +6371,13 @@ msgstr ""
 "O compartilhamento parou para que nada mais deste computador apareça. Abra o "
 "jogo de novo para compartilhá-lo."
 
-#: src/big_remote_play/ui/host_view.py:1325
-#: src/big_remote_play/ui/host_view.py:1326
+#: src/big_remote_play/ui/host_view.py:1332
+#: src/big_remote_play/ui/host_view.py:1333
 msgid "Sharing stopped to protect your privacy"
 msgstr "Compartilhamento parado para proteger sua privacidade"
 
-#: src/big_remote_play/ui/host_view.py:317
-#: src/big_remote_play/ui/host_view.py:1279
+#: src/big_remote_play/ui/host_view.py:324
+#: src/big_remote_play/ui/host_view.py:1286
 msgid ""
 "Sharing the whole screen also shows notifications and other open windows."
 msgstr ""
@@ -6399,11 +6393,11 @@ msgstr "Imagem mais nítida"
 msgid "Shortcuts & Instructions"
 msgstr "Atalhos e instruções"
 
-#: src/big_remote_play/ui/host_view.py:434
+#: src/big_remote_play/ui/host_view.py:441
 msgid "Show a number on every connected screen"
 msgstr "Mostrar um número em cada tela conectada"
 
-#: src/big_remote_play/ui/host_view.py:1072
+#: src/big_remote_play/ui/host_view.py:1079
 msgid "Show all open windows"
 msgstr "Mostrar todas as janelas abertas"
 
@@ -6415,10 +6409,10 @@ msgstr ""
 "Mostrar ícone na área de notificação e exibir notificações na área de "
 "trabalho"
 
-#: src/big_remote_play/ui/host_view.py:2396
+#: src/big_remote_play/ui/host_view.py:2403
 #, python-brace-format
-msgid "Show or hide the {} value"
-msgstr "Mostrar ou ocultar o valor {}"
+msgid "Show or hide the {field} value"
+msgstr "Mostrar ou ocultar o valor {field}"
 
 #: src/big_remote_play/ui/guest_view.py:361
 msgid "Show performance statistics during streaming"
@@ -6437,7 +6431,7 @@ msgstr "Exibe um aviso quando a rede fica instável ou lenta demais."
 msgid "Shows network details and tools for experienced users."
 msgstr "Mostra detalhes da rede e ferramentas para usuários experientes."
 
-#: src/big_remote_play/ui/host_view.py:867
+#: src/big_remote_play/ui/host_view.py:874
 msgid "Shows the ports first; your password is requested"
 msgstr "Mostra as portas antes; sua senha será pedida"
 
@@ -6540,7 +6534,12 @@ msgstr "Aumento percentual de VBV/HRD de quadro único"
 msgid "Software"
 msgstr "Software"
 
-#: src/big_remote_play/ui/host_view.py:1032
+#. TRANSLATORS: video encoding on the processor instead of the graphics card.
+#: src/big_remote_play/ui/host_view.py:292
+msgid "Software (CPU)"
+msgstr "Software (CPU)"
+
+#: src/big_remote_play/ui/host_view.py:1039
 msgid "Solve sharing problems"
 msgstr "Resolver problemas de compartilhamento"
 
@@ -6574,11 +6573,11 @@ msgstr ""
 msgid "Somewhere else"
 msgstr "Em outro lugar"
 
-#: src/big_remote_play/ui/host_view.py:1002
+#: src/big_remote_play/ui/host_view.py:1009
 msgid "Sound and access on this computer"
 msgstr "Som e acesso neste computador"
 
-#: src/big_remote_play/ui/host_view.py:327
+#: src/big_remote_play/ui/host_view.py:334
 msgid "Source"
 msgstr "Origem"
 
@@ -6593,12 +6592,12 @@ msgid "Stable"
 msgstr "Estável"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 564
-#: src/big_remote_play/ui/main_window.py:1523
+#: src/big_remote_play/ui/main_window.py:1526
 msgid "Start"
 msgstr "Iniciar"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 633
-#: src/big_remote_play/ui/main_window.py:1559
+#: src/big_remote_play/ui/main_window.py:1562
 msgid "Start Containers"
 msgstr "Iniciar Contêineres"
 
@@ -6611,25 +6610,25 @@ msgstr "Iniciar o ZeroTier"
 msgid "Start service"
 msgstr "Iniciar serviço"
 
-#: src/big_remote_play/ui/host_view.py:717
-#: src/big_remote_play/ui/host_view.py:721
 #: src/big_remote_play/ui/host_view.py:724
-#: src/big_remote_play/ui/host_view.py:727
-#: src/big_remote_play/ui/host_view.py:2541
-#: src/big_remote_play/ui/host_view.py:2543
-#: src/big_remote_play/ui/host_view.py:2549
+#: src/big_remote_play/ui/host_view.py:728
+#: src/big_remote_play/ui/host_view.py:731
+#: src/big_remote_play/ui/host_view.py:734
+#: src/big_remote_play/ui/host_view.py:2548
+#: src/big_remote_play/ui/host_view.py:2550
+#: src/big_remote_play/ui/host_view.py:2556
 msgid "Start sharing"
 msgstr "Iniciar compartilhamento"
 
-#: src/big_remote_play/ui/host_view.py:3638
+#: src/big_remote_play/ui/host_view.py:3645
 msgid "Start sharing first to browse this PC."
 msgstr "Inicie o compartilhamento antes de procurar arquivos neste PC."
 
-#: src/big_remote_play/ui/host_view.py:3507
+#: src/big_remote_play/ui/host_view.py:3514
 msgid "Start sharing first to manage the game library."
 msgstr "Inicie o compartilhamento antes de gerenciar a biblioteca de jogos."
 
-#: src/big_remote_play/ui/host_view.py:1645
+#: src/big_remote_play/ui/host_view.py:1652
 msgid "Start sharing first, then enter the password again."
 msgstr "Inicie o compartilhamento primeiro e digite a senha de novo."
 
@@ -6641,13 +6640,13 @@ msgstr "Inicie o compartilhamento no PC do jogo e procure novamente."
 msgid "Start sharing on the game PC. It will appear here."
 msgstr "Inicie o compartilhamento no PC do jogo. Ele aparecerá aqui."
 
-#: src/big_remote_play/ui/host_view.py:727
-#: src/big_remote_play/ui/host_view.py:2549
+#: src/big_remote_play/ui/host_view.py:734
+#: src/big_remote_play/ui/host_view.py:2556
 msgid "Start sharing the game from this PC"
 msgstr "Iniciar o compartilhamento do jogo a partir deste PC"
 
-#: src/big_remote_play/ui/host_view.py:2156
-#: src/big_remote_play/ui/host_view.py:2557
+#: src/big_remote_play/ui/host_view.py:2163
+#: src/big_remote_play/ui/host_view.py:2564
 msgid "Start sharing to show paired devices"
 msgstr "Inicie o compartilhamento para mostrar dispositivos pareados"
 
@@ -6660,20 +6659,15 @@ msgstr "Iniciando ${unit}…"
 msgid "Starting ZeroTier…"
 msgstr "Iniciando o ZeroTier…"
 
-#: src/big_remote_play/ui/host_view.py:2435
-msgid "Starting game sharing..."
-msgstr "Iniciando compartilhamento do jogo..."
+#: src/big_remote_play/ui/host_view.py:2442
+msgid "Starting game sharing…"
+msgstr "Iniciando compartilhamento do jogo…"
 
-#: src/big_remote_play/ui/network_dashboard.py:272
+#: src/big_remote_play/ui/network_dashboard.py:280
 msgid "Starting it asks for your password once."
 msgstr "Para iniciá-lo, sua senha será pedida uma vez."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 67
 #: src/big_remote_play/ui/private_network_view.py:800
-msgid "Starting..."
-msgstr "Iniciando…"
-
 #: src/big_remote_play/ui/remote_connection.py:647
 msgid "Starting…"
 msgstr "Iniciando…"
@@ -6695,14 +6689,14 @@ msgstr "Status desconhecido"
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:241
 #, python-brace-format
-msgid "Status: {}"
-msgstr "Status: {}"
+msgid "Status: {status}"
+msgstr "Status: {status}"
 
-#: src/big_remote_play/ui/host_view.py:582
+#: src/big_remote_play/ui/host_view.py:589
 msgid "Steam Remote Play"
 msgstr "Steam Remote Play"
 
-#: src/big_remote_play/ui/host_view.py:2710
+#: src/big_remote_play/ui/host_view.py:2717
 msgid "Steam is not recording sound"
 msgstr "O Steam não está gravando o som"
 
@@ -6740,6 +6734,10 @@ msgstr "Estéreo"
 msgid "Stereo · This computer only"
 msgstr "Estéreo · somente neste computador"
 
+#: src/big_remote_play/ui/sunshine_preferences.py:654
+msgid "Still image"
+msgstr "Imagem estática"
+
 # #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 564
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 868
@@ -6747,39 +6745,39 @@ msgstr "Estéreo · somente neste computador"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 206
 #: src/big_remote_play/ui/guest_view.py:875
 #: src/big_remote_play/ui/guest_view.py:899
-#: src/big_remote_play/ui/main_window.py:1523
+#: src/big_remote_play/ui/main_window.py:1526
 msgid "Stop"
 msgstr "Parar"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 633
-#: src/big_remote_play/ui/main_window.py:1559
+#: src/big_remote_play/ui/main_window.py:1562
 msgid "Stop Containers"
 msgstr "Parar Contêineres"
 
-#: src/big_remote_play/ui/network_dashboard.py:324
+#: src/big_remote_play/ui/network_dashboard.py:332
 msgid "Stop ZeroTier temporarily"
 msgstr "Parar o ZeroTier temporariamente"
 
-#: src/big_remote_play/ui/network_dashboard.py:446
+#: src/big_remote_play/ui/network_dashboard.py:454
 msgid "Stop ZeroTier temporarily?"
 msgstr "Parar o ZeroTier temporariamente?"
 
-#: src/big_remote_play/ui/host_view.py:2435
-#: src/big_remote_play/ui/host_view.py:2482
-#: src/big_remote_play/ui/host_view.py:2484
-#: src/big_remote_play/ui/host_view.py:2490
+#: src/big_remote_play/ui/host_view.py:2442
+#: src/big_remote_play/ui/host_view.py:2489
+#: src/big_remote_play/ui/host_view.py:2491
+#: src/big_remote_play/ui/host_view.py:2497
 msgid "Stop sharing"
 msgstr "Parar compartilhamento"
 
-#: src/big_remote_play/ui/host_view.py:2490
+#: src/big_remote_play/ui/host_view.py:2497
 msgid "Stop sharing the game from this PC"
 msgstr "Parar o compartilhamento do jogo a partir deste PC"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
-#: src/big_remote_play/ui/host_view.py:781
-#: src/big_remote_play/ui/host_view.py:2522
-#: src/big_remote_play/ui/main_window.py:1454
-#: src/big_remote_play/ui/main_window.py:1555
+#: src/big_remote_play/ui/host_view.py:788
+#: src/big_remote_play/ui/host_view.py:2529
+#: src/big_remote_play/ui/main_window.py:1457
+#: src/big_remote_play/ui/main_window.py:1558
 #: src/big_remote_play/ui/service_status_card.py:71
 #: src/big_remote_play/ui/service_status_card.py:90
 msgid "Stopped"
@@ -6789,10 +6787,9 @@ msgstr "Parado"
 msgid "Stopped looking for new devices"
 msgstr "A busca por novos dispositivos parou"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1256
-#: src/big_remote_play/ui/host_view.py:3124
-msgid "Stopping server..."
-msgstr "Parando o servidor..."
+#: src/big_remote_play/ui/host_view.py:3131
+msgid "Stopping server…"
+msgstr "Parando o servidor…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 221
@@ -6803,7 +6800,7 @@ msgstr ""
 "Sunshine."
 
 #. TRANSLATORS: sidebar heading above the Sunshine or Moonlight card.
-#: src/big_remote_play/ui/main_window.py:516
+#: src/big_remote_play/ui/main_window.py:519
 msgid "Streaming"
 msgstr "Transmissão"
 
@@ -6815,31 +6812,19 @@ msgstr ""
 "Imponha rigorosamente os limites de taxa de bits de quadro para H.264/HEVC "
 "em GPUs AMD."
 
-#: src/big_remote_play/host/sunshine_manager.py:542
-#, python-brace-format
-msgid "Sunshine API request failed: {}"
-msgstr "Falha na requisição à API do Sunshine: {}"
-
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 20
 #: src/big_remote_play/ui/main_window.py:70
 msgid "Sunshine Game Stream Host"
 msgstr "Anfitrião de Transmissão do Jogo Sunshine"
 
-#: src/big_remote_play/ui/host_view.py:3466
+#: src/big_remote_play/ui/host_view.py:3473
 msgid "Sunshine Logs"
 msgstr "Logs do Sunshine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 113
-#: src/big_remote_play/ui/host_view.py:312
+#: src/big_remote_play/ui/host_view.py:319
 msgid "Sunshine Offline"
 msgstr "Sunshine offline"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
-# line: 265
-#: src/big_remote_play/ui/host_view.py:1624
-#: src/big_remote_play/ui/host_view.py:2058
-msgid "Sunshine Password"
-msgstr "Senha Sunshine"
 
 #: src/big_remote_play/ui/sunshine_preferences.py:302
 msgid "Sunshine Runtime"
@@ -6847,8 +6832,8 @@ msgstr "Runtime do Sunshine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 264
-#: src/big_remote_play/ui/host_view.py:1622
-#: src/big_remote_play/ui/host_view.py:2054
+#: src/big_remote_play/ui/host_view.py:1629
+#: src/big_remote_play/ui/host_view.py:2061
 msgid "Sunshine User"
 msgstr "Usuário Sunshine"
 
@@ -6856,7 +6841,7 @@ msgstr "Usuário Sunshine"
 msgid "Sunshine answers"
 msgstr "O Sunshine responde"
 
-#: src/big_remote_play/ui/host_view.py:600
+#: src/big_remote_play/ui/host_view.py:607
 msgid ""
 "Sunshine asks a compatible router when it starts. Enabling this does not "
 "confirm that the ports opened."
@@ -6864,7 +6849,7 @@ msgstr ""
 "Ao iniciar, o Sunshine solicita a abertura a um roteador compatível. Ativar "
 "esta opção não confirma que as portas foram abertas."
 
-#: src/big_remote_play/ui/host_view.py:1556
+#: src/big_remote_play/ui/host_view.py:1563
 #, python-brace-format
 msgid ""
 "Sunshine cannot create their virtual controller: this user cannot open "
@@ -6874,7 +6859,7 @@ msgstr ""
 "acesso a {devices}. Reinicie este computador uma vez depois de instalar ou "
 "atualizar o Sunshine."
 
-#: src/big_remote_play/ui/host_view.py:1763
+#: src/big_remote_play/ui/host_view.py:1770
 msgid ""
 "Sunshine chooses compatible capture and encoding at startup. You can still "
 "set a video bitrate ceiling."
@@ -6882,11 +6867,11 @@ msgstr ""
 "O Sunshine escolhe recursos de captura e compressão compatíveis ao iniciar. "
 "Você ainda pode limitar o bitrate do vídeo."
 
-#: src/big_remote_play/ui/host_view.py:1645
+#: src/big_remote_play/ui/host_view.py:1652
 msgid "Sunshine did not answer"
 msgstr "O Sunshine não respondeu"
 
-#: src/big_remote_play/ui/host_view.py:1695
+#: src/big_remote_play/ui/host_view.py:1702
 msgid ""
 "Sunshine did not close it. Try again, or stop sharing and start it again."
 msgstr ""
@@ -6897,6 +6882,7 @@ msgstr ""
 msgid "Sunshine does not answer. Start sharing on the game PC."
 msgstr "O Sunshine não responde. Inicie o compartilhamento no PC do jogo."
 
+#: src/big_remote_play/host/sunshine_manager.py:199
 #: src/big_remote_play/host/sunshine_manager.py:716
 #: src/big_remote_play/utils/system_check.py:184
 msgid "Sunshine executable not found"
@@ -6906,44 +6892,32 @@ msgstr "Executável do Sunshine não encontrado"
 msgid "Sunshine failed to report its version"
 msgstr "O Sunshine não conseguiu informar sua versão"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 86
 #: src/big_remote_play/host/sunshine_manager.py:268
 #, python-brace-format
-msgid "Sunshine failed to start (Exit code {}).\n"
-msgstr "O Sunshine falhou ao iniciar (código de saída {}).\n"
+msgid "Sunshine failed to start (exit code {code}).\n"
+msgstr "O Sunshine falhou ao iniciar (código de saída {code}).\n"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 90
-#: src/big_remote_play/host/sunshine_manager.py:272
-#, python-brace-format
-msgid "Sunshine failed to start (Exit code {}). Check logs."
-msgstr "O Sunshine falhou ao iniciar (Código de saída {}). Verifique os logs."
-
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1411
-#: src/big_remote_play/ui/host_view.py:3236
+#: src/big_remote_play/ui/host_view.py:3243
 #, python-brace-format
 msgid ""
 "Sunshine failed to start.\n"
 "\n"
-"Error: {}\n"
+"Error: {error}\n"
 "\n"
 "If this is a dependency issue (missing libraries), try the 'Fix "
 "Dependencies' button."
 msgstr ""
 "O Sunshine falhou ao iniciar.\n"
 "\n"
-"Erro: {}\n"
+"Erro: {error}\n"
 "\n"
 "Se este for um problema de dependência (bibliotecas ausentes), tente o botão "
 "'Corrigir Dependências'."
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 88
-#: src/big_remote_play/host/sunshine_manager.py:270
-#, python-brace-format
-msgid "Sunshine failed to start: {}"
-msgstr "O Sunshine falhou ao iniciar: {}"
+#: src/big_remote_play/host/sunshine_manager.py:194
+#: src/big_remote_play/host/sunshine_manager.py:195
+msgid "Sunshine is already running."
+msgstr "O Sunshine já está em execução."
 
 #: src/big_remote_play/ui/sunshine_preferences.py:304
 msgid "Sunshine is available."
@@ -6953,14 +6927,8 @@ msgstr "O Sunshine está disponível."
 msgid "Sunshine is not available."
 msgstr "O Sunshine não está disponível."
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 115
-#: src/big_remote_play/host/sunshine_manager.py:300
-msgid "Sunshine is not running"
-msgstr "Sunshine não está em execução."
-
-#: src/big_remote_play/ui/host_view.py:3274
-#: src/big_remote_play/ui/main_window.py:1371
+#: src/big_remote_play/ui/host_view.py:3281
+#: src/big_remote_play/ui/main_window.py:1374
 #: src/big_remote_play/ui/sunshine_preferences.py:367
 msgid "Sunshine is not running."
 msgstr "O Sunshine não está em execução."
@@ -6970,11 +6938,13 @@ msgid "Sunshine is not running. Settings are saved to file."
 msgstr ""
 "O Sunshine não está em execução. As configurações são salvas em arquivo."
 
-#: src/big_remote_play/ui/host_view.py:1618
+#: src/big_remote_play/ui/host_view.py:1625
+#: src/big_remote_play/ui/host_view.py:1631
+#: src/big_remote_play/ui/host_view.py:2065
 msgid "Sunshine password"
 msgstr "Senha do Sunshine"
 
-#: src/big_remote_play/ui/host_view.py:1638
+#: src/big_remote_play/ui/host_view.py:1645
 msgid "Sunshine password saved. Devices can be approved right away."
 msgstr "Senha do Sunshine salva. Os aparelhos podem ser aprovados na hora."
 
@@ -6983,7 +6953,7 @@ msgstr "Senha do Sunshine salva. Os aparelhos podem ser aprovados na hora."
 msgid "Sunshine port settings"
 msgstr "Configuração de portas do Sunshine"
 
-#: src/big_remote_play/ui/host_view.py:579
+#: src/big_remote_play/ui/host_view.py:586
 msgid "Sunshine records now"
 msgstr "O Sunshine está gravando"
 
@@ -6996,11 +6966,11 @@ msgstr "O Sunshine rejeitou o PIN"
 msgid "Sunshine rejected the credentials"
 msgstr "O Sunshine rejeitou as credenciais"
 
-#: src/big_remote_play/ui/host_view.py:1508
+#: src/big_remote_play/ui/host_view.py:1515
 msgid "Sunshine rejected the saved password"
 msgstr "O Sunshine recusou a senha salva"
 
-#: src/big_remote_play/ui/host_view.py:1950
+#: src/big_remote_play/ui/host_view.py:1957
 msgid "Sunshine rejected the saved password."
 msgstr "O Sunshine recusou a senha salva."
 
@@ -7008,18 +6978,11 @@ msgstr "O Sunshine recusou a senha salva."
 msgid "Sunshine runtime is available"
 msgstr "O runtime do Sunshine está disponível"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 105
-#: src/big_remote_play/host/sunshine_manager.py:285
-#, python-brace-format
-msgid "Sunshine started (PID: {})"
-msgstr "Sunshine iniciado (PID: {})"
-
-#: src/big_remote_play/ui/host_view.py:1504
+#: src/big_remote_play/ui/host_view.py:1511
 msgid "Sunshine's password is needed to approve devices"
 msgstr "A senha do Sunshine é necessária para aprovar aparelhos"
 
-#: src/big_remote_play/ui/host_view.py:1039
+#: src/big_remote_play/ui/host_view.py:1046
 msgid "Support"
 msgstr "Suporte"
 
@@ -7043,7 +7006,7 @@ msgstr ""
 "Troque entre contas do Tailscale ou Headscale e gerencie várias redes "
 "ZeroTier."
 
-#: src/big_remote_play/ui/network_dashboard.py:315
+#: src/big_remote_play/ui/network_dashboard.py:323
 msgid "Switch Tailscale or Headscale accounts, and see every ZeroTier network."
 msgstr ""
 "Troque de conta do Tailscale ou do Headscale e veja todas as redes ZeroTier."
@@ -7056,8 +7019,8 @@ msgstr ""
 
 #: src/big_remote_play/ui/tailscale_accounts.py:108
 #, python-brace-format
-msgid "Switch to {}"
-msgstr "Trocar para {}"
+msgid "Switch to {name}"
+msgstr "Trocar para {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 997
 #: src/big_remote_play/ui/guest_view.py:2321
@@ -7067,27 +7030,27 @@ msgstr "Alternando Monitores"
 #: src/big_remote_play/ui/tailscale_accounts.py:126
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:251
 #, python-brace-format
-msgid "Switching to {}…"
-msgstr "Trocando para {}…"
+msgid "Switching to {name}…"
+msgstr "Trocando para {name}…"
 
 #: src/big_remote_play/ui/remote_connection.py:790
 msgid "System"
 msgstr "Sistema"
 
-#: src/big_remote_play/ui/host_view.py:2700
+#: src/big_remote_play/ui/host_view.py:2707
 msgid "System audio unavailable"
 msgstr "Áudio do sistema indisponível"
 
-#: src/big_remote_play/ui/host_view.py:2696
+#: src/big_remote_play/ui/host_view.py:2703
 msgid "System audio unavailable: no output device was found."
 msgstr ""
 "Áudio do sistema indisponível: nenhum dispositivo de saída foi encontrado."
 
-#: src/big_remote_play/ui/host_view.py:2760
+#: src/big_remote_play/ui/host_view.py:2767
 msgid "System audio unavailable: there is no output to test."
 msgstr "Áudio do sistema indisponível: não há saída para testar."
 
-#: src/big_remote_play/ui/host_view.py:1905
+#: src/big_remote_play/ui/host_view.py:1912
 msgid "System keyring is unavailable. Password was not saved."
 msgstr "O chaveiro do sistema está indisponível. A senha não foi salva."
 
@@ -7141,7 +7104,7 @@ msgstr "O Tailscale não aceitou a mudança. Tente de novo."
 msgid "Tailscale download page"
 msgstr "Página de download do Tailscale"
 
-#: src/big_remote_play/ui/host_view.py:1520
+#: src/big_remote_play/ui/host_view.py:1527
 msgid "Tailscale or Headscale"
 msgstr "Tailscale ou Headscale"
 
@@ -7159,7 +7122,7 @@ msgstr ""
 "roteador, inclusive com CGNAT, sem abrir portas e sem expor o Sunshine à "
 "internet."
 
-#: src/big_remote_play/ui/host_view.py:573
+#: src/big_remote_play/ui/host_view.py:580
 msgid "Technical audio details"
 msgstr "Detalhes técnicos do áudio"
 
@@ -7170,15 +7133,16 @@ msgid "Technical details"
 msgstr "Detalhes técnicos"
 
 #: src/big_remote_play/ui/api_access_dialog.py:331
-msgid "Technical details:"
-msgstr "Detalhes técnicos:"
+#, python-brace-format
+msgid "Technical details: {detail}"
+msgstr "Detalhes técnicos: {detail}"
 
-#: src/big_remote_play/ui/host_view.py:566
+#: src/big_remote_play/ui/host_view.py:573
 msgid "Test"
 msgstr "Testar"
 
-#: src/big_remote_play/ui/host_view.py:563
-#: src/big_remote_play/ui/host_view.py:567
+#: src/big_remote_play/ui/host_view.py:570
+#: src/big_remote_play/ui/host_view.py:574
 msgid "Test audio"
 msgstr "Testar áudio"
 
@@ -7265,7 +7229,7 @@ msgstr ""
 "cooperativamente a distância — sem plataformas proprietárias, sem restrições "
 "e sem limitar os jogos que você pode usar."
 
-#: src/big_remote_play/ui/host_view.py:2327
+#: src/big_remote_play/ui/host_view.py:2334
 msgid "The Sunshine port is outside the supported range."
 msgstr "A porta do Sunshine está fora do intervalo permitido."
 
@@ -7277,7 +7241,7 @@ msgstr ""
 "O serviço do ZeroTier não consegue acessar a internet. Verifique a conexão "
 "ou se um firewall está bloqueando a porta UDP 9993."
 
-#: src/big_remote_play/ui/network_dashboard.py:450
+#: src/big_remote_play/ui/network_dashboard.py:458
 msgid ""
 "The active VPN connection will stop. Saved accounts are kept so you can "
 "reconnect later."
@@ -7291,7 +7255,7 @@ msgid ""
 msgstr ""
 "O administrador deve compartilhar o nó ou convidar seu e-mail para a rede."
 
-#: src/big_remote_play/ui/host_view.py:2871
+#: src/big_remote_play/ui/host_view.py:2878
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr ""
 "O comando do aplicativo é inválido. Confira as aspas e tente novamente."
@@ -7315,7 +7279,7 @@ msgstr ""
 msgid "The checks could not run."
 msgstr "Não foi possível executar as verificações."
 
-#: src/big_remote_play/ui/host_view.py:2274
+#: src/big_remote_play/ui/host_view.py:2281
 msgid ""
 "The chosen device plays the sound here too. Choose Automatic to share "
 "without playing it here."
@@ -7331,7 +7295,7 @@ msgstr "O computador aparece na lista de dispositivos desta rede."
 msgid "The computer seems to be offline"
 msgstr "O computador parece estar offline"
 
-#: src/big_remote_play/ui/host_view.py:2718
+#: src/big_remote_play/ui/host_view.py:2725
 msgid "The connected client asked Sunshine not to play sound on this computer."
 msgstr ""
 "O cliente conectado pediu ao Sunshine para não reproduzir som neste "
@@ -7380,15 +7344,20 @@ msgstr "O arquivo onde os logs atuais do Sunshine estão armazenados."
 msgid "The file that stores Sunshine's current state."
 msgstr "O arquivo onde o estado atual do Sunshine está armazenado."
 
-#: src/big_remote_play/ui/host_view.py:858
+#: src/big_remote_play/ui/host_view.py:865
 msgid "The firewall blocks other computers"
 msgstr "O firewall bloqueia outros computadores"
 
-#: src/big_remote_play/ui/host_view.py:2358
+#: src/big_remote_play/ui/host_view.py:2357
+#, python-brace-format
+msgid "The firewall helper was not found: {path}"
+msgstr "O assistente do firewall não foi encontrado: {path}"
+
+#: src/big_remote_play/ui/host_view.py:2365
 msgid "The firewall now allows Sunshine's ports."
 msgstr "O firewall agora libera as portas do Sunshine."
 
-#: src/big_remote_play/ui/host_view.py:2330
+#: src/big_remote_play/ui/host_view.py:2337
 #, python-brace-format
 msgid ""
 "The firewall will allow incoming TCP {tcp} and UDP {udp}, plus 5353/UDP "
@@ -7436,19 +7405,19 @@ msgstr "O computador do jogo decide se esses pedidos podem ser aplicados."
 msgid "The game PC's firewall blocks the game ports"
 msgstr "O firewall do PC do jogo bloqueia as portas do jogo"
 
-#: src/big_remote_play/ui/host_view.py:1314
-#: src/big_remote_play/ui/host_view.py:1315
+#: src/big_remote_play/ui/host_view.py:1321
+#: src/big_remote_play/ui/host_view.py:1322
 msgid ""
 "The game closed before sharing started. Open it again, then select Refresh."
 msgstr ""
 "O jogo fechou antes de o compartilhamento começar. Abra-o de novo e clique "
 "em Atualizar."
 
-#: src/big_remote_play/ui/host_view.py:1323
+#: src/big_remote_play/ui/host_view.py:1330
 msgid "The game window closed"
 msgstr "A janela do jogo foi fechada"
 
-#: src/big_remote_play/ui/host_view.py:1326
+#: src/big_remote_play/ui/host_view.py:1333
 msgid ""
 "The game window could no longer be captured on its own, so sharing stopped. "
 "Nothing else on this computer was shown."
@@ -7456,7 +7425,7 @@ msgstr ""
 "Não foi mais possível capturar só a janela do jogo, então o compartilhamento "
 "parou. Nada mais deste computador foi mostrado."
 
-#: src/big_remote_play/ui/host_view.py:1311
+#: src/big_remote_play/ui/host_view.py:1318
 msgid "The game window was not confirmed, so sharing did not start."
 msgstr ""
 "A janela do jogo não foi confirmada, então o compartilhamento não começou."
@@ -7489,7 +7458,7 @@ msgstr "O idioma utilizado para a interface do usuário do Sunshine."
 msgid "The main configuration file for Sunshine."
 msgstr "O arquivo de configuração principal para Sunshine."
 
-#: src/big_remote_play/ui/network_dashboard.py:438
+#: src/big_remote_play/ui/network_dashboard.py:446
 msgid "The network could not be created."
 msgstr "Não foi possível criar a rede."
 
@@ -7497,7 +7466,7 @@ msgstr "Não foi possível criar a rede."
 msgid "The network has not answered yet"
 msgstr "A rede ainda não respondeu"
 
-#: src/big_remote_play/ui/network_dashboard.py:393
+#: src/big_remote_play/ui/network_dashboard.py:401
 msgid ""
 "The network is private: every new device must be approved. This computer "
 "joins and is approved automatically."
@@ -7515,7 +7484,7 @@ msgstr ""
 
 #: src/big_remote_play/ui/network_common.py:133
 #: src/big_remote_play/ui/network_common.py:151
-#: src/big_remote_play/ui/network_dashboard.py:251
+#: src/big_remote_play/ui/network_dashboard.py:259
 msgid "The network owner still needs to approve this computer."
 msgstr "O dono da rede ainda precisa aprovar este computador."
 
@@ -7536,11 +7505,11 @@ msgstr "A operação falhou."
 msgid "The operation took longer than expected."
 msgstr "A operação demorou mais do que o esperado."
 
-#: src/big_remote_play/ui/host_view.py:1947
+#: src/big_remote_play/ui/host_view.py:1954
 msgid "The other PC is paired."
 msgstr "O outro PC está pareado."
 
-#: src/big_remote_play/ui/host_view.py:531
+#: src/big_remote_play/ui/host_view.py:538
 msgid ""
 "The other computer hears the sound this computer plays. The microphone is "
 "not sent."
@@ -7587,7 +7556,7 @@ msgstr ""
 msgid "The person who created the network gives you this code."
 msgstr "A pessoa que criou a rede passa este código para você."
 
-#: src/big_remote_play/ui/host_view.py:1318
+#: src/big_remote_play/ui/host_view.py:1325
 msgid ""
 "The private game screen could not start. Check that KDE Plasma "
 "(kwin_wayland) and the GStreamer plugins are installed."
@@ -7622,7 +7591,7 @@ msgstr ""
 msgid "The saved credentials could not be read."
 msgstr "Não foi possível ler as credenciais salvas."
 
-#: src/big_remote_play/ui/host_view.py:2918
+#: src/big_remote_play/ui/host_view.py:2925
 msgid ""
 "The selected audio output is unavailable. Choose Automatic or reconnect the "
 "device."
@@ -7630,7 +7599,7 @@ msgstr ""
 "A saída de áudio selecionada está indisponível. Escolha Automático ou "
 "reconecte o dispositivo."
 
-#: src/big_remote_play/ui/host_view.py:2694
+#: src/big_remote_play/ui/host_view.py:2701
 msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr ""
 "A saída selecionada não está conectada. Reconecte-a ou escolha Automático."
@@ -7668,7 +7637,7 @@ msgstr ""
 "Não foi possível acessar o serviço. Verifique a conexão com a internet e o "
 "endereço do servidor."
 
-#: src/big_remote_play/ui/network_dashboard.py:358
+#: src/big_remote_play/ui/network_dashboard.py:366
 msgid "The service could not be started."
 msgstr "Não foi possível iniciar o serviço."
 
@@ -7688,7 +7657,7 @@ msgstr "O serviço está em execução"
 msgid "The stream did not start"
 msgstr "A transmissão não começou"
 
-#: src/big_remote_play/ui/host_view.py:1695
+#: src/big_remote_play/ui/host_view.py:1702
 msgid "The stream is still open"
 msgstr "A transmissão continua aberta"
 
@@ -7702,12 +7671,12 @@ msgstr ""
 "O chaveiro do sistema está bloqueado ou indisponível. Desbloqueie-o e tente "
 "novamente."
 
-#: src/big_remote_play/ui/host_view.py:2762
+#: src/big_remote_play/ui/host_view.py:2769
 #, python-brace-format
 msgid "The tone could not be played on {output}."
 msgstr "Não foi possível reproduzir o tom em {output}."
 
-#: src/big_remote_play/ui/host_view.py:2766
+#: src/big_remote_play/ui/host_view.py:2773
 #, python-brace-format
 msgid ""
 "The tone did not reach the shared sound. Check the output volume and that "
@@ -7716,12 +7685,12 @@ msgstr ""
 "O tom não chegou ao som compartilhado. Verifique o volume da saída e se "
 "{output} é a saída que você ouve."
 
-#: src/big_remote_play/ui/host_view.py:2764
+#: src/big_remote_play/ui/host_view.py:2771
 #, python-brace-format
 msgid "The tone reached the shared sound ({level:.0f} dB on {output})."
 msgstr "O tom chegou ao som compartilhado ({level:.0f} dB em {output})."
 
-#: src/big_remote_play/ui/host_view.py:1619
+#: src/big_remote_play/ui/host_view.py:1626
 msgid ""
 "The user and password of Sunshine on this computer, the ones of its web "
 "panel. They are kept in the system keyring."
@@ -7729,7 +7698,7 @@ msgstr ""
 "O usuário e a senha do Sunshine neste computador, os mesmos do painel web "
 "dele. Ficam guardados no chaveiro do sistema."
 
-#: src/big_remote_play/ui/host_view.py:1312
+#: src/big_remote_play/ui/host_view.py:1319
 msgid ""
 "The window chosen in the system dialog is not the selected game. Try again "
 "and choose the same game."
@@ -7764,7 +7733,7 @@ msgstr ""
 "Estas configurações enviam um pedido ao computador do jogo ou verificam a "
 "conexão. O computador do jogo pode ignorar pedidos incompatíveis."
 
-#: src/big_remote_play/ui/network_dashboard.py:249
+#: src/big_remote_play/ui/network_dashboard.py:257
 msgid ""
 "They approve it in ZeroTier Central or in Big Remote Play. This page updates "
 "when you refresh."
@@ -7772,14 +7741,14 @@ msgstr ""
 "O dono da rede aprova no ZeroTier Central ou no Big Remote Play. Esta página "
 "mostra a mudança quando você a atualiza."
 
-#: src/big_remote_play/ui/host_view.py:931
+#: src/big_remote_play/ui/host_view.py:938
 msgid "This PC did not appear in the list?"
 msgstr "Este PC não apareceu na lista?"
 
 #: src/big_remote_play/ui/private_network_view.py:550
 #, python-brace-format
-msgid "This PC is on the {} private network."
-msgstr "Este PC está na rede privada {}."
+msgid "This PC is on the {name} private network."
+msgstr "Este PC está na rede privada {name}."
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:157
 msgid ""
@@ -7817,7 +7786,7 @@ msgstr "Este código está incompleto"
 msgid "This computer"
 msgstr "Este computador"
 
-#: src/big_remote_play/ui/host_view.py:1010
+#: src/big_remote_play/ui/host_view.py:1017
 msgid ""
 "This computer captures and encodes the game. Under Connect → Image, the "
 "other computer requests resolution, frame rate and video bitrate. The "
@@ -7856,13 +7825,15 @@ msgstr ""
 "Este computador está autorizado, mas a rede ainda não deu um endereço a ele. "
 "O dono da rede pode atribuir um."
 
-#: src/big_remote_play/ui/network_dashboard.py:207
+#: src/big_remote_play/ui/network_dashboard.py:210
 #, python-brace-format
-msgid ""
+msgid "This computer is in {count} ZeroTier network. Manage network lists it."
+msgid_plural ""
 "This computer is in {count} ZeroTier networks. Manage network lists them all."
-msgstr ""
-"Este computador está em {count} redes ZeroTier. Gerenciar rede mostra todas "
-"elas."
+msgstr[0] ""
+"Este computador está em {count} rede ZeroTier. Gerenciar rede a mostra."
+msgstr[1] ""
+"Este computador está em {count} redes ZeroTier. Gerenciar rede mostra todas."
 
 #: src/big_remote_play/ui/remote_connection.py:52
 msgid "This computer is not connected to the internet"
@@ -7871,6 +7842,10 @@ msgstr "Este computador não está conectado à internet"
 #: src/big_remote_play/ui/network_devices.py:228
 msgid "This computer is not connected to this network."
 msgstr "Este computador não está conectado a esta rede."
+
+#: src/big_remote_play/ui/network_devices.py:594
+msgid "This computer is not in the Tailscale device list yet."
+msgstr "Este computador ainda não está na lista de dispositivos do Tailscale."
 
 #: src/big_remote_play/ui/network_common.py:130
 #, python-brace-format
@@ -7903,7 +7878,7 @@ msgstr ""
 msgid "This computer only"
 msgstr "Somente neste computador"
 
-#: src/big_remote_play/ui/main_window.py:986
+#: src/big_remote_play/ui/main_window.py:989
 msgid "This computer runs the game. Share a game or your whole desktop."
 msgstr ""
 "Este computador executa o jogo. Compartilhe um jogo ou toda a área de "
@@ -7935,7 +7910,7 @@ msgstr ""
 msgid "This computer's address"
 msgstr "Endereço deste computador"
 
-#: src/big_remote_play/ui/host_view.py:876
+#: src/big_remote_play/ui/host_view.py:883
 msgid "This computer's controller comes first"
 msgstr "O controle deste computador vem primeiro"
 
@@ -7961,7 +7936,7 @@ msgstr "Não foi possível salvar esta credencial."
 msgid "This credential is of a different type than the one selected."
 msgstr "Esta credencial é de um tipo diferente do selecionado."
 
-#: src/big_remote_play/ui/host_view.py:1313
+#: src/big_remote_play/ui/host_view.py:1320
 msgid ""
 "This desktop cannot share a single window. Update KDE Plasma, or choose Full "
 "Desktop."
@@ -8192,25 +8167,23 @@ msgstr ""
 "O tráfego passa por um servidor de retransmissão, o que pode aumentar a "
 "latência."
 
+#: src/big_remote_play/ui/sunshine_preferences.py:565
+msgid "Transcoding"
+msgstr "Transcodificação"
+
 #: src/big_remote_play/ui/sunshine_preferences.py:411
 msgid "Trusted Web UI Origins"
 msgstr "Origens confiáveis da interface web"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1769
-# line: 1914
-#: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:913
-msgid "Try Again"
-msgstr "Tente Novamente"
-
 #: src/big_remote_play/ui/guest_view.py:1870
-#: src/big_remote_play/ui/network_dashboard.py:295
+#: src/big_remote_play/ui/installer_window.py:200
+#: src/big_remote_play/ui/network_dashboard.py:303
+#: src/big_remote_play/ui/private_network_view.py:913
 #: src/big_remote_play/ui/zerotier_join.py:109
 msgid "Try again"
 msgstr "Tentar novamente"
 
-#: src/big_remote_play/ui/network_dashboard.py:300
+#: src/big_remote_play/ui/network_dashboard.py:308
 msgid "Try again. If it keeps happening, check the technical details."
 msgstr ""
 "Tente novamente. Se continuar acontecendo, confira os detalhes técnicos."
@@ -8220,13 +8193,13 @@ msgid "Try again. Technical details show what ZeroTier answered."
 msgstr ""
 "Tente novamente. Os detalhes técnicos mostram o que o ZeroTier respondeu."
 
-#: src/big_remote_play/ui/host_view.py:599
+#: src/big_remote_play/ui/host_view.py:606
 msgid "Try automatic port forwarding (UPnP)"
 msgstr "Tentar abrir portas automaticamente (UPnP)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 416
-#: src/big_remote_play/ui/sunshine_preferences.py:650
+#: src/big_remote_play/ui/sunshine_preferences.py:658
 msgid ""
 "Tuning options, which are applied after the preset. Defaults to zerolatency."
 msgstr ""
@@ -8263,13 +8236,17 @@ msgstr "Portas UDP"
 msgid "UPnP"
 msgstr "UPnP"
 
+#: src/big_remote_play/ui/sunshine_preferences.py:569
+msgid "Ultra-low latency"
+msgstr "Latência ultrabaixa"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 112
-#: src/big_remote_play/ui/host_view.py:2626
+#: src/big_remote_play/ui/host_view.py:2633
 msgid "Unavailable"
 msgstr "Indisponível"
 
-#: src/big_remote_play/ui/host_view.py:2304
+#: src/big_remote_play/ui/host_view.py:2311
 #, python-brace-format
 msgid "Unavailable: {device}"
 msgstr "Indisponível: {device}"
@@ -8283,8 +8260,8 @@ msgstr "Indisponível: {device}"
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 215
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 226
 #: src/big_remote_play/ui/host_view.py:226
-#: src/big_remote_play/ui/host_view.py:1787
-#: src/big_remote_play/ui/host_view.py:1792
+#: src/big_remote_play/ui/host_view.py:1794
+#: src/big_remote_play/ui/host_view.py:1799
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:241
 #: src/big_remote_play/utils/system_check.py:176
 #: src/big_remote_play/utils/system_check.py:179
@@ -8298,8 +8275,8 @@ msgstr "Desconhecido"
 msgid "Unknown VPN service: ${provider}"
 msgstr "Serviço VPN desconhecido: ${provider}"
 
-#: src/big_remote_play/ui/host_view.py:2214
-#: src/big_remote_play/ui/host_view.py:3348
+#: src/big_remote_play/ui/host_view.py:2221
+#: src/big_remote_play/ui/host_view.py:3355
 msgid "Unknown device"
 msgstr "Dispositivo desconhecido"
 
@@ -8315,11 +8292,11 @@ msgstr "Sem limite"
 msgid "Unlock the bitrate limit"
 msgstr "Desbloquear o limite da taxa de bits"
 
-#: src/big_remote_play/ui/host_view.py:3567
+#: src/big_remote_play/ui/host_view.py:3574
 msgid "Unnamed"
 msgstr "Sem nome"
 
-#: src/big_remote_play/ui/host_view.py:1988
+#: src/big_remote_play/ui/host_view.py:1995
 msgid "Unnamed device"
 msgstr "Dispositivo sem nome"
 
@@ -8328,11 +8305,11 @@ msgstr "Dispositivo sem nome"
 msgid "Unstable"
 msgstr "Instável"
 
-#: src/big_remote_play/ui/host_view.py:522
+#: src/big_remote_play/ui/host_view.py:529
 msgid "Unstable network mode"
 msgstr "Modo de rede instável"
 
-#: src/big_remote_play/ui/host_view.py:3700
+#: src/big_remote_play/ui/host_view.py:3707
 msgid "Up one level"
 msgstr "Subir um nível"
 
@@ -8424,7 +8401,7 @@ msgstr ""
 msgid "Use the controller to move the mouse"
 msgstr "Usar o controle para mover o mouse"
 
-#: src/big_remote_play/ui/guest_view.py:1912
+#: src/big_remote_play/ui/guest_view.py:1914
 msgid "Use the form WIDTHxHEIGHT, e.g. 1920x1080."
 msgstr "Use o formato LARGURAxALTURA, por exemplo 1920x1080."
 
@@ -8436,7 +8413,7 @@ msgstr "Use o código de busca do Big Remote Play no PC do jogo."
 msgid "Use the touchscreen as a virtual trackpad"
 msgstr "Usar a tela sensível ao toque como touchpad virtual"
 
-#: src/big_remote_play/ui/host_view.py:647
+#: src/big_remote_play/ui/host_view.py:654
 msgid "Use these when you need to inspect or manage Sunshine."
 msgstr "Use estas opções para inspecionar ou gerenciar o Sunshine."
 
@@ -8457,7 +8434,7 @@ msgid "Use this when the controller labels do not match the game."
 msgstr ""
 "Use quando os nomes dos botões do controle não corresponderem aos do jogo."
 
-#: src/big_remote_play/ui/main_window.py:957
+#: src/big_remote_play/ui/main_window.py:960
 msgid "Use your gaming PC from anywhere"
 msgstr "Use seu PC gamer de qualquer lugar"
 
@@ -8466,7 +8443,7 @@ msgstr "Use seu PC gamer de qualquer lugar"
 msgid "Use your own Headscale server. Advanced setup."
 msgstr "Use seu próprio servidor Headscale. Configuração avançada."
 
-#: src/big_remote_play/ui/host_view.py:696
+#: src/big_remote_play/ui/host_view.py:703
 msgid "Used by this app to talk to the server"
 msgstr "Usada por este aplicativo para falar com o servidor"
 
@@ -8485,15 +8462,12 @@ msgid "User"
 msgstr "Usuário"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 616
-#: src/big_remote_play/ui/host_view.py:2103
+#: src/big_remote_play/ui/host_view.py:2110
 msgid "User Not Found"
 msgstr "Usuário Não Encontrado"
 
 #: src/big_remote_play/host/sunshine_manager.py:713
-msgid "Username and password cannot be empty"
-msgstr "Usuário e senha não podem ficar vazios"
-
-#: src/big_remote_play/ui/host_view.py:3815
+#: src/big_remote_play/ui/host_view.py:3822
 msgid "Username and password cannot be empty."
 msgstr "Usuário e senha não podem ficar vazios."
 
@@ -8529,12 +8503,27 @@ msgstr "VA-API"
 msgid "VA-API Encoder (Linux)"
 msgstr "Codificador VA-API (Linux)"
 
+#. TRANSLATORS: {device} is a render node name such as renderD129.
+#: src/big_remote_play/ui/host_view.py:285
+#, python-brace-format
+msgid "VAAPI (device {device})"
+msgstr "VAAPI (dispositivo {device})"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:580
+msgid "VBR, latency constrained"
+msgstr "VBR, limitado por latência"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:580
+msgid "VBR, peak constrained"
+msgstr "VBR, limitado por pico"
+
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:61
 msgid "VPN accounts and networks"
 msgstr "Contas e redes VPN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 780
 #: src/big_remote_play/ui/guest_view.py:1975
+#: src/big_remote_play/ui/host_view.py:2427
 msgid "Value"
 msgstr "Valor"
 
@@ -8551,7 +8540,7 @@ msgstr "Codec de vídeo"
 msgid "Video format and diagnostics"
 msgstr "Formato de vídeo e diagnóstico"
 
-#: src/big_remote_play/ui/host_view.py:1465
+#: src/big_remote_play/ui/host_view.py:1472
 #, python-brace-format
 msgid "Video limit: {mbps:g} Mbps"
 msgstr "Limite do vídeo: {mbps:g} Mbps"
@@ -8586,13 +8575,17 @@ msgid "VideoToolbox Software Encoding"
 msgstr "Codificação de Software VideoToolbox"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:3240
+#: src/big_remote_play/ui/host_view.py:3247
 msgid "View Logs"
 msgstr "Ver Registros"
 
-#: src/big_remote_play/ui/host_view.py:557
+#: src/big_remote_play/ui/host_view.py:564
 msgid "Voice calls"
 msgstr "Chamadas de voz"
+
+#: src/big_remote_play/ui/host_view.py:290
+msgid "Vulkan (experimental)"
+msgstr "Vulkan (experimental)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 289
@@ -8619,8 +8612,8 @@ msgid "Wait for it to appear"
 msgstr "Aguarde até ele aparecer"
 
 #: src/big_remote_play/ui/network_common.py:95
-#: src/big_remote_play/ui/network_dashboard.py:241
-#: src/big_remote_play/ui/network_dashboard.py:248
+#: src/big_remote_play/ui/network_dashboard.py:249
+#: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:117
 #: src/big_remote_play/ui/network_devices.py:129
 #: src/big_remote_play/ui/network_devices.py:461
@@ -8633,11 +8626,9 @@ msgstr "Aguardando aprovação"
 msgid "Waiting for authorization"
 msgstr "Aguardando autorização"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 166
 #: src/big_remote_play/ui/performance_monitor.py:208
-msgid "Waiting for data..."
-msgstr "Aguardando dados..."
+msgid "Waiting for data…"
+msgstr "Aguardando dados…"
 
 #: src/big_remote_play/ui/remote_connection.py:649
 msgid "Waiting for permission…"
@@ -8672,13 +8663,17 @@ msgstr "Precisamos corrigir uma configuração"
 msgid "Web UI"
 msgstr "Interface Web"
 
+#: src/big_remote_play/ui/sunshine_preferences.py:566
+msgid "Webcam"
+msgstr "Webcam"
+
 #: src/big_remote_play/ui/zerotier_join.py:225
 msgid "What ZeroTier answered, to share with someone helping you."
 msgstr ""
 "O que o ZeroTier respondeu, para compartilhar com quem estiver ajudando você."
 
 #: src/big_remote_play/ui/guided_setup.py:121
-#: src/big_remote_play/ui/main_window.py:976
+#: src/big_remote_play/ui/main_window.py:979
 #: src/big_remote_play/ui/remote_connection.py:241
 msgid "What do you want to do?"
 msgstr "O que você quer fazer?"
@@ -8687,7 +8682,7 @@ msgstr "O que você quer fazer?"
 msgid "What is the network code?"
 msgstr "Qual é o código da rede?"
 
-#: src/big_remote_play/ui/host_view.py:682
+#: src/big_remote_play/ui/host_view.py:689
 msgid "What the server recorded, for troubleshooting"
 msgstr "O que o servidor registrou, para investigar problemas"
 
@@ -8700,13 +8695,13 @@ msgstr "O que este computador mostra"
 msgid "What you need"
 msgstr "O que você precisa"
 
-#: src/big_remote_play/ui/network_dashboard.py:237
+#: src/big_remote_play/ui/network_dashboard.py:245
 msgid "What you need and the steps to run Headscale on a Linux server."
 msgstr ""
 "O que você precisa e as etapas para executar o Headscale em um servidor "
 "Linux."
 
-#: src/big_remote_play/ui/host_view.py:2139
+#: src/big_remote_play/ui/host_view.py:2146
 msgid ""
 "When another device starts playing, it appears here with its connection "
 "quality."
@@ -8733,9 +8728,9 @@ msgstr ""
 "Ativada, mantém o som no computador do jogo. Ao desativar, o Sunshine pode "
 "mudar esse computador para uma saída virtual."
 
-#: src/big_remote_play/ui/host_view.py:543
-#: src/big_remote_play/ui/host_view.py:2276
-#: src/big_remote_play/ui/host_view.py:2720
+#: src/big_remote_play/ui/host_view.py:550
+#: src/big_remote_play/ui/host_view.py:2283
+#: src/big_remote_play/ui/host_view.py:2727
 msgid "When off, only the other computer hears the game."
 msgstr "Quando desativado, apenas o outro computador ouve o jogo."
 
@@ -8751,11 +8746,11 @@ msgstr "Onde criar um token"
 msgid "Where to create it"
 msgstr "Onde criar"
 
-#: src/big_remote_play/ui/host_view.py:1979
+#: src/big_remote_play/ui/host_view.py:1986
 msgid "Which computer shows this code?"
 msgstr "Qual computador exibe este código?"
 
-#: src/big_remote_play/ui/host_view.py:473
+#: src/big_remote_play/ui/host_view.py:480
 msgid ""
 "While sharing, the shared screen uses SDR and returns to HDR afterwards, so "
 "every device sees correct colors; devices that ask for HDR get SDR. Without "
@@ -8778,8 +8773,8 @@ msgstr ""
 "Por que uma conexão pela internet pode falhar e a forma mais segura de "
 "contornar cada problema."
 
-#: src/big_remote_play/ui/host_view.py:1316
-#: src/big_remote_play/ui/host_view.py:1325
+#: src/big_remote_play/ui/host_view.py:1323
+#: src/big_remote_play/ui/host_view.py:1332
 msgid ""
 "Window effects (compositing) are off, so the game cannot be shown on its "
 "own. Turn them on, then share again."
@@ -8834,7 +8829,7 @@ msgstr ""
 "Sim — este computador tem um endereço de NAT de operadora (CGNAT). O "
 "encaminhamento de portas não funciona aqui; use uma rede privada."
 
-#: src/big_remote_play/ui/host_view.py:2706
+#: src/big_remote_play/ui/host_view.py:2713
 msgid "Yes — this is an error; stop sharing and report it"
 msgstr "Sim — isto é um erro; pare o compartilhamento e relate o problema"
 
@@ -8897,7 +8892,7 @@ msgstr ""
 "Seu amigo instala o Tailscale, abre o link e entra com a própria conta. Ele "
 "verá somente este computador."
 
-#: src/big_remote_play/ui/main_window.py:939
+#: src/big_remote_play/ui/main_window.py:942
 msgid "Your games. Any screen. Anywhere."
 msgstr "Seus jogos. Qualquer tela. Em qualquer lugar."
 
@@ -8926,6 +8921,10 @@ msgstr ""
 #: src/big_remote_play/ui/private_network_view.py:1132
 msgid "ZT Panel"
 msgstr "Painel do ZT"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:656
+msgid "Zero latency"
+msgstr "Latência zero"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 82
 #: src/big_remote_play/ui/main_window.py:96
@@ -8971,7 +8970,7 @@ msgstr "O ZeroTier não está em execução"
 msgid "ZeroTier is receiving the network settings."
 msgstr "O ZeroTier está recebendo as configurações da rede."
 
-#: src/big_remote_play/ui/network_dashboard.py:286
+#: src/big_remote_play/ui/network_dashboard.py:294
 msgid "ZeroTier keeps its control key readable only by the system."
 msgstr "O ZeroTier mantém sua chave de controle legível apenas pelo sistema."
 
@@ -8995,20 +8994,20 @@ msgstr "Erro no serviço ZeroTier"
 msgid "ZeroTier shows its 16-character network code. Copy it."
 msgstr "O ZeroTier mostra o código da rede, com 16 caracteres. Copie-o."
 
+#. TRANSLATORS: Search terms separated by semicolons; keep the final semicolon. Keep Sunshine, Moonlight and VPN, add common local words.
+#: build-aux/i18n/br.com.biglinux.remoteplay.desktop.in:14
+msgid "game;remote;play;stream;streaming;Sunshine;Moonlight;VPN;"
+msgstr "jogo;remoto;jogar;transmitir;transmissão;streaming;Sunshine;Moonlight;VPN;"
+
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
 msgstr "não identificado"
 
-#: src/big_remote_play/ui/host_view.py:1520
+#: src/big_remote_play/ui/host_view.py:1527
 msgid "the local network"
 msgstr "rede local"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 780
-#: src/big_remote_play/ui/host_view.py:2420
-msgid "value"
-msgstr "Valor"
-
-#: src/big_remote_play/ui/host_view.py:1551
+#: src/big_remote_play/ui/host_view.py:1558
 #, python-brace-format
 msgid ""
 "{controllers} is connected here. A game that uses one controller reads it "
@@ -9018,6 +9017,13 @@ msgstr ""
 "{controllers} está conectado aqui. Um jogo que usa um só controle lê este, e "
 "não o controle de quem está conectando. Desconecte-o enquanto a outra pessoa "
 "joga ou escolha o controle “Sunshine” nas configurações do jogo."
+
+#: src/big_remote_play/ui/host_view.py:2237
+#, python-brace-format
+msgid "{count} more paired device"
+msgid_plural "{count} more paired devices"
+msgstr[0] "Mais {count} dispositivo pareado"
+msgstr[1] "Mais {count} dispositivos pareados"
 
 #: src/big_remote_play/ui/network_dashboard.py:182
 #, python-brace-format
@@ -9039,7 +9045,7 @@ msgstr "{layout} · {location}"
 msgid "{minutes} min"
 msgstr "{minutes} min"
 
-#: src/big_remote_play/ui/host_view.py:1469
+#: src/big_remote_play/ui/host_view.py:1476
 #, python-brace-format
 msgid "{mode} · {limit}"
 msgstr "{mode} · {limit}"
@@ -9059,6 +9065,11 @@ msgstr "{name} (avançado)"
 msgid "{name} (this computer)"
 msgstr "{name} (este computador)"
 
+#: src/big_remote_play/ui/private_network_view.py:477
+#, python-brace-format
+msgid "{name} installed"
+msgstr "{name} instalado"
+
 #: src/big_remote_play/ui/network_common.py:123
 #, python-brace-format
 msgid ""
@@ -9072,6 +9083,15 @@ msgstr ""
 #, python-brace-format
 msgid "{name} is not installed on this computer."
 msgstr "O {name} não está instalado neste computador."
+
+#: src/big_remote_play/ui/private_network_view.py:448
+#, python-brace-format
+msgid ""
+"{name} is not installed yet. Install it below to continue (asks for your "
+"password)."
+msgstr ""
+"{name} ainda não está instalado. Instale abaixo para continuar (pede sua "
+"senha)."
 
 #: src/big_remote_play/ui/network_common.py:131
 #, python-brace-format
@@ -9096,27 +9116,33 @@ msgstr ""
 "{name} será removido da rede e precisará ser adicionado novamente para "
 "voltar."
 
+#. TRANSLATORS: {platform} is Steam or Lutris.
+#: src/big_remote_play/ui/host_view.py:3877
+#, python-brace-format
+msgid "{platform} games"
+msgstr "Jogos do {platform}"
+
 #: src/big_remote_play/ui/guest_view.py:186
 #, python-brace-format
 msgid "{resolution} · {frame_rate} · {bitrate}"
 msgstr "{resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:2737
+#: src/big_remote_play/ui/host_view.py:2744
 #, python-brace-format
 msgid "{source} (a microphone)"
 msgstr "{source} (um microfone)"
 
-#: src/big_remote_play/ui/host_view.py:2736
+#: src/big_remote_play/ui/host_view.py:2743
 #, python-brace-format
 msgid "{source} (sound this computer plays)"
 msgstr "{source} (som reproduzido por este computador)"
 
-#: src/big_remote_play/ui/host_view.py:2456
+#: src/big_remote_play/ui/host_view.py:2463
 #, python-brace-format
 msgid "{source} · {quality}"
 msgstr "{source} · {quality}"
 
-#: src/big_remote_play/ui/host_view.py:2714
+#: src/big_remote_play/ui/host_view.py:2721
 #, python-brace-format
 msgid "{source} → {target}"
 msgstr "{source} → {target}"
@@ -9126,7 +9152,7 @@ msgstr "{source} → {target}"
 msgid "{state} · {ms} ms"
 msgstr "{state} · {ms} ms"
 
-#: src/big_remote_play/ui/host_view.py:1527
+#: src/big_remote_play/ui/host_view.py:1534
 #, python-brace-format
 msgid ""
 "{tool} is on and does not allow Sunshine's ports ({ports}) from {networks}. "
@@ -9140,24 +9166,6 @@ msgstr ""
 #, python-brace-format
 msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
-
-#: src/big_remote_play/ui/private_network_view.py:477
-#, python-brace-format
-msgid "{} installed"
-msgstr "{} instalado"
-
-#: src/big_remote_play/ui/private_network_view.py:448
-#, python-brace-format
-msgid ""
-"{} is not installed yet. Install it below to continue (asks for your "
-"password)."
-msgstr ""
-"{} ainda não está instalado. Instale abaixo para continuar (pede sua senha)."
-
-#: src/big_remote_play/ui/host_view.py:2230
-#, python-brace-format
-msgid "{} more paired devices"
-msgstr "Mais {} dispositivos pareados"
 
 #: src/big_remote_play/ui/remote_connection.py:609
 #, python-brace-format

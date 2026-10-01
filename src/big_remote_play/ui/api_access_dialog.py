@@ -328,7 +328,7 @@ class ApiAccessDialog:
             return
         sentence = api_error_message(result) if result is not None else _("The operation failed.")
         detail = technical_detail(result) if result is not None else ""
-        row = message_row(_("Needs attention"), sentence + (f"\n{_('Technical details:')} {detail}" if detail else ""), "dialog-warning-symbolic")
+        row = message_row(_("Needs attention"), sentence + ("\n" + _("Technical details: {detail}").format(detail=detail) if detail else ""), "dialog-warning-symbolic")
         status.replace([row])
 
     def _confirm_remove(self, kind: CredentialKind) -> None:

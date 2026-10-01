@@ -111,7 +111,7 @@ class BigRemotePlayApp(Adw.Application):
     def setup_icon(self):
         display = Gdk.Display.get_default()
         if display is None:
-            self.logger.error(_("Could not load icon theme: no GTK display"))
+            self.logger.error("Could not load icon theme: no GTK display")
             return
         it = Gtk.IconTheme.get_for_display(display)
         current_paths = list(it.get_search_path())
@@ -120,7 +120,7 @@ class BigRemotePlayApp(Adw.Application):
         # same-named system icon cannot silently change the visual language.
         it.set_search_path(bundled_paths + [path for path in current_paths if path not in bundled_paths])
         Gtk.Window.set_default_icon_name(self._application_icon_name())
-        self.logger.info(_("Icon and image paths added"))
+        self.logger.info("Icon and image paths added")
 
     @staticmethod
     def _application_icon_name() -> str:
@@ -204,7 +204,7 @@ class BigRemotePlayApp(Adw.Application):
         about.connect("activate-link", open_story)
         about.add_link(_("Project Story"), "brp:story")
         about.add_link("System-infotech", "https://www.youtube.com/@System-infotech")
-        about.add_link("Youtube (Project Story)", "https://www.youtube.com/watch?v=D2l9o_wXW5M")
+        about.add_link(_("Project story on YouTube"), "https://www.youtube.com/watch?v=D2l9o_wXW5M")
         about.present()
 
     def show_preferences(self, *_args, tab=None):

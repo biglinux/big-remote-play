@@ -24,9 +24,9 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Audio architecture](audio-architecture.md) — what Sunshine records, the bridges Big Remote Play owns, recovery and Steam coexistence.
 - [Translations](translations.md) — gettext workflow and regional catalog requirements.
 - [Iconography](iconography.md) — native, symbolic and project icon rules.
-- [Gamer theme audit](gamer-theme-audit.md) and [design](gamer-theme-design.md) — provider ownership, compatibility and visual tokens.
-- [Backup/restore audit](backup-restore-audit.md) — storage inventory, archive format, validation, rollback and data ownership.
-- [Service status cards](service-status-cards.md) — stable Share/Connect service cards and their state contract; [audit](ui-service-cards-audit.md).
+- [Gamer theme design](gamer-theme-design.md) — provider ownership, compatibility and visual tokens.
+- [Backup and restore](backup-restore.md) — storage inventory, archive format, validation, rollback and data ownership.
+- [Service status cards](service-status-cards.md) — stable Share/Connect service cards and their state contract.
 
 ## Maintainers and coding agents
 
@@ -34,11 +34,7 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Maintainer guide](maintainer-guide.md) — issue triage, documentation ownership, repository hygiene and release preparation.
 - [Release acceptance](release-testing.md) — automated gates and mandatory target-machine checks.
 - [Private-network test matrix](private-network-test-matrix.md) — what is unit tested, simulated or verified on real services.
-- [Private-network change record](private-network-audit.md) — problems found in the private-network integration and how they were resolved.
 - [Audio testing](audio-testing.md) — measured Sunshine/PipeWire behavior, automated coverage and pending hardware tests.
-- [Gamer theme validation](gamer-theme-validation.md) — executed checks and remaining real-desktop review.
-- [Backup and service-card validation](backup-service-validation.md) — automated coverage and target-system matrix.
-- [Service-card validation](ui-service-cards-validation.md) — executed gates, rendered states and pending real-service checks.
 
 ## Documentation rules
 

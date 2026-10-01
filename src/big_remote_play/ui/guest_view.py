@@ -172,9 +172,9 @@ class GuestView(Gtk.Box):
         frame_rate = self._selected_string(self.fps_row, "60 FPS")
         if self.scale_row.get_active():
             resolution = _("This screen's resolution")
-        elif self.resolution_row.get_selected() == 4:
+        elif self.resolution_row.get_selected() == self._CUSTOM_RESOLUTION_INDEX:
             resolution = self.custom_resolution_val or resolution
-        if self.fps_row.get_selected() == 3:
+        if self.fps_row.get_selected() == self._CUSTOM_FPS_INDEX:
             frame_rate = f"{self.custom_fps_val or 60} FPS"
         bitrate = _("{value:g} Mbps").format(value=self.bitrate_scale.get_value())
         if self._is_automatic():
@@ -559,7 +559,7 @@ class GuestView(Gtk.Box):
 
         self.image_row = action_row(
             _("Image"),
-            _("Checking..."),
+            _("Checking…"),
             "brp-quality-symbolic",
             lambda: self.image_dialog.present(self),
         )
@@ -690,7 +690,7 @@ class GuestView(Gtk.Box):
         self._auto_signature = current_signature
         resolution = f"{defaults['width']}x{defaults['height']}"
         resolution_index = next((index for index, value in self._RESOLUTION_BY_INDEX.items() if value == resolution), 4)
-        if resolution_index == 4:
+        if resolution_index == self._CUSTOM_RESOLUTION_INDEX:
             self.custom_resolution_val = resolution
         fps_index = {30: 0, 60: 1, 120: 2}.get(defaults["fps"], 1)
         self.loading_settings = True
@@ -723,10 +723,10 @@ class GuestView(Gtk.Box):
             return
         # Keep ComboRow's own selection label untouched. A subtitle is only
         # needed for custom values, and must be cleared for ordinary sizes.
-        self.resolution_row.set_subtitle(self.custom_resolution_val if self.resolution_row.get_selected() == 4 else "")
-        self.fps_row.set_subtitle(f"{self.custom_fps_val} FPS" if self.fps_row.get_selected() == 3 and self.custom_fps_val else "")
-        self.custom_resolution_edit.set_visible(self.resolution_row.get_selected() == 4)
-        self.custom_fps_edit.set_visible(self.fps_row.get_selected() == 3)
+        self.resolution_row.set_subtitle(self.custom_resolution_val if self.resolution_row.get_selected() == self._CUSTOM_RESOLUTION_INDEX else "")
+        self.fps_row.set_subtitle(f"{self.custom_fps_val} FPS" if self.fps_row.get_selected() == self._CUSTOM_FPS_INDEX and self.custom_fps_val else "")
+        self.custom_resolution_edit.set_visible(self.resolution_row.get_selected() == self._CUSTOM_RESOLUTION_INDEX)
+        self.custom_fps_edit.set_visible(self.fps_row.get_selected() == self._CUSTOM_FPS_INDEX)
         summary = self._quality_summary()
         explanations = {
             self._AUTOMATIC_PROFILE: _("Uses this screen at connection time; it does not measure internet speed."),
@@ -894,7 +894,7 @@ class GuestView(Gtk.Box):
         if hasattr(self, "main_connect_btn"):
             # Keep the visible action short. The selected row and accessible
             # description identify the destination without repeating a long name.
-            target = _("Connect to {}").format(selected_host["name"]) if selected_host else _("Pick the PC that is sharing the game.")
+            target = _("Connect to {name}").format(name=selected_host["name"]) if selected_host else _("Pick the PC that is sharing the game.")
             if connected or is_connecting:
                 target = _("Stop")
             self.main_connect_btn.update_property([Gtk.AccessibleProperty.DESCRIPTION], [target])
@@ -907,7 +907,7 @@ class GuestView(Gtk.Box):
 
     def check_reconnect(self):
         if self.is_connected and hasattr(self, "current_host_ctx"):
-            self.show_toast(_("Applying settings..."))
+            self.show_toast(_("Applying settings…"))
             ctx = self.current_host_ctx
             if self.is_connected:
                 self.moonlight.disconnect()
@@ -1112,7 +1112,7 @@ class GuestView(Gtk.Box):
         spinner = Gtk.Spinner()
         spinner.set_size_request(48, 48)
         spinner.start()
-        lbl = Gtk.Label(label=_("Searching for game PCs..."))
+        lbl = Gtk.Label(label=_("Searching for game PCs…"))
         lbl.add_css_class("title-2")
         box.append(spinner)
         box.append(lbl)
@@ -1249,7 +1249,7 @@ class GuestView(Gtk.Box):
         row.set_subtitle_lines(2)
         row._brp_host = host
         row.add_prefix(icon_tile("brp-computer-symbolic"))
-        description = _("Available at {}").format(host["ip"])
+        description = _("Available at {address}").format(address=host["ip"])
         if provider:
             description = _("On your {provider} private network at {address}").format(provider=provider, address=host["ip"])
         if readiness:
@@ -1426,9 +1426,9 @@ class GuestView(Gtk.Box):
             res = self.get_auto_resolution()
         else:
             res_idx = self.resolution_row.get_selected()
-            res = (self.custom_resolution_val or "1920x1080") if res_idx == 4 else self._RESOLUTION_BY_INDEX.get(res_idx, "1920x1080")
+            res = (self.custom_resolution_val or "1920x1080") if res_idx == self._CUSTOM_RESOLUTION_INDEX else self._RESOLUTION_BY_INDEX.get(res_idx, "1920x1080")
         width, height = res.split("x") if "x" in res else ("1920", "1080")
-        fps = (self.custom_fps_val or "60") if fps_idx == 3 else self._FPS_BY_INDEX.get(fps_idx, "60")
+        fps = (self.custom_fps_val or "60") if fps_idx == self._CUSTOM_FPS_INDEX else self._FPS_BY_INDEX.get(fps_idx, "60")
         opts = {
             "cancel_event": cancel_event,
             "port": host.get("port", 47989),
@@ -1610,7 +1610,7 @@ class GuestView(Gtk.Box):
         dialog.set_body_use_markup(False)
         code = Gtk.Label(label=str(pin or ""), selectable=True, xalign=0.5)
         code.add_css_class("title-1")
-        code.update_property([Gtk.AccessibleProperty.LABEL], [_("Pairing code: {}").format(pin or "")])
+        code.update_property([Gtk.AccessibleProperty.LABEL], [_("Pairing code: {code}").format(code=pin or "")])
         dialog.set_extra_child(code)
         dialog.add_response("cancel", _("Cancel"))
         dialog.set_close_response("cancel")
@@ -1707,7 +1707,7 @@ class GuestView(Gtk.Box):
         port = ip_info.get("port", 47989)
         hostname = ip_info.get("hostname", "Host")
 
-        self.show_toast(_("Game PC found: {}").format(hostname))
+        self.show_toast(_("Game PC found: {name}").format(name=hostname))
         self.connect_to_host({"name": hostname, "ip": ip, "port": port}, override_check=True)
 
     def _on_pin_failed(self):
@@ -1894,14 +1894,16 @@ class GuestView(Gtk.Box):
         dialog.add_response("ok", _("OK"))
         dialog.present(self)
 
+    # "Custom" is the last choice of each list; compare positions, never the
+    # translated label.
+    _CUSTOM_RESOLUTION_INDEX = 4
+    _CUSTOM_FPS_INDEX = 3
     _RESOLUTION_RE = re.compile(r"^\s*(\d{3,5})\s*[xX]\s*(\d{3,5})\s*$")
 
     def on_resolution_changed(self, row, _pspec):
         if getattr(self, "loading_settings", False):
             return
-        item = row.get_selected_item()
-        val = item.get_string() if item is not None else ""
-        if val != _("Custom"):
+        if row.get_selected() != self._CUSTOM_RESOLUTION_INDEX:
             self._last_res_idx = row.get_selected()
             self.save_guest_settings()
             return
@@ -1928,9 +1930,7 @@ class GuestView(Gtk.Box):
     def on_fps_changed(self, row, _pspec):
         if getattr(self, "loading_settings", False):
             return
-        item = row.get_selected_item()
-        val = item.get_string() if item is not None else ""
-        if val != _("Custom"):
+        if row.get_selected() != self._CUSTOM_FPS_INDEX:
             self._last_fps_idx = row.get_selected()
             self.save_guest_settings()
             return

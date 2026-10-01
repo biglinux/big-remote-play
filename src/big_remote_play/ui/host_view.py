@@ -17,7 +17,7 @@ from big_remote_play.utils.game_detector import GameDetector
 from big_remote_play.utils import auto_quality
 from big_remote_play.utils.config import Config
 import threading
-from big_remote_play.utils.i18n import _
+from big_remote_play.utils.i18n import _, ngettext
 from big_remote_play.utils.icons import create_icon_widget, set_icon
 from big_remote_play.integration_contracts import MOONLIGHT_PAIRING_PIN_LENGTH, BRP_DISCOVERY_CODE_LENGTH
 from big_remote_play import paths
@@ -272,7 +272,7 @@ class HostView(Gtk.Box):
                 except Exception:
                     pass
             if "intel" in lspci:
-                gpus.append({"label": "VAAPI (Intel Quicksync)", "encoder": "vaapi", "adapter": "/dev/dri/renderD128"})
+                gpus.append({"label": "VAAPI (Intel Quick Sync)", "encoder": "vaapi", "adapter": "/dev/dri/renderD128"})
         except Exception:
             pass
         try:
@@ -281,10 +281,17 @@ class HostView(Gtk.Box):
             if Path("/dev/dri").exists():
                 for node in sorted(list(Path("/dev/dri").glob("renderD*"))):
                     if not any(str(node) == g["adapter"] for g in gpus):
-                        gpus.append({"label": f"VAAPI (Adapter {node.name})", "encoder": "vaapi", "adapter": str(node)})
+                        # TRANSLATORS: {device} is a render node name such as renderD129.
+                        gpus.append({"label": _("VAAPI (device {device})").format(device=node.name), "encoder": "vaapi", "adapter": str(node)})
         except Exception:
             pass
-        gpus.extend([{"label": "Vulkan (Exp)", "encoder": "vulkan", "adapter": "auto"}, {"label": "Software", "encoder": "software", "adapter": "auto"}])
+        gpus.extend(
+            [
+                {"label": _("Vulkan (experimental)"), "encoder": "vulkan", "adapter": "auto"},
+                # TRANSLATORS: video encoding on the processor instead of the graphics card.
+                {"label": _("Software (CPU)"), "encoder": "software", "adapter": "auto"},
+            ]
+        )
         # Append rather than prepend to preserve older saved GPU indices.
         gpus.append({"label": _("Automatic"), "encoder": "auto", "adapter": "auto"})
         return gpus
@@ -377,7 +384,7 @@ class HostView(Gtk.Box):
         # on, so nothing is hidden and nothing invites a pointless decision.
         self.auto_quality_row = Adw.SwitchRow()
         self.auto_quality_row.set_title(_("Automatic capture and encoding"))
-        self.auto_quality_row.set_subtitle(_("Checking..."))
+        self.auto_quality_row.set_subtitle(_("Checking…"))
         self.auto_quality_row.set_active(True)
         self.streaming_group.add(self.auto_quality_row)
 
@@ -960,7 +967,7 @@ class HostView(Gtk.Box):
         # nobody has to open a sheet to learn what they are about to send.
         self.quality_summary_row = action_row(
             _("Image and capture"),
-            _("Checking..."),
+            _("Checking…"),
             "brp-quality-symbolic",
             self._open_quality_sheet,
         )
@@ -970,7 +977,7 @@ class HostView(Gtk.Box):
         # While sharing, these controls decide nothing: the session is running
         # with the values it started with. The page states what is being sent
         # instead of showing a form that cannot be applied.
-        self.session_summary_row = Adw.ActionRow(title=_("Sharing now"), subtitle=_("Checking..."), use_markup=False)
+        self.session_summary_row = Adw.ActionRow(title=_("Sharing now"), subtitle=_("Checking…"), use_markup=False)
         self.session_summary_row.set_title_lines(0)
         self.session_summary_row.set_subtitle_lines(0)
         set_row_icon(self.session_summary_row, "brp-host-symbolic")
@@ -1055,7 +1062,7 @@ class HostView(Gtk.Box):
         from .network_common import Worker
 
         self._game_window_worker = Worker()
-        self.game_window_expander = Adw.ExpanderRow(title=_("Game window"), use_markup=False)
+        self.game_window_expander = Adw.ExpanderRow(title=_("Game Window"), use_markup=False)
         self.game_window_expander.set_subtitle_lines(0)
         set_row_icon(self.game_window_expander, "brp-input-gaming-symbolic")
         self.game_window_expander.set_visible(False)
@@ -1621,7 +1628,7 @@ class HostView(Gtk.Box):
         group = Adw.PreferencesGroup()
         user_row = Adw.EntryRow(title=_("Sunshine User"))
         user_row.set_text(saved[0] if saved else "")
-        pass_row = Adw.PasswordEntryRow(title=_("Sunshine Password"))
+        pass_row = Adw.PasswordEntryRow(title=_("Sunshine password"))
         group.add(user_row)
         group.add(pass_row)
         dialog.set_extra_child(group)
@@ -2055,7 +2062,7 @@ class HostView(Gtk.Box):
         if saved_user:
             user_row.set_text(saved_user)
 
-        pass_row = Adw.PasswordEntryRow(title=_("Sunshine Password"))
+        pass_row = Adw.PasswordEntryRow(title=_("Sunshine password"))
         if saved_pass:
             pass_row.set_text(saved_pass)
 
@@ -2227,7 +2234,7 @@ class HostView(Gtk.Box):
         remaining = len(clients) - 3
         if remaining > 0:
             row = Adw.ActionRow(
-                title=_("{} more paired devices").format(remaining),
+                title=ngettext("{count} more paired device", "{count} more paired devices", remaining).format(count=remaining),
                 subtitle=_("Open management to view all paired devices."),
             )
             set_row_icon(row, "view-more-symbolic")
@@ -2340,14 +2347,14 @@ class HostView(Gtk.Box):
         dialog.present(self)
 
     def _configure_firewall(self):
-        self.show_toast(_("Configuring firewall... (Password may be requested)"))
+        self.show_toast(_("Configuring the firewall… Your password may be requested."))
 
         try:
             # Resolve the bundled script (installed /usr/share path, dev fallback)
             script_path = paths.script_path("configure_firewall.sh")
 
             if not os.path.exists(script_path):
-                self.show_error_dialog(_("Error"), f"Script not found: {script_path}")
+                self.show_error_dialog(_("Error"), _("The firewall helper was not found: {path}").format(path=script_path))
                 return
 
             # Run with pkexec
@@ -2371,7 +2378,7 @@ class HostView(Gtk.Box):
             threading.Thread(target=run, daemon=True).start()
 
         except Exception as e:
-            self.show_toast(_("Error executing script: {}").format(e))
+            self.show_toast(_("Error executing script: {error}").format(error=e))
 
     def create_masked_row(self, title: str, key: str, icon_name: str = "brp-text-x-generic-symbolic", default_revealed: bool = False) -> None:
         row = Adw.ActionRow()
@@ -2392,16 +2399,16 @@ class HostView(Gtk.Box):
         eye_btn.add_css_class("flat")
         name_icon_button(
             eye_btn,
-            _("Hide {}").format(title) if default_revealed else _("Reveal {}").format(title),
-            _("Show or hide the {} value").format(title),
+            _("Hide {field}").format(field=title) if default_revealed else _("Reveal {field}").format(field=title),
+            _("Show or hide the {field} value").format(field=title),
         )
         copy_btn = Gtk.Button()
         copy_btn.set_child(create_icon_widget("brp-edit-copy-symbolic", size=16))
         copy_btn.add_css_class("flat")
         name_icon_button(
             copy_btn,
-            _("Copy {}").format(title),
-            _("Copy the {} value to clipboard").format(title),
+            _("Copy {field}").format(field=title),
+            _("Copy the {field} value to the clipboard").format(field=title),
         )
 
         box.append(value_lbl)
@@ -2417,9 +2424,9 @@ class HostView(Gtk.Box):
     def toggle_field_visibility(self, key: str) -> None:
         field = self.field_widgets[key]
         field["revealed"] = not field["revealed"]
-        title = field.get("title", _("value"))
+        title = field.get("title", _("Value"))
         field["btn_eye"].set_child(create_icon_widget("brp-view-conceal-symbolic" if field["revealed"] else "brp-view-reveal-symbolic", size=16))
-        action_label = _("Hide {}").format(title) if field["revealed"] else _("Reveal {}").format(title)
+        action_label = _("Hide {field}").format(field=title) if field["revealed"] else _("Reveal {field}").format(field=title)
         field["btn_eye"].set_tooltip_text(action_label)
         field["btn_eye"].update_property([Gtk.AccessibleProperty.LABEL], [action_label])
         field["label"].set_text(field["real_value"] if field["revealed"] else "••••••")
@@ -2432,7 +2439,7 @@ class HostView(Gtk.Box):
             self.show_toast(_("Copied!"))
 
     def toggle_hosting(self, button: Gtk.Widget) -> None:
-        self.show_toast(_("Stop sharing") if self.is_hosting else _("Starting game sharing..."))
+        self.show_toast(_("Stop sharing") if self.is_hosting else _("Starting game sharing…"))
         if hasattr(self, "overview_start_button"):
             self.overview_start_button.set_sensitive(False)
 
@@ -3047,7 +3054,7 @@ class HostView(Gtk.Box):
                 # 1. Open Steam Big Picture Mode
                 p1 = subprocess.Popen(["steam", "steam://open/bigpicture"], env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 self._game_processes.append(p1)
-                self.show_toast(_("Opening Steam Big Picture..."))
+                self.show_toast(_("Opening Steam Big Picture…"))
 
                 # 2. Launch the game after a delay (give Big Picture time to open)
                 def _delayed_game_launch():
@@ -3057,11 +3064,11 @@ class HostView(Gtk.Box):
                     try:
                         p2 = subprocess.Popen(["steam", f"steam://rungameid/{app_id}"], env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                         self._game_processes.append(p2)
-                        GLib.idle_add(self.show_toast, _("Launching {}...").format(game_name))
+                        GLib.idle_add(self.show_toast, _("Launching {game}…").format(game=game_name))
                         _log.debug(f"DIRECT LAUNCH: Game {game_name} launched (PID: {p2.pid})")
                     except Exception as e:
                         _log.error(f"Error launching game: {e}")
-                        GLib.idle_add(self.show_toast, _("Error launching game: {}").format(e))
+                        GLib.idle_add(self.show_toast, _("Error launching game: {error}").format(error=e))
 
                 threading.Thread(target=_delayed_game_launch, daemon=True).start()
 
@@ -3076,7 +3083,7 @@ class HostView(Gtk.Box):
 
                 p = subprocess.Popen(argv, env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 self._game_processes.append(p)
-                self.show_toast(_("Launching {}...").format(game_name))
+                self.show_toast(_("Launching {game}…").format(game=game_name))
 
             elif info["type"] == "custom":
                 cmd = info["cmd"]
@@ -3089,11 +3096,11 @@ class HostView(Gtk.Box):
 
                 p = subprocess.Popen(argv, env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 self._game_processes.append(p)
-                self.show_toast(_("Launching {}...").format(game_name))
+                self.show_toast(_("Launching {game}…").format(game=game_name))
 
         except Exception as e:
             _log.error(f"Error in _launch_game_direct: {e}")
-            self.show_toast(_("Error launching game: {}").format(e))
+            self.show_toast(_("Error launching game: {error}").format(error=e))
 
     def _stop_game_direct(self):
         """Kill any directly launched game processes"""
@@ -3121,7 +3128,7 @@ class HostView(Gtk.Box):
         self._game_launch_info = None
 
     def stop_hosting(self, b=None) -> None:
-        self.show_toast(_("Stopping server..."))
+        self.show_toast(_("Stopping server…"))
         self.loading_bar.set_visible(True)
         self.loading_bar.pulse()
 
@@ -3233,7 +3240,7 @@ class HostView(Gtk.Box):
         if not message:
             message = _("Check logs for details.")
 
-        body = _("Sunshine failed to start.\n\nError: {}\n\nIf this is a dependency issue (missing libraries), try the 'Fix Dependencies' button.").format(message)
+        body = _("Sunshine failed to start.\n\nError: {error}\n\nIf this is a dependency issue (missing libraries), try the 'Fix Dependencies' button.").format(error=message)
 
         dialog = Adw.AlertDialog(heading=_("Server Failed to Start"), body=body)
         dialog.add_response("cancel", _("Close"))
@@ -3257,7 +3264,7 @@ class HostView(Gtk.Box):
 
     def show_error_dialog(self, title, message):
         dialog = Adw.AlertDialog(heading=title, body=message)
-        dialog.add_response("ok", "OK")
+        dialog.add_response("ok", _("OK"))
         dialog.present(self)
 
     def show_toast(self, message):
@@ -3290,7 +3297,7 @@ class HostView(Gtk.Box):
         remove_all.add_css_class("destructive-action")
         box.append(remove_all)
         description = _("Devices paired with Sunshine. Disable to block access without re-pairing; remove to revoke (a new PIN will be required).")
-        dialog = content_dialog(_("Paired Devices"), box, description=description)
+        dialog = content_dialog(_("Paired devices"), box, description=description)
 
         def confirm_remove(_button):
             confirm = Adw.AlertDialog(heading=_("Remove All"), body=description)
@@ -3386,8 +3393,8 @@ class HostView(Gtk.Box):
 
     def _on_device_remove(self, _button: Gtk.Button, uuid: str, name: str) -> None:
         confirm = Adw.AlertDialog(
-            heading=_("Remove Device"),
-            body=_("Remove “{}”? It will need to pair again with a new PIN.").format(name),
+            heading=_("Remove device"),
+            body=_("Remove “{name}”? It will need to pair again with a new PIN.").format(name=name),
         )
         confirm.add_response("cancel", _("Cancel"))
         confirm.add_response("remove", _("Remove"))
@@ -3622,7 +3629,7 @@ class HostView(Gtk.Box):
         threading.Thread(target=work, daemon=True).start()
 
     def _after_library_add(self, added):
-        self.show_toast(_("Games added: {}").format(added))
+        self.show_toast(_("Games added: {count}").format(count=added))
         self._refresh_game_library()
         return False
 
@@ -3646,7 +3653,7 @@ class HostView(Gtk.Box):
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scroll.set_min_content_height(360)
         scroll.set_child(group)
-        dialog = content_dialog(_("Select Executable"), scroll)
+        dialog = content_dialog(_("Select executable"), scroll)
         self._browse_dialog = dialog
 
         import os
@@ -3734,7 +3741,7 @@ class HostView(Gtk.Box):
         self.custom_cmd_entry.set_text(path)
         if getattr(self, "_browse_dialog", None) is not None:
             self._browse_dialog.close()
-        self.show_toast(_("Selected: {}").format(path))
+        self.show_toast(_("Selected: {name}").format(name=path))
 
     # --- Server password (change / reset) --------------------------------
 
@@ -3747,7 +3754,7 @@ class HostView(Gtk.Box):
     def open_password_dialog(self, _widget):
         # A form belongs in an adaptive sheet, not in a confirmation dialog.
         # Invalid input keeps the form open so credentials never need retyping.
-        dialog = Adw.Dialog(title=_("Server Password"))
+        dialog = Adw.Dialog(title=_("Server password"))
         dialog.set_content_width(480)
         dialog.set_content_height(610)
         dialog.add_css_class("brp-dialog")
@@ -3866,7 +3873,8 @@ class HostView(Gtk.Box):
         self.game_window_expander.set_expanded(source == "game_window")
         if launch:
             plat = _LAUNCH_PLATFORMS[source]
-            self.platform_games_expander.set_title(f"{plat} Games")
+            # TRANSLATORS: {platform} is Steam or Lutris.
+            self.platform_games_expander.set_title(_("{platform} games").format(platform=plat))
             self.populate_game_list(plat)
         if source == "game_window" and not self.loading_settings:
             self.refresh_game_windows()
@@ -3885,7 +3893,8 @@ class HostView(Gtk.Box):
         games = self.detected_games[plat]
         new_model = Gtk.StringList()
         if not games:
-            new_model.append(f"No games found on {plat}")
+            # TRANSLATORS: {platform} is Steam or Lutris.
+            new_model.append(_("No games found in {platform}").format(platform=plat))
         else:
             for game in games:
                 new_model.append(game["name"])

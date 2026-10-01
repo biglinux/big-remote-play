@@ -146,7 +146,7 @@ class PerformanceChartWidget(Gtk.DrawingArea):
         # the current values so a screen reader can read them.
         self.update_property(
             [Gtk.AccessibleProperty.LABEL],
-            [_("Latency {}, FPS {} (target), bandwidth {} (target)").format(self._cur_latency_text, self._cur_fps_text, self._cur_bw_text)],
+            [_("Latency {latency}, FPS {fps} (target), bandwidth {bandwidth} (target)").format(latency=self._cur_latency_text, fps=self._cur_fps_text, bandwidth=self._cur_bw_text)],
         )
         self.queue_draw()
 
@@ -205,7 +205,7 @@ class PerformanceChartWidget(Gtk.DrawingArea):
             if not self._history:
                 cr.set_source_rgba(0.5, 0.5, 0.5, 1)
                 cr.set_font_size(14)
-                text = _("Waiting for data...")
+                text = _("Waiting for data…")
                 extents = cr.text_extents(text)
                 cr.move_to(margin_left + (chart_width - extents.width) / 2, margin_top + chart_height / 2)
                 cr.show_text(text)
@@ -239,7 +239,7 @@ class PerformanceChartWidget(Gtk.DrawingArea):
             if self._history:
                 last_point = self._history[-1]
                 if last_point.users_count > 0:
-                    text = _("Active devices: {}").format(last_point.users_count)
+                    text = _("Active devices: {count}").format(count=last_point.users_count)
                     cr.set_font_size(14)
                     ext = cr.text_extents(text)
                     box_x = width - ext.width - 25
@@ -559,7 +559,7 @@ class PerformanceMonitor(Gtk.Box):
     def _prompt_disconnect(self, session_id, ip):
         """Offers a gentle app close vs a forceful IP eviction."""
         dialog = Adw.AlertDialog(
-            heading=_("Disconnect Guest"),
+            heading=_("Disconnect guest"),
             body=_("End the running game gently, or forcefully evict the network address? Ending the game keeps the device paired."),
         )
         root = self.get_root()
@@ -787,7 +787,7 @@ class PerformanceMonitor(Gtk.Box):
             if len(infos) == 1:
                 self.set_connection_status(infos[0].device_name, _("Active Connection"), True)
             elif infos:
-                self.set_connection_status("Sunshine", _("Connected devices: {}").format(len(infos)), True)
+                self.set_connection_status("Sunshine", _("Connected devices: {count}").format(count=len(infos)), True)
             else:
                 self.set_connection_status("Sunshine", _("Active - No devices"), True)
         self._details_frame.set_visible(bool(infos))
@@ -817,7 +817,7 @@ class PerformanceMonitor(Gtk.Box):
 
     def set_connection_status(self, name, status, conn=True):
         if conn:
-            self._title_label.set_label(_("Connected to {}").format(name))
+            self._title_label.set_label(_("Connected to {name}").format(name=name))
         else:
             self._title_label.set_label(_("Real-time Monitoring"))
         self._status_label.set_label(status)
