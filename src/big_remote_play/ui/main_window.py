@@ -25,7 +25,7 @@ from big_remote_play.utils.config import Config
 from big_remote_play.utils.network import NetworkDiscovery
 from big_remote_play.utils.system_check import SystemCheck
 from big_remote_play.utils.icons import create_icon_widget
-from big_remote_play.utils.i18n import _
+from big_remote_play.utils.i18n import _, pgettext
 from big_remote_play.utils.secure_io import secure_write_text
 from big_remote_play import paths
 import subprocess
@@ -111,8 +111,11 @@ SERVICE_METADATA = {
 
 # Home remains a stable starting point; direct task destinations are shortcuts.
 BASE_NAVIGATION_PAGES = {
-    "host": {"name": _("Share"), "icon": "brp-host-symbolic", "description": _("Run the game on this PC")},
-    "guest": {"name": _("Connect"), "icon": "brp-client-symbolic", "description": _("Play from another PC")},
+    # TRANSLATORS: with context "navigation", Share and Connect name the two
+    # main pages: the computer that shares a game and the one that connects to
+    # it. Buttons that perform the action use the same words without context.
+    "host": {"name": pgettext("navigation", "Share"), "icon": "brp-host-symbolic", "description": _("Run the game on this PC")},
+    "guest": {"name": pgettext("navigation", "Connect"), "icon": "brp-client-symbolic", "description": _("Play from another PC")},
     "vpn_selector": {"name": _("Play over the internet"), "icon": "brp-network-private-symbolic", "description": _("For PCs in different houses")},
 }
 WELCOME_NAVIGATION_PAGE = {"welcome": {"name": _("Home"), "icon": "brp-go-home-symbolic", "description": _("Home Page")}}
@@ -653,7 +656,7 @@ class MainWindow(Adw.ApplicationWindow):
             "host": self.host_view.view_stack,
         }
         self.header_context_specs = {
-            "host": (_("Share"), _("Run the game on this PC"), _("Sharing sections")),
+            "host": (pgettext("navigation", "Share"), _("Run the game on this PC"), _("Sharing sections")),
         }
 
         header.set_title_widget(self.header_title_stack)
@@ -825,7 +828,7 @@ class MainWindow(Adw.ApplicationWindow):
     def network_return_label(self) -> str:
         if self._network_return_page == "welcome":
             return _("Back to Home")
-        return _("Share") if self._network_return_page == "host" else _("Connect")
+        return pgettext("navigation", "Share") if self._network_return_page == "host" else pgettext("navigation", "Connect")
 
     def _go_to_private_network_setup(self) -> None:
         if self.current_page == "welcome":
@@ -982,7 +985,7 @@ class MainWindow(Adw.ApplicationWindow):
         self.welcome_cards_box = cards_box
         self.host_card = self.create_action_card(
             "host",
-            _("Share"),
+            pgettext("navigation", "Share"),
             _("This computer runs the game. Share a game or your whole desktop."),
             "brp-host-symbolic",
             "Sunshine",
@@ -990,7 +993,7 @@ class MainWindow(Adw.ApplicationWindow):
         )
         self.guest_card = self.create_action_card(
             "guest",
-            _("Connect"),
+            pgettext("navigation", "Connect"),
             _("Play on this device. Connect to the computer running the game."),
             "brp-client-symbolic",
             "Moonlight",
@@ -1084,7 +1087,7 @@ class MainWindow(Adw.ApplicationWindow):
         dot = create_icon_widget("brp-media-record-symbolic", size=8)
         dot.add_css_class("status-dot")
         state.append(dot)
-        label = Gtk.Label(label=_("Checking..."), wrap=True, xalign=0)
+        label = Gtk.Label(label=_("Checking…"), wrap=True, xalign=0)
         label.add_css_class("caption")
         state.append(label)
         copy.append(state)
@@ -1126,8 +1129,8 @@ class MainWindow(Adw.ApplicationWindow):
             state.add_css_class("needs-setup")
             dot.add_css_class("status-offline")
             # A missing component is explained before opening its task.
-            label.set_label(_("Needs {}").format(component_name))
-            ui["button"].set_tooltip_text(_("Install {}").format(component_name))
+            label.set_label(_("Needs {name}").format(name=component_name))
+            ui["button"].set_tooltip_text(_("Install {name}").format(name=component_name))
 
     def _activate_role(self, target: str, service_id: str, component_name: str) -> None:
         """Enter a role, or offer the one action needed to make it usable."""
@@ -1136,7 +1139,7 @@ class MainWindow(Adw.ApplicationWindow):
             return
 
         dialog = Adw.AlertDialog(heading=_("Installation needed"))
-        dialog.set_body(_("Install {}").format(component_name))
+        dialog.set_body(_("Install {name}").format(name=component_name))
         dialog.add_response("cancel", _("Cancel"))
         dialog.add_response("install", _("Install"))
         dialog.set_default_response("install")
@@ -1218,7 +1221,7 @@ class MainWindow(Adw.ApplicationWindow):
         if pid == "host":
             self._set_header_context("host")
         elif pid == "guest":
-            self._set_header_title(_("Connect"), _("Play from another PC"))
+            self._set_header_title(pgettext("navigation", "Connect"), _("Play from another PC"))
         elif pid == "welcome":
             self._on_home_page_changed()
         elif pid == "vpn_selector":
@@ -1272,7 +1275,7 @@ class MainWindow(Adw.ApplicationWindow):
                 for provider in self._NETWORK_SERVICES:
                     self._refresh_network_card(provider)
             elif not self._network_statuses:
-                # Never leave the cards on "Checking..." after a failed read.
+                # Never leave the cards on "Checking…" after a failed read.
                 for provider in self._NETWORK_SERVICES:
                     self._status_rows[provider].set_presentation(unknown_presentation())
             return False
@@ -1368,7 +1371,7 @@ class MainWindow(Adw.ApplicationWindow):
                 ok, detail = server.restart()
             else:
                 ok, detail = server.start()
-            message = _("Action {} sent to {}").format(action, SERVICE_METADATA["sunshine"]["name"]) if ok else (detail or _("Sunshine is not running."))
+            message = _("Action {action} sent to {service}").format(action=action, service=SERVICE_METADATA["sunshine"]["name"]) if ok else (detail or _("Sunshine is not running."))
             GLib.idle_add(self.show_toast, message)
             GLib.idle_add(self.check_system)
 
@@ -1514,11 +1517,11 @@ class MainWindow(Adw.ApplicationWindow):
                 try:
                     subprocess.Popen(cmd)
                     name = _("Containers") if current_type == "containers" else m["name"]
-                    self.show_toast(_("Action {} sent to {}").format(action, name))
+                    self.show_toast(_("Action {action} sent to {service}").format(action=action, service=name))
                     dialog.destroy()
                     GLib.timeout_add(1000, self.check_system)
                 except Exception as e:
-                    self.show_toast(_("Error executing command: {}").format(e))
+                    self.show_toast(_("Error executing command: {error}").format(error=e))
 
         btn_main = Gtk.Button(label=_("Stop") if is_running else _("Start"))
         btn_main.add_css_class("suggested-action" if not is_running else "destructive-action")

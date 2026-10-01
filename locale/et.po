@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-10-01 02:11+0000\n"
+"POT-Creation-Date: 2026-10-01 11:05+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Estonian\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: src/big_remote_play/ui/host_view.py:413
+#: src/big_remote_play/ui/host_view.py:420
 msgid ""
 "0 follows the other computer’s request. This limits video, not total network "
 "traffic."
@@ -32,7 +32,7 @@ msgstr "1. Konto"
 msgid "1. Check internet reachability"
 msgstr "1. Kontrollige interneti kättesaadavust"
 
-#: src/big_remote_play/ui/host_view.py:316
+#: src/big_remote_play/ui/host_view.py:323
 msgid "1. Choose what to share"
 msgstr "1. Vali, mida jagada"
 
@@ -58,7 +58,7 @@ msgstr "1. Paigalda Headscale serverisse"
 msgid "1080p · 60 FPS · 20 Mbps"
 msgstr "1080p · 60 FPS · 20 Mbps"
 
-#: src/big_remote_play/ui/host_view.py:496
+#: src/big_remote_play/ui/host_view.py:503
 msgid "1280 × 720 — slow connections"
 msgstr "1280 × 720 — aeglased ühendused"
 
@@ -66,7 +66,7 @@ msgstr "1280 × 720 — aeglased ühendused"
 msgid "1440p · 60 FPS · 40 Mbps"
 msgstr "1440p · 60 FPS · 40 Mbps"
 
-#: src/big_remote_play/ui/host_view.py:494
+#: src/big_remote_play/ui/host_view.py:501
 msgid "1920 × 1080 — best for TVs"
 msgstr "1920 × 1080 — parim teleritele"
 
@@ -92,7 +92,7 @@ msgstr "2. Liitu"
 msgid "2. Network"
 msgstr "2. Võrk"
 
-#: src/big_remote_play/ui/host_view.py:981
+#: src/big_remote_play/ui/host_view.py:988
 msgid "2. Start sharing"
 msgstr "2. Alusta jagamist"
 
@@ -108,7 +108,7 @@ msgstr "3. Autoriseerimine"
 msgid "3. Connect"
 msgstr "3. Ühenda"
 
-#: src/big_remote_play/ui/host_view.py:800
+#: src/big_remote_play/ui/host_view.py:807
 msgid "3. Connect the other PC"
 msgstr "3. Ühenda teine arvuti"
 
@@ -196,12 +196,12 @@ msgstr "Võrgukoodis on 16 tähte ja numbrit, näiteks {example}."
 msgid "A new device cannot use the network until it is approved."
 msgstr "Uus seade ei saa võrku kasutada enne, kui see on kinnitatud."
 
-#: src/big_remote_play/ui/network_dashboard.py:226
-#: src/big_remote_play/ui/network_dashboard.py:231
+#: src/big_remote_play/ui/network_dashboard.py:234
+#: src/big_remote_play/ui/network_dashboard.py:239
 msgid "A new private ZeroTier network, ready for your computers."
 msgstr "Uus privaatne ZeroTier-võrk, valmis sinu arvutite jaoks."
 
-#: src/big_remote_play/ui/host_view.py:486
+#: src/big_remote_play/ui/host_view.py:493
 msgid ""
 "A screen larger than the other device is scaled down, which blurs small "
 "text. For TVs and car screens, 1920 × 1080 is sharpest. The chosen screen "
@@ -211,7 +211,7 @@ msgstr ""
 "muutub uduseks. Teleritel ja autoekraanidel on 1920 × 1080 kõige teravam. "
 "Pärast taastub valitud ekraani tavaline olek. Vali kõigepealt ülal ekraan."
 
-#: src/big_remote_play/ui/host_view.py:816
+#: src/big_remote_play/ui/host_view.py:823
 msgid "A stream is open on this computer"
 msgstr "Selles arvutis on voog avatud"
 
@@ -263,17 +263,8 @@ msgstr "AMF kasutamine"
 msgid "AMF Variance Based Adaptive Quantization (VBAQ)"
 msgstr "AMF variatsioonipõhine kohanduv kvantimine (VBAQ)"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 312
-# line: 348
-#: src/big_remote_play/host/sunshine_manager.py:668
-#: src/big_remote_play/host/sunshine_manager.py:699
-#, python-brace-format
-msgid "API Error: {}"
-msgstr "API viga: {}"
-
 #: src/big_remote_play/ui/api_access_dialog.py:71
-#: src/big_remote_play/ui/network_dashboard.py:312
+#: src/big_remote_play/ui/network_dashboard.py:320
 #: src/big_remote_play/ui/private_network_view.py:666
 #: src/big_remote_play/ui/remote_connection.py:269
 msgid "API access"
@@ -285,6 +276,12 @@ msgstr "API-juurdepääs"
 msgid "API access token"
 msgstr "API-juurdepääsuluba"
 
+#: src/big_remote_play/host/sunshine_manager.py:668
+#: src/big_remote_play/host/sunshine_manager.py:699
+#, python-brace-format
+msgid "API error: {status}"
+msgstr "API viga: {status}"
+
 #: src/big_remote_play/ui/api_access_dialog.py:254
 msgid "API key"
 msgstr "API-võti"
@@ -294,7 +291,7 @@ msgid "API token"
 msgstr "API-luba"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 203
-#: src/big_remote_play/ui/main_window.py:686
+#: src/big_remote_play/ui/main_window.py:689
 msgid "About"
 msgstr "Teave"
 
@@ -308,7 +305,7 @@ msgstr "Teave selle VPN-i kohta"
 msgid "Access Tailscale"
 msgstr "Tailscale'i kasutamine"
 
-#: src/big_remote_play/ui/network_dashboard.py:349
+#: src/big_remote_play/ui/network_dashboard.py:357
 msgid "Access allowed"
 msgstr "Juurdepääs lubatud"
 
@@ -329,7 +326,7 @@ msgstr "Konto vahetati"
 msgid "Account switching is unavailable"
 msgstr "Konto vahetamine pole saadaval"
 
-#: src/big_remote_play/ui/network_dashboard.py:314
+#: src/big_remote_play/ui/network_dashboard.py:322
 #: src/big_remote_play/ui/remote_connection.py:268
 msgid "Accounts and networks"
 msgstr "Kontod ja võrgud"
@@ -342,12 +339,11 @@ msgstr ""
 "Kontosid hoiavad VPN-i kliendid. Big Remote Play salvestab ainult siin "
 "näidatavad valikulised nimed."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 557
-#: src/big_remote_play/ui/main_window.py:1371
-#: src/big_remote_play/ui/main_window.py:1517
+#: src/big_remote_play/ui/main_window.py:1374
+#: src/big_remote_play/ui/main_window.py:1520
 #, python-brace-format
-msgid "Action {} sent to {}"
-msgstr "Tegevus {} saadetud {}"
+msgid "Action {action} sent to {service}"
+msgstr "Tegevus {action} saadetud {service}"
 
 #: src/big_remote_play/ui/remote_connection.py:456
 #: src/big_remote_play/ui/remote_connection.py:488
@@ -367,8 +363,8 @@ msgid "Active - No devices"
 msgstr "Aktiivne - Seadmeid pole"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 851
-#: src/big_remote_play/ui/host_view.py:2477
-#: src/big_remote_play/ui/host_view.py:2493
+#: src/big_remote_play/ui/host_view.py:2484
+#: src/big_remote_play/ui/host_view.py:2500
 msgid "Active - Waiting for Connections"
 msgstr "Aktiivne - Ootab ühendusi"
 
@@ -389,15 +385,13 @@ msgstr "Aktiivne seanss"
 msgid "Active Stream"
 msgstr "Aktiivne voog"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 260
 #: src/big_remote_play/ui/performance_monitor.py:242
 #, python-brace-format
-msgid "Active devices: {}"
-msgstr "Aktiivsed seadmed: {}"
+msgid "Active devices: {count}"
+msgstr "Aktiivsed seadmed: {count}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 137
-#: src/big_remote_play/ui/host_view.py:3513
+#: src/big_remote_play/ui/host_view.py:3520
 msgid "Add Detected Games"
 msgstr "Lisa tuvastatud mängud"
 
@@ -409,7 +403,7 @@ msgstr "Lisa Headscale'i konto"
 msgid "Add Tailscale account"
 msgstr "Lisa Tailscale'i konto"
 
-#: src/big_remote_play/ui/network_dashboard.py:430
+#: src/big_remote_play/ui/network_dashboard.py:438
 msgid "Add a ZeroTier API token first."
 msgstr "Lisa kõigepealt ZeroTieri API-luba."
 
@@ -468,7 +462,7 @@ msgstr "Lisa oma telefon, sülearvuti, teler või mõni teine arvuti."
 msgid "Add {name} to favorites"
 msgstr "Lisa {name} lemmikutesse"
 
-#: src/big_remote_play/ui/host_view.py:1005
+#: src/big_remote_play/ui/host_view.py:1012
 msgid "Additional settings"
 msgstr "Lisaseaded"
 
@@ -489,7 +483,7 @@ msgstr "Aadress, kõikumine ja kadunud vastused"
 msgid "Address: {address}"
 msgstr "Aadress: {address}"
 
-#: src/big_remote_play/ui/host_view.py:523
+#: src/big_remote_play/ui/host_view.py:530
 msgid ""
 "Adds error-correction data (FEC). Uses more bandwidth and does not fix a "
 "slow connection."
@@ -515,13 +509,13 @@ msgstr "Täpsem"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 174
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 250
-#: src/big_remote_play/ui/host_view.py:596
+#: src/big_remote_play/ui/host_view.py:603
 msgid "Advanced Settings"
 msgstr "Täpsemad seaded"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 814
-#: src/big_remote_play/ui/host_view.py:650
+#: src/big_remote_play/ui/host_view.py:657
 msgid "Advanced administration"
 msgstr "Täpsem haldus"
 
@@ -552,23 +546,23 @@ msgstr "Täpsemad valikud"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 174
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 250
-#: src/big_remote_play/ui/host_view.py:702
+#: src/big_remote_play/ui/host_view.py:709
 #: src/big_remote_play/ui/sunshine_preferences.py:89
 msgid "Advanced server settings"
 msgstr "Täpsemad seaded"
 
-#: src/big_remote_play/ui/host_view.py:675
+#: src/big_remote_play/ui/host_view.py:682
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "Täpsemad seaded brauseris (Sunshine)"
 
-#: src/big_remote_play/ui/host_view.py:2245
+#: src/big_remote_play/ui/host_view.py:2252
 msgid ""
 "Advanced: IP addresses for manual connection when automatic discovery fails."
 msgstr ""
 "Täpsem: IP-aadressid käsitsi ühendamiseks, kui automaatne tuvastamine "
 "ebaõnnestub."
 
-#: src/big_remote_play/ui/host_view.py:2207
+#: src/big_remote_play/ui/host_view.py:2214
 msgid "After step 2, the other PC appears here."
 msgstr "Pärast 2. sammu ilmub teine arvuti siia."
 
@@ -587,10 +581,10 @@ msgstr ""
 "Kõik Big Remote Plays tehtud muudatused taastatakse! See hõlmab Sunshine'i "
 "ja Moonlighti seadeid."
 
-#: src/big_remote_play/ui/host_view.py:2335
+#: src/big_remote_play/ui/host_view.py:2342
 #: src/big_remote_play/ui/network_common.py:141
 #: src/big_remote_play/ui/network_common.py:165
-#: src/big_remote_play/ui/network_dashboard.py:291
+#: src/big_remote_play/ui/network_dashboard.py:299
 #: src/big_remote_play/ui/remote_connection.py:64
 #: src/big_remote_play/ui/tailscale_accounts.py:71
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:141
@@ -598,11 +592,11 @@ msgstr ""
 msgid "Allow"
 msgstr "Luba"
 
-#: src/big_remote_play/ui/network_dashboard.py:283
+#: src/big_remote_play/ui/network_dashboard.py:291
 msgid "Allow Big Remote Play to read ZeroTier"
 msgstr "Luba rakendusel Big Remote Play ZeroTieri lugeda"
 
-#: src/big_remote_play/ui/host_view.py:506
+#: src/big_remote_play/ui/host_view.py:513
 msgid ""
 "Allow HEVC/AV1 when supported. The other computer chooses a compatible codec."
 msgstr ""
@@ -624,7 +618,7 @@ msgstr ""
 msgid "Allow Slow HEVC Encoding"
 msgstr "Luba aeglane HEVC kodeerimine"
 
-#: src/big_remote_play/ui/host_view.py:2332
+#: src/big_remote_play/ui/host_view.py:2339
 msgid "Allow Sunshine through the firewall?"
 msgstr "Kas lubada Sunshine tulemüürist läbi?"
 
@@ -634,11 +628,11 @@ msgstr "Kas lubada Sunshine tulemüürist läbi?"
 msgid "Allow fallback to software encoding"
 msgstr "Luba varuvariandina tarkvaraline kodeerimine"
 
-#: src/big_remote_play/ui/host_view.py:863
+#: src/big_remote_play/ui/host_view.py:870
 msgid "Allow in firewall"
 msgstr "Luba tulemüüris"
 
-#: src/big_remote_play/ui/host_view.py:621
+#: src/big_remote_play/ui/host_view.py:628
 msgid "Allow internet access to administration"
 msgstr "Luba haldamine internetist"
 
@@ -676,12 +670,12 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 396
-#: src/big_remote_play/ui/host_view.py:2219
+#: src/big_remote_play/ui/host_view.py:2226
 #: src/big_remote_play/ui/sunshine_preferences.py:624
 msgid "Allowed"
 msgstr "Lubatud"
 
-#: src/big_remote_play/ui/network_dashboard.py:287
+#: src/big_remote_play/ui/network_dashboard.py:295
 msgid ""
 "Allowing copies that key to a private file in your home folder, as ZeroTier "
 "documents for desktop users. After that, networks can be listed and joined "
@@ -741,11 +735,11 @@ msgstr "Juba ühendatud"
 msgid "Also play sound on the game PC"
 msgstr "Esita heli ka mänguarvutis"
 
-#: src/big_remote_play/ui/host_view.py:542
+#: src/big_remote_play/ui/host_view.py:549
 msgid "Also play sound on this computer"
 msgstr "Esita heli ka selles arvutis"
 
-#: src/big_remote_play/ui/host_view.py:615
+#: src/big_remote_play/ui/host_view.py:622
 msgid "Also use IPv6"
 msgstr "Kasuta ka IPv6"
 
@@ -776,11 +770,15 @@ msgstr ""
 "hallata: seadmeid loetleda, neid kinnitada ja kutseid luua. See erineb "
 "autentimisvõtmest, mis lisab võrku ainult ühe arvuti."
 
-#: src/big_remote_play/ui/network_dashboard.py:258
+#: src/big_remote_play/ui/network_dashboard.py:266
 msgid "An administrator must approve this computer"
 msgstr "Administraator peab selle arvuti kinnitama"
 
-#: src/big_remote_play/ui/host_view.py:1477
+#: src/big_remote_play/ui/sunshine_preferences.py:652
+msgid "Animation"
+msgstr "Animatsioon"
+
+#: src/big_remote_play/ui/host_view.py:1484
 msgid ""
 "Another device is playing now, and Moonlight pairs only when nobody is "
 "playing: the new device shows “The computer is currently in a game”. End the "
@@ -797,7 +795,7 @@ msgstr ""
 msgid "Another way to connect distant PCs."
 msgstr "Veel üks viis kaugel asuvate arvutite ühendamiseks."
 
-#: src/big_remote_play/ui/main_window.py:684
+#: src/big_remote_play/ui/main_window.py:687
 msgid "Appearance"
 msgstr "Välimus"
 
@@ -808,28 +806,28 @@ msgid "Apple Encoder"
 msgstr "Apple'i kodeerija"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 145
-#: src/big_remote_play/ui/host_view.py:352
+#: src/big_remote_play/ui/host_view.py:359
 msgid "Application Details"
 msgstr "Rakenduse üksikasjad"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 150
-#: src/big_remote_play/ui/host_view.py:357
+#: src/big_remote_play/ui/host_view.py:364
 msgid "Application Name"
 msgstr "Rakenduse nimi"
 
-#: src/big_remote_play/ui/host_view.py:1366
+#: src/big_remote_play/ui/host_view.py:1373
 msgid "Application diagnostics"
 msgstr "Rakenduse diagnostika"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 150
-#: src/big_remote_play/ui/main_window.py:672
-#: src/big_remote_play/ui/main_window.py:673
+#: src/big_remote_play/ui/main_window.py:675
+#: src/big_remote_play/ui/main_window.py:676
 msgid "Application menu"
 msgstr "Rakenduse menüü"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 762
 #: src/big_remote_play/ui/guest_view.py:1982
-#: src/big_remote_play/ui/host_view.py:386
+#: src/big_remote_play/ui/host_view.py:393
 #: src/big_remote_play/ui/sunshine_preferences.py:317
 msgid "Apply"
 msgstr "Rakenda"
@@ -847,10 +845,9 @@ msgstr "Rakenda või laadi uuesti"
 msgid "Apply to Running Server"
 msgstr "Rakenda töötavale serverile"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 223
 #: src/big_remote_play/ui/guest_view.py:910
-msgid "Applying settings..."
-msgstr "Seadistuste rakendamine..."
+msgid "Applying settings…"
+msgstr "Seadistuste rakendamine…"
 
 #: src/big_remote_play/ui/network_devices.py:266
 #: src/big_remote_play/ui/network_devices.py:317
@@ -937,7 +934,7 @@ msgstr ""
 "loob üks teist selle tasuta ZeroTier Centralis – või kasutage Tailscale'i, "
 "mis on kõige lihtsam viis alustada."
 
-#: src/big_remote_play/ui/network_dashboard.py:346
+#: src/big_remote_play/ui/network_dashboard.py:354
 #: src/big_remote_play/ui/zerotier_join.py:51
 msgid "Asking for permission…"
 msgstr "Küsin luba…"
@@ -959,12 +956,12 @@ msgstr ""
 #: src/big_remote_play/ui/guest_view.py:410
 #: src/big_remote_play/ui/guest_view.py:540
 #: src/big_remote_play/ui/guest_view.py:567
-#: src/big_remote_play/ui/host_view.py:530
+#: src/big_remote_play/ui/host_view.py:537
 msgid "Audio"
 msgstr "Heli"
 
-#: src/big_remote_play/ui/host_view.py:2283
-#: src/big_remote_play/ui/host_view.py:2316
+#: src/big_remote_play/ui/host_view.py:2290
+#: src/big_remote_play/ui/host_view.py:2323
 msgid ""
 "Audio changes apply the next time you start sharing. The current output is "
 "unchanged."
@@ -992,8 +989,8 @@ msgid "Auth Key"
 msgstr "Autentimisvõti"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1641
-#: src/big_remote_play/ui/host_view.py:2009
+#: src/big_remote_play/ui/host_view.py:1648
+#: src/big_remote_play/ui/host_view.py:2016
 msgid "Authentication Failed"
 msgstr "Autentimine ebaõnnestus"
 
@@ -1008,18 +1005,6 @@ msgstr "Autentimine ebaõnnestus. Kontrolli praegust parooli."
 #: src/big_remote_play/host/sunshine_manager.py:666
 msgid "Authentication Failed. Configure a user in Sunshine."
 msgstr "Autentimine ebaõnnestus. Konfigureeri kasutaja Sunshine'is."
-
-# File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
-# line: 363
-# line: 386
-# line: 393
-# line: 396
-#: src/big_remote_play/ui/sunshine_preferences.py:553
-#: src/big_remote_play/ui/sunshine_preferences.py:611
-#: src/big_remote_play/ui/sunshine_preferences.py:618
-#: src/big_remote_play/ui/sunshine_preferences.py:624
-msgid "Auto"
-msgstr "Automaatne"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 365
@@ -1041,10 +1026,14 @@ msgstr "Automaatne tuvastamine (soovitatav)"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 749
 #: src/big_remote_play/ui/guest_view.py:253
 #: src/big_remote_play/ui/host_view.py:204
-#: src/big_remote_play/ui/host_view.py:289
-#: src/big_remote_play/ui/host_view.py:462
-#: src/big_remote_play/ui/host_view.py:1745
-#: src/big_remote_play/ui/main_window.py:680
+#: src/big_remote_play/ui/host_view.py:296
+#: src/big_remote_play/ui/host_view.py:469
+#: src/big_remote_play/ui/host_view.py:1752
+#: src/big_remote_play/ui/main_window.py:683
+#: src/big_remote_play/ui/sunshine_preferences.py:553
+#: src/big_remote_play/ui/sunshine_preferences.py:611
+#: src/big_remote_play/ui/sunshine_preferences.py:618
+#: src/big_remote_play/ui/sunshine_preferences.py:624
 msgid "Automatic"
 msgstr "Automaatne"
 
@@ -1055,8 +1044,8 @@ msgstr "Automaatne"
 msgid "Automatic (Recommended)"
 msgstr "Automaatne (Soovitatav)"
 
-#: src/big_remote_play/ui/host_view.py:379
-#: src/big_remote_play/ui/host_view.py:1466
+#: src/big_remote_play/ui/host_view.py:386
+#: src/big_remote_play/ui/host_view.py:1473
 msgid "Automatic capture and encoding"
 msgstr "Automaatne pildihõive ja kodeerimine"
 
@@ -1064,7 +1053,7 @@ msgstr "Automaatne pildihõive ja kodeerimine"
 msgid "Automatic mode chooses the best format supported by both computers."
 msgstr "Automaatrežiim valib parima vormingu, mida mõlemad arvutid toetavad."
 
-#: src/big_remote_play/ui/host_view.py:1016
+#: src/big_remote_play/ui/host_view.py:1023
 msgid ""
 "Automatic options below are chosen by Sunshine when sharing starts, not "
 "measurements of an active stream."
@@ -1080,11 +1069,11 @@ msgstr ""
 "Automaatne valib viisi, mis selles arvutis juba töötab. Vali mõni muu ainult "
 "siis, kui seda vajad."
 
-#: src/big_remote_play/ui/host_view.py:1014
+#: src/big_remote_play/ui/host_view.py:1021
 msgid "Automatic settings and video limit"
 msgstr "Automaatsed seaded ja videopiirang"
 
-#: src/big_remote_play/ui/host_view.py:535
+#: src/big_remote_play/ui/host_view.py:542
 msgid ""
 "Automatic shares the output you are using now, including effects such as "
 "EasyEffects. Choose a device only to always share that one."
@@ -1092,7 +1081,7 @@ msgstr ""
 "Automaatne jagab praegu kasutatavat väljundit koos efektidega, nagu "
 "EasyEffects. Valige seade ainult siis, kui soovite alati just seda jagada."
 
-#: src/big_remote_play/ui/host_view.py:459
+#: src/big_remote_play/ui/host_view.py:466
 msgid ""
 "Automatic works across desktops. Select a specific method only for "
 "troubleshooting."
@@ -1105,18 +1094,16 @@ msgstr ""
 msgid "Automatic · {resolution} · {frame_rate} · {bitrate}"
 msgstr "Automaatne · {resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:2300
+#: src/big_remote_play/ui/host_view.py:2307
 msgid "Automatic — use the current output"
 msgstr "Automaatne — kasuta praegust väljundit"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
-# line: 111
 #: src/big_remote_play/ui/guest_view.py:1252
 #, python-brace-format
-msgid "Available at {}"
-msgstr "Saadaval aadressil {}"
+msgid "Available at {address}"
+msgstr "Saadaval aadressil {address}"
 
-#: src/big_remote_play/ui/host_view.py:946
+#: src/big_remote_play/ui/host_view.py:953
 msgid "Available over the internet"
 msgstr "Saadaval üle interneti"
 
@@ -1125,8 +1112,8 @@ msgstr "Saadaval üle interneti"
 msgid "BW (target)"
 msgstr "Ribalaius (siht)"
 
-#: src/big_remote_play/ui/main_window.py:602
-#: src/big_remote_play/ui/main_window.py:608
+#: src/big_remote_play/ui/main_window.py:605
+#: src/big_remote_play/ui/main_window.py:611
 msgid "Back"
 msgstr "Tagasi"
 
@@ -1136,15 +1123,15 @@ msgstr "Tagasi"
 msgid "Back Button as Touchpad Click"
 msgstr "Tagasi nupp puuteplaadi klõpsuna"
 
-#: src/big_remote_play/ui/main_window.py:608
+#: src/big_remote_play/ui/main_window.py:611
 msgid "Back to Connect your devices"
 msgstr "Tagasi: Ühenda oma seadmed"
 
-#: src/big_remote_play/ui/main_window.py:827
+#: src/big_remote_play/ui/main_window.py:830
 msgid "Back to Home"
 msgstr "Tagasi avalehele"
 
-#: src/big_remote_play/ui/main_window.py:602
+#: src/big_remote_play/ui/main_window.py:605
 msgid "Back to the previous question"
 msgstr "Tagasi eelmise küsimuse juurde"
 
@@ -1153,7 +1140,7 @@ msgstr "Tagasi eelmise küsimuse juurde"
 msgid "Backup"
 msgstr "Varukoopia"
 
-#: src/big_remote_play/ui/main_window.py:685
+#: src/big_remote_play/ui/main_window.py:688
 #: src/big_remote_play/ui/preferences.py:33
 msgid "Backup and restore"
 msgstr "Varundamine ja taastamine"
@@ -1175,7 +1162,7 @@ msgid "Balanced"
 msgstr "Tasakaalustatud"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 248
-#: src/big_remote_play/ui/host_view.py:515
+#: src/big_remote_play/ui/host_view.py:522
 msgid "Balanced (Default)"
 msgstr "Tasakaalustatud (vaikimisi)"
 
@@ -1192,6 +1179,17 @@ msgstr "Parim jõudlus."
 msgid "Big Remote Play can start it for you. Your password may be requested."
 msgstr ""
 "Big Remote Play saab selle sinu eest käivitada. Võidakse küsida sinu parooli."
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:9
+msgid ""
+"Big Remote Play guides a host and guest through game streaming with Sunshine "
+"and Moonlight. It also helps connect distant computers through an existing "
+"VPN or a guided Tailscale, ZeroTier, or Headscale setup."
+msgstr ""
+"Big Remote Play juhendab jagavat ja ühenduvat arvutit mängude voogesitusel "
+"Sunshine'i ja Moonlightiga. See aitab ka ühendada kaugel asuvaid arvuteid "
+"olemasoleva VPN-i või Tailscale'i, ZeroTieri või Headscale'i juhendatud "
+"seadistuse kaudu."
 
 #: src/big_remote_play/ui/remote_connection.py:68
 msgid "Big Remote Play installs it for you. Your password may be requested."
@@ -1221,11 +1219,11 @@ msgstr "Big Remote Play: teisele arvutile saadetav heli"
 msgid "Bind Address"
 msgstr "Sidumise aadress"
 
-#: src/big_remote_play/ui/host_view.py:2219
+#: src/big_remote_play/ui/host_view.py:2226
 msgid "Blocked"
 msgstr "Blokeeritud"
 
-#: src/big_remote_play/ui/host_view.py:2216
+#: src/big_remote_play/ui/host_view.py:2223
 msgid "Blocked until enabled again"
 msgstr "Blokeeritud kuni uuesti lubamiseni"
 
@@ -1245,11 +1243,11 @@ msgstr "Mõlemad arvutid peavad kasutama sama valikut."
 msgid "Both devices are connected to the same Wi-Fi or router."
 msgstr "Mõlemad seadmed on ühendatud samasse Wi-Fi-võrku või ruuterisse."
 
-#: src/big_remote_play/ui/host_view.py:367
+#: src/big_remote_play/ui/host_view.py:374
 msgid "Browse files on this computer"
 msgstr "Sirvi selle arvuti faile"
 
-#: src/big_remote_play/ui/host_view.py:366
+#: src/big_remote_play/ui/host_view.py:373
 msgid "Browse this computer for an executable"
 msgstr "Otsi sellest arvutist käivitatavat faili"
 
@@ -1277,7 +1275,7 @@ msgstr ""
 msgid "CGNAT"
 msgstr "CGNAT (operaatoritasemel NAT)"
 
-#: src/big_remote_play/ui/network_dashboard.py:319
+#: src/big_remote_play/ui/network_dashboard.py:327
 msgid "CGNAT, IPv6, UPnP and when a VPN is the better choice."
 msgstr "CGNAT, IPv6, UPnP ja millal on VPN parem valik."
 
@@ -1291,14 +1289,14 @@ msgstr "CGNAT, IPv6, UPnP ja millal on privaatvõrk parem valik."
 msgid "CPU Encoding"
 msgstr "CPU kodeerimine"
 
-#: src/big_remote_play/ui/host_view.py:583
+#: src/big_remote_play/ui/host_view.py:590
 msgid "Calls kept out of the stream"
 msgstr "Voost välja jäetud kõned"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 219
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 425
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 449
-#: src/big_remote_play/ui/host_view.py:2216
+#: src/big_remote_play/ui/host_view.py:2223
 msgid "Can connect without a new PIN"
 msgstr "Saab ühenduda ilma uue PIN-ita"
 
@@ -1316,18 +1314,18 @@ msgstr "Saab ühenduda ilma uue PIN-ita"
 #: src/big_remote_play/ui/guest_view.py:1615
 #: src/big_remote_play/ui/guest_view.py:1981
 #: src/big_remote_play/ui/guest_view.py:2207
-#: src/big_remote_play/ui/host_view.py:1628
-#: src/big_remote_play/ui/host_view.py:1980
-#: src/big_remote_play/ui/host_view.py:2074
-#: src/big_remote_play/ui/host_view.py:2104
-#: src/big_remote_play/ui/host_view.py:2334
-#: src/big_remote_play/ui/host_view.py:3297
-#: src/big_remote_play/ui/host_view.py:3392
-#: src/big_remote_play/ui/host_view.py:3797
-#: src/big_remote_play/ui/host_view.py:4157
-#: src/big_remote_play/ui/main_window.py:1140
+#: src/big_remote_play/ui/host_view.py:1635
+#: src/big_remote_play/ui/host_view.py:1987
+#: src/big_remote_play/ui/host_view.py:2081
+#: src/big_remote_play/ui/host_view.py:2111
+#: src/big_remote_play/ui/host_view.py:2341
+#: src/big_remote_play/ui/host_view.py:3304
+#: src/big_remote_play/ui/host_view.py:3399
+#: src/big_remote_play/ui/host_view.py:3804
+#: src/big_remote_play/ui/host_view.py:4166
+#: src/big_remote_play/ui/main_window.py:1143
 #: src/big_remote_play/ui/network_common.py:310
-#: src/big_remote_play/ui/network_dashboard.py:397
+#: src/big_remote_play/ui/network_dashboard.py:405
 #: src/big_remote_play/ui/performance_monitor.py:567
 #: src/big_remote_play/ui/preferences.py:168
 #: src/big_remote_play/ui/preferences.py:222
@@ -1345,12 +1343,12 @@ msgstr "Tühista"
 msgid "Cancel the request"
 msgstr "Tühista taotlus"
 
-#: src/big_remote_play/ui/host_view.py:3691
+#: src/big_remote_play/ui/host_view.py:3698
 msgid "Cannot browse (no access or credentials)"
 msgstr "Sirvimine pole võimalik (puudub juurdepääs või mandaadid)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 206
-#: src/big_remote_play/ui/host_view.py:458
+#: src/big_remote_play/ui/host_view.py:465
 msgid "Capture Method"
 msgstr "Hõivemeetod"
 
@@ -1358,7 +1356,7 @@ msgstr "Hõivemeetod"
 msgid "Capture, compression and stream limits"
 msgstr "Pildihõive, tihendus ja voo piirangud"
 
-#: src/big_remote_play/ui/host_view.py:1767
+#: src/big_remote_play/ui/host_view.py:1774
 #, python-brace-format
 msgid "Capture: {value}"
 msgstr "Pildihõive: {value}"
@@ -1368,11 +1366,6 @@ msgstr "Pildihõive: {value}"
 #: src/big_remote_play/ui/sunshine_preferences.py:252
 msgid "Certificate"
 msgstr "Sertifikaat"
-
-#: src/big_remote_play/host/sunshine_manager.py:505
-#, python-brace-format
-msgid "Certificate trust error: {}"
-msgstr "Sertifikaadi usalduse viga: {}"
 
 #: src/big_remote_play/ui/remote_connection.py:226
 msgid "Change"
@@ -1409,7 +1402,7 @@ msgid "Check for blocked connections automatically"
 msgstr "Kontrolli blokeeritud ühendusi automaatselt"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1195
-#: src/big_remote_play/ui/host_view.py:3234
+#: src/big_remote_play/ui/host_view.py:3241
 msgid "Check logs for details."
 msgstr "Kontrollige logisid üksikasjade jaoks."
 
@@ -1429,7 +1422,7 @@ msgid ""
 msgstr ""
 "Kontrolli koodi ja proovi uuesti. Kui see on õige, võib võrk olla kustutatud."
 
-#: src/big_remote_play/ui/host_view.py:1032
+#: src/big_remote_play/ui/host_view.py:1039
 msgid "Check the connection first. Open server tools only when needed."
 msgstr ""
 "Kontrolli esmalt ühendust. Ava serveritööriistad ainult vajaduse korral."
@@ -1467,20 +1460,18 @@ msgstr "Selle arvuti kontrollimine…"
 msgid "Checking what this network allows…"
 msgstr "Kontrollin, mida see võrk lubab…"
 
-#: src/big_remote_play/ui/host_view.py:3322
+#: src/big_remote_play/ui/host_view.py:3329
 msgid "Checking which devices are already allowed."
 msgstr "Kontrollitakse, millised seadmed on juba lubatud."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 150
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 173
 #: src/big_remote_play/ui/guest_view.py:562
-#: src/big_remote_play/ui/host_view.py:380
-#: src/big_remote_play/ui/host_view.py:963
-#: src/big_remote_play/ui/host_view.py:973
-#: src/big_remote_play/ui/main_window.py:1087
+#: src/big_remote_play/ui/host_view.py:387
+#: src/big_remote_play/ui/host_view.py:970
+#: src/big_remote_play/ui/host_view.py:980
+#: src/big_remote_play/ui/main_window.py:1090
 #: src/big_remote_play/ui/service_status_card.py:51
-msgid "Checking..."
-msgstr "Kontrollimine..."
+msgid "Checking…"
+msgstr "Kontrollimine…"
 
 #: src/big_remote_play/ui/connection_guides.py:132
 msgid ""
@@ -1504,9 +1495,9 @@ msgstr "Vali fail, mis on loodud käsuga „Loo varukoopia“."
 msgid "Choose a method to see its sign-in, network and device details."
 msgstr "Vali viis, et näha selle sisselogimise, võrgu ja seadmete üksikasju."
 
-#: src/big_remote_play/ui/host_view.py:768
-#: src/big_remote_play/ui/host_view.py:1290
-#: src/big_remote_play/ui/host_view.py:2520
+#: src/big_remote_play/ui/host_view.py:775
+#: src/big_remote_play/ui/host_view.py:1297
+#: src/big_remote_play/ui/host_view.py:2527
 msgid "Choose a source, then start sharing."
 msgstr "Vali allikas ja alusta jagamist."
 
@@ -1516,13 +1507,13 @@ msgstr "Vali teine võimalus"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 133
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 138
-#: src/big_remote_play/ui/host_view.py:340
-#: src/big_remote_play/ui/host_view.py:345
+#: src/big_remote_play/ui/host_view.py:347
+#: src/big_remote_play/ui/host_view.py:352
 msgid "Choose game from list"
 msgstr "Vali mäng nimekirjast"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 198
-#: src/big_remote_play/ui/host_view.py:449
+#: src/big_remote_play/ui/host_view.py:456
 msgid "Choose hardware for video encoding"
 msgstr "Vali riistvara videode kodeerimiseks"
 
@@ -1552,12 +1543,12 @@ msgstr ""
 "Vali mänguarvutis kuvar menüüst Jaga → Eelistused → Riistvara ja hõive. "
 "Pärast muutmist ühenda uuesti."
 
-#: src/big_remote_play/ui/host_view.py:1269
+#: src/big_remote_play/ui/host_view.py:1276
 msgid "Choose the game to share"
 msgstr "Vali jagatav mäng"
 
-#: src/big_remote_play/ui/host_view.py:1288
-#: src/big_remote_play/ui/host_view.py:2863
+#: src/big_remote_play/ui/host_view.py:1295
+#: src/big_remote_play/ui/host_view.py:2870
 msgid "Choose the game window to share."
 msgstr "Vali jagatav mänguaken."
 
@@ -1569,11 +1560,11 @@ msgstr ""
 "Valige sellel arvutil kasutatav helivorming ja kas heli esitatakse ka "
 "mänguarvutis."
 
-#: src/big_remote_play/ui/host_view.py:805
+#: src/big_remote_play/ui/host_view.py:812
 msgid "Choose this computer from the list."
 msgstr "Vali loendist see arvuti."
 
-#: src/big_remote_play/ui/host_view.py:1382
+#: src/big_remote_play/ui/host_view.py:1389
 msgid "Clear"
 msgstr "Puhasta"
 
@@ -1589,7 +1580,7 @@ msgid "Clear Everything"
 msgstr "Puhasta kõik"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 97
-#: src/big_remote_play/ui/host_view.py:1381
+#: src/big_remote_play/ui/host_view.py:1388
 msgid "Clear Logs"
 msgstr "Logide puhastamine"
 
@@ -1611,8 +1602,8 @@ msgstr "Kas tühjendada ühenduste ajalugu?"
 #: src/big_remote_play/ui/guest_view.py:1869
 #: src/big_remote_play/ui/guest_view.py:1884
 #: src/big_remote_play/ui/guided_setup.py:311
-#: src/big_remote_play/ui/host_view.py:1833
-#: src/big_remote_play/ui/host_view.py:3239
+#: src/big_remote_play/ui/host_view.py:1840
+#: src/big_remote_play/ui/host_view.py:3246
 #: src/big_remote_play/ui/installer_window.py:76
 msgid "Close"
 msgstr "Sulge"
@@ -1625,7 +1616,7 @@ msgstr "Otsimise jätkamiseks sulge see aken ja ava see uuesti."
 msgid "Close the game on the game PC when streaming ends"
 msgstr "Sulge mäng mänguarvutis voogedastuse lõppemisel"
 
-#: src/big_remote_play/ui/host_view.py:831
+#: src/big_remote_play/ui/host_view.py:838
 msgid "Close the stream on every device so a new device can pair"
 msgstr "Sulge voog kõigis seadmetes, et uut seadet saaks siduda"
 
@@ -1634,7 +1625,7 @@ msgstr "Sulge voog kõigis seadmetes, et uut seadet saaks siduda"
 msgid "Cloudflare DNS-only documentation"
 msgstr "Cloudflare'i ainult DNS-i dokumentatsioon"
 
-#: src/big_remote_play/ui/network_dashboard.py:245
+#: src/big_remote_play/ui/network_dashboard.py:253
 #: src/big_remote_play/ui/network_devices.py:218
 msgid "Code for this computer"
 msgstr "Selle arvuti kood"
@@ -1643,7 +1634,7 @@ msgstr "Selle arvuti kood"
 msgid "Codec, HDR, data limit and connection warnings"
 msgstr "Koodek, HDR, andmepiirang ja ühenduse hoiatused"
 
-#: src/big_remote_play/ui/host_view.py:703
+#: src/big_remote_play/ui/host_view.py:710
 msgid "Codecs, network, capture and recovery tools"
 msgstr "Koodekid, võrk, hõive ja taastetööriistad"
 
@@ -1658,7 +1649,7 @@ msgstr ""
 "Sunshine'i sisseehitatud localhosti vaikeväärtusi."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 154
-#: src/big_remote_play/ui/host_view.py:361
+#: src/big_remote_play/ui/host_view.py:368
 #: src/big_remote_play/ui/network_devices.py:636
 #: src/big_remote_play/ui/network_devices.py:667
 #: src/big_remote_play/ui/network_devices.py:695
@@ -1685,11 +1676,11 @@ msgid ""
 msgstr ""
 "Mõned komponendid on veel puudu. Lõpeta paigaldamine ja kontrolli uuesti."
 
-#: src/big_remote_play/ui/host_view.py:1768
+#: src/big_remote_play/ui/host_view.py:1775
 msgid "Compression: H.264 only"
 msgstr "Tihendus: ainult H.264"
 
-#: src/big_remote_play/ui/host_view.py:1768
+#: src/big_remote_play/ui/host_view.py:1775
 msgid "Compression: HEVC/AV1 when supported"
 msgstr "Tihendus: HEVC/AV1, kui toetatud"
 
@@ -1716,7 +1707,7 @@ msgstr "Konfiguratsioonifailid"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 225
-#: src/big_remote_play/ui/host_view.py:1389
+#: src/big_remote_play/ui/host_view.py:1396
 msgid "Configuration Directory"
 msgstr "Konfiguratsioonikaust"
 
@@ -1739,17 +1730,17 @@ msgstr ""
 "eelistused uuesti."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 283
-#: src/big_remote_play/ui/host_view.py:631
+#: src/big_remote_play/ui/host_view.py:638
 msgid "Configure"
 msgstr "Konfigureeri"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 279
-#: src/big_remote_play/ui/host_view.py:627
+#: src/big_remote_play/ui/host_view.py:634
 msgid "Configure Firewall (IPv6)"
 msgstr "Konfigureeri tulemüür (IPv6)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 146
-#: src/big_remote_play/ui/host_view.py:353
+#: src/big_remote_play/ui/host_view.py:360
 msgid "Configure name and command"
 msgstr "Konfigureeri nimi ja käsk"
 
@@ -1757,17 +1748,16 @@ msgstr "Konfigureeri nimi ja käsk"
 msgid "Configured"
 msgstr "Seadistatud"
 
-#: src/big_remote_play/ui/host_view.py:390
+#: src/big_remote_play/ui/host_view.py:397
 msgid "Configured for the next sharing session"
 msgstr "Seadistatud järgmiseks jagamisseansiks"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 768
-#: src/big_remote_play/ui/host_view.py:2343
-msgid "Configuring firewall... (Password may be requested)"
-msgstr "Tulemüüri seadistamine... (võidakse küsida parooli)"
+#: src/big_remote_play/ui/host_view.py:2350
+msgid "Configuring the firewall… Your password may be requested."
+msgstr "Tulemüüri seadistamine… (võidakse küsida parooli)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 637
-#: src/big_remote_play/ui/host_view.py:3779
+#: src/big_remote_play/ui/host_view.py:3786
 msgid "Confirm New Password"
 msgstr "Kinnita uus parool"
 
@@ -1778,14 +1768,18 @@ msgstr "Kinnita uus parool"
 #: src/big_remote_play/ui/guest_view.py:1022
 #: src/big_remote_play/ui/guest_view.py:1334
 #: src/big_remote_play/ui/guest_view.py:1782
-#: src/big_remote_play/ui/main_window.py:115
-#: src/big_remote_play/ui/main_window.py:828
-#: src/big_remote_play/ui/main_window.py:993
-#: src/big_remote_play/ui/main_window.py:1221
 #: src/big_remote_play/ui/private_network_view.py:596
 #: src/big_remote_play/ui/private_network_view.py:598
 #: src/big_remote_play/ui/remote_connection.py:454
 #: src/big_remote_play/ui/remote_connection.py:482
+msgid "Connect"
+msgstr "Ühenda"
+
+#: src/big_remote_play/ui/main_window.py:118
+#: src/big_remote_play/ui/main_window.py:831
+#: src/big_remote_play/ui/main_window.py:996
+#: src/big_remote_play/ui/main_window.py:1224
+msgctxt "navigation"
 msgid "Connect"
 msgstr "Ühenda"
 
@@ -1799,8 +1793,12 @@ msgstr "Ühenda uuesti"
 msgid "Connect by address"
 msgstr "Ühenda aadressi kaudu"
 
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:16
+msgid "Connect from another computer with Moonlight and pair it with a PIN"
+msgstr "Ühenda teisest arvutist Moonlightiga ja seo see PIN-koodiga"
+
 #: src/big_remote_play/ui/network_common.py:164
-#: src/big_remote_play/ui/network_dashboard.py:217
+#: src/big_remote_play/ui/network_dashboard.py:225
 #: src/big_remote_play/ui/private_network_view.py:566
 msgid "Connect this computer"
 msgstr "Ühenda see arvuti"
@@ -1840,6 +1838,11 @@ msgstr "Ühenda teise arvutiga"
 msgid "Connect to this server"
 msgstr "Ühenda selle serveriga"
 
+#: src/big_remote_play/ui/guest_view.py:897
+#, python-brace-format
+msgid "Connect to {name}"
+msgstr "Ühenda {name}"
+
 #: src/big_remote_play/ui/guest_view.py:1783
 #: src/big_remote_play/ui/history_dialog.py:127
 #: src/big_remote_play/ui/remote_connection.py:483
@@ -1847,17 +1850,11 @@ msgstr "Ühenda selle serveriga"
 msgid "Connect to {name} again"
 msgstr "Ühenda uuesti arvutiga {name}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 212
-#: src/big_remote_play/ui/guest_view.py:897
-#, python-brace-format
-msgid "Connect to {}"
-msgstr "Ühenda {}"
-
-#: src/big_remote_play/ui/host_view.py:612
+#: src/big_remote_play/ui/host_view.py:619
 msgid "Connect without a VPN"
 msgstr "Ühendu ilma VPN-ita"
 
-#: src/big_remote_play/ui/main_window.py:1225
+#: src/big_remote_play/ui/main_window.py:1228
 #: src/big_remote_play/ui/remote_connection.py:183
 msgid "Connect your devices"
 msgstr "Ühenda oma seadmed"
@@ -1875,10 +1872,10 @@ msgstr "Ühendatud seade"
 
 #: src/big_remote_play/ui/performance_monitor.py:790
 #, python-brace-format
-msgid "Connected devices: {}"
-msgstr "Ühendatud seadmed: {}"
+msgid "Connected devices: {count}"
+msgstr "Ühendatud seadmed: {count}"
 
-#: src/big_remote_play/ui/host_view.py:2118
+#: src/big_remote_play/ui/host_view.py:2125
 msgid "Connected now"
 msgstr "Praegu ühendatud"
 
@@ -1890,22 +1887,18 @@ msgstr "Praegu ühendatud"
 msgid "Connected successfully!"
 msgstr "Ühendus õnnestus!"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 773
 #: src/big_remote_play/ui/performance_monitor.py:820
 #, python-brace-format
-msgid "Connected to {}"
-msgstr "Ühendatud {}"
+msgid "Connected to {name}"
+msgstr "Ühendatud {name}"
 
 #: src/big_remote_play/ui/zerotier_join.py:62
 msgid "Connecting to the network…"
 msgstr "Võrguga ühendamine…"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1848
 #: src/big_remote_play/ui/private_network_view.py:798
-msgid "Connecting..."
-msgstr "Ühendamine..."
+msgid "Connecting…"
+msgstr "Ühendamine…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
@@ -1944,7 +1937,7 @@ msgid "Connection history"
 msgstr "Ühenduse ajalugu"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 372
-#: src/big_remote_play/ui/host_view.py:2244
+#: src/big_remote_play/ui/host_view.py:2251
 msgid "Connection information"
 msgstr "Ühenduse teave"
 
@@ -1992,7 +1985,7 @@ msgid "Contacting the service…"
 msgstr "Teenusega ühendumine…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 582
-#: src/big_remote_play/ui/main_window.py:1516
+#: src/big_remote_play/ui/main_window.py:1519
 msgid "Containers"
 msgstr "Konteinerid"
 
@@ -2012,7 +2005,7 @@ msgstr ""
 msgid "Controllers"
 msgstr "Mängupuldid"
 
-#: src/big_remote_play/ui/host_view.py:877
+#: src/big_remote_play/ui/host_view.py:884
 msgid "Controllers of the other computer cannot work"
 msgstr "Teise arvuti mängupuldid ei saa töötada"
 
@@ -2035,20 +2028,20 @@ msgid "Copied"
 msgstr "Kopeeritud"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 830
-#: src/big_remote_play/ui/host_view.py:2432
-#: src/big_remote_play/ui/host_view.py:3501
+#: src/big_remote_play/ui/host_view.py:2439
+#: src/big_remote_play/ui/host_view.py:3508
 msgid "Copied!"
 msgstr "Kopeeritud!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 356
-#: src/big_remote_play/ui/host_view.py:3447
+#: src/big_remote_play/ui/host_view.py:3454
 #: src/big_remote_play/ui/network_common.py:229
 #: src/big_remote_play/ui/network_common.py:246
 msgid "Copy"
 msgstr "Kopeeri"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 356
-#: src/big_remote_play/ui/host_view.py:1394
+#: src/big_remote_play/ui/host_view.py:1401
 msgid "Copy Path"
 msgstr "Kopeeri tee"
 
@@ -2056,13 +2049,13 @@ msgstr "Kopeeri tee"
 msgid "Copy address"
 msgstr "Kopeeri aadress"
 
-#: src/big_remote_play/ui/host_view.py:912
-#: src/big_remote_play/ui/host_view.py:915
+#: src/big_remote_play/ui/host_view.py:919
+#: src/big_remote_play/ui/host_view.py:922
 msgid "Copy code"
 msgstr "Kopeeri kood"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 356
-#: src/big_remote_play/ui/host_view.py:3448
+#: src/big_remote_play/ui/host_view.py:3455
 msgid "Copy logs"
 msgstr "Kopeeri logid"
 
@@ -2075,27 +2068,26 @@ msgstr "Kopeeri tehnilised üksikasjad"
 msgid "Copy the private address of {name}"
 msgstr "Kopeeri seadme {name} privaatne aadress"
 
-#: src/big_remote_play/ui/host_view.py:2404
+#: src/big_remote_play/ui/host_view.py:2411
 #, python-brace-format
-msgid "Copy the {} value to clipboard"
-msgstr "Kopeeri väärtus {} lõikelauale"
+msgid "Copy the {field} value to the clipboard"
+msgstr "Kopeeri väärtus {field} lõikelauale"
 
-#: src/big_remote_play/ui/host_view.py:915
+#: src/big_remote_play/ui/host_view.py:922
 msgid "Copy this PC's discovery code to the clipboard"
 msgstr "Kopeeri selle arvuti tuvastuskood"
+
+#: src/big_remote_play/ui/host_view.py:2410
+#, python-brace-format
+msgid "Copy {field}"
+msgstr "Kopeeri {field}"
 
 #: src/big_remote_play/ui/network_common.py:246
 #, python-brace-format
 msgid "Copy {name} to the clipboard"
 msgstr "Kopeeri {name} lõikelauale"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 356
-#: src/big_remote_play/ui/host_view.py:2403
-#, python-brace-format
-msgid "Copy {}"
-msgstr "Kopeeri {}"
-
-#: src/big_remote_play/ui/host_view.py:470
+#: src/big_remote_play/ui/host_view.py:477
 msgid "Correct colors of HDR screens"
 msgstr "Paranda HDR-ekraanide värvid"
 
@@ -2113,10 +2105,6 @@ msgstr "Varukoopia loomine ebaõnnestus"
 msgid "Could not install ${pkg}."
 msgstr "Paketti ${pkg} ei saanud paigaldada."
 
-#: src/big_remote_play/app.py:114
-msgid "Could not load icon theme: no GTK display"
-msgstr "Ikooniteemat ei saanud laadida: GTK kuva puudub"
-
 #: src/big_remote_play/ui/guest_view.py:1865
 msgid ""
 "Could not pair with the game PC. Check that the code was entered on the game "
@@ -2133,7 +2121,7 @@ msgstr ""
 msgid "Could not read server configuration."
 msgstr "Serveri konfiguratsiooni ei saanud lugeda."
 
-#: src/big_remote_play/ui/host_view.py:1138
+#: src/big_remote_play/ui/host_view.py:1145
 msgid "Could not read the open windows"
 msgstr "Avatud aknaid ei õnnestunud lugeda"
 
@@ -2155,7 +2143,7 @@ msgstr "Muudatust ei saanud salvestada."
 msgid "Could not save the connection settings. Check file permissions."
 msgstr "Ühenduse seadeid ei saanud salvestada. Kontrollige failiõigusi."
 
-#: src/big_remote_play/ui/host_view.py:2955
+#: src/big_remote_play/ui/host_view.py:2962
 msgid "Could not save the server configuration."
 msgstr "Serveri seadete salvestamine ebaõnnestus."
 
@@ -2163,7 +2151,7 @@ msgstr "Serveri seadete salvestamine ebaõnnestus."
 msgid "Could not turn it on. Check the connection details."
 msgstr "Sisselülitamine ebaõnnestus. Kontrolli ühenduse üksikasju."
 
-#: src/big_remote_play/ui/host_view.py:2909
+#: src/big_remote_play/ui/host_view.py:2916
 msgid "Could not update the game library. Existing games were preserved."
 msgstr "Mängukogu uuendamine ebaõnnestus. Olemasolevad mängud säilitati."
 
@@ -2174,7 +2162,7 @@ msgid "Create Account"
 msgstr "Loo konto"
 
 #: src/big_remote_play/ui/guided_setup.py:312
-#: src/big_remote_play/ui/network_dashboard.py:395
+#: src/big_remote_play/ui/network_dashboard.py:403
 #: src/big_remote_play/ui/private_network_view.py:90
 msgid "Create a ZeroTier network"
 msgstr "Loo ZeroTier-võrk"
@@ -2191,8 +2179,8 @@ msgid ""
 "this."
 msgstr "Loo tasuta konto või logi sisse. Seda teeb ainult võrgu omanik."
 
-#: src/big_remote_play/ui/network_dashboard.py:226
-#: src/big_remote_play/ui/network_dashboard.py:230
+#: src/big_remote_play/ui/network_dashboard.py:234
+#: src/big_remote_play/ui/network_dashboard.py:238
 #: src/big_remote_play/ui/private_network_view.py:100
 msgid "Create a network"
 msgstr "Loo võrk"
@@ -2205,7 +2193,7 @@ msgstr "Loo ühekordne sisselogimisvõti, mis aegub ühe tunni pärast."
 msgid "Create invitation"
 msgstr "Loo kutse"
 
-#: src/big_remote_play/ui/network_dashboard.py:398
+#: src/big_remote_play/ui/network_dashboard.py:406
 msgid "Create network"
 msgstr "Loo võrk"
 
@@ -2221,7 +2209,7 @@ msgstr "Loo API-võti serveris"
 msgid "Creates a private network between several devices."
 msgstr "Loob privaatvõrgu mitme seadme vahel."
 
-#: src/big_remote_play/ui/network_dashboard.py:406
+#: src/big_remote_play/ui/network_dashboard.py:414
 msgid "Creating the network…"
 msgstr "Võrgu loomine…"
 
@@ -2253,7 +2241,7 @@ msgstr ""
 msgid "Credentials reset successfully"
 msgstr "Mandaadid lähtestati edukalt"
 
-#: src/big_remote_play/ui/network_dashboard.py:312
+#: src/big_remote_play/ui/network_dashboard.py:320
 #: src/big_remote_play/ui/private_network_view.py:666
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr "Mandaadid, millega Big Remote Play saab seda võrku hallata."
@@ -2269,16 +2257,16 @@ msgid "Credentials updated successfully"
 msgstr "Mandaadid uuendati edukalt"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 637
-#: src/big_remote_play/ui/host_view.py:3773
+#: src/big_remote_play/ui/host_view.py:3780
 msgid "Current Password"
 msgstr "Praegune parool"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 679
-#: src/big_remote_play/ui/host_view.py:3771
+#: src/big_remote_play/ui/host_view.py:3778
 msgid "Current Username"
 msgstr "Praegune kasutajanimi"
 
-#: src/big_remote_play/ui/host_view.py:577
+#: src/big_remote_play/ui/host_view.py:584
 msgid "Current output"
 msgstr "Praegune väljund"
 
@@ -2289,14 +2277,12 @@ msgstr "Praegune väljund"
 #: src/big_remote_play/ui/guest_view.py:258
 #: src/big_remote_play/ui/guest_view.py:267
 #: src/big_remote_play/ui/guest_view.py:292
-#: src/big_remote_play/ui/guest_view.py:1904
-#: src/big_remote_play/ui/guest_view.py:1933
-#: src/big_remote_play/ui/host_view.py:402
+#: src/big_remote_play/ui/host_view.py:409
 msgid "Custom"
 msgstr "Kohandatud"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 128
-#: src/big_remote_play/ui/host_view.py:330
+#: src/big_remote_play/ui/host_view.py:337
 msgid "Custom App"
 msgstr "Kohandatud rakendus"
 
@@ -2309,7 +2295,7 @@ msgid "Custom Frame Rate"
 msgstr "Kohandatud kaadrisagedus"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 736
-#: src/big_remote_play/ui/guest_view.py:1921
+#: src/big_remote_play/ui/guest_view.py:1923
 msgid "Custom Resolution"
 msgstr "Kohandatud eraldusvõime"
 
@@ -2317,11 +2303,11 @@ msgstr "Kohandatud eraldusvõime"
 msgid "Custom image settings"
 msgstr "Kohandatud pildiseaded"
 
-#: src/big_remote_play/ui/main_window.py:680
+#: src/big_remote_play/ui/main_window.py:683
 msgid "Dark"
 msgstr "Tume"
 
-#: src/big_remote_play/ui/host_view.py:580
+#: src/big_remote_play/ui/host_view.py:587
 msgid "Default microphone"
 msgstr "Vaikemikrofon"
 
@@ -2349,7 +2335,7 @@ msgid "Delete this saved network"
 msgstr "Kustuta see salvestatud võrk"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:1369
+#: src/big_remote_play/ui/host_view.py:1376
 msgid "Detailed Logs"
 msgstr "Üksikasjalikud logid"
 
@@ -2363,11 +2349,11 @@ msgid "Device ID"
 msgstr "Seadme ID"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:2051
+#: src/big_remote_play/ui/host_view.py:2058
 msgid "Device Name"
 msgstr "Seadme nimi"
 
-#: src/big_remote_play/ui/network_dashboard.py:258
+#: src/big_remote_play/ui/network_dashboard.py:266
 msgid ""
 "Device approval is enabled for this tailnet. It is done in the admin console."
 msgstr ""
@@ -2387,7 +2373,7 @@ msgid "Device at {address}"
 msgstr "Seade aadressil {address}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:3356
+#: src/big_remote_play/ui/host_view.py:3363
 msgid "Device enabled"
 msgstr "Seade lubatud"
 
@@ -2407,7 +2393,7 @@ msgstr "Seadmed"
 msgid "Devices online now: {count}"
 msgstr "Seadmeid praegu veebis: {count}"
 
-#: src/big_remote_play/ui/host_view.py:3292
+#: src/big_remote_play/ui/host_view.py:3299
 msgid ""
 "Devices paired with Sunshine. Disable to block access without re-pairing; "
 "remove to revoke (a new PIN will be required)."
@@ -2415,12 +2401,12 @@ msgstr ""
 "Sunshine'iga seotud seadmed. Keela seade, et blokeerida juurdepääs ilma "
 "uuesti sidumata; eemalda seade, et juurdepääs tühistada (vajalik on uus PIN)."
 
-#: src/big_remote_play/ui/host_view.py:2118
+#: src/big_remote_play/ui/host_view.py:2125
 msgid "Devices playing on this computer at this moment."
 msgstr "Seadmed, mis praegu selles arvutis mängivad."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:3425
+#: src/big_remote_play/ui/host_view.py:3432
 msgid "Devices updated"
 msgstr "Seadmed uuendatud"
 
@@ -2461,11 +2447,11 @@ msgstr ""
 "Otseühendus domeeni ja ruuteri portidega. Suurem kokkupuude internetiga."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 576
-#: src/big_remote_play/ui/main_window.py:1536
+#: src/big_remote_play/ui/main_window.py:1539
 msgid "Disable"
 msgstr "Keela"
 
-#: src/big_remote_play/ui/host_view.py:2186
+#: src/big_remote_play/ui/host_view.py:2193
 msgid "Disable or remove devices that should no longer connect."
 msgstr "Keela või eemalda seadmed, mis ei tohiks enam ühenduda."
 
@@ -2482,20 +2468,11 @@ msgstr "Keela või eemalda seadmed, mis ei tohiks enam ühenduda."
 msgid "Disabled"
 msgstr "Keelatud"
 
-#: src/big_remote_play/ui/network_dashboard.py:451
+#: src/big_remote_play/ui/network_dashboard.py:459
 msgid "Disconnect"
 msgstr "Katkesta ühendus"
 
-# #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 407
-# line: 774
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 151
-#: src/big_remote_play/ui/performance_monitor.py:562
-msgid "Disconnect Guest"
-msgstr "Katkesta külalise ühendus"
-
-#: src/big_remote_play/ui/network_dashboard.py:324
+#: src/big_remote_play/ui/network_dashboard.py:332
 msgid "Disconnect every ZeroTier network on this computer"
 msgstr "Katkesta ühendus kõigi selle arvuti ZeroTier-võrkudega"
 
@@ -2504,15 +2481,16 @@ msgstr "Katkesta ühendus kõigi selle arvuti ZeroTier-võrkudega"
 # line: 407
 # line: 774
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 151
+#: src/big_remote_play/ui/performance_monitor.py:562
 #: src/big_remote_play/ui/performance_monitor.py:812
 msgid "Disconnect guest"
 msgstr "Katkesta külalise ühendus"
 
-#: src/big_remote_play/ui/network_dashboard.py:326
+#: src/big_remote_play/ui/network_dashboard.py:334
 msgid "Disconnect temporarily"
 msgstr "Katkesta ajutiselt"
 
-#: src/big_remote_play/ui/network_dashboard.py:449
+#: src/big_remote_play/ui/network_dashboard.py:457
 msgid "Disconnect temporarily?"
 msgstr "Kas katkestada ajutiselt?"
 
@@ -2532,11 +2510,9 @@ msgstr "Katkesta selle külalise ühendus (Admin)"
 msgid "Disconnected"
 msgstr "Ühendus katkestatud"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 883
-#: src/big_remote_play/ui/network_dashboard.py:455
-msgid "Disconnecting..."
-msgstr "Ühendus katkestatakse..."
+#: src/big_remote_play/ui/network_dashboard.py:463
+msgid "Disconnecting…"
+msgstr "Ühendus katkestatakse…"
 
 #: src/big_remote_play/ui/guest_view.py:510
 msgid "Discover game PCs automatically"
@@ -2551,7 +2527,7 @@ msgid "Displays latency, frame rate, and decoding information over the stream."
 msgstr "Kuvab voo peal latentsuse, kaadrisageduse ja dekodeerimise andmed."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1429
-#: src/big_remote_play/ui/host_view.py:4156
+#: src/big_remote_play/ui/host_view.py:4165
 msgid "Do you want to restore default settings?"
 msgstr "Kas soovite taastada vaikeseaded?"
 
@@ -2562,7 +2538,7 @@ msgstr "Kas soovite taastada vaikeseaded?"
 msgid "Domain"
 msgstr "Domeen"
 
-#: src/big_remote_play/ui/host_view.py:612
+#: src/big_remote_play/ui/host_view.py:619
 msgid "Domain, router ports and security precautions."
 msgstr "Domeen, ruuteri pordid ja turvameetmed."
 
@@ -2570,11 +2546,9 @@ msgstr "Domeen, ruuteri pordid ja turvameetmed."
 msgid "Done"
 msgstr "Valmis"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 77
 #: src/big_remote_play/ui/installer_window.py:123
-msgid "Done! Press Enter to close..."
-msgstr "Valmis! Vajutage Enter, et sulgeda..."
+msgid "Done. Press Enter to close."
+msgstr "Valmis! Vajutage Enter, et sulgeda."
 
 #: src/big_remote_play/ui/network_devices.py:441
 msgid ""
@@ -2610,14 +2584,12 @@ msgstr "Muuda kohandatud eraldusvõimet"
 msgid "Edit this saved network"
 msgstr "Muuda seda salvestatud võrku"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1796
 #: src/big_remote_play/ui/private_network_view.py:1033
 #, python-brace-format
-msgid "Edit – {}"
-msgstr "Muuda – {}"
+msgid "Edit – {name}"
+msgstr "Muuda – {name}"
 
-#: src/big_remote_play/ui/host_view.py:505
+#: src/big_remote_play/ui/host_view.py:512
 msgid "Efficient video compression"
 msgstr "Tõhus videopakkimine"
 
@@ -2642,7 +2614,7 @@ msgid "Emulate touchpad as DS4"
 msgstr "Emuleeri puuteplaati kui DS4"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 576
-#: src/big_remote_play/ui/main_window.py:1536
+#: src/big_remote_play/ui/main_window.py:1539
 msgid "Enable"
 msgstr "Luba"
 
@@ -2679,11 +2651,11 @@ msgid "Enable YUV 4:4:4"
 msgstr "Luba YUV 4:4:4"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 268
-#: src/big_remote_play/ui/host_view.py:616
+#: src/big_remote_play/ui/host_view.py:623
 msgid "Enable simultaneous IPv4 and IPv6 support on server"
 msgstr "Luba samal ajal IPv4 ja IPv6 tugi serveris"
 
-#: src/big_remote_play/ui/host_view.py:1369
+#: src/big_remote_play/ui/host_view.py:1376
 msgid "Enable verbose logging for debugging"
 msgstr "Luba silumiseks üksikasjalik logimine"
 
@@ -2697,7 +2669,7 @@ msgstr ""
 "Selle valiku lubamine võib vältida kaadreid, mis jäävad võrgu kaudu vahele "
 "stseenide vahetumise ajal, kuid video kvaliteet võib liikumise ajal väheneda."
 
-#: src/big_remote_play/ui/host_view.py:1769
+#: src/big_remote_play/ui/host_view.py:1776
 #, python-brace-format
 msgid "Encoding priority: {value}"
 msgstr "Kodeerimise prioriteet: {value}"
@@ -2707,8 +2679,8 @@ msgstr "Kodeerimise prioriteet: {value}"
 msgid "End Game"
 msgstr "Lõpeta mäng"
 
-#: src/big_remote_play/ui/host_view.py:827
-#: src/big_remote_play/ui/host_view.py:1662
+#: src/big_remote_play/ui/host_view.py:834
+#: src/big_remote_play/ui/host_view.py:1669
 msgid "End for everyone"
 msgstr "Lõpeta kõigi jaoks"
 
@@ -2720,7 +2692,7 @@ msgstr ""
 "Kas lõpetada töötav mäng sujuvalt või eemaldada võrguaadress "
 "sunniviisiliselt? Mängu lõpetamine jätab seadme seotuks."
 
-#: src/big_remote_play/ui/host_view.py:1658
+#: src/big_remote_play/ui/host_view.py:1665
 msgid "End the stream for everyone?"
 msgstr "Kas lõpetada voog kõigi jaoks?"
 
@@ -2729,11 +2701,11 @@ msgstr "Kas lõpetada voog kõigi jaoks?"
 msgid "Enter ID"
 msgstr "Sisesta ID"
 
-#: src/big_remote_play/ui/host_view.py:850
+#: src/big_remote_play/ui/host_view.py:857
 msgid "Enter Sunshine password"
 msgstr "Sisesta Sunshine'i parool"
 
-#: src/big_remote_play/ui/guest_view.py:1922
+#: src/big_remote_play/ui/guest_view.py:1924
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Sisesta LAIUSxKÕRGUS (nt 1920x1080):"
 
@@ -2759,8 +2731,8 @@ msgstr "Sisestage teine 16-märgiline võrgu ID"
 
 #: src/big_remote_play/ui/guest_view.py:1358
 #: src/big_remote_play/ui/guest_view.py:1675
-#: src/big_remote_play/ui/host_view.py:1927
-#: src/big_remote_play/ui/host_view.py:2088
+#: src/big_remote_play/ui/host_view.py:1934
+#: src/big_remote_play/ui/host_view.py:2095
 msgid "Enter exactly four digits."
 msgstr "Sisesta täpselt neli numbrit."
 
@@ -2769,7 +2741,7 @@ msgstr "Sisesta täpselt neli numbrit."
 msgid "Enter frames per second (e.g. 75):"
 msgstr "Sisesta kaadrisagedus (nt 75):"
 
-#: src/big_remote_play/ui/host_view.py:1505
+#: src/big_remote_play/ui/host_view.py:1512
 msgid ""
 "Enter it now, so a device is approved the moment you type its code. "
 "Otherwise Moonlight on the device may give up while you type it."
@@ -2792,7 +2764,7 @@ msgstr "Sisesta Headscale'i serveri aadress."
 msgid "Enter the ID on this page and choose Connect."
 msgstr "Sisesta ID sellel lehel ja vali Ühenda."
 
-#: src/big_remote_play/ui/host_view.py:2036
+#: src/big_remote_play/ui/host_view.py:2043
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr "Sisestage Moonlighti teises arvutis näidatud PIN."
 
@@ -2800,14 +2772,14 @@ msgstr "Sisestage Moonlighti teises arvutis näidatud PIN."
 msgid "Enter the code here"
 msgstr "Sisesta kood siia"
 
-#: src/big_remote_play/ui/host_view.py:1509
+#: src/big_remote_play/ui/host_view.py:1516
 msgid ""
 "Enter the current Sunshine user and password, so devices can be approved."
 msgstr ""
 "Sisesta Sunshine'i praegune kasutaja ja parool, et seadmeid saaks kinnitada."
 
-#: src/big_remote_play/ui/host_view.py:891
-#: src/big_remote_play/ui/host_view.py:2048
+#: src/big_remote_play/ui/host_view.py:898
+#: src/big_remote_play/ui/host_view.py:2055
 msgid "Enter the four digits shown by Moonlight on the other computer."
 msgstr "Sisestage Moonlighti teises arvutis näidatud neli numbrit."
 
@@ -2843,8 +2815,8 @@ msgstr "Sisestus uuendatud"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1266
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 539
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 567
-#: src/big_remote_play/ui/host_view.py:2350
-#: src/big_remote_play/ui/host_view.py:3024
+#: src/big_remote_play/ui/host_view.py:2357
+#: src/big_remote_play/ui/host_view.py:3031
 msgid "Error"
 msgstr "Viga"
 
@@ -2853,50 +2825,36 @@ msgstr "Viga"
 msgid "Error Clearing"
 msgstr "Viga tühjendamisel"
 
-#: src/big_remote_play/ui/host_view.py:1770
+#: src/big_remote_play/ui/host_view.py:1777
 #, python-brace-format
 msgid "Error correction: {value}%"
 msgstr "Veaparandus: {value}%"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 561
-#: src/big_remote_play/ui/main_window.py:1521
+#: src/big_remote_play/ui/main_window.py:1524
 #, python-brace-format
-msgid "Error executing command: {}"
-msgstr "Käskude täitmisel ilmnes viga: {}"
+msgid "Error executing command: {error}"
+msgstr "Käskude täitmisel ilmnes viga: {error}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 796
-#: src/big_remote_play/ui/host_view.py:2374
+#: src/big_remote_play/ui/host_view.py:2381
 #, python-brace-format
-msgid "Error executing script: {}"
-msgstr "Viga skripti täitmisel: {}"
+msgid "Error executing script: {error}"
+msgstr "Viga skripti täitmisel: {error}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1403
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1435
-#: src/big_remote_play/ui/host_view.py:3064
-#: src/big_remote_play/ui/host_view.py:3096
+#: src/big_remote_play/ui/host_view.py:3071
+#: src/big_remote_play/ui/host_view.py:3103
 #, python-brace-format
-msgid "Error launching game: {}"
-msgstr "Viga mängu käivitamisel: {}"
+msgid "Error launching game: {error}"
+msgstr "Viga mängu käivitamisel: {error}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 255
 #: src/big_remote_play/ui/preferences.py:253
 #, python-brace-format
-msgid "Error restoring: {}"
-msgstr "Viga taastamisel: {}"
+msgid "Error restoring: {error}"
+msgstr "Viga taastamisel: {error}"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 103
-#: src/big_remote_play/host/sunshine_manager.py:289
-#, python-brace-format
-msgid "Error starting Sunshine: {}"
-msgstr "Viga Sunshine'i käivitamisel: {}"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 91
 #: src/big_remote_play/ui/installer_window.py:158
 #, python-brace-format
-msgid "Error: {}"
-msgstr "Viga: {}"
+msgid "Error: {error}"
+msgstr "Viga: {error}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 403
@@ -2904,7 +2862,7 @@ msgstr "Viga: {}"
 msgid "Establish Connection"
 msgstr "Loo ühendus"
 
-#: src/big_remote_play/ui/network_dashboard.py:447
+#: src/big_remote_play/ui/network_dashboard.py:455
 msgid ""
 "Every ZeroTier network on this computer will disconnect. Saved network "
 "memberships are kept."
@@ -2916,7 +2874,7 @@ msgstr ""
 msgid "Every device on the network, approvals and removal."
 msgstr "Kõik võrgu seadmed, nende kinnitamine ja eemaldamine."
 
-#: src/big_remote_play/ui/host_view.py:1659
+#: src/big_remote_play/ui/host_view.py:1666
 msgid ""
 "Every device playing now is disconnected. Then start pairing again on the "
 "new device and enter its code here. Devices already paired can reconnect "
@@ -2952,9 +2910,14 @@ msgid "Excellent"
 msgstr "Suurepärane"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 784
-#: src/big_remote_play/ui/host_view.py:2361
+#: src/big_remote_play/ui/host_view.py:2368
 msgid "Execution failed or cancelled."
 msgstr "Täideviimine ebaõnnestus või tühistati."
+
+#: src/big_remote_play/host/sunshine_manager.py:278
+#, python-brace-format
+msgid "Exit code {code}"
+msgstr "Väljumiskood {code}"
 
 #: src/big_remote_play/ui/sunshine_preferences.py:98
 msgid ""
@@ -2992,11 +2955,15 @@ msgid "Failed to connect. Verify if Moonlight is paired."
 msgstr "Ühendamine ebaõnnestus. Kontrollige, kas Moonlight on seotud."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1146
-#: src/big_remote_play/ui/host_view.py:3383
+#: src/big_remote_play/ui/host_view.py:3390
 msgid "Failed to update device"
 msgstr "Seadme uuendamine ebaõnnestus"
 
-#: src/big_remote_play/ui/host_view.py:512
+#: src/big_remote_play/ui/sunshine_preferences.py:655
+msgid "Fast decoding"
+msgstr "Kiire dekodeerimine"
+
+#: src/big_remote_play/ui/host_view.py:519
 msgid "Faster response, or better picture"
 msgstr "Kiirem reageering või parem pilt"
 
@@ -3007,6 +2974,15 @@ msgstr "Lemmik"
 #: src/big_remote_play/ui/private_network_view.py:1092
 msgid "Fill in the form"
 msgstr "Täida vorm"
+
+#. TRANSLATORS: x264 tuning presets for kinds of picture.
+#: src/big_remote_play/ui/sunshine_preferences.py:651
+msgid "Film"
+msgstr "Film"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:653
+msgid "Film grain"
+msgstr "Filmiteralisus"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1293
@@ -3030,13 +3006,13 @@ msgid ""
 "Finish or cancel the package transaction in the terminal before closing."
 msgstr "Enne sulgemist lõpeta või tühista paigaldamine terminalis."
 
-#: src/big_remote_play/ui/network_dashboard.py:214
+#: src/big_remote_play/ui/network_dashboard.py:222
 msgid "Finish signing in"
 msgstr "Lõpeta sisselogimine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 784
-#: src/big_remote_play/ui/host_view.py:2327
-#: src/big_remote_play/ui/host_view.py:2361
+#: src/big_remote_play/ui/host_view.py:2334
+#: src/big_remote_play/ui/host_view.py:2368
 msgid "Firewall Error"
 msgstr "Tulemüüriviga"
 
@@ -3058,7 +3034,7 @@ msgstr "Paranda"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 302
-#: src/big_remote_play/ui/host_view.py:3241
+#: src/big_remote_play/ui/host_view.py:3248
 msgid "Fix Dependencies"
 msgstr "Paranda sõltuvused"
 
@@ -3072,7 +3048,7 @@ msgstr ""
 "mis paigaldab systemd-teenuse. Hoia seadistust failis /etc/headscale/"
 "config.yaml ja määra server_url oma https-aadressiks."
 
-#: src/big_remote_play/ui/main_window.py:116
+#: src/big_remote_play/ui/main_window.py:119
 msgid "For PCs in different houses"
 msgstr "Eri majapidamistes olevatele arvutitele"
 
@@ -3096,11 +3072,11 @@ msgstr ""
 "Administraatoritele, kes soovivad käitada oma VPN-i. See erineb avaliku "
 "domeeni kaudu toimuvast otseühendusega internetimängust."
 
-#: src/big_remote_play/ui/main_window.py:839
+#: src/big_remote_play/ui/main_window.py:842
 msgid "For computers in different houses. Not needed on the same home network."
 msgstr "Eri majades olevatele arvutitele. Samas koduvõrgus pole seda vaja."
 
-#: src/big_remote_play/ui/host_view.py:604
+#: src/big_remote_play/ui/host_view.py:611
 msgid "For direct internet access only"
 msgstr "Ainult otseseks internetijuurdepääsuks"
 
@@ -3108,7 +3084,7 @@ msgstr "Ainult otseseks internetijuurdepääsuks"
 msgid "For example: 192.168.1.20 or gaming-pc.local"
 msgstr "Näiteks: 192.168.1.20 või manguri-pc.local"
 
-#: src/big_remote_play/ui/host_view.py:1072
+#: src/big_remote_play/ui/host_view.py:1079
 msgid "For games that are not listed, such as emulators."
 msgstr "Mängudele, mida loendis pole, näiteks emulaatoritele."
 
@@ -3132,20 +3108,17 @@ msgstr "Sunni kindlat hõivemeetodit"
 msgid "Forced"
 msgstr "Sunditud"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 1772
-# line: 1787
 #: src/big_remote_play/ui/private_network_view.py:999
 #: src/big_remote_play/ui/private_network_view.py:1005
 #, python-brace-format
-msgid "Form filled for {}"
-msgstr "Vorm on täidetud {} jaoks"
+msgid "Form filled for {name}"
+msgstr "Vorm on täidetud {name} jaoks"
 
 # #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 90
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 88
-#: src/big_remote_play/ui/host_view.py:399
+#: src/big_remote_play/ui/host_view.py:406
 msgid "Frame Rate (FPS)"
 msgstr "Kaadrisagedus (FPS)"
 
@@ -3158,13 +3131,13 @@ msgid "Frame rate"
 msgstr "Kaadrisagedus"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 182
-#: src/big_remote_play/ui/host_view.py:400
+#: src/big_remote_play/ui/host_view.py:407
 msgid "Frames per second"
 msgstr "Kaadreid sekundis"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 128
-#: src/big_remote_play/ui/host_view.py:330
-#: src/big_remote_play/ui/host_view.py:2461
+#: src/big_remote_play/ui/host_view.py:337
+#: src/big_remote_play/ui/host_view.py:2468
 msgid "Full Desktop"
 msgstr "Kogu töölaud"
 
@@ -3176,8 +3149,8 @@ msgstr "Kogu töölaud"
 msgid "Fullscreen"
 msgstr "Täisekraan"
 
-#: src/big_remote_play/ui/host_view.py:688
-#: src/big_remote_play/ui/host_view.py:3532
+#: src/big_remote_play/ui/host_view.py:695
+#: src/big_remote_play/ui/host_view.py:3539
 msgid "Game Library"
 msgstr "Mänguteek"
 
@@ -3192,48 +3165,50 @@ msgstr "Mänguarvuti ja ühendus"
 
 #: src/big_remote_play/ui/guest_view.py:1710
 #, python-brace-format
-msgid "Game PC found: {}"
-msgstr "Mänguarvuti leitud: {}"
+msgid "Game PC found: {name}"
+msgstr "Mänguarvuti leitud: {name}"
 
 #: src/big_remote_play/ui/guest_view.py:1718
 msgid "Game PC not found"
 msgstr "Mänguarvutit ei leitud"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 132
-#: src/big_remote_play/ui/host_view.py:339
+#: src/big_remote_play/ui/host_view.py:346
 msgid "Game Selection"
 msgstr "Mängu valik"
 
-#: src/big_remote_play/ui/host_view.py:330
-#: src/big_remote_play/ui/host_view.py:1467
-#: src/big_remote_play/ui/host_view.py:2453
+#. TRANSLATORS: Generic application category shown by app menus and software centers.
+#: build-aux/i18n/br.com.biglinux.remoteplay.desktop.in:4
+msgid "Game Streaming"
+msgstr "Mängude voogesitus"
+
+#: src/big_remote_play/ui/host_view.py:337
+#: src/big_remote_play/ui/host_view.py:1065
+#: src/big_remote_play/ui/host_view.py:1474
+#: src/big_remote_play/ui/host_view.py:2460
 msgid "Game Window"
 msgstr "Mänguaken"
 
-#: src/big_remote_play/ui/host_view.py:1163
+#: src/big_remote_play/ui/host_view.py:1170
 msgid "Game Window is not available here"
 msgstr "Mänguaken pole siin saadaval"
 
-#: src/big_remote_play/ui/host_view.py:2453
+#: src/big_remote_play/ui/host_view.py:2460
 #, python-brace-format
 msgid "Game Window: {game}"
 msgstr "Mänguaken: {game}"
 
-#: src/big_remote_play/ui/host_view.py:1058
-msgid "Game window"
-msgstr "Mänguaken"
-
 #. TRANSLATORS: Gamer is the proper name of the violet/cyan appearance preset.
-#: src/big_remote_play/ui/main_window.py:679
+#: src/big_remote_play/ui/main_window.py:682
 msgid "Gamer"
 msgstr "Gamer"
 
-#: src/big_remote_play/ui/host_view.py:3625
+#: src/big_remote_play/ui/host_view.py:3632
 #, python-brace-format
-msgid "Games added: {}"
-msgstr "Lisati {} mängu"
+msgid "Games added: {count}"
+msgstr "Lisati {count} mängu"
 
-#: src/big_remote_play/ui/host_view.py:3532
+#: src/big_remote_play/ui/host_view.py:3539
 msgid ""
 "Games shown on the other computer in Moonlight. Add detected games or remove "
 "entries."
@@ -3241,7 +3216,7 @@ msgstr ""
 "Teise arvuti Moonlightis näidatavad mängud. Lisage tuvastatud mänge või "
 "eemaldage kirjeid."
 
-#: src/big_remote_play/ui/network_dashboard.py:392
+#: src/big_remote_play/ui/network_dashboard.py:400
 msgid "Gaming network"
 msgstr "Mänguvõrk"
 
@@ -3275,11 +3250,11 @@ msgstr ""
 "Andke ühekordne juurdepääs ZeroTier-teenuses seadistatud võrkude lugemiseks."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 197
-#: src/big_remote_play/ui/host_view.py:448
+#: src/big_remote_play/ui/host_view.py:455
 msgid "Graphics Card / Encoder"
 msgstr "Graafikakaart / Kodeerija"
 
-#: src/big_remote_play/ui/host_view.py:1766
+#: src/big_remote_play/ui/host_view.py:1773
 #, python-brace-format
 msgid "Graphics card: {value}"
 msgstr "Graafikakaart: {value}"
@@ -3290,20 +3265,20 @@ msgstr "Graafikakaart: {value}"
 #: src/big_remote_play/ui/guided_setup.py:176
 #: src/big_remote_play/ui/guided_setup.py:247
 #: src/big_remote_play/ui/guided_setup.py:288
-#: src/big_remote_play/ui/main_window.py:968
+#: src/big_remote_play/ui/main_window.py:971
 msgid "Guided setup"
 msgstr "Juhendatud seadistamine"
 
-#: src/big_remote_play/ui/host_view.py:1719
+#: src/big_remote_play/ui/host_view.py:1726
 msgid "HDR screen: colors will look washed out on devices without HDR"
 msgstr "HDR-ekraan: HDR-ita seadmetes paistavad värvid tuhmid"
 
-#: src/big_remote_play/ui/host_view.py:1718
+#: src/big_remote_play/ui/host_view.py:1725
 msgid "HDR screen: shared in SDR"
 msgstr "HDR-ekraan: jagatakse SDR-is"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 183
-#: src/big_remote_play/ui/host_view.py:420
+#: src/big_remote_play/ui/host_view.py:427
 msgid "Hardware and Capture"
 msgstr "Riistvara ja hõive"
 
@@ -3334,18 +3309,18 @@ msgstr "Headscale kasutab tavalist Tailscale'i klienti."
 msgid "Hidden. Use Copy."
 msgstr "Peidetud. Kasuta nuppu Kopeeri."
 
-#: src/big_remote_play/ui/host_view.py:2395
-#: src/big_remote_play/ui/host_view.py:2422
+#: src/big_remote_play/ui/host_view.py:2402
+#: src/big_remote_play/ui/host_view.py:2429
 #, python-brace-format
-msgid "Hide {}"
-msgstr "Peida {}"
+msgid "Hide {field}"
+msgstr "Peida {field}"
 
 #: src/big_remote_play/ui/network_common.py:195
 msgid "High"
 msgstr "Kõrge"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 249
-#: src/big_remote_play/ui/host_view.py:516
+#: src/big_remote_play/ui/host_view.py:523
 msgid "High Quality (Best Image)"
 msgstr "Kõrge kvaliteet (parim pilt)"
 
@@ -3382,16 +3357,16 @@ msgstr ""
 "< 0."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 16
-#: src/big_remote_play/ui/main_window.py:118
-#: src/big_remote_play/ui/main_window.py:668
-#: src/big_remote_play/ui/main_window.py:1018
-#: src/big_remote_play/ui/main_window.py:1042
-#: src/big_remote_play/ui/main_window.py:1044
+#: src/big_remote_play/ui/main_window.py:121
+#: src/big_remote_play/ui/main_window.py:671
+#: src/big_remote_play/ui/main_window.py:1021
+#: src/big_remote_play/ui/main_window.py:1045
+#: src/big_remote_play/ui/main_window.py:1047
 msgid "Home"
 msgstr "Avaleht"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 18
-#: src/big_remote_play/ui/main_window.py:118
+#: src/big_remote_play/ui/main_window.py:121
 msgid "Home Page"
 msgstr "Avaleht"
 
@@ -3406,11 +3381,10 @@ msgstr "Home/Guide-nupu aegumine (ms)"
 msgid "Host"
 msgstr "Hostarvuti"
 
-# File: big-remote-play/usr/share/big-remote-play/utils/network.py, line: 156
 #: src/big_remote_play/utils/network.py:213
 #, python-brace-format
-msgid "Host ({})"
-msgstr "Hostarvuti ({})"
+msgid "Host ({address})"
+msgstr "Hostarvuti ({address})"
 
 #: src/big_remote_play/ui/connection_guides.py:136
 msgid "Host a Headscale VPN server"
@@ -3437,11 +3411,10 @@ msgstr "Kuidas kinnitada"
 msgid "How to create a free network, step by step."
 msgstr "Kuidas luua tasuta võrk samm-sammult."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 196
 #: src/big_remote_play/ui/private_network_view.py:463
 #, python-brace-format
-msgid "How to install {}"
-msgstr "Kuidas paigaldada {}"
+msgid "How to install {name}"
+msgstr "Kuidas paigaldada {name}"
 
 #: src/big_remote_play/ui/private_network_view.py:732
 msgid "How to run Headscale on your own server, step by step."
@@ -3464,7 +3437,7 @@ msgstr "Mul pole koodi"
 msgid "I don't have a server yet"
 msgstr "Mul pole veel serverit"
 
-#: src/big_remote_play/ui/host_view.py:3769
+#: src/big_remote_play/ui/host_view.py:3776
 msgid "I forgot the current password"
 msgstr "Unustasin praeguse parooli"
 
@@ -3506,13 +3479,8 @@ msgstr "IPv6-ühendus"
 msgid "IPv6 only"
 msgstr "Ainult IPv6"
 
-# File: big-remote-play/usr/share/big-remote-play/main.py, line: 54
-#: src/big_remote_play/app.py:123
-msgid "Icon and image paths added"
-msgstr "Ikoonide ja piltide teed on lisatud"
-
-#: src/big_remote_play/ui/host_view.py:433
 #: src/big_remote_play/ui/host_view.py:440
+#: src/big_remote_play/ui/host_view.py:447
 msgid "Identify monitors"
 msgstr "Tuvasta monitorid"
 
@@ -3530,13 +3498,13 @@ msgstr ""
 msgid "Image"
 msgstr "Pilt"
 
-#: src/big_remote_play/ui/host_view.py:962
-#: src/big_remote_play/ui/host_view.py:1007
-#: src/big_remote_play/ui/host_view.py:1017
+#: src/big_remote_play/ui/host_view.py:969
+#: src/big_remote_play/ui/host_view.py:1014
+#: src/big_remote_play/ui/host_view.py:1024
 msgid "Image and capture"
 msgstr "Pilt ja pildihõive"
 
-#: src/big_remote_play/ui/host_view.py:1002
+#: src/big_remote_play/ui/host_view.py:1009
 msgid "Image and capture settings are on Overview, next to Start sharing."
 msgstr ""
 "Pildi ja pildihõive seaded on Ülevaate lehel nupu Alusta jagamist kõrval."
@@ -3573,7 +3541,7 @@ msgstr ""
 "Vali rakenduses Big Remote Play Headscale → Liitu võrguga ja sisesta serveri "
 "aadress või käivita allolev käsk."
 
-#: src/big_remote_play/ui/host_view.py:921
+#: src/big_remote_play/ui/host_view.py:928
 msgid ""
 "In Big Remote Play on the other PC, choose Find by code. This is not the "
 "pairing code."
@@ -3618,7 +3586,7 @@ msgid "In use now"
 msgstr "Praegu kasutusel"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 877
-#: src/big_remote_play/ui/host_view.py:2512
+#: src/big_remote_play/ui/host_view.py:2519
 msgid "Inactive"
 msgstr "Passiivne"
 
@@ -3643,18 +3611,18 @@ msgid "Input"
 msgstr "Sisestus"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 251
-#: src/big_remote_play/ui/host_view.py:596
+#: src/big_remote_play/ui/host_view.py:603
 msgid "Input, Network, and Access"
 msgstr "Sisend, Võrk ja Juurdepääs"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 563
-#: src/big_remote_play/ui/host_view.py:2036
+#: src/big_remote_play/ui/host_view.py:2043
 msgid "Insert PIN"
 msgstr "Sisesta PIN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 366
 #: src/big_remote_play/ui/installer_window.py:78
-#: src/big_remote_play/ui/main_window.py:1141
+#: src/big_remote_play/ui/main_window.py:1144
 #: src/big_remote_play/ui/network_common.py:158
 #: src/big_remote_play/ui/remote_connection.py:68
 msgid "Install"
@@ -3687,24 +3655,23 @@ msgstr "Paigalda ainult oma ülesandeks vajalikud komponendid."
 #, python-brace-format
 msgid ""
 "Install these packages with your distribution's tools:\n"
-"{}"
+"{packages}"
 msgstr ""
 "Paigalda need paketid oma distributsiooni tööriistadega:\n"
-"{}"
+"{packages}"
 
-#: src/big_remote_play/ui/host_view.py:1165
+#: src/big_remote_play/ui/host_view.py:1172
 #, python-brace-format
 msgid "Install these packages, then open Big Remote Play again: {packages}"
 msgstr "Paigalda need paketid ja ava siis Big Remote Play uuesti: {packages}"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 366
-#: src/big_remote_play/ui/main_window.py:1130
-#: src/big_remote_play/ui/main_window.py:1139
+#: src/big_remote_play/ui/main_window.py:1133
+#: src/big_remote_play/ui/main_window.py:1142
 #: src/big_remote_play/ui/private_network_view.py:458
 #: src/big_remote_play/ui/private_network_view.py:460
 #, python-brace-format
-msgid "Install {}"
-msgstr "Paigalda {}"
+msgid "Install {name}"
+msgstr "Paigalda {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
@@ -3727,19 +3694,16 @@ msgstr "Paigaldamine lõpetati edukalt!"
 msgid "Installation failed. Check the log."
 msgstr "Paigaldamine ebaõnnestus. Kontrollige logi."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 113
-# line: 124
 #: src/big_remote_play/ui/installer_window.py:198
 #, python-brace-format
-msgid "Installation failed. Exit code: {}"
-msgstr "Paigaldamine ebaõnnestus. Väljumiskood: {}"
+msgid "Installation failed. Exit code: {code}"
+msgstr "Paigaldamine ebaõnnestus. Väljumiskood: {code}"
 
 #: usr/share/big-remote-play/scripts/install-vpn.sh:69
 msgid "Installation finished."
 msgstr "Paigaldamine lõpetati."
 
-#: src/big_remote_play/ui/main_window.py:1138
+#: src/big_remote_play/ui/main_window.py:1141
 #: src/big_remote_play/ui/network_common.py:145
 msgid "Installation needed"
 msgstr "Paigaldamine on vajalik"
@@ -3749,18 +3713,14 @@ msgstr "Paigaldamine on vajalik"
 msgid "Installing ${pkg}…"
 msgstr "Paigaldatakse ${pkg}…"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 89
 #: src/big_remote_play/ui/installer_window.py:153
 #, python-brace-format
-msgid "Installing {}..."
-msgstr "{} paigaldamine..."
+msgid "Installing {packages}…"
+msgstr "{packages} paigaldamine…"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 89
 #: src/big_remote_play/ui/private_network_view.py:472
-msgid "Installing..."
-msgstr "Paigaldamine..."
+msgid "Installing…"
+msgstr "Paigaldamine…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 82
@@ -3783,7 +3743,7 @@ msgid "Internet protocols"
 msgstr "Interneti-protokollid"
 
 #: src/big_remote_play/ui/connection_guides.py:228
-#: src/big_remote_play/ui/network_dashboard.py:319
+#: src/big_remote_play/ui/network_dashboard.py:327
 #: src/big_remote_play/ui/remote_connection.py:270
 msgid "Internet, router and firewall"
 msgstr "Internet, ruuter ja tulemüür"
@@ -3798,13 +3758,13 @@ msgid "Invalid IP address: ${ip}"
 msgstr "Vigane IP-aadress: ${ip}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 696
-#: src/big_remote_play/ui/host_view.py:2088
+#: src/big_remote_play/ui/host_view.py:2095
 msgid "Invalid PIN"
 msgstr "Kehtetu PIN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 350
-#: src/big_remote_play/ui/guest_view.py:1912
+#: src/big_remote_play/ui/guest_view.py:1914
 msgid "Invalid Resolution"
 msgstr "Vigane eraldusvõime"
 
@@ -3816,8 +3776,8 @@ msgstr "Vigane aadress"
 msgid "Invalid code"
 msgstr "Vigane kood"
 
-#: src/big_remote_play/ui/host_view.py:3074
-#: src/big_remote_play/ui/host_view.py:3087
+#: src/big_remote_play/ui/host_view.py:3081
+#: src/big_remote_play/ui/host_view.py:3094
 msgid "Invalid launch command"
 msgstr "Vigane käivituskäsk"
 
@@ -3826,8 +3786,8 @@ msgid "Invalid port"
 msgstr "Vigane port"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1641
-#: src/big_remote_play/ui/host_view.py:2009
+#: src/big_remote_play/ui/host_view.py:1648
+#: src/big_remote_play/ui/host_view.py:2016
 msgid "Invalid username or password."
 msgstr "Kehtetu kasutajanimi või parool."
 
@@ -3854,7 +3814,7 @@ msgstr ""
 "See vastab võrgus, aga mitte Sunshine'i pordil. Ava mänguarvutis Jaga ja "
 "vali Luba tulemüüris."
 
-#: src/big_remote_play/ui/host_view.py:1169
+#: src/big_remote_play/ui/host_view.py:1176
 msgid ""
 "It cannot see other apps' windows from inside the Flatpak sandbox. Use the "
 "native package."
@@ -3877,7 +3837,7 @@ msgstr ""
 "Seda näidatakse ainult praegu ja seda ei salvestata. Salvesta see käsus "
 "nimetatud faili, käivita käsk ja seejärel kustuta fail."
 
-#: src/big_remote_play/ui/host_view.py:1170
+#: src/big_remote_play/ui/host_view.py:1177
 msgid ""
 "It needs KDE Plasma on Wayland, or an X11 desktop with window effects "
 "(compositing) on."
@@ -3885,7 +3845,7 @@ msgstr ""
 "Vajab Waylandil töötavat KDE Plasmat või X11 töölauda, kus aknaefektid "
 "(komposiitimine) on sees."
 
-#: src/big_remote_play/ui/host_view.py:1167
+#: src/big_remote_play/ui/host_view.py:1174
 #, python-brace-format
 msgid ""
 "It needs Sunshine {version} or newer, which can capture the private game "
@@ -3930,7 +3890,7 @@ msgstr "Liitu ZeroTier-võrguga"
 msgid "Join again to send a new request."
 msgstr "Uue taotluse saatmiseks liitu uuesti."
 
-#: src/big_remote_play/ui/network_dashboard.py:218
+#: src/big_remote_play/ui/network_dashboard.py:226
 msgid "Join an existing network or sign in."
 msgstr "Liitu olemasoleva võrguga või logi sisse."
 
@@ -3961,7 +3921,7 @@ msgid "Joining the network…"
 msgstr "Võrguga liitumine…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 209
-#: src/big_remote_play/ui/host_view.py:462
+#: src/big_remote_play/ui/host_view.py:469
 msgid "KMS (Direct)"
 msgstr "KMS (Otsene)"
 
@@ -3973,7 +3933,7 @@ msgstr "Hoia mängupuldi sisend taustal aktiivne"
 msgid "Keep history"
 msgstr "Säilita ajalugu"
 
-#: src/big_remote_play/ui/host_view.py:606
+#: src/big_remote_play/ui/host_view.py:613
 msgid ""
 "Keep off for local play or a VPN. UPnP must be enabled on the router; it "
 "does not bypass CGNAT, double NAT or the computer’s firewall. Restart "
@@ -3983,7 +3943,7 @@ msgstr ""
 "lubatud; see ei lähe mööda CGNAT-ist, topelt-NAT-ist ega arvuti tulemüürist. "
 "Käivitage jagamine uuesti ja katsetage teisest võrgust."
 
-#: src/big_remote_play/ui/host_view.py:622
+#: src/big_remote_play/ui/host_view.py:629
 msgid ""
 "Keep off for normal play. If enabled together with UPnP, Sunshine may also "
 "open the administration port on the router."
@@ -3991,7 +3951,7 @@ msgstr ""
 "Tavalise mängimise puhul hoidke väljas. Kui see ja UPnP on lubatud, võib "
 "Sunshine avada ruuteris ka halduspordi."
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1026
 msgid ""
 "Keep router port forwarding off when using a VPN. Changes apply when sharing "
 "starts again."
@@ -3999,7 +3959,7 @@ msgstr ""
 "VPN-i kasutamisel hoidke ruuteri pordiedastus väljas. Muudatused rakenduvad "
 "jagamise uuesti käivitamisel."
 
-#: src/big_remote_play/ui/network_dashboard.py:326
+#: src/big_remote_play/ui/network_dashboard.py:334
 msgid "Keep saved accounts so you can reconnect without signing in again"
 msgstr "Säilita salvestatud kontod, et saaksite uuesti sisse logimata ühenduda"
 
@@ -4007,11 +3967,11 @@ msgstr "Säilita salvestatud kontod, et saaksite uuesti sisse logimata ühenduda
 msgid "Keep this screen active during streaming"
 msgstr "Hoia see ekraan voogedastuse ajal aktiivne"
 
-#: src/big_remote_play/ui/host_view.py:492
+#: src/big_remote_play/ui/host_view.py:499
 msgid "Keep this screen's resolution"
 msgstr "Säilita selle ekraani eraldusvõime"
 
-#: src/big_remote_play/ui/host_view.py:384
+#: src/big_remote_play/ui/host_view.py:391
 msgid "Keeps your screen choice and video bitrate ceiling."
 msgstr "Säilitab ekraanivaliku ja video bitikiiruse ülempiiri."
 
@@ -4052,18 +4012,15 @@ msgstr "Latentsus"
 
 #: src/big_remote_play/ui/performance_monitor.py:149
 #, python-brace-format
-msgid "Latency {}, FPS {} (target), bandwidth {} (target)"
-msgstr "Latentsus {}, FPS {} (siht), ribalaius {} (siht)"
+msgid "Latency {latency}, FPS {fps} (target), bandwidth {bandwidth} (target)"
+msgstr "Latentsus {latency}, FPS {fps} (siht), ribalaius {bandwidth} (siht)"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1399
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1431
-#: src/big_remote_play/ui/host_view.py:3060
-#: src/big_remote_play/ui/host_view.py:3079
-#: src/big_remote_play/ui/host_view.py:3092
+#: src/big_remote_play/ui/host_view.py:3067
+#: src/big_remote_play/ui/host_view.py:3086
+#: src/big_remote_play/ui/host_view.py:3099
 #, python-brace-format
-msgid "Launching {}..."
-msgstr "Käivitamine {}..."
+msgid "Launching {game}…"
+msgstr "Käivitamine {game}…"
 
 #: src/big_remote_play/ui/api_access_dialog.py:151
 msgid "Least privilege"
@@ -4132,11 +4089,11 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/host_view.py:3630
+#: src/big_remote_play/ui/host_view.py:3637
 msgid "Library updated"
 msgstr "Teek uuendatud"
 
-#: src/big_remote_play/ui/main_window.py:680
+#: src/big_remote_play/ui/main_window.py:683
 msgid "Light"
 msgstr "Hele"
 
@@ -4152,7 +4109,7 @@ msgstr ""
 msgid "Linux command"
 msgstr "Linuxi käsk"
 
-#: src/big_remote_play/ui/host_view.py:1175
+#: src/big_remote_play/ui/host_view.py:1182
 msgid "Linux native"
 msgstr "Linuxi natiivne"
 
@@ -4173,15 +4130,15 @@ msgstr "Ajaloo laadimine…"
 msgid "Loading networks…"
 msgstr "Võrkude laadimine…"
 
-#: src/big_remote_play/ui/host_view.py:3321
+#: src/big_remote_play/ui/host_view.py:3328
 msgid "Loading paired devices…"
 msgstr "Seotud seadmete laadimine…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 712
-#: src/big_remote_play/ui/host_view.py:3284
-#: src/big_remote_play/ui/host_view.py:3474
-#: src/big_remote_play/ui/host_view.py:3520
+#: src/big_remote_play/ui/host_view.py:3291
+#: src/big_remote_play/ui/host_view.py:3481
+#: src/big_remote_play/ui/host_view.py:3527
 msgid "Loading…"
 msgstr "Laadimine..."
 
@@ -4218,7 +4175,7 @@ msgstr "Sisselogimise server (jäta tühi tailscale.com jaoks)"
 msgid "Logs Cleared"
 msgstr "Logid puhastatud"
 
-#: src/big_remote_play/ui/host_view.py:1067
+#: src/big_remote_play/ui/host_view.py:1074
 msgid "Look again for open games"
 msgstr "Otsi avatud mänge uuesti"
 
@@ -4234,7 +4191,7 @@ msgstr "Otsitakse juba töötavat ühendust."
 msgid "Looking for new devices…"
 msgstr "Uute seadmete otsimine…"
 
-#: src/big_remote_play/ui/host_view.py:1112
+#: src/big_remote_play/ui/host_view.py:1119
 msgid "Looking for open games…"
 msgstr "Avatud mängude otsimine…"
 
@@ -4244,9 +4201,17 @@ msgid "Lost replies: {percent}%"
 msgstr "Kadunud vastused: {percent}%"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 247
-#: src/big_remote_play/ui/host_view.py:514
+#: src/big_remote_play/ui/host_view.py:521
 msgid "Low Latency (Fastest)"
 msgstr "Madal Latentsus (Kiireim)"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:568
+msgid "Low latency"
+msgstr "Madal latentsus"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:567
+msgid "Low latency, high quality"
+msgstr "Madal latentsus, kõrge kvaliteet"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 308
@@ -4264,7 +4229,7 @@ msgstr "Muudab kursori liikumise sobivamaks töölauakasutuseks kui mängimiseks
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1215
-#: src/big_remote_play/ui/host_view.py:2190
+#: src/big_remote_play/ui/host_view.py:2197
 msgid "Manage"
 msgstr "Halda"
 
@@ -4272,7 +4237,7 @@ msgstr "Halda"
 msgid "Manage accounts and networks"
 msgstr "Halda kontosid ja võrke"
 
-#: src/big_remote_play/ui/host_view.py:689
+#: src/big_remote_play/ui/host_view.py:696
 msgid "Manage games shown on the other computer"
 msgstr "Halda teises arvutis näidatavaid mänge"
 
@@ -4284,12 +4249,12 @@ msgid "Manage network"
 msgstr "Halda võrku"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 241
-#: src/big_remote_play/ui/host_view.py:2185
-#: src/big_remote_play/ui/host_view.py:2194
+#: src/big_remote_play/ui/host_view.py:2192
+#: src/big_remote_play/ui/host_view.py:2201
 msgid "Manage paired devices"
 msgstr "Halda seotud seadmeid"
 
-#: src/big_remote_play/ui/host_view.py:1466
+#: src/big_remote_play/ui/host_view.py:1473
 msgid "Manual capture and encoding"
 msgstr "Käsitsi pildihõive ja kodeerimine"
 
@@ -4305,7 +4270,7 @@ msgid ""
 "playback."
 msgstr "Sobitab voo taasesituseks kasutatava ekraani füüsilise eraldusvõimega."
 
-#: src/big_remote_play/ui/host_view.py:412
+#: src/big_remote_play/ui/host_view.py:419
 msgid "Maximum video bitrate (Mbps)"
 msgstr "Video maksimaalne bitikiirus (Mbps)"
 
@@ -4324,11 +4289,11 @@ msgstr "Mõõtmisi: {count}"
 msgid "Measuring…"
 msgstr "Mõõtmine…"
 
-#: src/big_remote_play/ui/host_view.py:550
+#: src/big_remote_play/ui/host_view.py:557
 msgid "Microphone"
 msgstr "Mikrofon"
 
-#: src/big_remote_play/ui/host_view.py:581
+#: src/big_remote_play/ui/host_view.py:588
 msgid "Microphone sent to Sunshine"
 msgstr "Mikrofon saadetakse Sunshine'ile"
 
@@ -4365,13 +4330,13 @@ msgstr "Režiim 2"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 188
 #: src/big_remote_play/ui/host_view.py:244
 #: src/big_remote_play/ui/host_view.py:257
-#: src/big_remote_play/ui/host_view.py:423
-#: src/big_remote_play/ui/host_view.py:1799
+#: src/big_remote_play/ui/host_view.py:430
+#: src/big_remote_play/ui/host_view.py:1806
 msgid "Monitor / Display"
 msgstr "Monitor / Ekraan"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 184
-#: src/big_remote_play/ui/host_view.py:420
+#: src/big_remote_play/ui/host_view.py:427
 msgid "Monitor, GPU, and Capture Method"
 msgstr "Monitor, GPU ja hõivemeetod"
 
@@ -4390,7 +4355,7 @@ msgid "Moonlight internet setup guide"
 msgstr "Moonlighti internetiseadistuse juhend"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 541
-#: src/big_remote_play/ui/main_window.py:1498
+#: src/big_remote_play/ui/main_window.py:1501
 msgid "Moonlight not found"
 msgstr "Moonlighti ei leitud"
 
@@ -4465,12 +4430,12 @@ msgstr "Nimi võrgus"
 msgid "Name shown in Big Remote Play"
 msgstr "Big Remote Plays kuvatav nimi"
 
-#: src/big_remote_play/ui/main_window.py:380
-#: src/big_remote_play/ui/main_window.py:639
+#: src/big_remote_play/ui/main_window.py:383
+#: src/big_remote_play/ui/main_window.py:642
 msgid "Navigation"
 msgstr "Navigeerimine"
 
-#: src/big_remote_play/ui/network_dashboard.py:231
+#: src/big_remote_play/ui/network_dashboard.py:239
 msgid "Needs a ZeroTier API token. Add one under API access."
 msgstr "Vajab ZeroTieri API-luba. Lisa see jaotises API-juurdepääs."
 
@@ -4484,10 +4449,10 @@ msgstr "Vajab tähelepanu"
 msgid "Needs to sign in again"
 msgstr "Vaja uuesti sisse logida"
 
-#: src/big_remote_play/ui/main_window.py:1129
+#: src/big_remote_play/ui/main_window.py:1132
 #, python-brace-format
-msgid "Needs {}"
-msgstr "Vajab: {}"
+msgid "Needs {name}"
+msgstr "Vajab: {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 76
@@ -4502,7 +4467,7 @@ msgstr "Võrk"
 # line: 1069
 # line: 1666
 #: src/big_remote_play/ui/network_dashboard.py:179
-#: src/big_remote_play/ui/network_dashboard.py:256
+#: src/big_remote_play/ui/network_dashboard.py:264
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
 #: src/big_remote_play/ui/private_network_view.py:974
@@ -4516,12 +4481,12 @@ msgstr "Võrgu ID"
 msgid "Network ID (16 characters)"
 msgstr "Võrgu ID (16 tähemärki)"
 
-#: src/big_remote_play/ui/host_view.py:1019
+#: src/big_remote_play/ui/host_view.py:1026
 msgid "Network and access"
 msgstr "Võrk ja juurdepääs"
 
 #: src/big_remote_play/ui/network_dashboard.py:179
-#: src/big_remote_play/ui/network_dashboard.py:256
+#: src/big_remote_play/ui/network_dashboard.py:264
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
 #: src/big_remote_play/ui/zerotier_join.py:155
@@ -4534,11 +4499,11 @@ msgstr "Võrgukoodi ei leitud"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 505
-#: src/big_remote_play/ui/network_dashboard.py:434
+#: src/big_remote_play/ui/network_dashboard.py:442
 msgid "Network created"
 msgstr "Võrk loodud"
 
-#: src/big_remote_play/ui/main_window.py:1229
+#: src/big_remote_play/ui/main_window.py:1232
 #: src/big_remote_play/ui/network_dashboard.py:68
 #: src/big_remote_play/ui/network_dashboard.py:136
 #: src/big_remote_play/ui/remote_connection.py:519
@@ -4549,7 +4514,7 @@ msgstr "Võrgu üksikasjad"
 msgid "Network left"
 msgstr "Võrgust lahkutud"
 
-#: src/big_remote_play/ui/network_dashboard.py:391
+#: src/big_remote_play/ui/network_dashboard.py:399
 msgid "Network name"
 msgstr "Võrgu nimi"
 
@@ -4570,12 +4535,12 @@ msgid "New Central"
 msgstr "New Central (uus)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 637
-#: src/big_remote_play/ui/host_view.py:3778
+#: src/big_remote_play/ui/host_view.py:3785
 msgid "New Password"
 msgstr "Uus parool"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 635
-#: src/big_remote_play/ui/host_view.py:3776
+#: src/big_remote_play/ui/host_view.py:3783
 msgid "New Username"
 msgstr "Uus kasutaja"
 
@@ -4587,7 +4552,7 @@ msgstr "Uued arvutid kuuluvad kasutajale"
 msgid "New devices appear here while this window is open."
 msgstr "Uued seadmed ilmuvad siia, kuni see aken on avatud."
 
-#: src/big_remote_play/ui/host_view.py:818
+#: src/big_remote_play/ui/host_view.py:825
 msgid ""
 "New devices can pair only when no stream is open: they show “The computer is "
 "currently in a game”. End the stream for everyone, then start pairing again "
@@ -4598,16 +4563,16 @@ msgstr ""
 "jaoks ja alusta siis uues seadmes sidumist uuesti. Juba seotud seadmed "
 "saavad kohe pärast seda uuesti ühenduda."
 
-#: src/big_remote_play/ui/host_view.py:3820
+#: src/big_remote_play/ui/host_view.py:3827
 msgid "New passwords do not match."
 msgstr "Uued paroolid ei ühti."
 
-#: src/big_remote_play/ui/host_view.py:2706
+#: src/big_remote_play/ui/host_view.py:2713
 msgid "No"
 msgstr "Ei"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 611
-#: src/big_remote_play/ui/host_view.py:2103
+#: src/big_remote_play/ui/host_view.py:2110
 msgid "No Sunshine user exists. Configure one in the browser."
 msgstr ""
 "Sunshine'is ei ole loodud ühtegi kasutajat. Kasutaja seadistamine on vajalik "
@@ -4622,15 +4587,15 @@ msgstr "Kontot ei leitud"
 msgid "No active connection found"
 msgstr "Aktiivset ühendust ei leitud"
 
-#: src/big_remote_play/ui/host_view.py:3559
+#: src/big_remote_play/ui/host_view.py:3566
 msgid "No apps configured"
 msgstr "Ühtegi rakendust pole seadistatud"
 
-#: src/big_remote_play/ui/host_view.py:2711
+#: src/big_remote_play/ui/host_view.py:2718
 msgid "No call app is playing into the shared sound"
 msgstr "Ükski kõnerakendus ei esita jagatud helisse"
 
-#: src/big_remote_play/ui/host_view.py:2704
+#: src/big_remote_play/ui/host_view.py:2711
 msgid "No client is receiving sound right now"
 msgstr "Ükski klient ei võta praegu heli vastu"
 
@@ -4642,7 +4607,7 @@ msgstr ""
 "Ükski arvuti ei vastanud sellele otsingukoodile. Kontrolli koodi või ühenda "
 "aadressi abil."
 
-#: src/big_remote_play/ui/host_view.py:1487
+#: src/big_remote_play/ui/host_view.py:1494
 msgid "No computer is waiting"
 msgstr "Ükski arvuti ei oota"
 
@@ -4654,7 +4619,7 @@ msgstr ""
 "Ükski arvuti ei oota sidumist. Vali teises arvutis jaotises Ühenda see "
 "arvuti ja sisesta seejärel kood, mida see kuvab."
 
-#: src/big_remote_play/ui/host_view.py:1861
+#: src/big_remote_play/ui/host_view.py:1868
 msgid "No connected monitor could be identified."
 msgstr "Ühtegi ühendatud monitori ei õnnestunud tuvastada."
 
@@ -4668,7 +4633,7 @@ msgstr "Ühendusi veel pole"
 msgid "No details reported."
 msgstr "Üksikasju ei teatatud."
 
-#: src/big_remote_play/ui/host_view.py:1492
+#: src/big_remote_play/ui/host_view.py:1499
 msgid ""
 "No device is waiting for this code because a stream is open on this "
 "computer: the new device shows “The computer is currently in a game”. End "
@@ -4687,12 +4652,18 @@ msgstr "Ükski seade veel ei oota…"
 msgid "No game PC found yet"
 msgstr "Mänguarvutit pole veel leitud"
 
-#: src/big_remote_play/ui/host_view.py:1204
-#: src/big_remote_play/ui/host_view.py:1271
+#: src/big_remote_play/ui/host_view.py:1211
+#: src/big_remote_play/ui/host_view.py:1278
 msgid "No game windows found"
 msgstr "Mänguaknaid ei leitud"
 
-#: src/big_remote_play/ui/host_view.py:3489
+#. TRANSLATORS: {platform} is Steam or Lutris.
+#: src/big_remote_play/ui/host_view.py:3897
+#, python-brace-format
+msgid "No games found in {platform}"
+msgstr "Teenusest {platform} ei leitud mänge"
+
+#: src/big_remote_play/ui/host_view.py:3496
 msgid "No logs available (Sunshine not running or no credentials)."
 msgstr "Logisid pole saadaval (Sunshine ei tööta või mandaadid puuduvad)."
 
@@ -4704,7 +4675,7 @@ msgstr "Pole võrgukoodi?"
 msgid "No network found"
 msgstr "Võrku ei leitud"
 
-#: src/big_remote_play/ui/host_view.py:2139
+#: src/big_remote_play/ui/host_view.py:2146
 msgid "No one is playing yet"
 msgstr "Keegi ei mängi veel"
 
@@ -4719,11 +4690,11 @@ msgstr "Teisi seadmeid veel pole"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 423
-#: src/big_remote_play/ui/host_view.py:3341
+#: src/big_remote_play/ui/host_view.py:3348
 msgid "No paired devices"
 msgstr "Seotud seadmeid pole"
 
-#: src/big_remote_play/ui/host_view.py:2206
+#: src/big_remote_play/ui/host_view.py:2213
 msgid "No paired devices yet"
 msgstr "Seotud seadmeid pole veel"
 
@@ -4739,7 +4710,7 @@ msgid "No saved Tailscale or Headscale account was found on this computer."
 msgstr ""
 "Sellest arvutist ei leitud salvestatud Tailscale'i ega Headscale'i kontot."
 
-#: src/big_remote_play/ui/host_view.py:1693
+#: src/big_remote_play/ui/host_view.py:1700
 msgid "No stream is open now. Start pairing again on the new device."
 msgstr "Ühtegi voogu pole enam avatud. Alusta uues seadmes sidumist uuesti."
 
@@ -4751,12 +4722,12 @@ msgstr "Toetatud tulemüüritööriista ei leitud."
 #, python-brace-format
 msgid ""
 "No terminal found. Run this command:\n"
-"{}"
+"{command}"
 msgstr ""
 "Terminali ei leitud. Käivita see käsk:\n"
-"{}"
+"{command}"
 
-#: src/big_remote_play/ui/host_view.py:1465
+#: src/big_remote_play/ui/host_view.py:1472
 msgid "No video bitrate ceiling"
 msgstr "Video bitikiirusel pole ülempiiri"
 
@@ -4766,13 +4737,13 @@ msgstr "Video bitikiirusel pole ülempiiri"
 msgid "Node ID"
 msgstr "Sõlme ID"
 
-#: src/big_remote_play/ui/network_dashboard.py:245
+#: src/big_remote_play/ui/network_dashboard.py:253
 msgid "Node ID of this computer"
 msgstr "Selle arvuti sõlme ID"
 
 #: src/big_remote_play/ui/connection_guides.py:211
-#: src/big_remote_play/ui/host_view.py:2699
-#: src/big_remote_play/ui/host_view.py:2705
+#: src/big_remote_play/ui/host_view.py:2706
+#: src/big_remote_play/ui/host_view.py:2712
 msgid "None"
 msgstr "Puudub"
 
@@ -4780,11 +4751,11 @@ msgstr "Puudub"
 msgid "None detected (firewalld and ufw checked)"
 msgstr "Ei tuvastatud (kontrolliti firewalld ja ufw)"
 
-#: src/big_remote_play/ui/host_view.py:2716
+#: src/big_remote_play/ui/host_view.py:2723
 msgid "None: the sound is captured directly"
 msgstr "Puudub: heli salvestatakse otse"
 
-#: src/big_remote_play/ui/host_view.py:1265
+#: src/big_remote_play/ui/host_view.py:1272
 #: src/big_remote_play/ui/network_common.py:96
 #: src/big_remote_play/ui/remote_connection.py:611
 msgid "Not available"
@@ -4812,11 +4783,11 @@ msgstr "Selles arvutis ei tuvastatud. Ruuter võib siiski olla CGNAT-i taga."
 msgid "Not installed"
 msgstr "Pole paigaldatud"
 
-#: src/big_remote_play/ui/host_view.py:1661
+#: src/big_remote_play/ui/host_view.py:1668
 msgid "Not now"
 msgstr "Mitte praegu"
 
-#: src/big_remote_play/ui/host_view.py:1177
+#: src/big_remote_play/ui/host_view.py:1184
 msgid "Not recognized as a game"
 msgstr "Ei tuvastatud mänguna"
 
@@ -4828,18 +4799,18 @@ msgstr "Ei vasta"
 msgid "Not seen recently"
 msgstr "Pole hiljuti nähtud"
 
-#: src/big_remote_play/ui/host_view.py:550
+#: src/big_remote_play/ui/host_view.py:557
 msgid "Not sent by Big Remote Play. Voice chat apps keep using it normally."
 msgstr ""
 "Big Remote Play seda ei saada. Häälvestluse rakendused kasutavad seda edasi "
 "tavapäraselt."
 
-#: src/big_remote_play/ui/host_view.py:2725
+#: src/big_remote_play/ui/host_view.py:2732
 #, python-brace-format
 msgid "Not sent now: {programs}. The call plays only on this computer."
 msgstr "Praegu ei saadeta: {programs}. Kõne kõlab ainult selles arvutis."
 
-#: src/big_remote_play/ui/host_view.py:2729
+#: src/big_remote_play/ui/host_view.py:2736
 msgid ""
 "Not sent. Calls in Discord, Zoom, Teams and other call apps play only on "
 "this computer, so nobody hears their own voice come back. A call in a web "
@@ -4853,7 +4824,7 @@ msgstr ""
 msgid "Not signed in"
 msgstr "Pole sisse logitud"
 
-#: src/big_remote_play/ui/main_window.py:969
+#: src/big_remote_play/ui/main_window.py:972
 msgid ""
 "Not sure where to start? Answer a few questions and Big Remote Play sets up "
 "the way for you."
@@ -4872,7 +4843,7 @@ msgstr "Teavita, kui Sunshine'i uued eelväljalasked on saadaval"
 msgid "Now using {method}."
 msgstr "Nüüd on kasutusel {method}."
 
-#: src/big_remote_play/ui/host_view.py:2692
+#: src/big_remote_play/ui/host_view.py:2699
 #, python-brace-format
 msgid "Now: {output}"
 msgstr "Praegu: {output}"
@@ -4891,6 +4862,7 @@ msgid "OAuth client secret"
 msgstr "OAuth-kliendi saladus"
 
 #: src/big_remote_play/ui/guest_view.py:1894
+#: src/big_remote_play/ui/host_view.py:3267
 #: src/big_remote_play/ui/preferences.py:197
 #: src/big_remote_play/ui/preferences.py:210
 msgid "OK"
@@ -4904,10 +4876,17 @@ msgstr "OK"
 msgid "Offline"
 msgstr "Võrguühenduseta"
 
-#: src/big_remote_play/ui/host_view.py:1384
+#: src/big_remote_play/ui/host_view.py:1391
 #: src/big_remote_play/ui/preferences.py:209
 msgid "Old log files have been removed."
 msgstr "Vanad logifailid on eemaldatud."
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:18
+msgid ""
+"On KDE Plasma, share only the game window and keep the rest of the desktop "
+"private"
+msgstr ""
+"KDE Plasmas jaga ainult mänguakent ja hoia ülejäänud töölaud privaatsena"
 
 #: src/big_remote_play/ui/guest_view.py:1608
 msgid ""
@@ -5004,7 +4983,7 @@ msgstr ""
 msgid "Only in fullscreen"
 msgstr "Ainult täisekraanil"
 
-#: src/big_remote_play/ui/host_view.py:1367
+#: src/big_remote_play/ui/host_view.py:1374
 msgid "Only needed when reporting a problem."
 msgstr "Vajalik ainult probleemist teatades."
 
@@ -5028,7 +5007,7 @@ msgstr "Selles arvutis saab korraga aktiivne olla ainult üks neist kontodest."
 msgid "Only secure https addresses are accepted."
 msgstr "Lubatud on ainult turvalised https-aadressid."
 
-#: src/big_remote_play/ui/host_view.py:1277
+#: src/big_remote_play/ui/host_view.py:1284
 msgid ""
 "Only the chosen game is sent. The desktop, other windows and notifications "
 "stay on this computer."
@@ -5048,18 +5027,18 @@ msgstr "Uut nime kasutab ainult see arvuti."
 # line: 322
 # line: 347
 # line: 1295
-#: src/big_remote_play/ui/host_view.py:437
+#: src/big_remote_play/ui/host_view.py:444
 #: src/big_remote_play/ui/private_network_view.py:755
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "Ava"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 615
-#: src/big_remote_play/ui/host_view.py:2105
+#: src/big_remote_play/ui/host_view.py:2112
 msgid "Open Configuration"
 msgstr "Ava konfiguratsioon"
 
-#: src/big_remote_play/ui/host_view.py:801
+#: src/big_remote_play/ui/host_view.py:808
 msgid ""
 "Open Connect on the other PC, then approve its code here. This is needed "
 "only the first time."
@@ -5067,7 +5046,7 @@ msgstr ""
 "Ava teises arvutis Ühenda ja kinnita selle kood siin. Vajalik ainult "
 "esimesel korral."
 
-#: src/big_remote_play/ui/host_view.py:804
+#: src/big_remote_play/ui/host_view.py:811
 msgid "Open Connect on the other computer"
 msgstr "Ava teises arvutis Ühenda"
 
@@ -5076,7 +5055,7 @@ msgid "Open Share to start sharing a game from this computer"
 msgstr "Ava Jaga, et alustada sellest arvutist mängu jagamist"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 280
-#: src/big_remote_play/ui/host_view.py:628
+#: src/big_remote_play/ui/host_view.py:635
 msgid "Open TCP/UDP ports required for external connection"
 msgstr "Ava TCP/UDP porte, mis on vajalikud väliseks ühenduseks."
 
@@ -5095,7 +5074,7 @@ msgstr "Ava konsool"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 621
-#: src/big_remote_play/ui/host_view.py:3717
+#: src/big_remote_play/ui/host_view.py:3724
 msgid "Open folder"
 msgstr "Ava kaust"
 
@@ -5104,15 +5083,15 @@ msgstr "Ava kaust"
 msgid "Open guide"
 msgstr "Ava juhend"
 
-#: src/big_remote_play/ui/host_view.py:2231
+#: src/big_remote_play/ui/host_view.py:2238
 msgid "Open management to view all paired devices."
 msgstr "Kõigi seotud seadmete vaatamiseks ava haldus."
 
-#: src/big_remote_play/ui/host_view.py:2194
+#: src/big_remote_play/ui/host_view.py:2201
 msgid "Open paired device management"
 msgstr "Ava seotud seadmete haldus"
 
-#: src/big_remote_play/ui/host_view.py:3702
+#: src/big_remote_play/ui/host_view.py:3709
 msgid "Open parent folder"
 msgstr "Ava ülemkaust"
 
@@ -5124,7 +5103,7 @@ msgstr ""
 "Ava allolev ZeroTieri veebisait ja luba uus seade. Enne seda ei saa see "
 "võrku kasutada."
 
-#: src/big_remote_play/ui/network_dashboard.py:260
+#: src/big_remote_play/ui/network_dashboard.py:268
 msgid "Open the admin console"
 msgstr "Ava halduskonsool"
 
@@ -5132,18 +5111,17 @@ msgstr "Ava halduskonsool"
 msgid "Open the connection details to see what is wrong."
 msgstr "Ava ühenduse üksikasjad, et näha, mis on valesti."
 
-#: src/big_remote_play/ui/host_view.py:1204
+#: src/big_remote_play/ui/host_view.py:1211
 msgid "Open the game you want to share, then select Refresh."
 msgstr "Ava mäng, mida soovid jagada, ja vali siis Värskenda."
 
-#: src/big_remote_play/ui/network_dashboard.py:214
+#: src/big_remote_play/ui/network_dashboard.py:222
 msgid "Open the sign-in page again in your browser."
 msgstr "Ava sisselogimisleht brauseris uuesti."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1386
-#: src/big_remote_play/ui/host_view.py:3050
-msgid "Opening Steam Big Picture..."
-msgstr "Avaneb Steam Big Picture..."
+#: src/big_remote_play/ui/host_view.py:3057
+msgid "Opening Steam Big Picture…"
+msgstr "Avaneb Steam Big Picture…"
 
 #: src/big_remote_play/ui/connection_guides.py:35
 msgid "Opens the official website"
@@ -5151,24 +5129,24 @@ msgstr "Avab ametliku veebisaidi"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/host_view.py:3425
-#: src/big_remote_play/ui/host_view.py:3630
-#: src/big_remote_play/ui/network_dashboard.py:473
+#: src/big_remote_play/ui/host_view.py:3432
+#: src/big_remote_play/ui/host_view.py:3637
+#: src/big_remote_play/ui/network_dashboard.py:481
 msgid "Operation failed"
 msgstr "Toiming nurjus"
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:300
 #, python-brace-format
-msgid "Operation failed: {}"
-msgstr "Toiming nurjus: {}"
+msgid "Operation failed: {error}"
+msgstr "Toiming nurjus: {error}"
 
 #: src/big_remote_play/ui/guest_view.py:418
 msgid "Optimize the mouse for remote desktop"
 msgstr "Optimeeri hiir kaugtöölaua jaoks"
 
 #: src/big_remote_play/ui/guest_view.py:833
-#: src/big_remote_play/ui/host_view.py:1969
-#: src/big_remote_play/ui/host_view.py:1985
+#: src/big_remote_play/ui/host_view.py:1976
+#: src/big_remote_play/ui/host_view.py:1992
 msgid "Other computer"
 msgstr "Teine arvuti"
 
@@ -5186,12 +5164,12 @@ msgstr ""
 "→ Täpsem saab pärast sinu kinnitust lisada reeglid ainult "
 "voogedastusportidele; halduspaneel jääb suletuks."
 
-#: src/big_remote_play/ui/host_view.py:997
+#: src/big_remote_play/ui/host_view.py:1004
 msgid "Overview"
 msgstr "Ülevaade"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 603
-#: src/big_remote_play/ui/host_view.py:2017
+#: src/big_remote_play/ui/host_view.py:2024
 msgid "PIN Error"
 msgstr "PIN viga"
 
@@ -5202,11 +5180,11 @@ msgstr "PIN viga"
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 306
 #: src/big_remote_play/host/sunshine_manager.py:657
-#: src/big_remote_play/ui/host_view.py:2006
+#: src/big_remote_play/ui/host_view.py:2013
 msgid "PIN sent successfully"
 msgstr "PIN saadeti edukalt"
 
-#: src/big_remote_play/ui/host_view.py:2043
+#: src/big_remote_play/ui/host_view.py:2050
 msgid "PIN shown by Moonlight"
 msgstr "Moonlighti kuvatud PIN"
 
@@ -5214,9 +5192,9 @@ msgstr "Moonlighti kuvatud PIN"
 msgid "Packet Size"
 msgstr "Paketi suurus"
 
-#: src/big_remote_play/ui/host_view.py:893
-#: src/big_remote_play/ui/host_view.py:894
-#: src/big_remote_play/ui/host_view.py:1989
+#: src/big_remote_play/ui/host_view.py:900
+#: src/big_remote_play/ui/host_view.py:901
+#: src/big_remote_play/ui/host_view.py:1996
 msgid "Pair"
 msgstr "Seo"
 
@@ -5237,24 +5215,19 @@ msgstr ""
 "port erineb vaikepordist, kasutage seda. Katsetage väljaspool koduvõrku. "
 "Eemaldage avalikud pordisuunamised, kui neid enam vaja pole."
 
-#: src/big_remote_play/ui/host_view.py:897
+#: src/big_remote_play/ui/host_view.py:904
 msgid "Pair this device"
 msgstr "Seo see seade"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 260
-#: src/big_remote_play/ui/host_view.py:3293
-msgid "Paired Devices"
-msgstr "Seotud seadmed"
-
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 982
-#: src/big_remote_play/ui/host_view.py:2152
+#: src/big_remote_play/ui/host_view.py:2159
+#: src/big_remote_play/ui/host_view.py:3300
 msgid "Paired devices"
 msgstr "Seotud seadmed"
 
-#: src/big_remote_play/ui/host_view.py:2157
-#: src/big_remote_play/ui/host_view.py:2558
+#: src/big_remote_play/ui/host_view.py:2164
+#: src/big_remote_play/ui/host_view.py:2565
 msgid "Paired devices appear here."
 msgstr "Seotud seadmed kuvatakse siin."
 
@@ -5270,17 +5243,17 @@ msgstr "Sidumine õnnestus!"
 msgid "Pairing Error"
 msgstr "Sidumise viga"
 
-#: src/big_remote_play/ui/host_view.py:886
+#: src/big_remote_play/ui/host_view.py:893
 msgid "Pairing code shown on the other PC"
 msgstr "Teises arvutis kuvatav sidumiskood"
 
 #: src/big_remote_play/ui/guest_view.py:1613
 #, python-brace-format
-msgid "Pairing code: {}"
-msgstr "Sidumiskood: {}"
+msgid "Pairing code: {code}"
+msgstr "Sidumiskood: {code}"
 
-#: src/big_remote_play/ui/host_view.py:1942
-#: src/big_remote_play/ui/host_view.py:1959
+#: src/big_remote_play/ui/host_view.py:1949
+#: src/big_remote_play/ui/host_view.py:1966
 msgid "Pairing failed"
 msgstr "Sidumine ebaõnnestus"
 
@@ -5332,7 +5305,7 @@ msgstr "Tee"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 663
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 727
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 148
-#: src/big_remote_play/ui/host_view.py:1395
+#: src/big_remote_play/ui/host_view.py:1402
 #: src/big_remote_play/ui/preferences.py:215
 msgid "Path copied!"
 msgstr "Tee kopeeritud!"
@@ -5361,7 +5334,7 @@ msgstr "ZeroTier-võrkude loetlemiseks on vaja luba"
 msgid "Permission needed"
 msgstr "Vaja on luba"
 
-#: src/big_remote_play/ui/network_dashboard.py:349
+#: src/big_remote_play/ui/network_dashboard.py:357
 #: src/big_remote_play/ui/remote_connection.py:649
 msgid "Permission was not granted."
 msgstr "Luba ei antud."
@@ -5370,7 +5343,7 @@ msgstr "Luba ei antud."
 msgid "Pick the PC that is sharing the game."
 msgstr "Vali arvuti, mis mängu jagab."
 
-#: src/big_remote_play/ui/host_view.py:373
+#: src/big_remote_play/ui/host_view.py:380
 msgid "Picture"
 msgstr "Pilt"
 
@@ -5380,20 +5353,24 @@ msgstr "Pilt"
 msgid "Ping Timeout (ms)"
 msgstr "Ping'i aegumine (ms)"
 
-#: src/big_remote_play/ui/main_window.py:115
-#: src/big_remote_play/ui/main_window.py:1221
+#: src/big_remote_play/ui/main_window.py:118
+#: src/big_remote_play/ui/main_window.py:1224
 msgid "Play from another PC"
 msgstr "Mängi teisest arvutist"
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.desktop.in:5
+msgid "Play games together over a local or private network"
+msgstr "Mängige koos kohtvõrgus või privaatvõrgus"
 
 #: src/big_remote_play/ui/remote_connection.py:243
 msgid "Play on a computer that is already set up."
 msgstr "Mängi arvutis, mis on juba seadistatud."
 
-#: src/big_remote_play/ui/main_window.py:958
+#: src/big_remote_play/ui/main_window.py:961
 msgid "Play on another screen"
 msgstr "Mängi teisel ekraanil"
 
-#: src/big_remote_play/ui/main_window.py:994
+#: src/big_remote_play/ui/main_window.py:997
 msgid "Play on this device. Connect to the computer running the game."
 msgstr "Mängi selles seadmes. Ühendu arvutiga, milles mäng töötab."
 
@@ -5402,23 +5379,27 @@ msgid "Play or use this computer from anywhere, with a secure connection."
 msgstr "Mängi või kasuta seda arvutit kõikjalt, turvalise ühenduse kaudu."
 
 #: src/big_remote_play/ui/guest_view.py:608
-#: src/big_remote_play/ui/host_view.py:730
-#: src/big_remote_play/ui/host_view.py:732
-#: src/big_remote_play/ui/main_window.py:116
-#: src/big_remote_play/ui/main_window.py:838
-#: src/big_remote_play/ui/main_window.py:1225
+#: src/big_remote_play/ui/host_view.py:737
+#: src/big_remote_play/ui/host_view.py:739
+#: src/big_remote_play/ui/main_window.py:119
+#: src/big_remote_play/ui/main_window.py:841
+#: src/big_remote_play/ui/main_window.py:1228
 msgid "Play over the internet"
 msgstr "Mängimine üle interneti"
 
-#: src/big_remote_play/ui/host_view.py:733
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:17
+msgid "Play over the internet through Tailscale, ZeroTier, or Headscale"
+msgstr "Mängi üle interneti Tailscale'i, ZeroTieri või Headscale'iga"
+
+#: src/big_remote_play/ui/host_view.py:740
 msgid "Play over the internet: connect your devices"
 msgstr "Mängimine üle interneti: ühenda oma seadmed"
 
-#: src/big_remote_play/app.py:182 src/big_remote_play/ui/main_window.py:956
+#: src/big_remote_play/app.py:182 src/big_remote_play/ui/main_window.py:959
 msgid "Play together, from anywhere"
 msgstr "Mängige koos kõikjalt"
 
-#: src/big_remote_play/ui/main_window.py:931
+#: src/big_remote_play/ui/main_window.py:934
 msgid ""
 "Play with friends far away, or use the power of your computer on another "
 "compatible device."
@@ -5430,7 +5411,7 @@ msgstr ""
 msgid "Playback on this computer"
 msgstr "Taasesitus selles arvutis"
 
-#: src/big_remote_play/ui/host_view.py:2741
+#: src/big_remote_play/ui/host_view.py:2748
 msgid "Playing a short tone…"
 msgstr "Esitatakse lühikest tooni…"
 
@@ -5438,12 +5419,12 @@ msgstr "Esitatakse lühikest tooni…"
 msgid "Playing now"
 msgstr "Praegu mängimas"
 
-#: src/big_remote_play/ui/host_view.py:936
-#: src/big_remote_play/ui/main_window.py:1006
+#: src/big_remote_play/ui/host_view.py:943
+#: src/big_remote_play/ui/main_window.py:1009
 msgid "Playing over the internet?"
 msgstr "Kas mängid interneti kaudu?"
 
-#: src/big_remote_play/ui/host_view.py:563
+#: src/big_remote_play/ui/host_view.py:570
 msgid "Plays a short tone and checks that it reaches the shared sound."
 msgstr "Esitab lühikese tooni ja kontrollib, kas see jõuab jagatud helisse."
 
@@ -5476,7 +5457,7 @@ msgstr "Port ja IPv6"
 msgid "Port forwarding (advanced)"
 msgstr "Pordiedastus (täpsem)"
 
-#: src/big_remote_play/ui/host_view.py:462
+#: src/big_remote_play/ui/host_view.py:469
 msgid "Portal (screen picker)"
 msgstr "Portaal (ekraani valija)"
 
@@ -5504,7 +5485,7 @@ msgstr "Eelista CAVLC-d CABAC-i üle H.264-s."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 203
 #: src/big_remote_play/ui/components.py:275
-#: src/big_remote_play/ui/host_view.py:1029
+#: src/big_remote_play/ui/host_view.py:1036
 msgid "Preferences"
 msgstr "Eelistused"
 
@@ -5512,7 +5493,7 @@ msgstr "Eelistused"
 msgid "Prepare this PC"
 msgstr "Valmista see arvuti ette"
 
-#: src/big_remote_play/ui/host_view.py:3015
+#: src/big_remote_play/ui/host_view.py:3022
 msgid ""
 "Preparing the game window. If your system asks, choose the same game and "
 "select Share."
@@ -5534,7 +5515,7 @@ msgstr "Takistab selle arvuti ekraani seansi ajal välja lülitumast."
 msgid "Previous Networks"
 msgstr "Eelnevad võrgud"
 
-#: src/big_remote_play/ui/host_view.py:511
+#: src/big_remote_play/ui/host_view.py:518
 msgid "Priority"
 msgstr "Prioriteet"
 
@@ -5545,11 +5526,11 @@ msgid "Private Key"
 msgstr "Privaatvõti"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 619
-#: src/big_remote_play/ui/main_window.py:1549
+#: src/big_remote_play/ui/main_window.py:1552
 msgid "Private Network Containers"
 msgstr "Privaatvõrgu konteinerid"
 
-#: src/big_remote_play/ui/host_view.py:2576
+#: src/big_remote_play/ui/host_view.py:2583
 #: src/big_remote_play/ui/network_dashboard.py:175
 #: src/big_remote_play/ui/network_devices.py:213
 msgid "Private address"
@@ -5566,6 +5547,10 @@ msgstr "Aktiivsed privaatvõrgud"
 #: src/big_remote_play/app.py:189 src/big_remote_play/app.py:205
 msgid "Project Story"
 msgstr "Projekti lugu"
+
+#: src/big_remote_play/app.py:207
+msgid "Project story on YouTube"
+msgstr "Projekti lugu YouTube'is"
 
 #: src/big_remote_play/ui/sunshine_preferences.py:106
 #: src/big_remote_play/ui/sunshine_preferences.py:316
@@ -5626,7 +5611,7 @@ msgid ""
 "Read from the network interfaces of this computer. Nothing is sent anywhere."
 msgstr "Loetud selle arvuti võrguliidestest. Midagi ei saadeta kuhugi."
 
-#: src/big_remote_play/ui/host_view.py:573
+#: src/big_remote_play/ui/host_view.py:580
 msgid "Read from the sound server when opened."
 msgstr "Loetud heliserverist avamise ajal."
 
@@ -5669,7 +5654,7 @@ msgstr "Valmis üle interneti mängima"
 msgid "Ready to play?"
 msgstr "Valmis mängima?"
 
-#: src/big_remote_play/ui/host_view.py:2582
+#: src/big_remote_play/ui/host_view.py:2589
 msgid "Ready. This computer is also reachable over your private network."
 msgstr "Valmis. See arvuti on kättesaadav ka sinu privaatvõrgu kaudu."
 
@@ -5687,7 +5672,7 @@ msgstr "Reaalajas jälgimine"
 msgid "Realtime encoding priority"
 msgstr "Reaalajas kodeerimise prioriteet"
 
-#: src/big_remote_play/ui/host_view.py:384
+#: src/big_remote_play/ui/host_view.py:391
 msgid "Reapply automatic settings"
 msgstr "Rakenda automaatsed seaded uuesti"
 
@@ -5741,20 +5726,20 @@ msgstr "Ühenda uuesti"
 msgid "Reconnect using this saved network"
 msgstr "Ühendu selle salvestatud võrguga uuesti"
 
-#: src/big_remote_play/ui/host_view.py:578
+#: src/big_remote_play/ui/host_view.py:585
 msgid "Recorded source"
 msgstr "Salvestatav allikas"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1348
-#: src/big_remote_play/ui/host_view.py:1067
-#: src/big_remote_play/ui/host_view.py:3439
+#: src/big_remote_play/ui/host_view.py:1074
+#: src/big_remote_play/ui/host_view.py:3446
 #: src/big_remote_play/ui/network_dashboard.py:81
 #: src/big_remote_play/ui/network_devices.py:150
 msgid "Refresh"
 msgstr "Värskenda"
 
-#: src/big_remote_play/ui/host_view.py:3440
+#: src/big_remote_play/ui/host_view.py:3447
 msgid "Refresh logs"
 msgstr "Värskenda logisid"
 
@@ -5779,30 +5764,24 @@ msgid "Reload from Running Server"
 msgstr "Laadi töötavast serverist uuesti"
 
 #: src/big_remote_play/ui/api_access_dialog.py:92
-#: src/big_remote_play/ui/host_view.py:3393
+#: src/big_remote_play/ui/host_view.py:3400
 #: src/big_remote_play/ui/remote_connection.py:779
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:265
 msgid "Remove"
 msgstr "Eemalda"
 
-#: src/big_remote_play/ui/host_view.py:3289
 #: src/big_remote_play/ui/host_view.py:3296
-#: src/big_remote_play/ui/host_view.py:3298
+#: src/big_remote_play/ui/host_view.py:3303
+#: src/big_remote_play/ui/host_view.py:3305
 msgid "Remove All"
 msgstr "Eemalda kõik"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 423
-#: src/big_remote_play/ui/host_view.py:3389
-msgid "Remove Device"
-msgstr "Eemalda seade"
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:206
 msgid "Remove account from this computer"
 msgstr "Eemalda konto sellest arvutist"
 
-#: src/big_remote_play/ui/host_view.py:3580
-#: src/big_remote_play/ui/host_view.py:3581
+#: src/big_remote_play/ui/host_view.py:3587
+#: src/big_remote_play/ui/host_view.py:3588
 msgid "Remove app"
 msgstr "Eemalda rakendus"
 
@@ -5810,8 +5789,9 @@ msgstr "Eemalda rakendus"
 msgid "Remove credential"
 msgstr "Eemalda mandaat"
 
-#: src/big_remote_play/ui/host_view.py:3364
-#: src/big_remote_play/ui/host_view.py:3365
+#: src/big_remote_play/ui/host_view.py:3371
+#: src/big_remote_play/ui/host_view.py:3372
+#: src/big_remote_play/ui/host_view.py:3396
 #: src/big_remote_play/ui/network_devices.py:272
 #: src/big_remote_play/ui/network_devices.py:295
 #: src/big_remote_play/ui/network_devices.py:338
@@ -5829,7 +5809,7 @@ msgid "Remove logs, settings, servers and saved data"
 msgstr "Eemaldage logid, seaded, serverid ja salvestatud andmed"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 98
-#: src/big_remote_play/ui/host_view.py:1381
+#: src/big_remote_play/ui/host_view.py:1388
 msgid "Remove old log files"
 msgstr "Eemaldage vanad logifailid"
 
@@ -5868,10 +5848,10 @@ msgstr "Eemalda {name} võrgust"
 msgid "Remove {name}?"
 msgstr "Kas eemaldada {name}?"
 
-#: src/big_remote_play/ui/host_view.py:3390
+#: src/big_remote_play/ui/host_view.py:3397
 #, python-brace-format
-msgid "Remove “{}”? It will need to pair again with a new PIN."
-msgstr "Kas eemaldada „{}”? See tuleb uue PIN-iga uuesti siduda."
+msgid "Remove “{name}”? It will need to pair again with a new PIN."
+msgstr "Kas eemaldada „{name}”? See tuleb uue PIN-iga uuesti siduda."
 
 #: src/big_remote_play/ui/remote_connection.py:452
 #: src/big_remote_play/ui/remote_connection.py:490
@@ -5963,27 +5943,24 @@ msgstr "Lähtesta kõik seaded vaikeväärtustele"
 msgid "Reset connection settings"
 msgstr "Lähtesta ühenduse seaded"
 
-#: src/big_remote_play/ui/host_view.py:3770
+#: src/big_remote_play/ui/host_view.py:3777
 msgid "Reset directly; the server will restart"
 msgstr "Lähtesta otse; server taaskäivitub"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 91
 #: src/big_remote_play/host/sunshine_manager.py:726
 #, python-brace-format
-msgid "Reset error: {}"
-msgstr "Lähtestamise viga: {}"
+msgid "Reset error: {error}"
+msgstr "Lähtestamise viga: {error}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 790
 #: src/big_remote_play/host/sunshine_manager.py:724
 msgid "Reset failed"
 msgstr "Lähtestamine ebaõnnestus"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 717
 #: src/big_remote_play/host/sunshine_manager.py:724
 #, python-brace-format
-msgid "Reset failed: {}"
-msgstr "Lähtestamine ebaõnnestus: {}"
+msgid "Reset failed: {error}"
+msgstr "Lähtestamine ebaõnnestus: {error}"
 
 #: src/big_remote_play/ui/guest_view.py:2204
 msgid "Reset settings?"
@@ -5992,7 +5969,7 @@ msgstr "Kas lähtestada seaded?"
 # #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 122
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 75
-#: src/big_remote_play/ui/host_view.py:322
+#: src/big_remote_play/ui/host_view.py:329
 msgid "Reset to Defaults"
 msgstr "Lähtesta vaikeväärtustele"
 
@@ -6005,12 +5982,12 @@ msgid "Resolution"
 msgstr "Eraldusvõime"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 570
-#: src/big_remote_play/ui/main_window.py:1531
+#: src/big_remote_play/ui/main_window.py:1534
 msgid "Restart"
 msgstr "Taaskäivita"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 639
-#: src/big_remote_play/ui/main_window.py:1565
+#: src/big_remote_play/ui/main_window.py:1568
 msgid "Restart Containers"
 msgstr "Taaskäivita konteinerid"
 
@@ -6023,7 +6000,7 @@ msgstr ""
 "uuesti."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1430
-#: src/big_remote_play/ui/host_view.py:4158
+#: src/big_remote_play/ui/host_view.py:4167
 #: src/big_remote_play/ui/preferences.py:63
 #: src/big_remote_play/ui/preferences.py:169
 #: src/big_remote_play/ui/preferences.py:223
@@ -6031,7 +6008,7 @@ msgid "Restore"
 msgstr "Taasta"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1429
-#: src/big_remote_play/ui/host_view.py:4156
+#: src/big_remote_play/ui/host_view.py:4165
 #: src/big_remote_play/ui/preferences.py:62
 msgid "Restore Defaults"
 msgstr "Taasta vaikeväärtused"
@@ -6051,11 +6028,11 @@ msgstr "Taasta varukoopia"
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Kasuta Big Remote Play salvestatud ühendusandmeid uuesti"
 
-#: src/big_remote_play/ui/host_view.py:2395
-#: src/big_remote_play/ui/host_view.py:2422
+#: src/big_remote_play/ui/host_view.py:2402
+#: src/big_remote_play/ui/host_view.py:2429
 #, python-brace-format
-msgid "Reveal {}"
-msgstr "Näita {}"
+msgid "Reveal {field}"
+msgstr "Näita {field}"
 
 #: src/big_remote_play/ui/guest_view.py:444
 msgid "Reverse the scroll-wheel direction"
@@ -6091,12 +6068,12 @@ msgstr "Marsruuti pole mõõdetud"
 msgid "Routes approved"
 msgstr "Marsruudid kinnitatud"
 
-#: src/big_remote_play/ui/host_view.py:584
+#: src/big_remote_play/ui/host_view.py:591
 msgid "Routing added by Big Remote Play"
 msgstr "Big Remote Play lisatud suunamine"
 
-#: src/big_remote_play/ui/main_window.py:114
-#: src/big_remote_play/ui/main_window.py:656
+#: src/big_remote_play/ui/main_window.py:117
+#: src/big_remote_play/ui/main_window.py:659
 msgid "Run the game on this PC"
 msgstr "Käivita mäng selles arvutis"
 
@@ -6109,14 +6086,14 @@ msgstr ""
 "tulemus siia. Eelautentimisvõti on midagi muud: see registreerib ühe arvuti."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
-#: src/big_remote_play/ui/host_view.py:2495
-#: src/big_remote_play/ui/main_window.py:1454
+#: src/big_remote_play/ui/host_view.py:2502
+#: src/big_remote_play/ui/main_window.py:1457
 #: src/big_remote_play/ui/service_status_card.py:66
 msgid "Running"
 msgstr "Töötab"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 627
-#: src/big_remote_play/ui/main_window.py:1555
+#: src/big_remote_play/ui/main_window.py:1558
 msgid "Running (Caddy + Headscale)"
 msgstr "Töötab (Caddy + Headscale)"
 
@@ -6126,11 +6103,11 @@ msgstr "Töötab (Caddy + Headscale)"
 msgid "SW Tune"
 msgstr "SW Häälestus"
 
-#: src/big_remote_play/ui/host_view.py:493
+#: src/big_remote_play/ui/host_view.py:500
 msgid "Same as the first device that connects"
 msgstr "Sama mis esimesel ühenduval seadmel"
 
-#: src/big_remote_play/ui/host_view.py:937
+#: src/big_remote_play/ui/host_view.py:944
 msgid ""
 "Same home network? Skip this step. For different networks, set up internet "
 "play."
@@ -6141,8 +6118,8 @@ msgstr ""
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1077
 #: src/big_remote_play/ui/api_access_dialog.py:86
-#: src/big_remote_play/ui/host_view.py:1629
-#: src/big_remote_play/ui/host_view.py:3799
+#: src/big_remote_play/ui/host_view.py:1636
+#: src/big_remote_play/ui/host_view.py:3806
 #: src/big_remote_play/ui/private_network_view.py:1036
 #: src/big_remote_play/ui/remote_connection.py:751
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:324
@@ -6150,7 +6127,7 @@ msgid "Save"
 msgstr "Salvesta"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:2062
+#: src/big_remote_play/ui/host_view.py:2069
 msgid "Save Password"
 msgstr "Salvesta parool"
 
@@ -6159,7 +6136,7 @@ msgid "Save bandwidth"
 msgstr "Säästa ribalaiust"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 670
-#: src/big_remote_play/ui/host_view.py:2063
+#: src/big_remote_play/ui/host_view.py:2070
 msgid "Save credentials to the system keyring"
 msgstr "Salvesta sisselogimisandmed süsteemi võtmehoidjasse"
 
@@ -6180,16 +6157,16 @@ msgstr "Skanni see teise seadme kaameraga."
 msgid "Scan it with the phone of the person you are inviting."
 msgstr "Skanni see kutsutava inimese telefoniga."
 
-#: src/big_remote_play/ui/host_view.py:483
+#: src/big_remote_play/ui/host_view.py:490
 msgid "Screen resolution while sharing"
 msgstr "Ekraani eraldusvõime jagamise ajal"
 
-#: src/big_remote_play/ui/host_view.py:1015
+#: src/big_remote_play/ui/host_view.py:1022
 msgid "Screen, graphics card and encoding"
 msgstr "Ekraan, graafikakaart ja kodeerimine"
 
-#: src/big_remote_play/ui/host_view.py:1468
-#: src/big_remote_play/ui/host_view.py:1765
+#: src/big_remote_play/ui/host_view.py:1475
+#: src/big_remote_play/ui/host_view.py:1772
 #, python-brace-format
 msgid "Screen: {value}"
 msgstr "Ekraan: {value}"
@@ -6200,7 +6177,7 @@ msgid "Search again"
 msgstr "Otsi uuesti"
 
 #: src/big_remote_play/ui/guest_view.py:1354
-#: src/big_remote_play/ui/host_view.py:920
+#: src/big_remote_play/ui/host_view.py:927
 msgid "Search code"
 msgstr "Otsingukood"
 
@@ -6213,15 +6190,15 @@ msgid "Searches the local network for computers that are sharing a game."
 msgstr "Otsib kohalikust võrgust mängu jagavaid arvuteid."
 
 #: src/big_remote_play/ui/guest_view.py:1115
-msgid "Searching for game PCs..."
+msgid "Searching for game PCs…"
 msgstr "Mänguarvutite otsimine…"
 
 #. TRANSLATORS: sidebar heading above the Tailscale, ZeroTier and Headscale cards.
-#: src/big_remote_play/ui/main_window.py:519
+#: src/big_remote_play/ui/main_window.py:522
 msgid "Secure connection"
 msgstr "Turvaline ühendus"
 
-#: src/big_remote_play/ui/host_view.py:651
+#: src/big_remote_play/ui/host_view.py:658
 msgid "Security and expert settings that are rarely needed."
 msgstr "Turbe- ja ekspertseaded, mida läheb harva vaja."
 
@@ -6234,20 +6211,15 @@ msgid "Seen in the last few minutes"
 msgstr "Nähtud viimastel minutitel"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 137
-#: src/big_remote_play/ui/host_view.py:3649
-msgid "Select Executable"
-msgstr "Vali käivitatav fail"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 137
-#: src/big_remote_play/ui/host_view.py:344
+#: src/big_remote_play/ui/host_view.py:351
 msgid "Select Game"
 msgstr "Vali Mäng"
 
-#: src/big_remote_play/ui/host_view.py:1138
+#: src/big_remote_play/ui/host_view.py:1145
 msgid "Select Refresh to try again."
 msgstr "Uuesti proovimiseks vali Värskenda."
 
-#: src/big_remote_play/ui/host_view.py:2869
+#: src/big_remote_play/ui/host_view.py:2876
 msgid ""
 "Select a game or complete the app name and command. To share the whole "
 "screen instead, choose Full Desktop."
@@ -6260,24 +6232,23 @@ msgid "Select a network service and try again."
 msgstr "Valige võrguteenus ja proovige uuesti."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 137
-#: src/big_remote_play/ui/host_view.py:3725
+#: src/big_remote_play/ui/host_view.py:3656
+#: src/big_remote_play/ui/host_view.py:3732
 msgid "Select executable"
 msgstr "Vali käivitatav fail"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 189
-#: src/big_remote_play/ui/host_view.py:424
+#: src/big_remote_play/ui/host_view.py:431
 msgid "Select the display to capture"
 msgstr "Vali hõivatav ekraan"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 734
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 744
-#: src/big_remote_play/ui/host_view.py:3737
+#: src/big_remote_play/ui/host_view.py:3744
 #, python-brace-format
-msgid "Selected: {}"
-msgstr "Valitud: {}"
+msgid "Selected: {name}"
+msgstr "Valitud: {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 582
-#: src/big_remote_play/ui/host_view.py:2075
+#: src/big_remote_play/ui/host_view.py:2082
 msgid "Send"
 msgstr "Saada"
 
@@ -6285,7 +6256,7 @@ msgstr "Saada"
 msgid "Send invitation"
 msgstr "Saada kutse"
 
-#: src/big_remote_play/ui/host_view.py:947
+#: src/big_remote_play/ui/host_view.py:954
 msgid ""
 "Send one of these to the other person, or let them pick this computer under "
 "Connect."
@@ -6297,11 +6268,11 @@ msgstr ""
 msgid "Send system shortcuts to the remote computer"
 msgstr "Saada süsteemi kiirklahvid kaugarvutisse"
 
-#: src/big_remote_play/ui/network_dashboard.py:248
+#: src/big_remote_play/ui/network_dashboard.py:256
 msgid "Send the Node ID to the network owner"
 msgstr "Saada sõlme ID võrgu omanikule"
 
-#: src/big_remote_play/ui/host_view.py:897
+#: src/big_remote_play/ui/host_view.py:904
 msgid "Send the code shown on the other PC to finish pairing"
 msgstr "Saada teises arvutis näidatud kood sidumise lõpetamiseks"
 
@@ -6328,14 +6299,9 @@ msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Serveri domeen (nt vpn.example.com)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1415
-#: src/big_remote_play/ui/host_view.py:3238
+#: src/big_remote_play/ui/host_view.py:3245
 msgid "Server Failed to Start"
 msgstr "Serveri käivitamine ebaõnnestus"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:3750
-msgid "Server Password"
-msgstr "Serveri parool"
 
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
@@ -6345,41 +6311,42 @@ msgstr "Serveri parool"
 msgid "Server address"
 msgstr "Serveri aadress"
 
-#: src/big_remote_play/ui/host_view.py:674
+#: src/big_remote_play/ui/host_view.py:681
 msgid "Server control panel"
 msgstr "Serveri paneel"
 
-#: src/big_remote_play/ui/host_view.py:681
+#: src/big_remote_play/ui/host_view.py:688
 msgid "Server log"
 msgstr "Serveri logi"
 
-#: src/big_remote_play/ui/host_view.py:534
+#: src/big_remote_play/ui/host_view.py:541
 msgid "Server output"
 msgstr "Serveri väljund"
 
-#: src/big_remote_play/ui/host_view.py:695
+#: src/big_remote_play/ui/host_view.py:702
+#: src/big_remote_play/ui/host_view.py:3757
 msgid "Server password"
 msgstr "Serveri parool"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1189
-#: src/big_remote_play/ui/host_view.py:3008
+#: src/big_remote_play/ui/host_view.py:3015
 msgid "Server started"
 msgstr "Server käivitati"
 
-#: src/big_remote_play/ui/host_view.py:646
+#: src/big_remote_play/ui/host_view.py:653
 msgid "Server tools"
 msgstr "Serveritööriistad"
 
-#: src/big_remote_play/ui/network_dashboard.py:358
+#: src/big_remote_play/ui/network_dashboard.py:366
 msgid "Service started"
 msgstr "Teenus käivitatud"
 
 #. TRANSLATORS: accessible name of the list of streaming and private-network cards.
-#: src/big_remote_play/ui/main_window.py:488
+#: src/big_remote_play/ui/main_window.py:491
 msgid "Services"
 msgstr "Teenused"
 
-#: src/big_remote_play/ui/host_view.py:3760
+#: src/big_remote_play/ui/host_view.py:3767
 msgid ""
 "Set the username and password used to manage the Sunshine server. If you "
 "forgot the current password, switch on “I forgot the current password” to "
@@ -6397,11 +6364,11 @@ msgstr "Seadista"
 msgid "Set up a secure connection"
 msgstr "Seadista turvaline ühendus"
 
-#: src/big_remote_play/ui/main_window.py:1229
+#: src/big_remote_play/ui/main_window.py:1232
 msgid "Set up the connection"
 msgstr "Seadista ühendus"
 
-#: src/big_remote_play/ui/network_dashboard.py:237
+#: src/big_remote_play/ui/network_dashboard.py:245
 msgid "Set up your own server"
 msgstr "Seadista oma server"
 
@@ -6411,7 +6378,7 @@ msgid "Setting up"
 msgstr "Seadistamine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1438
-#: src/big_remote_play/ui/host_view.py:4173
+#: src/big_remote_play/ui/host_view.py:4182
 msgid "Settings Restored"
 msgstr "Seaded taastatud"
 
@@ -6428,7 +6395,7 @@ msgstr "Sätted taastatud! Kõigi muudatuste rakendamiseks taaskäivita rakendus
 msgid "Several computers are waiting to pair."
 msgstr "Mitu arvutit ootavad sidumist."
 
-#: src/big_remote_play/ui/host_view.py:1979
+#: src/big_remote_play/ui/host_view.py:1986
 msgid ""
 "Several computers are waiting to pair. Approve only the one that shows the "
 "code you entered."
@@ -6436,22 +6403,28 @@ msgstr ""
 "Mitu arvutit ootavad sidumist. Kinnita ainult see, mis kuvab sinu sisestatud "
 "koodi."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 215
-#: src/big_remote_play/ui/main_window.py:114
-#: src/big_remote_play/ui/main_window.py:656
-#: src/big_remote_play/ui/main_window.py:828
-#: src/big_remote_play/ui/main_window.py:985
+#. TRANSLATORS: with context "navigation", Share and Connect name the two
+#. main pages: the computer that shares a game and the one that connects to
+#. it. Buttons that perform the action use the same words without context.
+#: src/big_remote_play/ui/main_window.py:117
+#: src/big_remote_play/ui/main_window.py:659
+#: src/big_remote_play/ui/main_window.py:831
+#: src/big_remote_play/ui/main_window.py:988
+msgctxt "navigation"
 msgid "Share"
 msgstr "Jaga"
 
-#: src/big_remote_play/ui/host_view.py:761
+#: src/big_remote_play/ui/host_view.py:768
 msgid "Share from this PC"
 msgstr "Jaga sellest arvutist"
 
 #: src/big_remote_play/ui/guided_setup.py:123
 msgid "Share my game"
 msgstr "Jaga minu mängu"
+
+#: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:15
+msgid "Share the desktop or a single game from this computer with Sunshine"
+msgstr "Jaga selle arvuti töölauda või üht mängu Sunshine'iga"
 
 #: src/big_remote_play/ui/network_dashboard.py:188
 msgid "Share this PC"
@@ -6467,8 +6440,8 @@ msgstr "Jaga seda arvutit"
 msgid "Sharing found"
 msgstr "Jagamine leitud"
 
-#: src/big_remote_play/ui/host_view.py:3507
-#: src/big_remote_play/ui/host_view.py:3638
+#: src/big_remote_play/ui/host_view.py:3514
+#: src/big_remote_play/ui/host_view.py:3645
 msgid "Sharing is off"
 msgstr "Jagamine on välja lülitatud"
 
@@ -6476,21 +6449,21 @@ msgstr "Jagamine on välja lülitatud"
 msgid "Sharing not found"
 msgstr "Jagamist ei leitud"
 
-#: src/big_remote_play/ui/host_view.py:973
+#: src/big_remote_play/ui/host_view.py:980
 msgid "Sharing now"
 msgstr "Jagamine käib"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 159
-#: src/big_remote_play/ui/main_window.py:656
+#: src/big_remote_play/ui/main_window.py:659
 msgid "Sharing sections"
 msgstr "Jagamise jaotised"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1279
-#: src/big_remote_play/ui/host_view.py:3190
+#: src/big_remote_play/ui/host_view.py:3197
 msgid "Sharing stopped"
 msgstr "Jagamine peatatud"
 
-#: src/big_remote_play/ui/host_view.py:1323
+#: src/big_remote_play/ui/host_view.py:1330
 msgid ""
 "Sharing stopped so nothing else on this computer is shown. Open the game "
 "again to share it."
@@ -6498,13 +6471,13 @@ msgstr ""
 "Jagamine peatati, et sellest arvutist midagi muud ei paistaks. Jagamiseks "
 "ava mäng uuesti."
 
-#: src/big_remote_play/ui/host_view.py:1325
-#: src/big_remote_play/ui/host_view.py:1326
+#: src/big_remote_play/ui/host_view.py:1332
+#: src/big_remote_play/ui/host_view.py:1333
 msgid "Sharing stopped to protect your privacy"
 msgstr "Jagamine peatati sinu privaatsuse kaitseks"
 
-#: src/big_remote_play/ui/host_view.py:317
-#: src/big_remote_play/ui/host_view.py:1279
+#: src/big_remote_play/ui/host_view.py:324
+#: src/big_remote_play/ui/host_view.py:1286
 msgid ""
 "Sharing the whole screen also shows notifications and other open windows."
 msgstr "Kogu ekraani jagamisel on näha ka teavitused ja muud avatud aknad."
@@ -6520,11 +6493,11 @@ msgstr "Teravam pilt"
 msgid "Shortcuts & Instructions"
 msgstr "Otseteed ja juhised"
 
-#: src/big_remote_play/ui/host_view.py:434
+#: src/big_remote_play/ui/host_view.py:441
 msgid "Show a number on every connected screen"
 msgstr "Näita igal ühendatud ekraanil numbrit"
 
-#: src/big_remote_play/ui/host_view.py:1072
+#: src/big_remote_play/ui/host_view.py:1079
 msgid "Show all open windows"
 msgstr "Näita kõiki avatud aknaid"
 
@@ -6534,10 +6507,10 @@ msgstr "Näita kõiki avatud aknaid"
 msgid "Show icon in system tray and display desktop notifications"
 msgstr "Kuva ikoon süsteemisalves ja näita töölauateateid"
 
-#: src/big_remote_play/ui/host_view.py:2396
+#: src/big_remote_play/ui/host_view.py:2403
 #, python-brace-format
-msgid "Show or hide the {} value"
-msgstr "Näita või peida väärtus {}"
+msgid "Show or hide the {field} value"
+msgstr "Näita või peida väärtus {field}"
 
 #: src/big_remote_play/ui/guest_view.py:361
 msgid "Show performance statistics during streaming"
@@ -6556,7 +6529,7 @@ msgstr "Näitab hoiatust, kui võrk muutub ebastabiilseks või liiga aeglaseks."
 msgid "Shows network details and tools for experienced users."
 msgstr "Näitab kogenud kasutajatele võrgu üksikasju ja tööriistu."
 
-#: src/big_remote_play/ui/host_view.py:867
+#: src/big_remote_play/ui/host_view.py:874
 msgid "Shows the ports first; your password is requested"
 msgstr "Näitab esmalt porte; küsitakse sinu parooli"
 
@@ -6659,7 +6632,12 @@ msgstr "Ühekaadriline VBV/HRD protsendi tõus"
 msgid "Software"
 msgstr "Tarkvara"
 
-#: src/big_remote_play/ui/host_view.py:1032
+#. TRANSLATORS: video encoding on the processor instead of the graphics card.
+#: src/big_remote_play/ui/host_view.py:292
+msgid "Software (CPU)"
+msgstr "Tarkvara (protsessor)"
+
+#: src/big_remote_play/ui/host_view.py:1039
 msgid "Solve sharing problems"
 msgstr "Lahenda jagamisprobleemid"
 
@@ -6692,11 +6670,11 @@ msgstr ""
 msgid "Somewhere else"
 msgstr "Kusagil mujal"
 
-#: src/big_remote_play/ui/host_view.py:1002
+#: src/big_remote_play/ui/host_view.py:1009
 msgid "Sound and access on this computer"
 msgstr "Heli ja juurdepääs selles arvutis"
 
-#: src/big_remote_play/ui/host_view.py:327
+#: src/big_remote_play/ui/host_view.py:334
 msgid "Source"
 msgstr "Allikas"
 
@@ -6711,12 +6689,12 @@ msgid "Stable"
 msgstr "Stabiilne"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 564
-#: src/big_remote_play/ui/main_window.py:1523
+#: src/big_remote_play/ui/main_window.py:1526
 msgid "Start"
 msgstr "Alusta"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 633
-#: src/big_remote_play/ui/main_window.py:1559
+#: src/big_remote_play/ui/main_window.py:1562
 msgid "Start Containers"
 msgstr "Käivita konteinerid"
 
@@ -6730,25 +6708,25 @@ msgid "Start service"
 msgstr "Käivita teenus"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 601
-#: src/big_remote_play/ui/host_view.py:717
-#: src/big_remote_play/ui/host_view.py:721
 #: src/big_remote_play/ui/host_view.py:724
-#: src/big_remote_play/ui/host_view.py:727
-#: src/big_remote_play/ui/host_view.py:2541
-#: src/big_remote_play/ui/host_view.py:2543
-#: src/big_remote_play/ui/host_view.py:2549
+#: src/big_remote_play/ui/host_view.py:728
+#: src/big_remote_play/ui/host_view.py:731
+#: src/big_remote_play/ui/host_view.py:734
+#: src/big_remote_play/ui/host_view.py:2548
+#: src/big_remote_play/ui/host_view.py:2550
+#: src/big_remote_play/ui/host_view.py:2556
 msgid "Start sharing"
 msgstr "Alusta jagamist"
 
-#: src/big_remote_play/ui/host_view.py:3638
+#: src/big_remote_play/ui/host_view.py:3645
 msgid "Start sharing first to browse this PC."
 msgstr "Selle arvuti sirvimiseks alusta esmalt jagamist."
 
-#: src/big_remote_play/ui/host_view.py:3507
+#: src/big_remote_play/ui/host_view.py:3514
 msgid "Start sharing first to manage the game library."
 msgstr "Mänguteegi haldamiseks alusta esmalt jagamist."
 
-#: src/big_remote_play/ui/host_view.py:1645
+#: src/big_remote_play/ui/host_view.py:1652
 msgid "Start sharing first, then enter the password again."
 msgstr "Alusta esmalt jagamist ja sisesta siis parool uuesti."
 
@@ -6760,13 +6738,13 @@ msgstr "Alusta mänguarvutis jagamist ja otsi uuesti."
 msgid "Start sharing on the game PC. It will appear here."
 msgstr "Alusta mänguarvutis jagamist. See ilmub siia."
 
-#: src/big_remote_play/ui/host_view.py:727
-#: src/big_remote_play/ui/host_view.py:2549
+#: src/big_remote_play/ui/host_view.py:734
+#: src/big_remote_play/ui/host_view.py:2556
 msgid "Start sharing the game from this PC"
 msgstr "Alusta mängu jagamist sellest arvutist"
 
-#: src/big_remote_play/ui/host_view.py:2156
-#: src/big_remote_play/ui/host_view.py:2557
+#: src/big_remote_play/ui/host_view.py:2163
+#: src/big_remote_play/ui/host_view.py:2564
 msgid "Start sharing to show paired devices"
 msgstr "Seotud seadmete näitamiseks alusta jagamist"
 
@@ -6779,21 +6757,15 @@ msgstr "Käivitatakse ${unit}…"
 msgid "Starting ZeroTier…"
 msgstr "ZeroTieri käivitamine…"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 601
-#: src/big_remote_play/ui/host_view.py:2435
-msgid "Starting game sharing..."
-msgstr "Mängu jagamise alustamine..."
+#: src/big_remote_play/ui/host_view.py:2442
+msgid "Starting game sharing…"
+msgstr "Mängu jagamise alustamine…"
 
-#: src/big_remote_play/ui/network_dashboard.py:272
+#: src/big_remote_play/ui/network_dashboard.py:280
 msgid "Starting it asks for your password once."
 msgstr "Käivitamisel küsitakse üks kord sinu parooli."
 
-# File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
-# line: 67
 #: src/big_remote_play/ui/private_network_view.py:800
-msgid "Starting..."
-msgstr "Alustamine..."
-
 #: src/big_remote_play/ui/remote_connection.py:647
 msgid "Starting…"
 msgstr "Käivitamine…"
@@ -6815,14 +6787,14 @@ msgstr "Olek teadmata"
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:241
 #, python-brace-format
-msgid "Status: {}"
-msgstr "Olek: {}"
+msgid "Status: {status}"
+msgstr "Olek: {status}"
 
-#: src/big_remote_play/ui/host_view.py:582
+#: src/big_remote_play/ui/host_view.py:589
 msgid "Steam Remote Play"
 msgstr "Steam Remote Play"
 
-#: src/big_remote_play/ui/host_view.py:2710
+#: src/big_remote_play/ui/host_view.py:2717
 msgid "Steam is not recording sound"
 msgstr "Steam ei salvesta heli"
 
@@ -6862,45 +6834,49 @@ msgstr "Stereo"
 msgid "Stereo · This computer only"
 msgstr "Stereo · Ainult see arvuti"
 
+#: src/big_remote_play/ui/sunshine_preferences.py:654
+msgid "Still image"
+msgstr "Liikumatu pilt"
+
 # #-#-#-#-#  big-remote-play.pot (big-remote-play)  #-#-#-#-#
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 855
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 190
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 198
 #: src/big_remote_play/ui/guest_view.py:875
 #: src/big_remote_play/ui/guest_view.py:899
-#: src/big_remote_play/ui/main_window.py:1523
+#: src/big_remote_play/ui/main_window.py:1526
 msgid "Stop"
 msgstr "Peata"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 633
-#: src/big_remote_play/ui/main_window.py:1559
+#: src/big_remote_play/ui/main_window.py:1562
 msgid "Stop Containers"
 msgstr "Peata konteinerid"
 
-#: src/big_remote_play/ui/network_dashboard.py:324
+#: src/big_remote_play/ui/network_dashboard.py:332
 msgid "Stop ZeroTier temporarily"
 msgstr "Peata ZeroTier ajutiselt"
 
-#: src/big_remote_play/ui/network_dashboard.py:446
+#: src/big_remote_play/ui/network_dashboard.py:454
 msgid "Stop ZeroTier temporarily?"
 msgstr "Kas peatada ZeroTier ajutiselt?"
 
-#: src/big_remote_play/ui/host_view.py:2435
-#: src/big_remote_play/ui/host_view.py:2482
-#: src/big_remote_play/ui/host_view.py:2484
-#: src/big_remote_play/ui/host_view.py:2490
+#: src/big_remote_play/ui/host_view.py:2442
+#: src/big_remote_play/ui/host_view.py:2489
+#: src/big_remote_play/ui/host_view.py:2491
+#: src/big_remote_play/ui/host_view.py:2497
 msgid "Stop sharing"
 msgstr "Peata jagamine"
 
-#: src/big_remote_play/ui/host_view.py:2490
+#: src/big_remote_play/ui/host_view.py:2497
 msgid "Stop sharing the game from this PC"
 msgstr "Lõpeta mängu jagamine sellest arvutist"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
-#: src/big_remote_play/ui/host_view.py:781
-#: src/big_remote_play/ui/host_view.py:2522
-#: src/big_remote_play/ui/main_window.py:1454
-#: src/big_remote_play/ui/main_window.py:1555
+#: src/big_remote_play/ui/host_view.py:788
+#: src/big_remote_play/ui/host_view.py:2529
+#: src/big_remote_play/ui/main_window.py:1457
+#: src/big_remote_play/ui/main_window.py:1558
 #: src/big_remote_play/ui/service_status_card.py:71
 #: src/big_remote_play/ui/service_status_card.py:90
 msgid "Stopped"
@@ -6910,10 +6886,9 @@ msgstr "Peatunud"
 msgid "Stopped looking for new devices"
 msgstr "Uute seadmete otsimine lõpetati"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1248
-#: src/big_remote_play/ui/host_view.py:3124
-msgid "Stopping server..."
-msgstr "Serveri peatamine..."
+#: src/big_remote_play/ui/host_view.py:3131
+msgid "Stopping server…"
+msgstr "Serveri peatamine…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 220
@@ -6922,7 +6897,7 @@ msgid "Store Username/Password separately from Sunshine's state file."
 msgstr "Salvesta kasutajanimi/parool eraldi Sunshine'i olekufailist."
 
 #. TRANSLATORS: sidebar heading above the Sunshine or Moonlight card.
-#: src/big_remote_play/ui/main_window.py:516
+#: src/big_remote_play/ui/main_window.py:519
 msgid "Streaming"
 msgstr "Voogedastus"
 
@@ -6932,13 +6907,6 @@ msgstr "Voogedastus"
 msgid "Strictly enforce frame bitrate limits for H.264/HEVC on AMD GPUs"
 msgstr "Rakenda AMD GPU-del H.264/HEVC kaadri bitikiiruse piiranguid rangelt"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 82
-#: src/big_remote_play/host/sunshine_manager.py:542
-#, python-brace-format
-msgid "Sunshine API request failed: {}"
-msgstr "Sunshine'i API päring ebaõnnestus: {}"
-
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 20
 #: src/big_remote_play/ui/main_window.py:70
 msgid "Sunshine Game Stream Host"
@@ -6946,21 +6914,14 @@ msgstr "Sunshine Mängu Voogesituse Host"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 262
-#: src/big_remote_play/ui/host_view.py:3466
+#: src/big_remote_play/ui/host_view.py:3473
 msgid "Sunshine Logs"
 msgstr "Sunshine'i logid"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 111
-#: src/big_remote_play/ui/host_view.py:312
+#: src/big_remote_play/ui/host_view.py:319
 msgid "Sunshine Offline"
 msgstr "Sunshine pole võrgus"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
-# line: 263
-#: src/big_remote_play/ui/host_view.py:1624
-#: src/big_remote_play/ui/host_view.py:2058
-msgid "Sunshine Password"
-msgstr "Sunshine Parool"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 261
@@ -6970,8 +6931,8 @@ msgstr "Sunshine'i käituskeskkond"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 262
-#: src/big_remote_play/ui/host_view.py:1622
-#: src/big_remote_play/ui/host_view.py:2054
+#: src/big_remote_play/ui/host_view.py:1629
+#: src/big_remote_play/ui/host_view.py:2061
 msgid "Sunshine User"
 msgstr "Sunshine kasutaja"
 
@@ -6979,7 +6940,7 @@ msgstr "Sunshine kasutaja"
 msgid "Sunshine answers"
 msgstr "Sunshine vastab"
 
-#: src/big_remote_play/ui/host_view.py:600
+#: src/big_remote_play/ui/host_view.py:607
 msgid ""
 "Sunshine asks a compatible router when it starts. Enabling this does not "
 "confirm that the ports opened."
@@ -6987,7 +6948,7 @@ msgstr ""
 "Sunshine esitab käivitamisel taotluse ühilduvale ruuterile. Selle lubamine "
 "ei kinnita, et pordid avanesid."
 
-#: src/big_remote_play/ui/host_view.py:1556
+#: src/big_remote_play/ui/host_view.py:1563
 #, python-brace-format
 msgid ""
 "Sunshine cannot create their virtual controller: this user cannot open "
@@ -6997,7 +6958,7 @@ msgstr ""
 "seadet {devices}. Taaskäivita see arvuti üks kord pärast Sunshine'i "
 "paigaldamist või uuendamist."
 
-#: src/big_remote_play/ui/host_view.py:1763
+#: src/big_remote_play/ui/host_view.py:1770
 msgid ""
 "Sunshine chooses compatible capture and encoding at startup. You can still "
 "set a video bitrate ceiling."
@@ -7005,11 +6966,11 @@ msgstr ""
 "Sunshine valib käivitamisel ühilduva pildihõive ja kodeerimise. Video "
 "bitikiirusele saab siiski määrata ülempiiri."
 
-#: src/big_remote_play/ui/host_view.py:1645
+#: src/big_remote_play/ui/host_view.py:1652
 msgid "Sunshine did not answer"
 msgstr "Sunshine ei vastanud"
 
-#: src/big_remote_play/ui/host_view.py:1695
+#: src/big_remote_play/ui/host_view.py:1702
 msgid ""
 "Sunshine did not close it. Try again, or stop sharing and start it again."
 msgstr ""
@@ -7022,6 +6983,7 @@ msgstr "Sunshine ei vasta. Alusta mänguarvutis jagamist."
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 109
+#: src/big_remote_play/host/sunshine_manager.py:199
 #: src/big_remote_play/host/sunshine_manager.py:716
 #: src/big_remote_play/utils/system_check.py:184
 msgid "Sunshine executable not found"
@@ -7033,45 +6995,32 @@ msgstr "Sunshine'i käivitatavat faili ei leitud"
 msgid "Sunshine failed to report its version"
 msgstr "Sunshine ei suutnud oma versiooni teatada"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 80
 #: src/big_remote_play/host/sunshine_manager.py:268
 #, python-brace-format
-msgid "Sunshine failed to start (Exit code {}).\n"
-msgstr "Sunshine'i käivitamine ebaõnnestus (Väljumiskood {}).\n"
+msgid "Sunshine failed to start (exit code {code}).\n"
+msgstr "Sunshine'i käivitamine ebaõnnestus (Väljumiskood {code}).\n"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 84
-#: src/big_remote_play/host/sunshine_manager.py:272
-#, python-brace-format
-msgid "Sunshine failed to start (Exit code {}). Check logs."
-msgstr ""
-"Sunshine'i käivitamine ebaõnnestus (väljundkood {}). Kontrollige logisid."
-
-# File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1411
-#: src/big_remote_play/ui/host_view.py:3236
+#: src/big_remote_play/ui/host_view.py:3243
 #, python-brace-format
 msgid ""
 "Sunshine failed to start.\n"
 "\n"
-"Error: {}\n"
+"Error: {error}\n"
 "\n"
 "If this is a dependency issue (missing libraries), try the 'Fix "
 "Dependencies' button."
 msgstr ""
 "Sunshine'i käivitamine ebaõnnestus.\n"
 "\n"
-"Viga: {}\n"
+"Viga: {error}\n"
 "\n"
 "Kui see on sõltuvusprobleem (puuduvad teegid), proovige nuppu 'Paranda "
 "sõltuvused'."
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 82
-#: src/big_remote_play/host/sunshine_manager.py:270
-#, python-brace-format
-msgid "Sunshine failed to start: {}"
-msgstr "Sunshine'i käivitamine ebaõnnestus: {}"
+#: src/big_remote_play/host/sunshine_manager.py:194
+#: src/big_remote_play/host/sunshine_manager.py:195
+msgid "Sunshine is already running."
+msgstr "Sunshine juba töötab."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 261
@@ -7087,14 +7036,8 @@ msgstr "Sunshine pole saadaval."
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 109
-#: src/big_remote_play/host/sunshine_manager.py:300
-msgid "Sunshine is not running"
-msgstr "Sunshine ei tööta"
-
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 109
-#: src/big_remote_play/ui/host_view.py:3274
-#: src/big_remote_play/ui/main_window.py:1371
+#: src/big_remote_play/ui/host_view.py:3281
+#: src/big_remote_play/ui/main_window.py:1374
 #: src/big_remote_play/ui/sunshine_preferences.py:367
 msgid "Sunshine is not running."
 msgstr "Sunshine ei tööta"
@@ -7105,11 +7048,13 @@ msgstr "Sunshine ei tööta"
 msgid "Sunshine is not running. Settings are saved to file."
 msgstr "Sunshine ei tööta. Seaded salvestatakse faili."
 
-#: src/big_remote_play/ui/host_view.py:1618
+#: src/big_remote_play/ui/host_view.py:1625
+#: src/big_remote_play/ui/host_view.py:1631
+#: src/big_remote_play/ui/host_view.py:2065
 msgid "Sunshine password"
 msgstr "Sunshine'i parool"
 
-#: src/big_remote_play/ui/host_view.py:1638
+#: src/big_remote_play/ui/host_view.py:1645
 msgid "Sunshine password saved. Devices can be approved right away."
 msgstr "Sunshine'i parool on salvestatud. Seadmeid saab kohe kinnitada."
 
@@ -7118,7 +7063,7 @@ msgstr "Sunshine'i parool on salvestatud. Seadmeid saab kohe kinnitada."
 msgid "Sunshine port settings"
 msgstr "Sunshine'i pordiseaded"
 
-#: src/big_remote_play/ui/host_view.py:579
+#: src/big_remote_play/ui/host_view.py:586
 msgid "Sunshine records now"
 msgstr "Sunshine salvestab praegu"
 
@@ -7134,11 +7079,11 @@ msgstr "Sunshine lükkas PIN-i tagasi"
 msgid "Sunshine rejected the credentials"
 msgstr "Sunshine lükkas mandaadid tagasi"
 
-#: src/big_remote_play/ui/host_view.py:1508
+#: src/big_remote_play/ui/host_view.py:1515
 msgid "Sunshine rejected the saved password"
 msgstr "Sunshine lükkas salvestatud parooli tagasi"
 
-#: src/big_remote_play/ui/host_view.py:1950
+#: src/big_remote_play/ui/host_view.py:1957
 msgid "Sunshine rejected the saved password."
 msgstr "Sunshine lükkas salvestatud parooli tagasi."
 
@@ -7146,20 +7091,13 @@ msgstr "Sunshine lükkas salvestatud parooli tagasi."
 msgid "Sunshine runtime is available"
 msgstr "Sunshine'i käituskeskkond on saadaval"
 
-# File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
-# line: 99
-#: src/big_remote_play/host/sunshine_manager.py:285
-#, python-brace-format
-msgid "Sunshine started (PID: {})"
-msgstr "Sunshine käivitati (PID: {})"
-
-#: src/big_remote_play/ui/host_view.py:1504
+#: src/big_remote_play/ui/host_view.py:1511
 msgid "Sunshine's password is needed to approve devices"
 msgstr "Seadmete kinnitamiseks on vaja Sunshine'i parooli"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 330
-#: src/big_remote_play/ui/host_view.py:1039
+#: src/big_remote_play/ui/host_view.py:1046
 msgid "Support"
 msgstr "Tugi"
 
@@ -7183,7 +7121,7 @@ msgstr ""
 "Vahetage Tailscale'i või Headscale'i kontosid ja hallake mitut ZeroTier-"
 "võrku."
 
-#: src/big_remote_play/ui/network_dashboard.py:315
+#: src/big_remote_play/ui/network_dashboard.py:323
 msgid "Switch Tailscale or Headscale accounts, and see every ZeroTier network."
 msgstr ""
 "Vaheta Tailscale'i või Headscale'i kontot ja vaata kõiki ZeroTier-võrke."
@@ -7197,8 +7135,8 @@ msgstr ""
 
 #: src/big_remote_play/ui/tailscale_accounts.py:108
 #, python-brace-format
-msgid "Switch to {}"
-msgstr "Vaheta kontole {}"
+msgid "Switch to {name}"
+msgstr "Vaheta kontole {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 997
 #: src/big_remote_play/ui/guest_view.py:2321
@@ -7208,26 +7146,26 @@ msgstr "Monitorite vahetamine"
 #: src/big_remote_play/ui/tailscale_accounts.py:126
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:251
 #, python-brace-format
-msgid "Switching to {}…"
-msgstr "Vahetamine kontole {}…"
+msgid "Switching to {name}…"
+msgstr "Vahetamine kontole {name}…"
 
 #: src/big_remote_play/ui/remote_connection.py:790
 msgid "System"
 msgstr "Süsteem"
 
-#: src/big_remote_play/ui/host_view.py:2700
+#: src/big_remote_play/ui/host_view.py:2707
 msgid "System audio unavailable"
 msgstr "Süsteemi heli pole saadaval"
 
-#: src/big_remote_play/ui/host_view.py:2696
+#: src/big_remote_play/ui/host_view.py:2703
 msgid "System audio unavailable: no output device was found."
 msgstr "Süsteemi heli pole saadaval: väljundseadet ei leitud."
 
-#: src/big_remote_play/ui/host_view.py:2760
+#: src/big_remote_play/ui/host_view.py:2767
 msgid "System audio unavailable: there is no output to test."
 msgstr "Süsteemi heli pole saadaval: testitavat väljundit pole."
 
-#: src/big_remote_play/ui/host_view.py:1905
+#: src/big_remote_play/ui/host_view.py:1912
 msgid "System keyring is unavailable. Password was not saved."
 msgstr "Süsteemi võtmehoidja pole saadaval. Parooli ei salvestatud."
 
@@ -7282,7 +7220,7 @@ msgstr "Tailscale ei võtnud muudatust vastu. Proovi uuesti."
 msgid "Tailscale download page"
 msgstr "Tailscale'i allalaadimisleht"
 
-#: src/big_remote_play/ui/host_view.py:1520
+#: src/big_remote_play/ui/host_view.py:1527
 msgid "Tailscale or Headscale"
 msgstr "Tailscale või Headscale"
 
@@ -7299,7 +7237,7 @@ msgstr ""
 "Tailscale, ZeroTier või Headscale töötavad tavaliselt iga ruuteri taga, ka "
 "CGNAT-i korral, ilma porte avamata ja Sunshine'i internetile avamata."
 
-#: src/big_remote_play/ui/host_view.py:573
+#: src/big_remote_play/ui/host_view.py:580
 msgid "Technical audio details"
 msgstr "Heli tehnilised üksikasjad"
 
@@ -7310,15 +7248,16 @@ msgid "Technical details"
 msgstr "Tehnilised üksikasjad"
 
 #: src/big_remote_play/ui/api_access_dialog.py:331
-msgid "Technical details:"
-msgstr "Tehnilised üksikasjad:"
+#, python-brace-format
+msgid "Technical details: {detail}"
+msgstr "Tehnilised üksikasjad: {detail}"
 
-#: src/big_remote_play/ui/host_view.py:566
+#: src/big_remote_play/ui/host_view.py:573
 msgid "Test"
 msgstr "Testi"
 
-#: src/big_remote_play/ui/host_view.py:563
-#: src/big_remote_play/ui/host_view.py:567
+#: src/big_remote_play/ui/host_view.py:570
+#: src/big_remote_play/ui/host_view.py:574
 msgid "Test audio"
 msgstr "Testi heli"
 
@@ -7404,7 +7343,7 @@ msgstr ""
 "— ei mingit omandiõigusega platvormi, ei mingeid piiranguid, ei mingeid "
 "piire, milliseid mänge sa saad mängida."
 
-#: src/big_remote_play/ui/host_view.py:2327
+#: src/big_remote_play/ui/host_view.py:2334
 msgid "The Sunshine port is outside the supported range."
 msgstr "Sunshine'i port on toetatud vahemikust väljas."
 
@@ -7416,7 +7355,7 @@ msgstr ""
 "ZeroTieri teenus ei jõua internetti. Kontrolli ühendust või seda, kas "
 "tulemüür blokeerib UDP-porti 9993."
 
-#: src/big_remote_play/ui/network_dashboard.py:450
+#: src/big_remote_play/ui/network_dashboard.py:458
 msgid ""
 "The active VPN connection will stop. Saved accounts are kept so you can "
 "reconnect later."
@@ -7430,7 +7369,7 @@ msgid ""
 msgstr ""
 "Administraator peab sõlme jagama või kutsuma sinu e-posti aadressi võrku."
 
-#: src/big_remote_play/ui/host_view.py:2871
+#: src/big_remote_play/ui/host_view.py:2878
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr "Rakenduse käsk on vigane. Kontrolli jutumärke ja proovi uuesti."
 
@@ -7452,7 +7391,7 @@ msgstr ""
 msgid "The checks could not run."
 msgstr "Kontrolle ei saanud käivitada."
 
-#: src/big_remote_play/ui/host_view.py:2274
+#: src/big_remote_play/ui/host_view.py:2281
 msgid ""
 "The chosen device plays the sound here too. Choose Automatic to share "
 "without playing it here."
@@ -7468,7 +7407,7 @@ msgstr "Arvuti ilmub selle võrgu seadmete loendisse."
 msgid "The computer seems to be offline"
 msgstr "Arvuti näib olevat võrguühenduseta"
 
-#: src/big_remote_play/ui/host_view.py:2718
+#: src/big_remote_play/ui/host_view.py:2725
 msgid "The connected client asked Sunshine not to play sound on this computer."
 msgstr "Ühendatud klient palus Sunshine'il selles arvutis heli mitte esitada."
 
@@ -7514,15 +7453,20 @@ msgstr "Fail, kuhu praegused Sunshine'i logid on salvestatud."
 msgid "The file that stores Sunshine's current state."
 msgstr "Fail, kuhu Sunshine'i praegune olek on salvestatud"
 
-#: src/big_remote_play/ui/host_view.py:858
+#: src/big_remote_play/ui/host_view.py:865
 msgid "The firewall blocks other computers"
 msgstr "Tulemüür blokeerib teisi arvuteid"
 
-#: src/big_remote_play/ui/host_view.py:2358
+#: src/big_remote_play/ui/host_view.py:2357
+#, python-brace-format
+msgid "The firewall helper was not found: {path}"
+msgstr "Tulemüüri abiprogrammi ei leitud: {path}"
+
+#: src/big_remote_play/ui/host_view.py:2365
 msgid "The firewall now allows Sunshine's ports."
 msgstr "Tulemüür lubab nüüd Sunshine'i porte."
 
-#: src/big_remote_play/ui/host_view.py:2330
+#: src/big_remote_play/ui/host_view.py:2337
 #, python-brace-format
 msgid ""
 "The firewall will allow incoming TCP {tcp} and UDP {udp}, plus 5353/UDP "
@@ -7568,18 +7512,18 @@ msgstr "Mänguarvuti otsustab, kas neid taotlusi saab rakendada."
 msgid "The game PC's firewall blocks the game ports"
 msgstr "Mänguarvuti tulemüür blokeerib mängu porte"
 
-#: src/big_remote_play/ui/host_view.py:1314
-#: src/big_remote_play/ui/host_view.py:1315
+#: src/big_remote_play/ui/host_view.py:1321
+#: src/big_remote_play/ui/host_view.py:1322
 msgid ""
 "The game closed before sharing started. Open it again, then select Refresh."
 msgstr ""
 "Mäng suleti enne jagamise algust. Ava see uuesti ja vali siis Värskenda."
 
-#: src/big_remote_play/ui/host_view.py:1323
+#: src/big_remote_play/ui/host_view.py:1330
 msgid "The game window closed"
 msgstr "Mänguaken suleti"
 
-#: src/big_remote_play/ui/host_view.py:1326
+#: src/big_remote_play/ui/host_view.py:1333
 msgid ""
 "The game window could no longer be captured on its own, so sharing stopped. "
 "Nothing else on this computer was shown."
@@ -7587,7 +7531,7 @@ msgstr ""
 "Mänguakent ei saanud enam eraldi salvestada, seega jagamine peatati. Sellest "
 "arvutist ei näidatud midagi muud."
 
-#: src/big_remote_play/ui/host_view.py:1311
+#: src/big_remote_play/ui/host_view.py:1318
 msgid "The game window was not confirmed, so sharing did not start."
 msgstr "Mänguakent ei kinnitatud, seega jagamine ei alanud."
 
@@ -7620,7 +7564,7 @@ msgstr "Sunshine'i kasutajaliidese jaoks kasutatav lokaal."
 msgid "The main configuration file for Sunshine."
 msgstr "Sunshine'i peamine konfiguratsioonifail."
 
-#: src/big_remote_play/ui/network_dashboard.py:438
+#: src/big_remote_play/ui/network_dashboard.py:446
 msgid "The network could not be created."
 msgstr "Võrku ei õnnestunud luua."
 
@@ -7628,7 +7572,7 @@ msgstr "Võrku ei õnnestunud luua."
 msgid "The network has not answered yet"
 msgstr "Võrk pole veel vastanud"
 
-#: src/big_remote_play/ui/network_dashboard.py:393
+#: src/big_remote_play/ui/network_dashboard.py:401
 msgid ""
 "The network is private: every new device must be approved. This computer "
 "joins and is approved automatically."
@@ -7646,7 +7590,7 @@ msgstr ""
 
 #: src/big_remote_play/ui/network_common.py:133
 #: src/big_remote_play/ui/network_common.py:151
-#: src/big_remote_play/ui/network_dashboard.py:251
+#: src/big_remote_play/ui/network_dashboard.py:259
 msgid "The network owner still needs to approve this computer."
 msgstr "Võrgu omanik peab selle arvuti veel kinnitama."
 
@@ -7665,11 +7609,11 @@ msgstr "Toiming ebaõnnestus."
 msgid "The operation took longer than expected."
 msgstr "Toiming kestis oodatust kauem."
 
-#: src/big_remote_play/ui/host_view.py:1947
+#: src/big_remote_play/ui/host_view.py:1954
 msgid "The other PC is paired."
 msgstr "Teine arvuti on seotud."
 
-#: src/big_remote_play/ui/host_view.py:531
+#: src/big_remote_play/ui/host_view.py:538
 msgid ""
 "The other computer hears the sound this computer plays. The microphone is "
 "not sent."
@@ -7711,7 +7655,7 @@ msgstr "Inimene liitub sinu privaatvõrguga ja näeb seadmeid, mida sa lubad."
 msgid "The person who created the network gives you this code."
 msgstr "Selle koodi annab sulle võrgu loonud inimene."
 
-#: src/big_remote_play/ui/host_view.py:1318
+#: src/big_remote_play/ui/host_view.py:1325
 msgid ""
 "The private game screen could not start. Check that KDE Plasma "
 "(kwin_wayland) and the GStreamer plugins are installed."
@@ -7745,7 +7689,7 @@ msgstr ""
 msgid "The saved credentials could not be read."
 msgstr "Salvestatud mandaate ei õnnestunud lugeda."
 
-#: src/big_remote_play/ui/host_view.py:2918
+#: src/big_remote_play/ui/host_view.py:2925
 msgid ""
 "The selected audio output is unavailable. Choose Automatic or reconnect the "
 "device."
@@ -7753,7 +7697,7 @@ msgstr ""
 "Valitud heliväljund pole saadaval. Valige Automaatne või ühendage seade "
 "uuesti."
 
-#: src/big_remote_play/ui/host_view.py:2694
+#: src/big_remote_play/ui/host_view.py:2701
 msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr ""
 "Valitud väljund pole ühendatud. Ühendage see uuesti või valige Automaatne."
@@ -7790,7 +7734,7 @@ msgstr ""
 "Teenusega ei saadud ühendust. Kontrolli internetiühendust ja serveri "
 "aadressi."
 
-#: src/big_remote_play/ui/network_dashboard.py:358
+#: src/big_remote_play/ui/network_dashboard.py:366
 msgid "The service could not be started."
 msgstr "Teenust ei õnnestunud käivitada."
 
@@ -7810,7 +7754,7 @@ msgstr "Teenus töötab"
 msgid "The stream did not start"
 msgstr "Voog ei käivitunud"
 
-#: src/big_remote_play/ui/host_view.py:1695
+#: src/big_remote_play/ui/host_view.py:1702
 msgid "The stream is still open"
 msgstr "Voog on endiselt avatud"
 
@@ -7825,12 +7769,12 @@ msgstr ""
 "Süsteemi võtmehoidja on lukus või pole saadaval. Ava see lukust ja proovi "
 "uuesti."
 
-#: src/big_remote_play/ui/host_view.py:2762
+#: src/big_remote_play/ui/host_view.py:2769
 #, python-brace-format
 msgid "The tone could not be played on {output}."
 msgstr "Tooni ei saanud väljundis {output} esitada."
 
-#: src/big_remote_play/ui/host_view.py:2766
+#: src/big_remote_play/ui/host_view.py:2773
 #, python-brace-format
 msgid ""
 "The tone did not reach the shared sound. Check the output volume and that "
@@ -7839,12 +7783,12 @@ msgstr ""
 "Toon ei jõudnud jagatud helisse. Kontrollige väljundi helitugevust ja seda, "
 "et {output} on väljund, mida kuulete."
 
-#: src/big_remote_play/ui/host_view.py:2764
+#: src/big_remote_play/ui/host_view.py:2771
 #, python-brace-format
 msgid "The tone reached the shared sound ({level:.0f} dB on {output})."
 msgstr "Toon jõudis jagatud helisse ({level:.0f} dB väljundis {output})."
 
-#: src/big_remote_play/ui/host_view.py:1619
+#: src/big_remote_play/ui/host_view.py:1626
 msgid ""
 "The user and password of Sunshine on this computer, the ones of its web "
 "panel. They are kept in the system keyring."
@@ -7852,7 +7796,7 @@ msgstr ""
 "Selle arvuti Sunshine'i kasutaja ja parool, samad mis selle veebipaneelil. "
 "Neid hoitakse süsteemi võtmerõngas."
 
-#: src/big_remote_play/ui/host_view.py:1312
+#: src/big_remote_play/ui/host_view.py:1319
 msgid ""
 "The window chosen in the system dialog is not the selected game. Try again "
 "and choose the same game."
@@ -7885,7 +7829,7 @@ msgstr ""
 "Need seaded saadavad mänguarvutile taotluse või kontrollivad ühendust. "
 "Mänguarvuti võib eirata taotlusi, mida see ei toeta."
 
-#: src/big_remote_play/ui/network_dashboard.py:249
+#: src/big_remote_play/ui/network_dashboard.py:257
 msgid ""
 "They approve it in ZeroTier Central or in Big Remote Play. This page updates "
 "when you refresh."
@@ -7893,14 +7837,14 @@ msgstr ""
 "Nad kinnitavad selle ZeroTier Centralis või rakenduses Big Remote Play. See "
 "leht uueneb, kui seda värskendad."
 
-#: src/big_remote_play/ui/host_view.py:931
+#: src/big_remote_play/ui/host_view.py:938
 msgid "This PC did not appear in the list?"
 msgstr "Kas see arvuti ei ilmunud loendisse?"
 
 #: src/big_remote_play/ui/private_network_view.py:550
 #, python-brace-format
-msgid "This PC is on the {} private network."
-msgstr "See arvuti on privaatvõrgus {}."
+msgid "This PC is on the {name} private network."
+msgstr "See arvuti on privaatvõrgus {name}."
 
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:157
 msgid ""
@@ -7938,7 +7882,7 @@ msgstr "See kood pole täielik"
 msgid "This computer"
 msgstr "See arvuti"
 
-#: src/big_remote_play/ui/host_view.py:1010
+#: src/big_remote_play/ui/host_view.py:1017
 msgid ""
 "This computer captures and encodes the game. Under Connect → Image, the "
 "other computer requests resolution, frame rate and video bitrate. The "
@@ -7975,11 +7919,14 @@ msgstr ""
 "See arvuti on volitatud, kuid võrk pole sellele veel aadressi andnud. Võrgu "
 "omanik saab selle määrata."
 
-#: src/big_remote_play/ui/network_dashboard.py:207
+#: src/big_remote_play/ui/network_dashboard.py:210
 #, python-brace-format
-msgid ""
+msgid "This computer is in {count} ZeroTier network. Manage network lists it."
+msgid_plural ""
 "This computer is in {count} ZeroTier networks. Manage network lists them all."
-msgstr "See arvuti on {count} ZeroTier-võrgus. Halda võrku näitab neid kõiki."
+msgstr[0] "See arvuti on {count} ZeroTieri võrgus. Halda võrku näitab seda."
+msgstr[1] ""
+"See arvuti on {count} ZeroTieri võrgus. Halda võrku näitab neid kõiki."
 
 #: src/big_remote_play/ui/remote_connection.py:52
 msgid "This computer is not connected to the internet"
@@ -7988,6 +7935,10 @@ msgstr "See arvuti pole internetiga ühendatud"
 #: src/big_remote_play/ui/network_devices.py:228
 msgid "This computer is not connected to this network."
 msgstr "See arvuti pole selle võrguga ühendatud."
+
+#: src/big_remote_play/ui/network_devices.py:594
+msgid "This computer is not in the Tailscale device list yet."
+msgstr "Seda arvutit pole veel Tailscale'i seadmete loendis."
 
 #: src/big_remote_play/ui/network_common.py:130
 #, python-brace-format
@@ -8018,7 +7969,7 @@ msgstr "See arvuti lahkub võrgust. Hiljem saad sama koodiga uuesti liituda."
 msgid "This computer only"
 msgstr "Ainult see arvuti"
 
-#: src/big_remote_play/ui/main_window.py:986
+#: src/big_remote_play/ui/main_window.py:989
 msgid "This computer runs the game. Share a game or your whole desktop."
 msgstr "Mäng töötab selles arvutis. Jaga mängu või kogu töölauda."
 
@@ -8047,7 +7998,7 @@ msgstr ""
 msgid "This computer's address"
 msgstr "Selle arvuti aadress"
 
-#: src/big_remote_play/ui/host_view.py:876
+#: src/big_remote_play/ui/host_view.py:883
 msgid "This computer's controller comes first"
 msgstr "Selle arvuti mängupult on esimene"
 
@@ -8073,7 +8024,7 @@ msgstr "Seda mandaati ei õnnestunud salvestada."
 msgid "This credential is of a different type than the one selected."
 msgstr "See mandaat on valitust erinevat tüüpi."
 
-#: src/big_remote_play/ui/host_view.py:1313
+#: src/big_remote_play/ui/host_view.py:1320
 msgid ""
 "This desktop cannot share a single window. Update KDE Plasma, or choose Full "
 "Desktop."
@@ -8298,24 +8249,23 @@ msgstr ""
 msgid "Traffic passes through a relay server, which can add latency."
 msgstr "Liiklus läbib vahendusserverit, mis võib latentsust suurendada."
 
+#: src/big_remote_play/ui/sunshine_preferences.py:565
+msgid "Transcoding"
+msgstr "Ümberkodeerimine"
+
 #: src/big_remote_play/ui/sunshine_preferences.py:411
 msgid "Trusted Web UI Origins"
 msgstr "Usaldatud veebiliidese lähtekohad"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
-# line: 601
-#: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:913
-msgid "Try Again"
-msgstr "Proovi uuesti"
-
 #: src/big_remote_play/ui/guest_view.py:1870
-#: src/big_remote_play/ui/network_dashboard.py:295
+#: src/big_remote_play/ui/installer_window.py:200
+#: src/big_remote_play/ui/network_dashboard.py:303
+#: src/big_remote_play/ui/private_network_view.py:913
 #: src/big_remote_play/ui/zerotier_join.py:109
 msgid "Try again"
 msgstr "Proovi uuesti"
 
-#: src/big_remote_play/ui/network_dashboard.py:300
+#: src/big_remote_play/ui/network_dashboard.py:308
 msgid "Try again. If it keeps happening, check the technical details."
 msgstr "Proovi uuesti. Kui see kordub, vaata tehnilisi üksikasju."
 
@@ -8323,13 +8273,13 @@ msgstr "Proovi uuesti. Kui see kordub, vaata tehnilisi üksikasju."
 msgid "Try again. Technical details show what ZeroTier answered."
 msgstr "Proovi uuesti. Tehnilised üksikasjad näitavad, mida ZeroTier vastas."
 
-#: src/big_remote_play/ui/host_view.py:599
+#: src/big_remote_play/ui/host_view.py:606
 msgid "Try automatic port forwarding (UPnP)"
 msgstr "Proovi automaatset pordiedastust (UPnP)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 414
-#: src/big_remote_play/ui/sunshine_preferences.py:650
+#: src/big_remote_play/ui/sunshine_preferences.py:658
 msgid ""
 "Tuning options, which are applied after the preset. Defaults to zerolatency."
 msgstr ""
@@ -8366,13 +8316,17 @@ msgstr "UDP-pordid"
 msgid "UPnP"
 msgstr "UPnP (automaatne pordiavamine)"
 
+#: src/big_remote_play/ui/sunshine_preferences.py:569
+msgid "Ultra-low latency"
+msgstr "Ülimadal latentsus"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 111
-#: src/big_remote_play/ui/host_view.py:2626
+#: src/big_remote_play/ui/host_view.py:2633
 msgid "Unavailable"
 msgstr "Pole saadaval"
 
-#: src/big_remote_play/ui/host_view.py:2304
+#: src/big_remote_play/ui/host_view.py:2311
 #, python-brace-format
 msgid "Unavailable: {device}"
 msgstr "Pole saadaval: {device}"
@@ -8386,8 +8340,8 @@ msgstr "Pole saadaval: {device}"
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 215
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 226
 #: src/big_remote_play/ui/host_view.py:226
-#: src/big_remote_play/ui/host_view.py:1787
-#: src/big_remote_play/ui/host_view.py:1792
+#: src/big_remote_play/ui/host_view.py:1794
+#: src/big_remote_play/ui/host_view.py:1799
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:241
 #: src/big_remote_play/utils/system_check.py:176
 #: src/big_remote_play/utils/system_check.py:179
@@ -8409,8 +8363,8 @@ msgstr "Tundmatu VPN-teenus: ${provider}"
 # 129
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 215
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 226
-#: src/big_remote_play/ui/host_view.py:2214
-#: src/big_remote_play/ui/host_view.py:3348
+#: src/big_remote_play/ui/host_view.py:2221
+#: src/big_remote_play/ui/host_view.py:3355
 msgid "Unknown device"
 msgstr "Tundmatu seade"
 
@@ -8427,11 +8381,11 @@ msgid "Unlock the bitrate limit"
 msgstr "Eemalda bitikiiruse piirang"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 679
-#: src/big_remote_play/ui/host_view.py:3567
+#: src/big_remote_play/ui/host_view.py:3574
 msgid "Unnamed"
 msgstr "Nimetu"
 
-#: src/big_remote_play/ui/host_view.py:1988
+#: src/big_remote_play/ui/host_view.py:1995
 msgid "Unnamed device"
 msgstr "Nimetu seade"
 
@@ -8440,11 +8394,11 @@ msgstr "Nimetu seade"
 msgid "Unstable"
 msgstr "Ebastabiilne"
 
-#: src/big_remote_play/ui/host_view.py:522
+#: src/big_remote_play/ui/host_view.py:529
 msgid "Unstable network mode"
 msgstr "Ebastabiilse võrgu režiim"
 
-#: src/big_remote_play/ui/host_view.py:3700
+#: src/big_remote_play/ui/host_view.py:3707
 msgid "Up one level"
 msgstr "Üks tase üles"
 
@@ -8535,7 +8489,7 @@ msgstr "Kasutage ainult siis, kui mõlemad arvutid ja ekraan toetavad HDR-i."
 msgid "Use the controller to move the mouse"
 msgstr "Kasuta mängupulti hiire liigutamiseks"
 
-#: src/big_remote_play/ui/guest_view.py:1912
+#: src/big_remote_play/ui/guest_view.py:1914
 msgid "Use the form WIDTHxHEIGHT, e.g. 1920x1080."
 msgstr "Kasuta vormingut LAIUSxKÕRGUS, nt 1920x1080."
 
@@ -8547,7 +8501,7 @@ msgstr "Kasuta mänguarvuti Big Remote Play otsingukoodi."
 msgid "Use the touchscreen as a virtual trackpad"
 msgstr "Kasuta puuteekraani virtuaalse puuteplaadina"
 
-#: src/big_remote_play/ui/host_view.py:647
+#: src/big_remote_play/ui/host_view.py:654
 msgid "Use these when you need to inspect or manage Sunshine."
 msgstr "Kasuta neid Sunshine’i kontrollimiseks või haldamiseks."
 
@@ -8567,7 +8521,7 @@ msgstr "Kasuta selle ekraani eraldusvõimet"
 msgid "Use this when the controller labels do not match the game."
 msgstr "Kasutage seda, kui mängupuldi tähised ei vasta mängule."
 
-#: src/big_remote_play/ui/main_window.py:957
+#: src/big_remote_play/ui/main_window.py:960
 msgid "Use your gaming PC from anywhere"
 msgstr "Kasuta oma mänguarvutit kõikjalt"
 
@@ -8576,7 +8530,7 @@ msgstr "Kasuta oma mänguarvutit kõikjalt"
 msgid "Use your own Headscale server. Advanced setup."
 msgstr "Kasuta oma Headscale’i serverit. Täpsem seadistus."
 
-#: src/big_remote_play/ui/host_view.py:696
+#: src/big_remote_play/ui/host_view.py:703
 msgid "Used by this app to talk to the server"
 msgstr "Rakendus kasutab seda serveriga suhtlemiseks"
 
@@ -8593,16 +8547,13 @@ msgid "User"
 msgstr "Kasutaja"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 610
-#: src/big_remote_play/ui/host_view.py:2103
+#: src/big_remote_play/ui/host_view.py:2110
 msgid "User Not Found"
 msgstr "Kasutajat ei leitud"
 
-#: src/big_remote_play/host/sunshine_manager.py:713
-msgid "Username and password cannot be empty"
-msgstr "Kasutajanimi ja parool ei tohi olla tühjad"
-
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 630
-#: src/big_remote_play/ui/host_view.py:3815
+#: src/big_remote_play/host/sunshine_manager.py:713
+#: src/big_remote_play/ui/host_view.py:3822
 msgid "Username and password cannot be empty."
 msgstr "Kasutajanimi ja parool ei tohi olla tühjad."
 
@@ -8638,12 +8589,27 @@ msgstr "VA-API"
 msgid "VA-API Encoder (Linux)"
 msgstr "VA-API kodeerija (Linux)"
 
+#. TRANSLATORS: {device} is a render node name such as renderD129.
+#: src/big_remote_play/ui/host_view.py:285
+#, python-brace-format
+msgid "VAAPI (device {device})"
+msgstr "VAAPI (seade {device})"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:580
+msgid "VBR, latency constrained"
+msgstr "VBR, latentsusega piiratud"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:580
+msgid "VBR, peak constrained"
+msgstr "VBR, tipuga piiratud"
+
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:61
 msgid "VPN accounts and networks"
 msgstr "VPN-i kontod ja võrgud"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 757
 #: src/big_remote_play/ui/guest_view.py:1975
+#: src/big_remote_play/ui/host_view.py:2427
 msgid "Value"
 msgstr "Väärtus"
 
@@ -8660,7 +8626,7 @@ msgstr "Videokoodek"
 msgid "Video format and diagnostics"
 msgstr "Videovorming ja diagnostika"
 
-#: src/big_remote_play/ui/host_view.py:1465
+#: src/big_remote_play/ui/host_view.py:1472
 #, python-brace-format
 msgid "Video limit: {mbps:g} Mbps"
 msgstr "Videopiirang: {mbps:g} Mbps"
@@ -8695,13 +8661,17 @@ msgid "VideoToolbox Software Encoding"
 msgstr "VideoToolbox Tarkvara Kodeerimine"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:3240
+#: src/big_remote_play/ui/host_view.py:3247
 msgid "View Logs"
 msgstr "Vaata logisid"
 
-#: src/big_remote_play/ui/host_view.py:557
+#: src/big_remote_play/ui/host_view.py:564
 msgid "Voice calls"
 msgstr "Häälkõned"
+
+#: src/big_remote_play/ui/host_view.py:290
+msgid "Vulkan (experimental)"
+msgstr "Vulkan (katseline)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 287
@@ -8728,8 +8698,8 @@ msgid "Wait for it to appear"
 msgstr "Oota, kuni see ilmub"
 
 #: src/big_remote_play/ui/network_common.py:95
-#: src/big_remote_play/ui/network_dashboard.py:241
-#: src/big_remote_play/ui/network_dashboard.py:248
+#: src/big_remote_play/ui/network_dashboard.py:249
+#: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:117
 #: src/big_remote_play/ui/network_devices.py:129
 #: src/big_remote_play/ui/network_devices.py:461
@@ -8742,11 +8712,9 @@ msgstr "Ootab kinnitust"
 msgid "Waiting for authorization"
 msgstr "Volituse ootamine"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 206
 #: src/big_remote_play/ui/performance_monitor.py:208
-msgid "Waiting for data..."
-msgstr "Ootan andmeid..."
+msgid "Waiting for data…"
+msgstr "Ootan andmeid…"
 
 #: src/big_remote_play/ui/remote_connection.py:649
 msgid "Waiting for permission…"
@@ -8779,12 +8747,16 @@ msgstr "Üks säte vajab parandamist"
 msgid "Web UI"
 msgstr "Veebiliides"
 
+#: src/big_remote_play/ui/sunshine_preferences.py:566
+msgid "Webcam"
+msgstr "Veebikaamera"
+
 #: src/big_remote_play/ui/zerotier_join.py:225
 msgid "What ZeroTier answered, to share with someone helping you."
 msgstr "ZeroTieri vastus, mida jagada inimesega, kes sind aitab."
 
 #: src/big_remote_play/ui/guided_setup.py:121
-#: src/big_remote_play/ui/main_window.py:976
+#: src/big_remote_play/ui/main_window.py:979
 #: src/big_remote_play/ui/remote_connection.py:241
 msgid "What do you want to do?"
 msgstr "Mida soovid teha?"
@@ -8793,7 +8765,7 @@ msgstr "Mida soovid teha?"
 msgid "What is the network code?"
 msgstr "Mis on võrgukood?"
 
-#: src/big_remote_play/ui/host_view.py:682
+#: src/big_remote_play/ui/host_view.py:689
 msgid "What the server recorded, for troubleshooting"
 msgstr "Mida server salvestas, probleemide uurimiseks"
 
@@ -8806,11 +8778,11 @@ msgstr "Mida see arvuti näitab"
 msgid "What you need"
 msgstr "Mida sul vaja on"
 
-#: src/big_remote_play/ui/network_dashboard.py:237
+#: src/big_remote_play/ui/network_dashboard.py:245
 msgid "What you need and the steps to run Headscale on a Linux server."
 msgstr "Mida sul vaja on ja sammud Headscale'i käitamiseks Linuxi serveris."
 
-#: src/big_remote_play/ui/host_view.py:2139
+#: src/big_remote_play/ui/host_view.py:2146
 msgid ""
 "When another device starts playing, it appears here with its connection "
 "quality."
@@ -8836,9 +8808,9 @@ msgstr ""
 "Kui see on sees, jätkub heli esitamine mänguarvutis. Väljalülitamisel võib "
 "Sunshine selle virtuaalsesse väljundisse lülitada."
 
-#: src/big_remote_play/ui/host_view.py:543
-#: src/big_remote_play/ui/host_view.py:2276
-#: src/big_remote_play/ui/host_view.py:2720
+#: src/big_remote_play/ui/host_view.py:550
+#: src/big_remote_play/ui/host_view.py:2283
+#: src/big_remote_play/ui/host_view.py:2727
 msgid "When off, only the other computer hears the game."
 msgstr "Kui see on väljas, kuuleb mängu ainult teine arvuti."
 
@@ -8854,11 +8826,11 @@ msgstr "Kust luba luua"
 msgid "Where to create it"
 msgstr "Kust seda luua"
 
-#: src/big_remote_play/ui/host_view.py:1979
+#: src/big_remote_play/ui/host_view.py:1986
 msgid "Which computer shows this code?"
 msgstr "Milline arvuti kuvab seda koodi?"
 
-#: src/big_remote_play/ui/host_view.py:473
+#: src/big_remote_play/ui/host_view.py:480
 msgid ""
 "While sharing, the shared screen uses SDR and returns to HDR afterwards, so "
 "every device sees correct colors; devices that ask for HDR get SDR. Without "
@@ -8880,8 +8852,8 @@ msgstr ""
 "Miks võib ühendus üle interneti ebaõnnestuda ja kõige turvalisem viis iga "
 "probleemist mööda pääseda."
 
-#: src/big_remote_play/ui/host_view.py:1316
-#: src/big_remote_play/ui/host_view.py:1325
+#: src/big_remote_play/ui/host_view.py:1323
+#: src/big_remote_play/ui/host_view.py:1332
 msgid ""
 "Window effects (compositing) are off, so the game cannot be shown on its "
 "own. Turn them on, then share again."
@@ -8939,7 +8911,7 @@ msgstr ""
 "Jah — sellel arvutil on operaatoritasemel NAT-aadress (CGNAT). Pordiedastus "
 "siin ei tööta; kasuta privaatvõrku."
 
-#: src/big_remote_play/ui/host_view.py:2706
+#: src/big_remote_play/ui/host_view.py:2713
 msgid "Yes — this is an error; stop sharing and report it"
 msgstr "Jah — see on viga; peatage jagamine ja teatage sellest"
 
@@ -9000,7 +8972,7 @@ msgstr ""
 "Sinu sõber paigaldab Tailscale'i, avab lingi ja logib sisse oma kontoga. Ta "
 "näeb ainult seda arvutit."
 
-#: src/big_remote_play/ui/main_window.py:939
+#: src/big_remote_play/ui/main_window.py:942
 msgid "Your games. Any screen. Anywhere."
 msgstr "Sinu mängud. Iga ekraan. Kõikjal."
 
@@ -9029,6 +9001,10 @@ msgstr "Sinu seaded, seotud võrgud ja eelistused ühes failis."
 #: src/big_remote_play/ui/private_network_view.py:1132
 msgid "ZT Panel"
 msgstr "ZT paneel"
+
+#: src/big_remote_play/ui/sunshine_preferences.py:656
+msgid "Zero latency"
+msgstr "Null latentsus"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 82
 #: src/big_remote_play/ui/main_window.py:96
@@ -9074,7 +9050,7 @@ msgstr "ZeroTier ei tööta"
 msgid "ZeroTier is receiving the network settings."
 msgstr "ZeroTier võtab vastu võrgu seadeid."
 
-#: src/big_remote_play/ui/network_dashboard.py:286
+#: src/big_remote_play/ui/network_dashboard.py:294
 msgid "ZeroTier keeps its control key readable only by the system."
 msgstr "ZeroTier hoiab oma juhtvõtit loetavana ainult süsteemile."
 
@@ -9098,20 +9074,20 @@ msgstr "ZeroTier-teenuse viga"
 msgid "ZeroTier shows its 16-character network code. Copy it."
 msgstr "ZeroTier näitab 16-märgilist võrgukoodi. Kopeeri see."
 
+#. TRANSLATORS: Search terms separated by semicolons; keep the final semicolon. Keep Sunshine, Moonlight and VPN, add common local words.
+#: build-aux/i18n/br.com.biglinux.remoteplay.desktop.in:14
+msgid "game;remote;play;stream;streaming;Sunshine;Moonlight;VPN;"
+msgstr "mäng;kaug;mängima;voogesitus;striimimine;streaming;Sunshine;Moonlight;VPN;"
+
 #: src/big_remote_play/ui/connection_cards.py:184
 msgid "not identified"
 msgstr "tuvastamata"
 
-#: src/big_remote_play/ui/host_view.py:1520
+#: src/big_remote_play/ui/host_view.py:1527
 msgid "the local network"
 msgstr "kohtvõrk"
 
-# File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 757
-#: src/big_remote_play/ui/host_view.py:2420
-msgid "value"
-msgstr "Väärtus"
-
-#: src/big_remote_play/ui/host_view.py:1551
+#: src/big_remote_play/ui/host_view.py:1558
 #, python-brace-format
 msgid ""
 "{controllers} is connected here. A game that uses one controller reads it "
@@ -9121,6 +9097,13 @@ msgstr ""
 "{controllers} on siia ühendatud. Mäng, mis kasutab üht mängupulti, loeb seda "
 "ühendava inimese mängupuldi asemel. Ühenda see lahti, kuni teine mängib, või "
 "vali mängu seadetes mängupult „Sunshine“."
+
+#: src/big_remote_play/ui/host_view.py:2237
+#, python-brace-format
+msgid "{count} more paired device"
+msgid_plural "{count} more paired devices"
+msgstr[0] "Veel {count} seotud seade"
+msgstr[1] "Veel {count} seotud seadet"
 
 #: src/big_remote_play/ui/network_dashboard.py:182
 #, python-brace-format
@@ -9142,7 +9125,7 @@ msgstr "{layout} · {location}"
 msgid "{minutes} min"
 msgstr "{minutes} min."
 
-#: src/big_remote_play/ui/host_view.py:1469
+#: src/big_remote_play/ui/host_view.py:1476
 #, python-brace-format
 msgid "{mode} · {limit}"
 msgstr "{mode} · {limit}"
@@ -9162,6 +9145,11 @@ msgstr "{name} (täpsem)"
 msgid "{name} (this computer)"
 msgstr "{name} (see arvuti)"
 
+#: src/big_remote_play/ui/private_network_view.py:477
+#, python-brace-format
+msgid "{name} installed"
+msgstr "{name} paigaldatud"
+
 #: src/big_remote_play/ui/network_common.py:123
 #, python-brace-format
 msgid ""
@@ -9175,6 +9163,15 @@ msgstr ""
 #, python-brace-format
 msgid "{name} is not installed on this computer."
 msgstr "{name} pole selles arvutis paigaldatud."
+
+#: src/big_remote_play/ui/private_network_view.py:448
+#, python-brace-format
+msgid ""
+"{name} is not installed yet. Install it below to continue (asks for your "
+"password)."
+msgstr ""
+"{name} pole veel paigaldatud. Jätkamiseks paigalda see allpool (küsib sinu "
+"parooli)."
 
 #: src/big_remote_play/ui/network_common.py:131
 #, python-brace-format
@@ -9197,27 +9194,33 @@ msgid ""
 "{name} will be removed from the network and must be added again to return."
 msgstr "{name} eemaldatakse võrgust ja naasmiseks tuleb see uuesti lisada."
 
+#. TRANSLATORS: {platform} is Steam or Lutris.
+#: src/big_remote_play/ui/host_view.py:3877
+#, python-brace-format
+msgid "{platform} games"
+msgstr "{platform} mängud"
+
 #: src/big_remote_play/ui/guest_view.py:186
 #, python-brace-format
 msgid "{resolution} · {frame_rate} · {bitrate}"
 msgstr "{resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:2737
+#: src/big_remote_play/ui/host_view.py:2744
 #, python-brace-format
 msgid "{source} (a microphone)"
 msgstr "{source} (mikrofon)"
 
-#: src/big_remote_play/ui/host_view.py:2736
+#: src/big_remote_play/ui/host_view.py:2743
 #, python-brace-format
 msgid "{source} (sound this computer plays)"
 msgstr "{source} (heli, mida see arvuti esitab)"
 
-#: src/big_remote_play/ui/host_view.py:2456
+#: src/big_remote_play/ui/host_view.py:2463
 #, python-brace-format
 msgid "{source} · {quality}"
 msgstr "{source} · {quality}"
 
-#: src/big_remote_play/ui/host_view.py:2714
+#: src/big_remote_play/ui/host_view.py:2721
 #, python-brace-format
 msgid "{source} → {target}"
 msgstr "{source} → {target}"
@@ -9227,7 +9230,7 @@ msgstr "{source} → {target}"
 msgid "{state} · {ms} ms"
 msgstr "{state} · {ms} ms"
 
-#: src/big_remote_play/ui/host_view.py:1527
+#: src/big_remote_play/ui/host_view.py:1534
 #, python-brace-format
 msgid ""
 "{tool} is on and does not allow Sunshine's ports ({ports}) from {networks}. "
@@ -9240,28 +9243,6 @@ msgstr ""
 #, python-brace-format
 msgid "{value:g} Mbps"
 msgstr "{value:g} Mbps"
-
-# File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 190
-#: src/big_remote_play/ui/private_network_view.py:477
-#, python-brace-format
-msgid "{} installed"
-msgstr "{} paigaldatud"
-
-#: src/big_remote_play/ui/private_network_view.py:448
-#, python-brace-format
-msgid ""
-"{} is not installed yet. Install it below to continue (asks for your "
-"password)."
-msgstr ""
-"{} pole veel paigaldatud. Jätkamiseks paigalda see allpool (küsib sinu "
-"parooli)."
-
-# File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
-# line: 260
-#: src/big_remote_play/ui/host_view.py:2230
-#, python-brace-format
-msgid "{} more paired devices"
-msgstr "Veel {} seotud seadet"
 
 #: src/big_remote_play/ui/remote_connection.py:609
 #, python-brace-format

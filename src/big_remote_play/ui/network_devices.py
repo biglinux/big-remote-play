@@ -16,7 +16,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw, GLib, Gtk  # type: ignore
 
 from big_remote_play.private_network.headscale_api import registration_key
-from big_remote_play.private_network.http import ApiResult
+from big_remote_play.private_network.http import ApiErrorKind, ApiResult
 from big_remote_play.private_network.models import ConnectionState, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus
 from big_remote_play.private_network.service import PrivateNetworkService
 from big_remote_play.private_network.tailscale_api import ADMIN_CONSOLE, valid_email
@@ -591,7 +591,7 @@ class AddDeviceDialog:
                     api = _tailscale(self.service)
                     device, result = api.device_for_node(node_id)
                     if device is None:
-                        return "", result if not result.ok else ApiResult(False, detail="this computer was not found in the device list")
+                        return "", result if not result.ok else ApiResult(False, error=ApiErrorKind.NOT_FOUND, detail=_("This computer is not in the Tailscale device list yet."))
                     return api.share_device(device.device_id, email=email)
 
                 self.worker.submit(run, lambda value: self._invite_result(box, *value), keep_previous=True)
