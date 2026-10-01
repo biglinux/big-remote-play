@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import getpass
 import json
 from pathlib import Path
 from big_remote_play.utils.vpn_accounts import CommandResult, VPNAccountManager
@@ -79,13 +80,36 @@ def test_tailscale_profile_fallback_uses_status_json(tmp_path):
 
 
 def test_tailscale_switch_and_remove_validate_profile_ids(tmp_path):
-    mgr, runner = manager(tmp_path, [(0, "ok", ""), (0, "ok", "")])
+    mgr, runner = manager(tmp_path, [(0, "ok", ""), (0, "{}", ""), (0, "ok", "")])
     assert mgr.switch_tailscale_profile("-bad").returncode == 2
     assert mgr.remove_tailscale_profile("current").returncode == 2
     assert mgr.switch_tailscale_profile("1ab3").returncode == 0
     assert mgr.remove_tailscale_profile("9def").returncode == 0
     assert runner.calls[0][0] == ["tailscale", "switch", "1ab3"]
-    assert runner.calls[1][0] == ["tailscale", "switch", "remove", "9def"]
+    assert runner.calls[1][0] == ["tailscale", "status", "--json"]  # the new account answers this user
+    assert runner.calls[2][0] == ["tailscale", "switch", "remove", "9def"]
+
+
+DENIED = (1, "", "Access denied: profiles access denied\n\nUse 'sudo tailscale switch --list'.")
+
+
+def test_profiles_this_user_may_not_read_ask_for_permission_instead_of_showing_cli_advice(tmp_path):
+    mgr, runner = manager(tmp_path, [DENIED, (0, "", "")])
+    profiles = mgr.list_tailscale_profiles()
+    assert profiles.needs_permission and profiles.profiles == () and profiles.error == ""
+    assert mgr.grant_tailscale_operator().returncode == 0
+    assert runner.calls[1][0] == ["pkexec", "/usr/bin/tailscale", "set", f"--operator={getpass.getuser()}"]
+
+
+def test_switching_without_permission_asks_once_and_hands_the_new_account_to_this_user(tmp_path):
+    mgr, runner = manager(tmp_path, [DENIED, (0, "ok", ""), (1, "", "Access denied: status access denied"), (0, "", "")])
+    assert mgr.switch_tailscale_profile("c50a").returncode == 0
+    assert [call[0] for call in runner.calls] == [
+        ["tailscale", "switch", "c50a"],
+        ["pkexec", "/usr/bin/tailscale", "switch", "c50a"],
+        ["tailscale", "status", "--json"],
+        ["pkexec", "/usr/bin/tailscale", "set", f"--operator={getpass.getuser()}"],
+    ]
 
 
 def test_tailscale_pause_is_not_logout(tmp_path):
@@ -338,7 +362,9 @@ def test_adding_a_second_account_signs_in_instead_of_reusing_the_current_one(tmp
 
     result = mgr.connect_tailscale(add_account=True)
 
-    assert attempts == [["tailscale", "login", "--timeout=300s"]]
+    # One administrator sign-in that makes this user the new profile's operator:
+    # as a plain user the CLI loses access mid-way and leaves an empty profile.
+    assert attempts == [["pkexec", "/usr/bin/tailscale", "login", "--timeout=300s", f"--operator={getpass.getuser()}"]]
     assert result.connected
 
 
@@ -355,5 +381,5 @@ def test_a_new_account_left_stopped_is_brought_up(tmp_path):
 
     result = mgr.connect_tailscale(add_account=True)
 
-    assert [argv[1] for argv in attempts] == ["login", "up"]
+    assert [argv[2] if argv[0] == "pkexec" else argv[1] for argv in attempts] == ["login", "up"]
     assert result.connected and result.backend_state == "Running"

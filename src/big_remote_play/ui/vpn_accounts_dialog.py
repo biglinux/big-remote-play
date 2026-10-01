@@ -132,7 +132,18 @@ class VPNAccountsDialog:
         self._clear_group(self.tailscale_group)
         self._clear_group(self.zerotier_group)
 
-        if not profiles.profiles:
+        if profiles.needs_permission:
+            row = Adw.ActionRow(
+                title=_("Permission is needed to see your Tailscale accounts"),
+                subtitle=_("Allow it once. Your password is requested; afterwards Tailscale works without it."),
+                use_markup=False,
+            )
+            button = Gtk.Button(label=_("Allow"), valign=Gtk.Align.CENTER)
+            button.connect("clicked", lambda _button: self._grant_tailscale())
+            row.add_suffix(button)
+            row.set_activatable_widget(button)
+            self._append(self.tailscale_group, row)
+        elif not profiles.profiles:
             subtitle = profiles.error or _("No saved Tailscale or Headscale account was found on this computer.")
             self._append(self.tailscale_group, Adw.ActionRow(title=_("No account found"), subtitle=subtitle, use_markup=False))
         else:
@@ -228,6 +239,13 @@ class VPNAccountsDialog:
             "PORT_ERROR": _("ZeroTier service error"),
         }
         return labels.get(status, _("Status: {}").format(status or _("Unknown")))
+
+    def _grant_tailscale(self) -> None:
+        def run() -> None:
+            result = self.manager.grant_tailscale_operator()
+            GLib.idle_add(self._operation_finished, result.returncode == 0, _("Tailscale works without your password now"), result.stderr or result.stdout)
+
+        threading.Thread(target=run, daemon=True).start()
 
     def _run_profile_switch(self, profile: TailscaleProfile) -> None:
         self.show_toast(_("Switching to {}…").format(profile.display_name))
