@@ -12,6 +12,10 @@ The release-preparation review synchronizes every active source message across a
 python3 tools/i18n/validate_catalogs.py
 # After an intentional PO edit, rebuild its runtime MO:
 msgfmt --check -o usr/share/locale/pt_BR/LC_MESSAGES/big-remote-play.mo locale/pt_BR.po
+# Find English text copied into a catalog instead of translated:
+python3 tools/i18n/check_untranslated_human_text.py
 ```
+
+When a reviewed translation is spelled exactly like the English source (for example Danish "Start ZeroTier"), add it for that catalog only to `SAME_AS_SOURCE` in the checker.
 
 Render changed strings in context, especially action rows, small windows, RTL languages and 150% text. Keep PO and MO updates together in a patch. Usernames, network addresses and app names are dynamic text: they must not be interpreted as Pango markup.
