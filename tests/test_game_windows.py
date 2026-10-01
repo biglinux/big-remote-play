@@ -7,6 +7,7 @@ developer machine is read.
 from __future__ import annotations
 
 import json
+import subprocess
 
 import pytest
 
@@ -219,13 +220,15 @@ def test_kwin_answer_is_parsed_defensively():
 
 def test_capture_support_reports_what_is_missing():
     env = {"XDG_SESSION_TYPE": "wayland", "WAYLAND_DISPLAY": "wayland-0", "XDG_CURRENT_DESKTOP": "KDE"}
-    ok = gw.capture_support(env, which=lambda name: f"/usr/bin/{name}", has_element=lambda name: True, sandboxed=False)
+    ok = gw.capture_support(env, which=lambda name: f"/usr/bin/{name}", has_element=lambda name: True, sandboxed=False, version=lambda: (2026, 914))
     assert ok.available and ok.backend == "kwin"
-    missing = gw.capture_support(env, which=lambda name: None, has_element=lambda name: name != "pipewiresrc", sandboxed=False)
+    missing = gw.capture_support(env, which=lambda name: None, has_element=lambda name: name != "pipewiresrc", sandboxed=False, version=lambda: None)
     assert missing.problem == "missing-packages" and set(missing.missing) == {"kwin", "gst-plugin-pipewire"}
-    gnome = gw.capture_support({"XDG_SESSION_TYPE": "wayland", "WAYLAND_DISPLAY": "w", "XDG_CURRENT_DESKTOP": "GNOME"}, which=lambda n: "/x", has_element=lambda n: True, sandboxed=False)
+    gnome = gw.capture_support(
+        {"XDG_SESSION_TYPE": "wayland", "WAYLAND_DISPLAY": "w", "XDG_CURRENT_DESKTOP": "GNOME"}, which=lambda n: "/x", has_element=lambda n: True, sandboxed=False, version=lambda: None
+    )
     assert gnome.problem == "unsupported-session"
-    x11 = gw.capture_support({"XDG_SESSION_TYPE": "x11", "DISPLAY": ":0"}, which=lambda n: "/x", has_element=lambda n: True, sandboxed=False)
+    x11 = gw.capture_support({"XDG_SESSION_TYPE": "x11", "DISPLAY": ":0"}, which=lambda n: "/x", has_element=lambda n: True, sandboxed=False, version=lambda: None)
     assert x11.available and x11.backend == "x11"
     assert gw.capture_support(env, which=lambda n: "/x", has_element=lambda n: True, sandboxed=True).problem == "sandboxed"
 
@@ -249,3 +252,23 @@ def test_steam_window_class_names_the_game_when_its_environment_is_unreadable():
     # A non-Steam launch through Proton carries AppID 0: never a Steam game.
     [other] = build([window(2, 1100, title="Notepad", app_id="steam_app_0")], read, table)
     assert other.launch.steam_app_id == "" and other.name == "Notepad"
+
+
+def test_a_sunshine_without_kwin_capture_is_reported_instead_of_streaming_nothing():
+    env = {"XDG_SESSION_TYPE": "wayland", "WAYLAND_DISPLAY": "wayland-0", "XDG_CURRENT_DESKTOP": "KDE"}
+    common = {"which": lambda name: f"/usr/bin/{name}", "has_element": lambda name: True, "sandboxed": False}
+    assert gw.capture_support(env, version=lambda: (2025, 924), **common).problem == "sunshine-too-old"
+    assert gw.capture_support(env, version=lambda: (2026, 430), **common).problem == "sunshine-too-old"
+    assert gw.capture_support(env, version=lambda: (2026, 516), **common).available
+    assert gw.capture_support(env, version=lambda: (2026, 1001), **common).available
+
+
+def test_sunshine_version_is_read_from_its_own_output():
+    def run(argv, **kwargs):
+        assert argv == ["/usr/bin/sunshine", "--version"]
+        return subprocess.CompletedProcess(argv, 0, "[2026-09-30 14:33:13.188]: Info: Sunshine version: 2026.914.233613 commit: 63d35f7\n", "")
+
+    assert gw.sunshine_version(which=lambda name: f"/usr/bin/{name}", run=run) == (2026, 914)
+    old = lambda argv, **kwargs: subprocess.CompletedProcess(argv, 0, "", "Info: Sunshine version: v2025.924.154138\n")  # noqa: E731
+    assert gw.sunshine_version(which=lambda name: "/usr/bin/sunshine", run=old) == (2025, 924)
+    assert gw.sunshine_version(which=lambda name: None) is None
