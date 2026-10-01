@@ -3,9 +3,8 @@
 The sidebar of **Share** and **Connect** shows one card per service: the
 streaming component of the task, then every secure-connection method. It is an
 at-a-glance summary, not a daemon monitor; the page's own primary action stays
-the most prominent control. Audit and validation notes:
-[ui-service-cards-audit.md](ui-service-cards-audit.md),
-[ui-service-cards-validation.md](ui-service-cards-validation.md).
+the most prominent control. Release checks are in
+[release acceptance](release-testing.md#backup-restore-and-service-cards).
 
 ## Layout
 

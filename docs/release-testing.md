@@ -48,7 +48,7 @@ for screenshots must be labeled as simulated.
 | Internet | Real Tailscale browser authorization and machine sharing, ZeroTier join/approval/managed IP, Headscale server (0.27+) with API key, registration approval and pre-auth key; Share ↔ Connect over each provider, including a relayed path. Track results in the [private-network test matrix](private-network-test-matrix.md) |
 | Privileges | PolicyKit allow/cancel/failure and desktop keyring locked/unavailable states |
 | Accessibility | Orca/AT-SPI navigation and announcements, keyboard-only use, touch targets and text scaling |
-| Safety | Real backup/restore with native certificates, corrupt/legacy archives, forced apply failure and preserved libraries, Moonlight identity and devices; follow the [backup/service validation matrix](backup-service-validation.md) |
+| Safety | Real backup/restore with native certificates, corrupt/legacy archives, forced apply failure and preserved libraries, Moonlight identity and devices; follow [backup, restore and service cards](#backup-restore-and-service-cards) and the [backup and restore contract](backup-restore.md) |
 | Usability | First-time participants completing Share/Connect without developer guidance |
 
 Store exact component versions and the result of each scenario. Do not infer these results from a screenshot or a mock. Nix packaging and service paths also require target-system testing; the included expression is not a claim of a completed NixOS integration test.
@@ -81,3 +81,34 @@ For UPnP, check the router mappings and Sunshine logs, then connect from another
 network. Also test a router without UPnP and a CGNAT/double-NAT connection. Neither
 a local status nor a successful DNS lookup proves remote streaming. Do not expose
 the administration panel. Test public-domain setup separately from Headscale VPN.
+
+## Backup, restore and service cards
+
+Run this on both a native install and a Flatpak Moonlight setup. Use synthetic
+accounts/configuration where possible and never attach the resulting archive to
+a public report.
+
+1. Create a backup with app settings, a Sunshine library, paired Moonlight host
+   and one configured VPN. Confirm progress, responsive UI and mode `0600`.
+2. Change and add settings, restore, then reopen. Confirm restored values,
+   removed in-scope extras, preserved logs and Moonlight at its actual path.
+3. Move the archive to a different test user/machine. Confirm hardware choices
+   fail safely or fall back, and keyring-backed services request authentication.
+4. Try a corrupt/truncated archive and a legacy archive. Confirm the former
+   changes nothing and the latter restores supported content.
+5. Force low disk space or an unwritable destination. Confirm a previous backup
+   remains usable and restore reports rollback without partial settings.
+6. Check **Restore Defaults** with an obsolete JSON key and confirm Moonlight
+   pairing remains. Check **Clear Everything** twice-confirmed behavior and the
+   same external-data preservation.
+7. On Share and Connect, exercise Sunshine/Moonlight missing, stopped and
+   running states plus all VPN model states. Connect two providers together and
+   confirm both show Connected while every disconnected method keeps its card.
+8. Repeat cards and guided choices in light, dark, Gamer and high contrast at
+   normal/compact width, 150% text, keyboard-only, RTL and CJK locales. Confirm
+   focus remains visible without a thick double border.
+
+Real Secret Service, Sunshine/Moonlight pairing, provider authorization,
+service control, low-disk behavior and assistive-technology announcements still
+require target-system validation; hermetic tests deliberately do not perform
+those external operations.

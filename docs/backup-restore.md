@@ -1,4 +1,4 @@
-# Backup and restore audit
+# Backup and restore
 
 This document records the production contract implemented by
 `utils/backup_restore.py`. The GTK window chooses files and reports progress;
