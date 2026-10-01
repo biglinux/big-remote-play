@@ -352,13 +352,15 @@ def test_connect_lists_private_network_peers_with_readiness(ui, tmp_path):
     guest = ui.guest_view
     guest.update_hosts_list([{"name": "lan-pc", "ip": "192.168.1.5", "port": 47989}])
     guest.refresh_private_hosts()
-    assert wait_for(lambda: guest.hosts_list.get_row_at_index(2) is not None)
-    rows = [guest.hosts_list.get_row_at_index(index) for index in range(3)]
-    subtitles = [row.get_subtitle() for row in rows]
-    assert subtitles[0] == "192.168.1.5"  # local discovery keeps its place
-    assert "Tailscale" in subtitles[1] and "Sharing found" in subtitles[1]
-    assert "Offline" in subtitles[2]
-    assert rows[1]._brp_host["provider"] == "tailscale"
+    assert wait_for(lambda: len(guest.listed_hosts()) == 3)
+    hosts = guest.listed_hosts()
+    cards = [texts(guest.host_card(index)) for index in range(3)]
+    assert hosts[0]["name"] == "lan-pc"  # local discovery keeps its place
+    assert "Tailscale" in cards[1] and "Sharing found" in cards[1]
+    assert "Offline" in cards[2]
+    assert hosts[1]["provider"] == "tailscale"
+    # The address is technical: in the tooltip, not on the card.
+    assert "192.168.1.5" not in cards[0] and "192.168.1.5" in guest.host_card(0).get_tooltip_text()
 
 
 def test_connect_records_only_streams_that_started_and_offers_them_again(ui, tmp_path):
@@ -704,15 +706,18 @@ def test_status_polling_checks_only_the_services_the_page_shows(ui, monkeypatch)
     for name in ("sunshine", "moonlight", "docker", "tailscale", "zerotier"):
         monkeypatch.setattr(ui.system_check, f"is_{name}_running", lambda n=name: probed.append(n) or True)
     ui._status_timer_id = ui._status_timer_id or 1
+    ui._home_role = "guest"
     ui.navigate_to("vpn_selector")
     ui._polling_status = False
     ui.p_check()
-    wait_for(lambda: False, timeout=0.3)
-    assert probed == []
+    # Only the Streaming indicator's component; the network methods come
+    # from the private-network overview, not from process probes.
+    assert wait_for(lambda: probed == ["moonlight"])
+    assert wait_for(lambda: not ui._polling_status)
     ui.navigate_to("host")
     ui._polling_status = False
     ui.p_check()
-    assert wait_for(lambda: probed == ["sunshine"])
+    assert wait_for(lambda: probed == ["moonlight", "sunshine"])
     assert wait_for(lambda: not ui._polling_status)
 
 
@@ -763,3 +768,65 @@ def test_a_failed_pairing_explains_and_offers_to_try_again(ui, monkeypatch):
     dialog.emit("response", "retry")
     dialog.close()
     assert wait_for(lambda: len(attempts) == 2)
+
+
+# ── a missing client is installed before signing in ───────────────────────
+
+
+def _tailscale_missing(monkeypatch, installed: set[str]):
+    from big_remote_play.utils import dependencies
+
+    monkeypatch.setattr(dependencies, "_AUDIT", lambda ids: [dependencies.ComponentState(i, i in installed) for i in ids])
+    plan = dependencies.InstallPlan("pamac", ("pamac", "install", "--no-confirm", "tailscale"), ("tailscale",), ("tailscale",), ("tailscaled",))
+    monkeypatch.setattr(dependencies, "_PLAN", lambda ids: plan)
+    started: list[str] = []
+
+    def run(plan, *, on_line=None, start_unit=None, probe=None):
+        installed.update(plan.components)
+        for unit in plan.units:
+            started.append(unit)
+        return dependencies.InstallOutcome(tuple(probe(plan.components)), 0)
+
+    monkeypatch.setattr(dependencies, "_RUN", run)
+    return started
+
+
+def test_browser_sign_in_is_not_offered_while_tailscale_is_missing(ui, monkeypatch):
+    import big_remote_play.ui.private_network_view as pnv
+
+    _tailscale_missing(monkeypatch, set())
+    page = pnv.ConnectPage("tailscale", ui)
+    assert wait_for(lambda: page._install_slot.get_visible())
+    assert not page._connect_form.get_visible()
+    content = texts(page._install_slot)
+    assert "Tailscale is not installed yet" in content and "Install and continue" in content and "Not now" in content
+
+
+def test_after_installing_tailscale_the_sign_in_starts_by_itself(ui, monkeypatch):
+    import big_remote_play.ui.private_network_view as pnv
+
+    started = _tailscale_missing(monkeypatch, set())
+    signed_in = []
+    monkeypatch.setattr(pnv.ConnectPage, "_connect_tailnet", lambda self, **kwargs: signed_in.append(kwargs))
+    page = pnv.ConnectPage("tailscale", ui)
+    assert wait_for(lambda: page._install_slot.get_visible())
+    section = page._install_slot.get_first_child()
+    assert wait_for(lambda: section.checklist.button.get_visible())
+    section.checklist.button.emit("clicked")
+    assert wait_for(lambda: bool(signed_in), timeout=5)
+    assert started == ["tailscaled"]  # its service was started for the sign-in
+    assert page._connect_form.get_visible() and not page._install_slot.get_visible()
+    assert len(signed_in) == 1
+
+
+def test_the_internet_page_sign_in_button_signs_in_at_once(ui, monkeypatch):
+    import big_remote_play.ui.private_network_view as pnv
+
+    signed_in = []
+    monkeypatch.setattr(pnv.ConnectPage, "_connect_tailnet", lambda self, **kwargs: signed_in.append(kwargs))
+    signed_out = ProviderStatus(ProviderId.TAILSCALE, ConnectionState.NEEDS_AUTHENTICATION, installed=True)
+    page = hub(ui, HubService([signed_out]))
+    assert wait_for(lambda: page.primary.get_visible() and page.primary_label.get_label() == "Sign in")
+    page.primary.emit("clicked")
+    assert wait_for(lambda: bool(signed_in))
+    assert ui.current_page == "connect_private"

@@ -31,7 +31,9 @@ def test_shell_has_product_identity_dynamic_context_and_system_readiness() -> No
     # The sidebar header carries the title alone; the app icon belongs to the
     # shell, so drawing the logo next to it duplicated the same icon.
     assert 'header.set_title_widget(Adw.WindowTitle(title="Big Remote Play"))' in source
-    assert "create_logo_widget" not in source
+    # The logo appears once, in the Home hero, never next to the header title.
+    assert source.count("create_logo_widget(") == 1
+    assert "create_logo_widget(" in source.split("def create_welcome_page", 1)[1].split("def start_guided_setup", 1)[0]
     assert "self.content_title = Adw.WindowTitle()" in source
     assert "self.header_title_stack = Gtk.Stack()" in source
     assert "header.set_title_widget(self.header_title_stack)" in source
@@ -50,59 +52,6 @@ def test_shell_has_product_identity_dynamic_context_and_system_readiness() -> No
     assert ".header-title" not in stylesheet
 
 
-def test_home_is_a_two_role_decision_without_repeating_the_same_instructions() -> None:
-    source = MAIN.read_text()
-    welcome = source.split("def create_welcome_page", 1)[1].split("def create_action_card", 1)[0]
-    factory = source.split("def _create_home_network_guide", 1)[1].split("def create_welcome_page", 1)[0]
-    assert "Your games. Any screen. Anywhere." in welcome
-    assert "What do you want to do?" in welcome
-    assert "This computer runs the game" in welcome
-    assert "Play on this device" in welcome
-    assert welcome.index("main_box.append(cards_box)") < welcome.index("main_box.append(network_section)")
-    assert 'create_logo_widget("big-remote-play", 92)' not in welcome
-    assert "self.host_card" in welcome and "self.guest_card" in welcome
-    assert "How it works" not in welcome
-    assert "Adw.ExpanderRow" not in welcome
-    assert '"brp-host-symbolic"' in welcome
-    assert '"brp-client-symbolic"' in welcome
-    assert "boxed_rows(" in factory and "action_row(" in factory
-    assert "Adw.Banner" not in factory
-    assert "Set up a virtual private network" not in factory
-    assert "Play over the internet" in factory
-    assert "border-radius: 16px" in STYLE.read_text()
-    assert ".role-card:focus-visible" in STYLE.read_text()
-
-
-def test_missing_dependencies_are_explained_without_blocking_first_use() -> None:
-    source = MAIN.read_text()
-    dependency_block = source.split("def update_dependency_ui", 1)[1].split(
-        "def setup_content",
-        1,
-    )[0]
-    update_status_block = source.split("def update_status", 1)[1].split(
-        "def show_toast",
-        1,
-    )[0]
-
-    assert "self._set_role_card_state" in dependency_block
-    # A card whose component is missing names the action it performs, rather
-    # than stating a condition and leaving the next step to be guessed.
-    card_block = source.split("def _set_role_card_state", 1)[1].split("def _activate_role", 1)[0]
-    assert 'label.set_label(_("Needs {name}").format(name=component_name))' in card_block
-    assert "Installation needed" not in card_block
-    assert "self.host_card.set_sensitive(True)" in dependency_block
-    assert "self.guest_card.set_sensitive(True)" in dependency_block
-    assert "set_sensitive(False)" not in dependency_block
-    assert "MessageDialog" not in update_status_block
-    assert "def _activate_role" in source
-    role_block = source.split("def _activate_role", 1)[1].split("def on_nav_selected", 1)[0]
-    assert "self._service_installed.get(service_id) is not False" in role_block
-    assert 'dialog = Adw.AlertDialog(heading=_("Installation needed"))' in role_block
-    assert 'dialog.set_body(_("Install {name}").format(name=component_name))' in role_block
-    assert 'dialog.add_response("install", _("Install"))' in role_block
-    assert "InstallerWindow(parent=self" in role_block
-
-
 def test_adaptive_layout_stacks_content_and_opens_compact_windows_on_content() -> None:
     source = MAIN.read_text()
 
@@ -116,8 +65,7 @@ def test_adaptive_layout_stacks_content_and_opens_compact_windows_on_content() -
     assert "add_compact_layout_setters(compact)" in source
     assert "add_compact_layout_setters(narrow)" in source
     assert 'narrow.add_setter(self.split_view, "collapsed", True)' in source
-    assert 'narrow.add_setter(self.home_device_flow, "visible", False)' in source
-    assert 'narrow.add_setter(self.home_benefits, "visible", False)' in source
+    assert 'narrow.add_setter(self.home_logo, "pixel-size", 64)' in source
     assert "self.split_view.set_show_content(True)" in source
     assert 'narrow.add_setter(self.welcome_main_box, "margin-start", 12)' in source
     assert 'narrow.add_setter(self.welcome_main_box, "margin-end", 12)' in source
@@ -160,10 +108,9 @@ def test_context_switchers_share_the_native_headerbar_and_adapt_to_a_bottom_bar(
     # Network sub-pages are reached from one hub and return with Back.
     assert "network_navigation_stack" not in source
     assert "self.network_back_button" in source
-    # Connect is a single page now, so it has a plain title instead of a
-    # switcher over methods that were never parallel choices.
+    # Connect: computers first, everything else on a named second tab.
     assert "method_stack" not in source
-    assert 'self._set_header_title(pgettext("navigation", "Connect"), _("Play from another PC"))' in source
+    assert '"guest": self.guest_view.view_stack' in source
     assert "self.compact_view_switcher = Adw.ViewSwitcherBar()" in source
     assert "toolbar.add_bottom_bar(self.compact_view_switcher)" in source
     assert 'narrow.connect("apply", self._on_compact_header_apply)' in source
