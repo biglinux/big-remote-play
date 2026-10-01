@@ -9,20 +9,6 @@ The card on **Play over the internet** names the problem and its fix:
 - **This computer is not connected to the internet.** No network interface has an address: connect Wi-Fi or a cable and choose **Check again**.
 - **We need to fix a setting → See details.** Opens the network details, where **Technical details** shows what the connection program reported.
 
-## Share keeps asking to install Sunshine, or an installation does not finish
-
-Big Remote Play looks for the program again every time you choose the task and whenever its window comes back to the front, so a program installed with another tool is recognized without restarting. If the prompt still appears, Sunshine's executable is not on the system path: on BigLinux and Manjaro install the repository package (`sunshine-bin`, which provides `sunshine`), not the AUR source package.
-
-The installation runs through Pamac (or pacman with PolicyKit where Pamac is absent) and asks for your password in the system's own window; no terminal opens. **The installation was cancelled** means the password window was closed: choose **Try again**. **The installation did not finish** usually means no internet connection or another program updating the system: wait for it, then **Try again**. **Technical details** shows Pamac's own messages. See [installing what a task needs](dependency-installer.md).
-
-## A device wants to connect, but nothing appears on the sharing computer
-
-The request dialog needs Sunshine's password to read the waiting devices. When Share shows **Sunshine's password is needed to approve devices**, choose **Enter Sunshine password** once. On a first Sunshine without any user, Big Remote Play creates one itself and keeps it in the keyring. With an older Sunshine that does not list waiting devices, use **Type a pairing code yourself** under **3. Connect the other PC**. Requests expire after two minutes: start pairing again on the other device. See [pairing requests](pairing-ux.md).
-
-## Connection history is empty
-
-**Support → Connection history** fills in as devices play here: a session appears when it ends (shorter than five seconds is not kept). The live chart above it, **Latency in the last 3 minutes**, draws only ping replies; Windows, phones and TVs often do not answer ping, and the chart then says so — the game is not affected. See [connection history](connection-history-fix.md).
-
 ## Colors look grey or washed out on the other computer
 
 The shared screen is almost certainly in HDR (KDE: **System Settings → Display** shows HDR on). Sunshine captures HDR pixels and sends them as SDR, without converting them. Keep **Share → Image and capture → Correct colors of HDR screens** on and start sharing again: the screen uses SDR during the session and HDR afterwards. On desktops other than KDE Plasma, turn HDR off on that screen by hand before sharing. Measurements and details: [video quality](video-quality.md).
@@ -37,7 +23,7 @@ Text is sharp when the stream has the sharing screen's resolution. A wide or hig
 
 ## No computer found
 
-First start sharing on the game PC. Every computer found gets its own card under **Connect → Computers**; the other ways to connect are on the **Advanced options** tab. Check that both PCs are reachable on the same home or private network. Search again. Across a VPN, use the game PC's private IP address; broadcast discovery is not universally supported. A search code does not create network connectivity.
+First start sharing on the game PC. Check that both PCs are reachable on the same home or private network. Search again. Across a VPN, use the game PC's private IP address; broadcast discovery is not universally supported. A search code does not create network connectivity.
 
 ## The browser sign-in for the private network did not open, or the PC is not really connected
 

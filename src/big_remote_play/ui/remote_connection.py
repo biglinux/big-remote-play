@@ -211,7 +211,6 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
         # Long translations wrap inside the button instead of widening the page.
         self.primary_label = Gtk.Label(wrap=True, justify=Gtk.Justification.CENTER)
         self.primary_label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
-        self.primary_label.set_natural_wrap_mode(Gtk.NaturalWrapMode.NONE)
         inner.append(self.primary_spinner)
         inner.append(self.primary_label)
         self.primary.set_child(inner)
@@ -239,14 +238,11 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
         box.append(self.card)
         box.append(self._build_link_card())
 
-        # Share and Connect are in the sidebar, always one click away; once
-        # this computer is ready the page says where to go next instead.
-        self.tasks = Adw.PreferencesGroup(title=_("Ready to play?"))
+        self.tasks = Adw.PreferencesGroup(title=_("What do you want to do?"))
         self.share_row = action_row(_("Share this computer"), _("Let another device play on this computer."), "brp-host-symbolic", lambda: self.main_window.navigate_to("host"))
         self.connect_row = action_row(_("Connect to another computer"), _("Play on a computer that is already set up."), "brp-client-symbolic", lambda: self.main_window.navigate_to("guest"))
         for row in (self.share_row, self.connect_row):
             self.tasks.add(row)
-        self.tasks.set_visible(False)
         box.append(self.tasks)
 
         self.devices = RowGroup(title=_("My devices"))
@@ -398,8 +394,6 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
         self.method_box.get_parent().set_visible(not checking and plan.kind is not PlanKind.OFFLINE)
         self.method_label.set_label(_("Using {method}").format(method=plan.provider.display_name))
         self.method_button.update_property([Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION], [_("Change method"), _("Now using {method}.").format(method=plan.provider.display_name)])
-        # One next step at a time: where to play appears once the connection works.
-        self.tasks.set_visible(plan.kind is PlanKind.READY)
         self._render_install()
         self._render_devices()
         self._render_advanced()
@@ -414,17 +408,7 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
             return
         from .private_network_view import InstallSection
 
-        self.install_slot.append(InstallSection(self.plan.provider.value, self.main_window, on_installed=self._continue_after_install, on_found=self.refresh))
-
-    def _continue_after_install(self) -> None:
-        """Installed from here: go on to the step that needed it, by itself."""
-        provider = self.plan.provider
-        if provider is ProviderId.TAILSCALE:
-            self.main_window._apply_vpn_selection(provider.value, destination="connect_private", auto_start=True)
-        elif provider is ProviderId.ZEROTIER:
-            self.main_window._apply_vpn_selection(provider.value, destination="connect_private")
-        else:
-            self.refresh()
+        self.install_slot.append(InstallSection(self.plan.provider.value, self.main_window, on_installed=self.refresh))
 
     def _render_devices(self) -> None:
         status = self.plan.status if self.plan.kind is PlanKind.READY else None
@@ -664,9 +648,7 @@ class RemoteConnectionPage(Gtk.ScrolledWindow):
         elif kind is PlanKind.ALLOW:
             self._background(lambda service: service.grant_zerotier_access().returncode == 0, _("Waiting for permission…"), _("Permission granted"), _("Permission was not granted."))
         elif kind in (PlanKind.SIGN_IN, PlanKind.SET_UP):
-            # "Sign in" opens the browser sign-in at once, not a page with a
-            # second "Sign in" button.
-            self.main_window._apply_vpn_selection(provider.value, destination="connect_private", auto_start=kind is PlanKind.SIGN_IN and provider is ProviderId.TAILSCALE)
+            self.main_window._apply_vpn_selection(provider.value, destination="connect_private")
         elif kind is PlanKind.PROBLEM:
             self.main_window._apply_vpn_selection(provider.value, destination="create_private")
 

@@ -59,10 +59,7 @@ hardware encoder → Moonlight
   `apps.json` is used; no temporary app is created.
 - When sharing starts the game window is made active, because Sunshine sends
   keyboard and mouse to the active window (right after **Start sharing** that
-  would be Big Remote Play itself), and again every time a device starts
-  playing (approving that device happened in Big Remote Play). Many games also
-  slow down or mute themselves while they are not the active window; see
-  [Game Window audio](window-audio-fix.md).
+  would be Big Remote Play itself).
 
 `host/game_windows.py` lists open windows (KWin scripting on Wayland, EWMH on
 X11), reads each window's process tree and names it. `host/window_capture.py`
@@ -127,8 +124,7 @@ only when exactly one open window has that identity.
 
 - **Input goes to the desktop's active window.** Sunshine injects keyboard,
   mouse and controllers through `uinput` for the whole session, as with Full
-  Desktop. Game Window activates the game when sharing starts and when a
-  device starts playing; if someone at
+  Desktop. Game Window activates the game when sharing starts; if someone at
   this computer switches to another window, keys typed on the other device go
   there, without the other person seeing it. Controllers are read by games
   directly and are not affected.

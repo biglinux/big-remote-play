@@ -77,6 +77,16 @@ def test_icon_only_buttons_receive_explicit_accessible_names() -> None:
     assert "name_icon_button(reset_btn" in guest
 
 
+def test_discovered_hosts_use_native_single_selection_and_auto_select_first() -> None:
+    source = (ROOT / "src/big_remote_play/ui/guest_view.py").read_text()
+    assert "Gtk.SelectionMode.SINGLE" in source
+    assert 'connect("row-selected", self._on_host_row_selected)' in source
+    # First result by default; a background refresh keeps the chosen one.
+    assert "selected = keep_row or first_row" in source
+    assert "self.hosts_list.select_row(selected)" in source
+    assert "Gtk.CheckButton" not in source.split("def create_host_row_custom", 1)[1].split("def create_manual_page", 1)[0]
+
+
 def test_pairing_pin_is_four_digits_everywhere_in_primary_ui() -> None:
     host = (ROOT / "src/big_remote_play/ui/host_view.py").read_text()
     guest = (ROOT / "src/big_remote_play/ui/guest_view.py").read_text()
@@ -100,6 +110,14 @@ def test_pairing_pin_rejects_overlong_paste_instead_of_silently_truncating() -> 
     guest = (ROOT / "src/big_remote_play/ui/guest_view.py").read_text()
     assert "set_max_length(MOONLIGHT_PAIRING_PIN_LENGTH)" not in host
     assert "set_max_length(MOONLIGHT_PAIRING_PIN_LENGTH)" not in guest
+
+
+def test_installer_is_compact_until_terminal_is_needed() -> None:
+    source = (ROOT / "src/big_remote_play/ui/installer_window.py").read_text()
+    assert "self.set_default_size(720, 500)" in source
+    install_block = source.split("def _on_install", 1)[1].split("def _on_close", 1)[0]
+    assert "self.set_default_size(720, 620)" in install_block
+    assert install_block.index("self.set_default_size(720, 620)") < install_block.index("self.frame.set_visible(True)")
 
 
 def test_sparse_preferences_and_quality_dialogs_avoid_excess_empty_space() -> None:

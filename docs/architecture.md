@@ -11,11 +11,7 @@ software, start sharing or change a network.
 
 `HostView` gathers GTK values on the main thread, then uses a worker for Sunshine/audio/process work. `GuestView` distinguishes discovery, pairing and streaming, uses attempt generations/cancellation events, and applies UI results through the main loop. Background discovery is passive while Connect is visible; explicit Search may perform the bounded subnet scan. Home does not start that scan.
 
-Home's **Guided setup** (`ui/guided_setup.py`) asks two questions, gets this computer ready with the shared installation checklist and hands over: it pushes question pages on Home's navigation view and ends in Share, Connect, the internet page or a provider's connection page; it implements no network or sharing flow of its own. See [guided setup](guided-setup-redesign.md).
-
-`utils/dependencies.py` (GTK-free) owns which components a task needs, how they are detected (a fresh `PATH` lookup each time, Flatpak for the VPN clients) and the installation plan: Pamac as the user, or the allowlisted `install-components.sh` through `pkexec`; success is decided by looking again. `ui/dependency_installer.py` (`ComponentChecklist`, `InstallDialog`) is the only installation interface and allows one transaction at a time. See [installing what a task needs](dependency-installer.md).
-
-Share's pairing requests come from `host/pairing_requests.py` (`RequestTracker`: new, gone and expired requests from Sunshine's `GET /api/pin`) and are answered in `ui/pairing_prompt.py`; see [pairing requests](pairing-ux.md). `host/share_history.py` stores the sessions **Connected now** showed (start, end, device name, 0600) for **Support → Connection history** (`ui/connection_history.py`); see [connection history](connection-history-fix.md). Connect is a native `Adw.ViewStack` with **Computers** and **Advanced options**, like Share's tabs. Connection cards (`ui/connection_cards.py`) render `utils/connection_health.py` values; Share's live sessions come from `host/sunshine_sessions.py` through the existing `PerformanceMonitor` worker. See [connection status](connection-status.md). `host/stream_display.py` is Sunshine's `global_prep_cmd`: it switches an HDR screen to SDR for SDR clients and optionally to the client's resolution, and restores it; see [video quality](video-quality.md).
+Home's **Guided setup** (`ui/guided_setup.py`) only asks and hands over: it pushes question pages on Home's navigation view and ends in Share, Connect, the internet page or a provider's connection page; it implements no flow of its own. Connection cards (`ui/connection_cards.py`) render `utils/connection_health.py` values; Share's live sessions come from `host/sunshine_sessions.py` through the existing `PerformanceMonitor` worker. See [connection status](connection-status.md). `host/stream_display.py` is Sunshine's `global_prep_cmd`: it switches an HDR screen to SDR for SDR clients and optionally to the client's resolution, and restores it; see [video quality](video-quality.md).
 
 **Game Window** shares one game window without the desktop. `host/game_windows.py` lists open, capturable game windows (KWin scripting on Wayland, EWMH through `host/x11_windows.py` on X11), classifies their process trees and never persists window ids. `host/window_capture.py` is a helper process that owns the ScreenCast portal session (or X11 source), a private headless `kwin_wayland --virtual` screen and the GStreamer mirror, and tears them down together; Sunshine is started with `capture = kwin` and only that screen's `WAYLAND_DISPLAY`. `StreamDisplay` keeps owning the real monitors and is not used by this mode. See [Game Window](game-window.md).
 
@@ -23,7 +19,7 @@ Share's pairing requests come from `host/pairing_requests.py` (`RequestTracker`:
 
 | Owner | Values |
 |---|---|
-| Big Remote Play JSON | UI choices, Home role, per-task workflow state, the sessions shared from this computer (`history/shared.json`) |
+| Big Remote Play JSON | UI choices, Home role, per-task workflow state |
 | Share | Capture, encoder, host audio, maximum bitrate, network exposure |
 | Connecting PC | Stream resolution/FPS/bitrate, display mode, audio-on-host preference |
 | Connect task dialogs | Native input, controller, codec and decoder preferences (one owner, no second advanced-client window) |
@@ -71,7 +67,7 @@ Backup/restore is owned by `utils/backup_restore.py`. It writes a versioned, has
 
 The app coordinates separately installed Sunshine, Moonlight, VPN clients, PolicyKit and the audio server. Hermetic UI tests substitute these adapters. They do not establish hardware compatibility, frame pacing, streaming latency or actual authorization behavior.
 
-`utils/vpn_accounts.py` owns every Tailscale/Headscale/ZeroTier CLI call — listing and switching profiles, connecting (`tailscale up`), pausing (`down`), reading `BackendState`, joining/leaving ZeroTier networks and the one-time ZeroTier user access. Its command runner is injectable, so the UI never builds VPN argv itself and the flow is testable without a daemon. The GTK-free `private_network/` package owns provider status, REST APIs, credentials, connection history and diagnostics; see [private-network architecture](private-network-architecture.md). The only privileged shell helpers left are the dependency installer (used only without Pamac) and the firewall rule.
+`utils/vpn_accounts.py` owns every Tailscale/Headscale/ZeroTier CLI call — listing and switching profiles, connecting (`tailscale up`), pausing (`down`), reading `BackendState`, joining/leaving ZeroTier networks and the one-time ZeroTier user access. Its command runner is injectable, so the UI never builds VPN argv itself and the flow is testable without a daemon. The GTK-free `private_network/` package owns provider status, REST APIs, credentials, connection history and diagnostics; see [private-network architecture](private-network-architecture.md). The only privileged shell helpers left are the dependency installer and the firewall rule.
 
 ## Audio ownership
 

@@ -27,7 +27,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/home.png" width="860" alt="Home: the logo with Start with the guided setup, then Share and Connect; the sidebar shows Streaming and Secure connection">
+  <img src="docs/screenshots/home.png" width="860" alt="Home: Share and Connect as the two main choices, with Guided setup above them">
 </p>
 
 ## Why Big Remote Play?
@@ -40,7 +40,7 @@ Remote play on Linux usually means learning several unrelated tools before the f
 | 🖥️ **Connect from anywhere** | Find the game computer and play it with [Moonlight](https://moonlight-stream.org/) on another PC, a TV or a laptop. |
 | 🔒 **Play across the internet** | Put both computers on the same private network with Tailscale, Headscale or ZeroTier. No open router ports needed. |
 | 🕵️ **Keep your desktop private** | **Game Window** streams one game through a private screen: notifications, chats and other windows never reach the other device. |
-| 🧭 **Guided from the first click** | **Start with the guided setup** asks what you want to do and where the other device is, installs what this computer needs without a terminal, then opens the right page. |
+| 🧭 **Guided from the first click** | **Guided setup** asks what you want to do and where the other device is, then opens the right page. |
 | 🔊 **Sound that just works** | Game audio is sent, the microphone and voice calls are not. Everything returns to normal when sharing stops. |
 | 🛡️ **Respects what you have** | Existing Sunshine libraries, paired devices, Moonlight identity and VPN profiles are preserved, never overwritten. |
 | ♿ **Made for everyone** | Adaptive GTK 4/libadwaita interface for keyboard, touch, compact windows, high contrast, large text, RTL and CJK, in 32 languages. |
@@ -52,7 +52,7 @@ There is no proprietary game catalog and no requirement that the game came from 
 <table>
   <tr>
     <td width="50%"><img src="docs/screenshots/share.png" alt="Share: Source set to Game Window, listing Shadow of the Tomb Raider (Steam · Proton), SuperTuxKart (Linux native) and Cyberpunk 2077 (Steam · Proton · Gamescope)"><br><sub><b>Share</b>: choose Full Desktop, a game to start, or only one open game window.</sub></td>
-    <td width="50%"><img src="docs/screenshots/connect.png" alt="Connect: three game computers as cards, two on the local network and one over Tailscale, with the Computers and Advanced options tabs"><br><sub><b>Connect</b>: pick the game computer; other ways to connect are on the <b>Advanced options</b> tab.</sub></td>
+    <td width="50%"><img src="docs/screenshots/connect.png" alt="Connect: two game computers found on the network, with other ways to connect and this computer's image, audio and input settings"><br><sub><b>Connect</b>: pick the game computer; other ways to connect are one click away.</sub></td>
   </tr>
   <tr>
     <td><img src="docs/screenshots/private-network.png" alt="Play over the internet: ready over Tailscale with two devices online and the list of devices"><br><sub><b>Play over the internet</b>: one sentence and one button tell you what to do next.</sub></td>
@@ -74,9 +74,9 @@ There is no proprietary game catalog and no requirement that the game came from 
 
 **1. On the computer running the game** — open **Share**, choose what to share and select **Start sharing**. Under **Source**, **Game Window** sends only the game you pick; **Full Desktop** sends the whole screen.
 
-**2. On the computer that will play** — open **Connect** and choose the game computer. The first time, Moonlight shows a four-digit pairing code, and the sharing computer shows **New connection request** by itself: type the code there and choose **Approve**.
+**2. On the computer that will play** — open **Connect**, select the game computer and connect. The first time, Moonlight shows a four-digit pairing code: type it on the sharing computer to approve the device.
 
-**3. When the computers are in different places** — open **Play over the internet**. **Connect your devices** looks at what already works and shows one sentence with one button: **Turn on**, **Fix**, **Sign in**, **Set up** or **Add a device or invite a player**. Not sure where to start? **Start with the guided setup** on Home asks two questions, prepares this computer and takes you there.
+**3. When the computers are in different places** — open **Play over the internet**. **Connect your devices** looks at what already works and shows one sentence with one button: **Turn on**, **Fix**, **Sign in**, **Set up** or **Add a device or invite a player**. Not sure where to start? **Guided setup** on Home asks two questions and takes you there.
 
 > **Pairing code and search code are different.** A pairing code authorizes a device. A search code only helps find a Big Remote Play computer on a network that permits discovery.
 
@@ -92,7 +92,7 @@ Big Remote Play is packaged for BigLinux (currently in the `biglinux-testing` re
 sudo pacman -Syu big-remote-play
 ```
 
-Then open the task you want: anything missing is listed in the app with **Install what's needed**, which installs it through Pamac or PolicyKit (your password is asked in the system's own window). It never installs software without that button. To install by hand instead:
+Then install what your role needs — the app explains anything missing in place and never installs software silently:
 
 ```bash
 sudo pacman -S --needed sunshine        # on the computer that shares games
@@ -146,7 +146,7 @@ The Python wheel alone is not a complete desktop installation: icons, styles, tr
 | **Connect** | `moonlight-qt` |
 | **Game Window** | Sunshine ≥ 2026.516; KDE Plasma (`kwin`) on Wayland or an X11 desktop with compositing; `gst-plugin-pipewire`, `gst-plugins-bad`, `gst-plugins-good` |
 | **Play over the internet** | one of `tailscale`, `zerotier-one`, or a Headscale server (`docker`, `docker-compose`, `miniupnpc` to host your own) |
-| **Optional** | `pamac-cli` (installing missing components without a terminal), `pciutils` (graphics detection), `flatpak` (VPN clients installed as Flatpaks) |
+| **Optional** | `vte4` (installer terminal), `pciutils` (graphics detection), `flatpak` (VPN clients installed as Flatpaks) |
 
 ## Game Window: share the game, not your desktop
 
