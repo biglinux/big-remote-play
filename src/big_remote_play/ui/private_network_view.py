@@ -445,7 +445,7 @@ class InstallSection(Gtk.Box):
         self.main_window = main_window
         self._on_installed = on_installed or (lambda: None)
         self._name = self._NAMES.get(vpn_id, vpn_id)
-        self.append(note(_("{} is not installed yet. Install it below to continue (asks for your password).").format(self._name), "dialog-warning-symbolic"))
+        self.append(note(_("{name} is not installed yet. Install it below to continue (asks for your password).").format(name=self._name), "dialog-warning-symbolic"))
         self._progress = ProgressRow(on_show_log=lambda: _show_log_window(self.main_window, self._log, _("Installation Log")))
         self._log = LogView()
         self.append(self._progress)
@@ -455,12 +455,12 @@ class InstallSection(Gtk.Box):
             self._btn_install = Gtk.Button(halign=Gtk.Align.CENTER)
             inner = Gtk.Box(spacing=8, halign=Gtk.Align.CENTER)
             inner.append(self._spinner)
-            inner.append(Gtk.Label(label=_("Install {}").format(self._name)))
+            inner.append(Gtk.Label(label=_("Install {name}").format(name=self._name)))
             self._btn_install.set_child(inner)
-            self._btn_install.update_property([Gtk.AccessibleProperty.LABEL], [_("Install {}").format(self._name)])
+            self._btn_install.update_property([Gtk.AccessibleProperty.LABEL], [_("Install {name}").format(name=self._name)])
             self._btn_install.connect("clicked", self._on_install_clicked)
         else:
-            self._btn_install = Gtk.Button(label=_("How to install {}").format(self._name), halign=Gtk.Align.CENTER)
+            self._btn_install = Gtk.Button(label=_("How to install {name}").format(name=self._name), halign=Gtk.Align.CENTER)
             self._btn_install.connect("clicked", lambda b: open_uri(b, self._HELP.get(self.vpn_id, self._HELP["tailscale"])))
         self._btn_install.add_css_class("suggested-action")
         self._btn_install.set_size_request(220, 48)
@@ -469,12 +469,12 @@ class InstallSection(Gtk.Box):
     def _on_install_clicked(self, _btn) -> None:
         self._btn_install.set_sensitive(False)
         self._spinner.set_visible(True)
-        self._progress.update(0.05, _("Installing..."))
+        self._progress.update(0.05, _("Installing…"))
         self._log.clear()
 
         def done(code, captured):
             if captured.get("INSTALL_RESULT") == "ok" and code == 0:
-                self.main_window.show_toast(_("{} installed").format(self._name))
+                self.main_window.show_toast(_("{name} installed").format(name=self._name))
                 if hasattr(self.main_window, "check_system"):
                     self.main_window.check_system()
                 self._on_installed()
@@ -547,7 +547,7 @@ class ConnectPage(Adw.Bin):
             self._accounts.another_row.set_visible(connected)
         if connected:
             self._c_title.set_label(_("Already connected"))
-            self._c_description.set_label(_("This PC is on the {} private network.").format(self.vpn["name"]))
+            self._c_description.set_label(_("This PC is on the {name} private network.").format(name=self.vpn["name"]))
         return False
 
     def _build(self):
@@ -795,9 +795,9 @@ class ConnectPage(Adw.Bin):
         self._btn_connect.set_sensitive(False)
         self._c_spinner.set_visible(True)
         self._c_spinner.start()
-        self._c_lbl.set_label(_("Connecting..."))
+        self._c_lbl.set_label(_("Connecting…"))
         self._c_phase = 0.05
-        self._c_progress.update(self._c_phase, _("Starting..."))
+        self._c_progress.update(self._c_phase, _("Starting…"))
         self._c_log.clear()
 
         # Tailscale and Headscale are the same daemon: both join through the
@@ -910,7 +910,7 @@ class ConnectPage(Adw.Bin):
             message = _("Sign-in was not completed in the browser.") if awaiting else _("Connection failed")
             self._return_to_game.set_visible(False)
             self._c_progress.update(0, message)
-            self._c_lbl.set_label(_("Try Again"))
+            self._c_lbl.set_label(_("Try again"))
             self.main_window.show_toast(message)
 
     def _refresh_history(self):
@@ -996,13 +996,13 @@ class ConnectPage(Adw.Bin):
                 page = view.get_child() if view is not None and hasattr(view, "get_child") else None
                 if page is not None:
                     self._fill_from_entry(page, entry)
-                self.main_window.show_toast(_("Form filled for {}").format(vpn_name))
+                self.main_window.show_toast(_("Form filled for {name}").format(name=vpn_name))
                 return False
 
             GLib.timeout_add(300, _fill_form)
         else:
             self._fill_from_entry(self, entry)
-            self.main_window.show_toast(_("Form filled for {}").format(vpn_name))
+            self.main_window.show_toast(_("Form filled for {name}").format(name=vpn_name))
 
     def _edit_history_entry(self, entry):
         """Open a dialog to edit the non-secret fields of a history entry."""
@@ -1030,7 +1030,7 @@ class ConnectPage(Adw.Bin):
             grp.add(e_webui)
             edit_fields["web_ui"] = e_webui
 
-        dialog = Adw.AlertDialog(heading=_("Edit – {}").format(vpn_name))
+        dialog = Adw.AlertDialog(heading=_("Edit – {name}").format(name=vpn_name))
         dialog.set_extra_child(grp)
         dialog.add_response("cancel", _("Cancel"))
         dialog.add_response("save", _("Save"))

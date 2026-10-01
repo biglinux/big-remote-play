@@ -48,7 +48,7 @@ class CardPresentation:
 
 
 def checking_presentation() -> CardPresentation:
-    return CardPresentation(_("Checking..."), "checking")
+    return CardPresentation(_("Checking…"), "checking")
 
 
 def unknown_presentation() -> CardPresentation:
