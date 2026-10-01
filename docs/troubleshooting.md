@@ -54,6 +54,10 @@ The network is private: its owner must authorize this computer. Send them the **
 
 **Not found** comes from the network's controller: the network does not exist (a typo in a real owner's code, or a deleted network). **Has not answered yet** after a minute usually means the code points to no controller at all, so nobody can say “not found”; check the code, or choose **Cancel the request** so the computer stops trying.
 
+## Tailscale never shows “Select a tailnet”
+
+Reconnecting (`tailscale up`) reuses the tailnet this computer is already on, so Tailscale has nothing to ask. To use a friend's tailnet, first accept their invitation with the same account, then on the Tailscale page choose **Use another tailnet**. The new sign-in shows **Select a tailnet** when your account belongs to more than one. To play with a single friend, sharing one computer from their tailnet (**Share this computer**) avoids switching tailnets at all.
+
 ## “Could not connect” over ZeroTier, Tailscale or Headscale: the game PC's firewall
 
 The private network can work (both computers listed, pings answered) while the game PC's firewall drops Sunshine's ports; the connecting computer then sees exactly what it would see if sharing were off. Big Remote Play now tells the two apart:
