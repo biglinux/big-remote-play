@@ -12,6 +12,7 @@ import time
 import threading
 import subprocess
 import queue
+import logging
 import os
 from big_remote_play import paths
 import gi
@@ -34,6 +35,7 @@ from big_remote_play.utils.connection_health import (
 )
 
 CHART_MAX_HISTORY = 60
+_log = logging.getLogger("big-remoteplay")
 
 # Reverse-DNS lookups run here with a per-call timeout so a slow resolver never
 # blocks the monitor worker, and never via socket.setdefaulttimeout (which would
@@ -87,9 +89,11 @@ class PerformanceChartWidget(Gtk.DrawingArea):
         ]
         self._hover_x: float | None = None
         self._hover_index: int | None = None
+        self._message = ""
+        self._draw_failed = False
         self.set_size_request(220, 160)
         self.set_focusable(True)
-        self.update_property([Gtk.AccessibleProperty.LABEL], [_("Connection history")])
+        self.update_property([Gtk.AccessibleProperty.LABEL], [_("Latency in the last 3 minutes")])
         self.set_vexpand(False)
         self.set_hexpand(True)
         self.set_draw_func(self._on_draw)
@@ -97,6 +101,12 @@ class PerformanceChartWidget(Gtk.DrawingArea):
         motion_controller.connect("motion", self._on_motion)
         motion_controller.connect("leave", self._on_leave)
         self.add_controller(motion_controller)
+
+    def set_message(self, text: str) -> None:
+        """Why there is no line yet, instead of an endless “Waiting for data…”."""
+        if text != self._message:
+            self._message = text
+            self.queue_draw()
 
     def _get_device_color(self, name):
         # Strip state suffixes to keep the color consistent
@@ -203,12 +213,19 @@ class PerformanceChartWidget(Gtk.DrawingArea):
                 cr.line_to(margin_left + chart_width, y)
                 cr.stroke()
             if not self._history:
-                cr.set_source_rgba(0.5, 0.5, 0.5, 1)
-                cr.set_font_size(14)
-                text = _("Waiting for data…")
-                extents = cr.text_extents(text)
-                cr.move_to(margin_left + (chart_width - extents.width) / 2, margin_top + chart_height / 2)
-                cr.show_text(text)
+                # Pango, not Cairo's toy text: it wraps, follows the font and
+                # its size, and draws any script.
+                from gi.repository import Pango, PangoCairo  # type: ignore
+
+                color = self.get_color()
+                layout = self.create_pango_layout(self._message or _("Waiting for data…"))
+                layout.set_width(int(max(1, chart_width) * Pango.SCALE))
+                layout.set_alignment(Pango.Alignment.CENTER)
+                layout.set_wrap(Pango.WrapMode.WORD_CHAR)
+                _ink, logical = layout.get_pixel_extents()
+                cr.set_source_rgba(color.red, color.green, color.blue, 0.7)
+                cr.move_to(margin_left, margin_top + (chart_height - logical.height) / 2)
+                PangoCairo.show_layout(cr, layout)
                 return
             lat_vals = [p.latency for p in self._history]
             fps_vals = [p.fps for p in self._history]
@@ -250,8 +267,12 @@ class PerformanceChartWidget(Gtk.DrawingArea):
                     cr.set_source_rgba(1, 1, 1, 1)
                     cr.move_to(box_x, box_y + ext.height)
                     cr.show_text(text)
+            self._draw_failed = False
         except Exception:
-            pass
+            # Logged once per failure streak; the values stay readable as labels.
+            if not self._draw_failed:
+                _log.exception("Could not draw the latency chart")
+            self._draw_failed = True
 
     def _draw_line(self, cr, w, h, mx, my, vals, color, fill=False):
         if not vals:
@@ -418,7 +439,7 @@ class PerformanceMonitor(Gtk.Box):
         self._details_frame.set_child(self._details_list)
         self.append(self._details_frame)
         self.chart = PerformanceChartWidget()
-        history = Adw.ExpanderRow(title=_("Connection history"), use_markup=False)
+        history = Adw.ExpanderRow(title=_("Latency in the last 3 minutes"), subtitle=_("Measured with a ping every 5 seconds while a device plays."), use_markup=False)
         history.add_row(self.chart)
         history_list = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
         history_list.add_css_class("boxed-list")
@@ -546,9 +567,12 @@ class PerformanceMonitor(Gtk.Box):
             self.hostname_cache[ip] = hostname
             return hostname
         except (FutureTimeoutError, OSError, socket.herror, socket.gaierror):
-            # Cache failure too to avoid retrying constantly
-            self.hostname_cache[ip] = None
-            return None
+            # Home routers rarely answer reverse DNS; Linux computers announce
+            # their name over mDNS. A failure is cached too, to avoid retrying.
+            from big_remote_play.utils.network import mdns_name
+
+            self.hostname_cache[ip] = mdns_name(ip) or None
+            return self.hostname_cache[ip]
 
     def _sunshine_auth(self) -> tuple[str, str] | None:
         """Reads Sunshine admin credentials from the system keyring, or None."""
@@ -783,6 +807,14 @@ class PerformanceMonitor(Gtk.Box):
         # Only chart real measurements, never a flat line of targets.
         if latencies:
             self.chart.add_data_point(average, self._target_fps, self._target_bw, users=len(infos), device_latencies=latencies)
+            self.chart.set_message("")
+        elif infos and all(info.health.quality is Quality.NO_RESPONSE for info in infos):
+            # Common with Windows and phones: their firewall drops ping. The stream works.
+            self.chart.set_message(_("No latency to show: the other device does not answer pings. This does not affect the game."))
+        elif infos:
+            self.chart.set_message(_("Measuring…"))
+        else:
+            self.chart.set_message(_("Nobody is playing now. The line starts when a device plays."))
         if self._peer is None:
             if len(infos) == 1:
                 self.set_connection_status(infos[0].device_name, _("Active Connection"), True)

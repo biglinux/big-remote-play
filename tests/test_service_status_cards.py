@@ -137,9 +137,10 @@ def test_a_task_shows_its_streaming_card_and_every_network_method(page, streamin
     assert MainWindow._relevant_service_ids(window) == [streaming, *NETWORK]
 
 
-def test_home_never_shows_component_cards():
-    window = SimpleNamespace(current_page="welcome", _NETWORK_SERVICES=MainWindow._NETWORK_SERVICES)
-    assert MainWindow._relevant_service_ids(window) == []
+@pytest.mark.parametrize("page", ["welcome", "vpn_selector", "connect_private", "create_private"])
+def test_home_and_internet_pages_show_two_indicators_not_component_cards(page):
+    window = SimpleNamespace(current_page=page, _NETWORK_SERVICES=MainWindow._NETWORK_SERVICES)
+    assert MainWindow._relevant_service_ids(window) == ["summary-streaming", "summary-network"]
 
 
 def test_vpn_card_opens_the_role_appropriate_detail_page():
@@ -294,10 +295,44 @@ def test_cards_are_grouped_under_two_headings(live):
     assert headers["zerotier"] is None and headers["headscale"] is None
 
 
-def test_home_hides_every_card(live):
+def test_home_keeps_only_the_streaming_and_secure_connection_indicators(live):
     live.navigate_to("guest")
     live.navigate_to("welcome")
-    assert visible_cards(live) == []
+    assert visible_cards(live) == ["summary-streaming", "summary-network"]
+
+
+def test_indicators_say_the_streaming_state_and_the_connection_in_use(live):
+    live._home_role = "host"
+    live.update_dependency_ui(True, True, False, True, True)
+    live.update_server_status(True, False, False, False)
+    refresh_network(live, status(ProviderId.TAILSCALE, ConnectionState.CONNECTED, peers=()), off(ProviderId.ZEROTIER), off(ProviderId.HEADSCALE))
+    live.navigate_to("welcome")
+    settle(live)
+    streaming = card(live, "summary-streaming").presentation
+    network = card(live, "summary-network").presentation
+    assert (streaming.text, streaming.tone) == ("Sunshine · Running", "active")
+    assert (network.text, network.tone) == ("Tailscale · Connected", "active")
+
+
+def test_secure_connection_indicator_names_the_next_step_when_nothing_is_connected(live):
+    refresh_network(live, off(ProviderId.TAILSCALE), off(ProviderId.ZEROTIER), off(ProviderId.HEADSCALE))
+    live.navigate_to("vpn_selector")
+    settle(live)
+    network = card(live, "summary-network").presentation
+    assert network.tone != "active" and "Connected" not in network.text
+
+
+def test_activating_an_indicator_opens_its_task(live):
+    live._home_role = "guest"
+    live.update_dependency_ui(True, True, False, True, True)
+    live.navigate_to("welcome")
+    card(live, "summary-streaming").emit("activated")
+    drain()
+    assert live.current_page == "guest"
+    live.navigate_to("welcome")
+    card(live, "summary-network").emit("activated")
+    drain()
+    assert live.current_page == "vpn_selector"
 
 
 def test_connection_method_uses_the_same_state_words(ui):

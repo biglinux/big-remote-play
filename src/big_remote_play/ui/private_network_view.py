@@ -434,77 +434,53 @@ def _show_log_window(parent, log_view: LogView, title: str) -> None:
 
 # ─── INSTALL SECTION ──────────────────────────────────────────────────────────
 class InstallSection(Gtk.Box):
-    """Explicit installation of a missing VPN client (never automatic)."""
+    """A missing private-network client, explained and installed in place.
+
+    Nothing is installed until the button is pressed. When the client is
+    there, ``on_installed`` continues the flow that needed it, so the person
+    never has to find the next button again.
+    """
 
     _NAMES = {"tailscale": "Tailscale", "zerotier": "ZeroTier", "headscale": "Tailscale"}
-    _HELP = {"tailscale": "https://tailscale.com/download", "zerotier": "https://www.zerotier.com/download/", "headscale": "https://tailscale.com/download"}
 
-    def __init__(self, vpn_id, main_window, *, on_installed=None):
+    def __init__(self, vpn_id, main_window, *, on_installed=None, on_found=None, on_dismiss=None, install_label: str = ""):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        from big_remote_play.utils import dependencies
+        from .dependency_installer import ComponentChecklist
+
         self.vpn_id = vpn_id
         self.main_window = main_window
         self._on_installed = on_installed or (lambda: None)
+        # Already there when looked at again: show the page as it is now,
+        # without starting what an installation would have led to.
+        self._on_found = on_found or self._on_installed
         self._name = self._NAMES.get(vpn_id, vpn_id)
-        self.append(note(_("{name} is not installed yet. Install it below to continue (asks for your password).").format(name=self._name), "dialog-warning-symbolic"))
-        self._progress = ProgressRow(on_show_log=lambda: _show_log_window(self.main_window, self._log, _("Installation Log")))
-        self._log = LogView()
-        self.append(self._progress)
-        self._spinner = Adw.Spinner()
-        self._spinner.set_visible(False)
-        if self.main_window.system_check.has_pacman():
-            self._btn_install = Gtk.Button(halign=Gtk.Align.CENTER)
-            inner = Gtk.Box(spacing=8, halign=Gtk.Align.CENTER)
-            inner.append(self._spinner)
-            inner.append(Gtk.Label(label=_("Install {name}").format(name=self._name)))
-            self._btn_install.set_child(inner)
-            self._btn_install.update_property([Gtk.AccessibleProperty.LABEL], [_("Install {name}").format(name=self._name)])
-            self._btn_install.connect("clicked", self._on_install_clicked)
-        else:
-            self._btn_install = Gtk.Button(label=_("How to install {name}").format(name=self._name), halign=Gtk.Align.CENTER)
-            self._btn_install.connect("clicked", lambda b: open_uri(b, self._HELP.get(self.vpn_id, self._HELP["tailscale"])))
-        self._btn_install.add_css_class("suggested-action")
-        self._btn_install.set_size_request(220, 48)
-        self.append(self._btn_install)
+        component = "zerotier" if vpn_id == "zerotier" else "tailscale"
+        self.append(
+            note(
+                _("{name} is not installed yet. It creates a secure connection between your computers.").format(name=self._name),
+                "brp-network-private-symbolic",
+            )
+        )
+        self.checklist = ComponentChecklist(dependencies.NETWORK_COMPONENTS.get(vpn_id, (component,)), on_ready=self._installed, install_label=install_label, show_heading=False)
+        self.append(self.checklist)
+        if on_dismiss is not None:
+            later = Gtk.Button(label=_("Not now"), halign=Gtk.Align.START)
+            later.add_css_class("flat")
+            later.connect("clicked", lambda _button: on_dismiss())
+            self.append(later)
 
-    def _on_install_clicked(self, _btn) -> None:
-        self._btn_install.set_sensitive(False)
-        self._spinner.set_visible(True)
-        self._progress.update(0.05, _("Installing…"))
-        self._log.clear()
-
-        def done(code, captured):
-            if captured.get("INSTALL_RESULT") == "ok" and code == 0:
-                self.main_window.show_toast(_("{name} installed").format(name=self._name))
-                if hasattr(self.main_window, "check_system"):
-                    self.main_window.check_system()
-                self._on_installed()
-            else:
-                self._spinner.set_visible(False)
-                self._btn_install.set_sensitive(True)
-                self.main_window.show_toast(_("Installation failed. Check the log."))
-            return False
-
-        def on_text(text):
-            self._log.append(text)
-            self._progress.update(self._phase, text[:80])
-            return False
-
-        def on_phase(phase):
-            self._phase = phase
-            self._progress.update(phase, "")
-            return False
-
-        self._phase = 0.05
-        # Headscale computers join with the regular Tailscale client.
-        provider = "tailscale" if self.vpn_id == "headscale" else self.vpn_id
-        run_helper_script("install-vpn.sh", [provider + "\n"], on_text=on_text, on_phase=on_phase, on_done=done)
+    def _installed(self) -> None:
+        if hasattr(self.main_window, "check_system"):
+            self.main_window.check_system()
+        (self._on_installed if self.checklist.installed_here else self._on_found)()
 
 
 # ─── CONNECT PAGE ─────────────────────────────────────────────────────────────
 class ConnectPage(Adw.Bin):
     """Join a network with one provider: browser sign-in, key or Network ID."""
 
-    def __init__(self, vpn_id, main_window, add_account=False):
+    def __init__(self, vpn_id, main_window, add_account=False, auto_start=False):
         super().__init__()
         self.vpn_id = vpn_id
         self.vpn = VPN_META[vpn_id]
@@ -513,19 +489,58 @@ class ConnectPage(Adw.Bin):
         # "Add another account" is a deliberate second sign-in: the page must
         # keep its form even though this PC is already on a network.
         self._add_account = add_account
+        # Arrived right after installing the client: sign in without a second click.
+        self._auto_start = bool(auto_start) and vpn_id == "tailscale"
         self._fetching = False
         self._build()
+        self._probe()
 
-        if add_account:
-            return
+    def _probe(self) -> None:
+        """Installed? Connected? Off the GTK thread; the page follows the answer.
 
-        # The CLI probe blocks, so it runs off the GTK thread and only then
-        # decides whether this page is a form or a statement of the current state.
+        Signing in needs the client: a missing one is installed first, from
+        this page, instead of a sign-in that can only fail.
+        """
+        from big_remote_play.utils import dependencies
+
+        component = "zerotier" if self.vpn_id == "zerotier" else "tailscale"
+
         def probe():
-            connected = provider_connected(self.vpn_id, self.main_window.system_check)
-            GLib.idle_add(self._apply_connected, connected)
+            installed = all(state.installed for state in dependencies.check([component]))
+            connected = False if (self._add_account or not installed) else provider_connected(self.vpn_id, self.main_window.system_check)
+            GLib.idle_add(self._apply_probe, installed, connected)
 
         threading.Thread(target=probe, daemon=True).start()
+
+    def _apply_probe(self, installed: bool, connected: bool) -> bool:
+        if self._install_slot.get_first_child() is not None:
+            self._install_slot.remove(self._install_slot.get_first_child())
+        self._install_slot.set_visible(not installed)
+        if not installed:
+            self._connect_form.set_visible(False)
+            self._install_slot.append(
+                InstallSection(
+                    self.vpn_id,
+                    self.main_window,
+                    on_installed=self._after_install,
+                    on_found=self._probe,
+                    on_dismiss=getattr(self.main_window, "return_from_network", None),
+                    install_label=_("Install and continue"),
+                )
+            )
+            return False
+        self._connect_form.set_visible(True)
+        if not self._add_account:
+            self._apply_connected(connected)
+        if self._auto_start and not connected:
+            self._auto_start = False
+            self._on_connect(self._btn_connect)
+        return False
+
+    def _after_install(self) -> None:
+        """The client is there now: start its service and sign in, by itself."""
+        self._auto_start = self.vpn_id == "tailscale"
+        self._probe()
 
     def _apply_connected(self, connected: bool) -> bool:
         """Already on the network: say so instead of asking to sign in again.
@@ -574,6 +589,9 @@ class ConnectPage(Adw.Bin):
         self._c_description = heading.get_last_child().get_last_child()
         conn_box.append(heading)
 
+        # A missing client is installed here before anything else is offered.
+        self._install_slot = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, visible=False)
+        conn_box.append(self._install_slot)
         # Everything needed to join, hidden as one block once this PC is on the
         # network: a form asking to sign in again contradicts the page above it.
         self._connect_form = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
@@ -1149,7 +1167,7 @@ class ConnectPage(Adw.Bin):
 class PrivateNetworkView(Adw.Bin):
     """Entry point: the network dashboard ("create") or the join page."""
 
-    def __init__(self, main_window, mode="create", vpn_provider="headscale", add_account=False):
+    def __init__(self, main_window, mode="create", vpn_provider="headscale", add_account=False, auto_start=False):
         super().__init__()
         self.main_window = main_window
         self.mode = mode
@@ -1160,7 +1178,7 @@ class PrivateNetworkView(Adw.Bin):
 
             page = NetworkDashboardPage(self.vpn_provider, main_window)
         else:
-            page = ConnectPage(self.vpn_provider, main_window, add_account=add_account)
+            page = ConnectPage(self.vpn_provider, main_window, add_account=add_account, auto_start=auto_start)
 
         self.set_child(page)
 

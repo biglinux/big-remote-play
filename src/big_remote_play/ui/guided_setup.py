@@ -6,6 +6,7 @@ internet page or a connection page, which do the real work. Its pages are
 pushed onto Home's navigation view, so Back always goes one question back.
 
     What do you want to do?  →  Where is the other device?
+        →  this computer is checked; what the task needs is installed here
         same network  →  Share / Connect
         somewhere else →  a secure connection:
             one already works  →  use it  →  Share / Connect
@@ -78,11 +79,10 @@ def question_page(tag: str, title: str, question: str, explanation: str, *childr
     heading.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
     heading.add_css_class("title-1")
     box.append(heading)
-    if explanation:
-        text = Gtk.Label(label=explanation, xalign=0, wrap=True)
-        text.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
-        text.add_css_class("dim-label")
-        box.append(text)
+    text = Gtk.Label(label=explanation, xalign=0, wrap=True, visible=bool(explanation))
+    text.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+    text.add_css_class("dim-label")
+    box.append(text)
     # The answers sit together, a little apart from the question.
     choices = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
     choices.add_css_class("brp-guided-choices")
@@ -94,6 +94,7 @@ def question_page(tag: str, title: str, question: str, explanation: str, *childr
     scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
     page = Adw.NavigationPage(child=scroll, title=title, tag=tag)
     page._brp_heading = heading  # type: ignore[attr-defined]
+    page._brp_explanation = text  # type: ignore[attr-defined]
     return page
 
 
@@ -147,23 +148,45 @@ class GuidedSetup:
         )
 
     def same_network(self) -> None:
-        """Nothing to set up: the task page finds the other device by itself."""
-        self.finish()
+        """Nothing to connect: get this computer ready, then open the task."""
+        self.prepare(self.finish)
 
     def somewhere_else(self) -> None:
-        button = Gtk.Button(label=_("Continue"), halign=Gtk.Align.START)
-        button.add_css_class("suggested-action")
-        button.add_css_class("pill")
-        button.connect("clicked", lambda _button: self.detect())
+        self.prepare(self.detect)
+
+    # ── getting this computer ready ────────────────────────────────────────
+    def prepare(self, then: Callable[[], object]) -> None:
+        """Check what the task needs and install what is missing, in place.
+
+        Nothing is installed without the button; once everything is there the
+        guide continues by itself, so nobody has to come back and click again.
+        """
+        from big_remote_play.utils import dependencies
+
+        from .dependency_installer import ComponentChecklist
+
+        self._then = then
+        self._continue_ready = Gtk.Button(label=_("Continue"), halign=Gtk.Align.START, visible=False)
+        self._continue_ready.add_css_class("suggested-action")
+        self._continue_ready.add_css_class("pill")
+        self._continue_ready.connect("clicked", lambda _button: self._components_ready(force=True))
+        self.checklist = ComponentChecklist(dependencies.ROLE_COMPONENTS.get(self.role or "host", ()), on_ready=self._components_ready)
         self._push(
             question_page(
-                "guided-internet",
+                "guided-ready",
                 _("Guided setup"),
-                _("Let's create a secure connection"),
-                _("To play over the internet, the two computers need to be able to find each other. Big Remote Play can set this up for you."),
-                button,
+                _("Let's get this computer ready"),
+                _("Big Remote Play checks what this computer needs and installs what is missing. You may be asked for your password once."),
+                self.checklist,
+                self._continue_ready,
             )
         )
+
+    def _components_ready(self, *, force: bool = False) -> None:
+        self._continue_ready.set_visible(True)
+        # Only from the page that is on screen: Back must not be overtaken.
+        if force or visible_tag(self.navigation) == "guided-ready":
+            self._then()
 
     # ── looking at what this computer already has ─────────────────────────
     def detect(self) -> None:
@@ -173,7 +196,13 @@ class GuidedSetup:
         spinner_row.append(Adw.Spinner())
         spinner_row.append(Gtk.Label(label=_("Looking for a connection on this computer…"), xalign=0, wrap=True))
         self._result.append(spinner_row)
-        page = question_page("guided-detect", _("Guided setup"), _("Checking this computer"), "", self._result)
+        page = question_page(
+            "guided-detect",
+            _("Guided setup"),
+            _("Let's create a secure connection"),
+            _("To play over the internet, the two computers need to be able to find each other. Big Remote Play can set this up for you."),
+            self._result,
+        )
         self._detect_page = page
         self._push(page)
         preferred = self._preferred()
@@ -203,6 +232,7 @@ class GuidedSetup:
         while child := box.get_first_child():
             box.remove(child)
         heading = self._detect_page._brp_heading  # type: ignore[attr-defined]
+        self._detect_page._brp_explanation.set_visible(False)  # type: ignore[attr-defined]
         status = plan.status
         network = (status.network_name or next((item.name for item in status.networks if item.state is ConnectionState.CONNECTED), "")) if status is not None else ""
         name = network or plan.provider.display_name
@@ -349,6 +379,11 @@ class GuidedSetup:
             self.navigation.pop_to_page(existing)
             self.navigation.pop()
         self.navigation.push(page)
+
+
+def visible_tag(navigation: Adw.NavigationView) -> str:
+    page = navigation.get_visible_page()
+    return (page.get_tag() or "") if page is not None else ""
 
 
 def _installed(check) -> bool:

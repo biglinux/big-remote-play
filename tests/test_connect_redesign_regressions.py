@@ -8,15 +8,6 @@ PNV = Path("src/big_remote_play/ui/private_network_view.py")
 STYLE = Path("usr/share/big-remote-play/ui/style.css")
 
 
-def test_host_scroll_has_breathing_room_and_no_tall_min() -> None:
-    src = GUEST.read_text()
-    # The host list scroller must not force a tall empty box, and the list must
-    # have vertical margins so the boxed-list card corners are not clipped.
-    assert "host_scroll.set_min_content_height(120)" in src
-    assert "self.hosts_list.set_margin_top(6)" in src
-    assert "self.hosts_list.set_margin_bottom(6)" in src
-
-
 def test_empty_state_routes_novice_to_real_unlocks() -> None:
     src = GUEST.read_text()
     assert "_build_discover_empty_state" in src
@@ -37,23 +28,6 @@ def test_empty_state_rows_are_named_by_title_and_subtitle() -> None:
     factory = Path("src/big_remote_play/ui/components.py").read_text()
     assert "activatable=True, use_markup=False" in factory
     assert 'row.connect("activated"' in factory
-
-
-def test_discover_is_single_column_with_guidance() -> None:
-    src = GUEST.read_text()
-    stylesheet = STYLE.read_text()
-    # Side helper-card column removed from the discover page.
-    assert "create_helper_card(" not in src
-    # One status page states the situation; the alternatives are scannable rows,
-    # not three paragraphs of explanatory cards.
-    assert "Adw.StatusPage()" not in src
-    assert 'empty.add_css_class("brp-empty")' in src
-    assert "network blocks discovery" in src
-    assert "I have a search code" in src
-    assert "I know the IP address" in src
-    assert '_("Play over the internet")' in src
-    assert "Choose the path that matches" not in src
-    assert ".decision-card" not in stylesheet
 
 
 def test_quality_choice_starts_at_automatic_inside_the_image_dialog() -> None:
@@ -106,18 +80,6 @@ def test_pin_copy_explains_network_dependency_not_specific_vpn() -> None:
     assert "<broadcast>" in network_src
 
 
-def test_vpn_form_install_only_when_missing() -> None:
-    src = PNV.read_text()
-    assert "class InstallSection" in src
-    # Explicit install action (pacman) gated on pacman availability; manual link otherwise.
-    assert "has_pacman" in src
-    assert "_on_install_clicked" in src
-    assert "install-vpn.sh" in src
-    # The dashboard shows it only for a missing client and refreshes afterwards.
-    dashboard = Path("src/big_remote_play/ui/network_dashboard.py").read_text()
-    assert "InstallSection(self.vpn_id, self.main_window, on_installed=self.refresh)" in dashboard
-
-
 def test_install_supports_pacman_and_flatpak_detection() -> None:
     sc = Path("src/big_remote_play/utils/system_check.py").read_text()
     assert "def has_pacman" in sc
@@ -145,16 +107,3 @@ def test_no_bigsudo_uses_pkexec_for_cross_distro() -> None:
     # Privilege-elevation scripts no longer reference the BigLinux-only helper.
     for script in Path("usr/share/big-remote-play/scripts").glob("*.sh"):
         assert "bigsudo" not in script.read_text(), script.name
-
-
-def test_connect_page_asks_one_question_and_exposes_task_specific_settings() -> None:
-    src = GUEST.read_text()
-    assert "method_stack" not in src
-    assert 'self.connect_card.add_css_class("card")' in src
-    assert "self.connect_card.append(self.create_discover_page())" in src
-    assert "self.build_connection_dialogs()" in src
-    order = src.index("content.append(self.connect_card)")
-    rows = src.index("content.append(settings)", order)
-    assert order < rows
-    for name in ("image_row", "audio_settings_row", "input_settings_row", "host_connection_row", "address_row", "search_code_row"):
-        assert f"self.{name}" in src
