@@ -109,7 +109,7 @@ This separation is intentional:
 
 ### Building the package from a checkout
 
-Run `makepkg -si` inside `pkgbuild/` to build and install the checkout that directory belongs to, including a fork or an unmerged branch. `prepare()` prints the commit it packages, and notes uncommitted changes. `BIGREMOTEPLAY_LOCAL_ROOT=/path/to/checkout` packages another checkout. A `PKGBUILD` copied on its own, or run with `BIGREMOTEPLAY_FROM_GIT=1`, clones upstream `main` instead. That build still carries the current date, so its version never shows that the code is older.
+Run `makepkg -si` inside `pkgbuild/` to build and install the checkout that directory belongs to, including a fork or an unmerged branch. `prepare()` prints the commit it packages, and notes uncommitted changes. `BIGREMOTEPLAY_LOCAL_ROOT=/path/to/checkout` packages another checkout. A `PKGBUILD` copied on its own, or run with `BIGREMOTEPLAY_FROM_GIT=1`, clones `ruscher/main` instead. That build still carries the current date, so its version never shows that the code is older.
 
 Run the focused regression tests with:
 

@@ -51,15 +51,15 @@ pkgrel=$(date -u -d "@${_brp_epoch}" +%H%M)
 
 arch=('any')
 license=('GPL-3.0-or-later')
-url="https://github.com/biglinux/${pkgname}"
+url="https://github.com/ruscher/${pkgname}"
 replaces=('big-remote-play-together')
 conflicts=('big-remote-play-together')
 provides=('big-remote-play-together')
 
 # makepkg run from pkgbuild/ inside a checkout packages that checkout. The git
-# source below is upstream's main branch: from a fork or an unmerged branch it
+# source below is this project's main branch: from a fork or an unmerged branch it
 # installs an older application under today's version, with nothing to show
-# it. BIGREMOTEPLAY_FROM_GIT=1 builds upstream main anyway.
+# it. BIGREMOTEPLAY_FROM_GIT=1 builds ruscher/main anyway.
 if [ -z "${BIGREMOTEPLAY_LOCAL_ROOT:-}" ] && [ "${BIGREMOTEPLAY_FROM_GIT:-0}" != 1 ]; then
 	_recipe=$(realpath -qe -- "${BUILDFILE:-PKGBUILD}")
 	_recipe_dir=${_recipe%/*}
@@ -115,7 +115,7 @@ prepare() {
 		printf 'Building %s from local checkout: %s (commit %s%s)\n' \
 			"${pkgname}" "${_local_root}" "${commit}" "${state}"
 	else
-		printf 'Building %s from upstream branch main\n' "${pkgname}"
+		printf 'Building %s from ruscher branch main\n' "${pkgname}"
 	fi
 }
 
