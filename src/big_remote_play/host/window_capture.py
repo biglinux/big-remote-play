@@ -61,7 +61,7 @@ COMPOSITOR_TIMEOUT = 15.0
 WATCH_INTERVAL_MS = 1000
 STALL_SECONDS = 5
 STOP_GRACE = 5.0
-HOLD_SECONDS = 20  # the empty private screen waits this long for Sunshine to be stopped
+HOLD_SECONDS = 8  # the empty private screen waits this long for the application to stop Sunshine
 
 # Why a session ended. The UI maps these codes to sentences.
 REASONS = (
@@ -752,8 +752,10 @@ class CaptureSession:
 
         The picture stops immediately (the private screen turns black: nothing
         else exists there). The screen itself stays for a few seconds so the
-        application can stop Sunshine cleanly, which restores audio; without
-        the application it goes after ``HOLD_SECONDS`` anyway.
+        application can stop Sunshine cleanly, which restores audio. If the
+        application is closed, nobody else would: Sunshine would stay
+        reachable with no picture to send (devices connect, get sound and a
+        black screen), so this process stops it after ``HOLD_SECONDS``.
         """
         if self.ended:
             return
@@ -768,7 +770,13 @@ class CaptureSession:
         if self.reason == "stopped" or self.compositor is None:
             self._quit()
         else:
-            self.GLib.timeout_add_seconds(HOLD_SECONDS, self._quit)
+            self.GLib.timeout_add_seconds(HOLD_SECONDS, self._stop_sunshine_and_quit)
+
+    def _stop_sunshine_and_quit(self) -> bool:
+        stopped = stop_private_sunshine(self.socket)
+        if stopped:
+            _log.warning("Game Window: stopped the Sunshine server of the private screen (Big Remote Play was not there to do it)")
+        return self._quit()
 
     def _state(self, state: str, **extra: object) -> dict[str, object]:
         return {
@@ -803,6 +811,53 @@ class CaptureSession:
         if self.compositor is not None:
             stop_process_group(self.compositor.pid, wait=self.compositor.wait)
             self.compositor = None
+
+
+def stop_private_sunshine(socket: str, *, proc: Path = Path("/proc"), grace: float = 10.0) -> int:
+    """Stop the Sunshine that captures this private screen, and no other.
+
+    Only a process named ``sunshine`` whose ``WAYLAND_DISPLAY`` is this
+    screen's socket is stopped: a Sunshine sharing the desktop is never touched.
+    TERM first, so Sunshine puts the audio output back; KILL after ``grace``.
+    """
+    if not _SOCKET_RE.fullmatch(socket or ""):
+        return 0
+    marker = f"WAYLAND_DISPLAY={socket}".encode()
+    targets = []
+    for entry in proc.iterdir() if proc.is_dir() else []:
+        if not entry.name.isdigit():
+            continue
+        try:
+            if (entry / "comm").read_text(encoding="utf-8", errors="replace").strip() != "sunshine":
+                continue
+            if marker not in (entry / "environ").read_bytes().split(b"\0"):
+                continue
+        except OSError:
+            continue
+        targets.append(int(entry.name))
+    for pid in targets:
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except (ProcessLookupError, PermissionError):
+            continue
+    deadline = time.monotonic() + grace
+    while time.monotonic() < deadline and any((proc / str(pid)).exists() and not _exited(proc / str(pid)) for pid in targets):
+        time.sleep(0.2)
+    for pid in targets:
+        if (proc / str(pid)).exists() and not _exited(proc / str(pid)):
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                pass
+    return len(targets)
+
+
+def _exited(root: Path) -> bool:
+    """A zombie has exited even though its /proc entry remains until it is collected."""
+    try:
+        return (root / "stat").read_text(encoding="utf-8", errors="replace").rpartition(")")[2].split()[:1] == ["Z"]
+    except OSError:
+        return True
 
 
 def stop_process_group(pid: int, *, wait: Callable[..., object] | None = None, grace: float = STOP_GRACE) -> None:

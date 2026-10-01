@@ -166,6 +166,19 @@ class HostView(Gtk.Box):
         else:
             # A private screen without a server serves nobody.
             threading.Thread(target=window_capture.stop_helper, args=(state,), daemon=True).start()
+            ended_at = state.get("ended_at")
+            reason = str(state.get("reason") or "")
+            # The capture stopped Sunshine itself while this window was closed:
+            # say why once, then forget it.
+            if state.get("state") == "ended" and reason and reason != "stopped" and isinstance(ended_at, (int, float)) and time.time() - ended_at < 12 * 3600:
+                window_capture.clear_state()
+                GLib.timeout_add(800, self._explain_capture_end, reason)
+
+    def _explain_capture_end(self, reason: str) -> bool:
+        if not self._closed and self.get_root() is not None:
+            heading, body = self._capture_stop_text(reason)
+            self.show_error_dialog(heading, body)
+        return False
 
     def _adopt_audio_session(self, session) -> bool:
         if self._closed:
@@ -3145,6 +3158,8 @@ class HostView(Gtk.Box):
             from big_remote_play.host import window_capture
 
             window_capture.stop_helper()
+            # This window already said why; the next start must not say it again.
+            window_capture.clear_state()
             process, self._capture_process = self._capture_process, None
             if process is not None:
                 process.poll()
