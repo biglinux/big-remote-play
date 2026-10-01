@@ -275,6 +275,9 @@ def session(backend="kwin", **extra):
     item._buffer_width = item._buffer_height = 0
     item._kwin_misses = 0
     item._fd = -1
+    item._frames = item._frames_seen = 0
+    item._still_since = time.monotonic()
+    item._stall_reported = False
     item.__dict__.update(extra)
     return item
 
@@ -440,3 +443,19 @@ def test_window_activation_never_builds_a_script_from_an_invalid_id(monkeypatch)
     assert scripts == []
     assert game_windows.activate_kwin_window(UUID)
     assert UUID in scripts[0]
+
+
+def test_a_game_that_stops_drawing_is_reported_once_and_resuming_too(caplog):
+    item = session()
+    start = item._still_since
+    with caplog.at_level("INFO", logger="big-remoteplay"):
+        item._note_frames(start + wc.STALL_SECONDS)
+        assert "sent no picture" in caplog.text  # never drew: the device sees black
+        caplog.clear()
+        item._frames = 10
+        item._note_frames(start + 6)
+        assert "sending pictures again" in caplog.text
+        caplog.clear()
+        item._note_frames(start + 6 + wc.STALL_SECONDS)
+        item._note_frames(start + 7 + wc.STALL_SECONDS)
+        assert caplog.text.count("no new picture") == 1
