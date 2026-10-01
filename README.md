@@ -104,12 +104,12 @@ sudo pacman -S --needed moonlight-qt    # on the computer that plays
 `makepkg` run inside a checkout packages that checkout:
 
 ```bash
-git clone https://github.com/biglinux/big-remote-play.git
+git clone https://github.com/ruscher/big-remote-play.git
 cd big-remote-play/pkgbuild
 makepkg -si
 ```
 
-Set `BIGREMOTEPLAY_FROM_GIT=1` to build upstream `main` instead of the local checkout. The package version is dated automatically at build time (`YY.MM.DD`).
+Set `BIGREMOTEPLAY_FROM_GIT=1` to build `ruscher/main` instead of the local checkout. The package version is dated automatically at build time (`YY.MM.DD`).
 
 ### Nix
 
