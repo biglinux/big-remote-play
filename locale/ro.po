@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-10-01 01:32+0000\n"
+"POT-Creation-Date: 2026-10-01 02:11+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Romanian\n"
@@ -41,13 +41,13 @@ msgstr "1. Alegeți ce partajați"
 # line: 819
 # line: 826
 # line: 1988
-#: src/big_remote_play/ui/private_network_view.py:1094
+#: src/big_remote_play/ui/private_network_view.py:1109
 msgid "1. Create Account"
 msgstr "1. Creare cont"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1995
-#: src/big_remote_play/ui/private_network_view.py:1110
+#: src/big_remote_play/ui/private_network_view.py:1125
 msgid "1. Identification"
 msgstr "1. Identificare"
 
@@ -81,11 +81,11 @@ msgstr "2. Domeniu și HTTPS"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1989
-#: src/big_remote_play/ui/private_network_view.py:1101
+#: src/big_remote_play/ui/private_network_view.py:1116
 msgid "2. Invitation"
 msgstr "2. Invitație"
 
-#: src/big_remote_play/ui/private_network_view.py:1111
+#: src/big_remote_play/ui/private_network_view.py:1126
 msgid "2. Join"
 msgstr "2. Alăturare"
 
@@ -99,13 +99,13 @@ msgstr "2. Începeți partajarea"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1997
-#: src/big_remote_play/ui/private_network_view.py:1113
+#: src/big_remote_play/ui/private_network_view.py:1128
 msgid "3. Authorization"
 msgstr "3. Autorizare"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1990
-#: src/big_remote_play/ui/private_network_view.py:1102
+#: src/big_remote_play/ui/private_network_view.py:1117
 msgid "3. Connect"
 msgstr "3. Conectare"
 
@@ -276,7 +276,7 @@ msgstr "Eroare API: {}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:71
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:660
+#: src/big_remote_play/ui/private_network_view.py:666
 #: src/big_remote_play/ui/remote_connection.py:269
 msgid "API access"
 msgstr "Acces API"
@@ -300,13 +300,13 @@ msgstr "Token API"
 msgid "About"
 msgstr "Despre"
 
-#: src/big_remote_play/ui/private_network_view.py:619
+#: src/big_remote_play/ui/private_network_view.py:621
 msgid "About this VPN"
 msgstr "Despre acest VPN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1988
-#: src/big_remote_play/ui/private_network_view.py:1095
+#: src/big_remote_play/ui/private_network_view.py:1110
 msgid "Access Tailscale"
 msgstr "Accesați Tailscale"
 
@@ -318,15 +318,16 @@ msgstr "Acces permis"
 msgid "Access revoked"
 msgstr "Acces revocat"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:257
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:275
 msgid "Account removed from this computer"
 msgstr "Cont eliminat de pe acest computer"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:237
+#: src/big_remote_play/ui/tailscale_accounts.py:127
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:255
 msgid "Account switched"
 msgstr "Cont schimbat"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:145
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:156
 msgid "Account switching is unavailable"
 msgstr "Schimbarea conturilor nu este disponibilă"
 
@@ -356,7 +357,8 @@ msgstr "Acțiune {} trimisă către {}"
 msgid "Actions for {name}"
 msgstr "Acțiuni pentru {name}"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:177
+#: src/big_remote_play/ui/tailscale_accounts.py:102
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:188
 msgid "Active"
 msgstr "Activ"
 
@@ -544,8 +546,8 @@ msgstr "Mod avansat"
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 79
 #: src/big_remote_play/ui/guided_setup.py:252
-#: src/big_remote_play/ui/private_network_view.py:706
-#: src/big_remote_play/ui/private_network_view.py:722
+#: src/big_remote_play/ui/private_network_view.py:721
+#: src/big_remote_play/ui/private_network_view.py:737
 #: src/big_remote_play/ui/sunshine_preferences.py:104
 msgid "Advanced options"
 msgstr "Opțiuni avansate"
@@ -574,7 +576,7 @@ msgstr ""
 msgid "After step 2, the other PC appears here."
 msgstr "După pasul 2, celălalt PC apare aici."
 
-#: src/big_remote_play/ui/private_network_view.py:1096
+#: src/big_remote_play/ui/private_network_view.py:1111
 msgid ""
 "All participants need to sign in so their PCs join the same Private Network."
 msgstr ""
@@ -594,6 +596,8 @@ msgstr ""
 #: src/big_remote_play/ui/network_common.py:165
 #: src/big_remote_play/ui/network_dashboard.py:291
 #: src/big_remote_play/ui/remote_connection.py:64
+#: src/big_remote_play/ui/tailscale_accounts.py:71
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:141
 #: src/big_remote_play/ui/zerotier_join.py:107
 msgid "Allow"
 msgstr "Permite"
@@ -667,6 +671,15 @@ msgstr ""
 "Permite o dată pentru a folosi ZeroTier pe acest computer. Este posibil să "
 "ți se ceară parola."
 
+#: src/big_remote_play/ui/tailscale_accounts.py:70
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:138
+msgid ""
+"Allow it once. Your password is requested; afterwards Tailscale works "
+"without it."
+msgstr ""
+"Permite o singură dată. Ți se cere parola; apoi Tailscale funcționează fără "
+"ea."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 398
 #: src/big_remote_play/ui/host_view.py:2219
@@ -727,7 +740,7 @@ msgstr ""
 msgid "Almost there"
 msgstr "Aproape gata"
 
-#: src/big_remote_play/ui/private_network_view.py:547
+#: src/big_remote_play/ui/private_network_view.py:549
 msgid "Already connected"
 msgstr "Deja conectat"
 
@@ -861,7 +874,7 @@ msgstr "Aprobă un computer în așteptare"
 msgid "Approve each computer"
 msgstr "Aprobați fiecare computer"
 
-#: src/big_remote_play/ui/private_network_view.py:1080
+#: src/big_remote_play/ui/private_network_view.py:1095
 msgid "Approve if needed"
 msgstr "Aprobați, dacă este necesar"
 
@@ -909,7 +922,7 @@ msgstr "Sunteți absolut sigur?"
 msgid "Ask the game PC to optimize the game for streaming"
 msgstr "Cere computerului de jocuri să optimizeze jocul pentru streaming"
 
-#: src/big_remote_play/ui/private_network_view.py:1072
+#: src/big_remote_play/ui/private_network_view.py:1087
 msgid ""
 "Ask the network administrator for the server address and, optionally, a one-"
 "time auth key."
@@ -917,7 +930,7 @@ msgstr ""
 "Cereți administratorului rețelei adresa serverului și, opțional, o cheie de "
 "autentificare de unică folosință."
 
-#: src/big_remote_play/ui/private_network_view.py:737
+#: src/big_remote_play/ui/private_network_view.py:752
 msgid "Ask the network owner, or look in ZeroTier Central → Networks"
 msgstr ""
 "Întrebați proprietarul rețelei sau căutați în ZeroTier Central → Networks"
@@ -979,10 +992,10 @@ msgstr "Audio și video"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 865
-#: src/big_remote_play/ui/private_network_view.py:704
-#: src/big_remote_play/ui/private_network_view.py:706
+#: src/big_remote_play/ui/private_network_view.py:719
 #: src/big_remote_play/ui/private_network_view.py:721
-#: src/big_remote_play/ui/private_network_view.py:722
+#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:737
 msgid "Auth Key"
 msgstr "Cheie de autentificare"
 
@@ -1335,11 +1348,11 @@ msgstr "Se poate conecta fără un cod PIN nou"
 #: src/big_remote_play/ui/preferences.py:222
 #: src/big_remote_play/ui/preferences.py:266
 #: src/big_remote_play/ui/preferences.py:276
-#: src/big_remote_play/ui/private_network_view.py:1020
-#: src/big_remote_play/ui/private_network_view.py:1048
+#: src/big_remote_play/ui/private_network_view.py:1035
+#: src/big_remote_play/ui/private_network_view.py:1063
 #: src/big_remote_play/ui/remote_connection.py:750
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:246
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:266
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:264
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:284
 msgid "Cancel"
 msgstr "Anulează"
 
@@ -1685,7 +1698,7 @@ msgstr "Scurtături comune utilizate în timpul streaming-ului"
 msgid "Complete the installation in the external terminal, then check again."
 msgstr "Finalizați instalarea în terminalul extern și verificați din nou."
 
-#: src/big_remote_play/ui/private_network_view.py:837
+#: src/big_remote_play/ui/private_network_view.py:852
 msgid "Complete the sign-in in your browser."
 msgstr "Finalizați autentificarea în browser."
 
@@ -1795,8 +1808,8 @@ msgstr "Confirmați parola nouă"
 #: src/big_remote_play/ui/main_window.py:828
 #: src/big_remote_play/ui/main_window.py:993
 #: src/big_remote_play/ui/main_window.py:1221
-#: src/big_remote_play/ui/private_network_view.py:594
 #: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:598
 #: src/big_remote_play/ui/remote_connection.py:454
 #: src/big_remote_play/ui/remote_connection.py:482
 msgid "Connect"
@@ -1814,7 +1827,7 @@ msgstr "Conectare prin adresă"
 
 #: src/big_remote_play/ui/network_common.py:164
 #: src/big_remote_play/ui/network_dashboard.py:217
-#: src/big_remote_play/ui/private_network_view.py:564
+#: src/big_remote_play/ui/private_network_view.py:566
 msgid "Connect this computer"
 msgstr "Conectează acest computer"
 
@@ -1878,7 +1891,7 @@ msgstr "Conectează-ți dispozitivele"
 
 #: src/big_remote_play/ui/network_common.py:91
 #: src/big_remote_play/ui/remote_connection.py:645
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:224
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:235
 #: src/big_remote_play/ui/zerotier_join.py:78
 msgid "Connected"
 msgstr "Conectat"
@@ -1898,9 +1911,9 @@ msgstr "Conectate acum"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1907
-#: src/big_remote_play/ui/private_network_view.py:816
-#: src/big_remote_play/ui/private_network_view.py:853
-#: src/big_remote_play/ui/private_network_view.py:888
+#: src/big_remote_play/ui/private_network_view.py:831
+#: src/big_remote_play/ui/private_network_view.py:868
+#: src/big_remote_play/ui/private_network_view.py:903
 msgid "Connected successfully!"
 msgstr "Conectare reușită!"
 
@@ -1917,21 +1930,21 @@ msgstr "Se conectează la rețea…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1848
-#: src/big_remote_play/ui/private_network_view.py:783
+#: src/big_remote_play/ui/private_network_view.py:798
 msgid "Connecting..."
 msgstr "Conectare..."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 863
-#: src/big_remote_play/ui/private_network_view.py:580
-#: src/big_remote_play/ui/private_network_view.py:998
+#: src/big_remote_play/ui/private_network_view.py:582
+#: src/big_remote_play/ui/private_network_view.py:1013
 msgid "Connection Details"
 msgstr "Detaliile conexiunii"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1498
-#: src/big_remote_play/ui/private_network_view.py:582
-#: src/big_remote_play/ui/private_network_view.py:1063
+#: src/big_remote_play/ui/private_network_view.py:584
+#: src/big_remote_play/ui/private_network_view.py:1078
 msgid "Connection Log"
 msgstr "Jurnal de conexiune"
 
@@ -1948,7 +1961,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/private_network_view.py:895
+#: src/big_remote_play/ui/private_network_view.py:910
 msgid "Connection failed"
 msgstr "Conectarea a eșuat"
 
@@ -2045,7 +2058,7 @@ msgstr "Controlează combinații precum Alt+Tab și tasta Super."
 
 #: src/big_remote_play/ui/network_common.py:213
 #: src/big_remote_play/ui/network_common.py:224
-#: src/big_remote_play/ui/private_network_view.py:1130
+#: src/big_remote_play/ui/private_network_view.py:1145
 msgid "Copied"
 msgstr "Copiat"
 
@@ -2201,7 +2214,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1255
-#: src/big_remote_play/ui/private_network_view.py:1098
+#: src/big_remote_play/ui/private_network_view.py:1113
 msgid "Create Account"
 msgstr "Creează cont"
 
@@ -2289,7 +2302,7 @@ msgid "Credentials reset successfully"
 msgstr "Datele de autentificare au fost resetate"
 
 #: src/big_remote_play/ui/network_dashboard.py:312
-#: src/big_remote_play/ui/private_network_view.py:660
+#: src/big_remote_play/ui/private_network_view.py:666
 msgid "Credentials that let Big Remote Play manage this network."
 msgstr ""
 "Date de acces care îi permit lui Big Remote Play să gestioneze această rețea."
@@ -2364,8 +2377,8 @@ msgstr "Microfon implicit"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1263
-#: src/big_remote_play/ui/private_network_view.py:951
-#: src/big_remote_play/ui/private_network_view.py:1049
+#: src/big_remote_play/ui/private_network_view.py:966
+#: src/big_remote_play/ui/private_network_view.py:1064
 msgid "Delete"
 msgstr "Șterge"
 
@@ -2377,11 +2390,11 @@ msgstr "Șterge tot"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1895
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1062
 msgid "Delete entry?"
 msgstr "Ștergeți înregistrarea?"
 
-#: src/big_remote_play/ui/private_network_view.py:951
+#: src/big_remote_play/ui/private_network_view.py:966
 msgid "Delete this saved network"
 msgstr "Șterge această rețea salvată"
 
@@ -2461,7 +2474,7 @@ msgstr "Dispozitive care joacă pe acest computer în acest moment."
 msgid "Devices updated"
 msgstr "Dispozitivele au fost actualizate"
 
-#: src/big_remote_play/ui/private_network_view.py:625
+#: src/big_remote_play/ui/private_network_view.py:627
 msgid "Devices, private address and how to add another computer."
 msgstr "Dispozitive, adresa privată și cum adăugați un alt computer."
 
@@ -2595,8 +2608,8 @@ msgstr "Doriți să restaurați setările implicite?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1137
-#: src/big_remote_play/ui/private_network_view.py:958
-#: src/big_remote_play/ui/private_network_view.py:1003
+#: src/big_remote_play/ui/private_network_view.py:973
+#: src/big_remote_play/ui/private_network_view.py:1018
 msgid "Domain"
 msgstr "Domeniu"
 
@@ -2633,7 +2646,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1704
-#: src/big_remote_play/ui/private_network_view.py:943
+#: src/big_remote_play/ui/private_network_view.py:958
 msgid "Edit"
 msgstr "Editați"
 
@@ -2645,13 +2658,13 @@ msgstr "Editează frecvența de cadre personalizată"
 msgid "Edit custom resolution"
 msgstr "Editează rezoluția personalizată"
 
-#: src/big_remote_play/ui/private_network_view.py:943
+#: src/big_remote_play/ui/private_network_view.py:958
 msgid "Edit this saved network"
 msgstr "Editează această rețea salvată"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1796
-#: src/big_remote_play/ui/private_network_view.py:1018
+#: src/big_remote_play/ui/private_network_view.py:1033
 #, python-brace-format
 msgid "Edit – {}"
 msgstr "Editează – {}"
@@ -2765,7 +2778,7 @@ msgid "End the stream for everyone?"
 msgstr "Opriți streamul pentru toți?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 325
-#: src/big_remote_play/ui/private_network_view.py:1111
+#: src/big_remote_play/ui/private_network_view.py:1126
 msgid "Enter ID"
 msgstr "Introduceți ID-ul"
 
@@ -2777,7 +2790,7 @@ msgstr "Introduceți parola Sunshine"
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Introduceți LĂȚIMExÎNĂLȚIME (de exemplu 1920x1080):"
 
-#: src/big_remote_play/ui/private_network_view.py:1033
+#: src/big_remote_play/ui/private_network_view.py:1048
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "Introduceți un ID de rețea hexazecimal de 16 caractere."
 
@@ -2825,12 +2838,12 @@ msgstr ""
 "Introduceți Network ID-ul de 16 caractere pentru a vă alătura unei rețele "
 "ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:795
+#: src/big_remote_play/ui/private_network_view.py:810
 msgid "Enter the Headscale server address."
 msgstr "Introduceți adresa serverului Headscale."
 
 #: src/big_remote_play/ui/network_devices.py:442
-#: src/big_remote_play/ui/private_network_view.py:1111
+#: src/big_remote_play/ui/private_network_view.py:1126
 msgid "Enter the ID on this page and choose Connect."
 msgstr "Introduceți ID-ul pe această pagină și alegeți Conectare."
 
@@ -2876,7 +2889,7 @@ msgstr "Mod de codare a entropiei"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/private_network_view.py:1041
+#: src/big_remote_play/ui/private_network_view.py:1056
 msgid "Entry updated"
 msgstr "Intrarea a fost actualizată"
 
@@ -2947,7 +2960,7 @@ msgstr "Eroare: {}"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 937
 # line: 1908
-#: src/big_remote_play/ui/private_network_view.py:1102
+#: src/big_remote_play/ui/private_network_view.py:1117
 msgid "Establish Connection"
 msgstr "Stabilire conexiune"
 
@@ -3052,13 +3065,13 @@ msgstr "Răspuns mai rapid sau imagine mai bună"
 msgid "Favorite"
 msgstr "Favorit"
 
-#: src/big_remote_play/ui/private_network_view.py:1077
+#: src/big_remote_play/ui/private_network_view.py:1092
 msgid "Fill in the form"
 msgstr "Completați formularul"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1316
-#: src/big_remote_play/ui/private_network_view.py:736
+#: src/big_remote_play/ui/private_network_view.py:751
 msgid "Find Network ID"
 msgstr "Găsiți Network ID-ul"
 
@@ -3131,7 +3144,7 @@ msgid "For a computer in another house: connect your devices first."
 msgstr ""
 "Pentru un computer din altă casă: conectează-ți mai întâi dispozitivele."
 
-#: src/big_remote_play/ui/private_network_view.py:635
+#: src/big_remote_play/ui/tailscale_accounts.py:37
 msgid ""
 "For a friend's tailnet you were invited to, or another account. Tailscale "
 "asks which tailnet to use; the current one stays saved."
@@ -3187,8 +3200,8 @@ msgstr "Forțat"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1772
 # line: 1787
-#: src/big_remote_play/ui/private_network_view.py:984
-#: src/big_remote_play/ui/private_network_view.py:990
+#: src/big_remote_play/ui/private_network_view.py:999
+#: src/big_remote_play/ui/private_network_view.py:1005
 #, python-brace-format
 msgid "Form filled for {}"
 msgstr "Formular completat pentru {}"
@@ -3308,7 +3321,7 @@ msgstr "General"
 # line: 1084
 # line: 1721
 # line: 1842
-#: src/big_remote_play/ui/private_network_view.py:1110
+#: src/big_remote_play/ui/private_network_view.py:1125
 msgid "Get Network ID"
 msgstr "Obțineți Network ID-ul"
 
@@ -3317,11 +3330,11 @@ msgstr "Obțineți Network ID-ul"
 msgid "Good"
 msgstr "Bună"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:157
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:168
 msgid "Grant access"
 msgstr "Acordă acces"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:154
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:165
 msgid ""
 "Grant access once to read the networks configured by the ZeroTier service."
 msgstr ""
@@ -3493,7 +3506,7 @@ msgstr ""
 msgid "How to approve"
 msgstr "Cum se aprobă"
 
-#: src/big_remote_play/ui/private_network_view.py:750
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "How to create a free network, step by step."
 msgstr "Cum creați o rețea gratuită, pas cu pas."
 
@@ -3503,11 +3516,11 @@ msgstr "Cum creați o rețea gratuită, pas cu pas."
 msgid "How to install {}"
 msgstr "Cum se instalează {}"
 
-#: src/big_remote_play/ui/private_network_view.py:717
+#: src/big_remote_play/ui/private_network_view.py:732
 msgid "How to run Headscale on your own server, step by step."
 msgstr "Cum rulezi Headscale pe propriul server, pas cu pas."
 
-#: src/big_remote_play/ui/private_network_view.py:619
+#: src/big_remote_play/ui/private_network_view.py:621
 msgid "How to use the selected private network service."
 msgstr "Cum se folosește serviciul de rețea privată selectat."
 
@@ -3516,11 +3529,11 @@ msgid "I already use ZeroTier"
 msgstr "Folosesc deja ZeroTier"
 
 #: src/big_remote_play/ui/guided_setup.py:284
-#: src/big_remote_play/ui/private_network_view.py:750
+#: src/big_remote_play/ui/private_network_view.py:765
 msgid "I don't have a code"
 msgstr "Nu am un cod"
 
-#: src/big_remote_play/ui/private_network_view.py:717
+#: src/big_remote_play/ui/private_network_view.py:732
 msgid "I don't have a server yet"
 msgstr "Nu am încă un server"
 
@@ -3989,7 +4002,7 @@ msgstr ""
 "Alăturați-vă Tailscale cu autentificare în browser sau folosiți o cheie de "
 "autentificare dacă v-a dat cineva una."
 
-#: src/big_remote_play/ui/private_network_view.py:1067
+#: src/big_remote_play/ui/private_network_view.py:1082
 msgid "Join a Headscale VPN"
 msgstr "Alătură-te unui VPN Headscale"
 
@@ -4146,15 +4159,15 @@ msgstr "Privilegii minime"
 
 #: src/big_remote_play/ui/network_devices.py:222
 #: src/big_remote_play/ui/network_devices.py:235
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:267
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:285
 msgid "Leave network"
 msgstr "Părăsește rețeaua"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:215
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:226
 msgid "Leave this ZeroTier network"
 msgstr "Părăsește această rețea ZeroTier"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:263
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:281
 msgid "Leave this ZeroTier network?"
 msgstr "Părăsești această rețea ZeroTier?"
 
@@ -4231,6 +4244,7 @@ msgstr "Comandă Linux"
 msgid "Linux native"
 msgstr "Nativ Linux"
 
+#: src/big_remote_play/ui/tailscale_accounts.py:52
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:99
 msgid "Loading accounts…"
 msgstr "Se încarcă conturile…"
@@ -4278,13 +4292,13 @@ msgstr "Calea fișierului jurnal"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1831
-#: src/big_remote_play/ui/private_network_view.py:1003
+#: src/big_remote_play/ui/private_network_view.py:1018
 msgid "Login Server"
 msgstr "Server de autentificare"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1307
-#: src/big_remote_play/ui/private_network_view.py:720
+#: src/big_remote_play/ui/private_network_view.py:735
 msgid "Login Server (leave empty for tailscale.com)"
 msgstr "Server de autentificare (lăsați gol pentru tailscale.com)"
 
@@ -4344,7 +4358,7 @@ msgstr ""
 msgid "Manage"
 msgstr "Gestionează"
 
-#: src/big_remote_play/ui/private_network_view.py:654
+#: src/big_remote_play/ui/private_network_view.py:660
 msgid "Manage accounts and networks"
 msgstr "Gestionează conturile și rețelele"
 
@@ -4481,7 +4495,7 @@ msgid "More exposed than a private VPN"
 msgstr "Mai expus decât un VPN privat"
 
 #: src/big_remote_play/ui/network_dashboard.py:95
-#: src/big_remote_play/ui/private_network_view.py:643
+#: src/big_remote_play/ui/private_network_view.py:649
 msgid "More options"
 msgstr "Mai multe opțiuni"
 
@@ -4512,7 +4526,7 @@ msgstr "Dezactivează sunetul când Moonlight nu este fereastra activă"
 msgid "My devices"
 msgstr "Dispozitivele mele"
 
-#: src/big_remote_play/ui/private_network_view.py:625
+#: src/big_remote_play/ui/private_network_view.py:627
 msgid "My network"
 msgstr "Rețeaua mea"
 
@@ -4538,7 +4552,7 @@ msgstr "Nume"
 msgid "Name on the network"
 msgstr "Numele în rețea"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:301
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:319
 msgid "Name shown in Big Remote Play"
 msgstr "Nume afișat în Big Remote Play"
 
@@ -4583,8 +4597,8 @@ msgstr "Rețea"
 #: src/big_remote_play/ui/network_dashboard.py:256
 #: src/big_remote_play/ui/network_devices.py:220
 #: src/big_remote_play/ui/network_devices.py:451
-#: src/big_remote_play/ui/private_network_view.py:959
-#: src/big_remote_play/ui/private_network_view.py:1008
+#: src/big_remote_play/ui/private_network_view.py:974
+#: src/big_remote_play/ui/private_network_view.py:1023
 msgid "Network ID"
 msgstr "ID rețea"
 
@@ -4631,11 +4645,11 @@ msgstr "Ați părăsit rețeaua"
 msgid "Network name"
 msgstr "Numele rețelei"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:227
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:238
 msgid "Network not found"
 msgstr "Rețeaua nu a fost găsită"
 
-#: src/big_remote_play/ui/private_network_view.py:648
+#: src/big_remote_play/ui/private_network_view.py:654
 msgid "Networks this PC joined before."
 msgstr "Rețele la care acest PC s-a conectat anterior."
 
@@ -4691,7 +4705,8 @@ msgstr ""
 "Nu a fost creat niciun utilizator în Sunshine. Este necesar să configurați "
 "un utilizator prin intermediul browserului."
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:137
+#: src/big_remote_play/ui/tailscale_accounts.py:78
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:148
 msgid "No account found"
 msgstr "Nu s-a găsit niciun cont"
 
@@ -4780,7 +4795,7 @@ msgstr ""
 msgid "No network code?"
 msgstr "Nu ai un cod de rețea?"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:164
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:175
 msgid "No network found"
 msgstr "Nu s-a găsit nicio rețea"
 
@@ -4809,11 +4824,12 @@ msgstr "Încă nu există dispozitive asociate"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1660
-#: src/big_remote_play/ui/private_network_view.py:910
+#: src/big_remote_play/ui/private_network_view.py:925
 msgid "No previous networks"
 msgstr "Nicio rețea anterioară"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:136
+#: src/big_remote_play/ui/tailscale_accounts.py:78
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:147
 msgid "No saved Tailscale or Headscale account was found on this computer."
 msgstr ""
 "Nu s-a găsit niciun cont Tailscale sau Headscale salvat pe acest computer."
@@ -4932,6 +4948,10 @@ msgstr ""
 "înapoi. Un apel dintr-un browser web este trimis împreună cu sunetul "
 "browserului."
 
+#: src/big_remote_play/ui/tailscale_accounts.py:94
+msgid "Not signed in"
+msgstr "Neconectat"
+
 #: src/big_remote_play/ui/main_window.py:969
 msgid ""
 "Not sure where to start? Answer a few questions and Big Remote Play sets up "
@@ -5044,7 +5064,7 @@ msgstr "Pe acest computer"
 msgid "On your {provider} private network at {address}"
 msgstr "În rețeaua dvs. privată {provider}, la {address}"
 
-#: src/big_remote_play/ui/private_network_view.py:1102
+#: src/big_remote_play/ui/private_network_view.py:1117
 msgid ""
 "Once both computers are on the same private network, return to Connect to "
 "find the game PC."
@@ -5096,6 +5116,10 @@ msgstr ""
 "Doar pe acest computer. Nu se trimite nimic nicăieri și nu se stochează "
 "nicio parolă, cheie sau cod."
 
+#: src/big_remote_play/ui/tailscale_accounts.py:28
+msgid "Only one is active at a time. Switch to use another tailnet."
+msgstr "Doar unul este activ odată. Comută pentru a folosi alt tailnet."
+
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:45
 msgid "Only one of these accounts can be active at a time on this computer."
 msgstr ""
@@ -5126,7 +5150,7 @@ msgstr "Doar acest computer folosește noul nume."
 # line: 362
 # line: 1318
 #: src/big_remote_play/ui/host_view.py:437
-#: src/big_remote_play/ui/private_network_view.py:740
+#: src/big_remote_play/ui/private_network_view.py:755
 #: src/big_remote_play/ui/sunshine_preferences.py:275
 msgid "Open"
 msgstr "Deschide"
@@ -5236,7 +5260,7 @@ msgstr "Deschide site-ul oficial"
 msgid "Operation failed"
 msgstr "Operațiunea a eșuat"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:282
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:300
 #, python-brace-format
 msgid "Operation failed: {}"
 msgstr "Operația a eșuat: {}"
@@ -5382,7 +5406,7 @@ msgstr ""
 msgid "Paste the credential first."
 msgstr "Mai întâi lipiți datele de acces."
 
-#: src/big_remote_play/ui/private_network_view.py:1077
+#: src/big_remote_play/ui/private_network_view.py:1092
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Lipiți adresa serverului și cheia în câmpurile de pe această pagină."
 
@@ -5423,7 +5447,12 @@ msgstr "Presetare de performanță"
 msgid "Permission granted"
 msgstr "Permisiune acordată"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:153
+#: src/big_remote_play/ui/tailscale_accounts.py:70
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:137
+msgid "Permission is needed to see your Tailscale accounts"
+msgstr "Este nevoie de permisiune pentru a vedea conturile tale Tailscale"
+
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:164
 msgid "Permission is required to list ZeroTier networks"
 msgstr "Este necesară permisiunea pentru a lista rețelele ZeroTier"
 
@@ -5604,8 +5633,8 @@ msgstr "Împiedică oprirea ecranului acestui computer în timpul unei sesiuni."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1031
-#: src/big_remote_play/ui/private_network_view.py:646
-#: src/big_remote_play/ui/private_network_view.py:650
+#: src/big_remote_play/ui/private_network_view.py:652
+#: src/big_remote_play/ui/private_network_view.py:656
 msgid "Previous Networks"
 msgstr "Rețele anterioare"
 
@@ -5743,7 +5772,7 @@ msgid "Ready to play over the internet"
 msgstr "Gata de joc prin internet"
 
 #: src/big_remote_play/ui/network_dashboard.py:91
-#: src/big_remote_play/ui/private_network_view.py:621
+#: src/big_remote_play/ui/private_network_view.py:623
 msgid "Ready to play?"
 msgstr "Sunteți gata de joc?"
 
@@ -5811,7 +5840,7 @@ msgstr "Recomandat: o rețea privată"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1111
 #: src/big_remote_play/ui/network_common.py:163
-#: src/big_remote_play/ui/private_network_view.py:936
+#: src/big_remote_play/ui/private_network_view.py:951
 msgid "Reconnect"
 msgstr "Reconectare"
 
@@ -5819,7 +5848,7 @@ msgstr "Reconectare"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 855
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 78
-#: src/big_remote_play/ui/private_network_view.py:936
+#: src/big_remote_play/ui/private_network_view.py:951
 msgid "Reconnect using this saved network"
 msgstr "Reconectează folosind această rețea salvată"
 
@@ -5863,7 +5892,7 @@ msgstr "Reîncarcă de pe serverul care rulează"
 #: src/big_remote_play/ui/api_access_dialog.py:92
 #: src/big_remote_play/ui/host_view.py:3393
 #: src/big_remote_play/ui/remote_connection.py:779
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:247
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:265
 msgid "Remove"
 msgstr "Elimină"
 
@@ -5879,7 +5908,7 @@ msgstr "Elimină toate"
 msgid "Remove Device"
 msgstr "Elimină dispozitivul"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:195
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:206
 msgid "Remove account from this computer"
 msgstr "Elimină contul de pe acest computer"
 
@@ -5915,7 +5944,7 @@ msgstr "Elimină jurnalele, setările, serverele și datele salvate"
 msgid "Remove old log files"
 msgstr "Elimină fișierele de jurnal vechi"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:243
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:261
 msgid "Remove this account from this computer?"
 msgstr "Elimini acest cont de pe computer?"
 
@@ -5929,7 +5958,7 @@ msgstr "Eliminați acest dispozitiv?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1896
-#: src/big_remote_play/ui/private_network_view.py:1047
+#: src/big_remote_play/ui/private_network_view.py:1062
 msgid "Remove this network from history?"
 msgstr "Elimină această rețea din istoric?"
 
@@ -5960,7 +5989,7 @@ msgstr "Eliminați „{}”? Va trebui să se asocieze din nou cu un cod PIN nou
 msgid "Rename"
 msgstr "Redenumește"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:288
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:306
 msgid "Rename account locally"
 msgstr "Redenumește local contul"
 
@@ -5968,12 +5997,12 @@ msgstr "Redenumește local contul"
 msgid "Rename device"
 msgstr "Redenumește dispozitivul"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:188
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:209
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:199
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:220
 msgid "Rename locally"
 msgstr "Redenumește local"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:295
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:313
 msgid "Rename network locally"
 msgstr "Redenumește local rețeaua"
 
@@ -5990,7 +6019,7 @@ msgstr "Înlocuiește setările actuale cu un fișier salvat"
 msgid "Replace the current settings?"
 msgstr "Înlocuiești setările actuale?"
 
-#: src/big_remote_play/ui/private_network_view.py:1101
+#: src/big_remote_play/ui/private_network_view.py:1116
 msgid "Request Access"
 msgstr "Solicită acces"
 
@@ -6000,7 +6029,7 @@ msgstr "Cerere anulată"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 47
-#: src/big_remote_play/ui/private_network_view.py:1110
+#: src/big_remote_play/ui/private_network_view.py:1125
 msgid "Request the 16-character ID from the network owner."
 msgstr "Cereți identificatorul de 16 caractere proprietarului rețelei."
 
@@ -6009,7 +6038,7 @@ msgstr "Cereți identificatorul de 16 caractere proprietarului rețelei."
 msgid "Requested: {settings}"
 msgstr "Solicitat: {settings}"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:226
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:237
 msgid "Requesting configuration"
 msgstr "Se solicită configurația"
 
@@ -6129,7 +6158,7 @@ msgstr "Restabiliți valorile implicite?"
 msgid "Restore a backup"
 msgstr "Restaurează o copie de rezervă"
 
-#: src/big_remote_play/ui/private_network_view.py:650
+#: src/big_remote_play/ui/private_network_view.py:656
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "Reutilizează detaliile conexiunii salvate de Big Remote Play"
 
@@ -6227,9 +6256,9 @@ msgstr ""
 #: src/big_remote_play/ui/api_access_dialog.py:86
 #: src/big_remote_play/ui/host_view.py:1629
 #: src/big_remote_play/ui/host_view.py:3799
-#: src/big_remote_play/ui/private_network_view.py:1021
+#: src/big_remote_play/ui/private_network_view.py:1036
 #: src/big_remote_play/ui/remote_connection.py:751
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:306
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:324
 msgid "Save"
 msgstr "Salvează"
 
@@ -6339,7 +6368,7 @@ msgstr ""
 "Alegeți un joc sau completați numele aplicației și comanda. Pentru întregul "
 "ecran, alegeți Tot desktopul."
 
-#: src/big_remote_play/ui/private_network_view.py:807
+#: src/big_remote_play/ui/private_network_view.py:822
 msgid "Select a network service and try again."
 msgstr "Selectează un serviciu de rețea și încearcă din nou."
 
@@ -6407,7 +6436,7 @@ msgstr "Se trimite cererea către rețea."
 msgid "Sends your game to the other PC."
 msgstr "Trimite jocul tău către celălalt PC."
 
-#: src/big_remote_play/ui/private_network_view.py:703
+#: src/big_remote_play/ui/private_network_view.py:718
 msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Domeniul serverului (de ex. vpn.example.com)"
 
@@ -6424,8 +6453,8 @@ msgstr "Parola serverului"
 #: src/big_remote_play/ui/api_access_dialog.py:161
 #: src/big_remote_play/ui/network_devices.py:691
 #: src/big_remote_play/ui/network_devices.py:692
-#: src/big_remote_play/ui/private_network_view.py:703
-#: src/big_remote_play/ui/private_network_view.py:1071
+#: src/big_remote_play/ui/private_network_view.py:718
+#: src/big_remote_play/ui/private_network_view.py:1086
 msgid "Server address"
 msgstr "Adresa serverului"
 
@@ -6678,8 +6707,8 @@ msgstr "Autentificați-vă în {name} pentru a continua."
 msgid "Sign in with another Tailscale account"
 msgstr "Autentifică-te cu alt cont Tailscale"
 
-#: src/big_remote_play/ui/private_network_view.py:594
 #: src/big_remote_play/ui/private_network_view.py:596
+#: src/big_remote_play/ui/private_network_view.py:598
 msgid "Sign in with browser"
 msgstr "Autentificare cu browserul"
 
@@ -6691,7 +6720,7 @@ msgstr "Autentificați-vă cu același cont"
 msgid "Sign in with your account and connect your devices."
 msgstr "Autentifică-te cu contul tău și conectează-ți dispozitivele."
 
-#: src/big_remote_play/ui/private_network_view.py:567
+#: src/big_remote_play/ui/private_network_view.py:569
 msgid "Sign in with your browser. Use the same account on all your devices."
 msgstr ""
 "Autentifică-te în browser. Folosește același cont pe toate dispozitivele "
@@ -6709,9 +6738,13 @@ msgstr "Linkul de autentificare afișat pe acel computer"
 msgid "Sign-in needed"
 msgstr "Necesită autentificare"
 
-#: src/big_remote_play/ui/private_network_view.py:895
+#: src/big_remote_play/ui/private_network_view.py:910
 msgid "Sign-in was not completed in the browser."
 msgstr "Autentificarea în browser nu a fost finalizată."
+
+#: src/big_remote_play/ui/tailscale_accounts.py:96
+msgid "Sign-in was not finished on this account."
+msgstr "Autentificarea nu a fost finalizată pentru acest cont."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 356
@@ -6879,7 +6912,7 @@ msgstr "Pornirea vă cere parola o singură dată."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/installer_window.py,
 # line: 67
-#: src/big_remote_play/ui/private_network_view.py:785
+#: src/big_remote_play/ui/private_network_view.py:800
 msgid "Starting..."
 msgstr "Se pornește..."
 
@@ -6902,7 +6935,7 @@ msgstr "Stare necunoscută"
 msgid "Status unknown"
 msgstr "Stare necunoscută"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:230
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:241
 #, python-brace-format
 msgid "Status: {}"
 msgstr "Stare: {}"
@@ -6917,19 +6950,19 @@ msgstr "Steam nu înregistrează sunet"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1959
-#: src/big_remote_play/ui/private_network_view.py:1070
+#: src/big_remote_play/ui/private_network_view.py:1085
 msgid "Step 1: Get credentials"
 msgstr "Pasul 1: Obțineți acreditivele"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1965
-#: src/big_remote_play/ui/private_network_view.py:1077
+#: src/big_remote_play/ui/private_network_view.py:1092
 msgid "Step 2: Enter details"
 msgstr "Pasul 2: Introduceți detalii"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1971
-#: src/big_remote_play/ui/private_network_view.py:1079
+#: src/big_remote_play/ui/private_network_view.py:1094
 msgid "Step 3: Connect"
 msgstr "Pasul 3: Conectare"
 
@@ -7263,7 +7296,8 @@ msgstr "Schimbă între ele butoanele A/B și X/Y"
 msgid "Swap the left and right mouse buttons"
 msgstr "Inversează butoanele stâng și drept ale mouse-ului"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:182
+#: src/big_remote_play/ui/tailscale_accounts.py:107
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:193
 msgid "Switch"
 msgstr "Schimbă"
 
@@ -7280,19 +7314,25 @@ msgstr ""
 "Schimbați conturile Tailscale sau Headscale și vedeți toate rețelele "
 "ZeroTier."
 
-#: src/big_remote_play/ui/private_network_view.py:655
+#: src/big_remote_play/ui/private_network_view.py:661
 msgid ""
 "Switch saved accounts or leave networks without deleting online accounts."
 msgstr ""
 "Schimbă conturile salvate sau părăsește rețele fără a șterge conturile "
 "online."
 
+#: src/big_remote_play/ui/tailscale_accounts.py:108
+#, python-brace-format
+msgid "Switch to {}"
+msgstr "Comută la {}"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 997
 #: src/big_remote_play/ui/guest_view.py:2321
 msgid "Switching Monitors"
 msgstr "Comutarea monitoarelor"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:233
+#: src/big_remote_play/ui/tailscale_accounts.py:126
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:251
 #, python-brace-format
 msgid "Switching to {}…"
 msgstr "Se schimbă la {}…"
@@ -7343,9 +7383,13 @@ msgstr "Tailscale"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 818
 # line: 1987
-#: src/big_remote_play/ui/private_network_view.py:1091
+#: src/big_remote_play/ui/private_network_view.py:1106
 msgid "Tailscale Instructions"
 msgstr "Instrucțiuni Tailscale"
+
+#: src/big_remote_play/ui/tailscale_accounts.py:28
+msgid "Tailscale accounts and tailnets"
+msgstr "Conturi și tailneturi Tailscale"
 
 #: src/big_remote_play/ui/api_access_dialog.py:133
 msgid ""
@@ -7359,6 +7403,10 @@ msgstr ""
 msgid "Tailscale and Headscale accounts"
 msgstr "Conturi Tailscale și Headscale"
 
+#: src/big_remote_play/ui/tailscale_accounts.py:155
+msgid "Tailscale did not accept the change. Try again."
+msgstr "Tailscale nu a acceptat modificarea. Încearcă din nou."
+
 #: src/big_remote_play/ui/network_devices.py:633
 msgid "Tailscale download page"
 msgstr "Pagina de descărcare Tailscale"
@@ -7366,6 +7414,11 @@ msgstr "Pagina de descărcare Tailscale"
 #: src/big_remote_play/ui/host_view.py:1520
 msgid "Tailscale or Headscale"
 msgstr "Tailscale sau Headscale"
+
+#: src/big_remote_play/ui/tailscale_accounts.py:73
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:246
+msgid "Tailscale works without your password now"
+msgstr "Tailscale funcționează acum fără parola ta"
 
 #: src/big_remote_play/ui/connection_guides.py:165
 msgid ""
@@ -7504,7 +7557,7 @@ msgstr ""
 "Conexiunea VPN activă se va opri. Conturile salvate sunt păstrate pentru a "
 "te putea reconecta ulterior."
 
-#: src/big_remote_play/ui/private_network_view.py:1101
+#: src/big_remote_play/ui/private_network_view.py:1116
 msgid ""
 "The administrator must share the node or invite your email to the network."
 msgstr ""
@@ -7725,7 +7778,7 @@ msgstr ""
 "Rețeaua este privată: fiecare dispozitiv nou trebuie aprobat. Acest computer "
 "intră în rețea și este aprobat automat."
 
-#: src/big_remote_play/ui/private_network_view.py:1115
+#: src/big_remote_play/ui/private_network_view.py:1130
 msgid ""
 "The network owner must approve this computer, in Big Remote Play or in "
 "ZeroTier Central."
@@ -7739,7 +7792,7 @@ msgstr ""
 msgid "The network owner still needs to approve this computer."
 msgstr "Proprietarul rețelei trebuie încă să aprobe acest computer."
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:244
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:262
 msgid "The online account is not deleted. You can add it again by signing in."
 msgstr ""
 "Contul online nu este șters. Îl poți adăuga din nou prin autentificare."
@@ -7803,7 +7856,7 @@ msgstr ""
 "Persoana intră în rețeaua dvs. privată și poate vedea dispozitivele pe care "
 "le permiteți."
 
-#: src/big_remote_play/ui/private_network_view.py:746
+#: src/big_remote_play/ui/private_network_view.py:761
 msgid "The person who created the network gives you this code."
 msgstr "Persoana care a creat rețeaua îți dă acest cod."
 
@@ -7854,7 +7907,7 @@ msgstr ""
 msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr "Ieșirea selectată nu este conectată. Reconecteaz-o sau alege Automat."
 
-#: src/big_remote_play/ui/private_network_view.py:713
+#: src/big_remote_play/ui/private_network_view.py:728
 msgid "The server administrator then approves this computer."
 msgstr "Apoi administratorul serverului aprobă acest computer."
 
@@ -8001,12 +8054,12 @@ msgstr ""
 msgid "This PC did not appear in the list?"
 msgstr "Acest PC nu a apărut în listă?"
 
-#: src/big_remote_play/ui/private_network_view.py:548
+#: src/big_remote_play/ui/private_network_view.py:550
 #, python-brace-format
 msgid "This PC is on the {} private network."
 msgstr "Acest PC este în rețeaua privată {}."
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:146
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:157
 msgid ""
 "This Tailscale version can show the active account, but cannot list or "
 "switch saved accounts."
@@ -8030,7 +8083,7 @@ msgstr ""
 "detrimentul unei utilizări mai mari a GPU-ului și a unei performanțe mai "
 "slabe."
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:305
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:323
 msgid "This changes only the name shown by Big Remote Play."
 msgstr "Aceasta schimbă numai numele afișat de Big Remote Play."
 
@@ -8057,7 +8110,7 @@ msgstr ""
 "Codecul și HDR depind, de asemenea, de ambele computere. Modificările se "
 "aplică după repornirea partajării."
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:163
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:174
 msgid "This computer has not joined a ZeroTier network yet."
 msgstr "Acest computer nu s-a alăturat încă unei rețele ZeroTier."
 
@@ -8142,7 +8195,7 @@ msgstr ""
 "Acest computer nu mai folosește această rețea. Rețeaua în sine nu este "
 "ștearsă."
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:264
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:282
 msgid ""
 "This computer will no longer see devices on this network until it joins "
 "again."
@@ -8425,7 +8478,7 @@ msgstr "Origini web de încredere"
 # line: 1769
 # line: 1914
 #: src/big_remote_play/ui/installer_window.py:200
-#: src/big_remote_play/ui/private_network_view.py:898
+#: src/big_remote_play/ui/private_network_view.py:913
 msgid "Try Again"
 msgstr "Încercați din nou"
 
@@ -8469,13 +8522,13 @@ msgstr "Se activează…"
 msgid "Type"
 msgstr "Tip"
 
-#: src/big_remote_play/ui/private_network_view.py:568
+#: src/big_remote_play/ui/private_network_view.py:570
 msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr ""
 "Introdu adresa serverului tău. Administratorul lui aprobă acest computer."
 
-#: src/big_remote_play/ui/private_network_view.py:566
+#: src/big_remote_play/ui/private_network_view.py:568
 msgid "Type the network code you received."
 msgstr "Introdu codul de rețea primit."
 
@@ -8509,7 +8562,7 @@ msgstr "Indisponibil: {device}"
 #: src/big_remote_play/ui/host_view.py:226
 #: src/big_remote_play/ui/host_view.py:1787
 #: src/big_remote_play/ui/host_view.py:1792
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:230
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:241
 #: src/big_remote_play/utils/system_check.py:176
 #: src/big_remote_play/utils/system_check.py:179
 #: src/big_remote_play/utils/system_check.py:204
@@ -8535,7 +8588,7 @@ msgstr "Serviciu VPN necunoscut: ${provider}"
 msgid "Unknown device"
 msgstr "Dispozitiv necunoscut"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:282
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:300
 msgid "Unknown error"
 msgstr "Eroare necunoscută"
 
@@ -8637,7 +8690,7 @@ msgstr ""
 "disponibilitate, reguli de reînnoire și condiții. Este opțional: o adresă IP "
 "publică accesibilă funcționează și fără domeniu."
 
-#: src/big_remote_play/ui/private_network_view.py:634
+#: src/big_remote_play/ui/tailscale_accounts.py:36
 msgid "Use another tailnet"
 msgstr "Folosește alt tailnet"
 
@@ -8848,7 +8901,7 @@ msgstr ""
 "de autentificare de rețea) din inelul de chei al sistemului. Aplicația se va "
 "închide."
 
-#: src/big_remote_play/ui/private_network_view.py:1114
+#: src/big_remote_play/ui/private_network_view.py:1129
 msgid "Wait for Approval"
 msgstr "Așteptați aprobarea"
 
@@ -8866,7 +8919,7 @@ msgstr "Așteptați să apară"
 msgid "Waiting for approval"
 msgstr "Se așteaptă aprobarea"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:225
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:236
 #: src/big_remote_play/ui/zerotier_join.py:72
 msgid "Waiting for authorization"
 msgstr "Se așteaptă autorizarea"
@@ -8906,8 +8959,8 @@ msgstr "Trebuie reparată o setare"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1723
 # line: 1849
-#: src/big_remote_play/ui/private_network_view.py:960
-#: src/big_remote_play/ui/private_network_view.py:1013
+#: src/big_remote_play/ui/private_network_view.py:975
+#: src/big_remote_play/ui/private_network_view.py:1028
 msgid "Web UI"
 msgstr "Interfață web"
 
@@ -8934,7 +8987,7 @@ msgid "What this computer shows"
 msgstr "Ce arată acest computer"
 
 #: src/big_remote_play/ui/connection_guides.py:100
-#: src/big_remote_play/ui/private_network_view.py:580
+#: src/big_remote_play/ui/private_network_view.py:582
 msgid "What you need"
 msgstr "De ce aveți nevoie"
 
@@ -9046,7 +9099,7 @@ msgstr ""
 msgid "Without a browser (advanced)"
 msgstr "Fără browser (avansat)"
 
-#: src/big_remote_play/ui/private_network_view.py:1081
+#: src/big_remote_play/ui/private_network_view.py:1096
 msgid ""
 "Without a key, a sign-in link opens; the administrator approves this "
 "computer on the server."
@@ -9058,7 +9111,7 @@ msgstr ""
 msgid "Without a private network"
 msgstr "Fără rețea privată"
 
-#: src/big_remote_play/ui/private_network_view.py:712
+#: src/big_remote_play/ui/private_network_view.py:727
 msgid "Without an auth key, a sign-in link opens"
 msgstr "Fără cheie de autentificare, se deschide un link de autentificare"
 
@@ -9115,7 +9168,7 @@ msgstr "Conexiunile tale apar aici după ce începi să joci cu Big Remote Play.
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1662
-#: src/big_remote_play/ui/private_network_view.py:910
+#: src/big_remote_play/ui/private_network_view.py:925
 msgid "Your created/connected networks will appear here."
 msgstr "Rețelele create/conectate vor apărea aici."
 
@@ -9163,7 +9216,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 650
-#: src/big_remote_play/ui/private_network_view.py:1117
+#: src/big_remote_play/ui/private_network_view.py:1132
 msgid "ZT Panel"
 msgstr "Panou ZT"
 
@@ -9179,7 +9232,7 @@ msgstr "Token API ZeroTier"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 825
 # line: 1994
-#: src/big_remote_play/ui/private_network_view.py:1108
+#: src/big_remote_play/ui/private_network_view.py:1123
 msgid "ZeroTier Instructions"
 msgstr "Instrucțiuni ZeroTier"
 
@@ -9219,7 +9272,7 @@ msgstr "ZeroTier își păstrează cheia de control accesibilă doar sistemului.
 msgid "ZeroTier needs an update"
 msgstr "ZeroTier trebuie actualizat"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:277
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:295
 msgid "ZeroTier network left"
 msgstr "Rețeaua ZeroTier a fost părăsită"
 
@@ -9227,7 +9280,7 @@ msgstr "Rețeaua ZeroTier a fost părăsită"
 msgid "ZeroTier networks"
 msgstr "Rețele ZeroTier"
 
-#: src/big_remote_play/ui/vpn_accounts_dialog.py:228
+#: src/big_remote_play/ui/vpn_accounts_dialog.py:239
 msgid "ZeroTier service error"
 msgstr "Eroare serviciu ZeroTier"
 
