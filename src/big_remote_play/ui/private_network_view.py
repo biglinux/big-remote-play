@@ -542,6 +542,9 @@ class ConnectPage(Adw.Bin):
                 self._c_description.set_label(_("This computer is already on a ZeroTier network. To join another one, type its code."))
             return False
         self._connect_form.set_visible(not connected)
+        if self._accounts is not None:
+            # Signed out, the normal sign-in below already asks which tailnet.
+            self._accounts.another_row.set_visible(connected)
         if connected:
             self._c_title.set_label(_("Already connected"))
             self._c_description.set_label(_("This PC is on the {} private network.").format(self.vpn["name"]))
@@ -625,6 +628,23 @@ class ConnectPage(Adw.Bin):
         )
         self._open_dashboard.set_visible(False)
         conn_box.append(self._open_dashboard)
+        # `tailscale up` reconnects the current tailnet and never asks which one:
+        # the accounts on this computer, and a new sign-in for another tailnet
+        # (where Tailscale shows "Select a tailnet"), live on this page.
+        self._accounts = None
+        if self.vpn_id == "tailscale" and not self._add_account:
+            from big_remote_play.private_network.service import default_service
+            from .tailscale_accounts import TailscaleAccountsGroup
+
+            self._accounts = TailscaleAccountsGroup(
+                lambda: default_service().manager,
+                on_another_tailnet=self._use_another_tailnet,
+                on_changed=self._reprobe,
+                show_toast=getattr(self.main_window, "show_toast", lambda _text: None),
+            )
+            self._accounts.another_row.set_visible(False)
+            conn_box.append(self._accounts)
+            self._accounts.refresh()
 
         extras = Adw.PreferencesGroup(title=_("More options"))
         self._hist_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
@@ -654,6 +674,21 @@ class ConnectPage(Adw.Bin):
 
         toolbar.set_content(conn_scroll)
         self.set_child(toolbar)
+
+    def _reprobe(self) -> None:
+        """After switching accounts the page states the new connection."""
+
+        def probe() -> None:
+            connected = provider_connected(self.vpn_id, self.main_window.system_check)
+            GLib.idle_add(self._apply_connected, connected)
+
+        threading.Thread(target=probe, daemon=True).start()
+
+    def _use_another_tailnet(self) -> None:
+        # The new sign-in page replaces this one: never from inside its own handler.
+        select = getattr(self.main_window, "_apply_vpn_selection", None)
+        if callable(select):
+            GLib.idle_add(lambda: select("tailscale", add_account=True) and False)
 
     def _show_hosting_guide(self) -> None:
         from .connection_guides import build_headscale_hosting_dialog
