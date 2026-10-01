@@ -59,6 +59,14 @@ def _isolated_user_config(tmp_path_factory, monkeypatch):
     from big_remote_play.host import controllers
 
     monkeypatch.setattr(controllers, "controller_report", lambda read=None: controllers.ControllerReport())
+    # Nor the developer's packages: every component is reported installed and
+    # no package manager can run unless a test installs its own fakes.
+    from big_remote_play.utils import dependencies
+
+    monkeypatch.setattr(dependencies, "_AUDIT", lambda ids: [dependencies.ComponentState(component_id, True, "/usr/bin/" + component_id) for component_id in ids])
+    monkeypatch.setattr(dependencies, "_PLAN", lambda ids: None)
+    monkeypatch.setattr(dependencies, "_RUN", _no_package_manager)
+    monkeypatch.setattr(dependencies, "_START_UNIT", lambda unit: 1)
 
 
 def _offline_audio_init(original):
@@ -76,6 +84,10 @@ def _offline_display_init(original):
         original(self, **kwargs)
 
     return init
+
+
+def _no_package_manager(*_args, **_kwargs):
+    raise AssertionError("a test reached the real package manager")
 
 
 def _no_sound_server(*_args, **_kwargs):
