@@ -976,3 +976,22 @@ def test_game_window_session_is_described_by_the_game(ui):
     host._game_window_session = {"name": "Alpha"}
     assert host._describe_session().startswith("Game Window: Alpha")
     host._game_window_session = None
+
+
+def test_a_share_that_ended_while_the_window_was_closed_is_explained_once(ui, monkeypatch):
+    import time as clock
+
+    from big_remote_play.host import window_capture
+
+    host = ui.host_view
+    dialogs = []
+    monkeypatch.setattr(host, "show_error_dialog", lambda title, message: dialogs.append(title))
+    monkeypatch.setattr(window_capture, "stop_helper", lambda state=None: None)
+    window_capture.write_state({"version": 1, "state": "ended", "reason": "window-closed", "pid": 1, "ended_at": clock.time()})
+    host._recover_game_window_capture()
+    assert _wait_for(lambda: dialogs, timeout=3)
+    assert dialogs == ["The game window closed"]
+    assert window_capture.read_state() is None
+    host._recover_game_window_capture()
+    drain()
+    assert dialogs == ["The game window closed"]
