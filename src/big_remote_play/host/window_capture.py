@@ -59,8 +59,9 @@ READY_TIMEOUT = 200.0  # the portal waits for the person to confirm the window
 PORTAL_TIMEOUT = 180.0
 COMPOSITOR_TIMEOUT = 15.0
 WATCH_INTERVAL_MS = 1000
+STALL_SECONDS = 5
 STOP_GRACE = 5.0
-HOLD_SECONDS = 20  # the empty private screen waits this long for Sunshine to be stopped
+HOLD_SECONDS = 8  # the empty private screen waits this long for the application to stop Sunshine
 
 # Why a session ended. The UI maps these codes to sentences.
 REASONS = (
@@ -515,6 +516,11 @@ class CaptureSession:
         self._buffer_width = self._buffer_height = 0
         self._kwin_misses = 0
         self._fd = -1
+        # Pictures the window has sent: tells a still or stopped game from a broken capture.
+        self._frames = 0
+        self._frames_seen = 0
+        self._still_since = time.monotonic()
+        self._stall_reported = False
 
     # -- start ------------------------------------------------------------
 
@@ -615,15 +621,23 @@ class CaptureSession:
         bus.add_signal_watch()
         bus.connect("message::error", lambda _bus, message: self.end("capture-failed", message.parse_error()[0].message))
         bus.connect("message::eos", lambda *_args: self.end("capture-failed", "stream ended"))
+        bus.connect("message::warning", lambda _bus, message: _log.warning("Game Window: mirror warning: %s", message.parse_warning()[0].message))
         source = self.pipeline.get_by_name("source")
-        source.get_static_pad("src").connect("notify::caps", self._on_caps)
+        pad = source.get_static_pad("src")
+        pad.connect("notify::caps", self._on_caps)
+        pad.add_probe(Gst.PadProbeType.BUFFER, self._count_frame)
         if self.pipeline.set_state(Gst.State.PLAYING) == Gst.StateChangeReturn.FAILURE:
             raise CaptureError("capture-failed", "the mirror did not start")
+
+    def _count_frame(self, _pad, _info):
+        self._frames += 1
+        return self.Gst.PadProbeReturn.OK
 
     def _on_caps(self, pad, _pspec) -> None:
         caps = pad.get_current_caps()
         if caps is None or caps.get_size() == 0:
             return
+        _log.info("Game Window: window picture %s", caps.to_string()[:300])
         structure = caps.get_structure(0)
         ok_w, width = structure.get_int("width")
         ok_h, height = structure.get_int("height")
@@ -680,9 +694,23 @@ class CaptureSession:
             self.end("stopped")
         return True
 
+    def _note_frames(self, now: float) -> None:
+        """One line when the game stops sending pictures, one when it resumes."""
+        if self._frames != self._frames_seen:
+            if self._stall_reported:
+                _log.info("Game Window: the game is sending pictures again")
+            self._frames_seen, self._still_since, self._stall_reported = self._frames, now, False
+        elif not self._stall_reported and now - self._still_since >= STALL_SECONDS:
+            self._stall_reported = True
+            if self._frames:
+                _log.warning("Game Window: no new picture from the game for %d s (minimized, paused or not drawing); the last one stays on screen", STALL_SECONDS)
+            else:
+                _log.warning("Game Window: the game has sent no picture in %d s; the other device sees a black screen", STALL_SECONDS)
+
     def _check(self) -> bool:
         if self.ended:
             return False
+        self._note_frames(time.monotonic())
         if self.compositor is not None and self.compositor.poll() is not None:
             self.end("compositor-exited")
             return False
@@ -724,8 +752,10 @@ class CaptureSession:
 
         The picture stops immediately (the private screen turns black: nothing
         else exists there). The screen itself stays for a few seconds so the
-        application can stop Sunshine cleanly, which restores audio; without
-        the application it goes after ``HOLD_SECONDS`` anyway.
+        application can stop Sunshine cleanly, which restores audio. If the
+        application is closed, nobody else would: Sunshine would stay
+        reachable with no picture to send (devices connect, get sound and a
+        black screen), so this process stops it after ``HOLD_SECONDS``.
         """
         if self.ended:
             return
@@ -733,12 +763,20 @@ class CaptureSession:
         self.reason = reason if reason in REASONS else "capture-failed"
         if self.reason != "stopped":
             _log.warning("Game Window: the game picture stopped (%s); nothing else is shown. %s", self.reason, detail[:200])
+        seconds = max(1.0, time.time() - self.started_at)
+        _log.info("Game Window: %d pictures from the game in %.0f s (%.1f per second)", self._frames, seconds, self._frames / seconds)
         self.stop_picture()
         write_state(self._state("ended", reason=self.reason, ended_at=time.time()))
         if self.reason == "stopped" or self.compositor is None:
             self._quit()
         else:
-            self.GLib.timeout_add_seconds(HOLD_SECONDS, self._quit)
+            self.GLib.timeout_add_seconds(HOLD_SECONDS, self._stop_sunshine_and_quit)
+
+    def _stop_sunshine_and_quit(self) -> bool:
+        stopped = stop_private_sunshine(self.socket)
+        if stopped:
+            _log.warning("Game Window: stopped the Sunshine server of the private screen (Big Remote Play was not there to do it)")
+        return self._quit()
 
     def _state(self, state: str, **extra: object) -> dict[str, object]:
         return {
@@ -773,6 +811,53 @@ class CaptureSession:
         if self.compositor is not None:
             stop_process_group(self.compositor.pid, wait=self.compositor.wait)
             self.compositor = None
+
+
+def stop_private_sunshine(socket: str, *, proc: Path = Path("/proc"), grace: float = 10.0) -> int:
+    """Stop the Sunshine that captures this private screen, and no other.
+
+    Only a process named ``sunshine`` whose ``WAYLAND_DISPLAY`` is this
+    screen's socket is stopped: a Sunshine sharing the desktop is never touched.
+    TERM first, so Sunshine puts the audio output back; KILL after ``grace``.
+    """
+    if not _SOCKET_RE.fullmatch(socket or ""):
+        return 0
+    marker = f"WAYLAND_DISPLAY={socket}".encode()
+    targets = []
+    for entry in proc.iterdir() if proc.is_dir() else []:
+        if not entry.name.isdigit():
+            continue
+        try:
+            if (entry / "comm").read_text(encoding="utf-8", errors="replace").strip() != "sunshine":
+                continue
+            if marker not in (entry / "environ").read_bytes().split(b"\0"):
+                continue
+        except OSError:
+            continue
+        targets.append(int(entry.name))
+    for pid in targets:
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except (ProcessLookupError, PermissionError):
+            continue
+    deadline = time.monotonic() + grace
+    while time.monotonic() < deadline and any((proc / str(pid)).exists() and not _exited(proc / str(pid)) for pid in targets):
+        time.sleep(0.2)
+    for pid in targets:
+        if (proc / str(pid)).exists() and not _exited(proc / str(pid)):
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                pass
+    return len(targets)
+
+
+def _exited(root: Path) -> bool:
+    """A zombie has exited even though its /proc entry remains until it is collected."""
+    try:
+        return (root / "stat").read_text(encoding="utf-8", errors="replace").rpartition(")")[2].split()[:1] == ["Z"]
+    except OSError:
+        return True
 
 
 def stop_process_group(pid: int, *, wait: Callable[..., object] | None = None, grace: float = STOP_GRACE) -> None:
@@ -954,8 +1039,22 @@ def stop_helper(state: Mapping[str, object] | None = None) -> None:
         write_state({"version": 1, "state": "ended", "reason": "stopped", "pid": pid if isinstance(pid, int) else 0, "ended_at": time.time()})
 
 
+def _log_to_app_file() -> None:
+    """Write to Big Remote Play's daily log, where the application writes.
+
+    Started from the desktop menu, this process's stderr ends in the journal,
+    out of reach of anyone looking at the application's log for a report.
+    """
+    try:
+        from big_remote_play.utils.logger import Logger
+
+        Logger()
+    except Exception:  # a log that cannot be opened must not stop sharing
+        logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stderr)
+
+
 def main(argv: list[str] | None = None) -> int:
-    logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stderr)
+    _log_to_app_file()
     args = sys.argv[1:] if argv is None else argv
     if args[:1] == ["run"]:
         return run()

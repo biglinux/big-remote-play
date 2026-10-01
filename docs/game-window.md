@@ -111,6 +111,7 @@ only when exactly one open window has that identity.
 
 - KDE Plasma 6 on Wayland (ScreenCast portal with window sharing), or an X11
   desktop with compositing on.
+- Sunshine **v2026.516 or newer**: its KWin capture method is the only way it can read the private screen. An older Sunshine starts without any video source, so devices connect and get sound but never a picture; Big Remote Play checks the version and says so instead.
 - `kwin_wayland` (the private screen), GStreamer with `pipewiresrc`
   (`gst-plugin-pipewire`), `waylandsink` (`gst-plugins-bad`) and `videocrop`,
   `ximagesrc` (`gst-plugins-good`). Missing parts are named in the interface.
