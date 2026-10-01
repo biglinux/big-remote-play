@@ -47,7 +47,7 @@ PYTHONPATH=src python3 -m big_remote_play
 python3 -m pytest -q tests/test_relevant_area.py
 make lint
 make typecheck
-make translations-check
+make check-i18n
 make metadata-check
 make test
 make release-check
@@ -89,7 +89,9 @@ make release-check
 
 ## Translations
 
-- All visible text belongs in gettext unless it is a protocol token or technical identifier.
+- English is the source language. All visible text belongs in gettext unless it is a protocol token or technical identifier; logger-only messages stay in English.
+- Use named placeholders, `ngettext` for counts and `pgettext` for ambiguous words; never compare translated text in logic.
+- Edit the desktop entry and metainfo in `build-aux/i18n/`; their `usr/share` copies are generated.
 - Keep action names consistent across pages and documentation.
 - Preserve placeholders, markup and shell variables exactly.
 - Keep `pt` distinct from `pt_BR`; keep `zh_TW` genuinely Traditional and distinct from `zh`/`zh_CN`.
