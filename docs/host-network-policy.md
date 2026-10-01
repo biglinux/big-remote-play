@@ -10,6 +10,7 @@ There is no single "host wins" rule. These settings control different parts of t
 | Requested video bitrate | Set on Connect → Image. UI Mbps are converted to Kbps for Moonlight/Sunshine. It is a target, not a live traffic measurement. |
 | Maximum video bitrate | Host ceiling in Share → Image and capture. Zero adds no ceiling; a positive value limits a higher client request. A 40 Mbps request with a 25 Mbps ceiling is capped to 25 Mbps video, not 25 Mbps total network traffic. |
 | GPU, screen and capture | Host-local choices. Automatic leaves probing to Sunshine when it starts. The automatic summary describes configured policy, not a measured active encoder. |
+| Game Window | Overrides screen and capture for that session: Sunshine gets `capture = kwin`, no `output_name`, the private screen's GPU as `adapter_name` and only that screen's Wayland socket. HDR correction and the sharing resolution do not apply. The encoder choice is kept. No fallback to another capture method. See [Game Window](game-window.md). |
 | Codec / HDR | The client requests a format the host advertises and the devices can use. Unsupported combinations can fail or require a compatible choice; no universal fallback guarantee is made. |
 | V-Sync / decoding | Client-local display/decoding behavior, not the host encoder. |
 | Extra FEC | Host packet-loss redundancy. Adds network traffic; not a cure for a slow route. |
@@ -20,26 +21,29 @@ Automatic mode. Reapplying Automatic preserves that ceiling and the selected
 capture screen. Encoding priority, advertised codecs and FEC have a single
 mapping used both when saving and when the start worker snapshots settings.
 
-## Audio is opt-in routing
+## Audio: the current output, never the microphone
 
-`audio_output_name=""` means keep the current system output. Opening the program,
-starting this default mode, stopping it and closing it do not create app-owned
-virtual sinks, set a default sink or move playback applications. Old numeric
-`audio_output_idx` values do not constitute consent to route audio and are ignored
-for selection. A named unavailable device produces a recoverable error instead
-of silently substituting the first output.
+`audio_output_name=""` (**Automatic — use the current output**) leaves Sunshine's
+`audio_sink` unset, so Sunshine records the monitor of whatever output is current
+when a client connects. Opening, starting, stopping and closing make no sound-server
+writes, create no virtual output, never set the default output and never move
+applications. Old numeric `audio_output_idx` values are ignored.
 
-Explicit routing remembers the previous default, operates only on the app-owned
-sinks, and preserves any newer system output selected by the user. Edits made
-while sharing take effect on the next start, not as an unsolicited live reroute.
-Cleanup without ownership does not guess a device, even after a crash.
+`audio_play_on_host` (**Also play sound on this computer**, default on) decides what
+happens when a client asks Sunshine to mute this computer: on, a port link plays
+Sunshine's virtual output on the device in use; off, `audio_sink` points at
+`sink-sunshine-stereo`, so this computer stays silent for every client. The older
+`audio_mode` value 1 ("Other computer") maps to off; every other value maps to on.
 
-This is distinct from Sunshine's own behavior: its audio capture prefers a virtual
-sink when the connecting client disables host playback. New Big Remote Play
-clients therefore request `hostaudio=true`; saved user choices are preserved.
-A third-party client can still request mute. We cannot claim the host wrapper
-unconditionally prevents all output changes made by independently configured
-Sunshine/Moonlight sessions.
+A named output (hardware or Bluetooth only) becomes `audio_sink`; Sunshine then makes
+it the default output during sessions. A named unavailable device is a recoverable
+error, never a substitution. Edits made while sharing apply at the next start. The
+only routing ever removed is routing carrying this session's token; after a crash
+the previous output is restored only if Sunshine's virtual output is still the
+default. Details and measurements: [audio architecture](audio-architecture.md).
+
+A third-party Moonlight client still decides whether it asks Sunshine to mute this
+computer; the setting above decides whether this computer keeps playing anyway.
 
 ## UPnP is an attempt, not a connection test
 
@@ -59,9 +63,10 @@ port too. The UI warns about this combination; the default remains LAN-only.
 1. **VPN client setup:** the usual path. Join every computer to a private network;
    use the VPN address when discovery/broadcast does not work across the overlay.
 2. **Headscale control server:** still a VPN. A control-server domain and HTTPS
-   are not a direct-public-game route. The bundled Docker/Cloudflare deployment
-   is custom, not Headscale's recommended supported deployment. Official setup
-   requirements remain authoritative.
+   are not a direct-public-game route. Big Remote Play no longer deploys a
+   server; it explains the official installation on a server you administer
+   ([VPS and Headscale](vps-headscale.md)). Headscale does not work behind the
+   Cloudflare proxy or Tunnel ([Cloudflare](cloudflare.md)).
 3. **Direct game access by public IP/domain:** no VPN. A domain only resolves the
    public address. For Cloudflare, delegate the domain as documented and use
    DNS-only A/AAAA records (gray cloud), not the HTTP proxy. It is not Cloudflare
@@ -101,6 +106,10 @@ same rules.
 - **Authentication keys never enter argv.** A key is written to a 0600 file
   under `$XDG_RUNTIME_DIR` and passed as `--auth-key=file:<path>`, then removed;
   `/proc/<pid>/cmdline` is world-readable.
+- **ZeroTier without a password.** `zerotier-cli` reads `~/.zeroTierOneAuthToken`
+  for non-root users. After an explicit **Allow**, the service token is read
+  once with `pkexec /usr/bin/cat` and written by the user with mode 0600; see
+  [private-network security](private-network-security.md).
 - **Switching providers does not stop services.** `tailscale down` leaves the
   tailnet and keeps every saved profile, so the other provider works without
   `logout` (which would expire the node key) and without stopping `tailscaled`.

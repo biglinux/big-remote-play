@@ -47,6 +47,69 @@ _LEGACY_KEYS = {
 }
 
 
+def moonlight_config_paths() -> list[Path]:
+    """Where Moonlight Qt keeps its settings: native first, then Flatpak."""
+    config_home = Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config")
+    return [
+        config_home / "Moonlight Game Streaming Project" / "Moonlight.conf",
+        Path.home() / ".var/app/com.moonlight_stream.Moonlight/config/Moonlight Game Streaming Project/Moonlight.conf",
+    ]
+
+
+def _stored_certificate(value: str) -> str:
+    """The certificate in a ``srvcert`` value, ``""`` when Moonlight stored none.
+
+    Moonlight writes ``srvcert=@ByteArray()`` for a host it only contacted
+    (listed, discovered, or whose pairing failed) and the PEM text inside
+    ``@ByteArray(...)`` once pairing succeeded.
+    """
+    text = (value or "").strip()
+    if text.startswith("@ByteArray(") and text.endswith(")"):
+        text = text[len("@ByteArray(") : -1]
+    return value if text.strip() else ""
+
+
+def paired_host_certificate(address: str, paths: list[Path] | None = None, *, uuid: str = "") -> str:
+    """The server certificate Moonlight stored for ``address`` (``""`` if none).
+
+    Moonlight writes a certificate into ``hosts\\N\\srvcert`` only after a
+    pairing succeeds, next to the addresses it knows for that host. With
+    ``uuid`` (the host's ``uniqueid`` from ``/serverinfo``) an entry for another
+    host that once used the same address does not count.
+    """
+    wanted = address.strip().strip("[]").split("%")[0].lower()
+    wanted_uuid = uuid.strip().lower()
+    for path in paths or moonlight_config_paths():
+        try:
+            lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+        except OSError:
+            continue
+        section = ""
+        hosts: dict[str, dict[str, str]] = {}
+        for line in lines:
+            if line.startswith("[") and line.endswith("]"):
+                section = line[1:-1]
+                continue
+            if section != "hosts" or "=" not in line or "\\" not in line.split("=", 1)[0]:
+                continue
+            key, value = line.split("=", 1)
+            index, name = key.split("\\", 1)
+            hosts.setdefault(index, {})[name.lower()] = value
+        for entry in hosts.values():
+            known = {
+                entry.get(field, "").strip("[]").rsplit(":", 1)[0].lower() if entry.get(field, "").count(":") == 1 else entry.get(field, "").strip("[]").lower()
+                for field in ("manualaddress", "localaddress", "remoteaddress", "ipv6address")
+            }
+            if wanted not in known:
+                continue
+            if wanted_uuid and entry.get("uuid", "").strip().lower() not in ("", wanted_uuid):
+                continue
+            certificate = _stored_certificate(entry.get("srvcert", ""))
+            if certificate:
+                return certificate
+    return ""
+
+
 class MoonlightConfigManager:
     _shared_state: dict[str, Any] = {}
     _lock = threading.RLock()
@@ -55,11 +118,7 @@ class MoonlightConfigManager:
         self.__dict__ = self._shared_state
         if hasattr(self, "cp"):
             return
-        config_home = Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config")
-        candidates = [
-            config_home / "Moonlight Game Streaming Project" / "Moonlight.conf",
-            Path.home() / ".var/app/com.moonlight_stream.Moonlight/config/Moonlight Game Streaming Project/Moonlight.conf",
-        ]
+        candidates = moonlight_config_paths()
         self.config_file: Path = next((p for p in candidates if p.is_file()), candidates[0])
         self.cp = self._parser()
         self._load_error = False

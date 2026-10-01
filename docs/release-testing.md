@@ -25,7 +25,17 @@ make release-check
 
 ## Visual matrix
 
-Run the native interface in Portuguese and English, light/dark themes, compact width, large text and high contrast. Inspect Home with both roles, Share stopped/active, pairing, no computers/one computer, manual address, quality sheets, support, each network provider, installation and backup errors. Check that text is not obscured, primary actions are reachable, tabs retain names, and symbols follow the theme. Data injected for screenshots must be labeled as simulated.
+Run the native interface in Portuguese and English, Gamer/Automatic/Light/Dark
+appearances, compact width, large text and high contrast. Switch repeatedly
+between Gamer and every base appearance and check that no Gamer surface remains.
+Inspect Home with both roles, Share stopped/active, pairing, no computers/one
+computer, manual address, quality sheets, support, each network provider,
+installation and backup errors. On Share/Connect, verify that all three network
+cards stay in place while a method connects and disconnects, several connected
+methods at once, and the keyboard-only focus ring on cards and guided choices.
+Check that text is not obscured, primary actions
+are reachable, tabs retain names, and symbols follow the theme. Data injected
+for screenshots must be labeled as simulated.
 
 ## Required target-machine checks
 
@@ -34,10 +44,11 @@ Run the native interface in Portuguese and English, light/dark themes, compact w
 | Native package | Clean install/upgrade/removal on supported BigLinux/Manjaro; private Python layout, resources and launchers intact |
 | Streaming | Sunshine → Moonlight connection, pairing, stop/reconnect, custom port and invalid credentials |
 | Capture/audio | Wayland/X11 sessions, actual GPU encoding/decoding, display changes, host/client sound |
-| Internet | Real Tailscale browser authorization, ZeroTier authorization and Headscale deployment/client join |
+| Game Window | On KDE Plasma Wayland and X11: a native game, a Steam/Proton game and a Gamescope game listed by name; first-share confirmation and silent restore; terminal, browser, Dolphin, a notification and the Plasma menu over the game never reach the client; closing and crashing the game stop sharing with no desktop shown; windowed, borderless and fullscreen; two and three monitors; AMD, Intel and NVIDIA (hybrid laptops included) with hardware encoding; controllers, keyboard and mouse; host and client sound. See [Game Window](game-window.md) |
+| Internet | Real Tailscale browser authorization and machine sharing, ZeroTier join/approval/managed IP, Headscale server (0.27+) with API key, registration approval and pre-auth key; Share ↔ Connect over each provider, including a relayed path. Track results in the [private-network test matrix](private-network-test-matrix.md) |
 | Privileges | PolicyKit allow/cancel/failure and desktop keyring locked/unavailable states |
 | Accessibility | Orca/AT-SPI navigation and announcements, keyboard-only use, touch targets and text scaling |
-| Safety | Real backup/restore with native certificates, cancelled startup, preserved libraries and devices |
+| Safety | Real backup/restore with native certificates, corrupt/legacy archives, forced apply failure and preserved libraries, Moonlight identity and devices; follow [backup, restore and service cards](#backup-restore-and-service-cards) and the [backup and restore contract](backup-restore.md) |
 | Usability | First-time participants completing Share/Connect without developer guidance |
 
 Store exact component versions and the result of each scenario. Do not infer these results from a screenshot or a mock. Nix packaging and service paths also require target-system testing; the included expression is not a claim of a completed NixOS integration test.
@@ -57,13 +68,47 @@ The hermetic regression test simulates the path and process behavior, but only a
 
 ## Additional acceptance for audio and public access
 
-Confirm with multiple real outputs (USB, HDMI, speakers and an existing virtual
-processor) that default startup/stop/close never reroutes audio. Test a fresh client
-with host playback on, a saved mute-off choice and a third-party Moonlight client;
-Sunshine may choose its virtual sink for the latter request. Test explicit routing,
-device removal/reordering and the user's changing output during a session.
+Follow [audio testing](audio-testing.md). With multiple real outputs (USB, HDMI,
+Bluetooth and an effects output), confirm that Automatic startup/stop/close writes
+nothing to the sound server and that `sunshine-record` always records a monitor.
+Test a client that plays sound on the host and one that mutes it, with **Also play
+sound on this computer** on and off, a chosen device, device removal and the person
+changing output during a stream. Test Steam Remote Play Together with sharing active,
+kill Sunshine during a host-muting session and check that the next start restores
+the output. **Microphone sent to Sunshine** must read **No** throughout.
 
 For UPnP, check the router mappings and Sunshine logs, then connect from another
 network. Also test a router without UPnP and a CGNAT/double-NAT connection. Neither
 a local status nor a successful DNS lookup proves remote streaming. Do not expose
 the administration panel. Test public-domain setup separately from Headscale VPN.
+
+## Backup, restore and service cards
+
+Run this on both a native install and a Flatpak Moonlight setup. Use synthetic
+accounts/configuration where possible and never attach the resulting archive to
+a public report.
+
+1. Create a backup with app settings, a Sunshine library, paired Moonlight host
+   and one configured VPN. Confirm progress, responsive UI and mode `0600`.
+2. Change and add settings, restore, then reopen. Confirm restored values,
+   removed in-scope extras, preserved logs and Moonlight at its actual path.
+3. Move the archive to a different test user/machine. Confirm hardware choices
+   fail safely or fall back, and keyring-backed services request authentication.
+4. Try a corrupt/truncated archive and a legacy archive. Confirm the former
+   changes nothing and the latter restores supported content.
+5. Force low disk space or an unwritable destination. Confirm a previous backup
+   remains usable and restore reports rollback without partial settings.
+6. Check **Restore Defaults** with an obsolete JSON key and confirm Moonlight
+   pairing remains. Check **Clear Everything** twice-confirmed behavior and the
+   same external-data preservation.
+7. On Share and Connect, exercise Sunshine/Moonlight missing, stopped and
+   running states plus all VPN model states. Connect two providers together and
+   confirm both show Connected while every disconnected method keeps its card.
+8. Repeat cards and guided choices in light, dark, Gamer and high contrast at
+   normal/compact width, 150% text, keyboard-only, RTL and CJK locales. Confirm
+   focus remains visible without a thick double border.
+
+Real Secret Service, Sunshine/Moonlight pairing, provider authorization,
+service control, low-disk behavior and assistive-technology announcements still
+require target-system validation; hermetic tests deliberately do not perform
+those external operations.

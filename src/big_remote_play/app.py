@@ -14,6 +14,8 @@ from big_remote_play.utils.i18n import _
 
 ICONS_DIR = str(paths.ICONS_DIR)
 IMG_DIR = str(paths.IMG_DIR)
+THEMES = frozenset({"gamer", "auto", "light", "dark"})
+GAMER_CSS_PRIORITY = Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION + 1
 
 
 class BigRemotePlayApp(Adw.Application):
@@ -24,6 +26,12 @@ class BigRemotePlayApp(Adw.Application):
         self.config = Config()
         self.logger = Logger()
         self.window = None
+        self._base_css_provider = None
+        self._base_css_display = None
+        self._gamer_css_provider = None
+        self._gamer_css_display = None
+        self._selected_theme = "auto"
+        self._high_contrast_handler_id = None
 
     def do_activate(self):
         if not self.window:
@@ -44,22 +52,61 @@ class BigRemotePlayApp(Adw.Application):
             self.add_action(action)
 
         # Appearance is a stateful choice, so the menu can show which one is on.
-        theme = Gio.SimpleAction.new_stateful("theme", GLib.VariantType.new("s"), GLib.Variant.new_string(str(self.config.get("theme", "auto"))))
+        theme = Gio.SimpleAction.new_stateful("theme", GLib.VariantType.new("s"), GLib.Variant.new_string(self._configured_theme()))
         theme.connect("activate", self.on_theme_action)
         self.add_action(theme)
 
     def on_theme_action(self, action, value):
-        theme = value.get_string()
-        action.set_state(value)
+        theme = self._normalize_theme(value.get_string())
+        action.set_state(GLib.Variant.new_string(theme))
         self.config.set("theme", theme)
-        scheme = {"dark": Adw.ColorScheme.FORCE_DARK, "light": Adw.ColorScheme.FORCE_LIGHT}.get(theme, Adw.ColorScheme.DEFAULT)
-        Adw.StyleManager.get_default().set_color_scheme(scheme)
+        self._apply_theme(theme)
 
     def setup_theme(self):
         sm = Adw.StyleManager.get_default()
-        theme = self.config.get("theme", "auto")
-        sm.set_color_scheme(Adw.ColorScheme.FORCE_DARK if theme == "dark" else Adw.ColorScheme.FORCE_LIGHT if theme == "light" else Adw.ColorScheme.DEFAULT)
         self.load_custom_css()
+        if self._high_contrast_handler_id is None:
+            self._high_contrast_handler_id = sm.connect("notify::high-contrast", self._on_high_contrast_changed)
+        self._apply_theme(self._configured_theme())
+
+    @staticmethod
+    def _normalize_theme(value) -> str:
+        return value if isinstance(value, str) and value in THEMES else "auto"
+
+    def _configured_theme(self) -> str:
+        return self._normalize_theme(self.config.get("theme", "auto"))
+
+    def _apply_theme(self, theme: str) -> None:
+        theme = self._normalize_theme(theme)
+        self._selected_theme = theme
+        scheme = {
+            "gamer": Adw.ColorScheme.FORCE_DARK,
+            "dark": Adw.ColorScheme.FORCE_DARK,
+            "light": Adw.ColorScheme.FORCE_LIGHT,
+        }.get(theme, Adw.ColorScheme.DEFAULT)
+        Adw.StyleManager.get_default().set_color_scheme(scheme)
+        self._sync_gamer_css()
+
+    def _on_high_contrast_changed(self, *_args) -> None:
+        self._sync_gamer_css()
+
+    def _sync_gamer_css(self) -> None:
+        enabled = self._selected_theme == "gamer" and not Adw.StyleManager.get_default().get_high_contrast()
+        display = self.window.get_display() if self.window else Gdk.Display.get_default()
+        if enabled and self._gamer_css_provider is None:
+            if not paths.GAMER_CSS.exists() or display is None:
+                self.logger.error(f"Gamer stylesheet is unavailable: {paths.GAMER_CSS}")
+                return
+            provider = Gtk.CssProvider()
+            provider.load_from_path(str(paths.GAMER_CSS))
+            Gtk.StyleContext.add_provider_for_display(display, provider, GAMER_CSS_PRIORITY)
+            self._gamer_css_provider = provider
+            self._gamer_css_display = display
+        elif not enabled and self._gamer_css_provider is not None:
+            if self._gamer_css_display is not None:
+                Gtk.StyleContext.remove_provider_for_display(self._gamer_css_display, self._gamer_css_provider)
+            self._gamer_css_provider = None
+            self._gamer_css_display = None
 
     def setup_icon(self):
         display = Gdk.Display.get_default()
@@ -86,12 +133,29 @@ class BigRemotePlayApp(Adw.Application):
         return "big-remote-play"
 
     def load_custom_css(self):
+        if self._base_css_provider is not None:
+            return
         cp = Gtk.CssProvider()
         cp_path = paths.STYLE_CSS
         display = self.window.get_display() if self.window else Gdk.Display.get_default()
         if cp_path.exists() and display is not None:
             cp.load_from_path(str(cp_path))
             Gtk.StyleContext.add_provider_for_display(display, cp, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+            self._base_css_provider = cp
+            self._base_css_display = display
+
+    def _remove_theme_providers(self) -> None:
+        if self._high_contrast_handler_id is not None:
+            Adw.StyleManager.get_default().disconnect(self._high_contrast_handler_id)
+            self._high_contrast_handler_id = None
+        if self._gamer_css_provider is not None and self._gamer_css_display is not None:
+            Gtk.StyleContext.remove_provider_for_display(self._gamer_css_display, self._gamer_css_provider)
+        self._gamer_css_provider = None
+        self._gamer_css_display = None
+        if self._base_css_provider is not None and self._base_css_display is not None:
+            Gtk.StyleContext.remove_provider_for_display(self._base_css_display, self._base_css_provider)
+        self._base_css_provider = None
+        self._base_css_display = None
 
     def show_about(self, *_args):
         story = _(
@@ -172,6 +236,7 @@ class BigRemotePlayApp(Adw.Application):
             if self.window is not None:
                 self.window._shutdown_resources()
         finally:
+            self._remove_theme_providers()
             Adw.Application.do_shutdown(self)
         # Return through GApplication.run(): os._exit(0) would bypass Python
         # cleanup and turn every shutdown into an unconditionally successful

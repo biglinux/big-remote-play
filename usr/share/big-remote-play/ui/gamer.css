@@ -1,0 +1,275 @@
+/* Big Remote Play — Gamer preset
+ *
+ * This GTK 4.10-compatible overlay is registered above style.css only while
+ * Gamer is effective. Removing its provider restores the base appearance.
+ * Named colours are the palette tokens; dimensions repeat only within their
+ * component family because GTK 4.10 has no custom properties.
+ */
+
+/* Accent and semantic tokens. */
+@define-color brp_gamer_violet #835dff;
+@define-color brp_gamer_violet_strong #6f4aff;
+@define-color brp_gamer_cyan #22d3ee;
+@define-color brp_gamer_magenta #d946ef;
+@define-color brp_gamer_blue #4f6bff;
+@define-color brp_gamer_blue_hover #6278ff;
+@define-color brp_gamer_success #4ade9f;
+@define-color brp_gamer_warning #fbbf24;
+@define-color brp_gamer_error #fb7185;
+
+/* Surface and text tokens. No large surface uses pure black. */
+@define-color brp_gamer_bg_primary #151a35;
+@define-color brp_gamer_bg_secondary #11152d;
+@define-color brp_gamer_bg_deep #10142b;
+@define-color brp_gamer_surface #232846;
+@define-color brp_gamer_surface_secondary #2a2f50;
+@define-color brp_gamer_surface_elevated #303657;
+@define-color brp_gamer_surface_overlay #1f2443;
+@define-color brp_gamer_text_primary #eceeff;
+@define-color brp_gamer_text_secondary #b8bdda;
+@define-color brp_gamer_border alpha(#ffffff, 0.08);
+@define-color brp_gamer_border_active alpha(#9a7dff, 0.58);
+@define-color brp_gamer_focus #b29dff;
+@define-color brp_gamer_glow alpha(#7b5cff, 0.22);
+@define-color brp_gamer_shadow alpha(#030512, 0.42);
+@define-color brp_gamer_hover alpha(#835dff, 0.12);
+@define-color brp_gamer_selected alpha(#835dff, 0.20);
+
+/* Feed the same palette to native libadwaita widgets. */
+@define-color accent_bg_color @brp_gamer_violet_strong;
+@define-color accent_fg_color #ffffff;
+@define-color accent_color #a58bff;
+@define-color success_bg_color #10a674;
+@define-color success_fg_color #071b14;
+@define-color success_color @brp_gamer_success;
+@define-color warning_bg_color #d99a0b;
+@define-color warning_fg_color #171103;
+@define-color warning_color @brp_gamer_warning;
+@define-color error_bg_color #e11d48;
+@define-color error_fg_color #ffffff;
+@define-color error_color @brp_gamer_error;
+@define-color destructive_bg_color #e11d48;
+@define-color destructive_fg_color #ffffff;
+@define-color destructive_color @brp_gamer_error;
+
+@define-color window_bg_color @brp_gamer_bg_primary;
+@define-color window_fg_color @brp_gamer_text_primary;
+@define-color view_bg_color @brp_gamer_bg_secondary;
+@define-color view_fg_color @brp_gamer_text_primary;
+@define-color headerbar_bg_color @brp_gamer_bg_primary;
+@define-color headerbar_fg_color @brp_gamer_text_primary;
+@define-color headerbar_border_color @brp_gamer_border;
+@define-color headerbar_backdrop_color @brp_gamer_bg_primary;
+@define-color headerbar_shade_color @brp_gamer_shadow;
+@define-color headerbar_darker_shade_color alpha(#030512, 0.65);
+@define-color sidebar_bg_color @brp_gamer_bg_deep;
+@define-color sidebar_fg_color @brp_gamer_text_primary;
+@define-color sidebar_backdrop_color @brp_gamer_bg_secondary;
+@define-color sidebar_shade_color @brp_gamer_shadow;
+@define-color sidebar_border_color @brp_gamer_border;
+@define-color secondary_sidebar_bg_color @brp_gamer_bg_secondary;
+@define-color secondary_sidebar_fg_color @brp_gamer_text_primary;
+@define-color secondary_sidebar_backdrop_color @brp_gamer_bg_primary;
+@define-color secondary_sidebar_shade_color @brp_gamer_shadow;
+@define-color secondary_sidebar_border_color @brp_gamer_border;
+@define-color card_bg_color @brp_gamer_surface;
+@define-color card_fg_color @brp_gamer_text_primary;
+@define-color card_shade_color @brp_gamer_shadow;
+@define-color dialog_bg_color #1b2040;
+@define-color dialog_fg_color @brp_gamer_text_primary;
+@define-color popover_bg_color #222747;
+@define-color popover_fg_color @brp_gamer_text_primary;
+@define-color popover_shade_color @brp_gamer_shadow;
+@define-color thumbnail_bg_color @brp_gamer_surface_secondary;
+@define-color thumbnail_fg_color @brp_gamer_text_primary;
+@define-color shade_color @brp_gamer_shadow;
+@define-color scrollbar_outline_color alpha(#030512, 0.9);
+
+/* Firm hierarchy without replacing the system font. */
+.title-1, .title-2 { font-weight: 800; }
+.title-3, .title-4, .heading { font-weight: 700; }
+.dim-label, .dimmed { color: @brp_gamer_text_secondary; opacity: 1; }
+
+/* Shell and navigation. */
+headerbar {
+    box-shadow: inset 0 -1px @brp_gamer_border;
+}
+.sidebar-content {
+    background-image: linear-gradient(150deg, alpha(@brp_gamer_violet, 0.13), transparent 42%);
+}
+.navigation-sidebar > row {
+    color: @brp_gamer_text_secondary;
+    border-radius: 12px;
+}
+.navigation-sidebar > row.activatable:hover {
+    color: @brp_gamer_text_primary;
+    background: @brp_gamer_hover;
+}
+.navigation-sidebar > row:selected,
+.navigation-sidebar > row:selected:hover {
+    color: @brp_gamer_text_primary;
+    background-image: linear-gradient(90deg, @brp_gamer_selected, alpha(@brp_gamer_violet, 0.04));
+    box-shadow: inset 3px 0 @brp_gamer_cyan;
+}
+.navigation-sidebar > row:selected image { color: @brp_gamer_cyan; }
+.brp-nav-separator { color: @brp_gamer_border_active; }
+
+/* Home: the strongest expression of the remote-play identity. */
+.welcome-page {
+    background-color: @brp_gamer_bg_secondary;
+    background-image: linear-gradient(145deg, alpha(@brp_gamer_violet, 0.08), transparent 58%);
+}
+.welcome-hero {
+    border-color: @brp_gamer_border_active;
+    background-color: @brp_gamer_surface;
+    background-image: linear-gradient(120deg, alpha(@brp_gamer_violet, 0.28), alpha(@brp_gamer_magenta, 0.10) 58%, alpha(@brp_gamer_cyan, 0.09));
+    box-shadow: 0 12px 32px @brp_gamer_shadow;
+}
+.welcome-hero .accent { color: @brp_gamer_cyan; }
+.home-stream-flow {
+    color: @brp_gamer_cyan;
+    background: alpha(@brp_gamer_bg_deep, 0.72);
+    border-color: alpha(@brp_gamer_cyan, 0.26);
+}
+.home-benefit {
+    background: alpha(@brp_gamer_surface_elevated, 0.72);
+    border-color: @brp_gamer_border;
+}
+
+/* Major choices, guided setup and task heroes. */
+.role-card {
+    background: @brp_gamer_surface;
+    border-color: @brp_gamer_border;
+    box-shadow: 0 6px 20px @brp_gamer_shadow;
+}
+.role-card.role-host { border-color: alpha(@brp_gamer_violet, 0.48); }
+.role-card.role-guest { border-color: alpha(@brp_gamer_cyan, 0.42); }
+.role-card:hover {
+    background: @brp_gamer_surface_secondary;
+    border-color: @brp_gamer_border_active;
+    box-shadow: 0 8px 24px @brp_gamer_shadow;
+}
+.role-card:active { background: @brp_gamer_surface_elevated; box-shadow: 0 2px 10px @brp_gamer_shadow; }
+/* Keyboard focus only: the ring never doubles as a permanent border. */
+.role-card:focus-visible {
+    outline: 2px solid alpha(@brp_gamer_focus, 0.8);
+    outline-offset: 3px;
+}
+.role-card:disabled, .role-card:disabled:hover { background: alpha(@brp_gamer_surface, 0.6); border-color: @brp_gamer_border; box-shadow: none; }
+.role-host .role-flow-node { color: @brp_gamer_focus; background: alpha(@brp_gamer_violet, 0.18); }
+.role-guest .role-flow-node { color: @brp_gamer_cyan; background: alpha(@brp_gamer_cyan, 0.13); }
+.role-card.brp-guided-banner {
+    border-color: alpha(@brp_gamer_cyan, 0.32);
+    background-image: linear-gradient(110deg, alpha(@brp_gamer_violet, 0.26), alpha(@brp_gamer_magenta, 0.08) 58%, alpha(@brp_gamer_cyan, 0.10));
+}
+.session-hero, .network-hero {
+    border-color: @brp_gamer_border_active;
+    background-color: @brp_gamer_surface;
+    background-image: linear-gradient(110deg, alpha(@brp_gamer_violet, 0.20), alpha(@brp_gamer_cyan, 0.06));
+}
+.brp-session-panel, .brp-empty, .brp-progress {
+    background: alpha(@brp_gamer_surface, 0.94);
+    border-color: @brp_gamer_border;
+    box-shadow: 0 4px 16px @brp_gamer_shadow;
+}
+.brp-note { background: alpha(@brp_gamer_violet, 0.10); border-color: alpha(@brp_gamer_violet, 0.28); }
+.brp-metric { background: alpha(@brp_gamer_surface_elevated, 0.72); border: 1px solid @brp_gamer_border; }
+
+list.brp-service-list > row.brp-service-card {
+    background: alpha(@brp_gamer_surface, 0.94);
+    border-color: @brp_gamer_border;
+}
+list.brp-service-list > row.brp-service-card:hover { background: @brp_gamer_surface_secondary; }
+/* Like the Turbo preset: an active service is lit, the rest stay quiet. */
+list.brp-service-list > row.brp-service-card.active {
+    background-image: linear-gradient(135deg, alpha(@brp_gamer_cyan, 0.10), alpha(@brp_gamer_violet, 0.16));
+    border-color: alpha(@brp_gamer_cyan, 0.5);
+}
+list.brp-service-list > row.brp-service-card.active .brp-icon-tile { color: @brp_gamer_cyan; }
+list.brp-service-list > row.brp-service-card.inactive .brp-icon-tile,
+list.brp-service-list > row.brp-service-card.missing .brp-icon-tile,
+list.brp-service-list > row.brp-service-card.checking .brp-icon-tile {
+    color: @brp_gamer_text_secondary;
+    background-image: none;
+    background-color: alpha(@brp_gamer_text_secondary, 0.08);
+    box-shadow: inset 0 0 0 1px @brp_gamer_border;
+}
+list.brp-service-list > row.brp-service-card.starting { border-color: alpha(@brp_gamer_violet, 0.42); }
+list.brp-service-list > row.brp-service-card.attention { border-color: alpha(@brp_gamer_warning, 0.45); }
+list.brp-service-list > row.brp-service-card.error { border-color: alpha(@error_bg_color, 0.62); }
+list.brp-service-list > row.brp-service-card:focus-visible {
+    outline-color: alpha(@brp_gamer_focus, 0.8);
+    box-shadow: none;
+}
+
+/* Icon tiles distinguish host and receiver without recolouring routine icons. */
+.brp-icon-tile, .hero-icon-chip, .icon-chip {
+    color: @brp_gamer_focus;
+    background-image: linear-gradient(135deg, alpha(@brp_gamer_violet, 0.25), alpha(@brp_gamer_blue, 0.10));
+    box-shadow: inset 0 0 0 1px alpha(@brp_gamer_violet, 0.30);
+}
+.brp-icon-tile.guest {
+    color: @brp_gamer_cyan;
+    background: alpha(@brp_gamer_cyan, 0.12);
+    box-shadow: inset 0 0 0 1px alpha(@brp_gamer_cyan, 0.25);
+}
+
+/* Native surfaces and controls. */
+list.boxed-list, list.content, .card {
+    border-color: @brp_gamer_border;
+    box-shadow: 0 0 0 1px @brp_gamer_border, 0 4px 14px @brp_gamer_shadow;
+}
+list.boxed-list > row.activatable:hover,
+list.content > row.activatable:hover { background: @brp_gamer_hover; }
+button.suggested-action, button.suggested-action:checked {
+    color: #ffffff;
+    background-image: linear-gradient(135deg, @brp_gamer_violet_strong, @brp_gamer_blue);
+    box-shadow: 0 3px 12px @brp_gamer_glow;
+}
+button.suggested-action:hover {
+    background-image: linear-gradient(135deg, @brp_gamer_violet, @brp_gamer_blue_hover);
+    box-shadow: 0 5px 16px @brp_gamer_glow;
+}
+button.suggested-action:active { box-shadow: none; }
+button.suggested-action:disabled { background-image: none; box-shadow: none; }
+switch { background: @brp_gamer_surface_elevated; }
+switch:checked { background-image: linear-gradient(90deg, @brp_gamer_violet_strong, @brp_gamer_violet); }
+switch > slider { box-shadow: 0 1px 3px @brp_gamer_shadow; }
+entry:focus-within, spinbutton:focus-within { box-shadow: inset 0 0 0 2px @brp_gamer_focus; }
+progressbar > trough, levelbar > trough > block.empty, scale > trough { background: @brp_gamer_surface_elevated; }
+progressbar > trough > progress,
+levelbar > trough > block.filled,
+scale > trough > highlight {
+    background-color: transparent;
+    background-image: linear-gradient(90deg, @brp_gamer_violet, @brp_gamer_cyan);
+}
+
+/* Status remains words + icon + colour. */
+.readiness-pill, .state-pill { border: 1px solid @brp_gamer_border; }
+.readiness-pill.ready, .state-pill.online { color: @brp_gamer_success; background: alpha(@brp_gamer_success, 0.13); }
+.readiness-pill.needs-setup, .state-pill.attention { color: @brp_gamer_warning; background: alpha(@brp_gamer_warning, 0.13); }
+.state-pill.offline { color: @brp_gamer_text_secondary; background: alpha(@brp_gamer_text_secondary, 0.09); }
+
+/* Elevated transient surfaces. */
+popover > contents, popover > arrow {
+    border: 1px solid @brp_gamer_border;
+    box-shadow: 0 12px 32px @brp_gamer_shadow;
+}
+popover > contents { border-radius: 14px; }
+popover.menu modelbutton:hover, popover.menu modelbutton:selected { background: @brp_gamer_hover; }
+tooltip.background {
+    color: @brp_gamer_text_primary;
+    background: @brp_gamer_surface_overlay;
+    border: 1px solid @brp_gamer_border;
+    border-radius: 8px;
+}
+.brp-dialog { background-color: @dialog_bg_color; }
+toast {
+    color: @brp_gamer_text_primary;
+    background: @brp_gamer_surface_overlay;
+    border: 1px solid @brp_gamer_border_active;
+    border-radius: 12px;
+}
+
+/* Gamer declares no transition or animation of its own: the short, one-off
+ * state transitions come from style.css and obey reduced motion there. */

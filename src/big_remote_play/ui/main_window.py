@@ -18,12 +18,15 @@ import os
 from .host_view import HostView
 from .guest_view import GuestView
 from .installer_window import InstallerWindow
-from .components import name_icon_button, action_row, boxed_rows, icon_tile, intro
+from .components import name_icon_button, action_row, boxed_rows, icon_tile
+from .service_status_card import ServiceStatusCard, provider_presentation, streaming_presentation, unknown_presentation
+from big_remote_play.private_network.models import ProviderStatus
 from big_remote_play.utils.config import Config
 from big_remote_play.utils.network import NetworkDiscovery
 from big_remote_play.utils.system_check import SystemCheck
 from big_remote_play.utils.icons import create_icon_widget
 from big_remote_play.utils.i18n import _
+from big_remote_play.utils.secure_io import secure_write_text
 from big_remote_play import paths
 import subprocess
 import shutil
@@ -79,15 +82,6 @@ SERVICE_METADATA = {
         "type": "app",
         "bin": "moonlight-qt",
     },
-    "docker": {
-        "name": "DOCKER",
-        "full_name": _("Docker Engine"),
-        "description": _("Only needed to run your own Headscale server."),
-        "icon": "brp-service-symbolic",
-        "type": "service",
-        "unit": "docker.service",
-        "user": False,
-    },
     "tailscale": {
         "name": "TAILSCALE",
         "full_name": _("Tailscale"),
@@ -105,6 +99,13 @@ SERVICE_METADATA = {
         "type": "service",
         "unit": "zerotier-one.service",
         "user": False,
+    },
+    "headscale": {
+        "name": "HEADSCALE",
+        "full_name": "Headscale",
+        "description": _("Use your own Headscale server. Advanced setup."),
+        "icon": "brp-headscale-symbolic",
+        "type": "network",
     },
 }
 
@@ -133,9 +134,7 @@ def load_vpn_choice():
 
 def save_vpn_choice(provider_id):
     """Persist VPN provider choice."""
-    os.makedirs(os.path.dirname(VPN_CONFIG_FILE), exist_ok=True)
-    with open(VPN_CONFIG_FILE, "w") as f:
-        json.dump({"vpn_provider": provider_id}, f)
+    secure_write_text(VPN_CONFIG_FILE, json.dumps({"vpn_provider": provider_id}, indent=2))
 
 
 class MainWindow(Adw.ApplicationWindow):
@@ -166,12 +165,15 @@ class MainWindow(Adw.ApplicationWindow):
         self.current_page = "welcome"
         self._network_return_page = "guest"
         self._polling_status = False
+        self._network_polling = False
+        self._network_poll_ticks = 0
+        self._network_statuses: dict[str, ProviderStatus] = {}
         self._vpn_choice = load_vpn_choice()  # None if not yet chosen
         self._vpn_add_account = False
+        self.network_advanced_mode = bool(self.config.get("network_advanced_mode", False))
         self._nav_page_by_row: dict[Gtk.ListBoxRow, str] = {}
         self._service_by_row: dict[Gtk.Widget, str] = {}
-        self._status_dots: dict[str, Gtk.Widget] = {}
-        self._status_rows: dict[str, Adw.ActionRow] = {}
+        self._status_rows: dict[str, ServiceStatusCard] = {}
         # Installed and running are probed by separate passes; a row shows one
         # combined state, so both halves are kept until they can be merged.
         self._service_installed: dict[str, bool] = {}
@@ -185,6 +187,9 @@ class MainWindow(Adw.ApplicationWindow):
         self.navigate_to("welcome")
         self._status_timer_id = None
         self.check_system()
+        # After the window is up: never on the startup critical path.
+        GLib.timeout_add_seconds(2, self._refresh_home_network_status)
+        GLib.timeout_add_seconds(3, self._secure_legacy_network_files)
 
         # Connect close signal
         self.connect("close-request", self.on_close_request)
@@ -290,6 +295,9 @@ class MainWindow(Adw.ApplicationWindow):
 
         def add_compact_layout_setters(breakpoint: Adw.Breakpoint) -> None:
             breakpoint.add_setter(self.welcome_cards_box, "orientation", Gtk.Orientation.VERTICAL)
+            breakpoint.add_setter(self.home_hero_content, "orientation", Gtk.Orientation.VERTICAL)
+            breakpoint.add_setter(self.home_device_flow, "halign", Gtk.Align.START)
+            breakpoint.add_setter(self.home_benefits, "orientation", Gtk.Orientation.VERTICAL)
             for role in self._role_card_ui.values():
                 breakpoint.add_setter(role["content"], "orientation", Gtk.Orientation.HORIZONTAL)
             breakpoint.add_setter(self.host_view.overview_hero, "orientation", Gtk.Orientation.VERTICAL)
@@ -299,7 +307,7 @@ class MainWindow(Adw.ApplicationWindow):
         # ApplicationWindow activates one matching breakpoint at a time. Repeat
         # the compact composition in the narrower breakpoint so it inherits the
         # same card/hero layout instead of reverting to the desktop arrangement.
-        compact = Adw.Breakpoint.new(Adw.BreakpointCondition.parse("max-width: 980sp"))
+        compact = Adw.Breakpoint.new(Adw.BreakpointCondition.parse("max-width: 880sp"))
         add_compact_layout_setters(compact)
         # Large text can exhaust the tab labels' width while the sidebar still
         # fits. Move tabs before ellipsizing their task names, not only when
@@ -313,6 +321,10 @@ class MainWindow(Adw.ApplicationWindow):
         narrow.add_setter(self.split_view, "collapsed", True)
         narrow.add_setter(self.welcome_main_box, "margin-start", 12)
         narrow.add_setter(self.welcome_main_box, "margin-end", 12)
+        # At phone-like widths the explanation remains in words and the two
+        # decisions move above decorative/product-benefit visuals.
+        narrow.add_setter(self.home_device_flow, "visible", False)
+        narrow.add_setter(self.home_benefits, "visible", False)
         for margin in ("margin-top", "margin-bottom", "margin-start", "margin-end"):
             narrow.add_setter(self.guest_view.content_clamp, margin, 12)
         narrow.connect("apply", self._on_compact_header_apply)
@@ -353,6 +365,7 @@ class MainWindow(Adw.ApplicationWindow):
         self.nav_list.set_margin_end(8)
         self.nav_list.add_css_class("navigation-sidebar")
         self.nav_list.connect("row-selected", self.on_nav_selected)
+        self.nav_list.set_header_func(self._nav_header)
         self._refresh_nav_list()
 
         # Navigation and status scroll as one resilient column. The expanding
@@ -365,6 +378,19 @@ class MainWindow(Adw.ApplicationWindow):
         scroll.set_child(main)
         toolbar.set_content(scroll)
         self.split_view.set_sidebar(Adw.NavigationPage.new(toolbar, _("Navigation")))
+
+    # Home · Share, Connect · Play over the internet: three kinds of place.
+    _NAV_SECTION_STARTS = frozenset({"host", "vpn_selector"})
+
+    def _nav_header(self, row: Gtk.ListBoxRow, before: Gtk.ListBoxRow | None) -> None:
+        """A thin separator before each group; no extra words, no tree."""
+        if before is None or self._nav_page_by_row.get(row) not in self._NAV_SECTION_STARTS:
+            row.set_header(None)
+            return
+        if row.get_header() is None:
+            separator = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
+            separator.add_css_class("brp-nav-separator")
+            row.set_header(separator)
 
     def _navigation_pages(self) -> dict[str, dict]:
         """Keep Home reachable for beginners and returning users alike."""
@@ -441,12 +467,13 @@ class MainWindow(Adw.ApplicationWindow):
         )
         return row
 
-    def create_status_footer(self):
-        """The services this path needs, each with its own state, shown directly.
+    # Streaming first, then every secure-connection method, in a fixed order.
+    _STREAMING_SERVICES = ("sunshine", "moonlight")
+    _NETWORK_SERVICES = ("tailscale", "zerotier", "headscale")
 
-        Only the services relevant to the chosen path appear (one or two), so a
-        summary row would hide the answer behind a click without adding
-        anything the rows do not already say in words."""
+    def create_status_footer(self):
+        """Service cards for the task on screen: its streaming component, then
+        every private-network method with its real state."""
         footer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         footer.set_margin_start(12)
         footer.set_margin_end(12)
@@ -455,95 +482,89 @@ class MainWindow(Adw.ApplicationWindow):
 
         status_list = Gtk.ListBox()
         status_list.set_selection_mode(Gtk.SelectionMode.NONE)
-        status_list.add_css_class("boxed-list")
-        self._service_label: dict[str, str] = {}
+        status_list.add_css_class("brp-service-list")
+        status_list.set_header_func(self._service_header)
+        # TRANSLATORS: accessible name of the list of streaming and private-network cards.
+        status_list.update_property([Gtk.AccessibleProperty.LABEL], [_("Services")])
+        self.service_list = status_list
 
-        def add_status_row(label_text: str, service_id: str) -> None:
+        for service_id, label_text in (("sunshine", "Sunshine"), ("moonlight", "Moonlight"), ("tailscale", "Tailscale"), ("zerotier", "ZeroTier"), ("headscale", "Headscale")):
             meta = SERVICE_METADATA.get(service_id, {})
-            row = Adw.ActionRow(title=label_text, subtitle=_("Checking..."))
+            row = ServiceStatusCard(
+                service_id,
+                label_text,
+                meta.get("icon", "brp-service-symbolic"),
+                meta.get("description", ""),
+                primary=service_id in self._STREAMING_SERVICES,
+            )
             row.set_activatable(True)
             self._service_by_row[row] = service_id
             row.connect("activated", lambda _r, sid=service_id: self.on_service_clicked(sid))
-
-            icon_frame = Gtk.Box()
-            icon_frame.add_css_class("service-icon-frame")
-            service_icon = create_icon_widget(meta.get("icon", "brp-service-symbolic"), size=18)
-            service_icon.set_valign(Gtk.Align.CENTER)
-            for margin in ("top", "bottom", "start", "end"):
-                getattr(service_icon, f"set_margin_{margin}")(6)
-            icon_frame.append(service_icon)
-            row.add_prefix(icon_frame)
-
-            dot = create_icon_widget("brp-media-record-symbolic", size=9, css_class=["status-dot"])
-            dot.set_valign(Gtk.Align.CENTER)
-            self._status_dots[service_id] = dot
-            row.add_suffix(dot)
-
-            description = meta.get("description", "")
-            if description:
-                row.set_tooltip_text(description)
             self._service_full_name[service_id] = meta.get("full_name", label_text)
-            self._service_label[service_id] = label_text
             self._status_rows[service_id] = row
             status_list.append(row)
-
-        add_status_row("Sunshine", "sunshine")
-        add_status_row("Moonlight", "moonlight")
-        add_status_row("Docker", "docker")
-        add_status_row("Tailscale", "tailscale")
-        add_status_row("ZeroTier", "zerotier")
 
         footer.append(status_list)
         self._filter_status_rows()
         return footer
 
+    def _service_header(self, row: Gtk.ListBoxRow, before: Gtk.ListBoxRow | None) -> None:
+        """“Streaming” above Sunshine/Moonlight, “Secure connection” above the VPNs."""
+        service_id = self._service_by_row.get(row)
+        if service_id in self._STREAMING_SERVICES:
+            # TRANSLATORS: sidebar heading above the Sunshine or Moonlight card.
+            text = _("Streaming")
+        elif service_id in self._NETWORK_SERVICES and self._service_by_row.get(before) not in self._NETWORK_SERVICES:
+            # TRANSLATORS: sidebar heading above the Tailscale, ZeroTier and Headscale cards.
+            text = _("Secure connection")
+        else:
+            row.set_header(None)
+            return
+        header = row.get_header()
+        if isinstance(header, Gtk.Label) and header.get_label() == text:
+            return
+        label = Gtk.Label(label=text, xalign=0, accessible_role=Gtk.AccessibleRole.HEADING)
+        label.add_css_class("caption-heading")
+        label.add_css_class("brp-service-heading")
+        row.set_header(label)
+
     def _relevant_service_ids(self) -> list[str]:
-        role = self.current_page if self.current_page in ("host", "guest") else getattr(self, "_home_role", self._chosen_role())
-        relevant = ["sunshine" if role == "host" else "moonlight"] if role in ("host", "guest") else []
-        if self.current_page in ("create_private", "connect_private", "vpn_selector"):
-            if self._vpn_choice == "headscale":
-                relevant.append("tailscale")
-                if self.current_page == "create_private":
-                    relevant.append("docker")
-            elif self._vpn_choice in ("tailscale", "zerotier"):
-                relevant.append(self._vpn_choice)
-        return relevant
+        # Home is a doorway, not a component dashboard. A missing dependency is
+        # explained on its task card; service details belong to the chosen page.
+        if self.current_page not in ("host", "guest"):
+            return []
+        # Every method keeps its card while it is off, so turning one on or off
+        # changes that card in place instead of adding or removing a row.
+        return ["sunshine" if self.current_page == "host" else "moonlight", *self._NETWORK_SERVICES]
 
     def _filter_status_rows(self) -> None:
-        """Show only the services needed by the selected path."""
+        """Show the streaming component of the task and the network methods."""
         relevant = set(self._relevant_service_ids())
         for service_id, row in self._status_rows.items():
             row.set_visible(service_id in relevant)
+        service_list = getattr(self, "service_list", None)
+        if service_list is not None:
+            service_list.invalidate_headers()
+
+    def _refresh_network_card(self, service_id: str) -> None:
+        row = self._status_rows.get(service_id)
+        status = self._network_statuses.get(service_id)
+        if row is not None and status is not None:
+            row.set_presentation(provider_presentation(status))
 
     def _refresh_service_state(self, service_id: str) -> None:
-        """Show one state per row: the row subtitle says it, the dot colours it.
+        """One state per card, from the installed and running probes.
 
-        The dot used to carry "running" while a separate label carried
-        "installed", so a stopped service read as a green "Installed" beside a
-        red dot. Both now follow the same state, and the words are the carrier
-        so the state survives without colour vision or with a screen reader."""
-        installed = self._service_installed.get(service_id)
-        if installed is None:
-            return  # still checking; the row keeps its "checking" subtitle
-        if not installed:
-            text, dot_state = _("Missing"), "status-offline"
-        elif self._service_running.get(service_id):
-            text, dot_state = _("Running"), "status-online"
-        else:
-            text, dot_state = _("Stopped"), "status-idle"
-
+        Both halves are probed separately; until both are known the card keeps
+        saying “Checking...”. The words carry the state, so it survives without
+        colour vision and is what a screen reader announces."""
+        if service_id in self._NETWORK_SERVICES:
+            self._refresh_network_card(service_id)
+            return
         row = self._status_rows.get(service_id)
-        if row:
-            # The subtitle is the state: AT-SPI exposes it as a label inside the
-            # row, so a screen reader reads "SUNSHINE, Stopped" off the row
-            # itself and the dot only colours what the words already say.
-            row.set_subtitle(text)
-
-        dot = self._status_dots.get(service_id)
-        if dot:
-            for css in ("status-online", "status-idle", "status-offline"):
-                dot.remove_css_class(css)
-            dot.add_css_class(dot_state)
+        if row is None or self._service_installed.get(service_id) is None:
+            return
+        row.set_presentation(streaming_presentation(service_id, self._service_installed.get(service_id), self._service_running.get(service_id)))
 
     def update_server_status(self, run_sun, run_moon, run_docker, run_tailscale, run_zt=False):
         for service_id, running in [("sunshine", run_sun), ("moonlight", run_moon), ("docker", run_docker), ("tailscale", run_tailscale), ("zerotier", run_zt)]:
@@ -578,10 +599,16 @@ class MainWindow(Adw.ApplicationWindow):
         header.set_centering_policy(Adw.CenteringPolicy.STRICT)
         header.pack_end(self._create_header_menu_button())
         self.home_back_button = Gtk.Button(icon_name="go-previous-symbolic", visible=False)
-        name_icon_button(self.home_back_button, _("Back to Home"))
+        name_icon_button(self.home_back_button, _("Back"), _("Back to the previous question"))
         self.home_back_button.add_css_class("flat")
         self.home_back_button.connect("clicked", lambda _button: self.home_navigation.pop())
         header.pack_start(self.home_back_button)
+        # Network sub-pages (sign-in, network details) return to the hub.
+        self.network_back_button = Gtk.Button(icon_name="go-previous-symbolic", visible=False)
+        name_icon_button(self.network_back_button, _("Back"), _("Back to Connect your devices"))
+        self.network_back_button.add_css_class("flat")
+        self.network_back_button.connect("clicked", lambda _button: self.navigate_to("vpn_selector"))
+        header.pack_start(self.network_back_button)
         self.content_headerbar = header
         toolbar.add_top_bar(header)
 
@@ -600,24 +627,6 @@ class MainWindow(Adw.ApplicationWindow):
         self.content_stack.add_named(self.vpn_selector_page, "vpn_selector")
         self.create_private_view = None
         self.connect_private_view = None
-
-        # A dedicated navigation model gives the Private Network header the same
-        # native view-switcher treatment as Share and Connect.  The model holds
-        # lightweight placeholders; the real pages remain lazy in content_stack.
-        self.network_navigation_stack = Adw.ViewStack()
-        # Named for what each page shows, and distinct from the sidebar's own
-        # "Connect": the same word on two levels meant two different tasks.
-        for title, target, icon in (
-            (_("My network"), "create_private", "brp-network-setup-symbolic"),
-            (_("Join a network"), "connect_private", "brp-network-connect-symbolic"),
-            (_("Change service"), "vpn_selector", "brp-provider-switch-symbolic"),
-        ):
-            self.network_navigation_stack.add_titled_with_icon(Gtk.Box(), target, title, icon)
-        self._syncing_network_switcher = False
-        self.network_navigation_stack.connect(
-            "notify::visible-child-name",
-            self._on_network_switcher_changed,
-        )
 
         # Keep every task switcher in the native headerbar.  On compact widths,
         # the same ViewStack moves to a ViewSwitcherBar at the bottom, following
@@ -642,11 +651,9 @@ class MainWindow(Adw.ApplicationWindow):
         # header carries the plain title like Home does.
         self.header_context_stacks: dict[str, Adw.ViewStack] = {
             "host": self.host_view.view_stack,
-            "network": self.network_navigation_stack,
         }
         self.header_context_specs = {
-            "host": (_("Share my game"), _("Run the game on this PC"), _("Sharing sections")),
-            "network": (_("Play over the internet"), _("For PCs in different houses"), _("Private Network sections")),
+            "host": (_("Share"), _("Run the game on this PC"), _("Sharing sections")),
         }
 
         header.set_title_widget(self.header_title_stack)
@@ -665,10 +672,12 @@ class MainWindow(Adw.ApplicationWindow):
         menu_button.set_tooltip_text(_("Application menu"))
         menu_button.update_property([Gtk.AccessibleProperty.LABEL], [_("Application menu")])
         menu = Gio.Menu()
-        # Appearance is one choice with three values: a radio section in the
+        # Appearance is one choice with four values: a radio section in the
         # menu shows the current one, instead of a window built for it.
         appearance = Gio.Menu()
-        for label, value in ((_("Automatic"), "auto"), (_("Light"), "light"), (_("Dark"), "dark")):
+        # TRANSLATORS: Gamer is the proper name of the violet/cyan appearance preset.
+        gamer_label = _("Gamer")
+        for label, value in ((gamer_label, "gamer"), (_("Automatic"), "auto"), (_("Light"), "light"), (_("Dark"), "dark")):
             item = Gio.MenuItem.new(label, None)
             item.set_action_and_target_value("app.theme", GLib.Variant.new_string(value))
             appearance.append_item(item)
@@ -725,73 +734,39 @@ class MainWindow(Adw.ApplicationWindow):
             self.header_title_stack.set_visible_child_name("switcher")
         self.compact_view_switcher.set_reveal(False)
 
-    def _on_network_switcher_changed(self, *_args) -> None:
-        if self._syncing_network_switcher:
-            return
-        target = self.network_navigation_stack.get_visible_child_name()
-        if target and target != self.current_page:
-            self.navigate_to(target)
-
-    def _sync_network_switcher(self, page_id: str) -> None:
-        if page_id not in ("create_private", "connect_private", "vpn_selector"):
-            return
-        self._syncing_network_switcher = True
-        try:
-            self.network_navigation_stack.set_visible_child_name(page_id)
-        finally:
-            self._syncing_network_switcher = False
-
     # ─────────────────────────────────────────────────────────────────────────
     #  VPN SELECTOR PAGE
     # ─────────────────────────────────────────────────────────────────────────
 
     def create_vpn_selector_page(self):
-        scroll = Gtk.ScrolledWindow(vexpand=True)
-        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        clamp = Adw.Clamp(maximum_size=800, tightening_threshold=560)
-        for edge in ("top", "bottom", "start", "end"):
-            getattr(clamp, f"set_margin_{edge}")(24)
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
-        box.append(intro(_("Play over the internet"), _("On the same home network? You can skip this step."), "brp-network-private-symbolic"))
-        # One instruction is enough; a VPN may relay encrypted traffic, so do
-        # not promise a direct path or that traffic never uses another server.
-        guidance = Gtk.Label(
-            label=_("Connect both computers to the same private network. Then use the game PC’s private address under Connect."),
-            xalign=0,
-            wrap=True,
-        )
-        guidance.add_css_class("dim-label")
-        box.append(guidance)
-        # Three equally weighted rows asked a first-time user to compare three
-        # services they have never heard of. The recommended one is the whole
-        # first group; the others are kept for people who already use them.
-        recommended = Adw.PreferencesGroup(title=_("Start here"))
-        recommended.add(self._create_vpn_card("tailscale", VPN_PROVIDERS["tailscale"]))
-        box.append(recommended)
-        alternatives = Adw.PreferencesGroup(title=_("I already use another service"))
-        for provider in ("zerotier", "headscale"):
-            alternatives.add(self._create_vpn_card(provider, VPN_PROVIDERS[provider]))
-        box.append(alternatives)
+        """“Connect your devices”: status, tasks, devices and Advanced mode."""
+        from .remote_connection import RemoteConnectionPage
 
-        saved = Adw.PreferencesGroup(title=_("Accounts and networks on this computer"))
-        saved.add(
-            action_row(
-                _("Manage VPN accounts and networks"),
-                _("Switch Tailscale or Headscale accounts, and manage several ZeroTier networks."),
-                "brp-accounts-symbolic",
-                self.show_vpn_accounts,
-            )
-        )
-        box.append(saved)
-        direct_group = Adw.PreferencesGroup()
-        direct = Adw.ExpanderRow(title=_("Without a VPN (advanced)"), subtitle=_("Direct connection with a domain and router ports. Greater exposure to the internet."), use_markup=False)
-        direct.add_row(action_row(_("Connect using a domain"), _("Separate guide for Cloudflare DNS and an optional free domain."), "brp-address-symbolic", self.show_direct_internet_guide))
-        direct_group.add(direct)
-        box.append(direct_group)
-        box.append(boxed_rows(action_row(_("Already on the same network?"), _("Access shared game"), "brp-client-symbolic", lambda: self.navigate_to("guest"))))
-        clamp.set_child(box)
-        scroll.set_child(clamp)
-        return scroll
+        self.remote_connection_page = RemoteConnectionPage(self)
+        return self.remote_connection_page
+
+    def set_network_advanced_mode(self, advanced: bool) -> None:
+        """Remember the disclosure level; network pages follow it when reopened."""
+        advanced = bool(advanced)
+        if advanced == self.network_advanced_mode:
+            return
+        self.network_advanced_mode = advanced
+        self.config.set("network_advanced_mode", advanced)
+        for name in ("create_private", "connect_private"):
+            old = self.content_stack.get_child_by_name(name)
+            if old is not None:
+                self.content_stack.remove(old)
+
+    def show_api_access(self) -> None:
+        from big_remote_play.private_network.service import default_service
+        from .api_access_dialog import ApiAccessDialog
+
+        ApiAccessDialog(self, default_service(), show_toast=self.show_toast, focus=self._vpn_choice or "").present()
+
+    def show_internet_check(self) -> None:
+        from .connection_guides import build_internet_check_dialog
+
+        build_internet_check_dialog().present(self)
 
     def show_direct_internet_guide(self) -> None:
         from .connection_guides import build_direct_internet_dialog
@@ -818,82 +793,7 @@ class MainWindow(Adw.ApplicationWindow):
         self._vpn_accounts_dialog = dialog
         dialog.present()
 
-    def _create_vpn_card(self, provider_id: str, info: dict) -> Adw.ActionRow:
-        # The group heading carries the recommendation now: prefixing the
-        # subtitle repeated the word already in Tailscale's own description,
-        # and joined two translated fragments to do it.
-        return action_row(
-            info["name"],
-            info["description"],
-            info["icon"],
-            lambda: self._on_vpn_selected(provider_id),
-            icon_style="tile",
-        )
-
-    def _on_vpn_selected(self, provider_id: str):
-        """Handle VPN provider selection."""
-        old_vpn = self._vpn_choice
-
-        if old_vpn and old_vpn != provider_id:
-            dialog = Adw.AlertDialog(
-                heading=_("Switch VPN Provider?"),
-                body=_("You are switching from {} to {}. Do you want to disconnect from {}?").format(
-                    VPN_PROVIDERS[old_vpn]["name"], VPN_PROVIDERS[provider_id]["name"], VPN_PROVIDERS[old_vpn]["name"]
-                ),
-            )
-            dialog.add_response("cancel", _("Cancel"))
-            dialog.add_response("keep", _("Keep Connected"))
-            dialog.add_response("disconnect", _("Disconnect previous"))
-            dialog.set_response_appearance("disconnect", Adw.ResponseAppearance.DESTRUCTIVE)
-            dialog.set_default_response("keep")
-            dialog.set_close_response("cancel")
-
-            def on_resp(_dlg, resp):
-                if resp == "cancel":
-                    return
-                if resp == "disconnect":
-                    self._disconnect_vpn(old_vpn, lambda: self._apply_vpn_selection(provider_id))
-                else:
-                    self._apply_vpn_selection(provider_id)
-
-            dialog.connect("response", on_resp)
-            dialog.present(self)
-        else:
-            self._apply_vpn_selection(provider_id)
-
-    def _disconnect_vpn(self, vpn_id, on_success=None):
-        """Switch only after a confirmed disconnection, retaining Tailscale login."""
-        self.show_toast(_("Disconnecting from {}...").format(VPN_PROVIDERS[vpn_id]["name"]))
-
-        def run():
-            try:
-                if vpn_id in ("headscale", "tailscale"):
-                    # Both providers share tailscaled: `down` leaves the tailnet
-                    # and keeps every saved profile, so the other provider can be
-                    # used without stopping or reinstalling anything.
-                    from big_remote_play.utils.vpn_accounts import VPNAccountManager
-
-                    ok = VPNAccountManager(self.system_check).pause_tailscale().returncode == 0
-                else:
-                    result = subprocess.run(["pkexec", "/usr/bin/systemctl", "stop", "zerotier-one"], capture_output=True, text=True, timeout=30)
-                    ok = result.returncode == 0
-            except (OSError, subprocess.SubprocessError):
-                ok = False
-
-            def finish():
-                if ok:
-                    self.show_toast(_("{} disconnected").format(VPN_PROVIDERS[vpn_id]["name"]))
-                    if on_success:
-                        on_success()
-                else:
-                    self.show_toast(_("Could not disconnect. The selected network was not changed."))
-                return False
-
-            GLib.idle_add(finish)
-
-        threading.Thread(target=run, daemon=True).start()
-
-    def _apply_vpn_selection(self, provider_id, *, add_account: bool = False):
+    def _apply_vpn_selection(self, provider_id, *, add_account: bool = False, destination: str = "connect_private"):
         self._vpn_choice = provider_id
         self._vpn_add_account = add_account
         save_vpn_choice(provider_id)
@@ -901,9 +801,7 @@ class MainWindow(Adw.ApplicationWindow):
             old = self.content_stack.get_child_by_name(name)
             if old:
                 self.content_stack.remove(old)
-        self._filter_status_rows()
-        # Joining an existing network is the common path. Self-hosting is opt-in.
-        self.navigate_to("connect_private")
+        self.navigate_to(destination)
 
     def _ensure_private_view(self, name: str) -> None:
         if self.content_stack.get_child_by_name(name) is not None:
@@ -927,64 +825,173 @@ class MainWindow(Adw.ApplicationWindow):
     def network_return_label(self) -> str:
         if self._network_return_page == "welcome":
             return _("Back to Home")
-        return _("Share my game") if self._network_return_page == "host" else _("Access shared game")
+        return _("Share") if self._network_return_page == "host" else _("Connect")
 
     def _go_to_private_network_setup(self) -> None:
         if self.current_page == "welcome":
             self._network_return_page = "welcome"
-        target = "connect_private" if self._vpn_choice else "vpn_selector"
-        self.navigate_to(target)
+        self.navigate_to("vpn_selector")
 
     def _create_home_network_guide(self) -> Gtk.Widget:
         return boxed_rows(
             action_row(
-                _("Set up a virtual private network"),
-                _("For internet play. Skip this on the same home network."),
+                _("Play over the internet"),
+                _("For computers in different houses. Not needed on the same home network."),
                 "brp-network-private-symbolic",
                 self._go_to_private_network_setup,
             )
         )
 
+    def _secure_legacy_network_files(self) -> bool:
+        """Move credentials that older versions left in plain JSON to the keyring."""
+
+        def run() -> None:
+            from big_remote_play.private_network.legacy import migrate_legacy_secrets
+
+            try:
+                migrate_legacy_secrets()
+            except Exception as error:  # never break startup over a cleanup
+                _log.warning("Legacy network files were not migrated: %s", error)
+
+        threading.Thread(target=run, daemon=True).start()
+        return False
+
+    def _refresh_home_network_status(self) -> bool:
+        """One quiet line on Home: is internet play ready? Read-only, lazy."""
+        from big_remote_play.private_network.service import default_service
+        from .network_common import Worker
+
+        found = self.home_network_action.get_first_child() if getattr(self, "home_network_action", None) else None
+        if not isinstance(found, Adw.ActionRow):
+            return False
+        row: Adw.ActionRow = found
+
+        def apply(statuses) -> None:
+            from big_remote_play.private_network.plan import PlanKind, plan_connection
+            from .remote_connection import plan_words
+
+            plan = plan_connection(statuses)
+            if plan.kind is not PlanKind.INSTALL:
+                # The same sentence the page shows, so both never disagree.
+                row.set_subtitle(plan_words(plan)[2])
+
+        self._home_status_worker = Worker()
+        self._home_status_worker.submit(lambda: default_service().overview(), apply)
+        return False
+
+    @staticmethod
+    def _create_home_benefit(text: str, icon_name: str) -> Gtk.Widget:
+        benefit = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        benefit.add_css_class("home-benefit")
+        icon = create_icon_widget(icon_name, size=16)
+        icon.set_valign(Gtk.Align.CENTER)
+        benefit.append(icon)
+        label = Gtk.Label(label=text, xalign=0, wrap=True, hexpand=True)
+        label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        benefit.append(label)
+        return benefit
+
+    def _create_home_stream_diagram(self) -> Gtk.Widget:
+        flow = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, valign=Gtk.Align.CENTER)
+        flow.add_css_class("home-stream-flow")
+        flow.set_halign(Gtk.Align.END)
+        flow.append(icon_tile("brp-host-symbolic", tone="accent"))
+        flow.append(create_icon_widget("go-next-symbolic", size=16))
+        destinations = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        for icon_name in ("brp-computer-symbolic", "brp-video-display-symbolic", "brp-client-symbolic"):
+            destinations.append(icon_tile(icon_name, tone="guest"))
+        flow.append(destinations)
+        return flow
+
+    @staticmethod
+    def _create_role_flow(role_id: str) -> Gtk.Widget:
+        icons = ("brp-host-symbolic", "brp-network-transmit-receive-symbolic") if role_id == "host" else ("brp-network-transmit-receive-symbolic", "brp-client-symbolic")
+        flow = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8, halign=Gtk.Align.START)
+        flow.add_css_class("role-flow")
+        for index, icon_name in enumerate(icons):
+            node = Gtk.Box(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
+            node.add_css_class("role-flow-node")
+            node.append(create_icon_widget(icon_name, size=18))
+            flow.append(node)
+            if index == 0:
+                flow.append(create_icon_widget("go-next-symbolic", size=14))
+        return flow
+
     def create_welcome_page(self) -> Adw.NavigationView:
         scroll = Gtk.ScrolledWindow(vexpand=True)
         scroll.add_css_class("welcome-page")
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20, valign=Gtk.Align.START)
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24, valign=Gtk.Align.START)
         for edge in ("top", "bottom", "start", "end"):
             getattr(main_box, f"set_margin_{edge}")(24)
         self.welcome_main_box = main_box
 
-        hero = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        hero = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
         hero.add_css_class("welcome-hero")
-        eyebrow = Gtk.Label(label=_("PLAY TOGETHER"), xalign=0, wrap=True)
+        hero_description = _("Play with friends far away, or use the power of your computer on another compatible device.")
+        hero_content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=24)
+        self.home_hero_content = hero_content
+        hero_copy = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8, hexpand=True)
+        eyebrow = Gtk.Label(label="Big Remote Play", xalign=0, wrap=True)
         eyebrow.add_css_class("caption-heading")
         eyebrow.add_css_class("accent")
-        hero.append(eyebrow)
-        for text in (
-            _("At home, connect the computers to the same network. Share the game on one and access it from the other."),
-            _("Over the internet, connect all computers to the same virtual private network (VPN). We can help you set it up."),
+        hero_copy.append(eyebrow)
+        headline = Gtk.Label(label=_("Your games. Any screen. Anywhere."), xalign=0, wrap=True)
+        headline.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        headline.add_css_class("title-1")
+        hero_copy.append(headline)
+        description = Gtk.Label(label=hero_description, xalign=0, wrap=True)
+        description.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        description.add_css_class("dim-label")
+        hero_copy.append(description)
+        hero_content.append(hero_copy)
+        self.home_device_flow = self._create_home_stream_diagram()
+        hero_content.append(self.home_device_flow)
+        hero.append(hero_content)
+
+        benefits = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8, homogeneous=True)
+        self.home_benefits = benefits
+        benefits.add_css_class("home-benefits")
+        for text, icon_name in (
+            (_("Play together, from anywhere"), "brp-client-symbolic"),
+            (_("Use your gaming PC from anywhere"), "brp-host-symbolic"),
+            (_("Play on another screen"), "brp-video-display-symbolic"),
         ):
-            description = Gtk.Label(label=text, xalign=0, wrap=True)
-            description.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
-            hero.append(description)
+            benefits.append(self._create_home_benefit(text, icon_name))
+        hero.append(benefits)
         main_box.append(hero)
-        self.home_network_action = self._create_home_network_guide()
-        main_box.append(self.home_network_action)
+
+        # The easiest way to begin: two questions, then the right page.
+        from .guided_setup import choice_card
+
+        self.guided_setup_button = choice_card(
+            _("Guided setup"),
+            _("Not sure where to start? Answer a few questions and Big Remote Play sets up the way for you."),
+            "brp-guided-setup-symbolic",
+            self.start_guided_setup,
+        )
+        self.guided_setup_button.add_css_class("brp-guided-banner")
+        main_box.append(self.guided_setup_button)
+
+        self.home_question_label = Gtk.Label(label=_("What do you want to do?"), xalign=0, wrap=True)
+        self.home_question_label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        self.home_question_label.add_css_class("title-2")
+        main_box.append(self.home_question_label)
 
         cards_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16, homogeneous=True)
         self.welcome_cards_box = cards_box
         self.host_card = self.create_action_card(
             "host",
-            _("Share my game"),
-            _("Use this on the PC that runs the game."),
+            _("Share"),
+            _("This computer runs the game. Share a game or your whole desktop."),
             "brp-host-symbolic",
             "Sunshine",
             lambda: self._select_home_role("host"),
         )
         self.guest_card = self.create_action_card(
             "guest",
-            _("Access shared game"),
-            _("Use this on the other PC that will connect."),
+            _("Connect"),
+            _("Play on this device. Connect to the computer running the game."),
             "brp-client-symbolic",
             "Moonlight",
             lambda: self._select_home_role("guest"),
@@ -992,6 +999,16 @@ class MainWindow(Adw.ApplicationWindow):
         cards_box.append(self.host_card)
         cards_box.append(self.guest_card)
         main_box.append(cards_box)
+
+        network_section = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        network_section.set_margin_top(4)
+        self.home_network_section = network_section
+        network_title = Gtk.Label(label=_("Playing over the internet?"), xalign=0, wrap=True)
+        network_title.add_css_class("heading")
+        network_section.append(network_title)
+        self.home_network_action = self._create_home_network_guide()
+        network_section.append(self.home_network_action)
+        main_box.append(network_section)
         clamp = Adw.Clamp(maximum_size=860, tightening_threshold=620)
         clamp.set_child(main_box)
         scroll.set_child(clamp)
@@ -999,16 +1016,33 @@ class MainWindow(Adw.ApplicationWindow):
         # A single landing page: each action goes straight to its task.
         self.home_navigation = Adw.NavigationView(hhomogeneous=False, vhomogeneous=False)
         self.home_navigation.add(Adw.NavigationPage(child=scroll, title=_("Home"), tag="choices"))
+        self.home_navigation.connect("notify::visible-page", self._on_home_page_changed)
         return self.home_navigation
+
+    def start_guided_setup(self) -> None:
+        """Ask two questions on Home, then open the task that fits."""
+        from .guided_setup import GuidedSetup
+
+        if self.current_page != "welcome":
+            self.navigate_to("welcome")
+        self.guided_setup = GuidedSetup(self)
+        self.guided_setup.start()
 
     def _on_home_page_changed(self, *_args) -> None:
         if not hasattr(self, "content_title"):
             return
-        self.home_back_button.set_visible(False)
-        self.content_headerbar.set_show_back_button(True)
-        if self.current_page == "welcome":
-            self._set_header_title(_("Home"), "Big Remote Play")
-            (self.guest_card if getattr(self, "_home_role", "host") == "guest" else self.host_card).grab_focus()
+        page = self.home_navigation.get_visible_page()
+        guided = page is not None and page.get_tag() != "choices"
+        self.home_back_button.set_visible(guided and self.current_page == "welcome")
+        # One back arrow at a time: inside the guide it means "previous question".
+        self.content_headerbar.set_show_back_button(not (guided and self.current_page == "welcome"))
+        if self.current_page != "welcome":
+            return
+        if guided and page is not None:
+            self._set_header_title(page.get_title(), _("Home"))
+            return
+        self._set_header_title(_("Home"), "Big Remote Play")
+        (self.guest_card if getattr(self, "_home_role", "host") == "guest" else self.host_card).grab_focus()
 
     def create_action_card(
         self,
@@ -1024,14 +1058,14 @@ class MainWindow(Adw.ApplicationWindow):
         button.add_css_class("role-" + role_id)
         button.connect("clicked", lambda _button: callback())
         button.update_property([Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION], [title, description])
-        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12, hexpand=True)
         tile = icon_tile(icon_name, large=True, tone="guest" if role_id == "guest" else "accent")
         tile.set_halign(Gtk.Align.START)
         tile.set_valign(Gtk.Align.START)
         content.append(tile)
         copy = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10, hexpand=True)
         content.append(copy)
-        title_box = Gtk.Box(spacing=10)
+        title_box = Gtk.Box(spacing=10, hexpand=True)
         copy.append(title_box)
         title_label = Gtk.Label(label=title, xalign=0, wrap=True)
         title_label.add_css_class("title-2")
@@ -1040,8 +1074,10 @@ class MainWindow(Adw.ApplicationWindow):
         selection = create_icon_widget("go-next-symbolic", size=16)
         title_box.append(selection)
         description_label = Gtk.Label(label=description, xalign=0, wrap=True)
+        description_label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
         description_label.add_css_class("dim-label")
         copy.append(description_label)
+        copy.append(self._create_role_flow(role_id))
         copy.append(Gtk.Box(vexpand=True))
         state = Gtk.Box(spacing=6, halign=Gtk.Align.START)
         state.add_css_class("readiness-pill")
@@ -1081,11 +1117,12 @@ class MainWindow(Adw.ApplicationWindow):
             dot.remove_css_class(css_class)
 
         if installed:
-            state.add_css_class("ready")
-            dot.add_css_class("status-online")
-            label.set_label(_("Component installed"))
-            ui["button"].set_tooltip_text(component_name)
+            # Working components stay out of the way. The task itself is the
+            # focus; technical names only appear when the user must act.
+            state.set_visible(False)
+            ui["button"].set_tooltip_text(None)
         else:
+            state.set_visible(True)
             state.add_css_class("needs-setup")
             dot.add_css_class("status-offline")
             # A missing component is explained before opening its task.
@@ -1128,8 +1165,6 @@ class MainWindow(Adw.ApplicationWindow):
             if pid:
                 if pid == "welcome":
                     self.home_navigation.pop_to_tag("choices")
-                if pid == "vpn_selector" and self._vpn_choice:
-                    pid = "connect_private"
                 # The home cards offered to install what a task needs; reaching
                 # the same task from the sidebar must offer it too.
                 component = self._ROLE_COMPONENTS.get(pid)
@@ -1173,9 +1208,12 @@ class MainWindow(Adw.ApplicationWindow):
         self.content_stack.set_visible_child_name(pid)
         self.current_page = pid
         self.home_back_button.set_visible(False)
+        self.network_back_button.set_visible(pid in ("create_private", "connect_private"))
         self.content_headerbar.set_show_back_button(True)
         self._remember_role(pid)
         self._filter_status_rows()
+        if pid in ("host", "guest"):
+            self._refresh_private_network_status()
 
         if pid == "host":
             self._set_header_context("host")
@@ -1183,18 +1221,13 @@ class MainWindow(Adw.ApplicationWindow):
             self._set_header_title(_("Connect"), _("Play from another PC"))
         elif pid == "welcome":
             self._on_home_page_changed()
-        elif pid == "vpn_selector" and not self._vpn_choice:
-            # Before a provider exists there are no Set Up or Connect views yet.
-            self._set_header_title(_("Play over the internet"), _("For PCs in different houses"))
+        elif pid == "vpn_selector":
+            self._set_header_title(_("Play over the internet"), _("Connect your devices"))
         else:
-            provider = VPN_PROVIDERS[self._vpn_choice]["name"] if self._vpn_choice else _("Play over the internet")
-            subtitle = {
-                "create_private": _("My network"),
-                "connect_private": _("Join a network"),
-                "vpn_selector": _("Change service"),
-            }.get(pid, _("Internet or different houses"))
-            self._sync_network_switcher(pid)
-            self._set_header_context("network", title=provider, subtitle=subtitle)
+            # The task is the title; the method is only the subtitle.
+            provider = VPN_PROVIDERS[self._vpn_choice]["name"] if self._vpn_choice else ""
+            title = _("Network details") if pid == "create_private" else _("Set up the connection")
+            self._set_header_title(title, provider)
         if self.split_view.get_collapsed():
             self.split_view.set_show_content(True)
 
@@ -1224,31 +1257,75 @@ class MainWindow(Adw.ApplicationWindow):
         if self._status_timer_id is None:
             self._status_timer_id = GLib.timeout_add_seconds(3, self.p_check)
 
+    def _refresh_private_network_status(self) -> None:
+        """Fetch provider membership off the GTK thread, with no overlap."""
+        if self._network_polling or self.current_page not in ("host", "guest"):
+            return
+        self._network_polling = True
+
+        def finish(statuses):
+            self._network_polling = False
+            if self._status_timer_id is None:
+                return False  # the window is closing
+            if statuses is not None:
+                self._network_statuses = {status.provider.value: status for status in statuses}
+                for provider in self._NETWORK_SERVICES:
+                    self._refresh_network_card(provider)
+            elif not self._network_statuses:
+                # Never leave the cards on "Checking..." after a failed read.
+                for provider in self._NETWORK_SERVICES:
+                    self._status_rows[provider].set_presentation(unknown_presentation())
+            return False
+
+        def check():
+            statuses = None
+            try:
+                from big_remote_play.private_network.service import default_service
+
+                statuses = default_service().overview()
+            except Exception:
+                _log.exception("Cannot refresh private network status")
+            finally:
+                GLib.idle_add(finish, statuses)
+
+        threading.Thread(target=check, daemon=True).start()
+
     def p_check(self):
-        # A slow service probe must not start another worker every three seconds.
+        """Refresh only the service rows the current page shows.
+
+        Home and the network pages show none, so they start no process at all;
+        Share and Connect check one service each.
+        """
+        self._network_poll_ticks += 1
+        if self._network_poll_ticks >= 2:
+            self._network_poll_ticks = 0
+            self._refresh_private_network_status()
         if self._polling_status:
+            return True
+        probes = {
+            "sunshine": self.system_check.is_sunshine_running,
+            "moonlight": self.system_check.is_moonlight_running,
+            "docker": self.system_check.is_docker_running,
+            "tailscale": self.system_check.is_tailscale_running,
+            "zerotier": self.system_check.is_zerotier_running,
+        }
+        wanted = [service_id for service_id in self._relevant_service_ids() if service_id in ("sunshine", "moonlight")]
+        if not wanted:
             return True
         self._polling_status = True
 
         def finish(states):
             self._polling_status = False
             if self._status_timer_id is not None and states is not None:
-                self.update_server_status(*states)
+                for service_id, running in states.items():
+                    self._service_running[service_id] = running
+                    self._refresh_service_state(service_id)
             return False
 
         def check():
             states = None
             try:
-                states = tuple(
-                    probe()
-                    for probe in (
-                        self.system_check.is_sunshine_running,
-                        self.system_check.is_moonlight_running,
-                        self.system_check.is_docker_running,
-                        self.system_check.is_tailscale_running,
-                        self.system_check.is_zerotier_running,
-                    )
-                )
+                states = {service_id: probes[service_id]() for service_id in wanted}
             except Exception:
                 _log.exception("Cannot refresh service status")
             finally:
@@ -1265,7 +1342,10 @@ class MainWindow(Adw.ApplicationWindow):
 
     def show_toast(self, m):
         if hasattr(self, "toast_overlay"):
-            self.toast_overlay.add_toast(Adw.Toast.new(m))
+            # Messages can quote network, device or account names: never markup.
+            toast = Adw.Toast.new(m)
+            toast.set_use_markup(False)
+            self.toast_overlay.add_toast(toast)
         else:
             _log.info(m)
 
@@ -1298,6 +1378,11 @@ class MainWindow(Adw.ApplicationWindow):
         """Open service control dialog"""
         meta = SERVICE_METADATA.get(service_id)
         if not meta:
+            return
+
+        if service_id in ("tailscale", "zerotier", "headscale"):
+            destination = "create_private" if self.current_page == "host" else "connect_private"
+            self._apply_vpn_selection(service_id, destination=destination)
             return
 
         if probe_result is None:

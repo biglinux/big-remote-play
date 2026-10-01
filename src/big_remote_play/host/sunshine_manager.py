@@ -4,9 +4,13 @@ import base64
 import hashlib
 import http.client
 import json
+import re
+import socket
 import ssl
+import time
 import urllib.parse
 from pathlib import Path
+from collections.abc import Callable
 from typing import NamedTuple
 from big_remote_play import paths
 from big_remote_play.integration_contracts import sunshine_web_ui_port
@@ -16,13 +20,27 @@ from big_remote_play.utils.secure_io import secure_write_text
 _log = logging.getLogger("big-remoteplay")
 
 
+class PendingPairing(NamedTuple):
+    """A Moonlight client waiting for its PIN (Sunshine ``GET /api/pin``)."""
+
+    pairing_id: str
+    name: str
+    address: str
+
+
 class PinResult(NamedTuple):
     """Outcome of send_pin(). ``status`` is the HTTP status (0 = transport/cert
-    failure); callers branch on it instead of parsing the localized ``message``."""
+    failure); callers branch on it instead of parsing the localized ``message``.
+
+    ``PIN_CHOOSE`` means several clients are waiting: ``pending`` lists them
+    and the caller asks which one to approve. ``PIN_NONE_WAITING`` means no
+    client has started pairing yet.
+    """
 
     ok: bool
     status: int
     message: str
+    pending: tuple[PendingPairing, ...] = ()
 
 
 # Sunshine config web server. 127.0.0.1 avoids IPv6 (::1) quirks when Sunshine
@@ -35,6 +53,44 @@ API_PORT = 47990
 def _cert_fingerprint(cert_der: bytes) -> str:
     """SHA-256 hex of a DER-encoded certificate."""
     return hashlib.sha256(cert_der).hexdigest()
+
+
+def _process_name(pid: int) -> str:
+    """The kernel's short command name for ``pid`` (``""`` if unknown)."""
+    try:
+        return Path(f"/proc/{int(pid)}/comm").read_text(encoding="utf-8", errors="replace").strip()
+    except (OSError, ValueError):
+        return ""
+
+
+def _is_zombie(pid: int) -> bool:
+    """True for an exited process its parent has not collected yet."""
+    try:
+        stat = Path(f"/proc/{int(pid)}/stat").read_text(encoding="utf-8", errors="replace")
+    except (OSError, ValueError):
+        return False
+    # The state letter follows the parenthesised command name, which may itself contain spaces.
+    return stat.rpartition(")")[2].split()[:1] == ["Z"]
+
+
+def _is_live_sunshine(pid: int) -> bool:
+    return _process_name(pid) == "sunshine" and not _is_zombie(pid)
+
+
+# Sunshine restores the default output it switched to its own virtual sink only
+# when it exits normally, so it gets time to finish before being killed.
+STOP_GRACE_SECONDS = 10.0
+# Sunshine validates capture and encoders before opening its local API.  Wait
+# long enough to catch delayed probe crashes, but do not block indefinitely on
+# a portal screen picker that still needs the user.
+STARTUP_PROBE_SECONDS = 10.0
+STARTUP_PROBE_INTERVAL = 0.1
+
+
+PIN_CHOOSE = 300
+PIN_NONE_WAITING = 409
+_PAIRING_ID_RE = re.compile(r"^[0-9a-fA-F]{32}$")
+_CURRENT_GAME_RE = re.compile(r"<currentgame>\s*(\d{1,10})\s*</currentgame>")
 
 
 class SunshineHost:
@@ -69,11 +125,51 @@ class SunshineHost:
     def web_ui_url(self) -> str:
         return f"https://localhost:{self.api_port}"
 
+    def _api_is_reachable(self) -> bool:
+        """Whether Sunshine has opened its local configuration endpoint."""
+        try:
+            with socket.create_connection((API_HOST, self.api_port), timeout=0.25):
+                return True
+        except OSError:
+            return False
+
+    def _wait_for_startup(self) -> int | None:
+        """Return an early exit code, or None once ready/still starting."""
+        deadline = time.monotonic() + STARTUP_PROBE_SECONDS
+        while time.monotonic() < deadline:
+            if self.process is None:
+                return 1
+            exit_code = self.process.poll()
+            if exit_code is not None:
+                return exit_code
+            if self._api_is_reachable():
+                # Close-to-ready crashes still win over the successful socket
+                # probe when both happen in the same iteration.
+                return self.process.poll()
+            time.sleep(STARTUP_PROBE_INTERVAL)
+        return self.process.poll() if self.process is not None else 1
+
+    @staticmethod
+    def sunshine_data_dir() -> Path:
+        """Where Sunshine resolves relative paths from its configuration.
+
+        Sunshine uses its own data directory (``$XDG_CONFIG_HOME/sunshine``)
+        for relative ``file_apps``, ``file_state`` and similar paths, not the
+        directory of the configuration file it was started with. Seen for
+        real: with ``file_apps = apps.json`` the apps offered to devices came
+        from ``~/.config/sunshine/apps.json``.
+        """
+        root = os.environ.get("XDG_CONFIG_HOME") or str(Path.home() / ".config")
+        return Path(root) / "sunshine"
+
+    def apps_file(self) -> Path:
+        """The app library Sunshine really serves."""
+        app_file = Path(self._config_value("file_apps", "apps.json")).expanduser()
+        return app_file if app_file.is_absolute() else self.sunshine_data_dir() / app_file
+
     def ensure_desktop_app(self) -> bool:
         """Add Desktop without erasing the user's apps, environment or path."""
-        app_file = Path(self._config_value("file_apps", "apps.json"))
-        if not app_file.is_absolute():
-            app_file = self.config_dir / app_file
+        app_file = self.apps_file()
         try:
             data = json.loads(app_file.read_text()) if app_file.exists() else {"env": {}, "apps": []}
             if not isinstance(data, dict) or not isinstance(data.get("apps"), list):
@@ -85,8 +181,17 @@ class SunshineHost:
         except (OSError, ValueError):
             return False
 
-    def start(self, **kwargs):
+    def start(self, *, wayland_display: str | None = None, **kwargs):
+        """Start Sunshine; ``wayland_display`` makes it see only that compositor.
+
+        Game Window passes its private screen here: Sunshine then has no
+        connection to the desktop's compositor at all.
+        """
         if self.is_running():
+            # A server already running sees the desktop: never report it as
+            # the private Game Window server.
+            if wayland_display:
+                return False, "Sunshine is already running"
             return True, "Already running"
 
         sc = shutil.which("sunshine")
@@ -96,6 +201,11 @@ class SunshineHost:
             config_file = self.config_dir / "sunshine.conf"
             # Prepare environment
             env = os.environ.copy()
+            # vkBasalt is a game post-processing layer.  A session-wide
+            # ENABLE_VKBASALT=1 also injects it into Sunshine's Vulkan encoder
+            # probe and can crash the server.  This copy is server-only: games
+            # launched by Big Remote Play retain the user's original setting.
+            env["ENABLE_VKBASALT"] = "0"
             if "DISPLAY" not in env:
                 env["DISPLAY"] = ":0"
 
@@ -114,6 +224,9 @@ class SunshineHost:
             # Pass WAYLAND_DISPLAY if exists
             if "WAYLAND_DISPLAY" in os.environ:
                 env["WAYLAND_DISPLAY"] = os.environ["WAYLAND_DISPLAY"]
+            if wayland_display:
+                env["WAYLAND_DISPLAY"] = wayland_display
+                env.pop("WAYLAND_SOCKET", None)
 
             cmd = [sc, str(config_file)]
 
@@ -133,12 +246,10 @@ class SunshineHost:
 
             self.pid = self.process.pid
 
-            # Check if process died immediately (e.g. library error)
-            try:
-                # Wait a bit to see if startup fails
-                exit_code = self.process.wait(timeout=2.0)
-
-                # If reached here, process ended (failed)
+            # Encoder/capture validation may fail a few seconds after exec.
+            # Prefer API readiness, otherwise keep watching for a bounded time.
+            exit_code = self._wait_for_startup()
+            if exit_code is not None:
                 self.log_file.flush()
                 # Try to read the error from the log
                 error_detail = ""
@@ -160,13 +271,11 @@ class SunshineHost:
                 else:
                     _log.error(_("Sunshine failed to start (Exit code {}). Check logs.").format(exit_code))
 
+                self.log_file.close()
+                del self.log_file
                 self.process = None
                 self.pid = None
                 return False, error_detail if error_detail else f"Exit code {exit_code}"
-
-            except subprocess.TimeoutExpired:
-                # Process continues running after timeout, success!
-                pass
 
             # Save PID
             pid_file = self.config_dir / "sunshine.pid"
@@ -198,9 +307,11 @@ class SunshineHost:
                     pgid = os.getpgid(self.process.pid)
                     os.killpg(pgid, signal.SIGTERM)
                     try:
-                        self.process.wait(timeout=2)
+                        self.process.wait(timeout=STOP_GRACE_SECONDS)
                     except subprocess.TimeoutExpired:
                         os.killpg(pgid, signal.SIGKILL)
+                        # Collect the exit status, or the process stays a zombie.
+                        self.process.wait(timeout=5)
                     killed_tracked = True
                 except Exception:
                     try:
@@ -261,21 +372,27 @@ class SunshineHost:
                 with open(pid_file, "r") as f:
                     pid = int(f.read().strip())
 
-                # Check if process exists
+                # The PID must still be a Sunshine process: after Sunshine
+                # exits, the kernel can hand the same PID to anything else.
                 os.kill(pid, 0)
-                return True
+                if _is_live_sunshine(pid):
+                    return True
+                pid_file.unlink()
 
             except (OSError, ValueError):
                 # Process does not exist, clear PID file
                 pid_file.unlink()
                 return False
 
-        # Check via pgrep
+        # Check via pgrep. It also lists exited processes nobody collected
+        # (zombies), which must not block a new start.
         try:
-            result = subprocess.run(["pgrep", "-x", "sunshine"], capture_output=True, timeout=5)
-            return result.returncode == 0
+            result = subprocess.run(["pgrep", "-x", "sunshine"], capture_output=True, text=True, timeout=5)
         except Exception:
             return False
+        if result.returncode != 0:
+            return False
+        return any(_is_live_sunshine(int(pid)) for pid in (result.stdout or "").split() if pid.isdigit())
 
     def get_status(self) -> dict:
         """Gets server status"""
@@ -321,8 +438,10 @@ class SunshineHost:
 
             # Load existing config
             current_config = {}
+            previous_text = None
             if config_file.exists():
                 try:
+                    previous_text = config_file.read_text()
                     with open(config_file, "r") as f:
                         for line in f:
                             line = line.strip()
@@ -335,6 +454,13 @@ class SunshineHost:
                 except Exception as e:
                     _log.error(f"Error reading existing config: {e}")
                     return False
+
+            settings = dict(settings)
+            if "brp_stream_display" in settings:
+                # Our prep command replaces only our own entry.
+                from big_remote_play.host.stream_display import merge_prep_commands
+
+                settings["global_prep_cmd"] = merge_prep_commands(current_config.get("global_prep_cmd"), settings.pop("brp_stream_display"))
 
             # Update with new settings
             for k, v in settings.items():
@@ -351,8 +477,11 @@ class SunshineHost:
             for key in ("platform", "wayland.display", "fps", "bitrate", "videocodec", "webserver", "enable_api_endpoints", "audio", "log_level", "min_bitrate"):
                 current_config.pop(key, None)
 
-            # Save merged config
-            secure_write_text(str(config_file), "".join(f"{key} = {value}\n" for key, value in current_config.items()))
+            # Save merged config, keeping the previous version beside it.
+            text = "".join(f"{key} = {value}\n" for key, value in current_config.items())
+            if previous_text is not None and previous_text != text:
+                secure_write_text(str(self.config_dir / "sunshine.conf.previous"), previous_text)
+            secure_write_text(str(config_file), text)
 
             return True
 
@@ -415,19 +544,109 @@ class SunshineHost:
         finally:
             conn.close()
 
-    def send_pin(self, pin: str, name: str | None = None, auth: tuple[str, str] | None = None) -> PinResult:
+    def pending_pairings(self, auth: tuple[str, str] | None = None) -> tuple[list[PendingPairing] | None, int]:
+        """Clients waiting for a PIN, or ``None`` when Sunshine predates the list.
+
+        Current Sunshine answers ``GET /api/pin`` with ``[{id, name, address}]``
+        and requires the chosen ``id`` as ``pairing_id`` when the PIN is sent.
+        """
+        status, data = self._api_request("GET", "/api/pin", None, auth)
+        if status != 200:
+            return None, status
+        try:
+            payload = json.loads(data)
+        except (ValueError, TypeError):
+            return None, status
+        items = payload.get("pairings", payload.get("pending")) if isinstance(payload, dict) else payload
+        if not isinstance(items, list):
+            return None, status
+        pending = [
+            PendingPairing(str(item.get("id")), str(item.get("name") or ""), str(item.get("address") or ""))
+            for item in items
+            if isinstance(item, dict) and _PAIRING_ID_RE.fullmatch(str(item.get("id") or ""))
+        ]
+        return pending, status
+
+    def cancel_pairing(self, pairing_id: str, auth: tuple[str, str] | None = None) -> bool:
+        """Drop one waiting pairing (DELETE /api/pin), as Sunshine's web panel does."""
+        if not _PAIRING_ID_RE.fullmatch(pairing_id or ""):
+            return False
+        status, data = self._api_request("DELETE", "/api/pin", {"pairing_id": pairing_id}, auth)
+        try:
+            return status == 200 and json.loads(data or b"{}").get("status") is True
+        except (ValueError, AttributeError):
+            return False
+
+    def discard_abandoned_pairings(self, auth: tuple[str, str] | None = None, *, ss: Callable[[list[str]], str] | None = None) -> int:
+        """Cancel waiting pairings whose device is no longer waiting.
+
+        Sunshine keeps a pairing request that the device abandoned (it was
+        cancelled, the network dropped, a firewall cut it) until it restarts.
+        Meanwhile the same Moonlight is refused with "A pairing session with
+        this uniqueid already exists" and a PIN goes to the dead request. A
+        device that is really waiting keeps its connection to the HTTP port
+        open, so only requests without one are cancelled; if the connections
+        cannot be read, nothing is.
+        """
+        from big_remote_play.host.sunshine_sessions import _ss, established_peers
+        from big_remote_play.utils.connection_health import valid_address
+
+        pending, status = self.pending_pairings(auth)
+        if not pending or status != 200:
+            return 0
+        try:
+            port = int(self._config_value("port", "47989"))
+        except ValueError:
+            port = 47989
+        output = (ss or _ss)(["ss", "-tan"])
+        if not output.strip():
+            return 0
+        waiting = established_peers(output, port)
+        by_address: dict[str, list[PendingPairing]] = {}
+        for item in pending:
+            address = valid_address(item.address.split("%", 1)[0].removeprefix("::ffff:")) or item.address
+            by_address.setdefault(address, []).append(item)
+        cancelled = 0
+        for address, items in by_address.items():
+            # Sunshine lists requests oldest first; more requests than open
+            # connections from one address means the oldest were abandoned.
+            for item in items[: max(0, len(items) - waiting[address])]:
+                if self.cancel_pairing(item.pairing_id, auth):
+                    cancelled += 1
+        if cancelled:
+            _log.info("Cancelled %d abandoned pairing request(s).", cancelled)
+        return cancelled
+
+    def send_pin(self, pin: str, name: str | None = None, auth: tuple[str, str] | None = None, pairing_id: str | None = None) -> PinResult:
         """Sends a pairing PIN to Sunshine (POST /api/pin).
 
         Returns a PinResult; ``status`` is the HTTP status so callers can branch
         (401 = bad credentials, 307 = no admin user yet) without reading prose.
+        With current Sunshine the PIN belongs to one pending request: it is
+        matched automatically when only one client is waiting.
         """
-        payload = {"pin": pin}
-        if name:
+        payload: dict[str, str] = {"pin": pin}
+        if pairing_id is None:
+            pending, status = self.pending_pairings(auth)
+            if status in (0, 401, 307):
+                return self._pin_failure(status)
+            if pending is not None:
+                if not pending:
+                    return PinResult(False, PIN_NONE_WAITING, _("No computer is waiting to pair. Choose this computer under Connect on the other PC, then enter the code it shows."))
+                if len(pending) > 1:
+                    return PinResult(False, PIN_CHOOSE, _("Several computers are waiting to pair."), tuple(pending))
+                pairing_id = pending[0].pairing_id
+                name = name or pending[0].name
+        if pairing_id is not None:
+            if not _PAIRING_ID_RE.fullmatch(pairing_id):
+                return PinResult(False, 400, _("Sunshine rejected the PIN"))
+            payload["pairing_id"] = pairing_id
+            # The current API requires a device name of 1–128 bytes.
+            payload["name"] = (name or "Big Remote Play").encode("utf-8")[:128].decode("utf-8", "ignore") or "Big Remote Play"
+        elif name:
             payload["name"] = name
 
         status, data = self._api_request("POST", "/api/pin", payload, auth)
-        if status == 0:
-            return PinResult(False, 0, _("Connection error: Sunshine is unreachable or its certificate does not match"))
         if status == 200:
             try:
                 reply = json.loads(data)
@@ -437,6 +656,12 @@ class SunshineHost:
             if accepted:
                 return PinResult(True, 200, _("PIN sent successfully"))
             return PinResult(False, 200, _("Sunshine rejected the PIN"))
+        return self._pin_failure(status)
+
+    @staticmethod
+    def _pin_failure(status: int) -> PinResult:
+        if status == 0:
+            return PinResult(False, 0, _("Connection error: Sunshine is unreachable or its certificate does not match"))
         if status == 401:
             return PinResult(False, 401, _("Authentication Failed. Configure a user in Sunshine."))
         # 307 means no admin user exists yet; the caller offers to create one.
@@ -549,6 +774,29 @@ class SunshineHost:
         """
         status, _data = self._api_request("POST", "/api/apps/close", {}, auth)
         return status == 200
+
+    def running_app_id(self, timeout: float = 2.0) -> int | None:
+        """The app Sunshine streams now (0 = none), or ``None`` when unknown.
+
+        Read from ``/serverinfo`` on the GameStream HTTP port, the value
+        Moonlight checks: it refuses to pair while it is not 0 ("The computer
+        is currently in a game"), even when nobody is connected any more.
+        """
+        try:
+            port = int(self._config_value("port", "47989"))
+        except ValueError:
+            port = 47989
+        conn = http.client.HTTPConnection(API_HOST, port, timeout=timeout)
+        try:
+            conn.request("GET", "/serverinfo", headers={"User-Agent": "BigRemotePlay"})
+            response = conn.getresponse()
+            body = response.read(64 * 1024).decode("utf-8", errors="replace")
+        except (OSError, http.client.HTTPException):
+            return None
+        finally:
+            conn.close()
+        match = _CURRENT_GAME_RE.search(body)
+        return int(match.group(1)) if response.status == 200 and match else None
 
     def get_apps(self, auth: tuple[str, str] | None = None) -> list:
         """Lists configured Sunshine apps (GET /api/apps)."""

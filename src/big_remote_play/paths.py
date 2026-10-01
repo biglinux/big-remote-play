@@ -131,6 +131,7 @@ ICONS_DIR = DATA_DIR / "icons"
 IMG_DIR = DATA_DIR / "img"
 SCRIPTS_DIR = DATA_DIR / "scripts"
 STYLE_CSS = DATA_DIR / "ui" / "style.css"
+GAMER_CSS = DATA_DIR / "ui" / "gamer.css"
 LOCALE_DIR = _resolve_locale_dir()
 
 

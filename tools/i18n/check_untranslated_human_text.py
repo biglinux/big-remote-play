@@ -12,6 +12,7 @@ TECHNICAL = {
     "ZeroTier",
     "Sunshine",
     "Moonlight",
+    "Steam Remote Play",
     "Big Remote Play",
     "AMD AMF",
     "Docker Engine",
@@ -24,6 +25,9 @@ TECHNICAL = {
     "VPN",
     "VideoToolbox",
     "4K",
+    # ZeroTier's own names for its two management consoles.
+    "Legacy Central",
+    "New Central",
 }
 
 PLACEHOLDER = re.compile(
@@ -35,6 +39,14 @@ PLACEHOLDER = re.compile(
 )
 URL = re.compile(r"https?://\S+")
 VIDEO_PRESET = re.compile(r"^(?:\d{3,4}p|4K)(?:\s*·\s*\d+\s*FPS\s*·\s*\d+\s*Mbps)?$")
+# Unit symbols shared by every catalog, as in the video presets above.
+UNITS = {"FPS", "Hz", "kbps", "Mbps", "ms"}
+# Reviewed translations that are spelled exactly like the English source.
+SAME_AS_SOURCE = {
+    "da": {"Start ZeroTier", "Variation (jitter): {ms} ms"},
+    "no": {"Start ZeroTier"},
+    "sv": {"Variation (jitter): {ms} ms"},
+}
 SOURCE_LANGUAGE = "en"
 
 
@@ -74,6 +86,8 @@ def human(text: str) -> bool:
     # contains natural language that should have been translated.
     visible = URL.sub(" ", PLACEHOLDER.sub(" ", text))
     words = re.findall(r"[A-Za-zÀ-ÖØ-öø-ÿ']+", visible)
+    if all(word in UNITS for word in words):
+        return False
     if len(words) < 2 or len(visible.strip()) < 8:
         return False
     if text.startswith(("BRP_DATA", "BRP_PHASE")):
@@ -87,8 +101,7 @@ def should_check_catalog(path: Path) -> bool:
     return path.stem != SOURCE_LANGUAGE
 
 
-def main() -> int:
-    root = Path(__file__).resolve().parents[2]
+def findings(root: Path) -> list[tuple[str, str]]:
     failures = []
     for po in sorted((root / "locale").glob("*.po")):
         # English intentionally mirrors msgid. Treating it as untranslated
@@ -96,8 +109,15 @@ def main() -> int:
         if not should_check_catalog(po):
             continue
         for item in entries(po):
+            if item["msgid"] in SAME_AS_SOURCE.get(po.stem, ()):
+                continue
             if human(item["msgid"]) and item.get("msgstr", "") == item["msgid"]:
                 failures.append((po.name, item["msgid"]))
+    return failures
+
+
+def main() -> int:
+    failures = findings(Path(__file__).resolve().parents[2])
     for name, msgid in failures:
         print(f"{name}: untranslated human text: {msgid!r}")
     print(f"checked catalogs; findings={len(failures)}")

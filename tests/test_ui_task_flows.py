@@ -6,6 +6,7 @@ Run under Xvfb and a session D-Bus; no screenshot matching, internet or GPU need
 from __future__ import annotations
 
 from pathlib import Path
+import json
 from types import SimpleNamespace
 from unittest.mock import Mock
 import xml.etree.ElementTree as ET
@@ -21,7 +22,6 @@ from big_remote_play.ui.components import action_row
 from big_remote_play.ui.main_window import MainWindow
 from big_remote_play.ui.host_view import HostView
 from big_remote_play.host.sunshine_manager import SunshineHost
-from big_remote_play.utils.audio import AudioManager
 from big_remote_play.utils.config import Config
 from big_remote_play.utils.moonlight_config import MoonlightConfigManager
 from big_remote_play.utils.network import NetworkDiscovery
@@ -55,9 +55,6 @@ def ui(tmp_path, monkeypatch):
     monkeypatch.setattr(HostView, "detect_gpus", lambda self: [{"label": "Automatic", "encoder": "auto", "adapter": "auto"}])
     monkeypatch.setattr(HostView, "_ensure_sunshine_config", lambda self: None)
     monkeypatch.setattr(SunshineHost, "is_running", lambda self: False)
-    monkeypatch.setattr(AudioManager, "get_passive_sinks", lambda self: [])
-    monkeypatch.setattr(AudioManager, "get_default_sink", lambda self: None)
-    monkeypatch.setattr(AudioManager, "disable_streaming_audio", lambda *args: None)
     monkeypatch.setattr(NetworkDiscovery, "discover_hosts", lambda self, callback, **kwargs: callback([]))
     # The private-network pages probe the real tailscale/zerotier CLIs, each
     # with a ten-second timeout; the UI tests are about the pages, not the CLIs.
@@ -127,7 +124,7 @@ def test_automatic_quality_locks_the_rows_it_owns_and_frees_them_when_turned_off
 
 def test_each_host_settings_sheet_is_reachable_and_preserves_widgets(ui):
     host = ui.host_view
-    assert len(host.settings_dialogs) == 3
+    assert len(host.settings_dialogs) == 2  # the per-app audio mixer sheet is gone
     for dialog in host.settings_dialogs.values():
         dialog.present(host)
         drain()
@@ -138,15 +135,12 @@ def test_each_host_settings_sheet_is_reachable_and_preserves_widgets(ui):
     assert host.platform_row.get_model().get_n_items() == 7
 
 
-def test_mixer_has_an_explanatory_empty_state(ui):
+def test_audio_settings_say_what_is_shared_in_words(ui):
     host = ui.host_view
-    assert host.mixer_empty_row.get_visible()
-    host._apply_mixer_apps([{"id": "4", "name": "Game & voice"}])
-    assert not host.mixer_empty_row.get_visible()
-    assert host.mixer_rows["4"].get_title() == "Game & voice"
-    assert not host.mixer_rows["4"].get_use_markup()
-    host._apply_mixer_apps([])
-    assert host.mixer_empty_row.get_visible()
+    assert host.audio_output_row.get_title() == "Server output"
+    assert host.audio_play_here_row.get_title() == "Also play sound on this computer"
+    assert host.audio_details_row.get_title() == "Technical audio details"
+    assert not hasattr(host, "mixer_rows")  # applications are never moved between outputs
 
 
 def test_guest_page_summarises_quality_and_the_row_opens_the_sheet(ui):
@@ -232,16 +226,18 @@ def test_connect_is_one_page_and_private_network_keeps_the_header_switcher(ui):
     assert not hasattr(guest, "method_stack")
     assert guest.connect_card.is_ancestor(guest)
 
+    # Network sub-pages are titled by the task and return to the hub with Back.
     ui._vpn_choice = "tailscale"
     ui.navigate_to("create_private")
-    assert ui._header_context == "network"
-    assert ui.header_title_stack.get_visible_child_name() == "switcher"
-    assert ui.compact_view_switcher.get_stack() is ui.network_navigation_stack
-    assert ui.network_navigation_stack.get_visible_child_name() == "create_private"
+    assert ui._header_context is None
+    assert ui.content_title.get_title() == "Network details"
+    assert ui.content_title.get_subtitle() == "Tailscale"
+    assert ui.network_back_button.get_visible()
     ui.navigate_to("connect_private")
-    assert ui.network_navigation_stack.get_visible_child_name() == "connect_private"
-    ui.navigate_to("vpn_selector")
-    assert ui.network_navigation_stack.get_visible_child_name() == "vpn_selector"
+    assert ui.content_title.get_title() == "Set up the connection"
+    ui.network_back_button.emit("clicked")
+    assert ui.current_page == "vpn_selector"
+    assert not ui.network_back_button.get_visible()
 
 
 def test_computer_row_is_keyboard_activatable_and_handles_literal_markup(ui):
@@ -425,16 +421,13 @@ def test_network_helper_failure_reenables_connect_and_stops_spinner(ui, monkeypa
     assert not page._return_to_game.get_visible()
 
 
-def test_create_helper_failure_is_delivered_to_completion_callback(ui, monkeypatch):
+def test_helper_failure_is_delivered_to_completion_callback(ui, monkeypatch):
     import big_remote_play.ui.private_network_view as pnv
 
-    monkeypatch.setattr(pnv.CreatePage, "_check_logged_in", lambda self: False)
-    monkeypatch.setattr(pnv.CreatePage, "_is_vpn_installed", lambda self: True)
     monkeypatch.setattr(pnv.threading, "Thread", InlineThread)
     monkeypatch.setattr(pnv.subprocess, "Popen", Mock(side_effect=FileNotFoundError("pkexec")))
-    page = pnv.CreatePage("tailscale", ui)
     done = Mock(return_value=False)
-    page._run_script("create-network_zerotier.sh", [], done)
+    pnv.run_helper_script("install-vpn.sh", [], on_text=Mock(), on_phase=Mock(), on_done=done)
     drain()
     done.assert_called_once_with(127, {})
 
@@ -471,6 +464,106 @@ def test_join_page_states_the_connection_instead_of_asking_to_sign_in_again(ui, 
     assert page._c_title.get_label() == "Already connected"
 
 
+def test_a_connected_tailscale_page_still_offers_another_tailnet(ui, monkeypatch):
+    """`tailscale up` never asks which tailnet: a new sign-in is the way to a friend's."""
+    import big_remote_play.ui.private_network_view as pnv
+
+    monkeypatch.setattr(pnv, "_load_history", lambda: [])
+    monkeypatch.setattr(pnv, "provider_connected", lambda *args: True)
+    monkeypatch.setattr(pnv.threading, "Thread", InlineThread)
+    selected = []
+    monkeypatch.setattr(ui, "_apply_vpn_selection", lambda provider, **kwargs: selected.append((provider, kwargs)))
+    page = pnv.ConnectPage("tailscale", ui)
+    drain()
+    row = page._accounts.another_row
+    assert row.get_visible() and row.get_title() == "Use another tailnet"
+    row.emit("activated")
+    drain()
+    assert selected == [("tailscale", {"add_account": True})]
+
+    for provider in ("headscale", "zerotier"):
+        assert pnv.ConnectPage(provider, ui)._accounts is None
+
+    monkeypatch.setattr(pnv, "provider_connected", lambda *args: False)
+    signed_out = pnv.ConnectPage("tailscale", ui)
+    drain()
+    assert not signed_out._accounts.another_row.get_visible()  # the normal sign-in already asks
+    assert signed_out._accounts.get_visible()  # yet switching back to a saved account stays possible
+
+
+class FakeAccounts:
+    def __init__(self, profiles):
+        from big_remote_play.utils.vpn_accounts import CommandResult
+
+        self.profiles = profiles
+        self.calls = []
+        self.ok = CommandResult(0, "", "")
+
+    def list_tailscale_profiles(self):
+        return self.profiles
+
+    def switch_tailscale_profile(self, profile_id):
+        self.calls.append(("switch", profile_id))
+        return self.ok
+
+    def grant_tailscale_operator(self):
+        self.calls.append(("grant",))
+        return self.ok
+
+
+def _accounts_group(monkeypatch, fake):
+    import big_remote_play.ui.tailscale_accounts as ta
+
+    monkeypatch.setattr(ta.threading, "Thread", InlineThread)
+    changed, toasts = [], []
+    group = ta.TailscaleAccountsGroup(lambda: fake, on_another_tailnet=lambda: None, on_changed=lambda: changed.append(True), show_toast=toasts.append)
+    group.refresh()
+    drain()
+    return group, changed, toasts
+
+
+def _group_rows(group):
+    return [row for row in group._rows]
+
+
+def test_tailscale_accounts_say_which_is_active_and_switch_to_another(ui, monkeypatch):
+    from big_remote_play.utils.vpn_accounts import TailscaleProfile, TailscaleProfiles
+
+    fake = FakeAccounts(
+        TailscaleProfiles(
+            (
+                TailscaleProfile("c50a", "player@example.com", "player@example.com", selected=True),
+                TailscaleProfile("9d2b", "player@example.com", "friends.example.ts.net"),
+                TailscaleProfile("71ee", "", ""),
+            ),
+            switching_supported=True,
+        )
+    )
+    group, changed, _toasts = _accounts_group(monkeypatch, fake)
+    active, other, empty = _group_rows(group)
+    assert any(isinstance(w, Gtk.Label) and w.get_label() == "Active" for w in _walk_widgets(active))
+    assert empty.get_title() == "Not signed in"
+    switch = other.get_activatable_widget()
+    assert switch.get_label() == "Switch"
+    switch.emit("clicked")
+    drain()
+    assert fake.calls == [("switch", "9d2b")]
+    assert changed == [True]
+
+
+def test_tailscale_accounts_ask_for_permission_instead_of_cli_advice(ui, monkeypatch):
+    from big_remote_play.utils.vpn_accounts import TailscaleProfiles
+
+    fake = FakeAccounts(TailscaleProfiles((), switching_supported=True, needs_permission=True))
+    group, _changed, toasts = _accounts_group(monkeypatch, fake)
+    [row] = _group_rows(group)
+    assert "sudo" not in (row.get_title() + row.get_subtitle())
+    row.get_activatable_widget().emit("clicked")
+    drain()
+    assert fake.calls == [("grant",)]
+    assert toasts == ["Tailscale works without your password now"]
+
+
 def test_backup_round_trips_and_refuses_a_crafted_archive(ui, tmp_path, monkeypatch):
     import tarfile
 
@@ -484,7 +577,8 @@ def test_backup_round_trips_and_refuses_a_crafted_archive(ui, tmp_path, monkeypa
     window._write_backup(archive)
     assert archive.exists()
     with tarfile.open(archive) as handle:
-        assert f"{paths.CONFIG_DIR.name}/config.json" in handle.getnames()
+        assert "manifest.json" in handle.getnames()
+        assert "application/config.json" in handle.getnames()
     # The partial file used while writing must not survive.
     assert not archive.with_name(archive.name + ".part").exists()
 
@@ -494,10 +588,11 @@ def test_backup_round_trips_and_refuses_a_crafted_archive(ui, tmp_path, monkeypa
     payload.write_text("x")
     with tarfile.open(hostile, "w:gz") as handle:
         handle.add(payload, arcname=f"{paths.CONFIG_DIR.name}/../escaped")
-    errors = []
-    monkeypatch.setattr(window, "_show_error", lambda heading, body: errors.append(heading))
-    window._restore_backup(hostile)
-    assert errors and not (paths.CONFIG_DIR.parent / "escaped").exists()
+    from big_remote_play.utils.backup_restore import BackupValidationError
+
+    with pytest.raises(BackupValidationError):
+        window._restore_backup(hostile)
+    assert not (paths.CONFIG_DIR.parent / "escaped").exists()
     window.close()
     drain()
 
@@ -520,37 +615,47 @@ def test_background_discovery_keeps_the_chosen_computer(ui, monkeypatch):
     assert guest.selected_host_card_data["ip"] == "10.0.0.2"
 
 
-def test_connected_network_page_shows_devices_not_a_sign_in_form(ui, monkeypatch):
-    import big_remote_play.ui.private_network_view as pnv
+def _wait_for(predicate, timeout=2.0):
+    import time
 
-    monkeypatch.setattr(pnv, "provider_connected", lambda *args: True)
-    monkeypatch.setattr(pnv.CreatePage, "_refresh_networks", lambda self: None)
+    deadline = time.monotonic() + timeout
+    while not predicate() and time.monotonic() < deadline:
+        GLib.MainContext.default().iteration(False)
+        time.sleep(0.01)
+    return predicate()
+
+
+def test_my_network_without_a_client_explains_installation_and_shows_no_address(ui):
+    from big_remote_play.ui.network_dashboard import NetworkDashboardPage
+
     ui._vpn_choice = "tailscale"
     ui.navigate_to("create_private")
-    drain()
     page = ui.content_stack.get_child_by_name("create_private").get_child()
-    page._apply_logged_in(True)
-    drain()
+    assert isinstance(page, NetworkDashboardPage)
+    # The hermetic service reports no client: the page must say so, not hang.
+    assert _wait_for(lambda: page.status is not None)
+    assert page.status.state.value == "unavailable"
+    assert not page._return_to_game.get_visible()
+    # API/account/router administration is intentionally absent in simple mode.
+    assert not page._maintenance_group.get_visible()
 
-    assert page._title.get_label() == "Devices on this private network"
-    assert page._maintenance_group.get_visible()
-    assert page._return_to_game.get_visible()
+
+def test_home_always_opens_the_connection_hub_first(ui):
+    # The hub decides the next step; a remembered method is not the first page.
+    ui._vpn_choice = "zerotier"
+    ui.current_page = "welcome"
+    ui._go_to_private_network_setup()
+    assert ui.current_page == "vpn_selector"
 
 
-def test_network_token_help_is_visible_only_when_missing(ui, monkeypatch):
+def test_join_page_never_prefills_a_secret_from_old_history(ui, monkeypatch):
     import big_remote_play.ui.private_network_view as pnv
 
-    monkeypatch.setattr(pnv, "_load_history", lambda: [])
-    monkeypatch.setattr(pnv.threading, "Thread", InlineThread)
-    monkeypatch.setattr(pnv, "_has_zerotier_api_token", lambda: False)
-    without_token = pnv.ConnectPage("zerotier", ui)
-    drain()
-    assert without_token._token_help_row.get_visible()
-
-    monkeypatch.setattr(pnv, "_has_zerotier_api_token", lambda: True)
-    with_token = pnv.ConnectPage("zerotier", ui)
-    drain()
-    assert not with_token._token_help_row.get_visible()
+    old = [{"vpn": "headscale", "domain": "vpn.example.test", "auth_key": "hskey-auth-OLD"}]
+    monkeypatch.setattr(pnv, "_load_history", lambda: old)
+    page = pnv.ConnectPage("headscale", ui)
+    assert page._e_domain.get_text() == "vpn.example.test"
+    assert page._e_key.get_text() == ""
 
 
 @pytest.mark.parametrize(
@@ -676,7 +781,7 @@ def test_reused_network_page_updates_return_label_for_current_role(ui, monkeypat
 
     monkeypatch.setattr(pnv, "_load_history", lambda: [])
     ui._vpn_choice = "tailscale"
-    for role, title in (("host", "Share my game"), ("guest", "Access shared game")):
+    for role, title in (("host", "Share"), ("guest", "Connect")):
         ui.navigate_to(role)
         ui.navigate_to("connect_private")
         page = ui.connect_private_view.get_child()
@@ -713,7 +818,6 @@ def test_primary_switchers_have_titles_distinct_icons_and_native_tab_role(ui):
     ui._vpn_choice = "tailscale"
     stacks = {
         "host": ui.host_view.view_stack,
-        "network": ui.network_navigation_stack,
     }
     for stack in stacks.values():
         pages = _view_stack_pages(stack)
@@ -723,8 +827,6 @@ def test_primary_switchers_have_titles_distinct_icons_and_native_tab_role(ui):
     assert ui.header_view_switcher.get_accessible_role() == Gtk.AccessibleRole.TAB_LIST
     ui.navigate_to("host")
     assert ui.header_view_switcher.get_stack() is ui.host_view.view_stack
-    ui.navigate_to("create_private")
-    assert ui.header_view_switcher.get_stack() is ui.network_navigation_stack
 
 
 def test_header_switcher_moves_to_bottom_only_in_compact_mode(ui):
@@ -783,3 +885,213 @@ def test_sunshine_without_a_systemd_unit_is_driven_by_its_own_manager(ui, monkey
         GLib.usleep(5000)
     drain()
     started.assert_called_once()
+
+
+# ── Game Window ─────────────────────────────────────────────────────────────
+
+
+def _game(n: int, name: str, *, steam: str = ""):
+    from big_remote_play.host import game_windows as gw
+
+    raw = gw.RawWindow("kwin", "{%08d-2222-3333-4444-555555555555}" % n, name, 4000 + n, app_id=f"steam_app_{n}", width=1280, height=720, decoration=(0, 30, 0, 0))
+    return gw.GameWindow(window=raw, name=name, launch=gw.Launch(launcher="steam", steam_app_id=steam, proton=True, wine=True), is_game=True)
+
+
+@pytest.fixture
+def open_games(monkeypatch):
+    """The games KWin reports as open; each refresh reads this list again."""
+    from big_remote_play.host import game_windows as gw
+
+    state = {"windows": [], "refreshes": 0}
+
+    def refresh(backend, **kwargs):
+        state["refreshes"] += 1
+        return list(state["windows"])
+
+    monkeypatch.setattr(gw, "capture_support", lambda *args, **kwargs: gw.CaptureSupport("kwin"))
+    monkeypatch.setattr(gw, "refresh", refresh)
+    return state
+
+
+def _refreshed(host) -> None:
+    host.refresh_game_windows()
+    assert _wait_for(lambda: not host._game_window_busy)
+
+
+def _choose(host, name: str) -> None:
+    row = next(row for row in host._game_window_rows if row.get_title() == name)
+    row.get_activatable_widget().set_active(True)
+
+
+def test_game_window_is_a_source_and_needs_an_open_game_before_starting(ui, open_games):
+    host = ui.host_view
+    model = host.game_mode_row.get_model()
+    assert [model.get_string(i) for i in range(model.get_n_items())] == ["Full Desktop", "Game Window", "Steam", "Lutris", "Custom App"]
+    host._select_source("game_window")
+    assert host.game_window_expander.get_visible()
+    assert _wait_for(lambda: open_games["refreshes"] >= 1 and not host._game_window_busy)
+    [empty] = host._game_window_rows
+    assert empty.get_title() == "No game windows found"
+    assert "Refresh" in empty.get_subtitle()
+    # No valid source: sharing cannot start, and nothing falls back to the desktop.
+    assert not host.overview_start_button.get_sensitive()
+    with pytest.raises(ValueError):
+        host._collect_hosting_config()
+    assert "stay on this computer" in host.game_group.get_description()
+
+
+def test_refresh_adds_new_games_drops_closed_ones_and_keeps_the_choice(ui, open_games):
+    host = ui.host_view
+    host._select_source("game_window")
+    open_games["windows"] = [_game(1, "Alpha"), _game(2, "Beta")]
+    _refreshed(host)
+    _choose(host, "Beta")
+    assert host._selected_game_window().name == "Beta"
+    assert host.overview_start_button.get_sensitive()
+    assert host.game_window_expander.get_subtitle() == "Beta"
+
+    open_games["windows"] = [_game(3, "Gamma"), _game(2, "Beta")]
+    _refreshed(host)
+    assert [row.get_title() for row in host._game_window_rows] == ["Gamma", "Beta"]
+    assert host._selected_game_window().name == "Beta"
+
+    open_games["windows"] = [_game(3, "Gamma")]
+    _refreshed(host)
+    assert host._selected_game_window() is None
+    assert not host.overview_start_button.get_sensitive()
+    assert host.game_window_expander.get_subtitle() == "Choose the game to share"
+
+
+def test_refresh_button_has_a_name_and_never_blocks_the_window(ui, open_games):
+    host = ui.host_view
+    button = host.game_window_refresh_button
+    assert button.get_tooltip_text() == "Refresh"
+    host._select_source("game_window")
+    assert _wait_for(lambda: not host._game_window_busy)
+    host.refresh_game_windows()
+    # The list is read by a worker; the GTK thread returns at once.
+    assert host._game_window_busy
+    assert _wait_for(lambda: not host._game_window_busy)
+    assert button.get_sensitive()
+
+
+def test_restarted_game_is_found_again_only_by_its_saved_identity(ui, open_games):
+    host = ui.host_view
+    host._select_source("game_window")
+    open_games["windows"] = [_game(1, "Alpha", steam="42")]
+    _refreshed(host)
+    _choose(host, "Alpha")
+    host.save_host_settings()
+    saved = host.config.get("host")
+    assert saved["source"] == "game_window" and saved["game_window_identity"] == "steam:42"
+    assert "{" not in json.dumps(saved.get("game_window_identity"))  # no window id is stored
+
+    # A new window of the same Steam game is chosen again; an unknown one is not.
+    open_games["windows"] = [_game(7, "Alpha", steam="42")]
+    _refreshed(host)
+    assert host._selected_game_window().window.handle.startswith("{00000007")
+    open_games["windows"] = [_game(8, "Other")]
+    _refreshed(host)
+    assert host._selected_game_window() is None
+
+
+def test_old_saved_positions_keep_their_source(ui):
+    host = ui.host_view
+    for position, key in ((0, "desktop"), (1, "steam"), (2, "lutris"), (3, "custom")):
+        host.config.set("host", {"mode_idx": position})
+        host.load_settings()
+        assert host._source() == key
+
+
+def test_game_window_shares_only_its_private_screen(ui, open_games, monkeypatch):
+    from big_remote_play.host import window_capture
+
+    host = ui.host_view
+    host._select_source("game_window")
+    open_games["windows"] = [_game(1, "Alpha")]
+    _refreshed(host)
+    _choose(host, "Alpha")
+    cfg = host._collect_hosting_config()
+    sunshine = cfg["sunshine_config"]
+    assert sunshine["capture"] == "kwin" and sunshine["output_name"] is None
+    assert cfg["game_window"]["spec"].handle == _game(1, "Alpha").window.handle
+
+    started = window_capture.Started(4321, "brp-game-0123456789ab", "/dev/dri/renderD129", 1280, 720)
+    monkeypatch.setattr(window_capture, "start_helper", lambda spec: (started, None))
+    configured, starts = [], []
+    monkeypatch.setattr(NetworkDiscovery, "start_pin_listener", lambda *a: lambda: None)
+    monkeypatch.setattr(host.sunshine, "ensure_desktop_app", lambda: True)
+    monkeypatch.setattr(host.sunshine, "configure", lambda values: configured.append(dict(values)) or True)
+    monkeypatch.setattr(host.sunshine, "start", lambda **kwargs: starts.append(kwargs) or (True, None))
+    monkeypatch.setattr(GLib, "idle_add", lambda *a, **kw: 0)
+    host._run_start_hosting(cfg)
+    assert starts == [{"wayland_display": "brp-game-0123456789ab"}]
+    assert configured[0]["capture"] == "kwin" and configured[0]["adapter_name"] == "/dev/dri/renderD129"
+
+
+def test_unconfirmed_game_window_never_starts_the_server(ui, open_games, monkeypatch):
+    from big_remote_play.host import window_capture
+
+    host = ui.host_view
+    host._select_source("game_window")
+    open_games["windows"] = [_game(1, "Alpha")]
+    _refreshed(host)
+    _choose(host, "Alpha")
+    cfg = host._collect_hosting_config()
+
+    def refuse(spec):
+        raise window_capture.CaptureError("portal-cancelled")
+
+    errors, starts = [], []
+    monkeypatch.setattr(window_capture, "start_helper", refuse)
+    monkeypatch.setattr(NetworkDiscovery, "start_pin_listener", lambda *a: lambda: None)
+    monkeypatch.setattr(host.sunshine, "ensure_desktop_app", lambda: True)
+    monkeypatch.setattr(host.sunshine, "start", lambda **kwargs: starts.append(kwargs) or (True, None))
+    monkeypatch.setattr(GLib, "idle_add", lambda callback, *args: errors.append(args) if callback == host._on_hosting_error else 0)
+    host._run_start_hosting(cfg)
+    assert starts == []
+    assert errors == [("The game window was not confirmed, so sharing did not start.",)]
+
+
+def test_closed_game_stops_sharing_and_never_falls_back_to_the_desktop(ui, monkeypatch):
+    from big_remote_play.host import window_capture
+
+    host = ui.host_view
+    host.is_hosting = True
+    host._game_window_session = {"name": "Alpha"}
+    monkeypatch.setattr(window_capture, "read_state", lambda path=None: {"state": "ended", "reason": "window-closed", "pid": 1})
+    stops, starts, dialogs = [], [], []
+    monkeypatch.setattr(host, "stop_hosting", lambda *a: stops.append(True))
+    monkeypatch.setattr(host, "start_hosting", lambda *a: starts.append(True))
+    monkeypatch.setattr(host, "show_error_dialog", lambda title, message: dialogs.append((title, message)))
+    assert host._check_capture() is False
+    assert stops == [True] and starts == []
+    assert dialogs[0][0] == "The game window closed"
+    assert host._game_window_session is None
+    host.is_hosting = False
+
+
+def test_game_window_session_is_described_by_the_game(ui):
+    host = ui.host_view
+    host._game_window_session = {"name": "Alpha"}
+    assert host._describe_session().startswith("Game Window: Alpha")
+    host._game_window_session = None
+
+
+def test_a_share_that_ended_while_the_window_was_closed_is_explained_once(ui, monkeypatch):
+    import time as clock
+
+    from big_remote_play.host import window_capture
+
+    host = ui.host_view
+    dialogs = []
+    monkeypatch.setattr(host, "show_error_dialog", lambda title, message: dialogs.append(title))
+    monkeypatch.setattr(window_capture, "stop_helper", lambda state=None: None)
+    window_capture.write_state({"version": 1, "state": "ended", "reason": "window-closed", "pid": 1, "ended_at": clock.time()})
+    host._recover_game_window_capture()
+    assert _wait_for(lambda: dialogs, timeout=3)
+    assert dialogs == ["The game window closed"]
+    assert window_capture.read_state() is None
+    host._recover_game_window_capture()
+    drain()
+    assert dialogs == ["The game window closed"]

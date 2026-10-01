@@ -51,7 +51,7 @@ def test_discover_is_single_column_with_guidance() -> None:
     assert "network blocks discovery" in src
     assert "I have a search code" in src
     assert "I know the IP address" in src
-    assert '_("Internet play")' in src
+    assert '_("Play over the internet")' in src
     assert "Choose the path that matches" not in src
     assert ".decision-card" not in stylesheet
 
@@ -71,14 +71,18 @@ def test_quality_choice_starts_at_automatic_inside_the_image_dialog() -> None:
 
 def test_service_status_buttons_do_not_shadow_vpn_card_names() -> None:
     src = MAIN.read_text()
+    card = Path("src/big_remote_play/ui/service_status_card.py").read_text()
     assert "label_text, desc])" not in src
     # One state per row, spelled out for screen readers instead of colour-only.
     assert "Service status: {}" not in src
-    # The state lives in the ActionRow subtitle, which AT-SPI reads out.
-    assert 'Adw.ActionRow(title=label_text, subtitle=_("Checking..."))' in src
-    assert "row.set_subtitle(text)" in src
-    assert 'status_list.add_css_class("boxed-list")' in src
-    assert '_("Stopped"), "status-idle"' in src
+    # The reusable card keeps its state in the ActionRow subtitle and AT-SPI
+    # description (behaviour: tests/test_service_status_cards.py); the state
+    # icon is only redundant visual reinforcement.
+    assert "self.set_subtitle(" in card
+    assert "Gtk.AccessibleProperty.DESCRIPTION" in card
+    assert 'status_list.add_css_class("brp-service-list")' in src
+    assert "streaming_presentation(" in src
+    assert "provider_presentation(status)" in src
     assert "_refresh_service_state" in src
 
 
@@ -88,10 +92,9 @@ def test_tailscale_browser_login_is_offered_once() -> None:
     # the auth key field.
     src = PNV.read_text()
     assert "Sign in with browser" in src
-    # "My network" (CreatePage) no longer builds an auth-key field of its own.
-    create_page = src.split("class CreatePage", 1)[1].split("class ConnectPage", 1)[0]
-    assert 'title=_("Auth Key")' not in create_page
-    assert "_defers_to_join" in create_page
+    dashboard = Path("src/big_remote_play/ui/network_dashboard.py").read_text()
+    assert "Auth Key" not in dashboard
+    assert 'navigate_to("connect_private")' in dashboard
     assert "_run_tailscale_login" not in src
 
 
@@ -105,14 +108,14 @@ def test_pin_copy_explains_network_dependency_not_specific_vpn() -> None:
 
 def test_vpn_form_install_only_when_missing() -> None:
     src = PNV.read_text()
-    assert "_is_vpn_installed" in src
-    assert "_build_install_buttons" in src
+    assert "class InstallSection" in src
     # Explicit install action (pacman) gated on pacman availability; manual link otherwise.
     assert "has_pacman" in src
     assert "_on_install_clicked" in src
     assert "install-vpn.sh" in src
-    # Rebuild to the connect view after a successful install.
-    assert "_rebuild" in src
+    # The dashboard shows it only for a missing client and refreshes afterwards.
+    dashboard = Path("src/big_remote_play/ui/network_dashboard.py").read_text()
+    assert "InstallSection(self.vpn_id, self.main_window, on_installed=self.refresh)" in dashboard
 
 
 def test_install_supports_pacman_and_flatpak_detection() -> None:
@@ -140,8 +143,8 @@ def test_no_bigsudo_uses_pkexec_for_cross_distro() -> None:
         assert "bigsudo" not in src, f"{p} still uses bigsudo"
     assert "pkexec" in PNV.read_text()
     # Privilege-elevation scripts no longer reference the BigLinux-only helper.
-    for s in ("install-vpn.sh", "create-network_headscale.sh"):
-        assert "bigsudo" not in Path(f"usr/share/big-remote-play/scripts/{s}").read_text()
+    for script in Path("usr/share/big-remote-play/scripts").glob("*.sh"):
+        assert "bigsudo" not in script.read_text(), script.name
 
 
 def test_connect_page_asks_one_question_and_exposes_task_specific_settings() -> None:
