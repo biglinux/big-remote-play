@@ -20,7 +20,7 @@ from big_remote_play.private_network.diagnostics import local_network_facts
 from big_remote_play.private_network.models import ConnectionState, ProviderCapabilities, ProviderId, ProviderStatus, Recovery
 from big_remote_play.private_network.service import default_service
 from big_remote_play.private_network.zerotier_api import choose_subnet
-from big_remote_play.utils.i18n import _
+from big_remote_play.utils.i18n import _, ngettext
 from big_remote_play.utils.uri import open_uri
 
 from .components import action_row, boxed_rows, icon_tile, note
@@ -204,7 +204,15 @@ class NetworkDashboardPage(Gtk.Box):
             flow.append(button)
         widgets: list[Gtk.Widget] = [info, flow]
         if self.advanced and self.provider is ProviderId.ZEROTIER and len(status.networks) > 1:
-            widgets.append(note(_("This computer is in {count} ZeroTier networks. Manage network lists them all.").format(count=len(status.networks))))
+            widgets.append(
+                note(
+                    ngettext(
+                        "This computer is in {count} ZeroTier network. Manage network lists it.",
+                        "This computer is in {count} ZeroTier networks. Manage network lists them all.",
+                        len(status.networks),
+                    ).format(count=len(status.networks))
+                )
+            )
         widgets.append(self._technical(status))
         return widgets
 
@@ -452,7 +460,7 @@ class NetworkDashboardPage(Gtk.Box):
 
     def _run_logout(self, btn) -> None:
         btn.set_sensitive(False)
-        self._toast(_("Disconnecting..."))
+        self._toast(_("Disconnecting…"))
 
         def run():
             if self.provider is ProviderId.ZEROTIER:

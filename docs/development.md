@@ -141,14 +141,14 @@ Known host-tool gotcha: with AppStream 1.1.6 and glycin 2.x on Arch, `appstreamc
 
 ## Translations
 
-Visible text belongs in gettext. After an intentional source-string or PO change:
+English is the source language and visible text belongs in gettext (`_()`, `ngettext()`, `pgettext()`). After an intentional source-string or PO change:
 
 ```bash
-python3 tools/i18n/update_catalogs.py
-python3 tools/i18n/validate_catalogs.py
+make update-po    # merge catalogs, rebuild MO files and the translated desktop/metainfo
+make check-i18n   # catalogs, copied English and hardcoded visible text
 ```
 
-Commit PO and MO changes together. Do not copy Brazilian Portuguese into European Portuguese or Simplified Chinese into Traditional Chinese. See [translations](translations.md) and `tools/i18n/AGENTS.md`.
+Translate the new messages in every catalog before committing. Commit sources, PO, MO and the regenerated metadata together. Do not copy Brazilian Portuguese into European Portuguese or Simplified Chinese into Traditional Chinese. See [translations](translations.md) and `tools/i18n/AGENTS.md`.
 
 ## UI changes
 

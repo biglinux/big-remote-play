@@ -105,7 +105,7 @@ class TailscaleAccountsGroup(Adw.PreferencesGroup):
             row.add_suffix(badge)
         elif switching_supported:
             button = Gtk.Button(label=_("Switch"), valign=Gtk.Align.CENTER)
-            button.update_property([Gtk.AccessibleProperty.LABEL], [_("Switch to {}").format(title)])
+            button.update_property([Gtk.AccessibleProperty.LABEL], [_("Switch to {name}").format(name=title)])
             button.connect("clicked", lambda _button, item=profile, name=title: self._switch(item, name))
             row.add_suffix(button)
             row.set_activatable_widget(button)
@@ -123,7 +123,7 @@ class TailscaleAccountsGroup(Adw.PreferencesGroup):
     # -- actions -----------------------------------------------------------
 
     def _switch(self, profile: TailscaleProfile, name: str) -> None:
-        self._show_toast(_("Switching to {}…").format(name))
+        self._show_toast(_("Switching to {name}…").format(name=name))
         self._run(lambda manager: manager.switch_tailscale_profile(profile.profile_id), _("Account switched"))
 
     def _run(self, action: Callable[[VPNAccountManager], object], done_text: str) -> None:

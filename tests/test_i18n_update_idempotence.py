@@ -18,6 +18,9 @@ def _hashes(root: Path) -> dict[str, str]:
     paths = [root / "locale/big-remote-play.pot"]
     paths.extend(sorted((root / "locale").glob("*.po")))
     paths.extend(sorted((root / "usr/share/locale").glob("*/LC_MESSAGES/big-remote-play.mo")))
+    # The translated desktop entry and metainfo are generated from the catalogs.
+    paths.extend(sorted((root / "usr/share/applications").glob("*.desktop")))
+    paths.extend(sorted((root / "usr/share/metainfo").glob("*.xml")))
     return {str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
 
 

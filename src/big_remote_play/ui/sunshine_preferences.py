@@ -550,7 +550,7 @@ class SunshineSettings:
     def get_qsv_options(self):
         return [
             ("qsv_preset", _("QuickSync Preset"), "combo", "medium", ["veryfast", "faster", "fast", "medium", "slow", "slower", "slowest"], _("Performance preset")),
-            ("qsv_coder", _("QuickSync Coder (H264)"), "combo", "auto", [("auto", _("Auto")), ("cabac", "CABAC"), ("cavlc", "CAVLC")], _("Entropy coding mode")),
+            ("qsv_coder", _("QuickSync Coder (H264)"), "combo", "auto", [("auto", _("Automatic")), ("cabac", "CABAC"), ("cavlc", "CAVLC")], _("Entropy coding mode")),
             ("qsv_slow_hevc", _("Allow Slow HEVC Encoding"), "switch", "false", None, _("This can enable HEVC encoding on older Intel GPUs, at the cost of higher GPU usage and worse performance.")),
         ]
 
@@ -562,11 +562,11 @@ class SunshineSettings:
                 "combo",
                 "ultralowlatency",
                 [
-                    ("transcoding", "Transcoding"),
-                    ("webcam", "Webcam"),
-                    ("lowlatency_high_quality", "Low Latency High Quality"),
-                    ("lowlatency", "Low Latency"),
-                    ("ultralowlatency", "Ultra Low Latency"),
+                    ("transcoding", _("Transcoding")),
+                    ("webcam", _("Webcam")),
+                    ("lowlatency_high_quality", _("Low latency, high quality")),
+                    ("lowlatency", _("Low latency")),
+                    ("ultralowlatency", _("Ultra-low latency")),
                 ],
                 _(
                     "This sets the base encoding profile. All options presented below will override a subset of the usage profile, but there are additional hidden settings applied that cannot be configured elsewhere."
@@ -577,7 +577,7 @@ class SunshineSettings:
                 _("AMF Rate Control"),
                 "combo",
                 "vbr_latency",
-                [("cbr", "CBR"), ("cqp", "CQP"), ("vbr_latency", "VBR Latency"), ("vbr_peak", "VBR Peak")],
+                [("cbr", "CBR"), ("cqp", "CQP"), ("vbr_latency", _("VBR, latency constrained")), ("vbr_peak", _("VBR, peak constrained"))],
                 _(
                     "This controls the rate control method to ensure we are not exceeding the client bitrate target. 'cqp' is not suitable for bitrate targeting, and other options besides 'vbr_latency' depend on HRD Enforcement to help constrain bitrate overflows."
                 ),
@@ -608,20 +608,20 @@ class SunshineSettings:
                 _("AMF Coder (H264)"),
                 "combo",
                 "auto",
-                [("auto", _("Auto")), ("cabac", "CABAC"), ("cavlc", "CAVLC")],
+                [("auto", _("Automatic")), ("cabac", "CABAC"), ("cavlc", "CAVLC")],
                 _("Allows you to select the entropy encoding to prioritize quality or encoding speed. H.264 only."),
             ),
         ]
 
     def get_vt_options(self):
         return [
-            ("vt_coder", _("VideoToolbox Coder"), "combo", "auto", [("auto", _("Auto")), ("cabac", "CABAC"), ("cavlc", "CAVLC")], _("Entropy coding mode")),
+            ("vt_coder", _("VideoToolbox Coder"), "combo", "auto", [("auto", _("Automatic")), ("cabac", "CABAC"), ("cavlc", "CAVLC")], _("Entropy coding mode")),
             (
                 "vt_software",
                 _("VideoToolbox Software Encoding"),
                 "combo",
                 "auto",
-                [("auto", _("Auto")), ("disabled", _("Disabled")), ("allowed", _("Allowed")), ("forced", _("Forced"))],
+                [("auto", _("Automatic")), ("disabled", _("Disabled")), ("allowed", _("Allowed")), ("forced", _("Forced"))],
                 _("Allow fallback to software encoding"),
             ),
             ("vt_realtime", _("VideoToolbox Realtime Encoding"), "switch", "true", None, _("Realtime encoding priority")),
@@ -646,7 +646,15 @@ class SunshineSettings:
                 _("SW Tune"),
                 "combo",
                 "zerolatency",
-                [("film", "Film"), ("animation", "Animation"), ("grain", "Grain"), ("stillimage", "Still Image"), ("fastdecode", "Fast Decode"), ("zerolatency", "Zero Latency")],
+                [
+                    # TRANSLATORS: x264 tuning presets for kinds of picture.
+                    ("film", _("Film")),
+                    ("animation", _("Animation")),
+                    ("grain", _("Film grain")),
+                    ("stillimage", _("Still image")),
+                    ("fastdecode", _("Fast decoding")),
+                    ("zerolatency", _("Zero latency")),
+                ],
                 _("Tuning options, which are applied after the preset. Defaults to zerolatency."),
             ),
         ]

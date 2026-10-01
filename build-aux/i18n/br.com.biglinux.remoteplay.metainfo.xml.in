@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<component type="desktop-application">
+  <id>br.com.biglinux.remoteplay</id>
+  <name translate="no">Big Remote Play</name>
+  <summary>Play games together over a local or private network</summary>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <description>
+    <p>
+      Big Remote Play guides a host and guest through game streaming with
+      Sunshine and Moonlight. It also helps connect distant computers through
+      an existing VPN or a guided Tailscale, ZeroTier, or Headscale setup.
+    </p>
+    <ul>
+      <li>Share the desktop or a single game from this computer with Sunshine</li>
+      <li>Connect from another computer with Moonlight and pair it with a PIN</li>
+      <li>Play over the internet through Tailscale, ZeroTier, or Headscale</li>
+      <li>On KDE Plasma, share only the game window and keep the rest of the desktop private</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">br.com.biglinux.remoteplay.desktop</launchable>
+  <url type="homepage">https://github.com/biglinux/big-remote-play</url>
+  <url type="bugtracker">https://github.com/biglinux/big-remote-play/issues</url>
+  <developer id="br.com.biglinux">
+    <name translate="no">BigLinux Team</name>
+  </developer>
+  <categories>
+    <category>Game</category>
+    <category>Network</category>
+  </categories>
+  <provides>
+    <binary>big-remote-play</binary>
+  </provides>
+  <releases>
+    <release version="0.0.0" date="1970-01-01">
+      <description translate="no">
+        <p>Improves guided setup, adaptive layouts, accessibility, and secure credential handling.</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1" />
+</component>

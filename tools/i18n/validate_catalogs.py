@@ -247,6 +247,30 @@ def _validate_checked_in_mo(language: str, entries: list[dict[str, Any]], errors
         errors.append(f"{language}: checked-in MO differs from PO (missing={missing}, extra={extra}, changed={changed})")
 
 
+def _valid_keyword_list(value: str) -> bool:
+    """Desktop-entry Keywords: non-empty terms, each followed by ';'."""
+    return value.endswith(";") and all(term.strip() == term and term for term in value[:-1].split(";"))
+
+
+def _validate_generated_metadata(languages: list[str], temporary_dir: Path, errors: list[str]) -> None:
+    """The checked-in desktop entry and metainfo must be what the catalogs produce."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import update_catalogs
+
+    catalogs = temporary_dir / "metadata-catalogs"
+    catalogs.mkdir()
+    for language in languages:
+        shutil.copyfile(LOCALE_DIR / f"{language}.po", catalogs / f"{language}.po")
+    try:
+        generated = update_catalogs.generate_metadata(catalogs, languages, temporary_dir / "metadata")
+    except (OSError, subprocess.CalledProcessError) as error:
+        errors.append(f"could not generate the translated desktop entry and metainfo: {error}")
+        return
+    for destination, output in generated.items():
+        if not destination.is_file() or destination.read_bytes() != output.read_bytes():
+            errors.append(f"{destination.relative_to(ROOT)} is not up to date with the catalogs; run tools/i18n/update_catalogs.py")
+
+
 def main() -> int:
     errors: list[str] = []
 
@@ -352,6 +376,8 @@ def main() -> int:
                     if not translated:
                         errors.append(f"{language}: untranslated entry: {message_id[:90]!r} form {index}")
                         continue
+                    if message_id.endswith(";") and ";" in message_id[:-1] and not _valid_keyword_list(translated):
+                        errors.append(f"{language}: desktop keywords must be words separated by ';' and end with ';': {translated[:90]!r}")
                     source = message_id if index == 0 or entry.get("plural") is None else entry["plural"]
                     if _signature(source) != _signature(translated):
                         errors.append(f"{language}: placeholder mismatch in {message_id[:90]!r} form {index}")
@@ -380,6 +406,9 @@ def main() -> int:
                 elif not output.is_file() or output.stat().st_size == 0:
                     errors.append(f"{language}: msgfmt produced no catalog")
 
+        if msgfmt:
+            _validate_generated_metadata(languages, temporary_dir, errors)
+
     for first, second in (("pt", "pt_BR"), ("zh_CN", "zh_TW")):
         if fingerprints.get(first) == fingerprints.get(second):
             errors.append(f"{first} and {second} have identical translations")
@@ -400,7 +429,7 @@ def main() -> int:
         return 1
 
     suffix = " with msgfmt" if msgfmt else " (msgfmt not available; structural checks only)"
-    print(f"OK: {len(languages)} catalogs match the template, preserve placeholders, match their runtime MOs, and pass regional checks{suffix}.")
+    print(f"OK: {len(languages)} catalogs match the template, preserve placeholders, match their runtime MOs and translated metadata, and pass regional checks{suffix}.")
     return 0
 
 
