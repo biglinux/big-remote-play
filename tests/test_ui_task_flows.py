@@ -475,22 +475,93 @@ def test_a_connected_tailscale_page_still_offers_another_tailnet(ui, monkeypatch
     monkeypatch.setattr(ui, "_apply_vpn_selection", lambda provider, **kwargs: selected.append((provider, kwargs)))
     page = pnv.ConnectPage("tailscale", ui)
     drain()
-    assert page._other_tailnet.get_visible()
-    row = page._other_tailnet.get_first_child()
-    assert row.get_title() == "Use another tailnet"
+    row = page._accounts.another_row
+    assert row.get_visible() and row.get_title() == "Use another tailnet"
     row.emit("activated")
     drain()
     assert selected == [("tailscale", {"add_account": True})]
 
     for provider in ("headscale", "zerotier"):
-        other = pnv.ConnectPage(provider, ui)
-        drain()
-        assert not other._other_tailnet.get_visible()
+        assert pnv.ConnectPage(provider, ui)._accounts is None
 
     monkeypatch.setattr(pnv, "provider_connected", lambda *args: False)
     signed_out = pnv.ConnectPage("tailscale", ui)
     drain()
-    assert not signed_out._other_tailnet.get_visible()  # the normal sign-in already asks
+    assert not signed_out._accounts.another_row.get_visible()  # the normal sign-in already asks
+    assert signed_out._accounts.get_visible()  # yet switching back to a saved account stays possible
+
+
+class FakeAccounts:
+    def __init__(self, profiles):
+        from big_remote_play.utils.vpn_accounts import CommandResult
+
+        self.profiles = profiles
+        self.calls = []
+        self.ok = CommandResult(0, "", "")
+
+    def list_tailscale_profiles(self):
+        return self.profiles
+
+    def switch_tailscale_profile(self, profile_id):
+        self.calls.append(("switch", profile_id))
+        return self.ok
+
+    def grant_tailscale_operator(self):
+        self.calls.append(("grant",))
+        return self.ok
+
+
+def _accounts_group(monkeypatch, fake):
+    import big_remote_play.ui.tailscale_accounts as ta
+
+    monkeypatch.setattr(ta.threading, "Thread", InlineThread)
+    changed, toasts = [], []
+    group = ta.TailscaleAccountsGroup(lambda: fake, on_another_tailnet=lambda: None, on_changed=lambda: changed.append(True), show_toast=toasts.append)
+    group.refresh()
+    drain()
+    return group, changed, toasts
+
+
+def _group_rows(group):
+    return [row for row in group._rows]
+
+
+def test_tailscale_accounts_say_which_is_active_and_switch_to_another(ui, monkeypatch):
+    from big_remote_play.utils.vpn_accounts import TailscaleProfile, TailscaleProfiles
+
+    fake = FakeAccounts(
+        TailscaleProfiles(
+            (
+                TailscaleProfile("c50a", "player@example.com", "player@example.com", selected=True),
+                TailscaleProfile("9d2b", "player@example.com", "friends.example.ts.net"),
+                TailscaleProfile("71ee", "", ""),
+            ),
+            switching_supported=True,
+        )
+    )
+    group, changed, _toasts = _accounts_group(monkeypatch, fake)
+    active, other, empty = _group_rows(group)
+    assert any(isinstance(w, Gtk.Label) and w.get_label() == "Active" for w in _walk_widgets(active))
+    assert empty.get_title() == "Not signed in"
+    switch = other.get_activatable_widget()
+    assert switch.get_label() == "Switch"
+    switch.emit("clicked")
+    drain()
+    assert fake.calls == [("switch", "9d2b")]
+    assert changed == [True]
+
+
+def test_tailscale_accounts_ask_for_permission_instead_of_cli_advice(ui, monkeypatch):
+    from big_remote_play.utils.vpn_accounts import TailscaleProfiles
+
+    fake = FakeAccounts(TailscaleProfiles((), switching_supported=True, needs_permission=True))
+    group, _changed, toasts = _accounts_group(monkeypatch, fake)
+    [row] = _group_rows(group)
+    assert "sudo" not in (row.get_title() + row.get_subtitle())
+    row.get_activatable_widget().emit("clicked")
+    drain()
+    assert fake.calls == [("grant",)]
+    assert toasts == ["Tailscale works without your password now"]
 
 
 def test_backup_round_trips_and_refuses_a_crafted_archive(ui, tmp_path, monkeypatch):
