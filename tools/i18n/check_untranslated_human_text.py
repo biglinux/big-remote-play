@@ -43,8 +43,15 @@ VIDEO_PRESET = re.compile(r"^(?:\d{3,4}p|4K)(?:\s*·\s*\d+\s*FPS\s*·\s*\d+\s*Mb
 UNITS = {"FPS", "Hz", "kbps", "Mbps", "ms"}
 # Reviewed translations that are spelled exactly like the English source.
 SAME_AS_SOURCE = {
-    "da": {"Start ZeroTier", "Variation (jitter): {ms} ms"},
+    "da": {"Software (CPU)", "Start ZeroTier", "Variation (jitter): {ms} ms"},
+    "de": {"Software (CPU)"},
+    "es": {"Software (CPU)", "Vulkan (experimental)"},
+    "it": {"Software (CPU)"},
+    "nl": {"Software (CPU)"},
     "no": {"Start ZeroTier"},
+    "pt": {"Software (CPU)", "Vulkan (experimental)"},
+    "pt_BR": {"Software (CPU)", "Vulkan (experimental)"},
+    "ro": {"Software (CPU)", "Vulkan (experimental)"},
     "sv": {"Variation (jitter): {ms} ms"},
 }
 SOURCE_LANGUAGE = "en"

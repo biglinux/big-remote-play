@@ -238,7 +238,7 @@ class VPNAccountsDialog:
             "NOT_FOUND": _("Network not found"),
             "PORT_ERROR": _("ZeroTier service error"),
         }
-        return labels.get(status, _("Status: {}").format(status or _("Unknown")))
+        return labels.get(status, _("Status: {status}").format(status=status or _("Unknown")))
 
     def _grant_tailscale(self) -> None:
         def run() -> None:
@@ -248,7 +248,7 @@ class VPNAccountsDialog:
         threading.Thread(target=run, daemon=True).start()
 
     def _run_profile_switch(self, profile: TailscaleProfile) -> None:
-        self.show_toast(_("Switching to {}…").format(profile.display_name))
+        self.show_toast(_("Switching to {name}…").format(name=profile.display_name))
 
         def run() -> None:
             result = self.manager.switch_tailscale_profile(profile.profile_id)
@@ -297,7 +297,7 @@ class VPNAccountsDialog:
         threading.Thread(target=run, daemon=True).start()
 
     def _operation_finished(self, success: bool, success_message: str, detail: str) -> bool:
-        self.show_toast(success_message if success else (_("Operation failed: {}").format(detail.strip() or _("Unknown error"))))
+        self.show_toast(success_message if success else (_("Operation failed: {error}").format(error=detail.strip() or _("Unknown error"))))
         self.refresh()
         return False
 

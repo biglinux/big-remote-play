@@ -28,8 +28,8 @@ def test_server_secret_icon_buttons_have_accessible_names() -> None:
     assert masked_row_block.count("name_icon_button(") == 2
     assert "Gtk.AccessibleProperty.LABEL" in components
     assert "Gtk.AccessibleProperty.DESCRIPTION" in components
-    assert '"Reveal {}"' in masked_row_block
-    assert '"Copy {}"' in masked_row_block
+    assert '"Reveal {field}"' in masked_row_block
+    assert '"Copy {field}"' in masked_row_block
 
 
 def test_copy_pin_button_has_accessible_name() -> None:

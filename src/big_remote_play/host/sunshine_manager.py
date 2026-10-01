@@ -191,12 +191,12 @@ class SunshineHost:
             # A server already running sees the desktop: never report it as
             # the private Game Window server.
             if wayland_display:
-                return False, "Sunshine is already running"
-            return True, "Already running"
+                return False, _("Sunshine is already running.")
+            return True, _("Sunshine is already running.")
 
         sc = shutil.which("sunshine")
         if not sc:
-            return False, "Sunshine executable not found"
+            return False, _("Sunshine executable not found")
         try:
             config_file = self.config_dir / "sunshine.conf"
             # Prepare environment
@@ -265,28 +265,28 @@ class SunshineHost:
                 except Exception:
                     pass
 
-                self.log_file.write(_("Sunshine failed to start (Exit code {}).\n").format(exit_code))
+                self.log_file.write(_("Sunshine failed to start (exit code {code}).\n").format(code=exit_code))
                 if error_detail:
-                    _log.error(_("Sunshine failed to start: {}").format(error_detail))
+                    _log.error("Sunshine failed to start: %s", error_detail)
                 else:
-                    _log.error(_("Sunshine failed to start (Exit code {}). Check logs.").format(exit_code))
+                    _log.error("Sunshine failed to start (Exit code %s). Check logs.", exit_code)
 
                 self.log_file.close()
                 del self.log_file
                 self.process = None
                 self.pid = None
-                return False, error_detail if error_detail else f"Exit code {exit_code}"
+                return False, error_detail if error_detail else _("Exit code {code}").format(code=exit_code)
 
             # Save PID
             pid_file = self.config_dir / "sunshine.pid"
             with open(pid_file, "w") as f:
                 f.write(str(self.pid))
 
-            _log.info(_("Sunshine started (PID: {})").format(self.pid))
+            _log.info("Sunshine started (PID: %s)", self.pid)
             return True, None
 
         except Exception as e:
-            _log.error(_("Error starting Sunshine: {}").format(e))
+            _log.error("Error starting Sunshine: %s", e)
             return False, str(e)  # Return tuple (success, error_message)
 
     def stop(self) -> bool:
@@ -297,7 +297,7 @@ class SunshineHost:
         never take down an unrelated `sunshine` process the app didn't spawn.
         """
         if not self.is_running():
-            _log.info(_("Sunshine is not running"))
+            _log.info("Sunshine is not running")
             return False
 
         killed_tracked = False
@@ -502,7 +502,7 @@ class SunshineHost:
             secure_write_text(str(self.cert_fp_file), fingerprint)
             return True
         except Exception as exc:
-            _log.error(_("Certificate trust error: {}").format(exc))
+            _log.error("Certificate trust error: %s", exc)
             return False
 
     def _api_request(self, method: str, path: str, payload: dict | None = None, auth: tuple[str, str] | None = None, timeout: float = 5.0) -> tuple[int, bytes]:
@@ -539,7 +539,7 @@ class SunshineHost:
             response = conn.getresponse()
             return response.status, response.read()
         except Exception as exc:
-            _log.error(_("Sunshine API request failed: {}").format(exc))
+            _log.error("Sunshine API request failed: %s", exc)
             return 0, b""
         finally:
             conn.close()
@@ -665,7 +665,7 @@ class SunshineHost:
         if status == 401:
             return PinResult(False, 401, _("Authentication Failed. Configure a user in Sunshine."))
         # 307 means no admin user exists yet; the caller offers to create one.
-        return PinResult(False, status, _("API Error: {}").format(status))
+        return PinResult(False, status, _("API error: {status}").format(status=status))
 
     def set_credentials(self, new_username: str, new_password: str, current: tuple[str, str] | None = None) -> tuple[bool, str]:
         """Sets or changes the Sunshine admin credentials (POST /api/password).
@@ -696,7 +696,7 @@ class SunshineHost:
             except Exception:
                 pass
             return True, _("Credentials updated successfully")
-        return False, _("API Error: {}").format(status)
+        return False, _("API error: {status}").format(status=status)
 
     def create_user(self, username: str, password: str) -> tuple[bool, str]:
         """Creates the Sunshine admin user (first-run, no existing credentials)."""
@@ -710,7 +710,7 @@ class SunshineHost:
         for a running instance to pick up the new credentials.
         """
         if not new_username or not new_password:
-            return False, _("Username and password cannot be empty")
+            return False, _("Username and password cannot be empty.")
         sc = shutil.which("sunshine")
         if not sc:
             return False, _("Sunshine executable not found")
@@ -721,9 +721,9 @@ class SunshineHost:
             if res.returncode == 0:
                 return True, _("Credentials reset successfully")
             detail = (res.stderr or res.stdout or "").strip()
-            return False, _("Reset failed: {}").format(detail[:200]) if detail else _("Reset failed")
+            return False, _("Reset failed: {error}").format(error=detail[:200]) if detail else _("Reset failed")
         except Exception as exc:
-            return False, _("Reset error: {}").format(exc)
+            return False, _("Reset error: {error}").format(error=exc)
 
     def list_clients(self, auth: tuple[str, str] | None = None) -> list:
         """Lists paired devices (GET /api/clients/list).

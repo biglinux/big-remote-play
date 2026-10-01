@@ -417,7 +417,7 @@ def test_network_helper_failure_reenables_connect_and_stops_spinner(ui, monkeypa
     drain()
     assert page._btn_connect.get_sensitive()
     assert not page._c_spinner.get_visible()
-    assert page._c_lbl.get_label() == "Try Again"
+    assert page._c_lbl.get_label() == "Try again"
     assert not page._return_to_game.get_visible()
 
 

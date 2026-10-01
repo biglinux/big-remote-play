@@ -88,7 +88,7 @@ def test_missing_dependencies_are_explained_without_blocking_first_use() -> None
     # A card whose component is missing names the action it performs, rather
     # than stating a condition and leaving the next step to be guessed.
     card_block = source.split("def _set_role_card_state", 1)[1].split("def _activate_role", 1)[0]
-    assert 'label.set_label(_("Needs {}").format(component_name))' in card_block
+    assert 'label.set_label(_("Needs {name}").format(name=component_name))' in card_block
     assert "Installation needed" not in card_block
     assert "self.host_card.set_sensitive(True)" in dependency_block
     assert "self.guest_card.set_sensitive(True)" in dependency_block
@@ -98,7 +98,7 @@ def test_missing_dependencies_are_explained_without_blocking_first_use() -> None
     role_block = source.split("def _activate_role", 1)[1].split("def on_nav_selected", 1)[0]
     assert "self._service_installed.get(service_id) is not False" in role_block
     assert 'dialog = Adw.AlertDialog(heading=_("Installation needed"))' in role_block
-    assert 'dialog.set_body(_("Install {}").format(component_name))' in role_block
+    assert 'dialog.set_body(_("Install {name}").format(name=component_name))' in role_block
     assert 'dialog.add_response("install", _("Install"))' in role_block
     assert "InstallerWindow(parent=self" in role_block
 
@@ -163,7 +163,7 @@ def test_context_switchers_share_the_native_headerbar_and_adapt_to_a_bottom_bar(
     # Connect is a single page now, so it has a plain title instead of a
     # switcher over methods that were never parallel choices.
     assert "method_stack" not in source
-    assert 'self._set_header_title(_("Connect"), _("Play from another PC"))' in source
+    assert 'self._set_header_title(pgettext("navigation", "Connect"), _("Play from another PC"))' in source
     assert "self.compact_view_switcher = Adw.ViewSwitcherBar()" in source
     assert "toolbar.add_bottom_bar(self.compact_view_switcher)" in source
     assert 'narrow.connect("apply", self._on_compact_header_apply)' in source

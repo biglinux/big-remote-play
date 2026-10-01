@@ -1,10 +1,10 @@
 PYTHON ?= python3
 export PYTHONDONTWRITEBYTECODE := 1
 
-.PHONY: help lint typecheck test translations-check metadata-check release-check build clean release
+.PHONY: help lint typecheck test pot update-po check-i18n translations-check metadata-check release-check build clean release
 
 help:
-	@printf '%s\n' 'Targets: lint typecheck test translations-check metadata-check release-check build clean release'
+	@printf '%s\n' 'Targets: lint typecheck test pot update-po check-i18n translations-check metadata-check release-check build clean release'
 
 lint:
 	$(PYTHON) -m ruff check --no-cache src tests tools
@@ -25,8 +25,21 @@ test:
 	@mkdir -p '$(TEST_TMPDIR)'
 	TMPDIR='$(TEST_TMPDIR)' GDK_BACKEND=x11 xvfb-run -a dbus-run-session -- $(PYTHON) -m pytest -q -p no:cacheprovider
 
-translations-check:
+# Refresh only locale/big-remote-play.pot to review new or changed messages.
+pot:
+	$(PYTHON) tools/i18n/update_catalogs.py --pot-only
+
+# Merge every catalog with the sources, then rebuild the MO files and the
+# translated desktop entry and metainfo. New messages still need translating.
+update-po:
+	$(PYTHON) tools/i18n/update_catalogs.py
+
+check-i18n:
 	$(PYTHON) tools/i18n/validate_catalogs.py
+	$(PYTHON) tools/i18n/check_untranslated_human_text.py
+	$(PYTHON) tools/i18n/check_hardcoded_text.py
+
+translations-check: check-i18n
 
 metadata-check:
 	@set -eu; \

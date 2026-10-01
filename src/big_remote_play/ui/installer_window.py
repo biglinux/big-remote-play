@@ -115,12 +115,12 @@ class InstallerWindow(Adw.Window):
         argv = _installer_argv(self.packages)
         if argv is None:
             self.frame.set_visible(False)
-            text = _("Install these packages with your distribution's tools:\n{}").format("\n".join(self.packages))
+            text = _("Install these packages with your distribution's tools:\n{packages}").format(packages="\n".join(self.packages))
             self.status_label.set_text(text)
             self._set_fallback_text(text)
             self.install_btn.set_visible(False)
             return
-        script = f"{shlex.join(argv)}; echo; echo {shlex.quote(_('Done! Press Enter to close...'))}; read"
+        script = f"{shlex.join(argv)}; echo; echo {shlex.quote(_('Done. Press Enter to close.'))}; read"
         for terminal in (("konsole", "-e"), ("gnome-terminal", "--"), ("xfce4-terminal", "-x"), ("xterm", "-e")):
             if not shutil.which(terminal[0]):
                 continue
@@ -133,7 +133,7 @@ class InstallerWindow(Adw.Window):
             self.install_btn.set_label(_("Check again"))
             self.install_btn.set_sensitive(True)
             return
-        self.status_label.set_text(_("No terminal found. Run this command:\n{}").format(shlex.join(argv)))
+        self.status_label.set_text(_("No terminal found. Run this command:\n{command}").format(command=shlex.join(argv)))
         self.install_btn.set_sensitive(True)
 
     def start_installation(self):
@@ -150,12 +150,12 @@ class InstallerWindow(Adw.Window):
             self.terminal.connect("child-exited", self.on_process_exit)
             self.frame.set_child(self.terminal)
         self._running = True
-        self.status_label.set_text(_("Installing {}...").format(", ".join(self.packages)))
+        self.status_label.set_text(_("Installing {packages}…").format(packages=", ".join(self.packages)))
 
         def on_spawn_done(_terminal, _pid, error, _data):
             if error:
                 self._running = False
-                self.status_label.set_text(_("Error: {}").format(error))
+                self.status_label.set_text(_("Error: {error}").format(error=error))
                 self.start_external_installation()
 
         try:
@@ -195,7 +195,7 @@ class InstallerWindow(Adw.Window):
 
     def on_failure(self, code):
         self._running = False
-        self.status_label.set_text(_("Installation failed. Exit code: {}").format(code))
+        self.status_label.set_text(_("Installation failed. Exit code: {code}").format(code=code))
         self.status_label.add_css_class("error")
-        self.install_btn.set_label(_("Try Again"))
+        self.install_btn.set_label(_("Try again"))
         self.install_btn.set_sensitive(True)
