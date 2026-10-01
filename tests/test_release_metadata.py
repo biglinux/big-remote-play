@@ -97,10 +97,10 @@ def test_pkgbuild_in_a_checkout_packages_that_checkout() -> None:
     assert loaded["source"] == ""
 
 
-def test_pkgbuild_alone_or_forced_builds_upstream_main(tmp_path: Path) -> None:
+def test_pkgbuild_alone_or_forced_builds_current_project_main(tmp_path: Path) -> None:
     alone = tmp_path / "PKGBUILD"
     shutil.copy(ROOT / "pkgbuild" / "PKGBUILD", alone)
 
     for loaded in (_pkgbuild_source(alone), _pkgbuild_source(ROOT / "pkgbuild" / "PKGBUILD", BIGREMOTEPLAY_FROM_GIT="1")):
         assert loaded["local"] == "0"
-        assert loaded["source"].startswith("git+https://github.com/biglinux/big-remote-play.git#branch=main")
+        assert loaded["source"] == "git+https://github.com/ruscher/big-remote-play.git#branch=main"
