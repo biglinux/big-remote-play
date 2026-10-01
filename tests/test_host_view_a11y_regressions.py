@@ -59,10 +59,10 @@ def test_pairing_is_numbered_steps_with_one_code_to_type() -> None:
 def test_server_page_explains_network_requirement_for_guests() -> None:
     source = Path("src/big_remote_play/ui/host_view.py").read_text()
     assert "Share from this PC" in source
-    # Internet play is one sidebar destination; Share explains reachability
-    # only when it exists, under "Available over the internet".
-    assert "Playing over the internet?" not in source
-    assert '_("Available over the internet")' in source
+    assert "Playing over the internet?" in source
+    assert "Same home network? Skip this step." in source
+    assert "For different networks, set up internet play." in source
+    assert "Play over the internet: connect your devices" in source
 
 
 def test_server_network_details_are_collapsed_diagnostics() -> None:

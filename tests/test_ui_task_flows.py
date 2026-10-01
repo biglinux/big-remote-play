@@ -82,6 +82,16 @@ def test_vpn_pages_are_not_built_on_startup(ui):
     assert ui.current_page == "welcome"
 
 
+def test_home_help_is_native_rounded_action_and_opens_network(ui):
+    guide = ui._create_home_network_guide()
+    assert isinstance(guide, Gtk.ListBox)
+    assert guide.has_css_class("brp-boxed")
+    row = guide.get_first_child()
+    assert isinstance(row, Adw.ActionRow) and row.get_activatable()
+    row.emit("activated")
+    assert ui.current_page == "vpn_selector"
+
+
 def test_sharing_selects_source_before_start_and_keeps_advanced_off_main(ui):
     host = ui.host_view
     assert host.share_controls.get_last_child() is host.overview_start_button
@@ -209,10 +219,10 @@ def test_custom_resolution_summary_displays_real_values_after_reload(ui):
 def test_connect_is_one_page_and_private_network_keeps_the_header_switcher(ui):
     ui.navigate_to("guest")
     guest = ui.guest_view
-    # Two named tabs, like Share: the computers first.
-    assert ui._header_context == "guest"
-    assert ui.header_title_stack.get_visible_child_name() == "switcher"
-    assert guest.view_stack.get_visible_child_name() == "computers"
+    # One question, one page: no switcher, and no leftover in-page navigation.
+    assert ui._header_context is None
+    assert ui.header_title_stack.get_visible_child_name() == "title"
+    assert not ui.compact_view_switcher.get_reveal()
     assert not hasattr(guest, "method_stack")
     assert guest.connect_card.is_ancestor(guest)
 
@@ -230,28 +240,16 @@ def test_connect_is_one_page_and_private_network_keeps_the_header_switcher(ui):
     assert not ui.network_back_button.get_visible()
 
 
-def _descendants(widget):
-    yield widget
-    child = widget.get_first_child()
-    while child is not None:
-        yield from _descendants(child)
-        child = child.get_next_sibling()
-
-
-def test_computer_row_is_keyboard_activatable_and_handles_literal_markup(ui, monkeypatch):
+def test_computer_row_is_keyboard_activatable_and_handles_literal_markup(ui):
     guest = ui.guest_view
     host = {"name": "Alice & Bob <Game>", "ip": "192.168.1.9", "port": 47989}
-    connect = Mock()
-    monkeypatch.setattr(guest, "connect_to_host", connect)
     guest.update_hosts_list([host])
-    card = guest.host_card(0)
-    assert isinstance(card, Gtk.Button) and card.get_focusable()
-    assert not card.get_parent().get_focusable()  # one tab stop per computer
-    labels = [w.get_label() for w in _descendants(card) if isinstance(w, Gtk.Label)]
-    assert "Alice & Bob <Game>" in labels and not any(w.get_use_markup() for w in _descendants(card) if isinstance(w, Gtk.Label))
-    card.emit("clicked")
+    row = guest.hosts_list.get_row_at_index(0)
+    assert isinstance(row, Adw.ActionRow)
+    assert not row.get_use_markup()
+    row.emit("activated")
     assert guest.selected_host_card_data is host
-    connect.assert_called_once_with(host)
+    assert guest.main_connect_btn.get_sensitive()
 
 
 @pytest.mark.parametrize("value", ["", "12x456", "12345", "１２３４５６", "1234567"])
@@ -316,6 +314,52 @@ def test_sunshine_numeric_help_is_plain_text_and_negative_timeout_preserved(ui):
     assert not row.get_use_markup()
     assert "< 0" in row.get_subtitle()
     assert row.get_value() == -1
+
+
+def test_installer_requires_explicit_install_and_only_requested_packages(ui, monkeypatch):
+    from big_remote_play.ui.installer_window import InstallerWindow
+
+    launch = Mock()
+    monkeypatch.setattr(InstallerWindow, "start_installation", launch)
+    win = InstallerWindow(parent=ui, packages=("moonlight-qt",))
+    launch.assert_not_called()
+    assert win.packages == ("moonlight-qt",)
+    assert not win.frame.get_visible()
+    win.install_btn.emit("clicked")
+    launch.assert_called_once()
+    win.close()
+
+
+def test_installer_failure_can_retry_and_success_callback_is_once(ui):
+    from big_remote_play.ui.installer_window import InstallerWindow
+
+    callback = Mock()
+    win = InstallerWindow(parent=ui, on_success=callback)
+    win.on_failure(1)
+    assert win.install_btn.get_sensitive()
+    win.on_success()
+    win.on_success()
+    callback.assert_called_once()
+    win.close()
+
+
+def test_active_installation_cannot_be_silently_closed(ui):
+    from big_remote_play.ui.installer_window import InstallerWindow
+
+    win = InstallerWindow(parent=ui)
+    win._running = True
+    assert win._on_close(win) is True
+    win._running = False
+    assert win._on_close(win) is False
+    win.close()
+
+
+@pytest.mark.parametrize("packages", [(), ("other",), ("sunshine;touch /tmp/pwned",)])
+def test_installer_rejects_unreviewed_arguments(packages):
+    from big_remote_play.ui.installer_window import _installer_argv
+
+    with pytest.raises(ValueError):
+        _installer_argv(packages)
 
 
 @pytest.mark.parametrize("operation", ["lookup", "store", "clear"])
@@ -383,7 +427,7 @@ def test_helper_failure_is_delivered_to_completion_callback(ui, monkeypatch):
     monkeypatch.setattr(pnv.threading, "Thread", InlineThread)
     monkeypatch.setattr(pnv.subprocess, "Popen", Mock(side_effect=FileNotFoundError("pkexec")))
     done = Mock(return_value=False)
-    pnv.run_helper_script("install-components.sh", [], on_text=Mock(), on_phase=Mock(), on_done=done)
+    pnv.run_helper_script("install-vpn.sh", [], on_text=Mock(), on_phase=Mock(), on_done=done)
     drain()
     done.assert_called_once_with(127, {})
 
@@ -556,23 +600,19 @@ def test_backup_round_trips_and_refuses_a_crafted_archive(ui, tmp_path, monkeypa
 def test_background_discovery_keeps_the_chosen_computer(ui, monkeypatch):
     guest = ui.guest_view
     hosts = [{"name": "one", "ip": "10.0.0.1", "port": 47989}, {"name": "two", "ip": "10.0.0.2", "port": 47989}]
-    monkeypatch.setattr(guest, "connect_to_host", lambda host: None)
     guest.update_hosts_list(hosts)
     drain()
-    guest.host_card(1).emit("clicked")
+    guest.hosts_list.select_row(guest.hosts_list.get_row_at_index(1))
     assert guest.selected_host_card_data["ip"] == "10.0.0.2"
-    first = guest.host_card(0)
 
-    # Same set: the cards are left untouched, the choice included.
+    # Same set: the list is left untouched, selection included.
     guest.update_hosts_list(list(hosts), keep_selection=True)
     assert guest.selected_host_card_data["ip"] == "10.0.0.2"
-    assert guest.host_card(0) is first
 
-    # A newcomer rebuilds the cards but the chosen computer stays chosen.
+    # A newcomer rebuilds the list but the chosen computer stays chosen.
     guest.update_hosts_list([*hosts, {"name": "three", "ip": "10.0.0.3", "port": 47989}], keep_selection=True)
     drain()
     assert guest.selected_host_card_data["ip"] == "10.0.0.2"
-    assert [host["name"] for host in guest.listed_hosts()] == ["one", "two", "three"]
 
 
 def _wait_for(predicate, timeout=2.0):
@@ -687,6 +727,14 @@ def test_diagnostic_address_does_not_force_a_wide_layout(ui):
     field = host.field_widgets["ipv6"]
     field["label"].set_text("abcd:" * 30)
     assert field["label"].measure(Gtk.Orientation.HORIZONTAL, -1).minimum < 30
+
+
+def test_installer_review_does_not_construct_terminal(ui):
+    from big_remote_play.ui.installer_window import InstallerWindow
+
+    win = InstallerWindow(parent=ui)
+    assert not hasattr(win, "terminal")
+    win.close()
 
 
 def test_public_ip_diagnostics_are_lazy_and_do_not_overlap(ui, monkeypatch):

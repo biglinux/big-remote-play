@@ -67,10 +67,6 @@ The first bridge attempt used `module-loopback`. JamesDSP captured the loopback'
 
 Measured on 2026-09-29 in an isolated PipeWire 1.6.8 + WirePlumber 0.5 instance (private `XDG_RUNTIME_DIR`, ALSA and Bluetooth monitors disabled, so no real device was touched). Outputs were null sinks, the call a tone played by an executable named `fluxer`, the game another tone, and Sunshine's capture a `parecord` with Sunshine's client and stream names; the real `AudioRoutingSession` reconciled. Results are in the [architecture](audio-architecture.md#voice-calls-stay-out-of-the-stream). Also measured there: `pipewire-pulse` takes `sink_properties="device.description=\"…\" key=value"` and nothing simpler with spaces; a capture whose source is removed was moved by WirePlumber to the default output's monitor, not to the default microphone, even with one present.
 
-### Game Window compared with Full Desktop
-
-Measured on 2026-10-01 in an isolated PipeWire instance with a separate Sunshine and Moonlight: KMS capture against the Game Window path (private KWin screen through PipeWire, iGPU encoder, 60 and 240 Hz, 60 and 120 fps). The received 1 kHz tone had at most one isolated event per minute in both modes and PipeWire reported no error. Table and conclusion: [Game Window audio](window-audio-fix.md).
-
 ## Automated coverage
 
 - Discovery: parser, non-ASCII descriptions, output kinds from properties, verified monitors, a microphone that carries a monitor-like name, no server, no outputs, unreadable server.

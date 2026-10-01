@@ -31,34 +31,6 @@ def _is_virtual_iface(iface: str) -> bool:
     return name.startswith(_VIRTUAL_IFACE_PREFIXES)
 
 
-def mdns_name(address: str, *, runner=subprocess.run, timeout: float = 1.5) -> str:
-    """The name a computer announces over mDNS for ``address`` ("ruscher-dell"), or "".
-
-    Home routers rarely answer reverse DNS, while Linux desktops announce their
-    name through Avahi. Read-only and bounded; only an IP literal is asked.
-    """
-    import ipaddress
-
-    try:
-        ipaddress.ip_address(address)
-    except ValueError:
-        return ""
-    try:
-        result = runner(["avahi-resolve-address", address], capture_output=True, text=True, timeout=timeout)
-    except (OSError, subprocess.SubprocessError):
-        return ""
-    if result.returncode != 0:
-        return ""
-    for line in (result.stdout or "").splitlines():
-        parts = line.split()
-        if len(parts) == 2 and parts[0] == address:
-            name = parts[1].rstrip(".")
-            name = name[: -len(".local")] if name.endswith(".local") else name
-            if name and all(character.isalnum() or character in "-_." for character in name):
-                return name
-    return ""
-
-
 class NetworkDiscovery:
     """Sunshine host discovery on network"""
 
@@ -72,7 +44,9 @@ class NetworkDiscovery:
         def run():
             hosts = []
             try:
-                hosts = self.browse_avahi()
+                res = subprocess.run(["avahi-browse", "-t", "-r", "-p", "_nvstream._tcp"], capture_output=True, text=True, timeout=5)
+                if res.returncode == 0 and res.stdout:
+                    hosts = self.parse_avahi_output(res.stdout)
                 if not hosts and allow_scan:
                     hosts = self.manual_scan()
             except Exception:
@@ -84,27 +58,6 @@ class NetworkDiscovery:
                 GLib.idle_add(callback, hosts)
 
         threading.Thread(target=run, daemon=True).start()
-
-    def browse_avahi(self, *, runner=subprocess.run, timeout: float = 5) -> List[Dict]:
-        """Computers announcing Sunshine over mDNS.
-
-        ``avahi-browse`` resolves every announcement before it exits; one
-        computer that no longer answers can keep it past the timeout. The
-        computers already resolved are kept instead of discarding them all
-        (which once made the list look limited to the fastest few).
-        """
-        try:
-            res = runner(["avahi-browse", "-t", "-r", "-p", "_nvstream._tcp"], capture_output=True, text=True, timeout=timeout)
-        except subprocess.TimeoutExpired as expired:
-            partial = expired.stdout or ""
-            if isinstance(partial, bytes):
-                partial = partial.decode("utf-8", "replace")
-            return self.parse_avahi_output(partial)
-        except OSError:
-            return []
-        if res.returncode == 0 and res.stdout:
-            return self.parse_avahi_output(res.stdout)
-        return []
 
     def local_addresses(self) -> set:
         """Every address this machine answers on, plus loopback."""

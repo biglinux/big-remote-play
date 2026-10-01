@@ -17,13 +17,14 @@ import json
 import os
 from .host_view import HostView
 from .guest_view import GuestView
-from .components import name_icon_button, icon_tile
-from .service_status_card import CardPresentation, ServiceStatusCard, checking_presentation, provider_presentation, streaming_presentation, unknown_presentation
+from .installer_window import InstallerWindow
+from .components import name_icon_button, action_row, boxed_rows, icon_tile
+from .service_status_card import ServiceStatusCard, provider_presentation, streaming_presentation, unknown_presentation
 from big_remote_play.private_network.models import ProviderStatus
 from big_remote_play.utils.config import Config
 from big_remote_play.utils.network import NetworkDiscovery
 from big_remote_play.utils.system_check import SystemCheck
-from big_remote_play.utils.icons import create_icon_widget, create_logo_widget
+from big_remote_play.utils.icons import create_icon_widget
 from big_remote_play.utils.i18n import _, pgettext
 from big_remote_play.utils.secure_io import secure_write_text
 from big_remote_play import paths
@@ -117,11 +118,6 @@ BASE_NAVIGATION_PAGES = {
     "guest": {"name": pgettext("navigation", "Connect"), "icon": "brp-client-symbolic", "description": _("Play from another PC")},
     "vpn_selector": {"name": _("Play over the internet"), "icon": "brp-network-private-symbolic", "description": _("For PCs in different houses")},
 }
-# Home and the internet pages show two indicators in the sidebar instead of
-# one card per service: is streaming ready, is the secure connection on.
-SUMMARY_SERVICES = ("summary-streaming", "summary-network")
-SUMMARY_PAGES = ("welcome", "vpn_selector", "create_private", "connect_private")
-
 WELCOME_NAVIGATION_PAGE = {"welcome": {"name": _("Home"), "icon": "brp-go-home-symbolic", "description": _("Home Page")}}
 
 
@@ -195,11 +191,11 @@ class MainWindow(Adw.ApplicationWindow):
         self._status_timer_id = None
         self.check_system()
         # After the window is up: never on the startup critical path.
+        GLib.timeout_add_seconds(2, self._refresh_home_network_status)
         GLib.timeout_add_seconds(3, self._secure_legacy_network_files)
 
         # Connect close signal
         self.connect("close-request", self.on_close_request)
-        self.connect("notify::is-active", self._on_active_changed)
 
     @staticmethod
     def _coerce_window_dimension(
@@ -303,7 +299,8 @@ class MainWindow(Adw.ApplicationWindow):
         def add_compact_layout_setters(breakpoint: Adw.Breakpoint) -> None:
             breakpoint.add_setter(self.welcome_cards_box, "orientation", Gtk.Orientation.VERTICAL)
             breakpoint.add_setter(self.home_hero_content, "orientation", Gtk.Orientation.VERTICAL)
-            breakpoint.add_setter(self.home_logo, "halign", Gtk.Align.START)
+            breakpoint.add_setter(self.home_device_flow, "halign", Gtk.Align.START)
+            breakpoint.add_setter(self.home_benefits, "orientation", Gtk.Orientation.VERTICAL)
             for role in self._role_card_ui.values():
                 breakpoint.add_setter(role["content"], "orientation", Gtk.Orientation.HORIZONTAL)
             breakpoint.add_setter(self.host_view.overview_hero, "orientation", Gtk.Orientation.VERTICAL)
@@ -327,8 +324,10 @@ class MainWindow(Adw.ApplicationWindow):
         narrow.add_setter(self.split_view, "collapsed", True)
         narrow.add_setter(self.welcome_main_box, "margin-start", 12)
         narrow.add_setter(self.welcome_main_box, "margin-end", 12)
-        # At phone-like widths the words and the two decisions come first.
-        narrow.add_setter(self.home_logo, "pixel-size", 64)
+        # At phone-like widths the explanation remains in words and the two
+        # decisions move above decorative/product-benefit visuals.
+        narrow.add_setter(self.home_device_flow, "visible", False)
+        narrow.add_setter(self.home_benefits, "visible", False)
         for margin in ("margin-top", "margin-bottom", "margin-start", "margin-end"):
             narrow.add_setter(self.guest_view.content_clamp, margin, 12)
         narrow.connect("apply", self._on_compact_header_apply)
@@ -492,22 +491,6 @@ class MainWindow(Adw.ApplicationWindow):
         status_list.update_property([Gtk.AccessibleProperty.LABEL], [_("Services")])
         self.service_list = status_list
 
-        # Home and the internet pages show two indicators only: is streaming
-        # ready, and is the secure connection on. The task pages show the
-        # detail behind them, one card per service.
-        for summary_id, title, icon, description in (
-            # TRANSLATORS: sidebar indicator: the state of the streaming program this computer uses.
-            ("summary-streaming", _("Streaming"), "brp-host-symbolic", _("The program that sends or receives the game.")),
-            # TRANSLATORS: sidebar indicator: the state of Tailscale, ZeroTier or Headscale.
-            ("summary-network", _("Secure connection"), "brp-network-private-symbolic", _("Lets computers in different places play together.")),
-        ):
-            row = ServiceStatusCard(summary_id, title, icon, description, primary=summary_id == "summary-streaming")
-            row.set_activatable(True)
-            self._service_by_row[row] = summary_id
-            row.connect("activated", lambda _r, sid=summary_id: self._on_summary_activated(sid))
-            self._status_rows[summary_id] = row
-            status_list.append(row)
-
         for service_id, label_text in (("sunshine", "Sunshine"), ("moonlight", "Moonlight"), ("tailscale", "Tailscale"), ("zerotier", "ZeroTier"), ("headscale", "Headscale")):
             meta = SERVICE_METADATA.get(service_id, {})
             row = ServiceStatusCard(
@@ -531,10 +514,6 @@ class MainWindow(Adw.ApplicationWindow):
     def _service_header(self, row: Gtk.ListBoxRow, before: Gtk.ListBoxRow | None) -> None:
         """“Streaming” above Sunshine/Moonlight, “Secure connection” above the VPNs."""
         service_id = self._service_by_row.get(row)
-        if service_id in SUMMARY_SERVICES:
-            # The two indicators carry their own titles.
-            row.set_header(None)
-            return
         if service_id in self._STREAMING_SERVICES:
             # TRANSLATORS: sidebar heading above the Sunshine or Moonlight card.
             text = _("Streaming")
@@ -553,9 +532,8 @@ class MainWindow(Adw.ApplicationWindow):
         row.set_header(label)
 
     def _relevant_service_ids(self) -> list[str]:
-        # Home and the internet pages: two indicators, not a component dashboard.
-        if self.current_page in SUMMARY_PAGES:
-            return list(SUMMARY_SERVICES)
+        # Home is a doorway, not a component dashboard. A missing dependency is
+        # explained on its task card; service details belong to the chosen page.
         if self.current_page not in ("host", "guest"):
             return []
         # Every method keeps its card while it is off, so turning one on or off
@@ -570,48 +548,6 @@ class MainWindow(Adw.ApplicationWindow):
         service_list = getattr(self, "service_list", None)
         if service_list is not None:
             service_list.invalidate_headers()
-
-    def _summary_role(self) -> str:
-        """The task the Streaming indicator is about."""
-        role = getattr(self, "_home_role", None) or self.config.get("home_role") or self._chosen_role()
-        if role in ("host", "guest"):
-            return role
-        # Never chosen: the component this computer already has.
-        if self._service_installed.get("sunshine") is not True and self._service_installed.get("moonlight") is True:
-            return "guest"
-        return "host"
-
-    def _refresh_summaries(self) -> None:
-        streaming = self._status_rows.get("summary-streaming")
-        network = self._status_rows.get("summary-network")
-        if streaming is None or network is None:
-            return
-        service_id = "sunshine" if self._summary_role() == "host" else "moonlight"
-        state = streaming_presentation(service_id, self._service_installed.get(service_id), self._service_running.get(service_id))
-        # TRANSLATORS: {service} is Sunshine, Moonlight, Tailscale, ZeroTier or Headscale; {state} its state, such as Running.
-        text = _("{service} · {state}").format(service="Sunshine" if service_id == "sunshine" else "Moonlight", state=state.text) if state.tone != "checking" else state.text
-        streaming.set_presentation(CardPresentation(text, state.tone))
-        statuses = list(self._network_statuses.values())
-        if not statuses:
-            network.set_presentation(checking_presentation() if not getattr(self, "_network_read_failed", False) else unknown_presentation())
-            return
-        from big_remote_play.private_network.plan import plan_connection
-
-        connected = [status for status in statuses if status.connected]
-        status = connected[0] if connected else plan_connection(statuses).status
-        if status is None:
-            # TRANSLATORS: state of the secure connection: no method is set up on this computer.
-            network.set_presentation(CardPresentation(_("Not set up"), "inactive"))
-            return
-        shown = provider_presentation(status)
-        network.set_presentation(CardPresentation(_("{service} · {state}").format(service=status.provider.display_name, state=shown.text), shown.tone))
-
-    def _on_summary_activated(self, summary_id: str) -> None:
-        if summary_id == "summary-streaming":
-            role = self._summary_role()
-            self._select_home_role(role, remember=False)
-        else:
-            self._go_to_private_network_setup()
 
     def _refresh_network_card(self, service_id: str) -> None:
         row = self._status_rows.get(service_id)
@@ -632,7 +568,6 @@ class MainWindow(Adw.ApplicationWindow):
         if row is None or self._service_installed.get(service_id) is None:
             return
         row.set_presentation(streaming_presentation(service_id, self._service_installed.get(service_id), self._service_running.get(service_id)))
-        self._refresh_summaries()
 
     def update_server_status(self, run_sun, run_moon, run_docker, run_tailscale, run_zt=False):
         for service_id, running in [("sunshine", run_sun), ("moonlight", run_moon), ("docker", run_docker), ("tailscale", run_tailscale), ("zerotier", run_zt)]:
@@ -715,15 +650,13 @@ class MainWindow(Adw.ApplicationWindow):
         self.header_title_stack.add_named(self.content_title, "title")
         self.header_title_stack.add_named(self.header_view_switcher, "switcher")
 
-        # Share and Connect each keep the routine task on the first tab and
-        # everything technical on a named second one.
+        # Connect is one page with one question, so it has no switcher: its
+        # header carries the plain title like Home does.
         self.header_context_stacks: dict[str, Adw.ViewStack] = {
             "host": self.host_view.view_stack,
-            "guest": self.guest_view.view_stack,
         }
         self.header_context_specs = {
             "host": (pgettext("navigation", "Share"), _("Run the game on this PC"), _("Sharing sections")),
-            "guest": (pgettext("navigation", "Connect"), _("Play from another PC"), _("Connect sections")),
         }
 
         header.set_title_widget(self.header_title_stack)
@@ -863,10 +796,9 @@ class MainWindow(Adw.ApplicationWindow):
         self._vpn_accounts_dialog = dialog
         dialog.present()
 
-    def _apply_vpn_selection(self, provider_id, *, add_account: bool = False, destination: str = "connect_private", auto_start: bool = False):
+    def _apply_vpn_selection(self, provider_id, *, add_account: bool = False, destination: str = "connect_private"):
         self._vpn_choice = provider_id
         self._vpn_add_account = add_account
-        self._vpn_auto_start = auto_start
         save_vpn_choice(provider_id)
         for name in ("create_private", "connect_private"):
             old = self.content_stack.get_child_by_name(name)
@@ -882,14 +814,7 @@ class MainWindow(Adw.ApplicationWindow):
             return
         from .private_network_view import PrivateNetworkView
 
-        view = PrivateNetworkView(
-            self,
-            mode="create" if name == "create_private" else "connect",
-            vpn_provider=provider,
-            add_account=self._vpn_add_account,
-            auto_start=getattr(self, "_vpn_auto_start", False) and name == "connect_private",
-        )
-        self._vpn_auto_start = False
+        view = PrivateNetworkView(self, mode="create" if name == "create_private" else "connect", vpn_provider=provider, add_account=self._vpn_add_account)
         setattr(self, "create_private_view" if name == "create_private" else "connect_private_view", view)
         self.content_stack.add_named(view, name)
 
@@ -910,6 +835,16 @@ class MainWindow(Adw.ApplicationWindow):
             self._network_return_page = "welcome"
         self.navigate_to("vpn_selector")
 
+    def _create_home_network_guide(self) -> Gtk.Widget:
+        return boxed_rows(
+            action_row(
+                _("Play over the internet"),
+                _("For computers in different houses. Not needed on the same home network."),
+                "brp-network-private-symbolic",
+                self._go_to_private_network_setup,
+            )
+        )
+
     def _secure_legacy_network_files(self) -> bool:
         """Move credentials that older versions left in plain JSON to the keyring."""
 
@@ -924,6 +859,67 @@ class MainWindow(Adw.ApplicationWindow):
         threading.Thread(target=run, daemon=True).start()
         return False
 
+    def _refresh_home_network_status(self) -> bool:
+        """One quiet line on Home: is internet play ready? Read-only, lazy."""
+        from big_remote_play.private_network.service import default_service
+        from .network_common import Worker
+
+        found = self.home_network_action.get_first_child() if getattr(self, "home_network_action", None) else None
+        if not isinstance(found, Adw.ActionRow):
+            return False
+        row: Adw.ActionRow = found
+
+        def apply(statuses) -> None:
+            from big_remote_play.private_network.plan import PlanKind, plan_connection
+            from .remote_connection import plan_words
+
+            plan = plan_connection(statuses)
+            if plan.kind is not PlanKind.INSTALL:
+                # The same sentence the page shows, so both never disagree.
+                row.set_subtitle(plan_words(plan)[2])
+
+        self._home_status_worker = Worker()
+        self._home_status_worker.submit(lambda: default_service().overview(), apply)
+        return False
+
+    @staticmethod
+    def _create_home_benefit(text: str, icon_name: str) -> Gtk.Widget:
+        benefit = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        benefit.add_css_class("home-benefit")
+        icon = create_icon_widget(icon_name, size=16)
+        icon.set_valign(Gtk.Align.CENTER)
+        benefit.append(icon)
+        label = Gtk.Label(label=text, xalign=0, wrap=True, hexpand=True)
+        label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        benefit.append(label)
+        return benefit
+
+    def _create_home_stream_diagram(self) -> Gtk.Widget:
+        flow = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, valign=Gtk.Align.CENTER)
+        flow.add_css_class("home-stream-flow")
+        flow.set_halign(Gtk.Align.END)
+        flow.append(icon_tile("brp-host-symbolic", tone="accent"))
+        flow.append(create_icon_widget("go-next-symbolic", size=16))
+        destinations = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        for icon_name in ("brp-computer-symbolic", "brp-video-display-symbolic", "brp-client-symbolic"):
+            destinations.append(icon_tile(icon_name, tone="guest"))
+        flow.append(destinations)
+        return flow
+
+    @staticmethod
+    def _create_role_flow(role_id: str) -> Gtk.Widget:
+        icons = ("brp-host-symbolic", "brp-network-transmit-receive-symbolic") if role_id == "host" else ("brp-network-transmit-receive-symbolic", "brp-client-symbolic")
+        flow = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8, halign=Gtk.Align.START)
+        flow.add_css_class("role-flow")
+        for index, icon_name in enumerate(icons):
+            node = Gtk.Box(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
+            node.add_css_class("role-flow-node")
+            node.append(create_icon_widget(icon_name, size=18))
+            flow.append(node)
+            if index == 0:
+                flow.append(create_icon_widget("go-next-symbolic", size=14))
+        return flow
+
     def create_welcome_page(self) -> Adw.NavigationView:
         scroll = Gtk.ScrolledWindow(vexpand=True)
         scroll.add_css_class("welcome-page")
@@ -933,55 +929,56 @@ class MainWindow(Adw.ApplicationWindow):
             getattr(main_box, f"set_margin_{edge}")(24)
         self.welcome_main_box = main_box
 
-        # One hero: who we are, what it does, and the recommended first step.
         hero = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
         hero.add_css_class("welcome-hero")
+        hero_description = _("Play with friends far away, or use the power of your computer on another compatible device.")
         hero_content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=24)
         self.home_hero_content = hero_content
-        # The application's own logo, rasterized for HiDPI; its name is the headline's job.
-        self.home_logo = create_logo_widget("big-remote-play", 104, css_class="brp-home-logo")
-        self.home_logo.set_valign(Gtk.Align.CENTER)
-        self.home_logo.set_halign(Gtk.Align.CENTER)
-        hero_content.append(self.home_logo)
-        hero_copy = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8, hexpand=True, valign=Gtk.Align.CENTER)
+        hero_copy = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8, hexpand=True)
+        eyebrow = Gtk.Label(label="Big Remote Play", xalign=0, wrap=True)
+        eyebrow.add_css_class("caption-heading")
+        eyebrow.add_css_class("accent")
+        hero_copy.append(eyebrow)
         headline = Gtk.Label(label=_("Your games. Any screen. Anywhere."), xalign=0, wrap=True)
         headline.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
         headline.add_css_class("title-1")
-        headline.set_accessible_role(Gtk.AccessibleRole.HEADING)
         hero_copy.append(headline)
-        description = Gtk.Label(label=_("Play on another screen using this computer, or invite a friend to play with you."), xalign=0, wrap=True)
+        description = Gtk.Label(label=hero_description, xalign=0, wrap=True)
         description.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
         description.add_css_class("dim-label")
         hero_copy.append(description)
-
-        # The easiest way to begin lives in the hero: two questions, then
-        # everything this computer needs, then the right page.
-        self.guided_setup_button = Gtk.Button(halign=Gtk.Align.START)
-        self.guided_setup_button.add_css_class("suggested-action")
-        self.guided_setup_button.add_css_class("brp-primary")
-        self.guided_setup_button.add_css_class("brp-hero-cta")
-        cta = Gtk.Box(spacing=8)
-        cta.append(create_icon_widget("brp-guided-setup-symbolic", size=16))
-        cta_label = Gtk.Label(label=_("Start with the guided setup"), wrap=True, max_width_chars=34)
-        cta_label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
-        cta_label.set_natural_wrap_mode(Gtk.NaturalWrapMode.NONE)
-        cta.append(cta_label)
-        self.guided_setup_button.set_child(cta)
-        self.guided_setup_button.update_property(
-            [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
-            [_("Start with the guided setup"), _("Answer two questions. Big Remote Play prepares this computer and opens the right page.")],
-        )
-        self.guided_setup_button.connect("clicked", lambda _button: self.start_guided_setup())
-        self.guided_setup_button.set_margin_top(8)
-        hero_copy.append(self.guided_setup_button)
         hero_content.append(hero_copy)
+        self.home_device_flow = self._create_home_stream_diagram()
+        hero_content.append(self.home_device_flow)
         hero.append(hero_content)
+
+        benefits = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8, homogeneous=True)
+        self.home_benefits = benefits
+        benefits.add_css_class("home-benefits")
+        for text, icon_name in (
+            (_("Play together, from anywhere"), "brp-client-symbolic"),
+            (_("Use your gaming PC from anywhere"), "brp-host-symbolic"),
+            (_("Play on another screen"), "brp-video-display-symbolic"),
+        ):
+            benefits.append(self._create_home_benefit(text, icon_name))
+        hero.append(benefits)
         main_box.append(hero)
 
-        self.home_question_label = Gtk.Label(label=_("Or choose what you want to do"), xalign=0, wrap=True)
+        # The easiest way to begin: two questions, then the right page.
+        from .guided_setup import choice_card
+
+        self.guided_setup_button = choice_card(
+            _("Guided setup"),
+            _("Not sure where to start? Answer a few questions and Big Remote Play sets up the way for you."),
+            "brp-guided-setup-symbolic",
+            self.start_guided_setup,
+        )
+        self.guided_setup_button.add_css_class("brp-guided-banner")
+        main_box.append(self.guided_setup_button)
+
+        self.home_question_label = Gtk.Label(label=_("What do you want to do?"), xalign=0, wrap=True)
         self.home_question_label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
-        self.home_question_label.add_css_class("title-3")
-        self.home_question_label.set_accessible_role(Gtk.AccessibleRole.HEADING)
+        self.home_question_label.add_css_class("title-2")
         main_box.append(self.home_question_label)
 
         cards_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16, homogeneous=True)
@@ -1005,8 +1002,16 @@ class MainWindow(Adw.ApplicationWindow):
         cards_box.append(self.host_card)
         cards_box.append(self.guest_card)
         main_box.append(cards_box)
-        # Playing over the internet is a permanent sidebar destination and a
-        # question of the guided setup; Home does not repeat it a third time.
+
+        network_section = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        network_section.set_margin_top(4)
+        self.home_network_section = network_section
+        network_title = Gtk.Label(label=_("Playing over the internet?"), xalign=0, wrap=True)
+        network_title.add_css_class("heading")
+        network_section.append(network_title)
+        self.home_network_action = self._create_home_network_guide()
+        network_section.append(self.home_network_action)
+        main_box.append(network_section)
         clamp = Adw.Clamp(maximum_size=860, tightening_threshold=620)
         clamp.set_child(main_box)
         scroll.set_child(clamp)
@@ -1040,10 +1045,7 @@ class MainWindow(Adw.ApplicationWindow):
             self._set_header_title(page.get_title(), _("Home"))
             return
         self._set_header_title(_("Home"), "Big Remote Play")
-        # A returning person lands on their task; a first visit on the guided start.
-        role = getattr(self, "_home_role", None) or self.config.get("home_role")
-        target = {"host": self.host_card, "guest": self.guest_card}.get(role, self.guided_setup_button)
-        target.grab_focus()
+        (self.guest_card if getattr(self, "_home_role", "host") == "guest" else self.host_card).grab_focus()
 
     def create_action_card(
         self,
@@ -1078,6 +1080,7 @@ class MainWindow(Adw.ApplicationWindow):
         description_label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
         description_label.add_css_class("dim-label")
         copy.append(description_label)
+        copy.append(self._create_role_flow(role_id))
         copy.append(Gtk.Box(vexpand=True))
         state = Gtk.Box(spacing=6, halign=Gtk.Align.START)
         state.add_css_class("readiness-pill")
@@ -1125,75 +1128,36 @@ class MainWindow(Adw.ApplicationWindow):
             state.set_visible(True)
             state.add_css_class("needs-setup")
             dot.add_css_class("status-offline")
-            # A missing component is explained before opening its task, in
-            # words; the product name stays in the tooltip and the installer.
-            label.set_label(_("Needs a quick installation"))
+            # A missing component is explained before opening its task.
+            label.set_label(_("Needs {name}").format(name=component_name))
             ui["button"].set_tooltip_text(_("Install {name}").format(name=component_name))
 
     def _activate_role(self, target: str, service_id: str, component_name: str) -> None:
-        """Enter a role, or offer the one action needed to make it usable.
-
-        A "not installed" seen earlier is never trusted on its own: the
-        component may have been installed since, here or in another program.
-        It is looked up again first, and only a component that is still
-        missing opens the installer.
-        """
+        """Enter a role, or offer the one action needed to make it usable."""
         if self._service_installed.get(service_id) is not False:
             self.navigate_to(target)
             return
-        from big_remote_play.utils import dependencies
-        from .network_common import Worker
 
-        ids = dependencies.ROLE_COMPONENTS[target]
+        dialog = Adw.AlertDialog(heading=_("Installation needed"))
+        dialog.set_body(_("Install {name}").format(name=component_name))
+        dialog.add_response("cancel", _("Cancel"))
+        dialog.add_response("install", _("Install"))
+        dialog.set_default_response("install")
+        dialog.set_close_response("cancel")
+        dialog.set_response_appearance("install", Adw.ResponseAppearance.SUGGESTED)
 
-        def checked(states) -> None:
-            self._apply_component_states(states)
-            if self._service_installed.get(service_id) is not False:
+        def on_response(_dialog: Adw.AlertDialog, response: str) -> None:
+            if response != "install":
+                return
+
+            def installation_finished() -> None:
+                self.check_system()
                 self.navigate_to(target)
-            else:
-                self._offer_installation(target)
 
-        self._role_worker = getattr(self, "_role_worker", None) or Worker()
-        self._role_worker.submit(lambda: dependencies.check(ids), checked, failed=lambda _error: self._offer_installation(target))
+            InstallerWindow(parent=self, on_success=installation_finished, packages=("sunshine" if target == "host" else "moonlight-qt",)).present()
 
-    def _offer_installation(self, target: str) -> None:
-        """Install what the task needs, then open it: no second click."""
-        from big_remote_play.utils import dependencies
-        from .dependency_installer import InstallDialog
-
-        if target == "host":
-            description = _("To share this computer, Big Remote Play needs one more program. It installs it for you after asking for your password once.")
-        else:
-            description = _("To play from this computer, Big Remote Play needs one more program. It installs it for you after asking for your password once.")
-
-        def ready() -> None:
-            self.check_system()
-            self.navigate_to(target)
-
-        dialog = InstallDialog(dependencies.ROLE_COMPONENTS[target], title=_("Let's get this computer ready"), description=description, on_ready=ready)
-        self._install_dialog = dialog
+        dialog.connect("response", on_response)
         dialog.present(self)
-
-    def _apply_component_states(self, states) -> None:
-        """Fresh installed probes into every place that shows them."""
-        names = {"sunshine": ("host", "Sunshine"), "moonlight": ("guest", "Moonlight")}
-        for state in states:
-            self._service_installed[state.id] = state.installed
-            self._refresh_service_state(state.id)
-            if state.id in names:
-                self._set_role_card_state(names[state.id][0], names[state.id][1], state.installed)
-        self._refresh_summaries()
-
-    def _on_active_changed(self, *_args) -> None:
-        """Coming back to the window: what was installed meanwhile is seen."""
-        if not self.is_active():
-            return
-        now = GLib.get_monotonic_time()
-        if now - getattr(self, "_last_focus_check", 0) < 10_000_000:
-            return
-        self._last_focus_check = now
-        self.check_system()
-        self._refresh_private_network_status()
 
     # Task -> (component that must exist, its name in the install prompt).
     _ROLE_COMPONENTS = {"host": ("sunshine", "Sunshine"), "guest": ("moonlight", "Moonlight")}
@@ -1251,14 +1215,13 @@ class MainWindow(Adw.ApplicationWindow):
         self.content_headerbar.set_show_back_button(True)
         self._remember_role(pid)
         self._filter_status_rows()
-        if pid in ("host", "guest", *SUMMARY_PAGES):
+        if pid in ("host", "guest"):
             self._refresh_private_network_status()
-        self._refresh_summaries()
 
         if pid == "host":
             self._set_header_context("host")
         elif pid == "guest":
-            self._set_header_context("guest")
+            self._set_header_title(pgettext("navigation", "Connect"), _("Play from another PC"))
         elif pid == "welcome":
             self._on_home_page_changed()
         elif pid == "vpn_selector":
@@ -1299,7 +1262,7 @@ class MainWindow(Adw.ApplicationWindow):
 
     def _refresh_private_network_status(self) -> None:
         """Fetch provider membership off the GTK thread, with no overlap."""
-        if self._network_polling or self.current_page not in ("host", "guest", *SUMMARY_PAGES):
+        if self._network_polling or self.current_page not in ("host", "guest"):
             return
         self._network_polling = True
 
@@ -1308,16 +1271,13 @@ class MainWindow(Adw.ApplicationWindow):
             if self._status_timer_id is None:
                 return False  # the window is closing
             if statuses is not None:
-                self._network_read_failed = False
                 self._network_statuses = {status.provider.value: status for status in statuses}
                 for provider in self._NETWORK_SERVICES:
                     self._refresh_network_card(provider)
             elif not self._network_statuses:
                 # Never leave the cards on "Checking…" after a failed read.
-                self._network_read_failed = True
                 for provider in self._NETWORK_SERVICES:
                     self._status_rows[provider].set_presentation(unknown_presentation())
-            self._refresh_summaries()
             return False
 
         def check():
@@ -1340,8 +1300,7 @@ class MainWindow(Adw.ApplicationWindow):
         Share and Connect check one service each.
         """
         self._network_poll_ticks += 1
-        # A window in the background polls nothing; focusing it reads again.
-        if self._network_poll_ticks >= 2 and (self.is_active() or not self._network_statuses):
+        if self._network_poll_ticks >= 2:
             self._network_poll_ticks = 0
             self._refresh_private_network_status()
         if self._polling_status:
@@ -1353,12 +1312,7 @@ class MainWindow(Adw.ApplicationWindow):
             "tailscale": self.system_check.is_tailscale_running,
             "zerotier": self.system_check.is_zerotier_running,
         }
-        relevant = self._relevant_service_ids()
-        wanted = [service_id for service_id in relevant if service_id in ("sunshine", "moonlight")]
-        if "summary-streaming" in relevant:
-            wanted.append("sunshine" if self._summary_role() == "host" else "moonlight")
-        if not self.is_active() and self._service_running:
-            wanted = []  # in the background nothing is probed again
+        wanted = [service_id for service_id in self._relevant_service_ids() if service_id in ("sunshine", "moonlight")]
         if not wanted:
             return True
         self._polling_status = True
