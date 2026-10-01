@@ -5,7 +5,7 @@ import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 
-from gi.repository import Gtk, Adw, GLib, Gdk  # type: ignore
+from gi.repository import Gtk, Adw, GLib, Gdk, Pango  # type: ignore
 import logging
 
 _log = logging.getLogger("big-remoteplay")
@@ -603,23 +603,19 @@ class GuestView(Gtk.Box):
             self.show_history,
         )
         methods.add(self.history_row)
-        methods.add(
-            action_row(
-                _("Play over the internet"),
-                _("For a computer in another house: connect your devices first."),
-                "brp-network-private-symbolic",
-                self._go_to_private_network,
-            )
-        )
+        # Play over the internet is a permanent sidebar destination: not repeated here.
         settings = Adw.PreferencesGroup(title=_("On this computer"))
         for row in (self.image_row, self.audio_settings_row, self.input_settings_row, self.host_connection_row, help_row):
             settings.add(row)
         content.append(self.connect_card)
+        # Everything a first connection does not need lives one tab away.
+        advanced = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
+        self.advanced_page = advanced
         self.recent_group = RowGroup(title=_("Connect again"))
         self.recent_group.set_visible(False)
-        content.append(self.recent_group)
-        content.append(methods)
-        content.append(settings)
+        advanced.append(self.recent_group)
+        advanced.append(methods)
+        advanced.append(settings)
         self.load_guest_settings()
         self.connect_settings_signals()
         # The summary follows the real values, so the page says what the current
@@ -636,7 +632,13 @@ class GuestView(Gtk.Box):
         self.profile_row.connect("notify::selected", self._apply_profile)
         self._apply_auto_quality()
         self._sync_quality_summary()
-        clamp.set_child(content)
+        # Two tabs in the header, like Share: the computers, and the rest.
+        self.view_stack = Adw.ViewStack()
+        self.view_stack.set_hhomogeneous(False)
+        self.view_stack.set_vhomogeneous(False)
+        self.view_stack.add_titled_with_icon(content, "computers", _("Computers"), "brp-computer-symbolic")
+        self.view_stack.add_titled_with_icon(advanced, "advanced", _("Advanced options"), "brp-preferences-symbolic")
+        clamp.set_child(self.view_stack)
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scroll.set_vexpand(True)
@@ -879,8 +881,8 @@ class GuestView(Gtk.Box):
             else:
                 progress.stop()
 
-        # Update Discover Button
-        # Logic specific for discover: only sensitive if host selected (when disconnected)
+        # Discover: a computer card connects; this button stops the attempt
+        # or the stream and exists only while there is one.
         selected_host = self.selected_host_card_data
         has_host = selected_host is not None
         update_btn(
@@ -892,12 +894,27 @@ class GuestView(Gtk.Box):
         )
 
         if hasattr(self, "main_connect_btn"):
-            # Keep the visible action short. The selected row and accessible
-            # description identify the destination without repeating a long name.
-            target = _("Connect to {name}").format(name=selected_host["name"]) if selected_host else _("Pick the PC that is sharing the game.")
-            if connected or is_connecting:
-                target = _("Stop")
-            self.main_connect_btn.update_property([Gtk.AccessibleProperty.DESCRIPTION], [target])
+            active = connected or is_connecting
+            self.main_connect_btn.set_visible(active)
+            name = str(selected_host.get("name") or selected_host.get("ip")) if selected_host else ""
+            self.main_connect_btn.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Stop") if active else _("Pick the PC that is sharing the game.")])
+            status = getattr(self, "connect_status", None)
+            if status is not None:
+                if connected:
+                    text = _("Playing on {name}").format(name=name) if name else ""
+                elif is_connecting:
+                    text = _("Connecting to {name}…").format(name=name) if name else _("Connecting…")
+                else:
+                    text = ""
+                status.set_label(text)
+                status.set_visible(bool(text))
+            for card, host in getattr(self, "_host_cards", []):
+                # One computer at a time; the one in use says so.
+                card.set_sensitive(not active)
+                if active and selected_host is not None and host.get("ip") == selected_host.get("ip"):
+                    card.add_css_class("selected")
+                else:
+                    card.remove_css_class("selected")
 
         # Update Manual Button
         update_btn("manual_connect_btn", "manual_btn_label", "manual_btn_spinner", _("Connect"))
@@ -974,11 +991,13 @@ class GuestView(Gtk.Box):
         lbl = Gtk.Label(label=_("Choose a computer"))
         lbl.add_css_class("title-2")
         lbl.set_halign(Gtk.Align.START)
+        lbl.set_accessible_role(Gtk.AccessibleRole.HEADING)
         desc = Gtk.Label(label=_("Start sharing on the game PC. It will appear here."))
         desc.add_css_class("dim-label")
         desc.set_halign(Gtk.Align.START)
         desc.set_wrap(True)
         desc.set_xalign(0)
+        self.discover_description = desc
 
         text_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         text_box.set_hexpand(True)
@@ -987,33 +1006,42 @@ class GuestView(Gtk.Box):
 
         refresh = Gtk.Button(icon_name="brp-view-refresh-symbolic")
         refresh.add_css_class("flat")
+        refresh.set_valign(Gtk.Align.START)
         refresh.set_tooltip_text(_("Search again"))
         refresh.update_property([Gtk.AccessibleProperty.LABEL], [_("Search for game PCs again")])
         refresh.connect("clicked", lambda b: self.discover_hosts())
+        self.refresh_button = refresh
         header.append(text_box)
         header.append(refresh)
-        self.hosts_list = Gtk.ListBox()
-        self.hosts_list.add_css_class("boxed-list")
-        self.hosts_list.set_selection_mode(Gtk.SelectionMode.SINGLE)
-        self.hosts_list.set_activate_on_single_click(True)
-        self.hosts_list.connect("row-selected", self._on_host_row_selected)
+        # One card per computer, two per line when there is room, every one
+        # visible: no inner scroller hiding the third and fourth computer.
+        self.hosts_list = Gtk.FlowBox(selection_mode=Gtk.SelectionMode.NONE, homogeneous=True, min_children_per_line=1, max_children_per_line=2)
+        self.hosts_list.set_column_spacing(12)
+        self.hosts_list.set_row_spacing(12)
+        self.hosts_list.add_css_class("brp-computer-grid")
+        self.hosts_list.update_property([Gtk.AccessibleProperty.LABEL], [_("Computers sharing a game")])
         for m in ["start", "end"]:
             getattr(self.hosts_list, f"set_margin_{m}")(12)
-        # Top/bottom margin so the boxed-list card's rounded corners and the
-        # first/last rows are not clipped by the ScrolledWindow viewport edge.
         self.hosts_list.set_margin_top(6)
         self.hosts_list.set_margin_bottom(6)
+        self._host_cards: list[tuple[Gtk.Button, dict]] = []
         action = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         for m in ["top", "bottom", "start", "end"]:
             getattr(action, f"set_margin_{m}")(12)
 
+        # What is happening now, in words: "Connecting to …".
+        self.connect_status = Gtk.Label(xalign=0.5, wrap=True, visible=False, justify=Gtk.Justification.CENTER)
+        self.connect_status.add_css_class("heading")
+        self.connect_status.set_accessible_role(Gtk.AccessibleRole.STATUS)
+        action.append(self.connect_status)
+
         buttons_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         buttons_box.set_halign(Gtk.Align.CENTER)
 
-        self.main_connect_btn = Gtk.Button()
+        # Choosing a computer connects; this button only stops an attempt or a stream.
+        self.main_connect_btn = Gtk.Button(visible=False)
         self.main_connect_btn.add_css_class("suggested-action")
         self.main_connect_btn.set_size_request(250, 50)
-        self.main_connect_btn.set_sensitive(False)
 
         btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         btn_box.set_halign(Gtk.Align.CENTER)
@@ -1028,16 +1056,22 @@ class GuestView(Gtk.Box):
 
         buttons_box.append(self.main_connect_btn)
 
-        self._host_scroll = Gtk.ScrolledWindow()
-        self._host_scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self._host_scroll.set_max_content_height(400)
-        self._host_scroll.set_min_content_height(120)
-        self._host_scroll.set_vexpand(False)
-        self._host_scroll.set_propagate_natural_height(True)
-        self._host_scroll.set_child(self.hosts_list)
+        self._host_scroll = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._host_scroll.append(self.hosts_list)
+        # Searching: a spinner in place of the cards.
+        self._searching = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, halign=Gtk.Align.CENTER, visible=False)
+        self._searching.set_size_request(-1, 150)
+        for m in ["top", "bottom"]:
+            getattr(self._searching, f"set_margin_{m}")(24)
+        searching_spinner = Adw.Spinner()
+        searching_spinner.set_size_request(48, 48)
+        self._searching.append(searching_spinner)
+        searching_label = Gtk.Label(label=_("Searching for game PCs…"))
+        searching_label.add_css_class("title-2")
+        self._searching.append(searching_label)
+        self._searching.set_accessible_role(Gtk.AccessibleRole.STATUS)
+        self._host_scroll.append(self._searching)
 
-        # Empty state lives OUTSIDE the height-capped scroller, so its taller
-        # guidance card is never clipped (the scroller is only for host rows).
         self._empty_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self._empty_container.set_visible(False)
 
@@ -1049,6 +1083,13 @@ class GuestView(Gtk.Box):
         box.append(action)
         box.set_hexpand(True)
         return box
+
+    def listed_hosts(self) -> list[dict]:
+        """The computers on screen, in their order."""
+        return [host for _card, host in self._host_cards]
+
+    def host_card(self, index: int) -> Gtk.Button | None:
+        return self._host_cards[index][0] if 0 <= index < len(self._host_cards) else None
 
     def _on_mapped(self, _view: Gtk.Widget) -> None:
         # A map signal may run before get_mapped() changes. Defer once to the
@@ -1099,32 +1140,14 @@ class GuestView(Gtk.Box):
             self._empty_container.set_visible(False)
             self._host_scroll.set_visible(True)
             self._discover_action.set_visible(True)
-        while row := self.hosts_list.get_row_at_index(0):
-            self.hosts_list.remove(row)
-        self.loading_row = Gtk.ListBoxRow()
-        self.loading_row.set_selectable(False)
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        box.set_halign(Gtk.Align.CENTER)
-        box.set_valign(Gtk.Align.CENTER)
-        box.set_size_request(-1, 150)
-        for m in ["top", "bottom"]:
-            getattr(box, f"set_margin_{m}")(24)
-        spinner = Gtk.Spinner()
-        spinner.set_size_request(48, 48)
-        spinner.start()
-        lbl = Gtk.Label(label=_("Searching for game PCs…"))
-        lbl.add_css_class("title-2")
-        box.append(spinner)
-        box.append(lbl)
-        self.loading_row.set_child(box)
-        self.hosts_list.append(self.loading_row)
+        self._clear_host_cards()
+        self._searching.set_visible(True)
 
         def on_hosts_discovered(hosts):
             self._discovery_running = False
             if self._closed or self.is_connected or getattr(self, "is_connecting", False):
                 return False
-            if self.loading_row.get_parent():
-                self.hosts_list.remove(self.loading_row)
+            self._searching.set_visible(False)
             self.update_hosts_list(hosts)
             return False
 
@@ -1179,27 +1202,28 @@ class GuestView(Gtk.Box):
                 merged.append(host)
         return merged
 
+    def _clear_host_cards(self) -> None:
+        while child := self.hosts_list.get_first_child():
+            self.hosts_list.remove(child)
+        self._host_cards = []
+
     def update_hosts_list(self, hosts, keep_selection: bool = False):
         self._lan_hosts = [host for host in hosts if host.get("source") != "provider"]
         hosts = self._merge_private(self._lan_hosts)
         previous = self.selected_host_card_data if keep_selection else None
-        if keep_selection and (hosts or self._empty_container.get_visible()):
-            listed = [getattr(self.hosts_list.get_row_at_index(index), "_brp_host", None) for index in range(len(hosts) + 1)]
-            if hosts == [entry for entry in listed if entry]:
-                return  # nothing changed; leave the list and the selection alone
+        if keep_selection and (hosts or self._empty_container.get_visible()) and hosts == self.listed_hosts():
+            return  # nothing changed; leave the cards and the keyboard focus alone
 
-        self.selected_host_card_data = None
+        focused = self.get_root().get_focus() if isinstance(self.get_root(), Gtk.Window) else None
+        had_focus = focused is not None and focused.is_ancestor(self.hosts_list)
+        self.selected_host_card_data = previous if previous is not None and any(host.get("ip") == previous.get("ip") for host in hosts) else None
+        self._clear_host_cards()
+        self._searching.set_visible(False)
         self._update_all_buttons_state()
 
-        while True:
-            row = self.hosts_list.get_row_at_index(0)
-            if row is None:
-                break
-            self.hosts_list.remove(row)
-
         if not hosts:
-            # Show the uncapped guidance card; hide the list scroller and the
-            # connect button, which only make sense with hosts.
+            # Show the uncapped guidance card; hide the grid and the stop
+            # button, which only make sense with computers.
             while child := self._empty_container.get_first_child():
                 self._empty_container.remove(child)
             self._empty_container.append(self._build_discover_empty_state())
@@ -1211,25 +1235,24 @@ class GuestView(Gtk.Box):
         self._empty_container.set_visible(False)
         self._host_scroll.set_visible(True)
         self._discover_action.set_visible(True)
-        first_row = None
-        keep_row = None
         for host in hosts:
-            row = self.create_host_row_custom(host)
-            self.hosts_list.append(row)
-            if first_row is None:
-                first_row = row
-            if previous is not None and host["ip"] == previous.get("ip"):
-                keep_row = row
-        # Discovery normally returns one obvious target. Preselecting the first
-        # result removes an unnecessary click while preserving keyboard choice;
-        # a background refresh keeps whatever the person had chosen.
-        selected = keep_row or first_row
-        if selected is not None:
-            self.hosts_list.select_row(selected)
-
-    def _on_host_row_selected(self, _listbox: Gtk.ListBox, row: Gtk.ListBoxRow | None) -> None:
-        self.selected_host_card_data = getattr(row, "_brp_host", None) if row is not None else None
+            card = self.create_host_row_custom(host)
+            self.hosts_list.append(card)
+            # The card is the tab stop, not the FlowBox cell around it.
+            card.get_parent().set_focusable(False)
+            self._host_cards.append((card, host))
         self._update_all_buttons_state()
+        if had_focus and self._host_cards:
+            # A refresh never strands keyboard focus on a removed card.
+            index = next((i for i, (_card, host) in enumerate(self._host_cards) if previous is not None and host.get("ip") == previous.get("ip")), 0)
+            self._host_cards[index][0].grab_focus()
+
+    def _on_host_chosen(self, host: dict) -> None:
+        """Choosing a computer is the whole decision: it connects."""
+        if getattr(self, "is_connecting", False) or self.is_connected or self._stopping:
+            return
+        self.selected_host_card_data = host
+        self.connect_to_host(dict(host))
 
     @staticmethod
     def _readiness_text(host: dict) -> str:
@@ -1243,23 +1266,43 @@ class GuestView(Gtk.Box):
         name = str(host.get("name") or host["ip"])
         provider = PRIVATE_PROVIDER_NAMES.get(str(host.get("provider", "")))
         readiness = self._readiness_text(host)
-        subtitle = " · ".join(value for value in (provider, str(host["ip"]), readiness) if value)
-        row = Adw.ActionRow(title=name, subtitle=subtitle, use_markup=False, activatable=True)
-        row.set_title_lines(2)
-        row.set_subtitle_lines(2)
-        row._brp_host = host
-        row.add_prefix(icon_tile("brp-computer-symbolic"))
+        # Words first; the address is technical and stays in the tooltip.
+        subtitle = " · ".join(value for value in (provider, readiness) if value) or _("On this network")
+        card = Gtk.Button(hexpand=True)
+        card.add_css_class("brp-computer-card")
+        if host.get("readiness") == "offline":
+            card.add_css_class("offline")
+        content = Gtk.Box(spacing=14)
+        content.append(icon_tile("brp-computer-symbolic"))
+        texts = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, hexpand=True, valign=Gtk.Align.CENTER)
+        # Natural widths are capped so two cards fit per line; long names wrap.
+        title = Gtk.Label(label=name, xalign=0, wrap=True, lines=2, ellipsize=Pango.EllipsizeMode.END, max_width_chars=18)
+        title.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        title.add_css_class("heading")
+        texts.append(title)
+        detail = Gtk.Label(label=subtitle, xalign=0, wrap=True, max_width_chars=22)
+        detail.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        detail.add_css_class("caption")
+        detail.add_css_class("dim-label")
+        texts.append(detail)
+        content.append(texts)
+        arrow = create_icon_widget("go-next-symbolic", size=16, css_class="brp-choice-arrow")
+        arrow.set_valign(Gtk.Align.CENTER)
+        content.append(arrow)
+        card.set_child(content)
+        card.set_tooltip_text(_("Available at {address}").format(address=host["ip"]))
         description = _("Available at {address}").format(address=host["ip"])
         if provider:
             description = _("On your {provider} private network at {address}").format(provider=provider, address=host["ip"])
         if readiness:
             description = f"{description}. {readiness}"
-        row.update_property(
+        card.update_property(
             [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
-            [name, description],
+            [_("Connect to {name}").format(name=name), description],
         )
-        row.connect("activated", lambda selected_row: self.hosts_list.select_row(selected_row))
-        return row
+        card._brp_host = host
+        card.connect("clicked", lambda _card, chosen=host: self._on_host_chosen(chosen))
+        return card
 
     def build_connection_dialogs(self) -> None:
         """Each fallback owns its fields; closing one never clears the other."""
