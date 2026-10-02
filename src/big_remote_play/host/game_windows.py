@@ -235,6 +235,66 @@ def children_of(pid: int, table: Iterable[ProcessInfo]) -> list[ProcessInfo]:
     return found
 
 
+# Wrappers that run one game and nothing else: everything below them is the game.
+_GAME_WRAPPERS = ("pv-adverb", "pv-bwrap", "srt-bwrap", "pressure-vessel", "gamescope", "gamemoderun", "umu-run", "lutris-wrapper")
+
+
+def game_audio_root(chain: Sequence[ProcessInfo]) -> int:
+    """The process whose whole subtree is the game, from the window's process up.
+
+    Steam starts each game under its own ``reaper`` (``SteamLaunch AppId=…``);
+    Lutris under one ``lutris-wrapper``. Otherwise Wine/Proton and runtime
+    wrappers belong to the game, and the first other ancestor (a launcher,
+    a shell, the desktop) does not: a native game is its own root.
+    """
+    if not chain:
+        return 0
+    for info in chain:
+        if info.name == "reaper" and "SteamLaunch" in info.cmdline:
+            return info.pid
+        if info.name.startswith("lutris-wrapper"):
+            return info.pid
+    root = chain[0]
+    for info in chain[1:]:
+        if not (_is_wine_process(info) or info.name.lower().startswith(_GAME_WRAPPERS)):
+            break
+        root = info
+    return root.pid
+
+
+def process_parents(proc: Path = Path("/proc")) -> dict[int, int]:
+    """``{pid: parent pid}`` from ``/proc/*/stat`` only: cheap enough for every audio check."""
+    parents: dict[int, int] = {}
+    for entry in proc.iterdir() if proc.is_dir() else []:
+        if not entry.name.isdigit():
+            continue
+        try:
+            stat = (entry / "stat").read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        fields = stat[stat.rfind(")") + 2 :].split()
+        if len(fields) > 1 and fields[1].isdigit():
+            parents[int(entry.name)] = int(fields[1])
+    return parents
+
+
+def game_process_family(window_pid: int, *, read: Callable[[int], ProcessInfo | None] = read_process, parents: Callable[[], Mapping[int, int]] = process_parents) -> frozenset[int]:
+    """The window's process, the game's root and everything started below it."""
+    if window_pid <= 1:
+        return frozenset()
+    root = game_audio_root(process_chain(window_pid, read)) or window_pid
+    by_parent: dict[int, list[int]] = {}
+    for pid, ppid in parents().items():
+        by_parent.setdefault(ppid, []).append(pid)
+    family, pending = {root, window_pid}, [root]
+    while pending and len(family) < 4096:
+        for child in by_parent.get(pending.pop(), []):
+            if child not in family:
+                family.add(child)
+                pending.append(child)
+    return frozenset(family)
+
+
 def all_processes(proc: Path = Path("/proc")) -> list[ProcessInfo]:
     table = []
     for entry in proc.iterdir() if proc.is_dir() else []:

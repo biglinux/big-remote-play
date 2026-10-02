@@ -1047,3 +1047,19 @@ def test_a_share_that_ended_while_the_window_was_closed_is_explained_once(ui, mo
     host._recover_game_window_capture()
     drain()
     assert dialogs == ["The game window closed"]
+
+
+def test_game_window_sends_only_the_games_sound_unless_turned_off(ui, open_games):
+    host = ui.host_view
+    host._select_source("game_window")
+    open_games["windows"] = [_game(1, "Alpha", steam="42")]
+    _refreshed(host)
+    _choose(host, "Alpha")
+    assert host.audio_game_only_row.get_active()  # the default
+    audio = host._collect_hosting_config()["game_window"]["audio"]
+    assert audio["pid"] == 4001 and "Alpha" in audio["names"]
+    host.audio_game_only_row.set_active(False)
+    assert "audio" not in host._collect_hosting_config()["game_window"]
+    host.audio_game_only_row.set_active(True)
+    host._select_source("desktop")
+    assert host._collect_hosting_config()["game_window"] is None  # Full Desktop sends everything

@@ -55,7 +55,15 @@ hardware encoder → Moonlight
   a DMA-BUF made on one GPU cannot be imported by another GPU's encoder.
 - **The title bar** is removed with crop metadata that the private screen
   applies (no copy). Fullscreen and borderless games have none.
-- Audio, input, pairing and the app library are unchanged. The Desktop entry of
+- **Sound:** only the game's sound is sent (Preferences → Audio → **Send only
+  the game's sound**, on by default). Big Remote Play links the game's own
+  playback into its private output and Sunshine records that output; other
+  programs, notifications and calls are not sent, and this computer still
+  hears everything. The game is its window's process and everything started
+  under the same game launch (Steam's per-game `reaper`, Lutris's wrapper,
+  Wine/Proton and runtime wrappers). See
+  [audio architecture](audio-architecture.md#game-window-only-the-games-sound).
+- Input, pairing and the app library are unchanged. The Desktop entry of
   `apps.json` is used; no temporary app is created.
 - When sharing starts the game window is made active, because Sunshine sends
   keyboard and mouse to the active window (right after **Start sharing** that

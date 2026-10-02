@@ -497,3 +497,43 @@ def test_guide_links_pass_the_requesting_widget_for_wayland_activation(monkeypat
     opened.assert_not_called()
     row.emit("activated")
     opened.assert_called_once_with(row, connection_guides.CLOUDFLARE_DNS_DOCS)
+
+
+def test_sharing_says_in_words_whether_the_other_computer_gets_sound(ui, monkeypatch):
+    """The 2026-10-02 report: Sunshine's recording restored muted, the game audible only here."""
+    from big_remote_play.utils.audio import audio_status
+
+    h = ui.host_view
+    pulse = outputs(h, monkeypatch)
+    run_start(h, monkeypatch)
+    h.is_hosting = True
+    h._render_stream_audio()
+    checking = h.session_audio_row.get_subtitle()
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), h._audio_generation)
+    waiting = h.audio_stream_row.get_subtitle()
+    pulse.sunshine_starts_session(host_audio=True, saved_level=(True, 40632))
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), h._audio_generation)
+    muted = h.audio_stream_row.get_subtitle()
+    assert h.audio_detail_rows["level"].get_subtitle() != h.audio_detail_rows["sunshine"].get_subtitle()
+    h._apply_audio_status(h.audio_session.reconcile(), h._audio_generation)
+    sending = h.audio_stream_row.get_subtitle()
+    assert len({checking, waiting, muted, sending}) == 4
+    assert h.session_audio_row.get_subtitle() == sending  # Overview shows the same fact
+    assert "100" in h.audio_detail_rows["level"].get_subtitle()
+    assert ["set-source-output-mute", "800", "0"] in pulse.writes
+    h.is_hosting = False
+    h._rollback_start()
+
+
+def test_a_stale_audio_status_does_not_change_the_sound_row(ui, monkeypatch):
+    from big_remote_play.utils.audio import audio_status
+
+    h = ui.host_view
+    pulse = outputs(h, monkeypatch)
+    h.is_hosting = True
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), h._audio_generation)
+    before = h.audio_stream_row.get_subtitle()
+    pulse.sunshine_starts_session(host_audio=True, saved_level=(True, 40632))
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), h._audio_generation - 1)
+    assert h.audio_stream_row.get_subtitle() == before
+    h.is_hosting = False
