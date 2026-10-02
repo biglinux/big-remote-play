@@ -800,6 +800,9 @@ class GuestView(Gtk.Box):
         if hasattr(self, "moonlight"):
             is_running = self.moonlight.is_connected()
 
+            sound = getattr(self.moonlight, "audio", None)
+            if is_running and sound is not None and sound.take_loss_alert():
+                self.show_toast(_("Sound from the game PC is being lost on the way. A wired or less busy connection helps."))
             if is_running:
                 if not self.is_connected:
                     # Update state if it was disconnected
@@ -825,6 +828,40 @@ class GuestView(Gtk.Box):
             self.update_ui_state()
 
         return True  # Continue polling
+
+    def _check_stream_sound(self, attempt: int) -> None:
+        """After the stream started: is the game PC's sound playing here? Said only when not."""
+        from big_remote_play.guest import moonlight_audio
+        from big_remote_play.utils.audio import AudioManager
+
+        moonlight = self.moonlight
+        report = getattr(moonlight, "audio", None)
+        if report is None:
+            return
+
+        def alive() -> bool:
+            return self._attempt_valid(attempt) and moonlight.is_connected()
+
+        def show(result: str) -> bool:
+            message = {
+                moonlight_audio.SOUND_UNMUTED: _("Moonlight's sound was muted on this computer, so Big Remote Play turned it back on."),
+                moonlight_audio.SOUND_DEVICE_FAILED: _("Moonlight could not open this computer's sound device. Check the sound output, then connect again."),
+                moonlight_audio.SOUND_NO_TRAFFIC: _("No sound is arriving from the game PC."),
+                moonlight_audio.SOUND_NOT_PLAYING: _("Moonlight is not playing sound on this computer."),
+            }.get(result)
+            if message and alive():
+                self.show_toast(message)
+            return False
+
+        def work() -> None:
+            try:
+                result = moonlight_audio.check_playback(AudioManager(), report, alive=alive)
+            except Exception as exc:  # a failed check must not affect the stream
+                _log.warning("Could not check the stream's sound: %s", exc)
+                return
+            GLib.idle_add(show, result)
+
+        threading.Thread(target=work, daemon=True).start()
 
     def _show_session_card(self) -> None:
         """The computer being played on: its name, then measured quality."""
@@ -1510,6 +1547,7 @@ class GuestView(Gtk.Box):
                 self.perf_monitor.set_connection_status(host["name"], _("Active Stream"), True)
                 self._show_session_card()
                 self._record_session_start(host, requested)
+                self._check_stream_sound(attempt)
             return False
 
         def not_started():

@@ -19,6 +19,9 @@ Contract (see docs/audio-architecture.md):
 - After Sunshine exits, another program's output that played into a Sunshine
   output and is left linked to nothing is linked to the default device again,
   as that program would have done itself.
+- Sunshine's own recording stream is kept unmuted at full volume. The session
+  manager restores a per-application mute and volume to every new stream, so
+  one mute of "sunshine" in a mixer silenced every later session.
 - Object ids are never persisted except the ids of links and of the output
   this app created, always re-verified (ports, token) before removal.
 """
@@ -52,6 +55,8 @@ SUNSHINE_STEREO_SINK = "sink-sunshine-stereo"
 LEGACY_SINKS = frozenset({"SunshineGameSink", "SunshineStereo", "SunshineHybrid"})
 OWNER_PROPERTY = "big-remote-play.owner"
 _COMMAND_TIMEOUT = 5
+# PA_VOLUME_NORM: 100 % as pactl prints raw volumes.
+VOLUME_NORM = 65536
 
 # Output kinds. Only "hardware" and "bluetooth" can be chosen explicitly (see
 # manual_outputs); virtual outputs are captured through Automatic.
@@ -141,6 +146,21 @@ class AudioStream:
     media_name: str
     node_name: str
     properties: Mapping[str, str] = field(default_factory=dict, compare=False, repr=False)
+    muted: bool = False
+    volume: int | None = None  # the quietest channel, raw (VOLUME_NORM is 100 %); None if unknown
+
+    @property
+    def silenced(self) -> bool:
+        """Muted or turned down: what it records or plays is quieter than the source."""
+        return self.muted or (self.volume is not None and self.volume < VOLUME_NORM)
+
+
+_VOLUME_VALUE = re.compile(r"(\d+) /")
+
+
+def _lowest_volume(text: str) -> int | None:
+    values = [int(v) for v in _VOLUME_VALUE.findall(text or "")]
+    return min(values) if values else None
 
 
 @dataclass(frozen=True)
@@ -264,6 +284,8 @@ def build_graph(sinks: str, sources: str, sink_inputs: str, source_outputs: str,
                     p.get("media.name", ""),
                     p.get("node.name", ""),
                     dict(p),
+                    f.get("Mute", "") == "yes",
+                    _lowest_volume(f.get("Volume", "")),
                 )
             )
         return tuple(found)
@@ -446,6 +468,13 @@ class AudioStatus:
     host_muted_by_client: bool = False
     notes: tuple[str, ...] = ()
     calls_kept_out: tuple[str, ...] = ()  # call programs playing here but not sent
+    sunshine_muted: bool = False  # Sunshine's recording stream is muted now
+    sunshine_volume: int | None = None  # its quietest channel in %, None without a client
+    sunshine_log: SunshineAudioLog | None = None  # what Sunshine logged for its latest session
+    level_restored: bool = False  # this session found Sunshine's recording muted or turned down and fixed it
+    game_only: bool = False  # Game Window sends only the game's sound
+    game_programs: tuple[str, ...] = ()  # the game's streams linked into the mix now
+    game_separated: bool | None = None  # every Sunshine recording is on the game-only mix; None without a client
 
 
 def audio_status(graph: AudioGraph | None, manual_output: str = "", bridges: Iterable[Bridge] = ()) -> AudioStatus:
@@ -457,6 +486,7 @@ def audio_status(graph: AudioGraph | None, manual_output: str = "", bridges: Ite
     source = captures[0].device if captures else ""
     records_monitor = bool(graph.recorded_output(captures[0])) if captures else None
     default = graph.output(graph.default_sink)
+    volumes = [c.volume for c in captures if c.volume is not None]
     return AudioStatus(
         plan,
         graph.default_source,
@@ -467,7 +497,96 @@ def audio_status(graph: AudioGraph | None, manual_output: str = "", bridges: Ite
         tuple((s.device, bool(graph.recorded_output(s))) for s in graph.steam_captures()),
         tuple(bridges),
         bool(captures) and default is not None and default.kind == SUNSHINE,
+        sunshine_muted=any(c.muted for c in captures),
+        sunshine_volume=round(min(volumes) * 100 / VOLUME_NORM) if volumes else None,
     )
+
+
+# Whether the other computer can get sound, from measured facts only.
+STREAM_UNAVAILABLE = "unavailable"  # no output or no verified monitor here
+STREAM_WAITING = "waiting"  # nobody is playing
+STREAM_STARTING = "starting"  # a device plays, Sunshine has no recording yet
+STREAM_CAPTURE_FAILED = "capture-failed"  # Sunshine logged that it could not open the sound
+STREAM_MUTED = "muted"  # Sunshine's recording is muted or at 0 %
+STREAM_MICROPHONE = "microphone"  # Sunshine records an input: never acceptable
+STREAM_NOT_SEPARATED = "not-separated"  # Game Window: the game's sound could not be sent on its own
+STREAM_SENDING = "sending"
+
+
+def stream_audio_state(status: AudioStatus | None, devices_playing: int) -> str:
+    """One state for the person: is this computer's sound reaching the stream?
+
+    Read from the sound server and Sunshine's log. It ends at Sunshine: whether
+    the other device plays the sound is only known on that device.
+    """
+    if status is None or not status.plan.available:
+        return STREAM_UNAVAILABLE
+    if status.microphone_sent:
+        return STREAM_MICROPHONE
+    if status.sunshine_source:
+        if status.sunshine_muted or status.sunshine_volume == 0:
+            return STREAM_MUTED
+        if status.game_only and status.game_separated is False:
+            return STREAM_NOT_SEPARATED
+        return STREAM_SENDING
+    if devices_playing <= 0:
+        return STREAM_WAITING
+    log = status.sunshine_log
+    return STREAM_CAPTURE_FAILED if log is not None and log.failed else STREAM_STARTING
+
+
+# --------------------------------------------------------------------------
+# Sunshine's own log: which monitor it opened, the encoder, and failures.
+# Messages are Sunshine's (English, never translated); see src/platform/linux/audio.cpp.
+# --------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class SunshineAudioLog:
+    source: str | None = None  # the monitor it opened; "" when it found none, None when not logged
+    encoder: str = ""  # e.g. "48 kHz, 2 channels, 96 kbps (total)"
+    failed: bool = False  # "Unable to initialize audio capture. The stream will not have audio."
+    error: str = ""  # the sound-server error logged before that, as Sunshine wrote it
+
+
+_LOG_MONITOR = re.compile(r"Found default monitor by name: ?(.*)$")
+_LOG_OPUS = re.compile(r"Opus initialized: (.*?)(?:, LOWDELAY| ?$)")
+_LOG_PA_ERROR = re.compile(r"pa_simple_new\(\) failed: (.*)$")
+SUNSHINE_LOG_TAIL = 512 * 1024
+
+
+def parse_sunshine_audio_log(text: str) -> SunshineAudioLog | None:
+    """The sound of the latest session of the running Sunshine; ``None`` before any session."""
+    lines = (text or "").splitlines()
+    start = max((i for i, line in enumerate(lines) if "Sunshine version:" in line), default=-1) + 1
+    report: SunshineAudioLog | None = None
+    for line in lines[start:]:
+        if "New streaming session started" in line:
+            report = SunshineAudioLog()
+        elif report is None:
+            continue
+        elif match := _LOG_MONITOR.search(line):
+            report = replace(report, source=match.group(1).strip()[:200])
+        elif "Unable to initialize audio capture" in line:
+            report = replace(report, failed=True)
+        elif match := _LOG_PA_ERROR.search(line):
+            report = replace(report, error=match.group(1).strip()[:200])
+        elif match := _LOG_OPUS.search(line):
+            report = replace(report, encoder=match.group(1).strip()[:120])
+    return report
+
+
+def read_sunshine_audio_log(path: Path | str) -> SunshineAudioLog | None:
+    """Read only the end of Sunshine's log (it grows for the whole session)."""
+    try:
+        with open(path, "rb") as handle:
+            handle.seek(0, os.SEEK_END)
+            size = handle.tell()
+            handle.seek(max(0, size - SUNSHINE_LOG_TAIL))
+            data = handle.read()
+    except OSError:
+        return None
+    return parse_sunshine_audio_log(data.decode("utf-8", errors="replace"))
 
 
 def desired_bridges(graph: AudioGraph, *, original_sink: str, play_on_host: bool, origins: Mapping[str, str] | None = None) -> tuple[list[Bridge], list[str]]:
@@ -832,6 +951,21 @@ class AudioManager:
         result = self._pactl("move-source-output", stream_index, source)
         return result is not None and result.returncode == 0
 
+    def unmute_playback(self, stream_index: str) -> bool:
+        result = self._pactl("set-sink-input-mute", stream_index, "0")
+        return result is not None and result.returncode == 0
+
+    def restore_capture_level(self, stream: AudioStream) -> bool:
+        """Unmute ``stream`` (a capture) and raise it to 100 % when it is below."""
+        ok = True
+        if stream.muted:
+            result = self._pactl("set-source-output-mute", stream.index, "0")
+            ok = result is not None and result.returncode == 0
+        if stream.volume is not None and stream.volume < VOLUME_NORM:
+            result = self._pactl("set-source-output-volume", stream.index, str(VOLUME_NORM))
+            ok = ok and result is not None and result.returncode == 0
+        return ok
+
     def pipewire(self) -> PipeWireGraph | None:
         """PipeWire's own nodes, ports and links; ``None`` when unreadable."""
         try:
@@ -898,15 +1032,24 @@ class AudioManager:
     TONE_SECONDS = 0.8
     _RATE = 48_000
 
-    def test_tone(self, manual_output: str = "") -> dict:
+    def test_tone(self, manual_output: str = "", *, game_only: bool = False) -> dict:
         """Play a short tone and measure it on the monitor Sunshine would record.
 
-        Returns ``{"played", "detected", "level_db", "monitor", "output"}``.
+        Returns ``{"played", "detected", "level_db", "monitor", "output", "capture", "capture_source"}``.
         The level is the tone's own energy (Goertzel), so other sound playing
-        at the same time does not count as a detection.
+        at the same time does not count as a detection. ``capture`` says what
+        Sunshine's own recording does right after (see ``capture_check``).
         """
         plan = capture_plan(self.snapshot(), manual_output)
-        result = {"played": False, "detected": False, "level_db": None, "monitor": plan.monitor, "output": plan.output.description if plan.output else ""}
+        result = {
+            "played": False,
+            "detected": False,
+            "level_db": None,
+            "monitor": plan.monitor,
+            "output": plan.output.description if plan.output else "",
+            "capture": CAPTURE_NONE,
+            "capture_source": "",
+        }
         if not plan.available or plan.output is None:
             return result
         samples = int(self._RATE * self.TONE_SECONDS)
@@ -941,7 +1084,30 @@ class AudioManager:
         level = tone_level_db(b"".join(chunks), self.TONE_HZ, self._RATE)
         result["level_db"] = level
         result["detected"] = result["played"] and level is not None and level > -45.0
+        result["capture"], result["capture_source"] = capture_check(self.snapshot(), plan.monitor or "", game_only=game_only)
         return result
+
+
+CAPTURE_NONE = "none"  # no client is playing: Sunshine records nothing
+CAPTURE_OK = "ok"  # Sunshine records the tested monitor (or the call-free mix), unmuted
+CAPTURE_MUTED = "muted"
+CAPTURE_ELSEWHERE = "elsewhere"  # Sunshine records another source
+CAPTURE_GAME_ONLY = "game-only"  # Game Window sends only the game: the tone is not sent
+
+
+def capture_check(graph: AudioGraph | None, monitor: str, *, game_only: bool = False) -> tuple[str, str]:
+    """Whether Sunshine's recording carries what was measured on ``monitor``."""
+    captures = graph.sunshine_captures() if graph is not None else []
+    if graph is None or not captures:
+        return CAPTURE_NONE, ""
+    if game_only and all(c.device == f"{CALL_MIX_SINK}.monitor" for c in captures):
+        return CAPTURE_GAME_ONLY, captures[0].device
+    for capture in captures:
+        if capture.device not in (monitor, f"{CALL_MIX_SINK}.monitor"):
+            return CAPTURE_ELSEWHERE, capture.device
+    if any(c.muted or c.volume == 0 for c in captures):
+        return CAPTURE_MUTED, captures[0].device
+    return CAPTURE_OK, captures[0].device
 
 
 def tone_level_db(pcm: bytes, frequency: float, rate: int) -> float | None:
@@ -966,6 +1132,27 @@ def tone_level_db(pcm: bytes, frequency: float, rate: int) -> float | None:
 # --------------------------------------------------------------------------
 # One sharing session's ownership
 # --------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class GameScope:
+    """The shared game window's process and names, for "only the game's sound"."""
+
+    pid: int
+    names: tuple[str, ...] = ()  # executable, game name, window title: a fallback for sandboxed PIDs
+
+    @classmethod
+    def from_state(cls, data: object) -> GameScope | None:
+        if not isinstance(data, dict) or not isinstance(data.get("pid"), int) or data["pid"] <= 1:
+            return None
+        names = tuple(str(n)[:256] for n in (data.get("names") or []) if isinstance(n, str))[:8]
+        return cls(data["pid"], names)
+
+
+def _game_process_family(pid: int) -> frozenset[int]:
+    from big_remote_play.host.game_windows import game_process_family
+
+    return game_process_family(pid)
 
 
 def _state_path() -> Path:
@@ -1004,9 +1191,23 @@ class AudioRoutingSession:
     # themselves before a port left without a link is reconnected.
     RELINK_SETTLE_SECONDS = 2.0
     _MAX_FEEDERS = 64
+    MAX_LEVEL_RESTORES = 3
 
-    def __init__(self, manager: AudioManager, *, manual_output: str = "", play_on_host: bool = True, state_path: Path | None = None) -> None:
+    def __init__(
+        self,
+        manager: AudioManager,
+        *,
+        manual_output: str = "",
+        play_on_host: bool = True,
+        state_path: Path | None = None,
+        game: GameScope | None = None,
+        game_family: Callable[[int], frozenset[int]] | None = None,
+    ) -> None:
         self.manager = manager
+        # Game Window with "only the game's sound": the mix carries the game alone.
+        self.game = game
+        self.game_family = game_family or _game_process_family
+        self.game_programs: tuple[str, ...] = ()
         self.manual_output = manual_output
         self.play_on_host = play_on_host
         self.state_path = state_path or _state_path()
@@ -1023,6 +1224,12 @@ class AudioRoutingSession:
         # Shown in the desktop's sound settings while the mix exists.
         self.mix_description = _("Big Remote Play: sound sent to the other computer")
         self.notes: tuple[str, ...] = ()
+        # Sunshine captures whose mute/volume this session restored, and how
+        # often: the session manager may apply a saved level right after us,
+        # but a person muting it again on purpose is not fought forever.
+        self._level_restores: dict[str, int] = {}
+        self.restored_level = False  # at least once this session
+        self._logged: dict[str, str] = {}
         self._owner_pid = os.getpid()
         self._lock = threading.Lock()
 
@@ -1039,6 +1246,7 @@ class AudioRoutingSession:
             "bridges": [{"source": b.source_sink, "target": b.target_sink, "reason": b.reason, "links": links} for b, links in self.links.items()],
             "feeders": sorted(self.feeders),
             "mix_module": self.mix_module,
+            "game": {"pid": self.game.pid, "names": list(self.game.names)} if self.game is not None else None,
         }
         try:
             secure_write_text(str(self.state_path), json.dumps(state))
@@ -1062,7 +1270,7 @@ class AudioRoutingSession:
             return None
         if not isinstance(state, dict) or not re.fullmatch(r"[0-9a-f]{16}", str(state.get("token", ""))):
             return None
-        session = cls(manager, manual_output=str(state.get("manual_output") or ""), play_on_host=bool(state.get("play_on_host", True)), state_path=path)
+        session = cls(manager, manual_output=str(state.get("manual_output") or ""), play_on_host=bool(state.get("play_on_host", True)), state_path=path, game=GameScope.from_state(state.get("game")))
         session.token = state["token"]
         session.original_sink = str(state.get("original_sink") or "")
         for entry in state.get("bridges") or []:
@@ -1106,6 +1314,19 @@ class AudioRoutingSession:
             if default is not None and default.is_real:
                 self.original_sink = default.name  # the person's latest choice
             for capture in graph.sunshine_captures():
+                if capture.silenced and self._level_restores.get(capture.index, 0) < self.MAX_LEVEL_RESTORES:
+                    # A saved per-application level (one mute of "sunshine" in a
+                    # mixer) is applied to every new recording: the other
+                    # computer heard silence while this one played normally.
+                    self._level_restores[capture.index] = self._level_restores.get(capture.index, 0) + 1
+                    if self.manager.restore_capture_level(capture):
+                        notes.append("capture-unmuted")
+                        self.restored_level = True
+                        _log.warning(
+                            "[AUDIO] Sunshine's recording #%s was %s; restored to 100 %% unmuted.",
+                            capture.index,
+                            "muted" if capture.muted else f"at {round((capture.volume or 0) * 100 / VOLUME_NORM)} %",
+                        )
                 recorded = graph.recorded_output(capture)
                 if recorded == CALL_MIX_SINK:
                     # Our call-free mix; below, it follows the person's output.
@@ -1146,7 +1367,54 @@ class AudioRoutingSession:
                 self._note_feeders()
             self.notes = tuple(dict.fromkeys(notes))
             self._save()
-            return replace(audio_status(graph, self.manual_output, tuple(self.links)), notes=self.notes, calls_kept_out=self.calls_kept_out)
+            live = {c.index for c in graph.sunshine_captures()}
+            self._level_restores = {index: count for index, count in self._level_restores.items() if index in live}
+            self._log_changes(graph)
+            return self.decorate(audio_status(graph, self.manual_output, tuple(self.links)), graph)
+
+    def decorate(self, status: AudioStatus, graph: AudioGraph | None) -> AudioStatus:
+        """Add what only this session knows: notes, calls, restored level, the game-only mix."""
+        captures = graph.sunshine_captures() if graph is not None else []
+        separated = all(graph.recorded_output(c) == CALL_MIX_SINK for c in captures) if graph is not None and captures and self.game is not None else None
+        return replace(
+            status,
+            notes=self.notes,
+            calls_kept_out=self.calls_kept_out,
+            level_restored=self.restored_level,
+            game_only=self.game is not None,
+            game_programs=self.game_programs if self.game is not None else (),
+            game_separated=separated,
+        )
+
+    def allow_level_restore(self) -> None:
+        """The person asked for a check (Test audio): restore the recording level again."""
+        with self._lock:
+            self._level_restores.clear()
+
+    def _log_changes(self, graph: AudioGraph) -> None:
+        """One ``[AUDIO]`` line per fact, only when it changes: enough to trace a silent stream."""
+        default = graph.output(graph.default_sink)
+        programs = sorted({call_program_name(s) for s in graph.playback if not _is_sunshine_process(s)})
+        facts = {
+            "output": f"Default output: {graph.default_sink or 'none'} ({default.kind if default else 'missing'})",
+            "programs": f"Programs playing: {', '.join(programs) if programs else 'none'}",
+        }
+        if self.game is not None:
+            facts["game"] = f"Only the game's sound is sent; game streams: {', '.join(self.game_programs) if self.game_programs else 'none playing'}"
+        captures = graph.sunshine_captures()
+        if not captures:
+            facts["sunshine"] = "Sunshine is not recording (no client playing)"
+        for capture in captures:
+            recorded = graph.recorded_output(capture)
+            level = "muted" if capture.muted else (f"{round(capture.volume * 100 / VOLUME_NORM)} %" if capture.volume is not None else "level unknown")
+            what = f"monitor of {recorded}" if recorded else "NOT a monitor"
+            facts[f"sunshine-{capture.index}"] = f"Sunshine records #{capture.index}: {capture.device} ({what}), {level}"
+        for key in [k for k in self._logged if k not in facts]:
+            del self._logged[key]
+        for key, text in facts.items():
+            if self._logged.get(key) != text:
+                self._logged[key] = text
+                _log.info("[AUDIO] %s", text)
 
     def _keep_calls_out(self, graph: AudioGraph) -> tuple[AudioGraph, list[str]]:
         """While a call program plays into what Sunshine records, record the call-free mix.
@@ -1171,7 +1439,8 @@ class AudioRoutingSession:
         # Only a capture in the mix needs its origin remembered.
         self.capture_origins = {index: origin for index, origin in origins.items() if index in on_mix}
         candidates = [s for s in graph.playback if is_call_stream(s)]
-        pw = self.manager.pipewire() if candidates and origins else None
+        game_only = self.game is not None
+        pw = self.manager.pipewire() if origins and (candidates or game_only) else None
         targets = {node for node in (pw.node_named(name) for name in set(origins.values())) if node is not None} if pw is not None else set()
 
         def reaching(stream: AudioStream) -> bool:
@@ -1179,9 +1448,19 @@ class AudioRoutingSession:
             return pw is not None and node is not None and any(pw.reaches(node, target) for target in targets)
 
         calls = [s for s in candidates if reaching(s)]
-        if not calls or pw is None:
+        game = self._game_streams(graph) if game_only and origins else []
+        self.game_programs = tuple(dict.fromkeys(call_program_name(s) for s in game))
+        if game_only and origins and pw is None:
+            # Never fall back to sending everything on purpose: what Sunshine
+            # records stays as it is, and the interface says so.
+            self.calls_kept_out = ()
+            return graph, ["game-not-separated"]
+        if not game_only and (not calls or pw is None):
             self.calls_kept_out = ()
             return self._release_mix(graph, captures, origins), (["calls-unreadable"] if candidates and origins and pw is None else [])
+        if not origins or pw is None:
+            self.calls_kept_out = ()
+            return self._release_mix(graph, captures, origins), []
         if graph.output(CALL_MIX_SINK) is None:
             origin = graph.output(next(iter(origins.values())))
             self.mix_module = self.manager.create_call_mix(self.token, origin.channel_map if origin else "", self.mix_description)
@@ -1189,21 +1468,26 @@ class AudioRoutingSession:
             fresh, fresh_pw = self.manager.snapshot(), self.manager.pipewire()
             if not self.mix_module or fresh is None or fresh_pw is None or fresh.output(CALL_MIX_SINK) is None:
                 self.calls_kept_out = ()
-                return self._release_mix(fresh or graph, captures, origins), ["calls-not-separated"]
+                return self._release_mix(fresh or graph, captures, origins), ["game-not-separated" if game_only else "calls-not-separated"]
             graph, pw = fresh, fresh_pw
             targets = {node for node in (pw.node_named(name) for name in set(origins.values())) if node is not None}
         mix = graph.output(CALL_MIX_SINK)
         mix_node = pw.node_named(CALL_MIX_SINK)
         if mix is None or mix.kind != OWNED or mix_node is None:
             self.calls_kept_out = ()
-            return graph, ["calls-not-separated"]  # someone else's output with our name
+            return graph, ["game-not-separated" if game_only else "calls-not-separated"]  # someone else's output with our name
         inputs = pw.ports_of(mix_node, "input")
         wanted: set[tuple[int, int]] = set()
+        game_nodes = {_stream_node(s) for s in game}
         for stream in graph.playback:
             node = _stream_node(stream)
             # Only programs themselves: a node others play into, or half of a
             # loopback or filter chain, forwards sound that is linked already.
-            if node is None or is_call_stream(stream) or _is_sunshine_process(stream) or pw.is_fed(node) or pw.link_group(node) or not reaching(stream):
+            if node is None or is_call_stream(stream) or _is_sunshine_process(stream) or pw.is_fed(node) or pw.link_group(node):
+                continue
+            # Game Window sends the game wherever it plays; otherwise every
+            # program that reaches the recorded output, except calls.
+            if (node not in game_nodes) if game_only else not reaching(stream):
                 continue
             for channel, port in pw.ports_of(node, "output").items():
                 wanted |= {(port, inputs[target]) for target in mix_channels(channel, inputs)}
@@ -1217,10 +1501,30 @@ class AudioRoutingSession:
                 if self.manager.move_capture(capture.index, f"{CALL_MIX_SINK}.monitor"):
                     self.capture_origins[capture.index] = origins[capture.index]
                 else:
-                    notes.append("calls-not-separated")
+                    notes.append("game-not-separated" if game_only else "calls-not-separated")
         self.calls_kept_out = tuple(dict.fromkeys(call_program_name(s) for s in calls))
         self._save()
         return self.manager.snapshot() or graph, notes
+
+    def _game_streams(self, graph: AudioGraph) -> list[AudioStream]:
+        """The game's playback: its process family, or a stream named like the game."""
+        scope = self.game
+        if scope is None:
+            return []
+        try:
+            family = self.game_family(scope.pid)
+        except Exception as exc:  # /proc unreadable: names still work
+            _log.warning("[AUDIO] Could not read the game's processes: %s", exc)
+            family = frozenset()
+        names = {name.casefold() for name in scope.names if len(name) >= 3}
+        found = []
+        for stream in graph.playback:
+            if _is_sunshine_process(stream) or is_call_stream(stream):
+                continue
+            pid = int(stream.pid) if stream.pid.isdigit() else 0
+            if pid in family or (stream.app and stream.app.casefold() in names):
+                found.append(stream)
+        return found
 
     def _release_mix(self, graph: AudioGraph, captures: Iterable[AudioStream], origins: Mapping[str, str]) -> AudioGraph:
         """Put Sunshine back on the output it chose, then remove the mix.

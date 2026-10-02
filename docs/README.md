@@ -29,6 +29,7 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Pairing requests](pairing-ux.md) — what Sunshine can tell, the request dialog and its safety rules.
 - [Connection history](connection-history-fix.md) — the stored sessions of Share, the 7-day chart and the live latency chart.
 - [Game Window audio](window-audio-fix.md) — investigation of corrupted sound when sharing one game window.
+- [Remote audio silence](remote-audio-silence-investigation.md) — investigation of a session where the other computer received no sound while the game played on the game PC.
 - [Iconography](iconography.md) — native, symbolic and project icon rules.
 - [Gamer theme design](gamer-theme-design.md) — provider ownership, compatibility and visual tokens.
 - [Backup and restore](backup-restore.md) — storage inventory, archive format, validation, rollback and data ownership.

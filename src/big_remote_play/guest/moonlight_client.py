@@ -8,6 +8,7 @@ import secrets
 import threading
 import time
 
+from big_remote_play.guest.moonlight_audio import MoonlightAudioReport
 from big_remote_play.utils.moonlight_config import paired_host_certificate
 
 
@@ -26,6 +27,8 @@ class MoonlightClient:
         self.logger = logger
         self.moonlight_cmd = next((c for c in ["moonlight-qt", "moonlight"] if shutil.which(c)), None)
         self.stream_confirmed = threading.Event()
+        # Moonlight's sound messages for the current connection.
+        self.audio = MoonlightAudioReport()
 
     def _prepare_ip(self, ip):
         """Prepares IP for Moonlight CLI."""
@@ -111,6 +114,7 @@ class MoonlightClient:
             # Output is always read: it is how a real stream is told apart from
             # a Moonlight window that only shows an error.
             self.stream_confirmed = threading.Event()
+            self.audio = MoonlightAudioReport()
             self.process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace")
             if cancel_event is not None and cancel_event.is_set():
                 self.disconnect()
@@ -119,6 +123,7 @@ class MoonlightClient:
 
             logger = self.logger
             confirmed = self.stream_confirmed
+            audio = self.audio
 
             def read_output(pipe: TextIO) -> None:
                 for line in iter(pipe.readline, ""):
@@ -129,8 +134,9 @@ class MoonlightClient:
                         break
                     if not confirmed.is_set() and any(marker in line for marker in STREAM_STARTED_MARKERS):
                         confirmed.set()
-                    if logger and line.strip():
-                        logger.info(f"[Moonlight] {line.strip()}")
+                    kind, keep = audio.note(line)
+                    if logger and line.strip() and keep:
+                        logger.info(f"[Moonlight]{' [AUDIO]' if kind else ''} {line.strip()}")
                 pipe.close()
 
             if self.process.stdout:

@@ -583,6 +583,12 @@ class HostView(Gtk.Box):
         audio_group.set_title(_("Audio"))
         audio_group.set_description(_("The other computer hears the sound this computer plays. The microphone is not sent."))
 
+        # Measured, not configured: what the sound server and Sunshine report.
+        self.audio_stream_row = Adw.ActionRow(title=_("Sound for the other computer"), use_markup=False)
+        self.audio_stream_row.set_subtitle_lines(0)
+        set_row_icon(self.audio_stream_row, "brp-audio-volume-high-symbolic")
+        audio_group.add(self.audio_stream_row)
+
         self.audio_output_row = Adw.ComboRow()
         self.audio_output_row.set_title(_("Server output"))
         self.audio_output_row.set_tooltip_text(_("Automatic shares the output you are using now, including effects such as EasyEffects. Choose a device only to always share that one."))
@@ -599,6 +605,14 @@ class HostView(Gtk.Box):
         set_row_icon(self.audio_play_here_row, "brp-audio-volume-medium-symbolic")
         self.audio_play_here_row.connect("notify::active", self.on_audio_mode_changed)
         audio_group.add(self.audio_play_here_row)
+
+        self.audio_game_only_row = Adw.SwitchRow(title=_("Send only the game's sound"))
+        self.audio_game_only_row.set_subtitle(_("With Game Window, other programs, notifications and voice calls stay on this computer. This computer still hears everything."))
+        self.audio_game_only_row.set_subtitle_lines(0)
+        self.audio_game_only_row.set_active(True)
+        set_row_icon(self.audio_game_only_row, "brp-audio-x-generic-symbolic")
+        self.audio_game_only_row.connect("notify::active", self.on_audio_mode_changed)
+        audio_group.add(self.audio_game_only_row)
 
         microphone_row = Adw.ActionRow(title=_("Microphone"), subtitle=_("Not sent by Big Remote Play. Voice chat apps keep using it normally."), use_markup=False)
         microphone_row.set_subtitle_lines(0)
@@ -630,9 +644,12 @@ class HostView(Gtk.Box):
             ("output", _("Current output")),
             ("monitor", _("Recorded source")),
             ("sunshine", _("Sunshine records now")),
+            ("level", _("Sunshine recording level")),
+            ("sunshine_log", _("Sunshine log")),
             ("microphone", _("Default microphone")),
             ("mic_sent", _("Microphone sent to Sunshine")),
             ("steam", _("Steam Remote Play")),
+            ("game", _("Game sound sent")),
             ("calls", _("Calls kept out of the stream")),
             ("bridges", _("Routing added by Big Remote Play")),
         ):
@@ -645,6 +662,7 @@ class HostView(Gtk.Box):
         audio_group.add(self.audio_details_row)
 
         self.load_audio_outputs()
+        self._render_stream_audio()
 
         self.advanced_group = Adw.PreferencesGroup(title=_("Advanced Settings"), description=_("Input, Network, and Access"))
 
@@ -1021,7 +1039,15 @@ class HostView(Gtk.Box):
         self.session_summary_row.set_title_lines(0)
         self.session_summary_row.set_subtitle_lines(0)
         set_row_icon(self.session_summary_row, "brp-host-symbolic")
-        self.session_summary_box = boxed_rows(self.session_summary_row)
+        # The same measured state as Preferences → Audio, where Test and the details are.
+        self.session_audio_row = Adw.ActionRow(title=_("Sound"), subtitle=_("Checking…"), use_markup=False, activatable=True)
+        self.session_audio_row.set_subtitle_lines(0)
+        set_row_icon(self.session_audio_row, "brp-audio-volume-high-symbolic")
+        arrow = create_icon_widget("go-next-symbolic", size=16)
+        arrow.set_valign(Gtk.Align.CENTER)
+        self.session_audio_row.add_suffix(arrow)
+        self.session_audio_row.connect("activated", lambda _row: self.view_stack.set_visible_child_name("config"))
+        self.session_summary_box = boxed_rows(self.session_summary_row, self.session_audio_row)
         self.session_summary_box.set_visible(False)
         self.share_controls.append(self.session_summary_box)
         self.overview_start_button.set_halign(Gtk.Align.FILL)
@@ -2327,6 +2353,8 @@ class HostView(Gtk.Box):
         """
         count = len([info for info in infos if info.connected])
         previous, self._playing_count = getattr(self, "_playing_count", 0), count
+        if count != previous:
+            self._render_stream_audio()
         session = self._game_window_session
         spec = session.get("spec") if session else None
         if count <= previous or spec is None or not self.is_hosting:
@@ -2714,6 +2742,8 @@ class HostView(Gtk.Box):
         for widget in (self.game_group, self.quality_summary_box):
             widget.set_visible(not self.is_hosting)
         self.session_summary_box.set_visible(self.is_hosting)
+        if hasattr(self, "audio_stream_row"):
+            self._render_stream_audio()
         if self.is_hosting:
             self.session_summary_row.set_subtitle(self._describe_session())
             self.perf_monitor.set_connection_status("Sunshine", _("Active - Waiting for Connections"), True)
@@ -2876,9 +2906,10 @@ class HostView(Gtk.Box):
             return
         self._audio_generation += 1
         generation = self._audio_generation
+        self._audio_status = None  # the previous sharing's facts no longer apply
 
         def check() -> None:
-            status = session.reconcile()
+            status = self._with_sunshine_log(session.reconcile())
             GLib.idle_add(self._apply_audio_status, status, generation)
 
         self.audio_watcher = AudioWatcher(check)
@@ -2899,7 +2930,6 @@ class HostView(Gtk.Box):
         generation = self._audio_generation
 
         def work() -> None:
-            from dataclasses import replace
 
             from big_remote_play.utils.audio import audio_status
 
@@ -2908,13 +2938,66 @@ class HostView(Gtk.Box):
                 graph = self.audio_manager.snapshot()
                 status = audio_status(graph, session.manual_output if session else manual, tuple(session.links) if session else ())
                 if session is not None:
-                    status = replace(status, calls_kept_out=session.calls_kept_out)
+                    status = session.decorate(status, graph)
+                status = self._with_sunshine_log(status)
             except Exception as exc:  # pragma: no cover - defensive
                 _log.error("Could not read audio status: %s", exc)
                 status = None
             GLib.idle_add(self._apply_audio_status, status, generation, True)
 
         threading.Thread(target=work, daemon=True).start()
+
+    def _with_sunshine_log(self, status):
+        """Worker: add what Sunshine logged about the sound of its latest session."""
+        from dataclasses import replace
+
+        from big_remote_play.utils.audio import read_sunshine_audio_log
+
+        if not self.is_hosting:
+            return status
+        log = read_sunshine_audio_log(self.sunshine.config_dir / "sunshine.log")
+        if log != getattr(self, "_logged_sunshine_audio", None):
+            self._logged_sunshine_audio = log
+            if log is not None:
+                _log.info("[AUDIO] Sunshine log: source=%r encoder=%r failed=%s %s", log.source, log.encoder, log.failed, log.error)
+        return replace(status, sunshine_log=log)
+
+    def _render_stream_audio(self) -> None:
+        """The first audio row: does this computer's sound reach the stream, in words."""
+        from big_remote_play.utils import audio
+
+        if not self.is_hosting:
+            self.audio_stream_row.set_subtitle(_("Checked while sharing."))
+            return
+        if self._audio_status is None:
+            self.audio_stream_row.set_subtitle(_("Checking…"))
+            self.session_audio_row.set_subtitle(_("Checking…"))
+            return
+        status = self._audio_status
+        state = audio.stream_audio_state(status, getattr(self, "_playing_count", 0))
+        if state == audio.STREAM_SENDING and status.game_only:
+            text = _("Sending only the game's sound.")
+            if not status.game_programs:
+                text += " " + _("The game is not playing sound right now.")
+            if status.level_restored:
+                text += " " + _("Sunshine's recording had been muted or turned down in this computer's sound settings; Big Remote Play turned it back up.")
+        elif state == audio.STREAM_SENDING:
+            text = _("Sending the sound this computer plays.")
+            if status is not None and status.level_restored:
+                text += " " + _("Sunshine's recording had been muted or turned down in this computer's sound settings; Big Remote Play turned it back up.")
+        else:
+            text = {
+                audio.STREAM_WAITING: _("Ready. Sound is sent when a device starts playing."),
+                audio.STREAM_STARTING: _("A device is playing, but Sunshine is not recording sound yet."),
+                audio.STREAM_CAPTURE_FAILED: _("Not sent: Sunshine could not open this computer's sound. Stop sharing and start again."),
+                audio.STREAM_MUTED: _("Not sent: Sunshine's recording is muted in this computer's sound settings. Press Test to turn it back on."),
+                audio.STREAM_MICROPHONE: _("Not sent: Sunshine is recording a microphone. Stop sharing and report it."),
+                audio.STREAM_NOT_SEPARATED: _("Sending all of this computer's sound: the game's sound could not be separated."),
+            }.get(state, _("System audio unavailable"))
+        self.audio_stream_row.set_subtitle(text)
+        self.session_audio_row.set_subtitle(text)
+        description = _("Details and a sound test are in Preferences.")
+        self.session_audio_row.update_property([Gtk.AccessibleProperty.DESCRIPTION], [f"{text} {description}"])
 
     def _apply_audio_status(self, status, generation: int, from_refresh: bool = False) -> bool:
         if from_refresh:
@@ -2937,12 +3020,33 @@ class HostView(Gtk.Box):
             rows["sunshine"].set_subtitle(self._describe_source(status.sunshine_source, bool(status.sunshine_records_monitor)))
         else:
             rows["sunshine"].set_subtitle(_("No client is receiving sound right now"))
+        if status.sunshine_volume is None:
+            rows["level"].set_subtitle(_("No client is receiving sound right now"))
+        elif status.sunshine_muted:
+            rows["level"].set_subtitle(_("Muted"))
+        else:
+            rows["level"].set_subtitle(_("{percent} %, not muted").format(percent=status.sunshine_volume))
+        log = status.sunshine_log
+        if log is None:
+            rows["sunshine_log"].set_subtitle(_("No session since Sunshine started"))
+        elif log.failed and log.error:
+            rows["sunshine_log"].set_subtitle(_("Could not open the sound: {error}").format(error=log.error))
+        elif log.failed:
+            rows["sunshine_log"].set_subtitle(_("Could not open the sound"))
+        else:
+            rows["sunshine_log"].set_subtitle(" · ".join(part for part in (log.source or _("No source named"), log.encoder) if part))
         rows["microphone"].set_subtitle(status.default_source_description or status.default_source or _("None"))
         rows["mic_sent"].set_subtitle(_("Yes — this is an error; stop sharing and report it") if status.microphone_sent else _("No"))
         if status.steam_sources:
             rows["steam"].set_subtitle("\n".join(self._describe_source(s, monitor) for s, monitor in status.steam_sources))
         else:
             rows["steam"].set_subtitle(_("Steam is not recording sound"))
+        if not status.game_only:
+            rows["game"].set_subtitle(_("All sound this computer plays (Full Desktop, or the option is off)"))
+        elif status.game_programs:
+            rows["game"].set_subtitle(", ".join(status.game_programs))
+        else:
+            rows["game"].set_subtitle(_("The game is not playing sound right now."))
         rows["calls"].set_subtitle(", ".join(status.calls_kept_out) if status.calls_kept_out else _("No call app is playing into the shared sound"))
         self._show_calls_kept_out(status.calls_kept_out)
         if status.bridges:
@@ -2953,6 +3057,7 @@ class HostView(Gtk.Box):
             self.audio_play_here_row.set_subtitle(_("The connected client asked Sunshine not to play sound on this computer."))
         else:
             self.audio_play_here_row.set_subtitle(_("When off, only the other computer hears the game."))
+        self._render_stream_audio()
         return False
 
     def _show_calls_kept_out(self, programs) -> None:
@@ -2974,12 +3079,17 @@ class HostView(Gtk.Box):
     def on_test_audio_clicked(self, button) -> None:
         button.set_sensitive(False)
         self.audio_test_row.set_subtitle(_("Playing a short tone…"))
-        manual = self._selected_audio_sink()
+        session = self.audio_session
+        manual = session.manual_output if session is not None else self._selected_audio_sink()
         generation = self._audio_generation
 
         def work() -> None:
             try:
-                result = self.audio_manager.test_tone(manual)
+                if session is not None:
+                    # Asked for by the person: a recording muted again is turned back on.
+                    session.allow_level_restore()
+                    session.reconcile()
+                result = self.audio_manager.test_tone(manual, game_only=session is not None and session.game is not None)
             except Exception as exc:  # pragma: no cover - defensive
                 _log.error("Audio test failed: %s", exc)
                 result = {"played": False, "detected": False, "level_db": None, "monitor": None, "output": ""}
@@ -2995,6 +3105,18 @@ class HostView(Gtk.Box):
             text = _("System audio unavailable: there is no output to test.")
         elif not result.get("played"):
             text = _("The tone could not be played on {output}.").format(output=result.get("output") or "?")
+        elif result.get("detected") and result.get("capture") == "ok":
+            text = _(
+                "The tone reached the shared sound ({level:.0f} dB on {output}) and Sunshine is recording it. If the other device still hears nothing, the problem is on that device or the network."
+            ).format(level=result["level_db"], output=result.get("output") or "?")
+        elif result.get("detected") and result.get("capture") == "game-only":
+            text = _("The tone reached this computer's sound ({level:.0f} dB on {output}). Only the game's sound is sent, so the other device does not hear the tone.").format(
+                level=result["level_db"], output=result.get("output") or "?"
+            )
+        elif result.get("detected") and result.get("capture") == "muted":
+            text = _("The tone reached the shared sound, but Sunshine's recording is muted in this computer's sound settings.")
+        elif result.get("detected") and result.get("capture") == "elsewhere":
+            text = _("The tone reached {output}, but Sunshine records another source: {source}.").format(output=result.get("output") or "?", source=result.get("capture_source") or "?")
         elif result.get("detected"):
             text = _("The tone reached the shared sound ({level:.0f} dB on {output}).").format(level=result["level_db"], output=result.get("output") or "?")
         else:
@@ -3097,6 +3219,9 @@ class HostView(Gtk.Box):
             if item is None:
                 raise ValueError(_("Choose the game window to share."))
             game_window = {"spec": self._game_window_spec(item), "name": item.name}
+            if self.audio_game_only_row.get_active() and item.window.pid > 1:
+                names = [item.launch.executable, item.name, item.window.title]
+                game_window["audio"] = {"pid": item.window.pid, "names": [name for name in dict.fromkeys(names) if name]}
             self._game_launch_info = None
         else:
             self._game_launch_info = self._resolve_game_launch_info()
@@ -3143,7 +3268,7 @@ class HostView(Gtk.Box):
             if not self.sunshine.ensure_desktop_app():
                 raise RuntimeError(_("Could not update the game library. Existing games were preserved."))
 
-            from big_remote_play.utils.audio import AudioRoutingSession, capture_plan, sunshine_audio_sink
+            from big_remote_play.utils.audio import AudioRoutingSession, GameScope, capture_plan, sunshine_audio_sink
 
             manual = cfg.get("audio_output_name", "")
             play_on_host = bool(cfg.get("audio_play_on_host", True))
@@ -3160,7 +3285,8 @@ class HostView(Gtk.Box):
             sunshine_config["audio_sink"] = sunshine_audio_sink(manual, play_on_host)
             # Records the output in use. Nothing is written to the sound server
             # here; loopbacks are added later only if Sunshine mutes this computer.
-            session = AudioRoutingSession(self.audio_manager, manual_output=manual, play_on_host=play_on_host)
+            game_audio = (cfg.get("game_window") or {}).get("audio")
+            session = AudioRoutingSession(self.audio_manager, manual_output=manual, play_on_host=play_on_host, game=GameScope.from_state(game_audio))
             session.begin(graph)
             self.audio_session = session
 
@@ -4166,6 +4292,7 @@ class HostView(Gtk.Box):
                 "gpu_idx": self.gpu_row.get_selected(),
                 "platform_idx": self.platform_row.get_selected(),
                 "audio_play_on_host": self.audio_play_here_row.get_active(),
+                "audio_game_only": self.audio_game_only_row.get_active(),
                 "audio_output_name": self._selected_audio_sink(),
                 "upnp": self.upnp_row.get_active(),
                 "ipv6": self.ipv6_row.get_active(),
@@ -4321,6 +4448,7 @@ class HostView(Gtk.Box):
                 # Older versions stored "audio_mode", where 1 meant "Other computer" only.
                 play_on_host = h.get("audio_mode") != 1
             self.audio_play_here_row.set_active(play_on_host)
+            self.audio_game_only_row.set_active(h.get("audio_game_only", True) is not False)
             desired_output = h.get("audio_output_name", "")
             if desired_output in self._audio_choice_names:
                 self.audio_output_row.set_selected(self._audio_choice_names.index(desired_output))
@@ -4342,7 +4470,7 @@ class HostView(Gtk.Box):
             self.loading_settings = False
 
     def connect_settings_signals(self):
-        for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row, self.audio_play_here_row, self.hdr_sdr_row, self.game_window_all_row]:
+        for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row, self.audio_play_here_row, self.audio_game_only_row, self.hdr_sdr_row, self.game_window_all_row]:
             r.connect("notify::active", self._schedule_save_host_settings)
 
         for r in [

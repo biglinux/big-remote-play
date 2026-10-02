@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-10-01 21:21+0000\n"
+"POT-Creation-Date: 2026-10-01 22:40+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Hungarian\n"
@@ -92,7 +92,7 @@ msgstr "2. Csatlakozás"
 msgid "2. Network"
 msgstr "2. Hálózat"
 
-#: src/big_remote_play/ui/host_view.py:1028
+#: src/big_remote_play/ui/host_view.py:1054
 msgid "2. Start sharing"
 msgstr "2. Indítsa el a megosztást"
 
@@ -108,7 +108,7 @@ msgstr "3. Engedélyezés"
 msgid "3. Connect"
 msgstr "3. Csatlakozás"
 
-#: src/big_remote_play/ui/host_view.py:848
+#: src/big_remote_play/ui/host_view.py:866
 msgid "3. Connect the other PC"
 msgstr "3. Csatlakoztassa a másik gépet"
 
@@ -183,13 +183,17 @@ msgstr ""
 "Egy 16 betűből és számjegyből álló kód, amelyet a hálózat tulajdonosa küld. "
 "Példa: {example}"
 
-#: src/big_remote_play/ui/host_view.py:1751
+#: src/big_remote_play/ui/host_view.py:1777
 msgid "A computer wants to connect"
 msgstr "Egy számítógép csatlakozni szeretne"
 
 #: src/big_remote_play/ui/api_access_dialog.py:39
 msgid "A credential cannot contain spaces or line breaks."
 msgstr "A hitelesítési adat nem tartalmazhat szóközt vagy sortörést."
+
+#: src/big_remote_play/ui/host_view.py:2991
+msgid "A device is playing, but Sunshine is not recording sound yet."
+msgstr "Egy eszköz hangot játszik le, de a Sunshine még nem rögzít hangot."
 
 #: src/big_remote_play/ui/zerotier_join.py:82
 #, python-brace-format
@@ -216,7 +220,7 @@ msgstr ""
 "legélesebb. Utána a kiválasztott képernyő visszaáll a szokásos állapotba. "
 "Előbb válasszon képernyőt fent."
 
-#: src/big_remote_play/ui/host_view.py:864
+#: src/big_remote_play/ui/host_view.py:882
 msgid "A stream is open on this computer"
 msgstr "Ezen a számítógépen nyitva van egy stream"
 
@@ -363,30 +367,30 @@ msgstr "Aktív"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 669
-#: src/big_remote_play/ui/performance_monitor.py:821
+#: src/big_remote_play/ui/performance_monitor.py:824
 msgid "Active - No devices"
 msgstr "Aktív - Nincsenek eszközök"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 864
-#: src/big_remote_play/ui/host_view.py:2719
-#: src/big_remote_play/ui/host_view.py:2735
+#: src/big_remote_play/ui/host_view.py:2749
+#: src/big_remote_play/ui/host_view.py:2765
 msgid "Active - Waiting for Connections"
 msgstr "Aktív – vár a kapcsolatokra"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 802
-#: src/big_remote_play/ui/performance_monitor.py:817
+#: src/big_remote_play/ui/performance_monitor.py:820
 msgid "Active Connection"
 msgstr "Aktív kapcsolat"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 149
-#: src/big_remote_play/ui/guest_view.py:808
+#: src/big_remote_play/ui/guest_view.py:811
 msgid "Active Session"
 msgstr "Aktív munkamenet"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 560
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 598
-#: src/big_remote_play/ui/guest_view.py:1510
+#: src/big_remote_play/ui/guest_view.py:1547
 msgid "Active Stream"
 msgstr "Aktív stream"
 
@@ -396,7 +400,7 @@ msgid "Active devices: {count}"
 msgstr "{count} aktív eszköz"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:3751
+#: src/big_remote_play/ui/host_view.py:3877
 msgid "Add Detected Games"
 msgstr "Megtalált játékok hozzáadása"
 
@@ -470,7 +474,7 @@ msgstr ""
 msgid "Add {name} to favorites"
 msgstr "{name} hozzáadása a kedvencekhez"
 
-#: src/big_remote_play/ui/host_view.py:1060
+#: src/big_remote_play/ui/host_view.py:1086
 msgid "Additional settings"
 msgstr "További beállítások"
 
@@ -517,13 +521,13 @@ msgstr "Haladó"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 174
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 255
-#: src/big_remote_play/ui/host_view.py:649
+#: src/big_remote_play/ui/host_view.py:667
 msgid "Advanced Settings"
 msgstr "Speciális beállítások"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 814
-#: src/big_remote_play/ui/host_view.py:703
+#: src/big_remote_play/ui/host_view.py:721
 msgid "Advanced administration"
 msgstr "Speciális felügyelet"
 
@@ -555,23 +559,23 @@ msgstr "Speciális beállítások"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 174
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 255
-#: src/big_remote_play/ui/host_view.py:755
+#: src/big_remote_play/ui/host_view.py:773
 #: src/big_remote_play/ui/sunshine_preferences.py:89
 msgid "Advanced server settings"
 msgstr "Speciális kiszolgálóbeállítások"
 
-#: src/big_remote_play/ui/host_view.py:728
+#: src/big_remote_play/ui/host_view.py:746
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "Haladó beállítások a böngészőben (Sunshine)"
 
-#: src/big_remote_play/ui/host_view.py:2487
+#: src/big_remote_play/ui/host_view.py:2515
 msgid ""
 "Advanced: IP addresses for manual connection when automatic discovery fails."
 msgstr ""
 "Speciális: IP-címek a kézi kapcsolathoz, ha az automatikus felderítés nem "
 "működik."
 
-#: src/big_remote_play/ui/host_view.py:2449
+#: src/big_remote_play/ui/host_view.py:2477
 msgid "After step 2, the other PC appears here."
 msgstr "A 2. lépés után itt jelenik meg a másik gép."
 
@@ -586,6 +590,12 @@ msgstr ""
 msgid "All set!"
 msgstr "Minden kész!"
 
+#: src/big_remote_play/ui/host_view.py:3045
+msgid "All sound this computer plays (Full Desktop, or the option is off)"
+msgstr ""
+"Az ezen a számítógépen lejátszott összes hang (Teljes asztal, vagy a "
+"beállítás ki van kapcsolva)"
+
 #: src/big_remote_play/ui/preferences.py:219
 msgid ""
 "All your changes in Big Remote Play will be restored! This includes Sunshine "
@@ -594,7 +604,7 @@ msgstr ""
 "A Big Remote Playben végzett összes módosítása visszaáll! Ide tartoznak a "
 "Sunshine és a Moonlight beállításai is."
 
-#: src/big_remote_play/ui/host_view.py:2577
+#: src/big_remote_play/ui/host_view.py:2605
 #: src/big_remote_play/ui/network_common.py:141
 #: src/big_remote_play/ui/network_common.py:165
 #: src/big_remote_play/ui/network_dashboard.py:299
@@ -632,7 +642,7 @@ msgstr ""
 msgid "Allow Slow HEVC Encoding"
 msgstr "Engedélyezze a Lassú HEVC Kódolást"
 
-#: src/big_remote_play/ui/host_view.py:2574
+#: src/big_remote_play/ui/host_view.py:2602
 msgid "Allow Sunshine through the firewall?"
 msgstr "Átengedi a Sunshine-t a tűzfalon?"
 
@@ -642,11 +652,11 @@ msgstr "Átengedi a Sunshine-t a tűzfalon?"
 msgid "Allow fallback to software encoding"
 msgstr "Engedélyezze a visszaállást a szoftveres kódolásra."
 
-#: src/big_remote_play/ui/host_view.py:911
+#: src/big_remote_play/ui/host_view.py:929
 msgid "Allow in firewall"
 msgstr "Engedélyezés a tűzfalon"
 
-#: src/big_remote_play/ui/host_view.py:674
+#: src/big_remote_play/ui/host_view.py:692
 msgid "Allow internet access to administration"
 msgstr "Internetes hozzáférés engedélyezése az adminisztrációhoz"
 
@@ -684,7 +694,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 398
-#: src/big_remote_play/ui/host_view.py:2461
+#: src/big_remote_play/ui/host_view.py:2489
 #: src/big_remote_play/ui/sunshine_preferences.py:624
 msgid "Allowed"
 msgstr "Engedélyezett"
@@ -755,11 +765,11 @@ msgstr "Már csatlakozva"
 msgid "Also play sound on the game PC"
 msgstr "Hang lejátszása a játékgépen is"
 
-#: src/big_remote_play/ui/host_view.py:595
+#: src/big_remote_play/ui/host_view.py:601
 msgid "Also play sound on this computer"
 msgstr "Hang lejátszása ezen a számítógépen is"
 
-#: src/big_remote_play/ui/host_view.py:668
+#: src/big_remote_play/ui/host_view.py:686
 msgid "Also use IPv6"
 msgstr "IPv6 használata is"
 
@@ -803,7 +813,7 @@ msgstr "Animáció"
 msgid "Another computer"
 msgstr "Egy másik számítógép"
 
-#: src/big_remote_play/ui/host_view.py:1539
+#: src/big_remote_play/ui/host_view.py:1565
 msgid ""
 "Another device is playing now, and Moonlight pairs only when nobody is "
 "playing: the new device shows “The computer is currently in a game”. End the "
@@ -853,7 +863,7 @@ msgstr "Alkalmazás részletei"
 msgid "Application Name"
 msgstr "Alkalmazás neve"
 
-#: src/big_remote_play/ui/host_view.py:1428
+#: src/big_remote_play/ui/host_view.py:1454
 msgid "Application diagnostics"
 msgstr "Alkalmazásdiagnosztika"
 
@@ -864,7 +874,7 @@ msgid "Application menu"
 msgstr "Alkalmazás menü"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 785
-#: src/big_remote_play/ui/guest_view.py:2025
+#: src/big_remote_play/ui/guest_view.py:2063
 #: src/big_remote_play/ui/host_view.py:439
 #: src/big_remote_play/ui/sunshine_preferences.py:317
 msgid "Apply"
@@ -883,7 +893,7 @@ msgstr "Alkalmazás vagy újratöltés"
 msgid "Apply to Running Server"
 msgstr "Alkalmazás a futó kiszolgálóra"
 
-#: src/big_remote_play/ui/guest_view.py:927
+#: src/big_remote_play/ui/guest_view.py:964
 msgid "Applying settings…"
 msgstr "Beállítások alkalmazása…"
 
@@ -921,7 +931,7 @@ msgstr ""
 msgid "Approve on the ZeroTier website"
 msgstr "Jóváhagyás a ZeroTier webhelyén"
 
-#: src/big_remote_play/ui/guest_view.py:1652
+#: src/big_remote_play/ui/guest_view.py:1690
 msgid "Approve on the game PC"
 msgstr "Jóváhagyás a játékot futtató gépen"
 
@@ -1002,8 +1012,8 @@ msgstr ""
 msgid "Audio"
 msgstr "Hang"
 
-#: src/big_remote_play/ui/host_view.py:2525
-#: src/big_remote_play/ui/host_view.py:2558
+#: src/big_remote_play/ui/host_view.py:2553
+#: src/big_remote_play/ui/host_view.py:2586
 msgid ""
 "Audio changes apply the next time you start sharing. The current output is "
 "unchanged."
@@ -1031,8 +1041,8 @@ msgid "Auth Key"
 msgstr "Hitelesítő kulcs"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1831
-#: src/big_remote_play/ui/host_view.py:2199
+#: src/big_remote_play/ui/host_view.py:1857
+#: src/big_remote_play/ui/host_view.py:2225
 msgid "Authentication Failed"
 msgstr "A hitelesítés nem sikerült"
 
@@ -1070,7 +1080,7 @@ msgstr "Automatikus észlelés (Ajánlott)"
 #: src/big_remote_play/ui/host_view.py:250
 #: src/big_remote_play/ui/host_view.py:342
 #: src/big_remote_play/ui/host_view.py:515
-#: src/big_remote_play/ui/host_view.py:1935
+#: src/big_remote_play/ui/host_view.py:1961
 #: src/big_remote_play/ui/main_window.py:750
 #: src/big_remote_play/ui/sunshine_preferences.py:553
 #: src/big_remote_play/ui/sunshine_preferences.py:611
@@ -1087,7 +1097,7 @@ msgid "Automatic (Recommended)"
 msgstr "Automatikus (ajánlott)"
 
 #: src/big_remote_play/ui/host_view.py:432
-#: src/big_remote_play/ui/host_view.py:1528
+#: src/big_remote_play/ui/host_view.py:1554
 msgid "Automatic capture and encoding"
 msgstr "Automatikus rögzítés és kódolás"
 
@@ -1097,7 +1107,7 @@ msgstr ""
 "Az automatikus mód a mindkét számítógép által támogatott legjobb formátumot "
 "választja."
 
-#: src/big_remote_play/ui/host_view.py:1071
+#: src/big_remote_play/ui/host_view.py:1097
 msgid ""
 "Automatic options below are chosen by Sunshine when sharing starts, not "
 "measurements of an active stream."
@@ -1113,11 +1123,11 @@ msgstr ""
 "Az Automatikus azt választja, amelyik már működik ezen a számítógépen. Mást "
 "csak akkor válasszon, ha szüksége van rá."
 
-#: src/big_remote_play/ui/host_view.py:1069
+#: src/big_remote_play/ui/host_view.py:1095
 msgid "Automatic settings and video limit"
 msgstr "Automatikus beállítások és videókorlát"
 
-#: src/big_remote_play/ui/host_view.py:588
+#: src/big_remote_play/ui/host_view.py:594
 msgid ""
 "Automatic shares the output you are using now, including effects such as "
 "EasyEffects. Choose a device only to always share that one."
@@ -1139,17 +1149,17 @@ msgstr ""
 msgid "Automatic · {resolution} · {frame_rate} · {bitrate}"
 msgstr "Automatikus · {resolution} · {frame_rate} · {bitrate}"
 
-#: src/big_remote_play/ui/host_view.py:2542
+#: src/big_remote_play/ui/host_view.py:2570
 msgid "Automatic — use the current output"
 msgstr "Automatikus — a jelenlegi kimenet használata"
 
-#: src/big_remote_play/ui/guest_view.py:1293
-#: src/big_remote_play/ui/guest_view.py:1294
+#: src/big_remote_play/ui/guest_view.py:1330
+#: src/big_remote_play/ui/guest_view.py:1331
 #, python-brace-format
 msgid "Available at {address}"
 msgstr "Elérhető itt: {address}"
 
-#: src/big_remote_play/ui/host_view.py:993
+#: src/big_remote_play/ui/host_view.py:1011
 msgid "Available over the internet"
 msgstr "Elérhető az interneten át"
 
@@ -1278,7 +1288,7 @@ msgstr ""
 "A Big Remote Play többé nem kezeli ezt a hálózatot. A hitelesítési adat a "
 "szolgáltatónál nem lesz visszavonva; vonja vissza ott, ha kiszivároghatott."
 
-#: src/big_remote_play/utils/audio.py:1024
+#: src/big_remote_play/utils/audio.py:1225
 msgid "Big Remote Play: sound sent to the other computer"
 msgstr "Big Remote Play: a másik számítógépre küldött hang"
 
@@ -1288,11 +1298,11 @@ msgstr "Big Remote Play: a másik számítógépre küldött hang"
 msgid "Bind Address"
 msgstr "Figyelési cím"
 
-#: src/big_remote_play/ui/host_view.py:2461
+#: src/big_remote_play/ui/host_view.py:2489
 msgid "Blocked"
 msgstr "Letiltva"
 
-#: src/big_remote_play/ui/host_view.py:2458
+#: src/big_remote_play/ui/host_view.py:2486
 msgid "Blocked until enabled again"
 msgstr "Letiltva, amíg újra nem engedélyezik"
 
@@ -1359,14 +1369,14 @@ msgstr "CGNAT, IPv6, UPnP, és mikor jobb választás a magánhálózat."
 msgid "CPU Encoding"
 msgstr "CPU Kódolás"
 
-#: src/big_remote_play/ui/host_view.py:636
+#: src/big_remote_play/ui/host_view.py:653
 msgid "Calls kept out of the stream"
 msgstr "A streamből kihagyott hívások"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 227
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 434
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 458
-#: src/big_remote_play/ui/host_view.py:2458
+#: src/big_remote_play/ui/host_view.py:2486
 msgid "Can connect without a new PIN"
 msgstr "Új PIN-kód nélkül is csatlakozhat"
 
@@ -1383,21 +1393,21 @@ msgstr "Új PIN-kód nélkül is csatlakozhat"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1444
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 672
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 784
-#: src/big_remote_play/ui/guest_view.py:1658
-#: src/big_remote_play/ui/guest_view.py:2024
-#: src/big_remote_play/ui/guest_view.py:2250
-#: src/big_remote_play/ui/host_view.py:1818
-#: src/big_remote_play/ui/host_view.py:2170
-#: src/big_remote_play/ui/host_view.py:2264
-#: src/big_remote_play/ui/host_view.py:2294
-#: src/big_remote_play/ui/host_view.py:2576
-#: src/big_remote_play/ui/host_view.py:3535
-#: src/big_remote_play/ui/host_view.py:3630
-#: src/big_remote_play/ui/host_view.py:4035
-#: src/big_remote_play/ui/host_view.py:4397
+#: src/big_remote_play/ui/guest_view.py:1696
+#: src/big_remote_play/ui/guest_view.py:2062
+#: src/big_remote_play/ui/guest_view.py:2288
+#: src/big_remote_play/ui/host_view.py:1844
+#: src/big_remote_play/ui/host_view.py:2196
+#: src/big_remote_play/ui/host_view.py:2290
+#: src/big_remote_play/ui/host_view.py:2320
+#: src/big_remote_play/ui/host_view.py:2604
+#: src/big_remote_play/ui/host_view.py:3661
+#: src/big_remote_play/ui/host_view.py:3756
+#: src/big_remote_play/ui/host_view.py:4161
+#: src/big_remote_play/ui/host_view.py:4525
 #: src/big_remote_play/ui/network_common.py:310
 #: src/big_remote_play/ui/network_dashboard.py:405
-#: src/big_remote_play/ui/performance_monitor.py:588
+#: src/big_remote_play/ui/performance_monitor.py:591
 #: src/big_remote_play/ui/preferences.py:168
 #: src/big_remote_play/ui/preferences.py:222
 #: src/big_remote_play/ui/preferences.py:266
@@ -1414,7 +1424,7 @@ msgstr "Mégse"
 msgid "Cancel the request"
 msgstr "Kérés visszavonása"
 
-#: src/big_remote_play/ui/host_view.py:3929
+#: src/big_remote_play/ui/host_view.py:4055
 msgid "Cannot browse (no access or credentials)"
 msgstr "A tallózás nem lehetséges (nincs hozzáférés vagy belépési adat)"
 
@@ -1427,7 +1437,7 @@ msgstr "Rögzítési Módszer"
 msgid "Capture, compression and stream limits"
 msgstr "Rögzítés, tömörítés és streamkorlátok"
 
-#: src/big_remote_play/ui/host_view.py:1957
+#: src/big_remote_play/ui/host_view.py:1983
 #, python-brace-format
 msgid "Capture: {value}"
 msgstr "Rögzítés: {value}"
@@ -1472,12 +1482,12 @@ msgid "Check for blocked connections automatically"
 msgstr "Automatikusan ellenőrzi a blokkolt kapcsolatokat"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1203
-#: src/big_remote_play/ui/host_view.py:3472
+#: src/big_remote_play/ui/host_view.py:3598
 msgid "Check logs for details."
 msgstr "Ellenőrizze a naplókat a részletekhez."
 
 #: src/big_remote_play/ui/guest_view.py:48
-#: src/big_remote_play/ui/guest_view.py:1574
+#: src/big_remote_play/ui/guest_view.py:1612
 msgid ""
 "Check that sharing is running on the game PC and that both computers can "
 "reach each other."
@@ -1493,7 +1503,7 @@ msgstr ""
 "Ellenőrizze a kódot, és próbálja újra. Ha helyes, lehet, hogy a hálózatot "
 "törölték."
 
-#: src/big_remote_play/ui/host_view.py:1087
+#: src/big_remote_play/ui/host_view.py:1113
 msgid "Check the connection first. Open server tools only when needed."
 msgstr ""
 "Először ellenőrizze a kapcsolatot. A kiszolgálóeszközöket csak szükség "
@@ -1503,11 +1513,15 @@ msgstr ""
 msgid "Check the internet connection of this computer."
 msgstr "Ellenőrizze a számítógép internetkapcsolatát."
 
+#: src/big_remote_play/ui/host_view.py:2970
+msgid "Checked while sharing."
+msgstr "Megosztás közben ellenőrizve."
+
 #: src/big_remote_play/ui/zerotier_join.py:47
 msgid "Checking ZeroTier…"
 msgstr "A ZeroTier ellenőrzése…"
 
-#: src/big_remote_play/ui/host_view.py:1781
+#: src/big_remote_play/ui/host_view.py:1807
 #, python-brace-format
 msgid "Checking the PIN with {name}…"
 msgstr "A PIN ellenőrzése ezzel az eszközzel: {name}…"
@@ -1516,7 +1530,7 @@ msgstr "A PIN ellenőrzése ezzel az eszközzel: {name}…"
 msgid "Checking the keyring…"
 msgstr "Kulcstartó ellenőrzése…"
 
-#: src/big_remote_play/ui/guest_view.py:1865
+#: src/big_remote_play/ui/guest_view.py:1903
 msgid "Checking the network, the computer and Sunshine…"
 msgstr "A hálózat, a számítógép és a Sunshine ellenőrzése…"
 
@@ -1534,7 +1548,7 @@ msgstr "A számítógép ellenőrzése…"
 msgid "Checking what this network allows…"
 msgstr "Annak ellenőrzése, mit enged ez a hálózat…"
 
-#: src/big_remote_play/ui/host_view.py:3560
+#: src/big_remote_play/ui/host_view.py:3686
 msgid "Checking which devices are already allowed."
 msgstr "Annak ellenőrzése, mely eszközök engedélyezettek már."
 
@@ -1542,8 +1556,11 @@ msgstr "Annak ellenőrzése, mely eszközök engedélyezettek már."
 #: src/big_remote_play/ui/dependency_installer.py:143
 #: src/big_remote_play/ui/guest_view.py:562
 #: src/big_remote_play/ui/host_view.py:433
-#: src/big_remote_play/ui/host_view.py:1010
-#: src/big_remote_play/ui/host_view.py:1020
+#: src/big_remote_play/ui/host_view.py:1028
+#: src/big_remote_play/ui/host_view.py:1038
+#: src/big_remote_play/ui/host_view.py:1043
+#: src/big_remote_play/ui/host_view.py:2973
+#: src/big_remote_play/ui/host_view.py:2974
 #: src/big_remote_play/ui/main_window.py:1087
 #: src/big_remote_play/ui/service_status_card.py:51
 msgid "Checking…"
@@ -1561,7 +1578,7 @@ msgstr ""
 "indítsa el a megosztást a játékgépen, és csatlakozzon a magánhálózati "
 "címével."
 
-#: src/big_remote_play/ui/guest_view.py:991
+#: src/big_remote_play/ui/guest_view.py:1028
 msgid "Choose a computer"
 msgstr "Válasszon számítógépet"
 
@@ -1576,9 +1593,9 @@ msgstr ""
 "Válasszon egy módot, hogy lássa a hozzá tartozó bejelentkezési, hálózati és "
 "eszközadatokat."
 
-#: src/big_remote_play/ui/host_view.py:816
-#: src/big_remote_play/ui/host_view.py:1352
-#: src/big_remote_play/ui/host_view.py:2763
+#: src/big_remote_play/ui/host_view.py:834
+#: src/big_remote_play/ui/host_view.py:1378
+#: src/big_remote_play/ui/host_view.py:2793
 msgid "Choose a source, then start sharing."
 msgstr "Válasszon forrást, majd indítsa el a megosztást."
 
@@ -1619,7 +1636,7 @@ msgid ""
 msgstr ""
 "Térhangzást csak akkor válasszon, ha a számítógép hangszórói támogatják."
 
-#: src/big_remote_play/ui/guest_view.py:2365
+#: src/big_remote_play/ui/guest_view.py:2403
 msgid ""
 "Choose the display on the game PC under Share → Preferences → Hardware and "
 "Capture. Reconnect after changing it."
@@ -1627,12 +1644,12 @@ msgstr ""
 "A játékgépen válasszon kijelzőt: Megosztás → Beállítások → Hardver és "
 "képrögzítés. A módosítás után csatlakozzon újra."
 
-#: src/big_remote_play/ui/host_view.py:1331
+#: src/big_remote_play/ui/host_view.py:1357
 msgid "Choose the game to share"
 msgstr "Válassza ki a megosztandó játékot"
 
-#: src/big_remote_play/ui/host_view.py:1350
-#: src/big_remote_play/ui/host_view.py:3098
+#: src/big_remote_play/ui/host_view.py:1376
+#: src/big_remote_play/ui/host_view.py:3220
 msgid "Choose the game window to share."
 msgstr "Válassza ki a megosztandó játékablakot."
 
@@ -1644,11 +1661,11 @@ msgstr ""
 "Válassza ki a számítógépen használt hangformátumot, és azt, hogy a hang a "
 "játékgépen is megszólaljon-e."
 
-#: src/big_remote_play/ui/host_view.py:853
+#: src/big_remote_play/ui/host_view.py:871
 msgid "Choose this computer from the list."
 msgstr "Válassza ki ezt a számítógépet a listából."
 
-#: src/big_remote_play/ui/host_view.py:1444
+#: src/big_remote_play/ui/host_view.py:1470
 msgid "Clear"
 msgstr "Törlés"
 
@@ -1664,7 +1681,7 @@ msgid "Clear Everything"
 msgstr "Minden törlése"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 97
-#: src/big_remote_play/ui/host_view.py:1443
+#: src/big_remote_play/ui/host_view.py:1469
 msgid "Clear Logs"
 msgstr "Naplók törlése"
 
@@ -1685,12 +1702,12 @@ msgstr "Törli a kapcsolati előzményeket?"
 # line: 85
 # line: 126
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1233
-#: src/big_remote_play/ui/guest_view.py:1848
-#: src/big_remote_play/ui/guest_view.py:1912
-#: src/big_remote_play/ui/guest_view.py:1927
+#: src/big_remote_play/ui/guest_view.py:1886
+#: src/big_remote_play/ui/guest_view.py:1950
+#: src/big_remote_play/ui/guest_view.py:1965
 #: src/big_remote_play/ui/guided_setup.py:341
-#: src/big_remote_play/ui/host_view.py:2023
-#: src/big_remote_play/ui/host_view.py:3477
+#: src/big_remote_play/ui/host_view.py:2049
+#: src/big_remote_play/ui/host_view.py:3603
 msgid "Close"
 msgstr "Bezárás"
 
@@ -1702,7 +1719,7 @@ msgstr "A további kereséshez zárja be, majd nyissa meg újra ezt az ablakot."
 msgid "Close the game on the game PC when streaming ends"
 msgstr "A játék bezárása a játékgépen a streamelés befejezésekor"
 
-#: src/big_remote_play/ui/host_view.py:879
+#: src/big_remote_play/ui/host_view.py:897
 msgid "Close the stream on every device so a new device can pair"
 msgstr ""
 "A stream bezárása minden eszközön, hogy egy új eszköz párosítható legyen"
@@ -1721,7 +1738,7 @@ msgstr "Ennek a számítógépnek a kódja"
 msgid "Codec, HDR, data limit and connection warnings"
 msgstr "Kodek, HDR, adatkorlát és kapcsolati figyelmeztetések"
 
-#: src/big_remote_play/ui/host_view.py:756
+#: src/big_remote_play/ui/host_view.py:774
 msgid "Codecs, network, capture and recovery tools"
 msgstr "Kodekek, hálózat, rögzítés és helyreállítási eszközök"
 
@@ -1744,8 +1761,8 @@ msgid "Command"
 msgstr "Parancs"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 969
-#: src/big_remote_play/ui/guest_view.py:2337
-#: src/big_remote_play/ui/guest_view.py:2342
+#: src/big_remote_play/ui/guest_view.py:2375
+#: src/big_remote_play/ui/guest_view.py:2380
 msgid "Common shortcuts used during streaming"
 msgstr "A streaming során használt gyakori billentyűparancsok"
 
@@ -1757,11 +1774,11 @@ msgstr "Fejezze be a bejelentkezést a böngészőben."
 msgid "Components"
 msgstr "Összetevők"
 
-#: src/big_remote_play/ui/host_view.py:1958
+#: src/big_remote_play/ui/host_view.py:1984
 msgid "Compression: H.264 only"
 msgstr "Tömörítés: csak H.264"
 
-#: src/big_remote_play/ui/host_view.py:1958
+#: src/big_remote_play/ui/host_view.py:1984
 msgid "Compression: HEVC/AV1 when supported"
 msgstr "Tömörítés: HEVC/AV1, ha támogatott"
 
@@ -1769,7 +1786,7 @@ msgstr "Tömörítés: HEVC/AV1, ha támogatott"
 msgid "Computer name on the network"
 msgstr "A számítógép neve a hálózaton"
 
-#: src/big_remote_play/ui/guest_view.py:1878
+#: src/big_remote_play/ui/guest_view.py:1916
 msgid "Computer online"
 msgstr "A számítógép online"
 
@@ -1777,7 +1794,7 @@ msgstr "A számítógép online"
 msgid "Computers"
 msgstr "Számítógépek"
 
-#: src/big_remote_play/ui/guest_view.py:1022
+#: src/big_remote_play/ui/guest_view.py:1059
 msgid "Computers sharing a game"
 msgstr "Játékot megosztó számítógépek"
 
@@ -1796,7 +1813,7 @@ msgstr "Konfigurációs fájlok"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 226
-#: src/big_remote_play/ui/host_view.py:1451
+#: src/big_remote_play/ui/host_view.py:1477
 msgid "Configuration Directory"
 msgstr "Konfigurációs könyvtár"
 
@@ -1819,12 +1836,12 @@ msgstr ""
 "értékek megtekintéséhez."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 288
-#: src/big_remote_play/ui/host_view.py:684
+#: src/big_remote_play/ui/host_view.py:702
 msgid "Configure"
 msgstr "Beállítás"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 284
-#: src/big_remote_play/ui/host_view.py:680
+#: src/big_remote_play/ui/host_view.py:698
 msgid "Configure Firewall (IPv6)"
 msgstr "Tűzfal beállítása (IPv6)"
 
@@ -1841,12 +1858,12 @@ msgstr "Beállítva"
 msgid "Configured for the next sharing session"
 msgstr "Beállítva a következő megosztási munkamenethez"
 
-#: src/big_remote_play/ui/host_view.py:2585
+#: src/big_remote_play/ui/host_view.py:2613
 msgid "Configuring the firewall… Your password may be requested."
 msgstr "Tűzfal konfigurálása… (Lehet, hogy jelszót kér)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:4017
+#: src/big_remote_play/ui/host_view.py:4143
 msgid "Confirm New Password"
 msgstr "Új jelszó megerősítése"
 
@@ -1859,11 +1876,11 @@ msgstr "Erősítse meg a jelszavával a megnyíló ablakban."
 # line: 568
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 224
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 417
-#: src/big_remote_play/ui/guest_view.py:892
-#: src/big_remote_play/ui/guest_view.py:920
-#: src/big_remote_play/ui/guest_view.py:1050
-#: src/big_remote_play/ui/guest_view.py:1377
-#: src/big_remote_play/ui/guest_view.py:1825
+#: src/big_remote_play/ui/guest_view.py:929
+#: src/big_remote_play/ui/guest_view.py:957
+#: src/big_remote_play/ui/guest_view.py:1087
+#: src/big_remote_play/ui/guest_view.py:1414
+#: src/big_remote_play/ui/guest_view.py:1863
 #: src/big_remote_play/ui/private_network_view.py:614
 #: src/big_remote_play/ui/private_network_view.py:616
 #: src/big_remote_play/ui/remote_connection.py:470
@@ -1885,7 +1902,7 @@ msgid "Connect again"
 msgstr "Újracsatlakozás"
 
 #: src/big_remote_play/ui/guest_view.py:586
-#: src/big_remote_play/ui/guest_view.py:1310
+#: src/big_remote_play/ui/guest_view.py:1347
 msgid "Connect by address"
 msgstr "Csatlakozás cím alapján"
 
@@ -1940,19 +1957,19 @@ msgstr "Csatlakozás másik számítógéphez"
 msgid "Connect to this server"
 msgstr "Csatlakozás ehhez a kiszolgálóhoz"
 
-#: src/big_remote_play/ui/guest_view.py:1301
+#: src/big_remote_play/ui/guest_view.py:1338
 #, python-brace-format
 msgid "Connect to {name}"
 msgstr "Csatlakozás a {name}-hoz"
 
-#: src/big_remote_play/ui/guest_view.py:1826
+#: src/big_remote_play/ui/guest_view.py:1864
 #: src/big_remote_play/ui/history_dialog.py:127
 #: src/big_remote_play/ui/remote_connection.py:499
 #, python-brace-format
 msgid "Connect to {name} again"
 msgstr "Újracsatlakozás ide: {name}"
 
-#: src/big_remote_play/ui/host_view.py:665
+#: src/big_remote_play/ui/host_view.py:683
 msgid "Connect without a VPN"
 msgstr "Csatlakozás VPN nélkül"
 
@@ -1968,16 +1985,16 @@ msgstr "Eszközök összekapcsolása"
 msgid "Connected"
 msgstr "Csatlakoztatva"
 
-#: src/big_remote_play/ui/performance_monitor.py:717
+#: src/big_remote_play/ui/performance_monitor.py:720
 msgid "Connected device"
 msgstr "Csatlakoztatott eszköz"
 
-#: src/big_remote_play/ui/performance_monitor.py:819
+#: src/big_remote_play/ui/performance_monitor.py:822
 #, python-brace-format
 msgid "Connected devices: {count}"
 msgstr "Csatlakoztatott eszközök: {count}"
 
-#: src/big_remote_play/ui/host_view.py:2308
+#: src/big_remote_play/ui/host_view.py:2334
 msgid "Connected now"
 msgstr "Most csatlakoztatva"
 
@@ -1989,7 +2006,7 @@ msgstr "Most csatlakoztatva"
 msgid "Connected successfully!"
 msgstr "A kapcsolat sikerült!"
 
-#: src/big_remote_play/ui/performance_monitor.py:849
+#: src/big_remote_play/ui/performance_monitor.py:852
 #, python-brace-format
 msgid "Connected to {name}"
 msgstr "Csatlakozva a {name}-hoz"
@@ -1998,12 +2015,12 @@ msgstr "Csatlakozva a {name}-hoz"
 msgid "Connecting to the network…"
 msgstr "Kapcsolódás a hálózathoz…"
 
-#: src/big_remote_play/ui/guest_view.py:906
+#: src/big_remote_play/ui/guest_view.py:943
 #, python-brace-format
 msgid "Connecting to {name}…"
 msgstr "Csatlakozás ehhez: {name}…"
 
-#: src/big_remote_play/ui/guest_view.py:906
+#: src/big_remote_play/ui/guest_view.py:943
 #: src/big_remote_play/ui/private_network_view.py:816
 msgid "Connecting…"
 msgstr "Csatlakozás…"
@@ -2049,7 +2066,7 @@ msgid "Connection history"
 msgstr "Kapcsolati előzmények"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 381
-#: src/big_remote_play/ui/host_view.py:2486
+#: src/big_remote_play/ui/host_view.py:2514
 msgid "Connection information"
 msgstr "Kapcsolat adatai"
 
@@ -2074,7 +2091,7 @@ msgstr "Kapcsolat minősége: {quality}"
 msgid "Connection request"
 msgstr "Csatlakozási kérés"
 
-#: src/big_remote_play/ui/guest_view.py:2305
+#: src/big_remote_play/ui/guest_view.py:2343
 msgid "Connection settings restored"
 msgstr "A kapcsolati beállítások visszaállítva"
 
@@ -2128,7 +2145,7 @@ msgstr ""
 msgid "Controllers"
 msgstr "Vezérlők"
 
-#: src/big_remote_play/ui/host_view.py:925
+#: src/big_remote_play/ui/host_view.py:943
 msgid "Controllers of the other computer cannot work"
 msgstr "A másik számítógép vezérlői nem működhetnek"
 
@@ -2152,8 +2169,8 @@ msgid "Copied"
 msgstr "Másolva"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 843
-#: src/big_remote_play/ui/host_view.py:2674
-#: src/big_remote_play/ui/host_view.py:3739
+#: src/big_remote_play/ui/host_view.py:2702
+#: src/big_remote_play/ui/host_view.py:3865
 msgid "Copied!"
 msgstr "Másolva!"
 
@@ -2165,14 +2182,14 @@ msgstr ""
 "másik személynek"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:3685
+#: src/big_remote_play/ui/host_view.py:3811
 #: src/big_remote_play/ui/network_common.py:229
 #: src/big_remote_play/ui/network_common.py:246
 msgid "Copy"
 msgstr "Másolás"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:1456
+#: src/big_remote_play/ui/host_view.py:1482
 msgid "Copy Path"
 msgstr "Útvonal másolása"
 
@@ -2180,8 +2197,8 @@ msgstr "Útvonal másolása"
 msgid "Copy address"
 msgstr "Cím másolása"
 
-#: src/big_remote_play/ui/host_view.py:965
-#: src/big_remote_play/ui/host_view.py:968
+#: src/big_remote_play/ui/host_view.py:983
+#: src/big_remote_play/ui/host_view.py:986
 msgid "Copy code"
 msgstr "Kód másolása"
 
@@ -2190,7 +2207,7 @@ msgid "Copy connection information"
 msgstr "Kapcsolati adatok másolása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 365
-#: src/big_remote_play/ui/host_view.py:3686
+#: src/big_remote_play/ui/host_view.py:3812
 msgid "Copy logs"
 msgstr "Naplók másolása"
 
@@ -2203,16 +2220,16 @@ msgstr "Műszaki részletek másolása"
 msgid "Copy the private address of {name}"
 msgstr "A(z) {name} magánhálózati címének másolása"
 
-#: src/big_remote_play/ui/host_view.py:2646
+#: src/big_remote_play/ui/host_view.py:2674
 #, python-brace-format
 msgid "Copy the {field} value to the clipboard"
 msgstr "A(z) {field} érték másolása a vágólapra"
 
-#: src/big_remote_play/ui/host_view.py:968
+#: src/big_remote_play/ui/host_view.py:986
 msgid "Copy this PC's discovery code to the clipboard"
 msgstr "A gép felfedezési kódjának másolása"
 
-#: src/big_remote_play/ui/host_view.py:2645
+#: src/big_remote_play/ui/host_view.py:2673
 #, python-brace-format
 msgid "Copy {field}"
 msgstr "{field} másolása"
@@ -2226,8 +2243,8 @@ msgstr "A(z) {name} másolása a vágólapra"
 msgid "Correct colors of HDR screens"
 msgstr "HDR-képernyők színeinek javítása"
 
-#: src/big_remote_play/ui/guest_view.py:1502
-#: src/big_remote_play/ui/guest_view.py:1846
+#: src/big_remote_play/ui/guest_view.py:1539
+#: src/big_remote_play/ui/guest_view.py:1884
 msgid "Could not connect"
 msgstr "Nem sikerült csatlakozni"
 
@@ -2235,7 +2252,16 @@ msgstr "Nem sikerült csatlakozni"
 msgid "Could not create the backup"
 msgstr "Nem sikerült elkészíteni a biztonsági mentést"
 
-#: src/big_remote_play/ui/guest_view.py:1908
+#: src/big_remote_play/ui/host_view.py:3035
+msgid "Could not open the sound"
+msgstr "Nem sikerült megnyitni a hangot"
+
+#: src/big_remote_play/ui/host_view.py:3033
+#, python-brace-format
+msgid "Could not open the sound: {error}"
+msgstr "Nem sikerült megnyitni a hangot: {error}"
+
+#: src/big_remote_play/ui/guest_view.py:1946
 msgid ""
 "Could not pair with the game PC. Check that the code was entered on the game "
 "PC, under Share → 3. Connect the other PC. If Moonlight said that a pairing "
@@ -2252,11 +2278,11 @@ msgstr ""
 msgid "Could not read server configuration."
 msgstr "A kiszolgáló konfigurációja nem olvasható."
 
-#: src/big_remote_play/ui/host_view.py:1200
+#: src/big_remote_play/ui/host_view.py:1226
 msgid "Could not read the open windows"
 msgstr "A megnyitott ablakok nem olvashatók be"
 
-#: src/big_remote_play/ui/guest_view.py:2293
+#: src/big_remote_play/ui/guest_view.py:2331
 msgid "Could not reset the connection settings. Check file permissions."
 msgstr ""
 "Nem sikerült visszaállítani a kapcsolati beállításokat. Ellenőrizze a "
@@ -2272,13 +2298,13 @@ msgstr "Nem sikerült visszaállítani a biztonsági mentést"
 msgid "Could not save the change."
 msgstr "A módosítást nem sikerült menteni."
 
-#: src/big_remote_play/ui/guest_view.py:2129
+#: src/big_remote_play/ui/guest_view.py:2167
 msgid "Could not save the connection settings. Check file permissions."
 msgstr ""
 "Nem sikerült menteni a kapcsolati beállításokat. Ellenőrizze a "
 "fájljogosultságokat."
 
-#: src/big_remote_play/ui/host_view.py:3190
+#: src/big_remote_play/ui/host_view.py:3316
 msgid "Could not save the server configuration."
 msgstr "Nem sikerült menteni a kiszolgáló beállításait."
 
@@ -2286,7 +2312,7 @@ msgstr "Nem sikerült menteni a kiszolgáló beállításait."
 msgid "Could not turn it on. Check the connection details."
 msgstr "Nem sikerült bekapcsolni. Ellenőrizze a kapcsolat részleteit."
 
-#: src/big_remote_play/ui/host_view.py:3144
+#: src/big_remote_play/ui/host_view.py:3269
 msgid "Could not update the game library. Existing games were preserved."
 msgstr ""
 "Nem sikerült frissíteni a játékkönyvtárat. A meglévő játékok megmaradtak."
@@ -2402,16 +2428,16 @@ msgid "Credentials updated successfully"
 msgstr "A hitelesítési adatok sikeresen frissítve"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:4011
+#: src/big_remote_play/ui/host_view.py:4137
 msgid "Current Password"
 msgstr "Jelenlegi jelszó"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 685
-#: src/big_remote_play/ui/host_view.py:4009
+#: src/big_remote_play/ui/host_view.py:4135
 msgid "Current Username"
 msgstr "Jelenlegi felhasználónév"
 
-#: src/big_remote_play/ui/host_view.py:630
+#: src/big_remote_play/ui/host_view.py:644
 msgid "Current output"
 msgstr "Jelenlegi kimenet"
 
@@ -2435,12 +2461,12 @@ msgstr "Egyedi alkalmazás"
 # File: big-remote-play/usr/share/big-remote-play/ui/moonlight_preferences.py,
 # line: 90
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 96
-#: src/big_remote_play/ui/guest_view.py:1993
+#: src/big_remote_play/ui/guest_view.py:2031
 msgid "Custom Frame Rate"
 msgstr "Egyéni képkockasebesség"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 759
-#: src/big_remote_play/ui/guest_view.py:1966
+#: src/big_remote_play/ui/guest_view.py:2004
 msgid "Custom Resolution"
 msgstr "Egyedi felbontás"
 
@@ -2452,7 +2478,7 @@ msgstr "Egyéni képbeállítások"
 msgid "Dark"
 msgstr "Sötét"
 
-#: src/big_remote_play/ui/host_view.py:633
+#: src/big_remote_play/ui/host_view.py:649
 msgid "Default microphone"
 msgstr "Alapértelmezett mikrofon"
 
@@ -2480,7 +2506,7 @@ msgid "Delete this saved network"
 msgstr "A mentett hálózat törlése"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:1431
+#: src/big_remote_play/ui/host_view.py:1457
 msgid "Detailed Logs"
 msgstr "Részletes naplók"
 
@@ -2489,12 +2515,16 @@ msgstr "Részletes naplók"
 msgid "Details"
 msgstr "Részletek"
 
+#: src/big_remote_play/ui/host_view.py:2999
+msgid "Details and a sound test are in Preferences."
+msgstr "A részletek és a hangteszt a Beállítások oldalon találhatók."
+
 #: src/big_remote_play/ui/remote_connection.py:810
 msgid "Device ID"
 msgstr "Eszközazonosító"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:2241
+#: src/big_remote_play/ui/host_view.py:2267
 msgid "Device Name"
 msgstr "Eszköz neve"
 
@@ -2513,13 +2543,13 @@ msgid "Device approved"
 msgstr "Eszköz jóváhagyva"
 
 #: src/big_remote_play/host/pairing_requests.py:64
-#: src/big_remote_play/ui/performance_monitor.py:722
+#: src/big_remote_play/ui/performance_monitor.py:725
 #, python-brace-format
 msgid "Device at {address}"
 msgstr "Eszköz ezen a címen: {address}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:3594
+#: src/big_remote_play/ui/host_view.py:3720
 msgid "Device enabled"
 msgstr "Eszköz engedélyezve"
 
@@ -2539,7 +2569,7 @@ msgstr "Eszközök"
 msgid "Devices online now: {count}"
 msgstr "Most online eszközök: {count}"
 
-#: src/big_remote_play/ui/host_view.py:3530
+#: src/big_remote_play/ui/host_view.py:3656
 msgid ""
 "Devices paired with Sunshine. Disable to block access without re-pairing; "
 "remove to revoke (a new PIN will be required)."
@@ -2547,7 +2577,7 @@ msgstr ""
 "A Sunshine-nal párosított eszközök. A letiltás új párosítás nélkül zárja ki "
 "a hozzáférést; az eltávolítás visszavonja azt (új PIN-kód kell)."
 
-#: src/big_remote_play/ui/host_view.py:2308
+#: src/big_remote_play/ui/host_view.py:2334
 msgid "Devices playing on this computer at this moment."
 msgstr "Az eszközök, amelyek most ezen a számítógépen játszanak."
 
@@ -2556,7 +2586,7 @@ msgid "Devices that played on this computer, kept only here."
 msgstr "Az ezen a számítógépen játszó eszközök. Csak itt tárolódnak."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 652
-#: src/big_remote_play/ui/host_view.py:3663
+#: src/big_remote_play/ui/host_view.py:3789
 msgid "Devices updated"
 msgstr "Eszközök frissítve"
 
@@ -2565,11 +2595,11 @@ msgid "Devices, private address and how to add another computer."
 msgstr ""
 "Eszközök, magánhálózati cím és egy másik számítógép hozzáadásának módja."
 
-#: src/big_remote_play/ui/guest_view.py:1849
+#: src/big_remote_play/ui/guest_view.py:1887
 msgid "Diagnose"
 msgstr "Diagnosztizálás"
 
-#: src/big_remote_play/ui/guest_view.py:1866
+#: src/big_remote_play/ui/guest_view.py:1904
 msgid "Diagnosis"
 msgstr "Diagnosztika"
 
@@ -2603,7 +2633,7 @@ msgstr ""
 msgid "Disable"
 msgstr "Letiltás"
 
-#: src/big_remote_play/ui/host_view.py:2428
+#: src/big_remote_play/ui/host_view.py:2456
 msgid "Disable or remove devices that should no longer connect."
 msgstr ""
 "Tiltsa le vagy távolítsa el azokat az eszközöket, amelyek már nem "
@@ -2634,8 +2664,8 @@ msgstr "Az összes ZeroTier-hálózat bontása ezen a számítógépen"
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 325
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 159
-#: src/big_remote_play/ui/performance_monitor.py:583
-#: src/big_remote_play/ui/performance_monitor.py:841
+#: src/big_remote_play/ui/performance_monitor.py:586
+#: src/big_remote_play/ui/performance_monitor.py:844
 msgid "Disconnect guest"
 msgstr "Vendég lecsatlakoztatása"
 
@@ -2649,7 +2679,7 @@ msgstr "Ideiglenesen leválasztja?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 864
-#: src/big_remote_play/ui/performance_monitor.py:840
+#: src/big_remote_play/ui/performance_monitor.py:843
 msgid "Disconnect this specific guest (Admin)"
 msgstr "Ennek a vendégnek a lecsatlakoztatása (Admin)"
 
@@ -2657,7 +2687,7 @@ msgstr "Ennek a vendégnek a lecsatlakoztatása (Admin)"
 # File: big-remote-play/usr/share/big-remote-play/ui/performance_monitor.py,
 # line: 325
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 159
-#: src/big_remote_play/ui/guest_view.py:817
+#: src/big_remote_play/ui/guest_view.py:820
 #: src/big_remote_play/ui/performance_monitor.py:402
 msgid "Disconnected"
 msgstr "Kapcsolat bontva"
@@ -2681,7 +2711,7 @@ msgstr ""
 "dekódolási adatokat."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1443
-#: src/big_remote_play/ui/host_view.py:4396
+#: src/big_remote_play/ui/host_view.py:4524
 msgid "Do you want to restore default settings?"
 msgstr "Vissza szeretné állítani az alapértelmezett beállításokat?"
 
@@ -2692,7 +2722,7 @@ msgstr "Vissza szeretné állítani az alapértelmezett beállításokat?"
 msgid "Domain"
 msgstr "Tartomány"
 
-#: src/big_remote_play/ui/host_view.py:665
+#: src/big_remote_play/ui/host_view.py:683
 msgid "Domain, router ports and security precautions."
 msgstr "Tartomány, útválasztóportok és biztonsági óvintézkedések."
 
@@ -2801,11 +2831,11 @@ msgid "Enable YUV 4:4:4"
 msgstr "YUV 4:4:4 engedélyezése"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 273
-#: src/big_remote_play/ui/host_view.py:669
+#: src/big_remote_play/ui/host_view.py:687
 msgid "Enable simultaneous IPv4 and IPv6 support on server"
 msgstr "Engedélyezze az IPv4 és IPv6 egyidejű támogatását a szerveren."
 
-#: src/big_remote_play/ui/host_view.py:1431
+#: src/big_remote_play/ui/host_view.py:1457
 msgid "Enable verbose logging for debugging"
 msgstr "Részletes naplózás bekapcsolása hibakereséshez"
 
@@ -2819,22 +2849,22 @@ msgstr ""
 "Ennek a beállításnak a bekapcsolásával elkerülhető a képkockák elvesztése a "
 "hálózaton jelenetváltáskor, de mozgás közben csökkenhet a videó minősége."
 
-#: src/big_remote_play/ui/host_view.py:1959
+#: src/big_remote_play/ui/host_view.py:1985
 #, python-brace-format
 msgid "Encoding priority: {value}"
 msgstr "Kódolási prioritás: {value}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 347
-#: src/big_remote_play/ui/performance_monitor.py:592
+#: src/big_remote_play/ui/performance_monitor.py:595
 msgid "End Game"
 msgstr "Játék befejezése"
 
-#: src/big_remote_play/ui/host_view.py:875
-#: src/big_remote_play/ui/host_view.py:1852
+#: src/big_remote_play/ui/host_view.py:893
+#: src/big_remote_play/ui/host_view.py:1878
 msgid "End for everyone"
 msgstr "Befejezés mindenkinél"
 
-#: src/big_remote_play/ui/performance_monitor.py:584
+#: src/big_remote_play/ui/performance_monitor.py:587
 msgid ""
 "End the running game gently, or forcefully evict the network address? Ending "
 "the game keeps the device paired."
@@ -2842,7 +2872,7 @@ msgstr ""
 "A futó játék szabályos befejezése, vagy a hálózati cím erőltetett kizárása? "
 "A játék befejezésekor az eszköz párosítva marad."
 
-#: src/big_remote_play/ui/host_view.py:1848
+#: src/big_remote_play/ui/host_view.py:1874
 msgid "End the stream for everyone?"
 msgstr "Befejezi a streamet mindenkinél?"
 
@@ -2851,11 +2881,11 @@ msgstr "Befejezi a streamet mindenkinél?"
 msgid "Enter ID"
 msgstr "Azonosító megadása"
 
-#: src/big_remote_play/ui/host_view.py:898
+#: src/big_remote_play/ui/host_view.py:916
 msgid "Enter Sunshine password"
 msgstr "Sunshine-jelszó megadása"
 
-#: src/big_remote_play/ui/guest_view.py:1967
+#: src/big_remote_play/ui/guest_view.py:2005
 msgid "Enter WIDTHxHEIGHT (e.g. 1920x1080):"
 msgstr "Adja meg: SZÉLESSÉGxMAGASSÁG (például 1920x1080):"
 
@@ -2863,7 +2893,7 @@ msgstr "Adja meg: SZÉLESSÉGxMAGASSÁG (például 1920x1080):"
 msgid "Enter a 16-character hexadecimal Network ID."
 msgstr "Adjon meg egy 16 karakteres hexadecimális hálózati azonosítót."
 
-#: src/big_remote_play/ui/guest_view.py:1700
+#: src/big_remote_play/ui/guest_view.py:1738
 msgid "Enter a hostname or IP address, without a URL or spaces."
 msgstr "Adjon meg gépnevet vagy IP-címet, URL és szóközök nélkül."
 
@@ -2871,7 +2901,7 @@ msgstr "Adjon meg gépnevet vagy IP-címet, URL és szóközök nélkül."
 msgid "Enter a valid email address."
 msgstr "Adjon meg érvényes e-mail-címet."
 
-#: src/big_remote_play/ui/guest_view.py:1984
+#: src/big_remote_play/ui/guest_view.py:2022
 msgid "Enter a whole number of frames per second (1–480)."
 msgstr "Adjon meg egész számot másodpercenkénti képkockákban (1–480)."
 
@@ -2879,19 +2909,19 @@ msgstr "Adjon meg egész számot másodpercenkénti képkockákban (1–480)."
 msgid "Enter another 16-character Network ID"
 msgstr "Adjon meg egy másik, 16 karakteres hálózati azonosítót"
 
-#: src/big_remote_play/ui/guest_view.py:1401
-#: src/big_remote_play/ui/guest_view.py:1718
-#: src/big_remote_play/ui/host_view.py:2117
-#: src/big_remote_play/ui/host_view.py:2278
+#: src/big_remote_play/ui/guest_view.py:1438
+#: src/big_remote_play/ui/guest_view.py:1756
+#: src/big_remote_play/ui/host_view.py:2143
+#: src/big_remote_play/ui/host_view.py:2304
 msgid "Enter exactly four digits."
 msgstr "Pontosan négy számjegyet írjon be."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 182
-#: src/big_remote_play/ui/guest_view.py:1994
+#: src/big_remote_play/ui/guest_view.py:2032
 msgid "Enter frames per second (e.g. 75):"
 msgstr "Adja meg a másodpercenkénti képkockák számát (például 75):"
 
-#: src/big_remote_play/ui/host_view.py:1567
+#: src/big_remote_play/ui/host_view.py:1593
 msgid ""
 "Enter it now, so a device is approved the moment you type its code. "
 "Otherwise Moonlight on the device may give up while you type it."
@@ -2917,7 +2947,7 @@ msgid "Enter the ID on this page and choose Connect."
 msgstr ""
 "Írja be az azonosítót ezen az oldalon, és válassza a Csatlakozás lehetőséget."
 
-#: src/big_remote_play/ui/host_view.py:2226
+#: src/big_remote_play/ui/host_view.py:2252
 msgid "Enter the PIN displayed by Moonlight on the other computer."
 msgstr ""
 "Adja meg a Moonlight által a másik számítógépen megjelenített PIN-kódot."
@@ -2926,15 +2956,15 @@ msgstr ""
 msgid "Enter the code here"
 msgstr "Írja be ide a kódot"
 
-#: src/big_remote_play/ui/host_view.py:1571
+#: src/big_remote_play/ui/host_view.py:1597
 msgid ""
 "Enter the current Sunshine user and password, so devices can be approved."
 msgstr ""
 "Adja meg a Sunshine jelenlegi felhasználónevét és jelszavát, hogy az "
 "eszközök jóváhagyhatók legyenek."
 
-#: src/big_remote_play/ui/host_view.py:939
-#: src/big_remote_play/ui/host_view.py:2238
+#: src/big_remote_play/ui/host_view.py:957
+#: src/big_remote_play/ui/host_view.py:2264
 msgid "Enter the four digits shown by Moonlight on the other computer."
 msgstr ""
 "Adja meg a Moonlight által a másik számítógépen megjelenített négy "
@@ -2972,8 +3002,8 @@ msgstr "A bejegyzés frissítve"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1246
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 562
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 600
-#: src/big_remote_play/ui/host_view.py:2592
-#: src/big_remote_play/ui/host_view.py:3262
+#: src/big_remote_play/ui/host_view.py:2620
+#: src/big_remote_play/ui/host_view.py:3388
 msgid "Error"
 msgstr "Hiba"
 
@@ -2982,7 +3012,7 @@ msgstr "Hiba"
 msgid "Error Clearing"
 msgstr "Hiba a törlés közben"
 
-#: src/big_remote_play/ui/host_view.py:1960
+#: src/big_remote_play/ui/host_view.py:1986
 #, python-brace-format
 msgid "Error correction: {value}%"
 msgstr "Hibajavítás: {value}%"
@@ -2992,13 +3022,13 @@ msgstr "Hibajavítás: {value}%"
 msgid "Error executing command: {error}"
 msgstr "Hiba a parancs végrehajtása során: {error}"
 
-#: src/big_remote_play/ui/host_view.py:2616
+#: src/big_remote_play/ui/host_view.py:2644
 #, python-brace-format
 msgid "Error executing script: {error}"
 msgstr "Hiba a szkript végrehajtása során: {error}"
 
-#: src/big_remote_play/ui/host_view.py:3302
-#: src/big_remote_play/ui/host_view.py:3334
+#: src/big_remote_play/ui/host_view.py:3428
+#: src/big_remote_play/ui/host_view.py:3460
 #, python-brace-format
 msgid "Error launching game: {error}"
 msgstr "Hiba a játék indításakor: {error}"
@@ -3026,7 +3056,7 @@ msgstr ""
 msgid "Every device on the network, approvals and removal."
 msgstr "A hálózat összes eszköze, jóváhagyások és eltávolítás."
 
-#: src/big_remote_play/ui/host_view.py:1849
+#: src/big_remote_play/ui/host_view.py:1875
 msgid ""
 "Every device playing now is disconnected. Then start pairing again on the "
 "new device and enter its code here. Devices already paired can reconnect "
@@ -3057,7 +3087,7 @@ msgstr "Minden készen áll"
 msgid "Everything this method reports, and its maintenance actions."
 msgstr "Minden, amit ez a mód jelent, és a karbantartási műveletei."
 
-#: src/big_remote_play/ui/performance_monitor.py:595
+#: src/big_remote_play/ui/performance_monitor.py:598
 msgid "Evict IP"
 msgstr "IP kizárása"
 
@@ -3067,7 +3097,7 @@ msgid "Excellent"
 msgstr "Kiváló"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:2603
+#: src/big_remote_play/ui/host_view.py:2631
 msgid "Execution failed or cancelled."
 msgstr "A végrehajtás nem sikerült vagy megszakadt."
 
@@ -3108,14 +3138,14 @@ msgstr ""
 "A beállításokat nem sikerült érvényesíteni (ellenőrizze a belépési adatokat)."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 562
-#: src/big_remote_play/ui/guest_view.py:1561
+#: src/big_remote_play/ui/guest_view.py:1599
 msgid "Failed to connect. Verify if Moonlight is paired."
 msgstr ""
 "A kapcsolat létrehozása nem sikerült. Ellenőrizze, hogy a Moonlight "
 "párosítva van-e."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1154
-#: src/big_remote_play/ui/host_view.py:3621
+#: src/big_remote_play/ui/host_view.py:3747
 msgid "Failed to update device"
 msgstr "Az eszköz frissítése nem sikerült"
 
@@ -3151,9 +3181,9 @@ msgid "Find Network ID"
 msgstr "Network ID megkeresése"
 
 #: src/big_remote_play/ui/guest_view.py:592
-#: src/big_remote_play/ui/guest_view.py:923
-#: src/big_remote_play/ui/guest_view.py:1315
-#: src/big_remote_play/ui/guest_view.py:1423
+#: src/big_remote_play/ui/guest_view.py:960
+#: src/big_remote_play/ui/guest_view.py:1352
+#: src/big_remote_play/ui/guest_view.py:1460
 msgid "Find by code"
 msgstr "Keresés kóddal"
 
@@ -3162,8 +3192,8 @@ msgid "Finish signing in"
 msgstr "Bejelentkezés befejezése"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 795
-#: src/big_remote_play/ui/host_view.py:2569
-#: src/big_remote_play/ui/host_view.py:2603
+#: src/big_remote_play/ui/host_view.py:2597
+#: src/big_remote_play/ui/host_view.py:2631
 msgid "Firewall Error"
 msgstr "Tűzfalhiba"
 
@@ -3185,7 +3215,7 @@ msgstr "Javítás"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 302
-#: src/big_remote_play/ui/host_view.py:3479
+#: src/big_remote_play/ui/host_view.py:3605
 msgid "Fix Dependencies"
 msgstr "Függőségek javítása"
 
@@ -3220,15 +3250,15 @@ msgstr ""
 "Azoknak a rendszergazdáknak, akik saját VPN-t szeretnének üzemeltetni. Ez "
 "különbözik a nyilvános tartományon keresztüli közvetlen internetes játéktól."
 
-#: src/big_remote_play/ui/host_view.py:657
+#: src/big_remote_play/ui/host_view.py:675
 msgid "For direct internet access only"
 msgstr "Csak közvetlen internetes hozzáféréshez"
 
-#: src/big_remote_play/ui/guest_view.py:1343
+#: src/big_remote_play/ui/guest_view.py:1380
 msgid "For example: 192.168.1.20 or gaming-pc.local"
 msgstr "Például: 192.168.1.20 vagy jatekos-pc.local"
 
-#: src/big_remote_play/ui/host_view.py:1134
+#: src/big_remote_play/ui/host_view.py:1160
 msgid "For games that are not listed, such as emulators."
 msgstr "A listában nem szereplő játékokhoz, például emulátorokhoz."
 
@@ -3281,7 +3311,7 @@ msgstr "Képkocka másodpercenként"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 133
 #: src/big_remote_play/ui/host_view.py:383
-#: src/big_remote_play/ui/host_view.py:2703
+#: src/big_remote_play/ui/host_view.py:2731
 msgid "Full Desktop"
 msgstr "Teljes asztal"
 
@@ -3293,8 +3323,8 @@ msgstr "Teljes asztal"
 msgid "Fullscreen"
 msgstr "Teljes képernyő"
 
-#: src/big_remote_play/ui/host_view.py:741
-#: src/big_remote_play/ui/host_view.py:3770
+#: src/big_remote_play/ui/host_view.py:759
+#: src/big_remote_play/ui/host_view.py:3896
 msgid "Game Library"
 msgstr "Játékkönyvtár"
 
@@ -3307,12 +3337,12 @@ msgstr "Játékgép + ez a számítógép"
 msgid "Game PC and connection"
 msgstr "Játékgép és kapcsolat"
 
-#: src/big_remote_play/ui/guest_view.py:1753
+#: src/big_remote_play/ui/guest_view.py:1791
 #, python-brace-format
 msgid "Game PC found: {name}"
 msgstr "Játékgép található: {name}"
 
-#: src/big_remote_play/ui/guest_view.py:1761
+#: src/big_remote_play/ui/guest_view.py:1799
 msgid "Game PC not found"
 msgstr "Nem található játékgép"
 
@@ -3327,32 +3357,36 @@ msgid "Game Streaming"
 msgstr "Játékstreamelés"
 
 #: src/big_remote_play/ui/host_view.py:383
-#: src/big_remote_play/ui/host_view.py:1120
-#: src/big_remote_play/ui/host_view.py:1529
-#: src/big_remote_play/ui/host_view.py:2695
+#: src/big_remote_play/ui/host_view.py:1146
+#: src/big_remote_play/ui/host_view.py:1555
+#: src/big_remote_play/ui/host_view.py:2723
 msgid "Game Window"
 msgstr "Játékablak"
 
-#: src/big_remote_play/ui/host_view.py:1225
+#: src/big_remote_play/ui/host_view.py:1251
 msgid "Game Window is not available here"
 msgstr "A Játékablak itt nem érhető el"
 
-#: src/big_remote_play/ui/host_view.py:2695
+#: src/big_remote_play/ui/host_view.py:2723
 #, python-brace-format
 msgid "Game Window: {game}"
 msgstr "Játékablak: {game}"
+
+#: src/big_remote_play/ui/host_view.py:652
+msgid "Game sound sent"
+msgstr "Küldött játékhang"
 
 #. TRANSLATORS: Gamer is the proper name of the violet/cyan appearance preset.
 #: src/big_remote_play/ui/main_window.py:749
 msgid "Gamer"
 msgstr "Gamer"
 
-#: src/big_remote_play/ui/host_view.py:3863
+#: src/big_remote_play/ui/host_view.py:3989
 #, python-brace-format
 msgid "Games added: {count}"
 msgstr "{count} játék hozzáadva"
 
-#: src/big_remote_play/ui/host_view.py:3770
+#: src/big_remote_play/ui/host_view.py:3896
 msgid ""
 "Games shown on the other computer in Moonlight. Add detected games or remove "
 "entries."
@@ -3399,7 +3433,7 @@ msgstr ""
 msgid "Graphics Card / Encoder"
 msgstr "Grafikus kártya / Kódoló"
 
-#: src/big_remote_play/ui/host_view.py:1956
+#: src/big_remote_play/ui/host_view.py:1982
 #, python-brace-format
 msgid "Graphics card: {value}"
 msgstr "Grafikus kártya: {value}"
@@ -3413,11 +3447,11 @@ msgstr "Grafikus kártya: {value}"
 msgid "Guided setup"
 msgstr "Irányított beállítás"
 
-#: src/big_remote_play/ui/host_view.py:1909
+#: src/big_remote_play/ui/host_view.py:1935
 msgid "HDR screen: colors will look washed out on devices without HDR"
 msgstr "HDR-képernyő: a HDR nélküli eszközökön a színek fakónak tűnnek"
 
-#: src/big_remote_play/ui/host_view.py:1908
+#: src/big_remote_play/ui/host_view.py:1934
 msgid "HDR screen: shared in SDR"
 msgstr "HDR-képernyő: SDR-ben osztja meg"
 
@@ -3454,8 +3488,8 @@ msgstr "A Headscale a szokásos Tailscale-klienst használja."
 msgid "Hidden. Use Copy."
 msgstr "Rejtett. Használja a Másolás gombot."
 
-#: src/big_remote_play/ui/host_view.py:2637
-#: src/big_remote_play/ui/host_view.py:2664
+#: src/big_remote_play/ui/host_view.py:2665
+#: src/big_remote_play/ui/host_view.py:2692
 #, python-brace-format
 msgid "Hide {field}"
 msgstr "{field} elrejtése"
@@ -3526,11 +3560,11 @@ msgstr "Home/Guide gomb időtúllépése (ms)"
 # File: big-remote-play/usr/share/big-remote-play/utils/network.py, line: 267
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 592
-#: src/big_remote_play/utils/network.py:375
+#: src/big_remote_play/utils/network.py:403
 msgid "Host"
 msgstr "Gazdagép"
 
-#: src/big_remote_play/utils/network.py:232
+#: src/big_remote_play/utils/network.py:260
 #, python-brace-format
 msgid "Host ({address})"
 msgstr "Gazdagép ({address})"
@@ -3582,7 +3616,7 @@ msgstr "Nincs kódom"
 msgid "I don't have a server yet"
 msgstr "Még nincs kiszolgálóm"
 
-#: src/big_remote_play/ui/host_view.py:4007
+#: src/big_remote_play/ui/host_view.py:4133
 msgid "I forgot the current password"
 msgstr "Elfelejtettem a jelenlegi jelszót"
 
@@ -3598,7 +3632,7 @@ msgstr "Ismerem az IP-címet"
 msgid "I will play using another computer."
 msgstr "Egy másik számítógépről fogok játszani."
 
-#: src/big_remote_play/ui/guest_view.py:1342
+#: src/big_remote_play/ui/guest_view.py:1379
 msgid "IP address or computer name"
 msgstr "IP-cím vagy számítógépnév"
 
@@ -3642,13 +3676,13 @@ msgstr ""
 msgid "Image"
 msgstr "Kép"
 
-#: src/big_remote_play/ui/host_view.py:1009
-#: src/big_remote_play/ui/host_view.py:1062
-#: src/big_remote_play/ui/host_view.py:1072
+#: src/big_remote_play/ui/host_view.py:1027
+#: src/big_remote_play/ui/host_view.py:1088
+#: src/big_remote_play/ui/host_view.py:1098
 msgid "Image and capture"
 msgstr "Kép és rögzítés"
 
-#: src/big_remote_play/ui/host_view.py:1057
+#: src/big_remote_play/ui/host_view.py:1083
 msgid "Image and capture settings are on Overview, next to Start sharing."
 msgstr ""
 "A kép- és rögzítési beállítások az Áttekintés oldalon, a Megosztás indítása "
@@ -3663,7 +3697,7 @@ msgstr "Kép-előbeállítás"
 msgid "Image quality / video bitrate (Mbps)"
 msgstr "Képminőség / videó adatsebessége (Mbps)"
 
-#: src/big_remote_play/ui/guest_view.py:2248
+#: src/big_remote_play/ui/guest_view.py:2286
 msgid ""
 "Image, audio, input, and connection settings will return to their "
 "recommended defaults."
@@ -3687,7 +3721,7 @@ msgstr ""
 "lehetőséget, és adja meg a kiszolgáló címét, vagy futtassa az alábbi "
 "parancsot."
 
-#: src/big_remote_play/ui/host_view.py:974
+#: src/big_remote_play/ui/host_view.py:992
 msgid ""
 "In Big Remote Play on the other PC, choose Find by code. This is not the "
 "pairing code."
@@ -3737,7 +3771,7 @@ msgid "In use now"
 msgstr "Jelenleg használatban"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 890
-#: src/big_remote_play/ui/host_view.py:2755
+#: src/big_remote_play/ui/host_view.py:2785
 msgid "Inactive"
 msgstr "Inaktív"
 
@@ -3763,12 +3797,12 @@ msgid "Input"
 msgstr "Bevitel"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 256
-#: src/big_remote_play/ui/host_view.py:649
+#: src/big_remote_play/ui/host_view.py:667
 msgid "Input, Network, and Access"
 msgstr "Bemenet, Hálózat és Hozzáférés"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 569
-#: src/big_remote_play/ui/host_view.py:2226
+#: src/big_remote_play/ui/host_view.py:2252
 msgid "Insert PIN"
 msgstr "PIN-kód megadása"
 
@@ -3795,7 +3829,7 @@ msgstr "Telepítés és folytatás"
 msgid "Install it first, then join the network."
 msgstr "Előbb telepítse, majd csatlakozzon a hálózathoz."
 
-#: src/big_remote_play/ui/host_view.py:1227
+#: src/big_remote_play/ui/host_view.py:1253
 #, python-brace-format
 msgid "Install these packages, then open Big Remote Play again: {packages}"
 msgstr ""
@@ -3875,7 +3909,7 @@ msgstr "Internetprotokollok"
 msgid "Internet, router and firewall"
 msgstr "Internet, útválasztó és tűzfal"
 
-#: src/big_remote_play/ui/guest_view.py:1984
+#: src/big_remote_play/ui/guest_view.py:2022
 msgid "Invalid Frame Rate"
 msgstr "Érvénytelen képkockasebesség"
 
@@ -3885,36 +3919,36 @@ msgid "Invalid IP address: ${ip}"
 msgstr "Érvénytelen IP-cím: ${ip}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 719
-#: src/big_remote_play/ui/host_view.py:2278
+#: src/big_remote_play/ui/host_view.py:2304
 msgid "Invalid PIN"
 msgstr "Érvénytelen PIN kód"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 352
-#: src/big_remote_play/ui/guest_view.py:1957
+#: src/big_remote_play/ui/guest_view.py:1995
 msgid "Invalid Resolution"
 msgstr "Érvénytelen felbontás"
 
-#: src/big_remote_play/ui/guest_view.py:1700
+#: src/big_remote_play/ui/guest_view.py:1738
 msgid "Invalid address"
 msgstr "Érvénytelen cím"
 
-#: src/big_remote_play/ui/guest_view.py:1718
+#: src/big_remote_play/ui/guest_view.py:1756
 msgid "Invalid code"
 msgstr "Érvénytelen kód"
 
-#: src/big_remote_play/ui/host_view.py:3312
-#: src/big_remote_play/ui/host_view.py:3325
+#: src/big_remote_play/ui/host_view.py:3438
+#: src/big_remote_play/ui/host_view.py:3451
 msgid "Invalid launch command"
 msgstr "Érvénytelen indítóparancs"
 
-#: src/big_remote_play/ui/guest_view.py:1708
+#: src/big_remote_play/ui/guest_view.py:1746
 msgid "Invalid port"
 msgstr "Érvénytelen port"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 707
-#: src/big_remote_play/ui/host_view.py:1831
-#: src/big_remote_play/ui/host_view.py:2199
+#: src/big_remote_play/ui/host_view.py:1857
+#: src/big_remote_play/ui/host_view.py:2225
 msgid "Invalid username or password."
 msgstr "Érvénytelen felhasználónév vagy jelszó."
 
@@ -3933,7 +3967,7 @@ msgstr "Meghívó létrehozva"
 msgid "Invitation link"
 msgstr "Meghívóhivatkozás"
 
-#: src/big_remote_play/ui/guest_view.py:1884
+#: src/big_remote_play/ui/guest_view.py:1922
 msgid ""
 "It answers on the network, but not on Sunshine's port. On the game PC, open "
 "Share and choose Allow in firewall."
@@ -3941,7 +3975,7 @@ msgstr ""
 "A hálózaton válaszol, de a Sunshine portján nem. A játék gépén nyissa meg a "
 "Megosztás lapot, és válassza a(z) Engedélyezés a tűzfalon lehetőséget."
 
-#: src/big_remote_play/ui/host_view.py:1231
+#: src/big_remote_play/ui/host_view.py:1257
 msgid ""
 "It cannot see other apps' windows from inside the Flatpak sandbox. Use the "
 "native package."
@@ -3965,7 +3999,7 @@ msgstr ""
 "Csak most jelenik meg, és nincs tárolva. Mentse egy, a parancsban "
 "megnevezett fájlba, futtassa a parancsot, majd törölje a fájlt."
 
-#: src/big_remote_play/ui/host_view.py:1232
+#: src/big_remote_play/ui/host_view.py:1258
 msgid ""
 "It needs KDE Plasma on Wayland, or an X11 desktop with window effects "
 "(compositing) on."
@@ -3973,7 +4007,7 @@ msgstr ""
 "KDE Plasma szükséges Waylanden, vagy X11-es asztal bekapcsolt "
 "ablakeffektusokkal (kompozitálással)."
 
-#: src/big_remote_play/ui/host_view.py:1229
+#: src/big_remote_play/ui/host_view.py:1255
 #, python-brace-format
 msgid ""
 "It needs Sunshine {version} or newer, which can capture the private game "
@@ -4066,7 +4100,7 @@ msgstr "A vezérlőbemenet aktívan tartása a háttérben"
 msgid "Keep history"
 msgstr "Előzmények megőrzése"
 
-#: src/big_remote_play/ui/host_view.py:659
+#: src/big_remote_play/ui/host_view.py:677
 msgid ""
 "Keep off for local play or a VPN. UPnP must be enabled on the router; it "
 "does not bypass CGNAT, double NAT or the computer’s firewall. Restart "
@@ -4076,7 +4110,7 @@ msgstr ""
 "az útválasztón; nem kerüli meg a CGNAT-ot, a dupla NAT-ot vagy a számítógép "
 "tűzfalát. Indítsa újra a megosztást, és tesztelje másik hálózatról."
 
-#: src/big_remote_play/ui/host_view.py:675
+#: src/big_remote_play/ui/host_view.py:693
 msgid ""
 "Keep off for normal play. If enabled together with UPnP, Sunshine may also "
 "open the administration port on the router."
@@ -4084,7 +4118,7 @@ msgstr ""
 "Normál játékhoz hagyja kikapcsolva. Ha az UPnP-vel együtt engedélyezi, a "
 "Sunshine az adminisztrációs portot is megnyithatja az útválasztón."
 
-#: src/big_remote_play/ui/host_view.py:1074
+#: src/big_remote_play/ui/host_view.py:1100
 msgid ""
 "Keep router port forwarding off when using a VPN. Changes apply when sharing "
 "starts again."
@@ -4117,8 +4151,8 @@ msgstr "Kulcs létrehozva"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 968
 #: src/big_remote_play/ui/guest_view.py:237
-#: src/big_remote_play/ui/guest_view.py:2337
-#: src/big_remote_play/ui/guest_view.py:2341
+#: src/big_remote_play/ui/guest_view.py:2375
+#: src/big_remote_play/ui/guest_view.py:2379
 msgid "Keyboard Shortcuts"
 msgstr "Billentyűparancsok"
 
@@ -4164,9 +4198,9 @@ msgstr "Késleltetés az elmúlt 3 percben"
 msgid "Latency {latency}, FPS {fps} (target), bandwidth {bandwidth} (target)"
 msgstr "Késleltetés {latency}, FPS {fps} (cél), sávszélesség {bandwidth} (cél)"
 
-#: src/big_remote_play/ui/host_view.py:3298
-#: src/big_remote_play/ui/host_view.py:3317
-#: src/big_remote_play/ui/host_view.py:3330
+#: src/big_remote_play/ui/host_view.py:3424
+#: src/big_remote_play/ui/host_view.py:3443
+#: src/big_remote_play/ui/host_view.py:3456
 #, python-brace-format
 msgid "Launching {game}…"
 msgstr "Indítás {game}…"
@@ -4251,7 +4285,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1878
-#: src/big_remote_play/ui/host_view.py:3868
+#: src/big_remote_play/ui/host_view.py:3994
 msgid "Library updated"
 msgstr "A könyvtár frissült"
 
@@ -4271,7 +4305,7 @@ msgstr ""
 msgid "Linux command"
 msgstr "Linux-parancs"
 
-#: src/big_remote_play/ui/host_view.py:1237
+#: src/big_remote_play/ui/host_view.py:1263
 msgid "Linux native"
 msgstr "Natív Linux"
 
@@ -4293,15 +4327,15 @@ msgstr "Előzmények betöltése…"
 msgid "Loading networks…"
 msgstr "Hálózatok betöltése…"
 
-#: src/big_remote_play/ui/host_view.py:3559
+#: src/big_remote_play/ui/host_view.py:3685
 msgid "Loading paired devices…"
 msgstr "Párosított eszközök betöltése…"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 712
-#: src/big_remote_play/ui/host_view.py:3522
-#: src/big_remote_play/ui/host_view.py:3712
-#: src/big_remote_play/ui/host_view.py:3758
+#: src/big_remote_play/ui/host_view.py:3648
+#: src/big_remote_play/ui/host_view.py:3838
+#: src/big_remote_play/ui/host_view.py:3884
 msgid "Loading…"
 msgstr "Betöltés…"
 
@@ -4338,7 +4372,7 @@ msgstr "Bejelentkezési szerver (hagyja üresen a tailscale.com-hoz)"
 msgid "Logs Cleared"
 msgstr "A naplók törölve"
 
-#: src/big_remote_play/ui/host_view.py:1129
+#: src/big_remote_play/ui/host_view.py:1155
 msgid "Look again for open games"
 msgstr "Megnyitott játékok keresése újra"
 
@@ -4354,7 +4388,7 @@ msgstr "Már működő kapcsolat keresése."
 msgid "Looking for new devices…"
 msgstr "Új eszközök keresése…"
 
-#: src/big_remote_play/ui/host_view.py:1174
+#: src/big_remote_play/ui/host_view.py:1200
 msgid "Looking for open games…"
 msgstr "Megnyitott játékok keresése…"
 
@@ -4395,7 +4429,7 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1215
-#: src/big_remote_play/ui/host_view.py:2432
+#: src/big_remote_play/ui/host_view.py:2460
 msgid "Manage"
 msgstr "Kezelés"
 
@@ -4403,7 +4437,7 @@ msgstr "Kezelés"
 msgid "Manage accounts and networks"
 msgstr "Fiókok és hálózatok kezelése"
 
-#: src/big_remote_play/ui/host_view.py:742
+#: src/big_remote_play/ui/host_view.py:760
 msgid "Manage games shown on the other computer"
 msgstr "A másik számítógépen megjelenő játékok kezelése"
 
@@ -4415,12 +4449,12 @@ msgid "Manage network"
 msgstr "Hálózat kezelése"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 246
-#: src/big_remote_play/ui/host_view.py:2427
-#: src/big_remote_play/ui/host_view.py:2436
+#: src/big_remote_play/ui/host_view.py:2455
+#: src/big_remote_play/ui/host_view.py:2464
 msgid "Manage paired devices"
 msgstr "Párosított eszközök kezelése"
 
-#: src/big_remote_play/ui/host_view.py:1528
+#: src/big_remote_play/ui/host_view.py:1554
 msgid "Manual capture and encoding"
 msgstr "Kézi rögzítés és kódolás"
 
@@ -4455,17 +4489,17 @@ msgid "Measurements: {count}"
 msgstr "Mérések: {count}"
 
 #: src/big_remote_play/ui/connection_cards.py:44
-#: src/big_remote_play/ui/performance_monitor.py:812
+#: src/big_remote_play/ui/performance_monitor.py:815
 #: src/big_remote_play/ui/remote_connection.py:568
 #: src/big_remote_play/ui/remote_connection.py:634
 msgid "Measuring…"
 msgstr "Mérés…"
 
-#: src/big_remote_play/ui/host_view.py:603
+#: src/big_remote_play/ui/host_view.py:617
 msgid "Microphone"
 msgstr "Mikrofon"
 
-#: src/big_remote_play/ui/host_view.py:634
+#: src/big_remote_play/ui/host_view.py:650
 msgid "Microphone sent to Sunshine"
 msgstr "Mikrofon küldése a Sunshine-nak"
 
@@ -4503,7 +4537,7 @@ msgstr "2. mód"
 #: src/big_remote_play/ui/host_view.py:290
 #: src/big_remote_play/ui/host_view.py:303
 #: src/big_remote_play/ui/host_view.py:476
-#: src/big_remote_play/ui/host_view.py:1989
+#: src/big_remote_play/ui/host_view.py:2015
 msgid "Monitor / Display"
 msgstr "Monitor / Kijelző"
 
@@ -4518,18 +4552,38 @@ msgid "Moonlight Game Stream Client"
 msgstr "Moonlight, játékstream-kliens"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 163
-#: src/big_remote_play/ui/guest_view.py:822
+#: src/big_remote_play/ui/guest_view.py:825
 msgid "Moonlight closed"
 msgstr "A Moonlight bezárult"
+
+#: src/big_remote_play/ui/guest_view.py:848
+msgid ""
+"Moonlight could not open this computer's sound device. Check the sound "
+"output, then connect again."
+msgstr ""
+"A Moonlight nem tudta megnyitni e számítógép hangeszközét. Ellenőrizze a "
+"hangkimenetet, majd csatlakozzon újra."
 
 #: src/big_remote_play/ui/connection_guides.py:74
 msgid "Moonlight internet setup guide"
 msgstr "Moonlight internetes beállítási útmutató"
 
+#: src/big_remote_play/ui/guest_view.py:850
+msgid "Moonlight is not playing sound on this computer."
+msgstr "A Moonlight nem játszik le hangot ezen a számítógépen."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 541
 #: src/big_remote_play/ui/main_window.py:1547
 msgid "Moonlight not found"
 msgstr "A Moonlight nem található"
+
+#: src/big_remote_play/ui/guest_view.py:847
+msgid ""
+"Moonlight's sound was muted on this computer, so Big Remote Play turned it "
+"back on."
+msgstr ""
+"A Moonlight hangja le volt némítva ezen a számítógépen, ezért a Big Remote "
+"Play visszakapcsolta."
 
 #: src/big_remote_play/ui/remote_connection.py:115
 #: src/big_remote_play/ui/remote_connection.py:116
@@ -4560,13 +4614,17 @@ msgid "Mouse, keyboard, touchscreen, and controllers"
 msgstr "Egér, billentyűzet, érintőképernyő és vezérlők"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 992
-#: src/big_remote_play/ui/guest_view.py:2362
+#: src/big_remote_play/ui/guest_view.py:2400
 msgid "Multi-Monitor Support"
 msgstr "Többmonitoros támogatás"
 
 #: src/big_remote_play/ui/guest_view.py:406
 msgid "Mute when Moonlight is not the active window"
 msgstr "Némítás, amikor nem a Moonlight az aktív ablak"
+
+#: src/big_remote_play/ui/host_view.py:3026
+msgid "Muted"
+msgstr "Némítva"
 
 #: src/big_remote_play/ui/remote_connection.py:252
 msgid "My devices"
@@ -4653,7 +4711,7 @@ msgstr "Hálózati azonosító"
 msgid "Network ID (16 characters)"
 msgstr "Network ID (16 karakter)"
 
-#: src/big_remote_play/ui/host_view.py:1074
+#: src/big_remote_play/ui/host_view.py:1100
 msgid "Network and access"
 msgstr "Hálózat és hozzáférés"
 
@@ -4708,12 +4766,12 @@ msgid "New Central"
 msgstr "New Central (új felület)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 643
-#: src/big_remote_play/ui/host_view.py:4016
+#: src/big_remote_play/ui/host_view.py:4142
 msgid "New Password"
 msgstr "Új jelszó"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 641
-#: src/big_remote_play/ui/host_view.py:4014
+#: src/big_remote_play/ui/host_view.py:4140
 msgid "New Username"
 msgstr "Új felhasználó"
 
@@ -4729,7 +4787,7 @@ msgstr "Új csatlakozási kérés"
 msgid "New devices appear here while this window is open."
 msgstr "Az új eszközök itt jelennek meg, amíg ez az ablak nyitva van."
 
-#: src/big_remote_play/ui/host_view.py:866
+#: src/big_remote_play/ui/host_view.py:884
 msgid ""
 "New devices can pair only when no stream is open: they show “The computer is "
 "currently in a game”. End the stream for everyone, then start pairing again "
@@ -4740,16 +4798,16 @@ msgstr ""
 "streamet mindenkinél, majd indítsa újra a párosítást az új eszközön. A már "
 "párosított eszközök rögtön ezután újra csatlakozhatnak."
 
-#: src/big_remote_play/ui/host_view.py:4058
+#: src/big_remote_play/ui/host_view.py:4184
 msgid "New passwords do not match."
 msgstr "Az új jelszavak nem egyeznek."
 
-#: src/big_remote_play/ui/host_view.py:2941
+#: src/big_remote_play/ui/host_view.py:3039
 msgid "No"
 msgstr "Nem"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 617
-#: src/big_remote_play/ui/host_view.py:2293
+#: src/big_remote_play/ui/host_view.py:2319
 msgid "No Sunshine user exists. Configure one in the browser."
 msgstr ""
 "Nincs felhasználó létrehozva a Sunshine-ban. Szükséges egy felhasználó "
@@ -4764,19 +4822,20 @@ msgstr "Nem található fiók"
 msgid "No active connection found"
 msgstr "Nem található aktív kapcsolat"
 
-#: src/big_remote_play/ui/host_view.py:3797
+#: src/big_remote_play/ui/host_view.py:3923
 msgid "No apps configured"
 msgstr "Nincs beállított alkalmazás"
 
-#: src/big_remote_play/ui/host_view.py:2946
+#: src/big_remote_play/ui/host_view.py:3050
 msgid "No call app is playing into the shared sound"
 msgstr "Egyetlen hívásalkalmazás sem játszik le a megosztott hangba"
 
-#: src/big_remote_play/ui/host_view.py:2939
+#: src/big_remote_play/ui/host_view.py:3022
+#: src/big_remote_play/ui/host_view.py:3024
 msgid "No client is receiving sound right now"
 msgstr "Jelenleg egyetlen kliens sem fogad hangot"
 
-#: src/big_remote_play/ui/guest_view.py:1762
+#: src/big_remote_play/ui/guest_view.py:1800
 msgid ""
 "No computer answered this search code. Check the code or connect using its "
 "address."
@@ -4784,7 +4843,7 @@ msgstr ""
 "Egyetlen gép sem válaszolt erre a keresőkódra. Ellenőrizze a kódot, vagy "
 "használja a gép címét."
 
-#: src/big_remote_play/ui/host_view.py:1549
+#: src/big_remote_play/ui/host_view.py:1575
 msgid "No computer is waiting"
 msgstr "Egy számítógép sem várakozik"
 
@@ -4796,7 +4855,7 @@ msgstr ""
 "Egy számítógép sem várakozik párosításra. A másik gépen a Csatlakozás "
 "részben válassza ezt a számítógépet, majd írja be az ott megjelenő kódot."
 
-#: src/big_remote_play/ui/host_view.py:2051
+#: src/big_remote_play/ui/host_view.py:2077
 msgid "No connected monitor could be identified."
 msgstr "Egyetlen csatlakoztatott monitor sem azonosítható."
 
@@ -4809,12 +4868,12 @@ msgstr "Még nincsenek kapcsolati előzmények."
 msgid "No connections yet"
 msgstr "Még nincsenek kapcsolatok"
 
-#: src/big_remote_play/ui/guest_view.py:1893
+#: src/big_remote_play/ui/guest_view.py:1931
 #: src/big_remote_play/ui/network_dashboard.py:161
 msgid "No details reported."
 msgstr "Nincs jelentett részlet."
 
-#: src/big_remote_play/ui/host_view.py:1554
+#: src/big_remote_play/ui/host_view.py:1580
 msgid ""
 "No device is waiting for this code because a stream is open on this "
 "computer: the new device shows “The computer is currently in a game”. End "
@@ -4830,22 +4889,22 @@ msgstr ""
 msgid "No device is waiting yet…"
 msgstr "Még egy eszköz sem várakozik…"
 
-#: src/big_remote_play/ui/guest_view.py:971
+#: src/big_remote_play/ui/guest_view.py:1008
 msgid "No game PC found yet"
 msgstr "Még nem található játékgép"
 
-#: src/big_remote_play/ui/host_view.py:1266
-#: src/big_remote_play/ui/host_view.py:1333
+#: src/big_remote_play/ui/host_view.py:1292
+#: src/big_remote_play/ui/host_view.py:1359
 msgid "No game windows found"
 msgstr "Nem található játékablak"
 
 #. TRANSLATORS: {platform} is Steam or Lutris.
-#: src/big_remote_play/ui/host_view.py:4128
+#: src/big_remote_play/ui/host_view.py:4254
 #, python-brace-format
 msgid "No games found in {platform}"
 msgstr "Nem található játék itt: {platform}"
 
-#: src/big_remote_play/ui/performance_monitor.py:810
+#: src/big_remote_play/ui/performance_monitor.py:813
 msgid ""
 "No latency to show: the other device does not answer pings. This does not "
 "affect the game."
@@ -4853,7 +4912,7 @@ msgstr ""
 "Nincs megjeleníthető késleltetés: a másik eszköz nem válaszol a pingre. Ez "
 "nem befolyásolja a játékot."
 
-#: src/big_remote_play/ui/host_view.py:3727
+#: src/big_remote_play/ui/host_view.py:3853
 msgid "No logs available (Sunshine not running or no credentials)."
 msgstr ""
 "Nincs elérhető napló (a Sunshine nem fut, vagy hiányoznak a belépési adatok)."
@@ -4866,7 +4925,7 @@ msgstr "Nincs hálózati kódja?"
 msgid "No network found"
 msgstr "Nem található hálózat"
 
-#: src/big_remote_play/ui/host_view.py:2381
+#: src/big_remote_play/ui/host_view.py:2409
 msgid "No one is playing yet"
 msgstr "Még senki sem játszik"
 
@@ -4881,11 +4940,11 @@ msgstr "Még nincs másik eszköz"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 576
-#: src/big_remote_play/ui/host_view.py:3579
+#: src/big_remote_play/ui/host_view.py:3705
 msgid "No paired devices"
 msgstr "Nincs párosított eszköz"
 
-#: src/big_remote_play/ui/host_view.py:2448
+#: src/big_remote_play/ui/host_view.py:2476
 msgid "No paired devices yet"
 msgstr "Még nincs párosított eszköz"
 
@@ -4901,7 +4960,19 @@ msgid "No saved Tailscale or Headscale account was found on this computer."
 msgstr ""
 "Ezen a számítógépen nem található mentett Tailscale- vagy Headscale-fiók."
 
-#: src/big_remote_play/ui/host_view.py:1883
+#: src/big_remote_play/ui/host_view.py:3031
+msgid "No session since Sunshine started"
+msgstr "A Sunshine indítása óta nem volt munkamenet"
+
+#: src/big_remote_play/ui/guest_view.py:849
+msgid "No sound is arriving from the game PC."
+msgstr "Nem érkezik hang a játékgépről."
+
+#: src/big_remote_play/ui/host_view.py:3037
+msgid "No source named"
+msgstr "Nincs megnevezett forrás"
+
+#: src/big_remote_play/ui/host_view.py:1909
 msgid "No stream is open now. Start pairing again on the new device."
 msgstr ""
 "Most már nincs nyitott stream. Indítsa újra a párosítást az új eszközön."
@@ -4910,11 +4981,11 @@ msgstr ""
 msgid "No supported firewall tool was found."
 msgstr "Nem található támogatott tűzfaleszköz."
 
-#: src/big_remote_play/ui/host_view.py:1527
+#: src/big_remote_play/ui/host_view.py:1553
 msgid "No video bitrate ceiling"
 msgstr "Nincs felső korlát a videó adatsebességére"
 
-#: src/big_remote_play/ui/performance_monitor.py:814
+#: src/big_remote_play/ui/performance_monitor.py:817
 msgid "Nobody is playing now. The line starts when a device plays."
 msgstr ""
 "Most senki sem játszik. A vonal akkor indul, amikor egy eszköz játszik."
@@ -4930,8 +5001,8 @@ msgid "Node ID of this computer"
 msgstr "A számítógép csomópont-azonosítója"
 
 #: src/big_remote_play/ui/connection_guides.py:211
-#: src/big_remote_play/ui/host_view.py:2934
-#: src/big_remote_play/ui/host_view.py:2940
+#: src/big_remote_play/ui/host_view.py:3017
+#: src/big_remote_play/ui/host_view.py:3038
 msgid "None"
 msgstr "Nincs"
 
@@ -4939,17 +5010,17 @@ msgstr "Nincs"
 msgid "None detected (firewalld and ufw checked)"
 msgstr "Nem található (a firewalld és az ufw ellenőrizve)"
 
-#: src/big_remote_play/ui/host_view.py:2951
+#: src/big_remote_play/ui/host_view.py:3055
 msgid "None: the sound is captured directly"
 msgstr "Nincs: a hang rögzítése közvetlenül történik"
 
-#: src/big_remote_play/ui/host_view.py:1327
+#: src/big_remote_play/ui/host_view.py:1353
 #: src/big_remote_play/ui/network_common.py:96
 #: src/big_remote_play/ui/remote_connection.py:627
 msgid "Not available"
 msgstr "Nem érhető el"
 
-#: src/big_remote_play/ui/guest_view.py:1871
+#: src/big_remote_play/ui/guest_view.py:1909
 msgid "Not checked"
 msgstr "Nincs ellenőrizve"
 
@@ -4974,13 +5045,13 @@ msgstr ""
 msgid "Not installed"
 msgstr "Nincs telepítve"
 
-#: src/big_remote_play/ui/host_view.py:1851
+#: src/big_remote_play/ui/host_view.py:1877
 #: src/big_remote_play/ui/pairing_prompt.py:62
 #: src/big_remote_play/ui/private_network_view.py:468
 msgid "Not now"
 msgstr "Most nem"
 
-#: src/big_remote_play/ui/host_view.py:1239
+#: src/big_remote_play/ui/host_view.py:1265
 msgid "Not recognized as a game"
 msgstr "Nem ismerhető fel játékként"
 
@@ -4992,20 +5063,20 @@ msgstr "Nem válaszol"
 msgid "Not seen recently"
 msgstr "Mostanában nem volt látható"
 
-#: src/big_remote_play/ui/host_view.py:603
+#: src/big_remote_play/ui/host_view.py:617
 msgid "Not sent by Big Remote Play. Voice chat apps keep using it normally."
 msgstr ""
 "A Big Remote Play nem küldi el. A hangalapú csevegőalkalmazások továbbra is "
 "a szokásos módon használják."
 
-#: src/big_remote_play/ui/host_view.py:2960
+#: src/big_remote_play/ui/host_view.py:3065
 #, python-brace-format
 msgid "Not sent now: {programs}. The call plays only on this computer."
 msgstr ""
 "Most nem kerül átküldésre: {programs}. A hívás csak ezen a számítógépen "
 "hallható."
 
-#: src/big_remote_play/ui/host_view.py:2964
+#: src/big_remote_play/ui/host_view.py:3069
 msgid ""
 "Not sent. Calls in Discord, Zoom, Teams and other call apps play only on "
 "this computer, so nobody hears their own voice come back. A call in a web "
@@ -5015,6 +5086,29 @@ msgstr ""
 "hívásai csak ezen a számítógépen hallhatók, így senki sem hallja vissza a "
 "saját hangját. A webböngészőben folytatott hívás a böngésző hangjával együtt "
 "kerül átküldésre."
+
+#: src/big_remote_play/ui/host_view.py:2992
+msgid ""
+"Not sent: Sunshine could not open this computer's sound. Stop sharing and "
+"start again."
+msgstr ""
+"Nincs küldés: a Sunshine nem tudta megnyitni e számítógép hangját. Állítsa "
+"le a megosztást, és indítsa újra."
+
+#: src/big_remote_play/ui/host_view.py:2994
+msgid ""
+"Not sent: Sunshine is recording a microphone. Stop sharing and report it."
+msgstr ""
+"Nincs küldés: a Sunshine egy mikrofont rögzít. Állítsa le a megosztást, és "
+"jelentse a hibát."
+
+#: src/big_remote_play/ui/host_view.py:2993
+msgid ""
+"Not sent: Sunshine's recording is muted in this computer's sound settings. "
+"Press Test to turn it back on."
+msgstr ""
+"Nincs küldés: a Sunshine felvétele le van némítva e számítógép "
+"hangbeállításaiban. A visszakapcsoláshoz nyomja meg a Tesztelés gombot."
 
 #. TRANSLATORS: state of the secure connection: no method is set up on this computer.
 #: src/big_remote_play/ui/main_window.py:604
@@ -5040,7 +5134,7 @@ msgstr "Értesítés, ha a Sunshine új előzetes (pre-release) verziói elérhe
 msgid "Now using {method}."
 msgstr "Mostantól használatban: {method}."
 
-#: src/big_remote_play/ui/host_view.py:2927
+#: src/big_remote_play/ui/host_view.py:3010
 #, python-brace-format
 msgid "Now: {output}"
 msgstr "Most: {output}"
@@ -5062,8 +5156,8 @@ msgstr "OAuth-klienstitok"
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 141
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 686
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 750
-#: src/big_remote_play/ui/guest_view.py:1937
-#: src/big_remote_play/ui/host_view.py:3498
+#: src/big_remote_play/ui/guest_view.py:1975
+#: src/big_remote_play/ui/host_view.py:3624
 #: src/big_remote_play/ui/preferences.py:197
 #: src/big_remote_play/ui/preferences.py:210
 msgid "OK"
@@ -5071,13 +5165,13 @@ msgstr "OK"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1529
-#: src/big_remote_play/ui/guest_view.py:1262
+#: src/big_remote_play/ui/guest_view.py:1299
 #: src/big_remote_play/ui/network_devices.py:121
 #: src/big_remote_play/ui/remote_connection.py:98
 msgid "Offline"
 msgstr "Kapcsolat nélkül"
 
-#: src/big_remote_play/ui/host_view.py:1446
+#: src/big_remote_play/ui/host_view.py:1472
 #: src/big_remote_play/ui/preferences.py:209
 msgid "Old log files have been removed."
 msgstr "A régi naplófájlok eltávolítva."
@@ -5090,7 +5184,7 @@ msgstr ""
 "KDE Plasmán csak a játék ablakát ossza meg, az asztal többi része privát "
 "marad"
 
-#: src/big_remote_play/ui/guest_view.py:1651
+#: src/big_remote_play/ui/guest_view.py:1689
 msgid ""
 "On the game PC:\n"
 "1. Open Share my game.\n"
@@ -5142,11 +5236,11 @@ msgstr ""
 msgid "On this computer"
 msgstr "Ezen a számítógépen"
 
-#: src/big_remote_play/ui/guest_view.py:1270
+#: src/big_remote_play/ui/guest_view.py:1307
 msgid "On this network"
 msgstr "Ezen a hálózaton"
 
-#: src/big_remote_play/ui/guest_view.py:1296
+#: src/big_remote_play/ui/guest_view.py:1333
 #, python-brace-format
 msgid "On your {provider} private network at {address}"
 msgstr "Az Ön {provider} magánhálózatán, a(z) {address} címen"
@@ -5187,7 +5281,7 @@ msgstr ""
 "{udp} portokat a számítógép rögzített helyi címére (DHCP-foglalás). A(z) "
 "{web} portot soha ne továbbítsa: az az adminisztrációs panel."
 
-#: src/big_remote_play/ui/host_view.py:951
+#: src/big_remote_play/ui/host_view.py:969
 msgid "Only if the request does not appear here by itself."
 msgstr "Csak akkor, ha a kérés nem jelenik meg itt magától."
 
@@ -5195,7 +5289,7 @@ msgstr "Csak akkor, ha a kérés nem jelenik meg itt magától."
 msgid "Only in fullscreen"
 msgstr "Csak teljes képernyőn"
 
-#: src/big_remote_play/ui/host_view.py:1429
+#: src/big_remote_play/ui/host_view.py:1455
 msgid "Only needed when reporting a problem."
 msgstr "Csak hibajelentéshez kell."
 
@@ -5220,7 +5314,7 @@ msgstr "Ezen a számítógépen egyszerre csak egy ilyen fiók lehet aktív."
 msgid "Only secure https addresses are accepted."
 msgstr "Csak biztonságos https-címek fogadhatók el."
 
-#: src/big_remote_play/ui/host_view.py:1339
+#: src/big_remote_play/ui/host_view.py:1365
 msgid ""
 "Only the chosen game is sent. The desktop, other windows and notifications "
 "stay on this computer."
@@ -5247,11 +5341,11 @@ msgid "Open"
 msgstr "Megnyitás"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 621
-#: src/big_remote_play/ui/host_view.py:2295
+#: src/big_remote_play/ui/host_view.py:2321
 msgid "Open Configuration"
 msgstr "Nyissa meg a konfigurációt"
 
-#: src/big_remote_play/ui/host_view.py:849
+#: src/big_remote_play/ui/host_view.py:867
 msgid ""
 "Open Connect on the other PC, then approve its code here. This is needed "
 "only the first time."
@@ -5259,7 +5353,7 @@ msgstr ""
 "A másik gépen nyissa meg a Csatlakozást, és itt hagyja jóvá a kódját. Csak "
 "először szükséges."
 
-#: src/big_remote_play/ui/host_view.py:852
+#: src/big_remote_play/ui/host_view.py:870
 msgid "Open Connect on the other computer"
 msgstr "Nyissa meg a Csatlakozást a másik gépen"
 
@@ -5269,7 +5363,7 @@ msgstr ""
 "Nyissa meg a Megosztás részt, hogy játékot osszon meg erről a számítógépről"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 285
-#: src/big_remote_play/ui/host_view.py:681
+#: src/big_remote_play/ui/host_view.py:699
 msgid "Open TCP/UDP ports required for external connection"
 msgstr "Nyissa meg a külső kapcsolathoz szükséges TCP/UDP portokat."
 
@@ -5288,7 +5382,7 @@ msgstr "Konzol megnyitása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 621
-#: src/big_remote_play/ui/host_view.py:3955
+#: src/big_remote_play/ui/host_view.py:4081
 msgid "Open folder"
 msgstr "Mappa megnyitása"
 
@@ -5297,15 +5391,15 @@ msgstr "Mappa megnyitása"
 msgid "Open guide"
 msgstr "Útmutató megnyitása"
 
-#: src/big_remote_play/ui/host_view.py:2473
+#: src/big_remote_play/ui/host_view.py:2501
 msgid "Open management to view all paired devices."
 msgstr "Nyissa meg a kezelést az összes párosított eszköz megtekintéséhez."
 
-#: src/big_remote_play/ui/host_view.py:2436
+#: src/big_remote_play/ui/host_view.py:2464
 msgid "Open paired device management"
 msgstr "Párosított eszközök kezelésének megnyitása"
 
-#: src/big_remote_play/ui/host_view.py:3940
+#: src/big_remote_play/ui/host_view.py:4066
 msgid "Open parent folder"
 msgstr "Szülőmappa megnyitása"
 
@@ -5325,7 +5419,7 @@ msgstr "A felügyeleti konzol megnyitása"
 msgid "Open the connection details to see what is wrong."
 msgstr "Nyissa meg a kapcsolat részleteit, hogy lássa, mi a hiba."
 
-#: src/big_remote_play/ui/host_view.py:1266
+#: src/big_remote_play/ui/host_view.py:1292
 msgid "Open the game you want to share, then select Refresh."
 msgstr ""
 "Nyissa meg a megosztandó játékot, majd válassza a Frissítés lehetőséget."
@@ -5334,7 +5428,7 @@ msgstr ""
 msgid "Open the sign-in page again in your browser."
 msgstr "Nyissa meg újra a bejelentkezési oldalt a böngészőben."
 
-#: src/big_remote_play/ui/host_view.py:3288
+#: src/big_remote_play/ui/host_view.py:3414
 msgid "Opening Steam Big Picture…"
 msgstr "A Steam Big Picture megnyitása…"
 
@@ -5344,8 +5438,8 @@ msgstr "Megnyitja a hivatalos webhelyet"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1913
-#: src/big_remote_play/ui/host_view.py:3663
-#: src/big_remote_play/ui/host_view.py:3868
+#: src/big_remote_play/ui/host_view.py:3789
+#: src/big_remote_play/ui/host_view.py:3994
 #: src/big_remote_play/ui/network_dashboard.py:481
 msgid "Operation failed"
 msgstr "A művelet nem sikerült"
@@ -5363,9 +5457,9 @@ msgstr "Az egér optimalizálása távoli asztali használathoz"
 msgid "Or choose what you want to do"
 msgstr "Vagy válassza ki, mit szeretne tenni"
 
-#: src/big_remote_play/ui/guest_view.py:835
-#: src/big_remote_play/ui/host_view.py:2159
-#: src/big_remote_play/ui/host_view.py:2175
+#: src/big_remote_play/ui/guest_view.py:872
+#: src/big_remote_play/ui/host_view.py:2185
+#: src/big_remote_play/ui/host_view.py:2201
 msgid "Other computer"
 msgstr "Másik számítógép"
 
@@ -5383,7 +5477,7 @@ msgstr ""
 "Megosztás → Haladó rész megerősítés után csak a streamelési portokra vehet "
 "fel szabályokat; az adminisztrációs panel zárva marad."
 
-#: src/big_remote_play/ui/host_view.py:1052
+#: src/big_remote_play/ui/host_view.py:1078
 msgid "Overview"
 msgstr "Áttekintés"
 
@@ -5392,7 +5486,7 @@ msgid "PIN"
 msgstr "PIN"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 609
-#: src/big_remote_play/ui/host_view.py:2207
+#: src/big_remote_play/ui/host_view.py:2233
 msgid "PIN Error"
 msgstr "PIN hiba"
 
@@ -5403,11 +5497,11 @@ msgstr "PIN hiba"
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 307
 #: src/big_remote_play/host/sunshine_manager.py:668
-#: src/big_remote_play/ui/host_view.py:2196
+#: src/big_remote_play/ui/host_view.py:2222
 msgid "PIN sent successfully"
 msgstr "A PIN-kód elküldve"
 
-#: src/big_remote_play/ui/host_view.py:2233
+#: src/big_remote_play/ui/host_view.py:2259
 msgid "PIN shown by Moonlight"
 msgstr "A Moonlight által mutatott PIN"
 
@@ -5421,13 +5515,13 @@ msgstr "Csomagok: {packages}"
 msgid "Packet Size"
 msgstr "Csomagméret"
 
-#: src/big_remote_play/ui/host_view.py:941
-#: src/big_remote_play/ui/host_view.py:942
-#: src/big_remote_play/ui/host_view.py:2179
+#: src/big_remote_play/ui/host_view.py:959
+#: src/big_remote_play/ui/host_view.py:960
+#: src/big_remote_play/ui/host_view.py:2205
 msgid "Pair"
 msgstr "Párosítás"
 
-#: src/big_remote_play/ui/guest_view.py:1928
+#: src/big_remote_play/ui/guest_view.py:1966
 msgid "Pair again"
 msgstr "Újrapárosítás"
 
@@ -5445,43 +5539,43 @@ msgstr ""
 "alapértelmezettől, használja azt. Tesztelje az otthoni hálózaton kívülről. "
 "Távolítsa el a nyilvános portleképezéseket, amikor már nincs rájuk szükség."
 
-#: src/big_remote_play/ui/host_view.py:945
+#: src/big_remote_play/ui/host_view.py:963
 msgid "Pair this device"
 msgstr "Eszköz párosítása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 982
-#: src/big_remote_play/ui/host_view.py:2394
-#: src/big_remote_play/ui/host_view.py:3531
+#: src/big_remote_play/ui/host_view.py:2422
+#: src/big_remote_play/ui/host_view.py:3657
 msgid "Paired devices"
 msgstr "Párosított eszközök"
 
-#: src/big_remote_play/ui/host_view.py:2399
-#: src/big_remote_play/ui/host_view.py:2801
+#: src/big_remote_play/ui/host_view.py:2427
+#: src/big_remote_play/ui/host_view.py:2831
 msgid "Paired devices appear here."
 msgstr "A párosított eszközök itt jelennek meg."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 651
-#: src/big_remote_play/ui/guest_view.py:1606
+#: src/big_remote_play/ui/guest_view.py:1644
 msgid "Paired successfully!"
 msgstr "A párosítás sikerült!"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 653
-#: src/big_remote_play/ui/guest_view.py:1906
+#: src/big_remote_play/ui/guest_view.py:1944
 msgid "Pairing Error"
 msgstr "Párosítási hiba"
 
-#: src/big_remote_play/ui/host_view.py:934
+#: src/big_remote_play/ui/host_view.py:952
 msgid "Pairing code shown on the other PC"
 msgstr "A másik gépen látható párosítási kód"
 
-#: src/big_remote_play/ui/guest_view.py:1656
+#: src/big_remote_play/ui/guest_view.py:1694
 #, python-brace-format
 msgid "Pairing code: {code}"
 msgstr "Párosítási kód: {code}"
 
-#: src/big_remote_play/ui/host_view.py:2132
-#: src/big_remote_play/ui/host_view.py:2149
+#: src/big_remote_play/ui/host_view.py:2158
+#: src/big_remote_play/ui/host_view.py:2175
 msgid "Pairing failed"
 msgstr "A párosítás nem sikerült"
 
@@ -5518,7 +5612,7 @@ msgid "Path"
 msgstr "Útvonal"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 148
-#: src/big_remote_play/ui/host_view.py:1457
+#: src/big_remote_play/ui/host_view.py:1483
 #: src/big_remote_play/ui/preferences.py:215
 msgid "Path copied!"
 msgstr "Útvonal másolva!"
@@ -5552,7 +5646,7 @@ msgstr "Engedély szükséges"
 msgid "Permission was not granted."
 msgstr "Az engedély nem lett megadva."
 
-#: src/big_remote_play/ui/guest_view.py:900
+#: src/big_remote_play/ui/guest_view.py:937
 msgid "Pick the PC that is sharing the game."
 msgstr "Válassza ki a gépet, amely a játékot megosztja."
 
@@ -5615,7 +5709,7 @@ msgstr "Játsszatok együtt, bárhonnan"
 msgid "Playback on this computer"
 msgstr "Lejátszás ezen a számítógépen"
 
-#: src/big_remote_play/ui/host_view.py:2976
+#: src/big_remote_play/ui/host_view.py:3081
 msgid "Playing a short tone…"
 msgstr "Rövid hangjelzés lejátszása…"
 
@@ -5623,12 +5717,12 @@ msgstr "Rövid hangjelzés lejátszása…"
 msgid "Playing now"
 msgstr "Most játszik"
 
-#: src/big_remote_play/ui/guest_view.py:904
+#: src/big_remote_play/ui/guest_view.py:941
 #, python-brace-format
 msgid "Playing on {name}"
 msgstr "Játék ezen: {name}"
 
-#: src/big_remote_play/ui/host_view.py:616
+#: src/big_remote_play/ui/host_view.py:630
 msgid "Plays a short tone and checks that it reaches the shared sound."
 msgstr ""
 "Rövid hangjelzést játszik le, és ellenőrzi, hogy eljut-e a megosztott hangba."
@@ -5651,11 +5745,11 @@ msgid "Poor"
 msgstr "Gyenge"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 389
-#: src/big_remote_play/ui/guest_view.py:1346
+#: src/big_remote_play/ui/guest_view.py:1383
 msgid "Port"
 msgstr "Port"
 
-#: src/big_remote_play/ui/guest_view.py:1359
+#: src/big_remote_play/ui/guest_view.py:1396
 msgid "Port and IPv6"
 msgstr "Port és IPv6"
 
@@ -5691,11 +5785,11 @@ msgstr "Előnyben részesíti a CAVLC-t a CABAC-kal szemben az H.264-ben."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 273
 #: src/big_remote_play/ui/components.py:275
-#: src/big_remote_play/ui/host_view.py:1084
+#: src/big_remote_play/ui/host_view.py:1110
 msgid "Preferences"
 msgstr "Beállítások"
 
-#: src/big_remote_play/ui/host_view.py:3253
+#: src/big_remote_play/ui/host_view.py:3379
 msgid ""
 "Preparing the game window. If your system asks, choose the same game and "
 "select Share."
@@ -5746,7 +5840,7 @@ msgstr "Magánhálózati cím"
 msgid "Private addresses, for someone helping you"
 msgstr "Magánhálózati címek az Önnek segítő személy számára"
 
-#: src/big_remote_play/ui/guest_view.py:1877
+#: src/big_remote_play/ui/guest_view.py:1915
 msgid "Private network connected"
 msgstr "Magánhálózat csatlakoztatva"
 
@@ -5785,7 +5879,7 @@ msgstr "QR-kód ehhez: {name}"
 msgid "Quantization Parameter"
 msgstr "Kvantálási paraméter"
 
-#: src/big_remote_play/ui/guest_view.py:1866
+#: src/big_remote_play/ui/guest_view.py:1904
 msgid "Quick read-only checks. Nothing is changed."
 msgstr "Gyors, csak olvasó ellenőrzések. Semmi sem változik."
 
@@ -5802,7 +5896,7 @@ msgid "QuickSync Preset"
 msgstr "QuickSync Előbeállítás"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 972
-#: src/big_remote_play/ui/guest_view.py:2345
+#: src/big_remote_play/ui/guest_view.py:2383
 msgid "Quit Stream"
 msgstr "Kilépés a Streamből"
 
@@ -5824,7 +5918,7 @@ msgid ""
 msgstr ""
 "A számítógép hálózati csatolóiból kiolvasva. Semmi sem kerül elküldésre."
 
-#: src/big_remote_play/ui/host_view.py:626
+#: src/big_remote_play/ui/host_view.py:640
 msgid "Read from the sound server when opened."
 msgstr "Megnyitáskor a hangkiszolgálóból beolvasva."
 
@@ -5851,7 +5945,7 @@ msgstr "A hálózat állapotának olvasása…"
 msgid "Ready"
 msgstr "Kész"
 
-#: src/big_remote_play/ui/guest_view.py:1891
+#: src/big_remote_play/ui/guest_view.py:1929
 #: src/big_remote_play/ui/network_common.py:147
 msgid "Ready to connect"
 msgstr "Kész a csatlakozásra"
@@ -5866,7 +5960,11 @@ msgstr "Minden kész a játékhoz az interneten át"
 msgid "Ready to play?"
 msgstr "Készen áll a játékra?"
 
-#: src/big_remote_play/ui/host_view.py:2817
+#: src/big_remote_play/ui/host_view.py:2990
+msgid "Ready. Sound is sent when a device starts playing."
+msgstr "Kész. A hang küldése akkor indul, amikor egy eszköz lejátszást kezd."
+
+#: src/big_remote_play/ui/host_view.py:2847
 msgid "Ready. This computer is also reachable over your private network."
 msgstr "Kész. Ez a számítógép a magánhálózatán keresztül is elérhető."
 
@@ -5874,7 +5972,7 @@ msgstr "Kész. Ez a számítógép a magánhálózatán keresztül is elérhető
 # line: 318
 # line: 723
 #: src/big_remote_play/ui/performance_monitor.py:394
-#: src/big_remote_play/ui/performance_monitor.py:851
+#: src/big_remote_play/ui/performance_monitor.py:854
 msgid "Real-time Monitoring"
 msgstr "Valós idejű megfigyelés"
 
@@ -5941,20 +6039,20 @@ msgstr "Újracsatlakozás"
 msgid "Reconnect using this saved network"
 msgstr "Újracsatlakozás ezzel a mentett hálózattal"
 
-#: src/big_remote_play/ui/host_view.py:631
+#: src/big_remote_play/ui/host_view.py:645
 msgid "Recorded source"
 msgstr "Rögzített forrás"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1348
-#: src/big_remote_play/ui/host_view.py:1129
-#: src/big_remote_play/ui/host_view.py:3677
+#: src/big_remote_play/ui/host_view.py:1155
+#: src/big_remote_play/ui/host_view.py:3803
 #: src/big_remote_play/ui/network_dashboard.py:81
 #: src/big_remote_play/ui/network_devices.py:150
 msgid "Refresh"
 msgstr "Frissítés"
 
-#: src/big_remote_play/ui/host_view.py:3678
+#: src/big_remote_play/ui/host_view.py:3804
 msgid "Refresh logs"
 msgstr "Naplók frissítése"
 
@@ -5984,15 +6082,15 @@ msgid "Reload from Running Server"
 msgstr "Újratöltés a futó kiszolgálóról"
 
 #: src/big_remote_play/ui/api_access_dialog.py:92
-#: src/big_remote_play/ui/host_view.py:3631
+#: src/big_remote_play/ui/host_view.py:3757
 #: src/big_remote_play/ui/remote_connection.py:797
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:265
 msgid "Remove"
 msgstr "Eltávolítás"
 
-#: src/big_remote_play/ui/host_view.py:3527
-#: src/big_remote_play/ui/host_view.py:3534
-#: src/big_remote_play/ui/host_view.py:3536
+#: src/big_remote_play/ui/host_view.py:3653
+#: src/big_remote_play/ui/host_view.py:3660
+#: src/big_remote_play/ui/host_view.py:3662
 msgid "Remove All"
 msgstr "Összes eltávolítása"
 
@@ -6000,8 +6098,8 @@ msgstr "Összes eltávolítása"
 msgid "Remove account from this computer"
 msgstr "Fiók eltávolítása erről a számítógépről"
 
-#: src/big_remote_play/ui/host_view.py:3818
-#: src/big_remote_play/ui/host_view.py:3819
+#: src/big_remote_play/ui/host_view.py:3944
+#: src/big_remote_play/ui/host_view.py:3945
 msgid "Remove app"
 msgstr "Alkalmazás eltávolítása"
 
@@ -6009,9 +6107,9 @@ msgstr "Alkalmazás eltávolítása"
 msgid "Remove credential"
 msgstr "Hitelesítési adat eltávolítása"
 
-#: src/big_remote_play/ui/host_view.py:3602
-#: src/big_remote_play/ui/host_view.py:3603
-#: src/big_remote_play/ui/host_view.py:3627
+#: src/big_remote_play/ui/host_view.py:3728
+#: src/big_remote_play/ui/host_view.py:3729
+#: src/big_remote_play/ui/host_view.py:3753
 #: src/big_remote_play/ui/network_devices.py:272
 #: src/big_remote_play/ui/network_devices.py:295
 #: src/big_remote_play/ui/network_devices.py:338
@@ -6029,7 +6127,7 @@ msgid "Remove logs, settings, servers and saved data"
 msgstr "Naplók, beállítások, kiszolgálók és mentett adatok eltávolítása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/preferences.py, line: 98
-#: src/big_remote_play/ui/host_view.py:1443
+#: src/big_remote_play/ui/host_view.py:1469
 msgid "Remove old log files"
 msgstr "Régi naplófájlok eltávolítása"
 
@@ -6068,7 +6166,7 @@ msgstr "A(z) {name} eltávolítása a hálózatból"
 msgid "Remove {name}?"
 msgstr "Eltávolítja ezt: {name}?"
 
-#: src/big_remote_play/ui/host_view.py:3628
+#: src/big_remote_play/ui/host_view.py:3754
 #, python-brace-format
 msgid "Remove “{name}”? It will need to pair again with a new PIN."
 msgstr ""
@@ -6117,7 +6215,7 @@ msgstr "Hozzáférés kérése"
 msgid "Request cancelled"
 msgstr "Kérés visszavonva"
 
-#: src/big_remote_play/ui/host_view.py:1792
+#: src/big_remote_play/ui/host_view.py:1818
 #, python-brace-format
 msgid "Request rejected. {name} was not allowed to connect."
 msgstr "A kérés elutasítva. Ez az eszköz nem csatlakozhatott: {name}."
@@ -6153,7 +6251,7 @@ msgstr ""
 "Szükséges a számítógép megosztásához vagy emberek meghívásához. A választott "
 "időtartam (1 és 90 nap között) után lejár."
 
-#: src/big_remote_play/ui/guest_view.py:2251
+#: src/big_remote_play/ui/guest_view.py:2289
 #: src/big_remote_play/ui/preferences.py:61
 msgid "Reset"
 msgstr "Visszaállítás"
@@ -6169,7 +6267,7 @@ msgstr "Minden beállítás visszaállítása alapértékre"
 msgid "Reset connection settings"
 msgstr "Kapcsolati beállítások visszaállítása"
 
-#: src/big_remote_play/ui/host_view.py:4008
+#: src/big_remote_play/ui/host_view.py:4134
 msgid "Reset directly; the server will restart"
 msgstr "Visszaállítás közvetlenül; a kiszolgáló újraindul"
 
@@ -6188,7 +6286,7 @@ msgstr "A visszaállítás nem sikerült"
 msgid "Reset failed: {error}"
 msgstr "A visszaállítás nem sikerült: {error}"
 
-#: src/big_remote_play/ui/guest_view.py:2247
+#: src/big_remote_play/ui/guest_view.py:2285
 msgid "Reset settings?"
 msgstr "Visszaállítja a beállításokat?"
 
@@ -6226,7 +6324,7 @@ msgstr ""
 "telepítse újra a ZeroTiert."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1444
-#: src/big_remote_play/ui/host_view.py:4398
+#: src/big_remote_play/ui/host_view.py:4526
 #: src/big_remote_play/ui/preferences.py:63
 #: src/big_remote_play/ui/preferences.py:169
 #: src/big_remote_play/ui/preferences.py:223
@@ -6234,7 +6332,7 @@ msgid "Restore"
 msgstr "Visszaállítás"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1443
-#: src/big_remote_play/ui/host_view.py:4396
+#: src/big_remote_play/ui/host_view.py:4524
 #: src/big_remote_play/ui/preferences.py:62
 msgid "Restore Defaults"
 msgstr "Alapértékek visszaállítása"
@@ -6254,8 +6352,8 @@ msgstr "Biztonsági mentés visszaállítása"
 msgid "Reuse connection details saved by Big Remote Play"
 msgstr "A Big Remote Play által mentett kapcsolati adatok újrafelhasználása"
 
-#: src/big_remote_play/ui/host_view.py:2637
-#: src/big_remote_play/ui/host_view.py:2664
+#: src/big_remote_play/ui/host_view.py:2665
+#: src/big_remote_play/ui/host_view.py:2692
 #, python-brace-format
 msgid "Reveal {field}"
 msgstr "{field} megjelenítése"
@@ -6287,7 +6385,7 @@ msgstr "Útvonal nem mérve"
 msgid "Routes approved"
 msgstr "Útvonalak jóváhagyva"
 
-#: src/big_remote_play/ui/host_view.py:637
+#: src/big_remote_play/ui/host_view.py:654
 msgid "Routing added by Big Remote Play"
 msgstr "A Big Remote Play által hozzáadott hangútvonalak"
 
@@ -6306,7 +6404,7 @@ msgstr ""
 "az egy számítógépet regisztrál."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
-#: src/big_remote_play/ui/host_view.py:2737
+#: src/big_remote_play/ui/host_view.py:2767
 #: src/big_remote_play/ui/main_window.py:1503
 #: src/big_remote_play/ui/service_status_card.py:66
 msgid "Running"
@@ -6330,8 +6428,8 @@ msgstr "Az elsőként csatlakozó eszközével azonos"
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1077
 #: src/big_remote_play/ui/api_access_dialog.py:86
-#: src/big_remote_play/ui/host_view.py:1819
-#: src/big_remote_play/ui/host_view.py:4037
+#: src/big_remote_play/ui/host_view.py:1845
+#: src/big_remote_play/ui/host_view.py:4163
 #: src/big_remote_play/ui/private_network_view.py:1054
 #: src/big_remote_play/ui/remote_connection.py:769
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:324
@@ -6339,7 +6437,7 @@ msgid "Save"
 msgstr "Mentés"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 669
-#: src/big_remote_play/ui/host_view.py:2252
+#: src/big_remote_play/ui/host_view.py:2278
 msgid "Save Password"
 msgstr "Jelszó mentése"
 
@@ -6348,7 +6446,7 @@ msgid "Save bandwidth"
 msgstr "Sávszélesség megtakarítása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 670
-#: src/big_remote_play/ui/host_view.py:2253
+#: src/big_remote_play/ui/host_view.py:2279
 msgid "Save credentials to the system keyring"
 msgstr "Bejelentkezési adatok mentése a rendszer kulcstartójába"
 
@@ -6373,27 +6471,27 @@ msgstr "Olvassa be a meghívott személy telefonjával."
 msgid "Screen resolution while sharing"
 msgstr "Képernyőfelbontás megosztás közben"
 
-#: src/big_remote_play/ui/host_view.py:1070
+#: src/big_remote_play/ui/host_view.py:1096
 msgid "Screen, graphics card and encoding"
 msgstr "Képernyő, grafikus kártya és kódolás"
 
-#: src/big_remote_play/ui/host_view.py:1530
-#: src/big_remote_play/ui/host_view.py:1955
+#: src/big_remote_play/ui/host_view.py:1556
+#: src/big_remote_play/ui/host_view.py:1981
 #, python-brace-format
 msgid "Screen: {value}"
 msgstr "Képernyő: {value}"
 
-#: src/big_remote_play/ui/guest_view.py:977
-#: src/big_remote_play/ui/guest_view.py:1010
+#: src/big_remote_play/ui/guest_view.py:1014
+#: src/big_remote_play/ui/guest_view.py:1047
 msgid "Search again"
 msgstr "Keresés újra"
 
-#: src/big_remote_play/ui/guest_view.py:1397
-#: src/big_remote_play/ui/host_view.py:973
+#: src/big_remote_play/ui/guest_view.py:1434
+#: src/big_remote_play/ui/host_view.py:991
 msgid "Search code"
 msgstr "Keresőkód"
 
-#: src/big_remote_play/ui/guest_view.py:1011
+#: src/big_remote_play/ui/guest_view.py:1048
 msgid "Search for game PCs again"
 msgstr "Játékgépek újbóli keresése"
 
@@ -6401,7 +6499,7 @@ msgstr "Játékgépek újbóli keresése"
 msgid "Searches the local network for computers that are sharing a game."
 msgstr "A helyi hálózaton játékot megosztó számítógépeket keres."
 
-#: src/big_remote_play/ui/guest_view.py:1069
+#: src/big_remote_play/ui/guest_view.py:1106
 msgid "Searching for game PCs…"
 msgstr "Játékgépek keresése…"
 
@@ -6413,7 +6511,7 @@ msgstr "Játékgépek keresése…"
 msgid "Secure connection"
 msgstr "Biztonságos kapcsolat"
 
-#: src/big_remote_play/ui/host_view.py:704
+#: src/big_remote_play/ui/host_view.py:722
 msgid "Security and expert settings that are rarely needed."
 msgstr "Ritkán szükséges biztonsági és szakértői beállítások."
 
@@ -6430,11 +6528,11 @@ msgstr "Az elmúlt néhány percben látható volt"
 msgid "Select Game"
 msgstr "Játék kiválasztása"
 
-#: src/big_remote_play/ui/host_view.py:1200
+#: src/big_remote_play/ui/host_view.py:1226
 msgid "Select Refresh to try again."
 msgstr "Az újrapróbálkozáshoz válassza a Frissítés lehetőséget."
 
-#: src/big_remote_play/ui/host_view.py:3104
+#: src/big_remote_play/ui/host_view.py:3229
 msgid ""
 "Select a game or complete the app name and command. To share the whole "
 "screen instead, choose Full Desktop."
@@ -6447,8 +6545,8 @@ msgid "Select a network service and try again."
 msgstr "Válasszon hálózati szolgáltatást, majd próbálja újra."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 142
-#: src/big_remote_play/ui/host_view.py:3887
-#: src/big_remote_play/ui/host_view.py:3963
+#: src/big_remote_play/ui/host_view.py:4013
+#: src/big_remote_play/ui/host_view.py:4089
 msgid "Select executable"
 msgstr "Futtatható fájl kiválasztása"
 
@@ -6457,19 +6555,23 @@ msgstr "Futtatható fájl kiválasztása"
 msgid "Select the display to capture"
 msgstr "A rögzítendő kijelző kiválasztása"
 
-#: src/big_remote_play/ui/host_view.py:3975
+#: src/big_remote_play/ui/host_view.py:4101
 #, python-brace-format
 msgid "Selected: {name}"
 msgstr "Kiválasztva: {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 588
-#: src/big_remote_play/ui/host_view.py:2265
+#: src/big_remote_play/ui/host_view.py:2291
 msgid "Send"
 msgstr "Küldés"
 
 #: src/big_remote_play/ui/network_devices.py:616
 msgid "Send invitation"
 msgstr "Meghívó küldése"
+
+#: src/big_remote_play/ui/host_view.py:609
+msgid "Send only the game's sound"
+msgstr "Csak a játék hangjának küldése"
 
 #: src/big_remote_play/ui/guest_view.py:424
 msgid "Send system shortcuts to the remote computer"
@@ -6479,7 +6581,7 @@ msgstr "Rendszerbillentyűk továbbítása a távoli számítógépnek"
 msgid "Send the Node ID to the network owner"
 msgstr "Küldje el a csomópont-azonosítót a hálózat tulajdonosának"
 
-#: src/big_remote_play/ui/host_view.py:945
+#: src/big_remote_play/ui/host_view.py:963
 msgid "Send the code shown on the other PC to finish pairing"
 msgstr "Küldje el a másik gépen látható kódot a párosítás befejezéséhez"
 
@@ -6491,9 +6593,25 @@ msgstr ""
 "Küldje el ezt a hivatkozást a személynek. Csak neki működik, és a Tailscale "
 "konzolon visszavonható."
 
+#: src/big_remote_play/ui/host_view.py:2995
+msgid ""
+"Sending all of this computer's sound: the game's sound could not be "
+"separated."
+msgstr ""
+"Az ezen a számítógépen lejátszott összes hang küldése: a játék hangját nem "
+"sikerült leválasztani."
+
+#: src/big_remote_play/ui/host_view.py:2979
+msgid "Sending only the game's sound."
+msgstr "Csak a játék hangjának küldése."
+
 #: src/big_remote_play/ui/zerotier_join.py:53
 msgid "Sending the request to the network."
 msgstr "A kérés elküldése a hálózatnak."
+
+#: src/big_remote_play/ui/host_view.py:2985
+msgid "Sending the sound this computer plays."
+msgstr "Az ezen a számítógépen lejátszott hang küldése."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 21
 #: src/big_remote_play/ui/main_window.py:70
@@ -6509,7 +6627,7 @@ msgid "Server Domain (e.g. vpn.example.com)"
 msgstr "Kiszolgáló tartománya (pl. vpn.example.com)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1415
-#: src/big_remote_play/ui/host_view.py:3476
+#: src/big_remote_play/ui/host_view.py:3602
 msgid "Server Failed to Start"
 msgstr "A szerver nem indult el"
 
@@ -6521,29 +6639,29 @@ msgstr "A szerver nem indult el"
 msgid "Server address"
 msgstr "Kiszolgáló címe"
 
-#: src/big_remote_play/ui/host_view.py:727
+#: src/big_remote_play/ui/host_view.py:745
 msgid "Server control panel"
 msgstr "Kiszolgáló panel"
 
-#: src/big_remote_play/ui/host_view.py:734
+#: src/big_remote_play/ui/host_view.py:752
 msgid "Server log"
 msgstr "Kiszolgálónapló"
 
-#: src/big_remote_play/ui/host_view.py:587
+#: src/big_remote_play/ui/host_view.py:593
 msgid "Server output"
 msgstr "Kiszolgáló kimenete"
 
-#: src/big_remote_play/ui/host_view.py:748
-#: src/big_remote_play/ui/host_view.py:3988
+#: src/big_remote_play/ui/host_view.py:766
+#: src/big_remote_play/ui/host_view.py:4114
 msgid "Server password"
 msgstr "Kiszolgáló jelszava"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1197
-#: src/big_remote_play/ui/host_view.py:3246
+#: src/big_remote_play/ui/host_view.py:3372
 msgid "Server started"
 msgstr "A kiszolgáló elindult"
 
-#: src/big_remote_play/ui/host_view.py:699
+#: src/big_remote_play/ui/host_view.py:717
 msgid "Server tools"
 msgstr "Kiszolgálóeszközök"
 
@@ -6560,7 +6678,7 @@ msgstr "Szolgáltatások"
 msgid "Sessions"
 msgstr "Munkamenetek"
 
-#: src/big_remote_play/ui/host_view.py:3998
+#: src/big_remote_play/ui/host_view.py:4124
 msgid ""
 "Set the username and password used to manage the Sunshine server. If you "
 "forgot the current password, switch on “I forgot the current password” to "
@@ -6592,7 +6710,7 @@ msgid "Setting up"
 msgstr "Beállítás folyamatban"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1452
-#: src/big_remote_play/ui/host_view.py:4413
+#: src/big_remote_play/ui/host_view.py:4541
 msgid "Settings Restored"
 msgstr "A beállítások visszaállítva"
 
@@ -6611,7 +6729,7 @@ msgstr ""
 msgid "Several computers are waiting to pair."
 msgstr "Több számítógép vár párosításra."
 
-#: src/big_remote_play/ui/host_view.py:2169
+#: src/big_remote_play/ui/host_view.py:2195
 msgid ""
 "Several computers are waiting to pair. Approve only the one that shows the "
 "code you entered."
@@ -6630,7 +6748,7 @@ msgctxt "navigation"
 msgid "Share"
 msgstr "Megosztás"
 
-#: src/big_remote_play/ui/host_view.py:809
+#: src/big_remote_play/ui/host_view.py:827
 msgid "Share from this PC"
 msgstr "Megosztás erről a gépről"
 
@@ -6653,20 +6771,20 @@ msgstr "A gép megosztása"
 msgid "Share this computer"
 msgstr "A számítógép megosztása"
 
-#: src/big_remote_play/ui/guest_view.py:1260
+#: src/big_remote_play/ui/guest_view.py:1297
 msgid "Sharing found"
 msgstr "Megosztás észlelve"
 
-#: src/big_remote_play/ui/host_view.py:3745
-#: src/big_remote_play/ui/host_view.py:3876
+#: src/big_remote_play/ui/host_view.py:3871
+#: src/big_remote_play/ui/host_view.py:4002
 msgid "Sharing is off"
 msgstr "A megosztás ki van kapcsolva"
 
-#: src/big_remote_play/ui/guest_view.py:1261
+#: src/big_remote_play/ui/guest_view.py:1298
 msgid "Sharing not found"
 msgstr "Nem található megosztás"
 
-#: src/big_remote_play/ui/host_view.py:1020
+#: src/big_remote_play/ui/host_view.py:1038
 msgid "Sharing now"
 msgstr "Most megosztva"
 
@@ -6676,11 +6794,11 @@ msgid "Sharing sections"
 msgstr "Megosztási szakaszok"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1288
-#: src/big_remote_play/ui/host_view.py:3428
+#: src/big_remote_play/ui/host_view.py:3554
 msgid "Sharing stopped"
 msgstr "A megosztás leállt"
 
-#: src/big_remote_play/ui/host_view.py:1385
+#: src/big_remote_play/ui/host_view.py:1411
 msgid ""
 "Sharing stopped so nothing else on this computer is shown. Open the game "
 "again to share it."
@@ -6688,13 +6806,13 @@ msgstr ""
 "A megosztás leállt, hogy semmi más ne látsszon erről a számítógépről. A "
 "megosztáshoz nyissa meg újra a játékot."
 
-#: src/big_remote_play/ui/host_view.py:1387
-#: src/big_remote_play/ui/host_view.py:1388
+#: src/big_remote_play/ui/host_view.py:1413
+#: src/big_remote_play/ui/host_view.py:1414
 msgid "Sharing stopped to protect your privacy"
 msgstr "A megosztás leállt az adatai védelmében"
 
 #: src/big_remote_play/ui/host_view.py:370
-#: src/big_remote_play/ui/host_view.py:1341
+#: src/big_remote_play/ui/host_view.py:1367
 msgid ""
 "Sharing the whole screen also shows notifications and other open windows."
 msgstr ""
@@ -6708,7 +6826,7 @@ msgstr "Élesebb kép"
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 67
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 947
 #: src/big_remote_play/ui/guest_view.py:233
-#: src/big_remote_play/ui/guest_view.py:2318
+#: src/big_remote_play/ui/guest_view.py:2356
 msgid "Shortcuts & Instructions"
 msgstr "Billentyűparancsok és utasítások"
 
@@ -6716,7 +6834,7 @@ msgstr "Billentyűparancsok és utasítások"
 msgid "Show a number on every connected screen"
 msgstr "Szám megjelenítése minden csatlakoztatott képernyőn"
 
-#: src/big_remote_play/ui/host_view.py:1134
+#: src/big_remote_play/ui/host_view.py:1160
 msgid "Show all open windows"
 msgstr "Az összes megnyitott ablak megjelenítése"
 
@@ -6727,7 +6845,7 @@ msgid "Show icon in system tray and display desktop notifications"
 msgstr ""
 "Ikon megjelenítése a rendszer tálcán és asztali értesítések megjelenítése"
 
-#: src/big_remote_play/ui/host_view.py:2638
+#: src/big_remote_play/ui/host_view.py:2666
 #, python-brace-format
 msgid "Show or hide the {field} value"
 msgstr "A(z) {field} érték megjelenítése vagy elrejtése"
@@ -6751,7 +6869,7 @@ msgid "Shows network details and tools for experienced users."
 msgstr ""
 "Hálózati részleteket és segédeszközöket mutat tapasztalt felhasználóknak."
 
-#: src/big_remote_play/ui/host_view.py:915
+#: src/big_remote_play/ui/host_view.py:933
 msgid "Shows the ports first; your password is requested"
 msgstr "Előbb megmutatja a portokat; a jelszavát kéri"
 
@@ -6859,7 +6977,7 @@ msgstr "Szoftver"
 msgid "Software (CPU)"
 msgstr "Szoftveres (CPU)"
 
-#: src/big_remote_play/ui/host_view.py:1087
+#: src/big_remote_play/ui/host_view.py:1113
 msgid "Solve sharing problems"
 msgstr "Megosztási problémák megoldása"
 
@@ -6892,9 +7010,25 @@ msgstr ""
 msgid "Somewhere else"
 msgstr "Máshol"
 
-#: src/big_remote_play/ui/host_view.py:1057
+#: src/big_remote_play/ui/host_view.py:1043
+msgid "Sound"
+msgstr "Hang"
+
+#: src/big_remote_play/ui/host_view.py:1083
 msgid "Sound and access on this computer"
 msgstr "Hang és hozzáférés ezen a számítógépen"
+
+#: src/big_remote_play/ui/host_view.py:587
+msgid "Sound for the other computer"
+msgstr "Hang a másik számítógépnek"
+
+#: src/big_remote_play/ui/guest_view.py:805
+msgid ""
+"Sound from the game PC is being lost on the way. A wired or less busy "
+"connection helps."
+msgstr ""
+"A játékgépről érkező hang egy része útközben elvész. Vezetékes vagy kevésbé "
+"terhelt kapcsolat segíthet."
 
 #: src/big_remote_play/ui/host_view.py:380
 msgid "Source"
@@ -6930,43 +7064,43 @@ msgid "Start service"
 msgstr "Szolgáltatás indítása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 634
-#: src/big_remote_play/ui/host_view.py:770
-#: src/big_remote_play/ui/host_view.py:774
-#: src/big_remote_play/ui/host_view.py:777
-#: src/big_remote_play/ui/host_view.py:780
-#: src/big_remote_play/ui/host_view.py:2784
-#: src/big_remote_play/ui/host_view.py:2786
-#: src/big_remote_play/ui/host_view.py:2792
+#: src/big_remote_play/ui/host_view.py:788
+#: src/big_remote_play/ui/host_view.py:792
+#: src/big_remote_play/ui/host_view.py:795
+#: src/big_remote_play/ui/host_view.py:798
+#: src/big_remote_play/ui/host_view.py:2814
+#: src/big_remote_play/ui/host_view.py:2816
+#: src/big_remote_play/ui/host_view.py:2822
 msgid "Start sharing"
 msgstr "Megosztás indítása"
 
-#: src/big_remote_play/ui/host_view.py:3876
+#: src/big_remote_play/ui/host_view.py:4002
 msgid "Start sharing first to browse this PC."
 msgstr "Előbb indítsa el a megosztást a gép tallózásához."
 
-#: src/big_remote_play/ui/host_view.py:3745
+#: src/big_remote_play/ui/host_view.py:3871
 msgid "Start sharing first to manage the game library."
 msgstr "Előbb indítsa el a megosztást a játékkönyvtár kezeléséhez."
 
-#: src/big_remote_play/ui/host_view.py:1835
+#: src/big_remote_play/ui/host_view.py:1861
 msgid "Start sharing first, then enter the password again."
 msgstr "Előbb indítsa el a megosztást, majd adja meg újra a jelszót."
 
-#: src/big_remote_play/ui/guest_view.py:974
+#: src/big_remote_play/ui/guest_view.py:1011
 msgid "Start sharing on the game PC, then search again."
 msgstr "Indítsa el a megosztást a játékot futtató gépen, majd keressen újra."
 
-#: src/big_remote_play/ui/guest_view.py:995
+#: src/big_remote_play/ui/guest_view.py:1032
 msgid "Start sharing on the game PC. It will appear here."
 msgstr "Indítsa el a megosztást a játékgépen. Itt fog megjelenni."
 
-#: src/big_remote_play/ui/host_view.py:780
-#: src/big_remote_play/ui/host_view.py:2792
+#: src/big_remote_play/ui/host_view.py:798
+#: src/big_remote_play/ui/host_view.py:2822
 msgid "Start sharing the game from this PC"
 msgstr "A játék megosztásának indítása erről a gépről"
 
-#: src/big_remote_play/ui/host_view.py:2398
-#: src/big_remote_play/ui/host_view.py:2800
+#: src/big_remote_play/ui/host_view.py:2426
+#: src/big_remote_play/ui/host_view.py:2830
 msgid "Start sharing to show paired devices"
 msgstr "Indítsa el a megosztást a párosított eszközök megtekintéséhez"
 
@@ -6979,7 +7113,7 @@ msgstr "Kezdje az irányított beállítással"
 msgid "Starting ZeroTier…"
 msgstr "A ZeroTier indítása…"
 
-#: src/big_remote_play/ui/host_view.py:2677
+#: src/big_remote_play/ui/host_view.py:2705
 msgid "Starting game sharing…"
 msgstr "A játék megosztása indul…"
 
@@ -7019,11 +7153,11 @@ msgstr "Ismeretlen állapot"
 msgid "Status: {status}"
 msgstr "Állapot: {status}"
 
-#: src/big_remote_play/ui/host_view.py:635
+#: src/big_remote_play/ui/host_view.py:651
 msgid "Steam Remote Play"
 msgstr "Steam Remote Play"
 
-#: src/big_remote_play/ui/host_view.py:2945
+#: src/big_remote_play/ui/host_view.py:3043
 msgid "Steam is not recording sound"
 msgstr "A Steam nem rögzít hangot"
 
@@ -7072,8 +7206,8 @@ msgstr "Állókép"
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 868
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 198
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 206
-#: src/big_remote_play/ui/guest_view.py:877
-#: src/big_remote_play/ui/guest_view.py:900
+#: src/big_remote_play/ui/guest_view.py:914
+#: src/big_remote_play/ui/guest_view.py:937
 #: src/big_remote_play/ui/main_window.py:1572
 msgid "Stop"
 msgstr "Leállítás"
@@ -7091,20 +7225,20 @@ msgstr "ZeroTier ideiglenes leállítása"
 msgid "Stop ZeroTier temporarily?"
 msgstr "Ideiglenesen leállítja a ZeroTiert?"
 
-#: src/big_remote_play/ui/host_view.py:2677
-#: src/big_remote_play/ui/host_view.py:2724
-#: src/big_remote_play/ui/host_view.py:2726
-#: src/big_remote_play/ui/host_view.py:2732
+#: src/big_remote_play/ui/host_view.py:2705
+#: src/big_remote_play/ui/host_view.py:2754
+#: src/big_remote_play/ui/host_view.py:2756
+#: src/big_remote_play/ui/host_view.py:2762
 msgid "Stop sharing"
 msgstr "Megosztás leállítása"
 
-#: src/big_remote_play/ui/host_view.py:2732
+#: src/big_remote_play/ui/host_view.py:2762
 msgid "Stop sharing the game from this PC"
 msgstr "A játék megosztásának leállítása erről a gépről"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/main_window.py, line: 513
-#: src/big_remote_play/ui/host_view.py:829
-#: src/big_remote_play/ui/host_view.py:2765
+#: src/big_remote_play/ui/host_view.py:847
+#: src/big_remote_play/ui/host_view.py:2795
 #: src/big_remote_play/ui/main_window.py:1503
 #: src/big_remote_play/ui/main_window.py:1604
 #: src/big_remote_play/ui/service_status_card.py:71
@@ -7116,7 +7250,7 @@ msgstr "Megállt"
 msgid "Stopped looking for new devices"
 msgstr "Az új eszközök keresése leállt"
 
-#: src/big_remote_play/ui/host_view.py:3362
+#: src/big_remote_play/ui/host_view.py:3488
 msgid "Stopping server…"
 msgstr "A kiszolgáló leállítása…"
 
@@ -7149,7 +7283,7 @@ msgstr "Sunshine, játékstream-gazdagép"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 264
-#: src/big_remote_play/ui/host_view.py:3704
+#: src/big_remote_play/ui/host_view.py:3830
 msgid "Sunshine Logs"
 msgstr "Sunshine-naplók"
 
@@ -7166,16 +7300,16 @@ msgstr "Sunshine futtatókörnyezet"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 264
-#: src/big_remote_play/ui/host_view.py:1812
-#: src/big_remote_play/ui/host_view.py:2244
+#: src/big_remote_play/ui/host_view.py:1838
+#: src/big_remote_play/ui/host_view.py:2270
 msgid "Sunshine User"
 msgstr "Sunshine-felhasználó"
 
-#: src/big_remote_play/ui/guest_view.py:1879
+#: src/big_remote_play/ui/guest_view.py:1917
 msgid "Sunshine answers"
 msgstr "A Sunshine válaszol"
 
-#: src/big_remote_play/ui/host_view.py:653
+#: src/big_remote_play/ui/host_view.py:671
 msgid ""
 "Sunshine asks a compatible router when it starts. Enabling this does not "
 "confirm that the ports opened."
@@ -7183,7 +7317,7 @@ msgstr ""
 "A Sunshine induláskor megkér egy kompatibilis útválasztót. Ennek "
 "engedélyezése nem igazolja, hogy a portok megnyíltak."
 
-#: src/big_remote_play/ui/host_view.py:1618
+#: src/big_remote_play/ui/host_view.py:1644
 #, python-brace-format
 msgid ""
 "Sunshine cannot create their virtual controller: this user cannot open "
@@ -7193,7 +7327,7 @@ msgstr ""
 "nem tudja megnyitni ezt: {devices}. A Sunshine telepítése vagy frissítése "
 "után indítsa újra egyszer ezt a számítógépet."
 
-#: src/big_remote_play/ui/host_view.py:1953
+#: src/big_remote_play/ui/host_view.py:1979
 msgid ""
 "Sunshine chooses compatible capture and encoding at startup. You can still "
 "set a video bitrate ceiling."
@@ -7201,22 +7335,22 @@ msgstr ""
 "A Sunshine induláskor kompatibilis rögzítési és kódolási módot választ. A "
 "videó adatsebességéhez továbbra is megadhat felső korlátot."
 
-#: src/big_remote_play/ui/host_view.py:1835
+#: src/big_remote_play/ui/host_view.py:1861
 msgid "Sunshine did not answer"
 msgstr "A Sunshine nem válaszolt"
 
-#: src/big_remote_play/ui/host_view.py:1792
+#: src/big_remote_play/ui/host_view.py:1818
 msgid "Sunshine did not answer. The request ends by itself when it expires."
 msgstr "A Sunshine nem válaszolt. A kérés magától megszűnik, amikor lejár."
 
-#: src/big_remote_play/ui/host_view.py:1885
+#: src/big_remote_play/ui/host_view.py:1911
 msgid ""
 "Sunshine did not close it. Try again, or stop sharing and start it again."
 msgstr ""
 "A Sunshine nem zárta be. Próbálja újra, vagy állítsa le a megosztást, és "
 "indítsa el újra."
 
-#: src/big_remote_play/ui/guest_view.py:1879
+#: src/big_remote_play/ui/guest_view.py:1917
 msgid "Sunshine does not answer. Start sharing on the game PC."
 msgstr "A Sunshine nem válaszol. Indítsa el a megosztást a játékgépen."
 
@@ -7239,7 +7373,7 @@ msgstr "A Sunshine nem jelentette a verzióját"
 msgid "Sunshine failed to start (exit code {code}).\n"
 msgstr "A Sunshine nem indult el (Kilépési kód: {code}).\n"
 
-#: src/big_remote_play/ui/host_view.py:3474
+#: src/big_remote_play/ui/host_view.py:3600
 #, python-brace-format
 msgid ""
 "Sunshine failed to start.\n"
@@ -7275,7 +7409,7 @@ msgstr "A Sunshine nem érhető el."
 
 # File: big-remote-play/usr/share/big-remote-play/host/sunshine_manager.py,
 # line: 115
-#: src/big_remote_play/ui/host_view.py:3512
+#: src/big_remote_play/ui/host_view.py:3638
 #: src/big_remote_play/ui/main_window.py:1420
 #: src/big_remote_play/ui/sunshine_preferences.py:367
 msgid "Sunshine is not running."
@@ -7287,13 +7421,17 @@ msgstr "A Sunshine nem fut."
 msgid "Sunshine is not running. Settings are saved to file."
 msgstr "A Sunshine nem fut. A beállítások fájlba mentődnek."
 
-#: src/big_remote_play/ui/host_view.py:1808
-#: src/big_remote_play/ui/host_view.py:1814
-#: src/big_remote_play/ui/host_view.py:2248
+#: src/big_remote_play/ui/host_view.py:648
+msgid "Sunshine log"
+msgstr "Sunshine-napló"
+
+#: src/big_remote_play/ui/host_view.py:1834
+#: src/big_remote_play/ui/host_view.py:1840
+#: src/big_remote_play/ui/host_view.py:2274
 msgid "Sunshine password"
 msgstr "Sunshine-jelszó"
 
-#: src/big_remote_play/ui/host_view.py:1828
+#: src/big_remote_play/ui/host_view.py:1854
 msgid "Sunshine password saved. Devices can be approved right away."
 msgstr "A Sunshine-jelszó mentve. Az eszközök azonnal jóváhagyhatók."
 
@@ -7302,7 +7440,11 @@ msgstr "A Sunshine-jelszó mentve. Az eszközök azonnal jóváhagyhatók."
 msgid "Sunshine port settings"
 msgstr "Sunshine portbeállításai"
 
-#: src/big_remote_play/ui/host_view.py:632
+#: src/big_remote_play/ui/host_view.py:647
+msgid "Sunshine recording level"
+msgstr "A Sunshine felvételi szintje"
+
+#: src/big_remote_play/ui/host_view.py:646
 msgid "Sunshine records now"
 msgstr "A Sunshine most ezt rögzíti"
 
@@ -7317,11 +7459,11 @@ msgstr "A Sunshine elutasította a PIN-kódot"
 msgid "Sunshine rejected the credentials"
 msgstr "A Sunshine elutasította a belépési adatokat"
 
-#: src/big_remote_play/ui/host_view.py:1570
+#: src/big_remote_play/ui/host_view.py:1596
 msgid "Sunshine rejected the saved password"
 msgstr "A Sunshine elutasította a mentett jelszót"
 
-#: src/big_remote_play/ui/host_view.py:2140
+#: src/big_remote_play/ui/host_view.py:2166
 msgid "Sunshine rejected the saved password."
 msgstr "A Sunshine elutasította a mentett jelszót."
 
@@ -7329,13 +7471,22 @@ msgstr "A Sunshine elutasította a mentett jelszót."
 msgid "Sunshine runtime is available"
 msgstr "A Sunshine futtatókörnyezete elérhető"
 
-#: src/big_remote_play/ui/host_view.py:1566
+#: src/big_remote_play/ui/host_view.py:1592
 msgid "Sunshine's password is needed to approve devices"
 msgstr "Az eszközök jóváhagyásához szükség van a Sunshine-jelszóra"
 
+#: src/big_remote_play/ui/host_view.py:2983
+#: src/big_remote_play/ui/host_view.py:2987
+msgid ""
+"Sunshine's recording had been muted or turned down in this computer's sound "
+"settings; Big Remote Play turned it back up."
+msgstr ""
+"A Sunshine felvétele le volt némítva vagy le volt halkítva e számítógép "
+"hangbeállításaiban; a Big Remote Play visszaállította."
+
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 332
-#: src/big_remote_play/ui/host_view.py:1101
+#: src/big_remote_play/ui/host_view.py:1127
 msgid "Support"
 msgstr "Támogatás"
 
@@ -7377,7 +7528,7 @@ msgid "Switch to {name}"
 msgstr "Váltás erre: {name}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 997
-#: src/big_remote_play/ui/guest_view.py:2364
+#: src/big_remote_play/ui/guest_view.py:2402
 msgid "Switching Monitors"
 msgstr "Monitorok váltása"
 
@@ -7391,19 +7542,20 @@ msgstr "Átváltás erre: {name}…"
 msgid "System"
 msgstr "Rendszer"
 
-#: src/big_remote_play/ui/host_view.py:2935
+#: src/big_remote_play/ui/host_view.py:2996
+#: src/big_remote_play/ui/host_view.py:3018
 msgid "System audio unavailable"
 msgstr "A rendszerhang nem érhető el"
 
-#: src/big_remote_play/ui/host_view.py:2931
+#: src/big_remote_play/ui/host_view.py:3014
 msgid "System audio unavailable: no output device was found."
 msgstr "A rendszerhang nem érhető el: nem található kimeneti eszköz."
 
-#: src/big_remote_play/ui/host_view.py:2995
+#: src/big_remote_play/ui/host_view.py:3105
 msgid "System audio unavailable: there is no output to test."
 msgstr "A rendszerhang nem érhető el: nincs tesztelhető kimenet."
 
-#: src/big_remote_play/ui/host_view.py:2095
+#: src/big_remote_play/ui/host_view.py:2121
 msgid "System keyring is unavailable. Password was not saved."
 msgstr "A rendszer kulcstartója nem érhető el. A jelszó nem lett elmentve."
 
@@ -7456,7 +7608,7 @@ msgstr "A Tailscale nem fogadta el a módosítást. Próbálja újra."
 msgid "Tailscale download page"
 msgstr "Tailscale letöltési oldal"
 
-#: src/big_remote_play/ui/host_view.py:1582
+#: src/big_remote_play/ui/host_view.py:1608
 msgid "Tailscale or Headscale"
 msgstr "Tailscale vagy Headscale"
 
@@ -7474,12 +7626,12 @@ msgstr ""
 "mögött működik, CGNAT esetén is, portnyitás nélkül és anélkül, hogy a "
 "Sunshine elérhetővé válna az interneten."
 
-#: src/big_remote_play/ui/host_view.py:626
+#: src/big_remote_play/ui/host_view.py:640
 msgid "Technical audio details"
 msgstr "A hang műszaki részletei"
 
 #: src/big_remote_play/ui/dependency_installer.py:116
-#: src/big_remote_play/ui/guest_view.py:1892
+#: src/big_remote_play/ui/guest_view.py:1930
 #: src/big_remote_play/ui/network_dashboard.py:160
 #: src/big_remote_play/ui/zerotier_join.py:225
 msgid "Technical details"
@@ -7490,12 +7642,12 @@ msgstr "Műszaki részletek"
 msgid "Technical details: {detail}"
 msgstr "Műszaki részletek: {detail}"
 
-#: src/big_remote_play/ui/host_view.py:619
+#: src/big_remote_play/ui/host_view.py:633
 msgid "Test"
 msgstr "Tesztelés"
 
-#: src/big_remote_play/ui/host_view.py:616
-#: src/big_remote_play/ui/host_view.py:620
+#: src/big_remote_play/ui/host_view.py:630
+#: src/big_remote_play/ui/host_view.py:634
 msgid "Test audio"
 msgstr "Hang tesztelése"
 
@@ -7595,7 +7747,7 @@ msgstr ""
 "van a távoli együttműködő játékhoz — nincs tulajdonosi platform, nincsenek "
 "korlátozások, nincsenek határok, hogy mely játékokkal játszhat."
 
-#: src/big_remote_play/ui/host_view.py:2569
+#: src/big_remote_play/ui/host_view.py:2597
 msgid "The Sunshine port is outside the supported range."
 msgstr "A Sunshine portja kívül esik a támogatott tartományon."
 
@@ -7622,7 +7774,7 @@ msgstr ""
 "A rendszergazdának meg kell osztania a csomópontot, vagy meg kell hívnia az "
 "e-mail-címét a hálózatba."
 
-#: src/big_remote_play/ui/host_view.py:3106
+#: src/big_remote_play/ui/host_view.py:3231
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr ""
 "Az alkalmazás parancsa érvénytelen. Ellenőrizze az idézőjeleket, és próbálja "
@@ -7643,11 +7795,11 @@ msgstr ""
 "párosításához használnak. A legjobb kompatibilitás érdekében ennek RSA-2048 "
 "nyilvános kulccsal kell rendelkeznie."
 
-#: src/big_remote_play/ui/guest_view.py:1900
+#: src/big_remote_play/ui/guest_view.py:1938
 msgid "The checks could not run."
 msgstr "Az ellenőrzéseket nem sikerült lefuttatni."
 
-#: src/big_remote_play/ui/host_view.py:2516
+#: src/big_remote_play/ui/host_view.py:2544
 msgid ""
 "The chosen device plays the sound here too. Choose Automatic to share "
 "without playing it here."
@@ -7659,17 +7811,17 @@ msgstr ""
 msgid "The computer appears in this network's device list."
 msgstr "A számítógép megjelenik a hálózat eszközlistájában."
 
-#: src/big_remote_play/ui/guest_view.py:1878
+#: src/big_remote_play/ui/guest_view.py:1916
 msgid "The computer seems to be offline"
 msgstr "Úgy tűnik, a számítógép kapcsolat nélkül van"
 
-#: src/big_remote_play/ui/host_view.py:2953
+#: src/big_remote_play/ui/host_view.py:3057
 msgid "The connected client asked Sunshine not to play sound on this computer."
 msgstr ""
 "A csatlakozott kliens arra kérte a Sunshine-t, hogy ne játsszon le hangot "
 "ezen a számítógépen."
 
-#: src/big_remote_play/ui/host_view.py:1732
+#: src/big_remote_play/ui/host_view.py:1758
 #, python-brace-format
 msgid "The connection request from {name} expired."
 msgstr "Lejárt a csatlakozási kérés ettől: {name}."
@@ -7718,20 +7870,20 @@ msgstr "A fájl, ahol a Sunshine aktuális naplói vannak tárolva."
 msgid "The file that stores Sunshine's current state."
 msgstr "A fájl, ahol a Sunshine aktuális állapota tárolva van."
 
-#: src/big_remote_play/ui/host_view.py:906
+#: src/big_remote_play/ui/host_view.py:924
 msgid "The firewall blocks other computers"
 msgstr "A tűzfal blokkolja a többi számítógépet"
 
-#: src/big_remote_play/ui/host_view.py:2592
+#: src/big_remote_play/ui/host_view.py:2620
 #, python-brace-format
 msgid "The firewall helper was not found: {path}"
 msgstr "A tűzfal segédprogramja nem található: {path}"
 
-#: src/big_remote_play/ui/host_view.py:2600
+#: src/big_remote_play/ui/host_view.py:2628
 msgid "The firewall now allows Sunshine's ports."
 msgstr "A tűzfal most már engedi a Sunshine portjait."
 
-#: src/big_remote_play/ui/host_view.py:2572
+#: src/big_remote_play/ui/host_view.py:2600
 #, python-brace-format
 msgid ""
 "The firewall will allow incoming TCP {tcp} and UDP {udp}, plus 5353/UDP "
@@ -7748,7 +7900,7 @@ msgstr ""
 msgid "The four digits shown by Moonlight on the other computer."
 msgstr "A Moonlight által a másik számítógépen mutatott négy számjegy."
 
-#: src/big_remote_play/ui/guest_view.py:1924
+#: src/big_remote_play/ui/guest_view.py:1962
 msgid ""
 "The game PC answered, but no video arrived. If this computer was removed "
 "from its paired devices, pair it again."
@@ -7779,23 +7931,28 @@ msgstr ""
 msgid "The game PC decides whether these requests can be applied."
 msgstr "A játékgép dönti el, hogy ezek a kérések alkalmazhatók-e."
 
-#: src/big_remote_play/ui/guest_view.py:1883
+#: src/big_remote_play/ui/guest_view.py:1921
 msgid "The game PC's firewall blocks the game ports"
 msgstr "A játék gépének tűzfala blokkolja a játék portjait"
 
-#: src/big_remote_play/ui/host_view.py:1376
-#: src/big_remote_play/ui/host_view.py:1377
+#: src/big_remote_play/ui/host_view.py:1402
+#: src/big_remote_play/ui/host_view.py:1403
 msgid ""
 "The game closed before sharing started. Open it again, then select Refresh."
 msgstr ""
 "A játék a megosztás kezdete előtt bezárult. Nyissa meg újra, majd válassza a "
 "Frissítés lehetőséget."
 
-#: src/big_remote_play/ui/host_view.py:1385
+#: src/big_remote_play/ui/host_view.py:2981
+#: src/big_remote_play/ui/host_view.py:3049
+msgid "The game is not playing sound right now."
+msgstr "A játék jelenleg nem ad ki hangot."
+
+#: src/big_remote_play/ui/host_view.py:1411
 msgid "The game window closed"
 msgstr "A játékablak bezárult"
 
-#: src/big_remote_play/ui/host_view.py:1388
+#: src/big_remote_play/ui/host_view.py:1414
 msgid ""
 "The game window could no longer be captured on its own, so sharing stopped. "
 "Nothing else on this computer was shown."
@@ -7803,7 +7960,7 @@ msgstr ""
 "A játékablakot már nem lehetett önmagában rögzíteni, ezért a megosztás "
 "leállt. Semmi más nem látszott erről a számítógépről."
 
-#: src/big_remote_play/ui/host_view.py:1373
+#: src/big_remote_play/ui/host_view.py:1399
 msgid "The game window was not confirmed, so sharing did not start."
 msgstr "A játékablak nem lett megerősítve, ezért a megosztás nem indult el."
 
@@ -7897,7 +8054,7 @@ msgstr "A művelet nem sikerült."
 msgid "The operation took longer than expected."
 msgstr "A művelet a vártnál tovább tartott."
 
-#: src/big_remote_play/ui/host_view.py:2137
+#: src/big_remote_play/ui/host_view.py:2163
 msgid "The other PC is paired."
 msgstr "A másik gép párosítva van."
 
@@ -7913,7 +8070,7 @@ msgstr ""
 msgid "The other device is in another house, city or network."
 msgstr "A másik eszköz egy másik házban, városban vagy hálózatban van."
 
-#: src/big_remote_play/ui/host_view.py:994
+#: src/big_remote_play/ui/host_view.py:1012
 msgid ""
 "The other person picks this computer under Connect. If it is not listed, "
 "send them the connection information."
@@ -7957,7 +8114,7 @@ msgstr ""
 msgid "The person who created the network gives you this code."
 msgstr "Ezt a kódot a hálózatot létrehozó személytől kapja."
 
-#: src/big_remote_play/ui/host_view.py:1380
+#: src/big_remote_play/ui/host_view.py:1406
 msgid ""
 "The private game screen could not start. Check that KDE Plasma "
 "(kwin_wayland) and the GStreamer plugins are installed."
@@ -7976,7 +8133,7 @@ msgstr ""
 "privát kulcs. A legjobb kompatibilitás érdekében ennek RSA-2048 privát "
 "kulcsnak kell lennie."
 
-#: src/big_remote_play/ui/guest_view.py:1877
+#: src/big_remote_play/ui/guest_view.py:1915
 msgid "The private network is not connected on this computer"
 msgstr "A magánhálózat nincs csatlakoztatva ezen a számítógépen"
 
@@ -7996,7 +8153,7 @@ msgstr ""
 msgid "The saved credentials could not be read."
 msgstr "A mentett hitelesítési adatokat nem sikerült beolvasni."
 
-#: src/big_remote_play/ui/host_view.py:3153
+#: src/big_remote_play/ui/host_view.py:3278
 msgid ""
 "The selected audio output is unavailable. Choose Automatic or reconnect the "
 "device."
@@ -8004,7 +8161,7 @@ msgstr ""
 "A kiválasztott hangkimenet nem érhető el. Válassza az Automatikus "
 "lehetőséget, vagy csatlakoztassa újra az eszközt."
 
-#: src/big_remote_play/ui/host_view.py:2929
+#: src/big_remote_play/ui/host_view.py:3012
 msgid "The selected output is not connected. Reconnect it or choose Automatic."
 msgstr ""
 "A kiválasztott kimenet nincs csatlakoztatva. Csatlakoztassa újra, vagy "
@@ -8060,11 +8217,11 @@ msgstr "A szolgáltatás nem indult el."
 msgid "The service is running"
 msgstr "A szolgáltatás fut"
 
-#: src/big_remote_play/ui/guest_view.py:1923
+#: src/big_remote_play/ui/guest_view.py:1961
 msgid "The stream did not start"
 msgstr "A stream nem indult el"
 
-#: src/big_remote_play/ui/host_view.py:1885
+#: src/big_remote_play/ui/host_view.py:1911
 msgid "The stream is still open"
 msgstr "A stream még mindig nyitva van"
 
@@ -8080,12 +8237,12 @@ msgstr ""
 "A rendszer kulcstartója zárolva van vagy nem érhető el. Oldja fel, és "
 "próbálja újra."
 
-#: src/big_remote_play/ui/host_view.py:2997
+#: src/big_remote_play/ui/host_view.py:3107
 #, python-brace-format
 msgid "The tone could not be played on {output}."
 msgstr "A hangjelzést nem sikerült lejátszani ezen a kimeneten: {output}."
 
-#: src/big_remote_play/ui/host_view.py:3001
+#: src/big_remote_play/ui/host_view.py:3123
 #, python-brace-format
 msgid ""
 "The tone did not reach the shared sound. Check the output volume and that "
@@ -8094,13 +8251,50 @@ msgstr ""
 "A hangjelzés nem jutott el a megosztott hangba. Ellenőrizze a kimenet "
 "hangerejét, és azt, hogy a(z) {output} az a kimenet-e, amelyet hall."
 
-#: src/big_remote_play/ui/host_view.py:2999
+#: src/big_remote_play/ui/host_view.py:3110
+#, python-brace-format
+msgid ""
+"The tone reached the shared sound ({level:.0f} dB on {output}) and Sunshine "
+"is recording it. If the other device still hears nothing, the problem is on "
+"that device or the network."
+msgstr ""
+"A hangjelzés eljutott a megosztott hangba ({level:.0f} dB, kimenet: "
+"{output}), és a Sunshine rögzíti. Ha a másik eszköz továbbra sem hall "
+"semmit, a hiba azon az eszközön vagy a hálózatban van."
+
+#: src/big_remote_play/ui/host_view.py:3121
 #, python-brace-format
 msgid "The tone reached the shared sound ({level:.0f} dB on {output})."
 msgstr ""
 "A hangjelzés eljutott a megosztott hangba ({level:.0f} dB ezen: {output})."
 
-#: src/big_remote_play/ui/host_view.py:1809
+#: src/big_remote_play/ui/host_view.py:3117
+msgid ""
+"The tone reached the shared sound, but Sunshine's recording is muted in this "
+"computer's sound settings."
+msgstr ""
+"A hangjelzés eljutott a megosztott hangba, de a Sunshine felvétele le van "
+"némítva e számítógép hangbeállításaiban."
+
+#: src/big_remote_play/ui/host_view.py:3113
+#, python-brace-format
+msgid ""
+"The tone reached this computer's sound ({level:.0f} dB on {output}). Only "
+"the game's sound is sent, so the other device does not hear the tone."
+msgstr ""
+"A hangjelzés eljutott e számítógép hangjába ({level:.0f} dB, kimenet: "
+"{output}). Mivel csak a játék hangja megy át, a másik eszköz nem hallja a "
+"hangjelzést."
+
+#: src/big_remote_play/ui/host_view.py:3119
+#, python-brace-format
+msgid ""
+"The tone reached {output}, but Sunshine records another source: {source}."
+msgstr ""
+"A hangjelzés eljutott ide: {output}, de a Sunshine egy másik forrást rögzít: "
+"{source}."
+
+#: src/big_remote_play/ui/host_view.py:1835
 msgid ""
 "The user and password of Sunshine on this computer, the ones of its web "
 "panel. They are kept in the system keyring."
@@ -8108,7 +8302,7 @@ msgstr ""
 "A Sunshine felhasználóneve és jelszava ezen a számítógépen, ugyanazok, mint "
 "a webes felületéhez. A rendszer kulcstartójában tárolódnak."
 
-#: src/big_remote_play/ui/host_view.py:1374
+#: src/big_remote_play/ui/host_view.py:1400
 msgid ""
 "The window chosen in the system dialog is not the selected game. Try again "
 "and choose the same game."
@@ -8153,7 +8347,7 @@ msgstr ""
 "A tulajdonos a ZeroTier Centralban vagy a Big Remote Playben hagyja jóvá. "
 "Frissítéskor ez az oldal is frissül."
 
-#: src/big_remote_play/ui/host_view.py:984
+#: src/big_remote_play/ui/host_view.py:1002
 msgid "This PC did not appear in the list?"
 msgstr "Nem jelent meg ez a gép a listában?"
 
@@ -8200,7 +8394,7 @@ msgstr "Ez a kód nem teljes"
 msgid "This computer"
 msgstr "Ez a számítógép"
 
-#: src/big_remote_play/ui/host_view.py:1065
+#: src/big_remote_play/ui/host_view.py:1091
 msgid ""
 "This computer captures and encodes the game. Under Connect → Image, the "
 "other computer requests resolution, frame rate and video bitrate. The "
@@ -8328,7 +8522,7 @@ msgstr ""
 msgid "This computer's address"
 msgstr "A számítógép címe"
 
-#: src/big_remote_play/ui/host_view.py:924
+#: src/big_remote_play/ui/host_view.py:942
 msgid "This computer's controller comes first"
 msgstr "Ennek a számítógépnek a vezérlője az első"
 
@@ -8354,7 +8548,7 @@ msgstr "Ezt a hitelesítési adatot nem sikerült menteni."
 msgid "This credential is of a different type than the one selected."
 msgstr "Ez a hitelesítési adat más típusú, mint a kiválasztott."
 
-#: src/big_remote_play/ui/host_view.py:1375
+#: src/big_remote_play/ui/host_view.py:1401
 msgid ""
 "This desktop cannot share a single window. Update KDE Plasma, or choose Full "
 "Desktop."
@@ -8449,7 +8643,7 @@ msgstr ""
 msgid "This network needs a sign-in"
 msgstr "Ehhez a hálózathoz bejelentkezés szükséges"
 
-#: src/big_remote_play/ui/guest_view.py:1410
+#: src/big_remote_play/ui/guest_view.py:1447
 msgid ""
 "This only finds the computer; it does not pair it. Use an address if the "
 "network blocks discovery."
@@ -8567,22 +8761,22 @@ msgid "Today at {time}"
 msgstr "Ma, {time}"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 977
-#: src/big_remote_play/ui/guest_view.py:2349
+#: src/big_remote_play/ui/guest_view.py:2387
 msgid "Toggle Fullscreen"
 msgstr "Teljes képernyő váltása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 973
-#: src/big_remote_play/ui/guest_view.py:2346
+#: src/big_remote_play/ui/guest_view.py:2384
 msgid "Toggle Mouse Capture"
 msgstr "Egérfogás váltása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 975
-#: src/big_remote_play/ui/guest_view.py:2348
+#: src/big_remote_play/ui/guest_view.py:2386
 msgid "Toggle Mouse Mode (Remote/Absolute)"
 msgstr "Egérmód váltása (Táv/Abszolút)"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 974
-#: src/big_remote_play/ui/guest_view.py:2347
+#: src/big_remote_play/ui/guest_view.py:2385
 msgid "Toggle Stats Overlay"
 msgstr "Statisztikai Átfedés Bekapcsolása/Kikapcsolása"
 
@@ -8618,7 +8812,7 @@ msgid "Trusted Web UI Origins"
 msgstr "Megbízható webes felület eredetek"
 
 #: src/big_remote_play/ui/dependency_installer.py:264
-#: src/big_remote_play/ui/guest_view.py:1913
+#: src/big_remote_play/ui/guest_view.py:1951
 #: src/big_remote_play/ui/network_dashboard.py:303
 #: src/big_remote_play/ui/private_network_view.py:931
 #: src/big_remote_play/ui/zerotier_join.py:109
@@ -8634,7 +8828,7 @@ msgid "Try again. Technical details show what ZeroTier answered."
 msgstr ""
 "Próbálja újra. A műszaki részletek megmutatják, mit válaszolt a ZeroTier."
 
-#: src/big_remote_play/ui/host_view.py:652
+#: src/big_remote_play/ui/host_view.py:670
 msgid "Try automatic port forwarding (UPnP)"
 msgstr "Automatikus porttovábbítás megkísérlése (UPnP)"
 
@@ -8659,7 +8853,7 @@ msgstr "Bekapcsolás…"
 msgid "Type"
 msgstr "Típus"
 
-#: src/big_remote_play/ui/host_view.py:951
+#: src/big_remote_play/ui/host_view.py:969
 msgid "Type a pairing code yourself"
 msgstr "Párosítási kód kézi megadása"
 
@@ -8693,11 +8887,11 @@ msgstr "Rendkívül alacsony késleltetés"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 112
-#: src/big_remote_play/ui/host_view.py:2861
+#: src/big_remote_play/ui/host_view.py:2891
 msgid "Unavailable"
 msgstr "Nem érhető el"
 
-#: src/big_remote_play/ui/host_view.py:2546
+#: src/big_remote_play/ui/host_view.py:2574
 #, python-brace-format
 msgid "Unavailable: {device}"
 msgstr "Nem érhető el: {device}"
@@ -8711,8 +8905,8 @@ msgstr "Nem érhető el: {device}"
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 215
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 226
 #: src/big_remote_play/ui/host_view.py:272
-#: src/big_remote_play/ui/host_view.py:1977
-#: src/big_remote_play/ui/host_view.py:1982
+#: src/big_remote_play/ui/host_view.py:2003
+#: src/big_remote_play/ui/host_view.py:2008
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:241
 #: src/big_remote_play/utils/system_check.py:179
 #: src/big_remote_play/utils/system_check.py:182
@@ -8734,8 +8928,8 @@ msgstr "Ismeretlen összetevő: ${component}"
 # 147
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 215
 # File: big-remote-play/usr/share/big-remote-play/utils/audio.py, line: 226
-#: src/big_remote_play/ui/host_view.py:2456
-#: src/big_remote_play/ui/host_view.py:3586
+#: src/big_remote_play/ui/host_view.py:2484
+#: src/big_remote_play/ui/host_view.py:3712
 msgid "Unknown device"
 msgstr "Ismeretlen eszköz"
 
@@ -8743,7 +8937,7 @@ msgstr "Ismeretlen eszköz"
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
 
-#: src/big_remote_play/ui/performance_monitor.py:803
+#: src/big_remote_play/ui/performance_monitor.py:806
 msgid "Unlimited"
 msgstr "Korlátlan"
 
@@ -8752,11 +8946,11 @@ msgid "Unlock the bitrate limit"
 msgstr "Az adatsebesség-korlát feloldása"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 685
-#: src/big_remote_play/ui/host_view.py:3805
+#: src/big_remote_play/ui/host_view.py:3931
 msgid "Unnamed"
 msgstr "Névtelen"
 
-#: src/big_remote_play/ui/host_view.py:2178
+#: src/big_remote_play/ui/host_view.py:2204
 msgid "Unnamed device"
 msgstr "Névtelen eszköz"
 
@@ -8769,7 +8963,7 @@ msgstr "Instabil"
 msgid "Unstable network mode"
 msgstr "Instabil hálózat mód"
 
-#: src/big_remote_play/ui/host_view.py:3938
+#: src/big_remote_play/ui/host_view.py:4064
 msgid "Up one level"
 msgstr "Egy szinttel feljebb"
 
@@ -8804,7 +8998,7 @@ msgstr ""
 "oldalt."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 393
-#: src/big_remote_play/ui/guest_view.py:1350
+#: src/big_remote_play/ui/guest_view.py:1387
 msgid "Use IPv6"
 msgstr "IPv6 használata"
 
@@ -8827,7 +9021,7 @@ msgstr ""
 msgid "Use Tailscale"
 msgstr "Tailscale használata"
 
-#: src/big_remote_play/ui/guest_view.py:1708
+#: src/big_remote_play/ui/guest_view.py:1746
 msgid "Use a number between 1 and 65535."
 msgstr "Használjon 1 és 65535 közötti számot."
 
@@ -8864,11 +9058,11 @@ msgstr ""
 msgid "Use the controller to move the mouse"
 msgstr "A vezérlő használata az egér mozgatásához"
 
-#: src/big_remote_play/ui/guest_view.py:1957
+#: src/big_remote_play/ui/guest_view.py:1995
 msgid "Use the form WIDTHxHEIGHT, e.g. 1920x1080."
 msgstr "Használja a SZÉLESSÉGxMAGASSÁG alakot, például 1920x1080."
 
-#: src/big_remote_play/ui/guest_view.py:1394
+#: src/big_remote_play/ui/guest_view.py:1431
 msgid "Use the search code in Big Remote Play on the game PC."
 msgstr "Használja a játékgépen futó Big Remote Play keresőkódját."
 
@@ -8876,7 +9070,7 @@ msgstr "Használja a játékgépen futó Big Remote Play keresőkódját."
 msgid "Use the touchscreen as a virtual trackpad"
 msgstr "Az érintőképernyő használata virtuális érintőtáblaként"
 
-#: src/big_remote_play/ui/host_view.py:700
+#: src/big_remote_play/ui/host_view.py:718
 msgid "Use these when you need to inspect or manage Sunshine."
 msgstr "Ezekkel az eszközökkel ellenőrizheti vagy kezelheti a Sunshine-t."
 
@@ -8884,7 +9078,7 @@ msgstr "Ezekkel az eszközökkel ellenőrizheti vagy kezelheti a Sunshine-t."
 msgid "Use this connection"
 msgstr "E kapcsolat használata"
 
-#: src/big_remote_play/ui/guest_view.py:1339
+#: src/big_remote_play/ui/guest_view.py:1376
 msgid "Use this only when automatic discovery cannot find the PC."
 msgstr ""
 "Csak akkor használja, ha az automatikus felderítés nem találja a "
@@ -8903,7 +9097,7 @@ msgstr "Akkor használja, ha a vezérlő feliratai nem egyeznek a játékkal."
 msgid "Use your own Headscale server. Advanced setup."
 msgstr "Használjon saját Headscale-kiszolgálót. Speciális beállítás."
 
-#: src/big_remote_play/ui/host_view.py:749
+#: src/big_remote_play/ui/host_view.py:767
 msgid "Used by this app to talk to the server"
 msgstr "Az alkalmazás ezzel beszél a kiszolgálóval"
 
@@ -8920,13 +9114,13 @@ msgid "User"
 msgstr "Felhasználó"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 616
-#: src/big_remote_play/ui/host_view.py:2293
+#: src/big_remote_play/ui/host_view.py:2319
 msgid "User Not Found"
 msgstr "Felhasználó nem található"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 636
 #: src/big_remote_play/host/sunshine_manager.py:724
-#: src/big_remote_play/ui/host_view.py:4053
+#: src/big_remote_play/ui/host_view.py:4179
 msgid "Username and password cannot be empty."
 msgstr "A felhasználónév és a jelszó nem lehet üres."
 
@@ -8937,7 +9131,7 @@ msgstr ""
 "A csatlakozás pillanatában használt képernyőt veszi alapul; nem méri az "
 "internet sebességét."
 
-#: src/big_remote_play/ui/guest_view.py:2011
+#: src/big_remote_play/ui/guest_view.py:2049
 msgid "Using this screen's resolution"
 msgstr "A képernyő felbontásának használata"
 
@@ -8983,8 +9177,8 @@ msgid "VPN accounts and networks"
 msgstr "VPN-fiókok és -hálózatok"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/guest_view.py, line: 780
-#: src/big_remote_play/ui/guest_view.py:2018
-#: src/big_remote_play/ui/host_view.py:2662
+#: src/big_remote_play/ui/guest_view.py:2056
+#: src/big_remote_play/ui/host_view.py:2690
 msgid "Value"
 msgstr "Érték"
 
@@ -9001,7 +9195,7 @@ msgstr "Videokodek"
 msgid "Video format and diagnostics"
 msgstr "Videoformátum és diagnosztika"
 
-#: src/big_remote_play/ui/host_view.py:1527
+#: src/big_remote_play/ui/host_view.py:1553
 #, python-brace-format
 msgid "Video limit: {mbps:g} Mbps"
 msgstr "Videókorlát: {mbps:g} Mbps"
@@ -9036,11 +9230,11 @@ msgid "VideoToolbox Software Encoding"
 msgstr "VideoToolbox Szoftver Kódolás"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 1418
-#: src/big_remote_play/ui/host_view.py:3478
+#: src/big_remote_play/ui/host_view.py:3604
 msgid "View Logs"
 msgstr "Naplók megtekintése"
 
-#: src/big_remote_play/ui/host_view.py:610
+#: src/big_remote_play/ui/host_view.py:624
 msgid "Voice calls"
 msgstr "Hanghívások"
 
@@ -9141,7 +9335,7 @@ msgstr "Mit szeretne tenni?"
 msgid "What is the network code?"
 msgstr "Mi a hálózati kód?"
 
-#: src/big_remote_play/ui/host_view.py:735
+#: src/big_remote_play/ui/host_view.py:753
 msgid "What the server recorded, for troubleshooting"
 msgstr "Amit a kiszolgáló rögzített, hibakereséshez"
 
@@ -9160,7 +9354,7 @@ msgstr ""
 "Amire szüksége van, és a Headscale Linux-kiszolgálón való futtatásának "
 "lépései."
 
-#: src/big_remote_play/ui/host_view.py:2381
+#: src/big_remote_play/ui/host_view.py:2409
 msgid ""
 "When another device starts playing, it appears here with its connection "
 "quality."
@@ -9187,9 +9381,9 @@ msgstr ""
 "Bekapcsolva a hang továbbra is megszólal a játékgépen. Kikapcsolásakor a "
 "Sunshine virtuális kimenetre válthatja."
 
-#: src/big_remote_play/ui/host_view.py:596
-#: src/big_remote_play/ui/host_view.py:2518
-#: src/big_remote_play/ui/host_view.py:2955
+#: src/big_remote_play/ui/host_view.py:602
+#: src/big_remote_play/ui/host_view.py:2546
+#: src/big_remote_play/ui/host_view.py:3059
 msgid "When off, only the other computer hears the game."
 msgstr "Kikapcsolva csak a másik számítógép hallja a játékot."
 
@@ -9205,7 +9399,7 @@ msgstr "Hol hozható létre token"
 msgid "Where to create it"
 msgstr "Hol hozható létre"
 
-#: src/big_remote_play/ui/host_view.py:2169
+#: src/big_remote_play/ui/host_view.py:2195
 msgid "Which computer shows this code?"
 msgstr "Melyik számítógép mutatja ezt a kódot?"
 
@@ -9232,8 +9426,8 @@ msgstr ""
 "Miért hiúsulhat meg egy internetes kapcsolat, és mi a legbiztonságosabb "
 "megoldás az egyes problémákra."
 
-#: src/big_remote_play/ui/host_view.py:1378
-#: src/big_remote_play/ui/host_view.py:1387
+#: src/big_remote_play/ui/host_view.py:1404
+#: src/big_remote_play/ui/host_view.py:1413
 msgid ""
 "Window effects (compositing) are off, so the game cannot be shown on its "
 "own. Turn them on, then share again."
@@ -9248,6 +9442,14 @@ msgstr ""
 #: src/big_remote_play/ui/guest_view.py:309
 msgid "Windowed"
 msgstr "Ablakos"
+
+#: src/big_remote_play/ui/host_view.py:610
+msgid ""
+"With Game Window, other programs, notifications and voice calls stay on this "
+"computer. This computer still hears everything."
+msgstr ""
+"Játékablak módban a többi program, az értesítések és a hanghívások ezen a "
+"számítógépen maradnak. Ez a számítógép továbbra is mindent hall."
 
 #: src/big_remote_play/ui/connection_guides.py:176
 msgid ""
@@ -9292,7 +9494,7 @@ msgstr ""
 "Igen — ez a számítógép szolgáltatói NAT-címmel (CGNAT) rendelkezik. Itt a "
 "porttovábbítás nem működhet; használjon magánhálózatot."
 
-#: src/big_remote_play/ui/host_view.py:2941
+#: src/big_remote_play/ui/host_view.py:3039
 msgid "Yes — this is an error; stop sharing and report it"
 msgstr "Igen — ez hiba; állítsa le a megosztást, és jelentse"
 
@@ -9470,11 +9672,11 @@ msgstr "játék;távoli;játszani;stream;streamelés;streaming;Sunshine;Moonligh
 msgid "not identified"
 msgstr "nem azonosított"
 
-#: src/big_remote_play/ui/host_view.py:1582
+#: src/big_remote_play/ui/host_view.py:1608
 msgid "the local network"
 msgstr "a helyi hálózat"
 
-#: src/big_remote_play/ui/host_view.py:1613
+#: src/big_remote_play/ui/host_view.py:1639
 #, python-brace-format
 msgid ""
 "{controllers} is connected here. A game that uses one controller reads it "
@@ -9492,7 +9694,7 @@ msgid_plural "{count} components are needed to continue."
 msgstr[0] "A folytatáshoz {count} összetevő szükséges."
 msgstr[1] "A folytatáshoz {count} összetevő szükséges."
 
-#: src/big_remote_play/ui/host_view.py:2472
+#: src/big_remote_play/ui/host_view.py:2500
 #, python-brace-format
 msgid "{count} more paired device"
 msgid_plural "{count} more paired devices"
@@ -9526,7 +9728,7 @@ msgstr "{layout} · {location}"
 msgid "{minutes} min"
 msgstr "{minutes} perc"
 
-#: src/big_remote_play/ui/host_view.py:1531
+#: src/big_remote_play/ui/host_view.py:1557
 #, python-brace-format
 msgid "{mode} · {limit}"
 msgstr "{mode} · {limit}"
@@ -9546,7 +9748,7 @@ msgstr "{name} (haladó)"
 msgid "{name} (this computer)"
 msgstr "{name} (ez a számítógép)"
 
-#: src/big_remote_play/ui/host_view.py:1782
+#: src/big_remote_play/ui/host_view.py:1808
 #, python-brace-format
 msgid "{name} can now play on this computer."
 msgstr "{name} most már játszhat ezen a számítógépen."
@@ -9596,7 +9798,7 @@ msgid "{name} stays in the member list but can no longer use the network."
 msgstr ""
 "A(z) {name} a taglistában marad, de többé nem használhatja a hálózatot."
 
-#: src/big_remote_play/ui/host_view.py:1738
+#: src/big_remote_play/ui/host_view.py:1764
 #, python-brace-format
 msgid "{name} stopped waiting."
 msgstr "{name} már nem vár."
@@ -9615,7 +9817,7 @@ msgstr ""
 "{name} csatlakozni szeretne ehhez a számítógéphez. Írja be az eszköz "
 "képernyőjén látható PIN-kódot."
 
-#: src/big_remote_play/ui/host_view.py:1752
+#: src/big_remote_play/ui/host_view.py:1778
 #, python-brace-format
 msgid ""
 "{name} wants to play on this computer. Open Big Remote Play to approve it."
@@ -9631,8 +9833,13 @@ msgstr ""
 "A(z) {name} el lesz távolítva a hálózatból, és a visszatéréshez újra hozzá "
 "kell adni."
 
+#: src/big_remote_play/ui/host_view.py:3028
+#, python-brace-format
+msgid "{percent} %, not muted"
+msgstr "{percent} %, nincs némítva"
+
 #. TRANSLATORS: {platform} is Steam or Lutris.
-#: src/big_remote_play/ui/host_view.py:4108
+#: src/big_remote_play/ui/host_view.py:4234
 #, python-brace-format
 msgid "{platform} games"
 msgstr "{platform}-játékok"
@@ -9649,22 +9856,22 @@ msgstr "{resolution} · {frame_rate} · {bitrate}"
 msgid "{service} · {state}"
 msgstr "{service} · {state}"
 
-#: src/big_remote_play/ui/host_view.py:2972
+#: src/big_remote_play/ui/host_view.py:3077
 #, python-brace-format
 msgid "{source} (a microphone)"
 msgstr "{source} (mikrofon)"
 
-#: src/big_remote_play/ui/host_view.py:2971
+#: src/big_remote_play/ui/host_view.py:3076
 #, python-brace-format
 msgid "{source} (sound this computer plays)"
 msgstr "{source} (a számítógép által lejátszott hang)"
 
-#: src/big_remote_play/ui/host_view.py:2698
+#: src/big_remote_play/ui/host_view.py:2726
 #, python-brace-format
 msgid "{source} · {quality}"
 msgstr "{source} · {quality}"
 
-#: src/big_remote_play/ui/host_view.py:2949
+#: src/big_remote_play/ui/host_view.py:3053
 #, python-brace-format
 msgid "{source} → {target}"
 msgstr "{source} → {target}"
@@ -9674,7 +9881,7 @@ msgstr "{source} → {target}"
 msgid "{state} · {ms} ms"
 msgstr "{state} · {ms} ms"
 
-#: src/big_remote_play/ui/host_view.py:1589
+#: src/big_remote_play/ui/host_view.py:1615
 #, python-brace-format
 msgid ""
 "{tool} is on and does not allow Sunshine's ports ({ports}) from {networks}. "

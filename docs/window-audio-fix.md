@@ -14,7 +14,7 @@ Reading the code and Sunshine's own log of real sessions on the development mach
 | Private screen refresh | — | switched to about 240 Hz when `kscreen-doctor` is available |
 | The game | usually fullscreen and the active window | a window; activated once when sharing started |
 
-Big Remote Play's audio code does not depend on the mode (`utils/audio.py` never looks at the source), and nothing in Game Window selects audio by process: the whole output is recorded in both modes, so a game whose sound comes from a launcher, a Wine/Proton child or another process is recorded the same way.
+At the time of these measurements Big Remote Play's audio code did not depend on the mode and the whole output was recorded in both. Since 2026-10-02 Game Window sends only the game's sound by default: the game's process family — including launcher, Wine/Proton and child processes started under the same game launch — is linked into Big Remote Play's own output ([audio architecture](audio-architecture.md#game-window-only-the-games-sound)).
 
 ## Measurements (2026-10-01)
 
@@ -61,6 +61,10 @@ Earlier in the same session that computer had no sound for a few minutes and the
 
 - **The game is brought to the front again every time a device starts playing** (`window_capture.activate_game`, called from Share when **Connected now** gains a device). Before, the game was activated once when sharing started. Approving the device — now a dialog in Big Remote Play — moved the focus to Big Remote Play just before the stream began, so the game played while not the active window: many engines lower their frame rate or mute/duck sound in the background (for example Source's *mute when not focused*, Unity's *run in background* off, Wine games that minimize when they lose focus), and the other person's keys went to Big Remote Play. Full Desktop games normally keep the focus because they are fullscreen. Covered by `tests/test_game_window_focus.py`.
 
+## Silence on the other computer (2026-10-02)
+
+A later report — no sound at all on the other computer while the game played here — had another cause, not related to Game Window: Sunshine's recording was restored muted by the session manager. See [remote audio silence investigation](remote-audio-silence-investigation.md).
+
 ## Still to verify on a target machine
 
 With *TMNT: Shredder's Revenge* and a real second computer ([release acceptance](release-testing.md)):
@@ -73,4 +77,4 @@ With *TMNT: Shredder's Revenge* and a real second computer ([release acceptance]
 ## Not changed
 
 - Full Desktop capture and audio are untouched.
-- No per-process audio capture was added: recording the whole output is what keeps Proton, Wine, launcher and child-process sound working, and it is unrelated to the measured behaviour.
+- The sound problems measured here are unrelated to what is recorded. Sending only the game's sound came later, on request; it follows the game's whole process family so Proton, Wine, launcher and child-process sound keep working.
