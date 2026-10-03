@@ -155,11 +155,10 @@ class AudioStream:
         return self.muted or (self.volume is not None and self.volume < VOLUME_NORM)
 
 
-_VOLUME_VALUE = re.compile(r"(\d+) /")
-
-
 def _lowest_volume(text: str) -> int | None:
-    values = [int(v) for v in _VOLUME_VALUE.findall(text or "")]
+    """``front-left: 40632 /  62% / -12.46 dB, …`` → 40632: the raw value before each first ``/``."""
+    tokens = (text or "").replace(",", " ").split()
+    values = [int(tokens[i - 1]) for i, token in enumerate(tokens) if token == "/" and i > 0 and tokens[i - 1].isdigit()]
     return min(values) if values else None
 
 
@@ -550,7 +549,7 @@ class SunshineAudioLog:
 
 
 _LOG_MONITOR = re.compile(r"Found default monitor by name: ?(.*)$")
-_LOG_OPUS = re.compile(r"Opus initialized: (.*?)(?:, LOWDELAY| ?$)")
+_LOG_OPUS = re.compile(r"Opus initialized: (.*?)(?:, LOWDELAY)?\s*$")
 _LOG_PA_ERROR = re.compile(r"pa_simple_new\(\) failed: (.*)$")
 SUNSHINE_LOG_TAIL = 512 * 1024
 
