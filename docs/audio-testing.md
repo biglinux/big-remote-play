@@ -67,12 +67,36 @@ The first bridge attempt used `module-loopback`. JamesDSP captured the loopback'
 
 Measured on 2026-09-29 in an isolated PipeWire 1.6.8 + WirePlumber 0.5 instance (private `XDG_RUNTIME_DIR`, ALSA and Bluetooth monitors disabled, so no real device was touched). Outputs were null sinks, the call a tone played by an executable named `fluxer`, the game another tone, and Sunshine's capture a `parecord` with Sunshine's client and stream names; the real `AudioRoutingSession` reconciled. Results are in the [architecture](audio-architecture.md#voice-calls-stay-out-of-the-stream). Also measured there: `pipewire-pulse` takes `sink_properties="device.description=\"…\" key=value"` and nothing simpler with spaces; a capture whose source is removed was moved by WirePlumber to the default output's monitor, not to the default microphone, even with one present.
 
+### Sunshine's recording restored muted (2026-10-02)
+
+The live session of a report (Game Window, *Gauntlet* through Wine, JamesDSP, a client muting the host): the game played here and the other computer heard nothing. Sunshine opened the right monitor, but WirePlumber had restored *muted, 62 %* to its `sunshine-record`. Recording the same monitor at the same moment: as "sunshine" digital silence, under another name −18.5 dBFS. After `restore_capture_level` on the live stream: not muted, 100 %, WirePlumber saved `"mute": false, "volume": 1.0`, and a new "sunshine" recording received −25.1 dBFS. Full account: [remote audio silence investigation](remote-audio-silence-investigation.md).
+
+### Game Window: only the game's sound (2026-10-02)
+
+Isolated PipeWire 1.6.8 + WirePlumber (private runtime and state, ALSA and Bluetooth monitors disabled), one null output, a "game" (`sh` running `paplay`, 660 Hz, −20 dBFS), another program (`paplay`, 1000 Hz) and a capture named like Sunshine's; the real `AudioRoutingSession` with the game's process family. Tone levels in Sunshine's capture and on the output:
+
+| Phase | Capture: game | Capture: other program | Output: game / other |
+|---|---|---|---|
+| Before (whole output) | −20.0 dB | −20.0 dB | −20.0 / −20.0 dB |
+| Only the game | −20.0 dB | −305 dB | −20.0 / −20.0 dB |
+| After the end | −20.0 dB | −20.0 dB | −20.0 / −20.0 dB |
+
+Process family read live for *Street Fighter V* (Steam, Proton): `reaper` and its 16 descendants (`srt-bwrap`, `pv-adverb`, `wineserver`, Wine services, the game), and the game's audio stream carried the window's PID.
+
+### Game Window compared with Full Desktop
+
+Measured on 2026-10-01 in an isolated PipeWire instance with a separate Sunshine and Moonlight: KMS capture against the Game Window path (private KWin screen through PipeWire, iGPU encoder, 60 and 240 Hz, 60 and 120 fps). The received 1 kHz tone had at most one isolated event per minute in both modes and PipeWire reported no error. Table and conclusion: [Game Window audio](window-audio-fix.md).
+
 ## Automated coverage
 
 - Discovery: parser, non-ASCII descriptions, output kinds from properties, verified monitors, a microphone that carries a monitor-like name, no server, no outputs, unreadable server.
 - Configuration: `audio_sink` for each mode, never a microphone or `@DEFAULT_AUDIO_SOURCE@`; unknown `sunshine.conf` options and `virtual_sink` preserved; previous file kept.
 - Bridges: each measured Sunshine behavior, refusal into virtual outputs, no microphone source, cycle check, surround to stereo.
 - Session: no writes in Automatic, idempotent reconcile, only our links removed (id and ports re-checked), restoring the output after a Sunshine crash, never overriding a newer choice, reconnecting a program left without an output when Sunshine exits (only when still unlinked after the wait, never into a virtual output, mono devices, also after a crash, recorded before **Stop sharing**), following an output change, moving a microphone capture back, leaving Steam's capture alone, private session record, crash recovery and adoption, removal of 2.x leftovers, corrupt records.
+- Recording level: mute and volume read from `pactl`; a muted or turned-down Sunshine recording restored (also while the client mutes the host and a bridge is in place); never more than three times for one recording; again for a recording Sunshine creates anew and after **Test audio**; other programs', microphones' and Steam's levels never changed; a change logged once.
+- Sound state in words: unavailable, waiting, starting, could not open, muted, microphone, sending; Sunshine's log (monitor and encoder, `pa_simple_new` failure, an earlier run, only the end of a large file); the tone test says whether Sunshine records the tested monitor; output switched to a headset or Bluetooth; an output removed during the stream.
+- Connecting computer (`tests/test_moonlight_audio.py`): Moonlight's sound messages, loss bursts logged once and told once, Moonlight's stream found by binary or Flatpak id, a muted Moonlight stream unmuted with its volume kept, no stream, a device Moonlight could not open, a connection that ended, no sound server.
+- Game Window, only the game's sound (`tests/test_game_window_audio.py`): the game's process family for Steam (`reaper`), Lutris, Wine under a launcher and a native game; only the game linked, nothing moved; calls and other programs kept out; a game that recreates its stream; a sandboxed PID found by name; a host-muting client keeps its bridge; unreadable PipeWire never silently sends everything; end removes the output; Steam's capture untouched; Full Desktop without a call writes nothing; the scope kept by an adopted session; the tone test; the option in the interface.
 - Watcher: reacts to default and capture events and to programs starting or stopping, ignores their volume changes.
 - Voice calls: recognition by executable, application name, Flatpak id and role, never browsers; PipeWire graph reading (links, link groups, monitors); the call kept out while every other program is linked and nothing is moved; idempotent; a program added during the call; filters and loopbacks never added; a call on a device Sunshine does not record changes nothing; no `pw-dump` without a call program; back to the device and the output removed when the call ends, in that order; the output kept while Sunshine still records it; a host-muting client keeps its bridge; removal on end and after a crash; module arguments that a description cannot break.
 - Interface: labels, migration of the old "Other computer" choice, virtual outputs not offered, stale status rejected, test-tone results in words.

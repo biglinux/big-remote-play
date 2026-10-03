@@ -6,7 +6,7 @@ Big Remote Play coordinates a game computer, a connecting computer and—when ne
 
 The game runs on the **sharing computer**. The person playing remotely uses the **connecting computer**.
 
-- Not sure? **Guided setup** on Home asks two questions and opens the right page.
+- Not sure? **Start with the guided setup** on Home asks two questions, prepares this computer and opens the right page.
 - On the same home network, no VPN is normally required.
 - Across the internet, the guided path is to place both computers on the same private network.
 - Sunshine is required on the sharing computer.
@@ -23,16 +23,21 @@ uses the native high-contrast appearance while keeping the saved choice.
 
 ## Guided setup
 
-Not sure where to start? On Home, choose **Guided setup**. It asks two questions and opens the right page; it never installs or changes anything by itself.
+Not sure where to start? On Home, choose **Start with the guided setup**. It asks two questions, gets this computer ready and opens the right page. It installs something only when you press its button.
 
 1. **What do you want to do?** — **Share my game** (this computer runs the game) or **Connect to another computer** (you play on this one).
-2. **Where is the other device?** — **On the same network** (same Wi-Fi or router, marked *Simplest*) opens Share or Connect directly: no private network is needed. **Somewhere else** continues with **Let's create a secure connection**.
-3. For somewhere else, Big Remote Play first looks at this computer:
+2. **Where is the other device?** — **On the same network** (same Wi-Fi or router, marked *Simplest*) or **Somewhere else**.
+3. **Let's get this computer ready** checks the program the task needs (Sunshine to share, Moonlight to connect). With everything there it continues by itself; otherwise press **Install what's needed** (see [installing what is missing](#installing-what-is-missing)) and the guide continues when it is done.
+4. On the same network, Share or Connect opens: no private network is needed. Somewhere else continues with **Let's create a secure connection**, where Big Remote Play first looks at this computer:
    - **We found a connection that is ready** shows the method and network with **Use this connection** (then Share or Connect opens) and **Choose another option**;
    - a connection that needs one step (turned off, service stopped, permission, sign-in) continues on **Play over the internet**, whose button does that step;
    - with nothing set up, **How do you want to connect?** offers **Tailscale** (*Recommended*: sign in with your account), **I already use ZeroTier** (type the network code you received, see [joining a ZeroTier network](#joining-a-zerotier-network)) and **Advanced options** (your own Headscale server).
 
 The back arrow goes one question back. After a connection is set up from the guide, **Ready to play?** returns to the task you chose.
+
+## Installing what is missing
+
+When a task needs a program this computer does not have yet, Big Remote Play says so and installs it for you — from Home (**Let's get this computer ready**), from the guided setup, and on the Tailscale, Headscale and ZeroTier pages (**Install and continue**). Each program is listed with **Installed** or **Not installed** and what it is for. Press **Install what's needed**: the system asks for your password in its own window, and when everything is installed you see **All set!** and the task continues by itself. Nothing opens a terminal. **Technical details** shows the packages and the package manager's messages for someone helping you. If the installation is cancelled or fails, **Try again** stays on the page. A program installed some other way is recognized the next time you choose the task. Details: [installing what a task needs](dependency-installer.md).
 
 ## Share a game
 
@@ -41,7 +46,7 @@ The back arrow goes one question back. After a connection is set up from the gui
 3. Open **Image and capture** only when the default display, GPU, encoder or host video ceiling needs to change. If displays have the same name, choose **Identify monitors** to show 01, 02 and 03 on the physical screens; the chosen screen then appears in the **Image and capture** summary.
 4. Sound works without setup: the other computer hears what this computer plays. **Preferences → Audio** has **Test audio** and the options below.
 5. Start sharing and leave the game computer running.
-6. When the other computer shows a Moonlight pairing code, enter the four digits on the sharing page and approve the device.
+6. The first time a device connects, **New connection request** appears by itself: type the four digits the other computer shows and choose **Approve** (see [approve a new device](#approve-a-new-device)).
 
 Opening Share does not start the server, install software or change network/firewall settings by itself.
 
@@ -56,7 +61,7 @@ Opening Share does not start the server, install software or change network/fire
 
 **Start sharing** stays unavailable until a game is chosen, so nothing else is ever shared instead. If the game closes or crashes while sharing, sharing stops at once with **The game window closed**; open the game and start again.
 
-While sharing, keep the game as the active window: keyboard and mouse input from the other device goes to the active window of this computer. Game Window needs KDE Plasma on Wayland (or an X11 desktop with window effects on) and some GStreamer plugins; if anything is missing, the list says what to install. Details and limits are in [Game Window](game-window.md).
+While sharing, keep the game as the active window: keyboard and mouse input from the other device goes to the active window of this computer, and many games stop their sound while another window is active (measured with *Shadow of the Tomb Raider*: its sound stops as soon as it loses focus). Big Remote Play brings the game to the front when sharing starts and every time a device starts playing. Only the game's sound is sent: other programs, notifications and voice calls stay on this computer, which still hears everything. To send all of this computer's sound instead, turn off **Preferences → Audio → Send only the game's sound**. Game Window needs KDE Plasma on Wayland (or an X11 desktop with window effects on) and some GStreamer plugins; if anything is missing, the list says what to install. Details and limits are in [Game Window](game-window.md).
 
 While sharing, **3. Connect the other PC** also tells you, before any device waits:
 
@@ -65,6 +70,10 @@ While sharing, **3. Connect the other PC** also tells you, before any device wai
 - **A stream is open on this computer**: new devices can pair only after **End for everyone**.
 
 Pairing requests that a device abandoned (cancelled, cut by the network or a firewall) are cleared automatically, so the device's next attempt is not refused.
+
+### Approve a new device
+
+When a device that was never paired asks to play, a dialog opens on its own: **New connection request** — *Living room PC wants to connect to this computer. Type the PIN shown on its screen.* The PIN field is ready for typing or pasting; Enter or **Approve** sends it. **Reject** refuses the device; **Not now** keeps the request. While it waits, **Connection request** stays at the top of **Overview** with the time left (*This request expires in 1:42*); after two minutes without an answer it is cancelled. If the window is in the background, a desktop notification tells you. **Type a pairing code yourself**, under **3. Connect the other PC**, is the manual fallback. Nothing is approved without the PIN shown on the other screen. Details: [pairing requests](pairing-ux.md).
 
 Two options in **Image and capture** decide how faithful the picture is:
 
@@ -81,11 +90,10 @@ While sharing, **Connected now** lists every device playing on this computer at 
 
 1. Ask the other person to start sharing.
 2. On Home, choose **Connect** — the option for playing on this device.
-3. Select the game computer from the list and connect.
+3. Under **Computers**, choose the game computer: every computer found has its own card, two per line on a wide window. Choosing it connects (*Connecting to Living room PC…*); **Stop** cancels.
 4. On the first connection, keep the Moonlight pairing window open while the sharing computer approves the code.
-5. Use **Image**, **Audio**, **Input** and **Game PC and connection** for client-side preferences.
 
-When discovery cannot find the computer, use **I know the IP address**. The address dialog and search-code dialog are separate because they solve different problems.
+Everything else is on the **Advanced options** tab: **Connect again** (recent computers), **Other ways to connect** (**I have a search code**, **I know the IP address**, **Connection history**) and **On this computer** (**Image**, **Audio**, **Input**, **Game PC and connection**). The address dialog and search-code dialog are separate because they solve different problems.
 
 While a stream runs, **Playing now** at the top of Connect shows the computer's name, the quality, the round trip in ms and whether it is reached on the local network or through ZeroTier, Tailscale or Headscale.
 
@@ -106,6 +114,8 @@ The word is always written next to its colour. The path (**Local network**, **Ze
 
 ## Services in the sidebar
 
+On Home and **Play over the internet** the bottom of the sidebar shows two indicators: **Streaming** (for example *Sunshine · Running* or *Moonlight · Ready*) and **Secure connection** (for example *Tailscale · Connected*). Selecting one opens its task or the internet page.
+
 On Share and Connect the bottom of the sidebar shows, under **Streaming**, Sunshine (Share) or Moonlight (Connect), and under **Secure connection**, Tailscale, ZeroTier and Headscale. Each card always stays in its place and says its state in words: for example **Running**, **Stopped** or **Ready** for streaming, and **Connected**, **Not connected**, **Sign-in needed**, **Waiting for approval** or **Not installed** for a secure connection. A connected method also shows how many other devices are online (Tailscale, Headscale) or the network name (ZeroTier). Select a card to open its controls or its setup page. Details in [service status cards](service-status-cards.md).
 
 ## Pairing code versus search code
@@ -124,17 +134,17 @@ On Home, Share and Connect work directly when both computers are on the same hom
 | Your secure connection is turned off | **Turn on** | Reconnects the account this computer already uses |
 | The connection service is stopped | **Fix** | Starts the background service (your password may be requested) |
 | Big Remote Play needs your permission | **Allow** | One-time permission to read ZeroTier networks |
-| Sign in to connect this computer | **Sign in** | Opens the sign-in in your browser |
+| Sign in to connect this computer | **Sign in** | Opens the sign-in in your browser at once |
 | Waiting for approval | **Check again** | The network owner still has to allow this computer |
 | Set up a secure connection | **Set up** | Joins a network (Tailscale sign-in, a ZeroTier network code or a Headscale server) |
-| One component is needed | **Install** | Installs the connection program (your password is requested) |
+| One component is needed | **Install what's needed** | Installs the connection program (your password is requested), then continues to sign-in or joining |
 | This computer is not connected to the internet | **Check again** | Connect Wi-Fi or a cable first |
 
 Nothing is installed, turned on or changed until you press the button. **Using Tailscale · Change** says which method is used; **Change** lists the three methods in plain words — Tailscale (easy, for your own devices), ZeroTier (a private network between several devices) and Headscale (your own server) — each with its state.
 
 Below the card:
 
-- **Share this computer** and **Connect to another computer** open Share and Connect.
+- Once the connection is ready, **Ready to play?** offers **Share this computer** and **Connect to another computer**.
 - **My devices** lists the other devices of your network by name, with **Online**, **Offline** or **Needs to sign in again**. The star keeps a device at the top; **⋮** offers **Connect**, **Details**, **Rename** (a name only this computer uses) and **Check connection**. ZeroTier lists its members only with an API token (Advanced mode → API access).
 - **Recent connections** lists the computers you really played on, with **Last connection: Today at 20:42**, **Connect**, a star, **Rename**, **Check connection** and **Remove from recent connections**.
 
@@ -146,7 +156,7 @@ The Tailscale page lists **Tailscale accounts and tailnets** on this computer an
 
 **Advanced mode** (off by default, remembered) adds the connection methods with their states, this network's name and this computer's private address (with **Copy**), **Network details**, **Manage network** (devices, approvals, **Leave network**, **Remove device**, **Revoke access**), **Accounts and networks**, **API access**, **Internet, router and firewall** and **Without a private network**. Pages opened from here have a **Back** button to Connect your devices.
 
-When sharing, **Share** lists under **Available over the internet** the name and private address the other person can use. On the other computer, **Connect** lists the computers your private network knows about, next to local ones, marked “Sharing found”, “Sharing not found” or “Offline”. **Check connection** (or **Diagnose** after a failed connection) checks the private network, the computer and Sunshine, and — for Tailscale — whether the route is direct (best performance) or relayed (works, may add latency), with the measured latency.
+When sharing, **Share** shows under **Available over the internet** the **Secure connection** in use, **This computer**'s name and **Status**, with **Copy connection information** to send to the other person; the private addresses are under **Connection details**. On the other computer, **Connect** lists the computers your private network knows about, next to local ones, marked “Sharing found”, “Sharing not found” or “Offline”. **Check connection** (or **Diagnose** after a failed connection) checks the private network, the computer and Sunshine, and — for Tailscale — whether the route is direct (best performance) or relayed (works, may add latency), with the measured latency.
 
 ### Joining a ZeroTier network
 
@@ -169,7 +179,9 @@ A private network may use a relay and does not guarantee a direct or low-latency
 
 ## Connection history
 
-**Connect → Connection history** lists streams that really started from this computer: the computer, the private-network service, start and end time, duration and the requested resolution and frame rate. It is stored only on this computer and never contains passwords, keys or codes. Choose how long to keep it (30 days, 90 days or always) or **Clear history**. The most recent computers also appear under **Connect again** and on **Play over the internet → Recent connections**.
+On the sharing computer, **Share → Support → Connection history** shows the sessions other devices played here in the **Last 7 days** — one bar per day — with **Sessions**, **Time played**, **Average session length** and **Last connection**. It is kept only on this computer for 90 days and holds no address, password or code; **Clear history** removes it. With nothing yet it says *No connection history yet.* Details: [connection history](connection-history-fix.md). Above it, while sharing, **Latency in the last 3 minutes** is the live ping measurement; a device that does not answer pings plays normally but draws no line.
+
+On the connecting computer, **Connect → Advanced options → Connection history** lists streams that really started from this computer: the computer, the private-network service, start and end time, duration and the requested resolution and frame rate. It is stored only on this computer and never contains passwords, keys or codes. Choose how long to keep it (30 days, 90 days or always) or **Clear history**. The most recent computers also appear under **Connect again** and on **Play over the internet → Recent connections**.
 
 ## Image quality and host limits
 
@@ -190,7 +202,8 @@ The other computer hears the sound this computer plays — games, the desktop an
 - **Server output — Automatic — use the current output** (recommended): shares whatever output you are using. If you switch output during a stream, the stream follows. Nothing in the sound settings changes.
 - **Also play sound on this computer** (on by default): keeps the game audible here even when the connecting computer asks for silence on the game PC. Turn it off to make only the other computer hear the game; Sunshine then switches this computer's output to its own silent output during sessions and switches it back afterwards.
 - **Server output — a device**: always share that device (headphones, HDMI, Bluetooth). Sunshine makes it the output during the session, so it also plays here. Effect outputs are not listed; use Automatic for them.
-- **Test audio** plays a short tone and says whether it reached the sound that is shared. **Technical audio details** shows what is recorded right now, the default microphone, the line **Microphone sent to Sunshine: No** and the calls kept out of the stream.
+- **Sound for the other computer** (and **Sound** under *Sharing now* on Overview) says, from what the sound system and Sunshine report, whether this computer's sound is being sent, or why not. If Sunshine's recording was muted or turned down in a mixer, Big Remote Play turns it back up and says so.
+- **Test audio** plays a short tone and says whether it reached the sound that is shared and, while a device is connected, whether Sunshine is recording it. **Technical audio details** shows what is recorded right now, Sunshine's recording level, what Sunshine's log says, the default microphone, the line **Microphone sent to Sunshine: No** and the calls kept out of the stream.
 
 Changes apply the next time you start sharing. The volume on this computer does not change the volume heard on the other computer.
 

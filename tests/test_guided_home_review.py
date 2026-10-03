@@ -8,7 +8,7 @@ import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw
+from gi.repository import GLib, Gtk, Adw
 from test_ui_task_flows import ui as _ui_fixture, drain
 
 ui = _ui_fixture
@@ -22,22 +22,99 @@ def widgets(root):
         child = child.get_next_sibling()
 
 
+def wait_until(predicate, timeout=3.0):
+    import time
+
+    deadline = time.monotonic() + timeout
+    context = GLib.MainContext.default()
+    while time.monotonic() < deadline:
+        while context.pending():
+            context.iteration(False)
+        if predicate():
+            return True
+        time.sleep(0.01)
+    return predicate()
+
+
+def all_text(widget) -> str:
+    found, stack = [], [widget]
+    while stack:
+        current = stack.pop()
+        for getter in ("get_label", "get_title", "get_subtitle", "get_text"):
+            value = getattr(current, getter, None)
+            if callable(value):
+                try:
+                    text = value()
+                except TypeError:
+                    continue
+                if isinstance(text, str):
+                    found.append(text)
+        child = current.get_first_child()
+        while child is not None:
+            stack.append(child)
+            child = child.get_next_sibling()
+    return "\n".join(found)
+
+
 @pytest.mark.parametrize("role,component", [("host", "Sunshine"), ("guest", "Moonlight")])
-def test_missing_component_is_explained_before_installation(ui, role, component):
+def test_missing_component_is_explained_before_installation(ui, monkeypatch, role, component):
+    from big_remote_play.ui.dependency_installer import InstallDialog
+    from big_remote_play.utils import dependencies
+
+    monkeypatch.setattr(dependencies, "_AUDIT", lambda ids: [dependencies.ComponentState(i, False) for i in ids])
     ui.update_dependency_ui(False, False, False, False, False)
     ui._select_home_role(role)
-    drain()
+    assert wait_until(lambda: isinstance(ui.get_visible_dialog(), InstallDialog))
     dialog = ui.get_visible_dialog()
-    assert isinstance(dialog, Adw.AlertDialog)
-    assert component in dialog.get_body()
+    assert wait_until(lambda: dialog.checklist.button.get_visible())
+    assert component in all_text(dialog)
     assert not ui.host_view.is_hosting
     assert ui.current_page == "welcome"
-    dialog.emit("response", "cancel")
     dialog.close()
+    drain()
+
+
+@pytest.mark.parametrize("role", ["host", "guest"])
+def test_component_installed_after_startup_opens_the_task_without_asking(ui, role):
+    """The reported bug: installed, yet Share kept asking to install Sunshine."""
+    ui.update_dependency_ui(False, False, False, False, False)  # what startup saw
+    ui._select_home_role(role)  # conftest: the component is there now
+    assert wait_until(lambda: ui.current_page == role)
+    assert ui.get_visible_dialog() is None
+    assert ui._service_installed["sunshine" if role == "host" else "moonlight"] is True
+    assert not ui._role_card_ui[role]["state"].get_visible()
+
+
+def test_installing_from_the_prompt_opens_the_task_by_itself(ui, monkeypatch):
+    from big_remote_play.ui.dependency_installer import InstallDialog
+    from big_remote_play.utils import dependencies
+
+    installed: set[str] = set()
+    monkeypatch.setattr(dependencies, "_AUDIT", lambda ids: [dependencies.ComponentState(i, i in installed) for i in ids])
+    plan = dependencies.InstallPlan("pamac", ("pamac", "install", "--no-confirm", "sunshine-bin"), ("sunshine",), ("sunshine-bin",), ())
+    monkeypatch.setattr(dependencies, "_PLAN", lambda ids: plan)
+    runs = []
+
+    def run(plan, *, on_line=None, start_unit=None, probe=None):
+        runs.append(plan.argv)
+        installed.add("sunshine")
+        return dependencies.InstallOutcome(tuple(probe(plan.components)), 0)
+
+    monkeypatch.setattr(dependencies, "_RUN", run)
+    ui.update_dependency_ui(False, True, False, False, False)
+    ui._select_home_role("host")
+    assert wait_until(lambda: isinstance(ui.get_visible_dialog(), InstallDialog))
+    dialog = ui.get_visible_dialog()
+    assert wait_until(lambda: dialog.checklist.button.get_visible())
+    dialog.checklist.button.emit("clicked")
+    dialog.checklist.button.emit("clicked")  # a second click starts nothing more
+    assert wait_until(lambda: ui.current_page == "host", timeout=5)
+    assert runs == [plan.argv]
+    assert ui.get_visible_dialog() is None
 
 
 def test_home_vpn_action_can_return_directly_to_home(ui):
-    ui.home_network_action.get_first_child().emit("activated")
+    ui._status_rows["summary-network"].emit("activated")
     assert ui.current_page == "vpn_selector"
     ui.return_from_network()
     assert ui.current_page == "welcome"

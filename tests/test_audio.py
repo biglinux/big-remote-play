@@ -58,6 +58,8 @@ class Sink:
 class Stream:
     target: str
     props: dict
+    muted: bool = False
+    volume: int = 65536  # raw, 65536 is 100 %
 
 
 class FakePulse:
@@ -85,7 +87,7 @@ class FakePulse:
         self.extra_outputs: list[str] = []  # output ports of programs, e.g. an effects filter
 
     # -- helpers for tests -------------------------------------------------
-    def sunshine_starts_session(self, *, host_audio: bool, surround: bool = False, audio_sink: str | None = None) -> None:
+    def sunshine_starts_session(self, *, host_audio: bool, surround: bool = False, audio_sink: str | None = None, saved_level: tuple[bool, int] | None = None) -> None:
         """What Sunshine does on Linux (measured on PipeWire 1.6, see docs/audio-testing.md)."""
         for name in (SUNSHINE_STEREO_SINK, NULL51):
             if not any(s.name == name for s in self.sinks):
@@ -98,6 +100,9 @@ class FakePulse:
         elif audio_sink:
             self.default_sink = audio_sink
         self.capture.append(Stream(f"{recorded}.monitor", {"application.name": "sunshine", "application.process.binary": "sunshine", "media.name": "sunshine-record"}))
+        if saved_level is not None:
+            # WirePlumber restores the level saved for application.name "sunshine".
+            self.capture[-1].muted, self.capture[-1].volume = saved_level
 
     def sunshine_ends_session(self, restore_to: str) -> None:
         self.capture = [c for c in self.capture if c.props.get("application.process.binary") != "sunshine"]
@@ -145,7 +150,9 @@ class FakePulse:
         out = []
         for index, stream in enumerate(streams, start=500 if kind == "Sink Input" else 800):
             props = "".join(f'\t\t{k} = "{v}"\n' for k, v in stream.props.items())
-            out.append(f"{kind} #{index}\n\tDriver: PipeWire\n\t{key}: {stream.target}\n\tProperties:\n{props}")
+            percent = round(stream.volume * 100 / 65536)
+            volume = f"front-left: {stream.volume} / {percent:3d}% / -12.46 dB,   front-right: {stream.volume} / {percent:3d}% / -12.46 dB"
+            out.append(f"{kind} #{index}\n\tDriver: PipeWire\n\t{key}: {stream.target}\n\tMute: {'yes' if stream.muted else 'no'}\n\tVolume: {volume}\n\t        balance 0.00\n\tProperties:\n{props}")
         return "\n".join(out)
 
     def _pw_link(self, argv):
@@ -218,6 +225,15 @@ class FakePulse:
         if args[0] == "move-source-output":
             index = int(args[1]) - 800
             self.capture[index].target = args[2]
+            return ok()
+        if args[0] == "set-source-output-mute":
+            self.capture[int(args[1]) - 800].muted = args[2] == "1"
+            return ok()
+        if args[0] == "set-source-output-volume":
+            self.capture[int(args[1]) - 800].volume = int(args[2])
+            return ok()
+        if args[0] == "set-sink-input-mute":
+            self.playback[int(args[1]) - 500].muted = args[2] == "1"
             return ok()
         raise AssertionError(f"unexpected pactl call {argv}")
 
@@ -530,8 +546,9 @@ def test_state_file_is_private_and_holds_no_stream_ids(pulse, manager, tmp_path)
     path = tmp_path / "audio-session.json"
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
     state = json.loads(path.read_text())
-    assert set(state) == {"owner_pid", "token", "original_sink", "manual_output", "play_on_host", "bridges", "feeders", "mix_module"}
+    assert set(state) == {"owner_pid", "token", "original_sink", "manual_output", "play_on_host", "bridges", "feeders", "mix_module", "game"}
     assert state["original_sink"] == HDMI and len(state["bridges"]) == 1 and len(state["bridges"][0]["links"]) == 2
+    assert state["game"] is None  # Full Desktop: no game scope
 
 
 def test_recovery_removes_what_a_crashed_window_left_and_restores_the_output(pulse, manager, tmp_path):
@@ -778,3 +795,187 @@ def test_test_tone_plays_the_generated_tone_and_measures_the_recorded_monitor(pu
     assert f"--device={HDMI}.monitor" in recorders[0].argv
     assert not any(a.startswith("--device=") for a in played[0][0])  # automatic: the current output
     assert pulse.writes == []
+    assert result["capture"] == audio.CAPTURE_NONE  # no client: Sunshine records nothing
+
+
+# ------------------------------------------- Sunshine's recording level
+#
+# Measured on 2026-10-02 (docs/remote-audio-silence-investigation.md): the
+# session manager saved mute=true at 62 % for application.name "sunshine" and
+# applied it to every new sunshine-record. The game played on this computer,
+# Sunshine opened the right monitor, and the other computer heard silence.
+
+MUTED_AT_62 = (True, 40632)
+
+
+def test_stream_mute_and_volume_are_read_from_the_server(pulse, manager):
+    pulse.sunshine_starts_session(host_audio=True, saved_level=MUTED_AT_62)
+    capture = manager.snapshot().sunshine_captures()[0]
+    assert capture.muted is True and capture.volume == 40632 and capture.silenced
+    status = audio_status(manager.snapshot())
+    assert status.sunshine_muted is True and status.sunshine_volume == 62
+
+
+def test_a_muted_sunshine_recording_is_restored_and_nothing_else_is_touched(pulse, manager, tmp_path):
+    pulse.playback.append(Stream(HDMI, {"application.name": "game.exe", "application.process.binary": "wine-preloader"}, muted=True))
+    pulse.capture.append(Stream(MIC, {"application.name": "Chrome input", "application.process.binary": "chrome"}, muted=True, volume=20000))
+    session = session_for(manager, tmp_path)
+    session.begin(manager.snapshot())
+    pulse.sunshine_starts_session(host_audio=True, saved_level=MUTED_AT_62)
+    sunshine = str(800 + len(pulse.capture) - 1)
+    status = session.reconcile()
+    assert pulse.writes == [["set-source-output-mute", sunshine, "0"], ["set-source-output-volume", sunshine, "65536"]]
+    assert status.sunshine_muted is False and status.sunshine_volume == 100
+    assert status.level_restored and "capture-unmuted" in status.notes
+    assert audio.stream_audio_state(status, devices_playing=1) == audio.STREAM_SENDING
+    # Another program's stream and a microphone capture keep their own levels.
+    assert pulse.playback[0].muted is True and pulse.capture[0].muted is True and pulse.capture[0].volume == 20000
+
+
+def test_a_turned_down_recording_is_raised_to_full_volume_only(pulse, manager, tmp_path):
+    session = session_for(manager, tmp_path)
+    session.begin(manager.snapshot())
+    pulse.sunshine_starts_session(host_audio=True, saved_level=(False, 30000))
+    session.reconcile()
+    assert pulse.writes == [["set-source-output-volume", "800", "65536"]]
+
+
+def test_a_recording_muted_again_on_purpose_is_not_fought_forever(pulse, manager, tmp_path):
+    session = session_for(manager, tmp_path)
+    session.begin(manager.snapshot())
+    pulse.sunshine_starts_session(host_audio=True, saved_level=MUTED_AT_62)
+    for _attempt in range(AudioRoutingSession.MAX_LEVEL_RESTORES + 3):
+        pulse.capture[0].muted = True  # someone mutes it again each time
+        status = session.reconcile()
+    mutes = [w for w in pulse.writes if w[0] == "set-source-output-mute"]
+    assert len(mutes) == AudioRoutingSession.MAX_LEVEL_RESTORES
+    assert status.sunshine_muted is True
+    assert audio.stream_audio_state(status, devices_playing=1) == audio.STREAM_MUTED
+    session.allow_level_restore()  # Test audio: the person asks for it
+    assert session.reconcile().sunshine_muted is False
+
+
+def test_a_recording_sunshine_creates_again_is_restored_again(pulse, manager, tmp_path):
+    session = session_for(manager, tmp_path)
+    session.begin(manager.snapshot())
+    pulse.sunshine_starts_session(host_audio=True, saved_level=MUTED_AT_62)
+    session.reconcile()
+    pulse.sunshine_ends_session(restore_to=HDMI)
+    session.reconcile()
+    pulse.sunshine_starts_session(host_audio=True, saved_level=MUTED_AT_62)  # the device reconnected
+    status = session.reconcile()
+    assert status.sunshine_muted is False
+    assert len([w for w in pulse.writes if w[0] == "set-source-output-mute"]) == 2
+
+
+def test_a_muted_recording_is_restored_when_the_client_mutes_the_host_too(pulse, manager, tmp_path):
+    """The reported case: Sunshine's own output is the default and bridged back to the speakers."""
+    session = session_for(manager, tmp_path)
+    session.begin(manager.snapshot())
+    pulse.sunshine_starts_session(host_audio=False, saved_level=MUTED_AT_62)
+    status = session.reconcile()
+    assert pulse.bridges() == [(f"{SUNSHINE_STEREO_SINK}.monitor", HDMI)]  # this computer still hears it
+    assert status.sunshine_source == f"{SUNSHINE_STEREO_SINK}.monitor" and status.sunshine_muted is False
+
+
+@pytest.mark.parametrize("new_output", [USB, BT])
+def test_the_recording_follows_speakers_to_a_headset_or_bluetooth(pulse, manager, tmp_path, new_output):
+    session = session_for(manager, tmp_path)
+    session.begin(manager.snapshot())
+    pulse.sunshine_starts_session(host_audio=True)
+    pulse.default_sink = new_output
+    status = session.reconcile()
+    assert status.sunshine_source == f"{new_output}.monitor" and status.sunshine_records_monitor
+    assert not any(w[0].startswith("set-sink-input") or w[0] == "move-sink-input" for w in pulse.writes)
+
+
+def test_a_removed_output_moves_the_recording_to_the_current_output_without_crashing(pulse, manager, tmp_path):
+    session = session_for(manager, tmp_path)
+    session.begin(manager.snapshot())
+    pulse.default_sink = USB
+    pulse.sunshine_starts_session(host_audio=True)
+    pulse.sinks = [s for s in pulse.sinks if s.name != USB]  # unplugged; its monitor is gone
+    pulse.default_sink = HDMI
+    status = session.reconcile()
+    assert status.sunshine_source == f"{HDMI}.monitor" and status.microphone_sent is False
+
+
+def test_steam_capture_levels_are_never_changed(pulse, manager, tmp_path):
+    pulse.capture.append(Stream(f"{HDMI}.monitor", {"application.name": "Steam", "application.process.binary": "steam"}, muted=True, volume=1000))
+    session = session_for(manager, tmp_path)
+    session.begin(manager.snapshot())
+    pulse.sunshine_starts_session(host_audio=True)
+    session.reconcile()
+    assert pulse.writes == []
+
+
+def test_audio_state_is_told_from_facts_only(pulse, manager):
+    assert audio.stream_audio_state(None, 0) == audio.STREAM_UNAVAILABLE
+    idle = audio_status(manager.snapshot())
+    assert audio.stream_audio_state(idle, 0) == audio.STREAM_WAITING
+    assert audio.stream_audio_state(idle, 1) == audio.STREAM_STARTING
+    failed = audio.SunshineAudioLog(source="", failed=True, error="Invalid argument")
+    from dataclasses import replace
+
+    assert audio.stream_audio_state(replace(idle, sunshine_log=failed), 1) == audio.STREAM_CAPTURE_FAILED
+    pulse.capture.append(Stream(MIC, {"application.process.binary": "sunshine", "application.name": "sunshine", "media.name": "sunshine-record"}))
+    assert audio.stream_audio_state(audio_status(manager.snapshot()), 1) == audio.STREAM_MICROPHONE
+
+
+SUNSHINE_LOG = """\
+[2026-10-02 18:00:00.000]: Info: Sunshine version: 2026.914.233613 commit: 63d35f7
+[2026-10-02 18:00:05.000]: Info: New streaming session started [active sessions: 1]
+[2026-10-02 18:00:05.400]: Info: Setting default sink to: [sink-sunshine-stereo]
+[2026-10-02 18:00:05.401]: Info: Found default monitor by name: sink-sunshine-stereo.monitor
+[2026-10-02 18:00:05.450]: Info: Opus initialized: 48 kHz, 2 channels, 96 kbps (total), LOWDELAY
+[2026-10-02 18:00:05.800]: Info: CLIENT CONNECTED
+"""
+
+
+def test_sunshine_log_reports_the_monitor_and_encoder_of_the_latest_session():
+    report = audio.parse_sunshine_audio_log(SUNSHINE_LOG)
+    assert report == audio.SunshineAudioLog(source="sink-sunshine-stereo.monitor", encoder="48 kHz, 2 channels, 96 kbps (total)")
+
+
+def test_sunshine_log_reports_a_capture_that_could_not_open():
+    failed = (
+        SUNSHINE_LOG
+        + "[2026-10-02 18:10:00.000]: Info: New streaming session started [active sessions: 1]\n"
+        + "[2026-10-02 18:10:00.400]: Info: Found default monitor by name: \n"
+        + "[2026-10-02 18:10:00.401]: Error: pa_simple_new() failed: Invalid argument\n"
+        + "[2026-10-02 18:10:00.402]: Error: Unable to initialize audio capture. The stream will not have audio.\n"
+    )
+    report = audio.parse_sunshine_audio_log(failed)
+    assert report is not None and report.failed and report.source == "" and report.error == "Invalid argument"
+
+
+def test_sunshine_log_of_a_previous_run_or_without_session_is_not_reported(tmp_path):
+    restarted = SUNSHINE_LOG + "[2026-10-02 19:00:00.000]: Info: Sunshine version: 2026.914.233613 commit: 63d35f7\n"
+    assert audio.parse_sunshine_audio_log(restarted) is None
+    assert audio.read_sunshine_audio_log(tmp_path / "missing.log") is None
+    log = tmp_path / "sunshine.log"
+    log.write_bytes(b"x" * (audio.SUNSHINE_LOG_TAIL * 2) + b"\n" + SUNSHINE_LOG.encode())
+    assert audio.read_sunshine_audio_log(log).source == "sink-sunshine-stereo.monitor"
+
+
+def test_capture_check_tells_where_sunshine_records(pulse, manager):
+    monitor = f"{HDMI}.monitor"
+    assert audio.capture_check(manager.snapshot(), monitor) == (audio.CAPTURE_NONE, "")
+    pulse.sunshine_starts_session(host_audio=True, saved_level=MUTED_AT_62)
+    assert audio.capture_check(manager.snapshot(), monitor) == (audio.CAPTURE_MUTED, monitor)
+    pulse.capture[-1].muted = False
+    assert audio.capture_check(manager.snapshot(), monitor) == (audio.CAPTURE_OK, monitor)
+    assert audio.capture_check(manager.snapshot(), f"{USB}.monitor") == (audio.CAPTURE_ELSEWHERE, monitor)
+
+
+def test_level_changes_are_logged_once_per_change(pulse, manager, tmp_path, caplog):
+    import logging
+
+    session = session_for(manager, tmp_path)
+    session.begin(manager.snapshot())
+    pulse.sunshine_starts_session(host_audio=True)
+    with caplog.at_level(logging.INFO, logger="big-remoteplay"):
+        session.reconcile()
+        session.reconcile()
+    lines = [r.getMessage() for r in caplog.records if "Sunshine records" in r.getMessage()]
+    assert len(lines) == 1 and f"{HDMI}.monitor" in lines[0] and "100 %" in lines[0]

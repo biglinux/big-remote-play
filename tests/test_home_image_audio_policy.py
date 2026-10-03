@@ -56,18 +56,16 @@ def run_start(host, monkeypatch):
     return cfg, configured
 
 
-def test_home_prioritizes_the_two_roles_before_optional_internet_setup(ui):
-    assert isinstance(ui.home_network_action, Gtk.ListBox)
-    row = ui.home_network_action.get_first_child()
-    assert row.get_title() == "Play over the internet"
-    assert ui.welcome_cards_box.get_next_sibling() is ui.home_network_section
+def test_home_is_one_hero_with_the_guided_start_then_the_two_roles(ui):
     labels = text(ui.home_navigation)
     assert "Your games. Any screen. Anywhere." in labels
-    assert "What do you want to do?" in labels
-    assert labels.index("Share") < labels.index("Playing over the internet?")
-    assert labels.index("Connect") < labels.index("Playing over the internet?")
-    assert "same home network" in labels
+    assert "Start with the guided setup" in labels
+    assert labels.index("Start with the guided setup") < labels.index("Share") < labels.index("Connect")
+    # Internet play is a sidebar destination and a guided question; Home does
+    # not repeat it, and never names the technology.
+    assert "Playing over the internet?" not in labels
     assert "virtual private network" not in labels.lower()
+    assert ui.home_logo.is_ancestor(ui.welcome_main_box)
     assert ui.home_navigation.find_page("guide") is None
 
 
@@ -75,11 +73,14 @@ def test_home_hides_working_component_details_but_explains_missing_ones(ui):
     ui.update_dependency_ui(True, True, True, True, True)
     assert not ui._role_card_ui["host"]["state"].get_visible()
     assert not ui._role_card_ui["guest"]["state"].get_visible()
-    assert not any(row.get_visible() for row in ui._status_rows.values())
+    # Only the two indicators; no per-service cards on Home.
+    assert [service for service, row in ui._status_rows.items() if row.get_visible()] == ["summary-streaming", "summary-network"]
 
     ui.update_dependency_ui(False, True, True, True, True)
     assert ui._role_card_ui["host"]["state"].get_visible()
-    assert "Sunshine" in ui._role_card_ui["host"]["label"].get_text()
+    # Words for the person, the product name for whoever needs it.
+    assert "Sunshine" not in ui._role_card_ui["host"]["label"].get_text()
+    assert "Sunshine" in ui.host_card.get_tooltip_text()
     assert ui.host_card.get_sensitive()
 
 
@@ -496,3 +497,43 @@ def test_guide_links_pass_the_requesting_widget_for_wayland_activation(monkeypat
     opened.assert_not_called()
     row.emit("activated")
     opened.assert_called_once_with(row, connection_guides.CLOUDFLARE_DNS_DOCS)
+
+
+def test_sharing_says_in_words_whether_the_other_computer_gets_sound(ui, monkeypatch):
+    """The 2026-10-02 report: Sunshine's recording restored muted, the game audible only here."""
+    from big_remote_play.utils.audio import audio_status
+
+    h = ui.host_view
+    pulse = outputs(h, monkeypatch)
+    run_start(h, monkeypatch)
+    h.is_hosting = True
+    h._render_stream_audio()
+    checking = h.session_audio_row.get_subtitle()
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), h._audio_generation)
+    waiting = h.audio_stream_row.get_subtitle()
+    pulse.sunshine_starts_session(host_audio=True, saved_level=(True, 40632))
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), h._audio_generation)
+    muted = h.audio_stream_row.get_subtitle()
+    assert h.audio_detail_rows["level"].get_subtitle() != h.audio_detail_rows["sunshine"].get_subtitle()
+    h._apply_audio_status(h.audio_session.reconcile(), h._audio_generation)
+    sending = h.audio_stream_row.get_subtitle()
+    assert len({checking, waiting, muted, sending}) == 4
+    assert h.session_audio_row.get_subtitle() == sending  # Overview shows the same fact
+    assert "100" in h.audio_detail_rows["level"].get_subtitle()
+    assert ["set-source-output-mute", "800", "0"] in pulse.writes
+    h.is_hosting = False
+    h._rollback_start()
+
+
+def test_a_stale_audio_status_does_not_change_the_sound_row(ui, monkeypatch):
+    from big_remote_play.utils.audio import audio_status
+
+    h = ui.host_view
+    pulse = outputs(h, monkeypatch)
+    h.is_hosting = True
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), h._audio_generation)
+    before = h.audio_stream_row.get_subtitle()
+    pulse.sunshine_starts_session(host_audio=True, saved_level=(True, 40632))
+    h._apply_audio_status(audio_status(h.audio_manager.snapshot()), h._audio_generation - 1)
+    assert h.audio_stream_row.get_subtitle() == before
+    h.is_hosting = False

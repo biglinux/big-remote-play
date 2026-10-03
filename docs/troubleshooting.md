@@ -9,6 +9,20 @@ The card on **Play over the internet** names the problem and its fix:
 - **This computer is not connected to the internet.** No network interface has an address: connect Wi-Fi or a cable and choose **Check again**.
 - **We need to fix a setting → See details.** Opens the network details, where **Technical details** shows what the connection program reported.
 
+## Share keeps asking to install Sunshine, or an installation does not finish
+
+Big Remote Play looks for the program again every time you choose the task and whenever its window comes back to the front, so a program installed with another tool is recognized without restarting. If the prompt still appears, Sunshine's executable is not on the system path: on BigLinux and Manjaro install the repository package (`sunshine-bin`, which provides `sunshine`), not the AUR source package.
+
+The installation runs through Pamac (or pacman with PolicyKit where Pamac is absent) and asks for your password in the system's own window; no terminal opens. **The installation was cancelled** means the password window was closed: choose **Try again**. **The installation did not finish** usually means no internet connection or another program updating the system: wait for it, then **Try again**. **Technical details** shows Pamac's own messages. See [installing what a task needs](dependency-installer.md).
+
+## A device wants to connect, but nothing appears on the sharing computer
+
+The request dialog needs Sunshine's password to read the waiting devices. When Share shows **Sunshine's password is needed to approve devices**, choose **Enter Sunshine password** once. On a first Sunshine without any user, Big Remote Play creates one itself and keeps it in the keyring. With an older Sunshine that does not list waiting devices, use **Type a pairing code yourself** under **3. Connect the other PC**. Requests expire after two minutes: start pairing again on the other device. See [pairing requests](pairing-ux.md).
+
+## Connection history is empty
+
+**Support → Connection history** fills in as devices play here: a session appears when it ends (shorter than five seconds is not kept). The live chart above it, **Latency in the last 3 minutes**, draws only ping replies; Windows, phones and TVs often do not answer ping, and the chart then says so — the game is not affected. See [connection history](connection-history-fix.md).
+
 ## Colors look grey or washed out on the other computer
 
 The shared screen is almost certainly in HDR (KDE: **System Settings → Display** shows HDR on). Sunshine captures HDR pixels and sends them as SDR, without converting them. Keep **Share → Image and capture → Correct colors of HDR screens** on and start sharing again: the screen uses SDR during the session and HDR afterwards. On desktops other than KDE Plasma, turn HDR off on that screen by hand before sharing. Measurements and details: [video quality](video-quality.md).
@@ -23,7 +37,7 @@ Text is sharp when the stream has the sharing screen's resolution. A wide or hig
 
 ## No computer found
 
-First start sharing on the game PC. Check that both PCs are reachable on the same home or private network. Search again. Across a VPN, use the game PC's private IP address; broadcast discovery is not universally supported. A search code does not create network connectivity.
+First start sharing on the game PC. Every computer found gets its own card under **Connect → Computers**; the other ways to connect are on the **Advanced options** tab. Check that both PCs are reachable on the same home or private network. Search again. Across a VPN, use the game PC's private IP address; broadcast discovery is not universally supported. A search code does not create network connectivity.
 
 ## The browser sign-in for the private network did not open, or the PC is not really connected
 
@@ -118,15 +132,18 @@ On the connecting computer, a host that Moonlight only contacted — listed, dis
 
 Set resolution and frame rate on the **connecting** PC under Image. Share's bitrate limit is a ceiling, not the requested video resolution. Its automatic mode leaves the request to the client. Check the selected display on the game PC.
 
-For sound, open **Share → Preferences → Audio** on the game PC:
+For sound, look at **Sound** under *Sharing now* on the game PC (Share → Overview), then open **Share → Preferences → Audio**:
 
-1. Press **Test audio**. "The tone reached the shared sound" means the game PC side works; check the connecting computer's volume and its **Audio** settings. "System audio unavailable" means no output device was found: connect or enable one.
-2. Open **Technical audio details** while connected. **Sunshine records now** should name a source followed by "sound this computer plays". **Microphone sent to Sunshine** must say **No**; if it says otherwise, stop sharing and report it.
-3. The game PC went silent when a client connected: that client asked Sunshine to mute the game PC. Keep **Also play sound on this computer** on. If your output is an effects program (EasyEffects, JamesDSP), this computer stays silent for that client; enable **Also play sound on the game PC** on the connecting computer instead.
-4. No sound anywhere after sharing stopped unexpectedly: start Big Remote Play again; it puts back the output Sunshine left on its silent output and reconnects an effects program (JamesDSP, EasyEffects) left without an output. Otherwise choose your output in the system sound settings; if the right output is already chosen and there is still no sound, restart the effects program.
-5. Steam Remote Play Together has no sound while sharing: the technical details show which source Steam records. Big Remote Play no longer moves application sound, so Steam's own capture is not undone. See [audio architecture](audio-architecture.md#coexisting-with-steam-remote-play-together).
+1. **Sound** says *Sending the sound this computer plays* while a device is connected: the game PC side works; look at the connecting computer. *Not sent: Sunshine's recording is muted…* means its recording was muted in a mixer three times during this session; press **Test** to turn it back on. *Not sent: Sunshine could not open this computer's sound* means Sunshine's log reports that the sound could not be opened; stop sharing and start again. Big Remote Play turns a recording that was saved as muted or turned down back up by itself and says so.
+2. Press **Test audio**. "The tone reached the shared sound" means the game PC side works; check the connecting computer's volume and its **Audio** settings. "System audio unavailable" means no output device was found: connect or enable one.
+3. Open **Technical audio details** while connected. **Sunshine records now** should name a source followed by "sound this computer plays", and **Sunshine recording level** should say 100 %, not muted. **Microphone sent to Sunshine** must say **No**; if it says otherwise, stop sharing and report it.
+4. The game PC went silent when a client connected: that client asked Sunshine to mute the game PC. Keep **Also play sound on this computer** on. If your output is an effects program (EasyEffects, JamesDSP), this computer stays silent for that client; enable **Also play sound on the game PC** on the connecting computer instead.
+5. No sound anywhere after sharing stopped unexpectedly: start Big Remote Play again; it puts back the output Sunshine left on its silent output and reconnects an effects program (JamesDSP, EasyEffects) left without an output. Otherwise choose your output in the system sound settings; if the right output is already chosen and there is still no sound, restart the effects program.
+6. Steam Remote Play Together has no sound while sharing: the technical details show which source Steam records. Big Remote Play no longer moves application sound, so Steam's own capture is not undone. See [audio architecture](audio-architecture.md#coexisting-with-steam-remote-play-together).
 
-6. The person connecting hears their own voice during a voice call with this computer: the call app here plays their voice, and Sunshine sends what this computer plays. **Voice calls** under Audio names the call apps kept out of the stream; if yours is not named, the call runs in a web browser (its sound cannot be separated) or in an app Big Remote Play does not recognize. Use the call app's desktop version, or headphones plugged into another output than the shared one.
+7. The person connecting hears their own voice during a voice call with this computer: the call app here plays their voice, and Sunshine sends what this computer plays. **Voice calls** under Audio names the call apps kept out of the stream; if yours is not named, the call runs in a web browser (its sound cannot be separated) or in an app Big Remote Play does not recognize. Use the call app's desktop version, or headphones plugged into another output than the shared one.
+8. Game Window, the game plays here but the other device hears nothing: **Game sound sent** in the technical details names the game's streams. If it says the game is not playing sound while it is, the sound comes from a program outside the game's launch; turn off **Send only the game's sound** to send everything this computer plays.
+9. On the connecting computer, Connect tells after the stream starts when Moonlight's sound was muted there (it is turned back on), when Moonlight could not open the sound device (check the output, connect again), when Moonlight is not playing sound at all, and when sound from the game PC is being lost on the way (use a wired or less busy connection). Details: [audio architecture](audio-architecture.md#on-the-connecting-computer).
 
 A configured value in the monitor is not a measured frame rate. Network ping is not end-to-end gaming latency. Test wired networking and the actual encoder/decoder before attributing low FPS to the interface.
 

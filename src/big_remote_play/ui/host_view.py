@@ -63,6 +63,52 @@ def _monitor_choice_label(number: int, name: str, connector: str) -> str:
     return f"{number:02d} · {name} · {connector}"
 
 
+def connection_information(endpoints) -> str:
+    """What to send to the other person: this computer and how to reach it."""
+    lines = []
+    for provider, device in endpoints:
+        # TRANSLATORS: one line of the text copied for the other person; {provider} is Tailscale, ZeroTier or Headscale.
+        lines.append(_("{name} on {provider}: {address}").format(name=device.name or socket.gethostname(), provider=provider.display_name, address=device.dns_name or device.best_address))
+    return "\n".join(lines)
+
+
+def internet_access_rows(endpoints, *, toast=None) -> list[Gtk.Widget]:
+    """Share → Overview: the facts that matter first, the addresses one click away."""
+    from .network_common import copy_row, copy_to_clipboard
+
+    endpoints = list(endpoints)
+    if not endpoints:
+        return []
+    provider, device = endpoints[0]
+    rows: list[Gtk.Widget] = []
+    for title, value, icon in (
+        (_("Secure connection"), " · ".join(dict.fromkeys(item.display_name for item, _device in endpoints)), "brp-network-private-symbolic"),
+        (_("This computer"), device.name or socket.gethostname(), "brp-computer-symbolic"),
+        # TRANSLATORS: state of this computer over the secure connection: other devices can connect now.
+        (_("Status"), _("Ready"), "brp-emblem-ok-symbolic"),
+    ):
+        row = Adw.ActionRow(title=title, subtitle=value, use_markup=False)
+        row.set_subtitle_lines(0)
+        set_row_icon(row, icon)
+        rows.append(row)
+    text = connection_information(endpoints)
+    copy = Adw.ButtonRow(title=_("Copy connection information"))
+    copy.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Copies this computer's name and private address, to send to the other person")])
+    copy.connect("activated", lambda row: copy_to_clipboard(row, text, toast))
+    rows.append(copy)
+    details = Adw.ExpanderRow(title=_("Connection details"), subtitle=_("Private addresses, for someone helping you"), use_markup=False)
+    set_row_icon(details, "brp-dialog-information-symbolic")
+    for item, peer in endpoints:
+        address = peer.best_address
+        if peer.dns_name and peer.dns_name != address:
+            details.add_row(copy_row(item.display_name, peer.dns_name, icon="brp-network-private-symbolic", toast=toast))
+            details.add_row(copy_row(_("Private address"), address, toast=toast))
+        else:
+            details.add_row(copy_row(item.display_name, address, icon="brp-network-private-symbolic", toast=toast))
+    rows.append(details)
+    return rows
+
+
 class HostView(Gtk.Box):
     def __init__(self):
         self.loading_settings = True
@@ -537,6 +583,12 @@ class HostView(Gtk.Box):
         audio_group.set_title(_("Audio"))
         audio_group.set_description(_("The other computer hears the sound this computer plays. The microphone is not sent."))
 
+        # Measured, not configured: what the sound server and Sunshine report.
+        self.audio_stream_row = Adw.ActionRow(title=_("Sound for the other computer"), use_markup=False)
+        self.audio_stream_row.set_subtitle_lines(0)
+        set_row_icon(self.audio_stream_row, "brp-audio-volume-high-symbolic")
+        audio_group.add(self.audio_stream_row)
+
         self.audio_output_row = Adw.ComboRow()
         self.audio_output_row.set_title(_("Server output"))
         self.audio_output_row.set_tooltip_text(_("Automatic shares the output you are using now, including effects such as EasyEffects. Choose a device only to always share that one."))
@@ -553,6 +605,14 @@ class HostView(Gtk.Box):
         set_row_icon(self.audio_play_here_row, "brp-audio-volume-medium-symbolic")
         self.audio_play_here_row.connect("notify::active", self.on_audio_mode_changed)
         audio_group.add(self.audio_play_here_row)
+
+        self.audio_game_only_row = Adw.SwitchRow(title=_("Send only the game's sound"))
+        self.audio_game_only_row.set_subtitle(_("With Game Window, other programs, notifications and voice calls stay on this computer. This computer still hears everything."))
+        self.audio_game_only_row.set_subtitle_lines(0)
+        self.audio_game_only_row.set_active(True)
+        set_row_icon(self.audio_game_only_row, "brp-audio-x-generic-symbolic")
+        self.audio_game_only_row.connect("notify::active", self.on_audio_mode_changed)
+        audio_group.add(self.audio_game_only_row)
 
         microphone_row = Adw.ActionRow(title=_("Microphone"), subtitle=_("Not sent by Big Remote Play. Voice chat apps keep using it normally."), use_markup=False)
         microphone_row.set_subtitle_lines(0)
@@ -584,9 +644,12 @@ class HostView(Gtk.Box):
             ("output", _("Current output")),
             ("monitor", _("Recorded source")),
             ("sunshine", _("Sunshine records now")),
+            ("level", _("Sunshine recording level")),
+            ("sunshine_log", _("Sunshine log")),
             ("microphone", _("Default microphone")),
             ("mic_sent", _("Microphone sent to Sunshine")),
             ("steam", _("Steam Remote Play")),
+            ("game", _("Game sound sent")),
             ("calls", _("Calls kept out of the stream")),
             ("bridges", _("Routing added by Big Remote Play")),
         ):
@@ -599,6 +662,7 @@ class HostView(Gtk.Box):
         audio_group.add(self.audio_details_row)
 
         self.load_audio_outputs()
+        self._render_stream_audio()
 
         self.advanced_group = Adw.PreferencesGroup(title=_("Advanced Settings"), description=_("Input, Network, and Access"))
 
@@ -733,11 +797,6 @@ class HostView(Gtk.Box):
             [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
             [_("Start sharing"), _("Start sharing the game from this PC")],
         )
-
-        self.private_network_button = _create_overview_action_button(_("Play over the internet"), lambda _b: self._go_to_private_network())
-        self.private_network_button.set_child(create_icon_widget("go-next-symbolic", size=16))
-        self.private_network_button.set_tooltip_text(_("Play over the internet"))
-        self.private_network_button.update_property([Gtk.AccessibleProperty.LABEL], [_("Play over the internet: connect your devices")])
 
         # A single premium session surface keeps the role, live state and primary
         # action together. It becomes vertical through the window breakpoint,
@@ -905,7 +964,12 @@ class HostView(Gtk.Box):
         )
         self.pair_entry.add_suffix(self.guest_pair_button)
         self.pair_entry.connect("entry-activated", lambda _row: self.pair_with_entered_pin())
-        pin_group.add(self.pair_entry)
+        # A request normally appears by itself, with its own PIN field; typing
+        # a code here is the fallback (an older Sunshine, no saved password).
+        self.manual_pairing_row = Adw.ExpanderRow(title=_("Type a pairing code yourself"), subtitle=_("Only if the request does not appear here by itself."), use_markup=False)
+        set_row_icon(self.manual_pairing_row, "brp-dialog-password-symbolic")
+        self.manual_pairing_row.add_row(self.pair_entry)
+        pin_group.add(self.manual_pairing_row)
 
         # The discovery code is the fallback, and says so.
         self.pin_display_label = Gtk.Label(label="—" * BRP_DISCOVERY_CODE_LENGTH)
@@ -939,19 +1003,13 @@ class HostView(Gtk.Box):
         fallback.add_row(fallback_row)
         pin_group.add(fallback)
 
-        network_row = Adw.ActionRow(
-            title=_("Playing over the internet?"),
-            subtitle=_("Same home network? Skip this step. For different networks, set up internet play."),
-        )
-        set_row_icon(network_row, "brp-network-private-symbolic")
-        network_row.add_suffix(self.private_network_button)
-        network_row.set_activatable_widget(self.private_network_button)
-        network_group = Adw.PreferencesGroup()
-        network_group.add(network_row)
+        # Play over the internet is a sidebar destination; Share does not
+        # repeat it. When this computer is reachable that way, the group below
+        # says how, while sharing.
         # While sharing: the private addresses another computer can really use,
         # read from the VPN clients (never a guessed or public address).
         self.internet_access_group = RowGroup(title=_("Available over the internet"))
-        self.internet_access_group.set_description(_("Send one of these to the other person, or let them pick this computer under Connect."))
+        self.internet_access_group.set_description(_("The other person picks this computer under Connect. If it is not listed, send them the connection information."))
         self.internet_access_group.set_visible(False)
         self._internet_worker = Worker()
 
@@ -981,7 +1039,15 @@ class HostView(Gtk.Box):
         self.session_summary_row.set_title_lines(0)
         self.session_summary_row.set_subtitle_lines(0)
         set_row_icon(self.session_summary_row, "brp-host-symbolic")
-        self.session_summary_box = boxed_rows(self.session_summary_row)
+        # The same measured state as Preferences → Audio, where Test and the details are.
+        self.session_audio_row = Adw.ActionRow(title=_("Sound"), subtitle=_("Checking…"), use_markup=False, activatable=True)
+        self.session_audio_row.set_subtitle_lines(0)
+        set_row_icon(self.session_audio_row, "brp-audio-volume-high-symbolic")
+        arrow = create_icon_widget("go-next-symbolic", size=16)
+        arrow.set_valign(Gtk.Align.CENTER)
+        self.session_audio_row.add_suffix(arrow)
+        self.session_audio_row.connect("activated", lambda _row: self.view_stack.set_visible_child_name("config"))
+        self.session_summary_box = boxed_rows(self.session_summary_row, self.session_audio_row)
         self.session_summary_box.set_visible(False)
         self.share_controls.append(self.session_summary_box)
         self.overview_start_button.set_halign(Gtk.Align.FILL)
@@ -991,6 +1057,15 @@ class HostView(Gtk.Box):
         self.share_controls.append(start_heading)
         self.share_controls.append(self.overview_start_button)
         overview_body.append(self.share_controls)
+        # A device asking to pair comes first: it waits for an answer here.
+        from .pairing_prompt import PairingRequestsGroup
+        from big_remote_play.host.pairing_requests import RequestTracker
+
+        self._pair_tracker = RequestTracker()
+        self._pair_dialog = None
+        self._pair_answer_worker = Worker()
+        self.pair_requests_group = PairingRequestsGroup(on_approve=self._open_pair_request, on_reject=self._reject_pair_request)
+        overview_body.append(self.pair_requests_group)
         # Right under the running session: who is playing now, then where the
         # other person can reach it. "Connected now" is live sessions only;
         # pairings are listed separately below.
@@ -998,7 +1073,6 @@ class HostView(Gtk.Box):
         overview_body.append(self.internet_access_group)
         overview_body.append(pin_group)
         overview_body.append(self._create_paired_devices_overview())
-        overview_body.append(network_group)
         overview_page = Adw.Clamp(maximum_size=820, tightening_threshold=560)
         overview_page.set_child(overview_body)
         self.view_stack.add_titled_with_icon(overview_page, "overview", _("Overview"), "brp-host-symbolic")
@@ -1039,6 +1113,13 @@ class HostView(Gtk.Box):
         support_page.append(intro(_("Solve sharing problems"), _("Check the connection first. Open server tools only when needed."), "brp-support-symbolic"))
         # The identical network row already sits on Overview, where sharing starts.
         support_page.append(self.perf_monitor)
+        from .connection_history import ShareHistoryCard
+
+        # Kept between sessions and app restarts, unlike the live chart above.
+        self.share_history_card = ShareHistoryCard()
+        self._history_sessions: dict[tuple[str, float], str] = {}
+        self._history_writer = Worker()
+        support_page.append(self.share_history_card)
         support_page.append(self.summary_box)
         support_page.append(server_tools_group)
         support_page.append(advanced_tools_group)
@@ -1577,22 +1658,65 @@ class HostView(Gtk.Box):
 
         self._controllers_worker.submit(controller_report, self._show_controller_report, failed=lambda _error: self._show_controller_report(None))
 
-    def _pairing_upkeep(self) -> tuple[int | None, str]:
-        """Worker: the open app, and whether devices can be approved right away.
+    def _pairing_upkeep(self) -> tuple[int | None, str, list | None, dict[str, str]]:
+        """Worker: the open app, whether devices can be approved, who is waiting.
 
         With working credentials it also cancels pairing requests the device
-        abandoned, which would otherwise refuse its next attempt.
+        abandoned, which would otherwise refuse its next attempt, and returns
+        the requests still waiting with a name a person recognizes.
         """
         app_id = self.sunshine.running_app_id()
-        credentials = self._get_sunshine_creds()
+        credentials = self._get_sunshine_creds() or self._create_sunshine_credentials()
+        # ``None`` means "could not be read": requests on screen stay as
+        # they are; only an answer from Sunshine can say nobody waits.
         if not credentials:
-            return app_id, "missing"
-        _pending, status = self.sunshine.pending_pairings(credentials)
+            return app_id, "missing", None, {}
+        pending, status = self.sunshine.pending_pairings(credentials)
         if status == 401:
-            return app_id, "rejected"
-        if status == 200:
-            self.sunshine.discard_abandoned_pairings(credentials)
-        return app_id, ""
+            return app_id, "rejected", None, {}
+        if status == 200 and pending:
+            if self.sunshine.discard_abandoned_pairings(credentials):
+                pending, status = self.sunshine.pending_pairings(credentials)
+        if status != 200 or pending is None:
+            return app_id, "", None, {}
+        pending = list(pending)
+        from big_remote_play.host.pairing_requests import friendly_name
+
+        known = getattr(self, "_pair_tracker", None)
+        names = {item.pairing_id: friendly_name(item, self.perf_monitor._display_name) for item in pending if known is None or item.pairing_id not in known.requests}
+        return app_id, "", pending, names
+
+    def _create_sunshine_credentials(self) -> tuple[str, str] | None:
+        """Worker: give a Sunshine that has no user yet one, kept in the keyring.
+
+        Only when Sunshine says no user exists (a first start) and the keyring
+        can keep the password: an existing Sunshine user is never replaced.
+        The person never needs to know this password; Server password in
+        Support shows how to change it.
+        """
+        import getpass
+        import secrets
+
+        from big_remote_play.utils.secret_store import SecretStore
+
+        if getattr(self, "_credentials_created", False):
+            return None
+        _pending, status = self.sunshine.pending_pairings(None)
+        if status != 307 or not SecretStore().is_available():
+            return None
+        self._credentials_created = True
+        user = getpass.getuser() or "big-remote-play"
+        password = secrets.token_urlsafe(24)
+        ok, _message = self.sunshine.create_user(user, password)
+        if not ok:
+            return None
+        try:
+            save_sunshine_credentials(user, password, conf_path=self._get_sunshine_conf_path())
+        except Exception as error:
+            _log.warning("Sunshine user created but its password could not be kept: %s", type(error).__name__)
+            return None
+        _log.info("Created the Sunshine user for this computer and kept its password in the keyring.")
+        return user, password
 
     def _check_pairing_busy(self) -> None:
         """Show the way out when an open stream would block pairing (off the GTK thread)."""
@@ -1609,14 +1733,99 @@ class HostView(Gtk.Box):
 
         def apply(result) -> None:
             self._pair_busy_checking = False
-            app_id, password = result
+            app_id, password, pending, names = result
             self._show_pairing_busy(self.is_hosting and bool(app_id))
             self._show_password_needed(password if self.is_hosting else "")
+            if not self.is_hosting:
+                self._end_pair_requests()
+            elif pending is not None:
+                self._update_pair_requests(pending, names)
 
         def failed(_error) -> None:
             self._pair_busy_checking = False
 
         self._pair_busy_worker.submit(self._pairing_upkeep, apply, failed=failed)
+
+    # ------------------------------------------------------------------
+    # Pairing requests: shown by themselves, answered here.
+    # ------------------------------------------------------------------
+    def _update_pair_requests(self, pending, names: dict[str, str] | None = None) -> None:
+        events = self._pair_tracker.update(pending, names)
+        for request in events.expired:
+            # Nobody answered in time: the request is cancelled, never left open.
+            credentials = self._get_sunshine_creds()
+            self._pair_answer_worker.submit(lambda pairing_id=request.pairing_id: self.sunshine.cancel_pairing(pairing_id, credentials), lambda _ok: None, keep_previous=True)
+            self.show_toast(_("The connection request from {name} expired.").format(name=request.name))
+        for request in (*events.gone, *events.expired):
+            if self._pair_dialog is not None and self._pair_dialog.request.pairing_id == request.pairing_id:
+                self._pair_dialog.force_close()
+                self._pair_dialog = None
+                if request in events.gone:
+                    self.show_toast(_("{name} stopped waiting.").format(name=request.name))
+        self.pair_requests_group.show_requests(self._pair_tracker.requests.values())
+        if events.new:
+            self._announce_pair_request(events.new[0])
+
+    def _announce_pair_request(self, request) -> None:
+        """Open the request at once; outside the window, a desktop notification too."""
+        root = self._root_window()
+        if root is not None and not root.is_active():
+            application = root.get_application()
+            if application is not None:
+                from gi.repository import Gio  # type: ignore
+
+                notification = Gio.Notification.new(_("A computer wants to connect"))
+                notification.set_body(_("{name} wants to play on this computer. Open Big Remote Play to approve it.").format(name=request.name))
+                application.send_notification("brp-pairing-request", notification)
+        if self._pair_dialog is None:
+            self._open_pair_request(request)
+
+    def _open_pair_request(self, request) -> None:
+        from .pairing_prompt import PairingRequestDialog
+
+        if self._pair_dialog is not None:
+            if self._pair_dialog.request.pairing_id == request.pairing_id:
+                return
+            self._pair_dialog.force_close()
+        dialog = PairingRequestDialog(request, on_approve=lambda pin, item=request: self._approve_pair_request(item, pin), on_reject=lambda item=request: self._reject_pair_request(item))
+        dialog.connect("closed", lambda closed: self._pair_dialog_closed(closed))
+        self._pair_dialog = dialog
+        dialog.present_for(self)
+
+    def _pair_dialog_closed(self, dialog) -> None:
+        if self._pair_dialog is dialog:
+            self._pair_dialog = None
+
+    def _approve_pair_request(self, request, pin: str) -> None:
+        self._pair_tracker.forget(request.pairing_id)
+        self.pair_requests_group.show_requests(self._pair_tracker.requests.values())
+        credentials = self._get_sunshine_creds()
+        if not credentials:
+            self.open_pin_dialog(None, prefill_pin=pin)
+            return
+        # Sunshine answers once the device has checked the PIN (up to about ten seconds).
+        self.show_toast(_("Checking the PIN with {name}…").format(name=request.name))
+        self._send_pin_async(pin, request.name, credentials, pairing_id=request.pairing_id, success=_("{name} can now play on this computer.").format(name=request.name))
+
+    def _reject_pair_request(self, request) -> None:
+        self._pair_tracker.forget(request.pairing_id)
+        self.pair_requests_group.show_requests(self._pair_tracker.requests.values())
+        if self._pair_dialog is not None and self._pair_dialog.request.pairing_id == request.pairing_id:
+            self._pair_dialog.force_close()
+        credentials = self._get_sunshine_creds()
+
+        def done(ok) -> None:
+            self.show_toast(_("Request rejected. {name} was not allowed to connect.").format(name=request.name) if ok else _("Sunshine did not answer. The request ends by itself when it expires."))
+
+        self._pair_answer_worker.submit(lambda: self.sunshine.cancel_pairing(request.pairing_id, credentials), done, failed=lambda _error: done(False), keep_previous=True)
+
+    def _end_pair_requests(self) -> None:
+        """Sharing stopped: nothing is waiting any more."""
+        self._pair_tracker.clear()
+        self.pair_requests_group.clear()
+        if self._pair_dialog is not None:
+            self._pair_dialog.force_close()
+            self._pair_dialog = None
 
     def open_sunshine_credentials_dialog(self) -> None:
         """Ask for Sunshine's user and password once, check them, keep them in the keyring."""
@@ -2002,7 +2211,7 @@ class HostView(Gtk.Box):
         dialog.set_extra_child(group)
         dialog.present(self)
 
-    def _send_pin_async(self, pin: str, name: str, auth, *, pairing_id: str | None = None) -> None:
+    def _send_pin_async(self, pin: str, name: str, auth, *, pairing_id: str | None = None, success: str = "") -> None:
         """Send a PIN off the GTK thread and report the outcome."""
 
         def done(result, blocked) -> bool:
@@ -2010,7 +2219,7 @@ class HostView(Gtk.Box):
                 return False
             if result.ok:
                 self.pair_entry.set_text("")
-                self.show_toast(_("PIN sent successfully"))
+                self.show_toast(success or _("PIN sent successfully"))
                 self._refresh_paired_devices()
             elif result.status == 401:
                 self.show_error_dialog(_("Authentication Failed"), _("Invalid username or password."))
@@ -2135,10 +2344,64 @@ class HostView(Gtk.Box):
         self._show_connected_devices([])
         return group
 
+    def _refocus_game_when_someone_joins(self, infos) -> None:
+        """Game Window: a device started playing, so the game gets the focus back.
+
+        Approving the device happened in this window; left like that, the
+        other person's keys would reach Big Remote Play and many games run
+        slowed down or muted while they are not the active window.
+        """
+        count = len([info for info in infos if info.connected])
+        previous, self._playing_count = getattr(self, "_playing_count", 0), count
+        if count != previous:
+            self._render_stream_audio()
+        session = self._game_window_session
+        spec = session.get("spec") if session else None
+        if count <= previous or spec is None or not self.is_hosting:
+            return
+        from big_remote_play.host.window_capture import activate_game
+
+        threading.Thread(target=activate_game, args=(spec,), daemon=True).start()
+
+    def _record_history(self, infos) -> None:
+        """Keep what Connected now showed: a start when a device appears, an end when it leaves."""
+        history = self.share_history_card.history
+        now = time.time()
+        current = {(info.device_name or "", float(info.started_at or 0.0)): info for info in infos if info.connected}
+        started = [(key, info) for key, info in current.items() if key not in self._history_sessions]
+        ended = [(key, record) for key, record in self._history_sessions.items() if key not in current]
+        if not started and not ended:
+            return
+        for key, _record in ended:
+            del self._history_sessions[key]
+        pending_keys = [key for key, _info in started]
+        for key in pending_keys:
+            self._history_sessions[key] = ""  # claimed; the id arrives from the worker
+
+        def work():
+            for _key, record in ended:
+                history.finish(record, ended_at=now)
+            return [(key, history.start(info.device_name, started_at=info.started_at or now)) for key, info in started]
+
+        def done(ids) -> None:
+            for key, record in ids:
+                if key in self._history_sessions:
+                    self._history_sessions[key] = record
+                else:
+                    # It ended before its start was written: close it now.
+                    self._history_writer.submit(lambda record=record: history.finish(record, ended_at=now), lambda _value: None, keep_previous=True)
+            if self.share_history_card.get_mapped():
+                self.share_history_card.refresh()
+
+        self._history_writer.submit(work, done, keep_previous=True)
+
     def _show_connected_devices(self, infos) -> None:
         from .connection_cards import DeviceConnectionCard
 
         self._check_pairing_busy()
+        if hasattr(self, "share_history_card") and (infos or self._history_sessions):
+            self._record_history(infos)
+        self._refocus_game_when_someone_joins(infos)
         box = self.connected_devices_list
         while child := box.get_first_child():
             box.remove(child)
@@ -2479,6 +2742,8 @@ class HostView(Gtk.Box):
         for widget in (self.game_group, self.quality_summary_box):
             widget.set_visible(not self.is_hosting)
         self.session_summary_box.set_visible(self.is_hosting)
+        if hasattr(self, "audio_stream_row"):
+            self._render_stream_audio()
         if self.is_hosting:
             self.session_summary_row.set_subtitle(self._describe_session())
             self.perf_monitor.set_connection_status("Sunshine", _("Active - Waiting for Connections"), True)
@@ -2516,6 +2781,7 @@ class HostView(Gtk.Box):
             self._refresh_internet_access()
             self._check_firewall()
         else:
+            self._end_pair_requests()
             self.perf_monitor.set_connection_status("Sunshine", _("Inactive"), False)
             self.perf_monitor.stop_monitoring()
             self._check_firewall()
@@ -2568,21 +2834,13 @@ class HostView(Gtk.Box):
         self._sync_game_window_timer()
 
     def _refresh_internet_access(self) -> None:
-        """Show the address of this PC on each connected private network."""
+        """How the other person reaches this PC over a private network, in plain words."""
         from big_remote_play.private_network.service import default_service
-        from .network_common import copy_row
 
         def apply(endpoints) -> None:
             if not self.is_hosting:
                 return
-            rows = []
-            for provider, device in endpoints:
-                address = device.best_address
-                if device.dns_name and device.dns_name != address:
-                    rows.append(copy_row(provider.display_name, device.dns_name, icon="brp-network-private-symbolic", toast=self.show_toast))
-                    rows.append(copy_row(_("Private address"), address, toast=self.show_toast))
-                else:
-                    rows.append(copy_row(provider.display_name, address, icon="brp-network-private-symbolic", toast=self.show_toast))
+            rows = internet_access_rows(endpoints, toast=self.show_toast)
             self.internet_access_group.replace(rows)
             self.internet_access_group.set_visible(bool(rows))
             if rows:
@@ -2648,9 +2906,10 @@ class HostView(Gtk.Box):
             return
         self._audio_generation += 1
         generation = self._audio_generation
+        self._audio_status = None  # the previous sharing's facts no longer apply
 
         def check() -> None:
-            status = session.reconcile()
+            status = self._with_sunshine_log(session.reconcile())
             GLib.idle_add(self._apply_audio_status, status, generation)
 
         self.audio_watcher = AudioWatcher(check)
@@ -2671,7 +2930,6 @@ class HostView(Gtk.Box):
         generation = self._audio_generation
 
         def work() -> None:
-            from dataclasses import replace
 
             from big_remote_play.utils.audio import audio_status
 
@@ -2680,13 +2938,66 @@ class HostView(Gtk.Box):
                 graph = self.audio_manager.snapshot()
                 status = audio_status(graph, session.manual_output if session else manual, tuple(session.links) if session else ())
                 if session is not None:
-                    status = replace(status, calls_kept_out=session.calls_kept_out)
+                    status = session.decorate(status, graph)
+                status = self._with_sunshine_log(status)
             except Exception as exc:  # pragma: no cover - defensive
                 _log.error("Could not read audio status: %s", exc)
                 status = None
             GLib.idle_add(self._apply_audio_status, status, generation, True)
 
         threading.Thread(target=work, daemon=True).start()
+
+    def _with_sunshine_log(self, status):
+        """Worker: add what Sunshine logged about the sound of its latest session."""
+        from dataclasses import replace
+
+        from big_remote_play.utils.audio import read_sunshine_audio_log
+
+        if not self.is_hosting:
+            return status
+        log = read_sunshine_audio_log(self.sunshine.config_dir / "sunshine.log")
+        if log != getattr(self, "_logged_sunshine_audio", None):
+            self._logged_sunshine_audio = log
+            if log is not None:
+                _log.info("[AUDIO] Sunshine log: source=%r encoder=%r failed=%s %s", log.source, log.encoder, log.failed, log.error)
+        return replace(status, sunshine_log=log)
+
+    def _render_stream_audio(self) -> None:
+        """The first audio row: does this computer's sound reach the stream, in words."""
+        from big_remote_play.utils import audio
+
+        if not self.is_hosting:
+            self.audio_stream_row.set_subtitle(_("Checked while sharing."))
+            return
+        if self._audio_status is None:
+            self.audio_stream_row.set_subtitle(_("Checking…"))
+            self.session_audio_row.set_subtitle(_("Checking…"))
+            return
+        status = self._audio_status
+        state = audio.stream_audio_state(status, getattr(self, "_playing_count", 0))
+        if state == audio.STREAM_SENDING and status.game_only:
+            text = _("Sending only the game's sound.")
+            if not status.game_programs:
+                text += " " + _("The game is not playing sound right now.")
+            if status.level_restored:
+                text += " " + _("Sunshine's recording had been muted or turned down in this computer's sound settings; Big Remote Play turned it back up.")
+        elif state == audio.STREAM_SENDING:
+            text = _("Sending the sound this computer plays.")
+            if status is not None and status.level_restored:
+                text += " " + _("Sunshine's recording had been muted or turned down in this computer's sound settings; Big Remote Play turned it back up.")
+        else:
+            text = {
+                audio.STREAM_WAITING: _("Ready. Sound is sent when a device starts playing."),
+                audio.STREAM_STARTING: _("A device is playing, but Sunshine is not recording sound yet."),
+                audio.STREAM_CAPTURE_FAILED: _("Not sent: Sunshine could not open this computer's sound. Stop sharing and start again."),
+                audio.STREAM_MUTED: _("Not sent: Sunshine's recording is muted in this computer's sound settings. Press Test to turn it back on."),
+                audio.STREAM_MICROPHONE: _("Not sent: Sunshine is recording a microphone. Stop sharing and report it."),
+                audio.STREAM_NOT_SEPARATED: _("Sending all of this computer's sound: the game's sound could not be separated."),
+            }.get(state, _("System audio unavailable"))
+        self.audio_stream_row.set_subtitle(text)
+        self.session_audio_row.set_subtitle(text)
+        description = _("Details and a sound test are in Preferences.")
+        self.session_audio_row.update_property([Gtk.AccessibleProperty.DESCRIPTION], [f"{text} {description}"])
 
     def _apply_audio_status(self, status, generation: int, from_refresh: bool = False) -> bool:
         if from_refresh:
@@ -2709,12 +3020,33 @@ class HostView(Gtk.Box):
             rows["sunshine"].set_subtitle(self._describe_source(status.sunshine_source, bool(status.sunshine_records_monitor)))
         else:
             rows["sunshine"].set_subtitle(_("No client is receiving sound right now"))
+        if status.sunshine_volume is None:
+            rows["level"].set_subtitle(_("No client is receiving sound right now"))
+        elif status.sunshine_muted:
+            rows["level"].set_subtitle(_("Muted"))
+        else:
+            rows["level"].set_subtitle(_("{percent} %, not muted").format(percent=status.sunshine_volume))
+        log = status.sunshine_log
+        if log is None:
+            rows["sunshine_log"].set_subtitle(_("No session since Sunshine started"))
+        elif log.failed and log.error:
+            rows["sunshine_log"].set_subtitle(_("Could not open the sound: {error}").format(error=log.error))
+        elif log.failed:
+            rows["sunshine_log"].set_subtitle(_("Could not open the sound"))
+        else:
+            rows["sunshine_log"].set_subtitle(" · ".join(part for part in (log.source or _("No source named"), log.encoder) if part))
         rows["microphone"].set_subtitle(status.default_source_description or status.default_source or _("None"))
         rows["mic_sent"].set_subtitle(_("Yes — this is an error; stop sharing and report it") if status.microphone_sent else _("No"))
         if status.steam_sources:
             rows["steam"].set_subtitle("\n".join(self._describe_source(s, monitor) for s, monitor in status.steam_sources))
         else:
             rows["steam"].set_subtitle(_("Steam is not recording sound"))
+        if not status.game_only:
+            rows["game"].set_subtitle(_("All sound this computer plays (Full Desktop, or the option is off)"))
+        elif status.game_programs:
+            rows["game"].set_subtitle(", ".join(status.game_programs))
+        else:
+            rows["game"].set_subtitle(_("The game is not playing sound right now."))
         rows["calls"].set_subtitle(", ".join(status.calls_kept_out) if status.calls_kept_out else _("No call app is playing into the shared sound"))
         self._show_calls_kept_out(status.calls_kept_out)
         if status.bridges:
@@ -2725,6 +3057,7 @@ class HostView(Gtk.Box):
             self.audio_play_here_row.set_subtitle(_("The connected client asked Sunshine not to play sound on this computer."))
         else:
             self.audio_play_here_row.set_subtitle(_("When off, only the other computer hears the game."))
+        self._render_stream_audio()
         return False
 
     def _show_calls_kept_out(self, programs) -> None:
@@ -2746,12 +3079,17 @@ class HostView(Gtk.Box):
     def on_test_audio_clicked(self, button) -> None:
         button.set_sensitive(False)
         self.audio_test_row.set_subtitle(_("Playing a short tone…"))
-        manual = self._selected_audio_sink()
+        session = self.audio_session
+        manual = session.manual_output if session is not None else self._selected_audio_sink()
         generation = self._audio_generation
 
         def work() -> None:
             try:
-                result = self.audio_manager.test_tone(manual)
+                if session is not None:
+                    # Asked for by the person: a recording muted again is turned back on.
+                    session.allow_level_restore()
+                    session.reconcile()
+                result = self.audio_manager.test_tone(manual, game_only=session is not None and session.game is not None)
             except Exception as exc:  # pragma: no cover - defensive
                 _log.error("Audio test failed: %s", exc)
                 result = {"played": False, "detected": False, "level_db": None, "monitor": None, "output": ""}
@@ -2767,6 +3105,18 @@ class HostView(Gtk.Box):
             text = _("System audio unavailable: there is no output to test.")
         elif not result.get("played"):
             text = _("The tone could not be played on {output}.").format(output=result.get("output") or "?")
+        elif result.get("detected") and result.get("capture") == "ok":
+            text = _(
+                "The tone reached the shared sound ({level:.0f} dB on {output}) and Sunshine is recording it. If the other device still hears nothing, the problem is on that device or the network."
+            ).format(level=result["level_db"], output=result.get("output") or "?")
+        elif result.get("detected") and result.get("capture") == "game-only":
+            text = _("The tone reached this computer's sound ({level:.0f} dB on {output}). Only the game's sound is sent, so the other device does not hear the tone.").format(
+                level=result["level_db"], output=result.get("output") or "?"
+            )
+        elif result.get("detected") and result.get("capture") == "muted":
+            text = _("The tone reached the shared sound, but Sunshine's recording is muted in this computer's sound settings.")
+        elif result.get("detected") and result.get("capture") == "elsewhere":
+            text = _("The tone reached {output}, but Sunshine records another source: {source}.").format(output=result.get("output") or "?", source=result.get("capture_source") or "?")
         elif result.get("detected"):
             text = _("The tone reached the shared sound ({level:.0f} dB on {output}).").format(level=result["level_db"], output=result.get("output") or "?")
         else:
@@ -2869,6 +3219,9 @@ class HostView(Gtk.Box):
             if item is None:
                 raise ValueError(_("Choose the game window to share."))
             game_window = {"spec": self._game_window_spec(item), "name": item.name}
+            if self.audio_game_only_row.get_active() and item.window.pid > 1:
+                names = [item.launch.executable, item.name, item.window.title]
+                game_window["audio"] = {"pid": item.window.pid, "names": [name for name in dict.fromkeys(names) if name]}
             self._game_launch_info = None
         else:
             self._game_launch_info = self._resolve_game_launch_info()
@@ -2915,7 +3268,7 @@ class HostView(Gtk.Box):
             if not self.sunshine.ensure_desktop_app():
                 raise RuntimeError(_("Could not update the game library. Existing games were preserved."))
 
-            from big_remote_play.utils.audio import AudioRoutingSession, capture_plan, sunshine_audio_sink
+            from big_remote_play.utils.audio import AudioRoutingSession, GameScope, capture_plan, sunshine_audio_sink
 
             manual = cfg.get("audio_output_name", "")
             play_on_host = bool(cfg.get("audio_play_on_host", True))
@@ -2932,7 +3285,8 @@ class HostView(Gtk.Box):
             sunshine_config["audio_sink"] = sunshine_audio_sink(manual, play_on_host)
             # Records the output in use. Nothing is written to the sound server
             # here; loopbacks are added later only if Sunshine mutes this computer.
-            session = AudioRoutingSession(self.audio_manager, manual_output=manual, play_on_host=play_on_host)
+            game_audio = (cfg.get("game_window") or {}).get("audio")
+            session = AudioRoutingSession(self.audio_manager, manual_output=manual, play_on_host=play_on_host, game=GameScope.from_state(game_audio))
             session.begin(graph)
             self.audio_session = session
 
@@ -2968,7 +3322,10 @@ class HostView(Gtk.Box):
                 return
             if not success:
                 self._rollback_start()
-            GLib.idle_add(self._on_hosting_started, {"success": success, "msg": msg, "game_window": game_window["name"] if game_window else None})
+            GLib.idle_add(
+                self._on_hosting_started,
+                {"success": success, "msg": msg, "game_window": game_window["name"] if game_window else None, "game_window_spec": game_window["spec"] if game_window else None},
+            )
         except Exception as e:
             self._rollback_start()
             GLib.idle_add(self._on_hosting_error, str(e))
@@ -3005,7 +3362,7 @@ class HostView(Gtk.Box):
 
         self.is_hosting = True
         name = result.get("game_window")
-        self._game_window_session = {"name": name} if name is not None else None
+        self._game_window_session = {"name": name, "spec": result.get("game_window_spec")} if name is not None else None
         if self._game_window_session is not None:
             self._watch_capture()
         self._start_audio_watch()
@@ -3935,6 +4292,7 @@ class HostView(Gtk.Box):
                 "gpu_idx": self.gpu_row.get_selected(),
                 "platform_idx": self.platform_row.get_selected(),
                 "audio_play_on_host": self.audio_play_here_row.get_active(),
+                "audio_game_only": self.audio_game_only_row.get_active(),
                 "audio_output_name": self._selected_audio_sink(),
                 "upnp": self.upnp_row.get_active(),
                 "ipv6": self.ipv6_row.get_active(),
@@ -4090,6 +4448,7 @@ class HostView(Gtk.Box):
                 # Older versions stored "audio_mode", where 1 meant "Other computer" only.
                 play_on_host = h.get("audio_mode") != 1
             self.audio_play_here_row.set_active(play_on_host)
+            self.audio_game_only_row.set_active(h.get("audio_game_only", True) is not False)
             desired_output = h.get("audio_output_name", "")
             if desired_output in self._audio_choice_names:
                 self.audio_output_row.set_selected(self._audio_choice_names.index(desired_output))
@@ -4111,7 +4470,7 @@ class HostView(Gtk.Box):
             self.loading_settings = False
 
     def connect_settings_signals(self):
-        for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row, self.audio_play_here_row, self.hdr_sdr_row, self.game_window_all_row]:
+        for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row, self.audio_play_here_row, self.audio_game_only_row, self.hdr_sdr_row, self.game_window_all_row]:
             r.connect("notify::active", self._schedule_save_host_settings)
 
         for r in [
@@ -4202,6 +4561,14 @@ class HostView(Gtk.Box):
         self._closed = True
         if hasattr(self, "perf_monitor"):
             self.perf_monitor.stop_monitoring()
+        # Sessions still on screen end with this window, as far as it knows.
+        for record in [record for record in getattr(self, "_history_sessions", {}).values() if record]:
+            try:
+                self.share_history_card.history.finish(record)
+            except Exception as error:  # a history line never blocks closing
+                _log.warning("Could not close a connection history entry: %s", error)
+        if hasattr(self, "_history_sessions"):
+            self._history_sessions.clear()
         stop_pin_listener = self.stop_pin_listener
         if callable(stop_pin_listener):
             stop_pin_listener()

@@ -23,6 +23,13 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Connection status](connection-status.md) — who is connected now, quality thresholds, the real route and the internet-page measurements.
 - [Audio architecture](audio-architecture.md) — what Sunshine records, the bridges Big Remote Play owns, recovery and Steam coexistence.
 - [Translations](translations.md) — gettext workflow and regional catalog requirements.
+- [UX simplification audit](ux-simplification-audit.md) — what each screen shows first, what moved to secondary places, and why.
+- [Guided setup](guided-setup-redesign.md) — the questions, the ready step and the hand-over.
+- [Installing what a task needs](dependency-installer.md) — detection, Pamac/PolicyKit installation and the Sunshine detection fix.
+- [Pairing requests](pairing-ux.md) — what Sunshine can tell, the request dialog and its safety rules.
+- [Connection history](connection-history-fix.md) — the stored sessions of Share, the 7-day chart and the live latency chart.
+- [Game Window audio](window-audio-fix.md) — investigation of corrupted sound when sharing one game window.
+- [Remote audio silence](remote-audio-silence-investigation.md) — investigation of a session where the other computer received no sound while the game played on the game PC.
 - [Iconography](iconography.md) — native, symbolic and project icon rules.
 - [Gamer theme design](gamer-theme-design.md) — provider ownership, compatibility and visual tokens.
 - [Backup and restore](backup-restore.md) — storage inventory, archive format, validation, rollback and data ownership.

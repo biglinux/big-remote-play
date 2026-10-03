@@ -90,13 +90,17 @@ def choose(ui, title):
 
 
 def test_home_offers_the_guided_setup_first(ui):
+    """The recommended start lives in the hero, before the two task cards."""
     assert ui.guided_setup_button.is_ancestor(ui.welcome_main_box)
     children = []
     child = ui.welcome_main_box.get_first_child()
     while child is not None:
         children.append(child)
         child = child.get_next_sibling()
-    assert children.index(ui.guided_setup_button) < children.index(ui.welcome_cards_box)
+    hero = next(child for child in children if ui.guided_setup_button.is_ancestor(child))
+    assert hero.has_css_class("welcome-hero")
+    assert children.index(hero) < children.index(ui.welcome_cards_box)
+    assert ui.guided_setup_button.has_css_class("suggested-action")
 
 
 @pytest.mark.parametrize("role, title", [("host", "Share my game"), ("guest", "Connect to another computer")])
@@ -107,7 +111,8 @@ def test_same_network_goes_straight_to_the_task_without_any_vpn(ui, role, title)
     assert visible_tag(ui) == "guided-place"
     assert "Simplest" in texts(ui.home_navigation.get_visible_page())
     choose(ui, "On the same network")
-    assert ui.current_page == role
+    # This computer is checked first; with everything there the guide goes on by itself.
+    assert wait_for(lambda: ui.current_page == role)
     assert visible_tag(ui) == "choices"  # Home is clean for the next visit
 
 
@@ -115,8 +120,6 @@ def test_internet_with_a_ready_connection_uses_it_and_returns_to_the_task(ui):
     start(ui, HubService([ZT_CONNECTED]))
     choose(ui, "Share my game")
     choose(ui, "Somewhere else")
-    assert "Let's create a secure connection" in texts(ui.home_navigation.get_visible_page())
-    buttons(ui, "Continue")[0].emit("clicked")
     assert wait_for(lambda: bool(buttons(ui, "Use this connection")))
     content = texts(ui.home_navigation.get_visible_page())
     assert "We found a connection that is ready" in content and "ZeroTier" in content and "games" in content
@@ -131,7 +134,6 @@ def test_internet_without_any_connection_asks_how_with_a_recommendation(ui):
     start(ui, HubService())
     choose(ui, "Connect to another computer")
     choose(ui, "Somewhere else")
-    buttons(ui, "Continue")[0].emit("clicked")
     assert wait_for(lambda: visible_tag(ui) == "guided-method")
     options = cards(ui)
     assert set(options) == {"Tailscale", "I already use ZeroTier", "Advanced options"}
@@ -147,7 +149,6 @@ def test_a_connection_that_needs_one_step_hands_over_to_the_internet_page(ui):
     start(ui, HubService([off]))
     choose(ui, "Share my game")
     choose(ui, "Somewhere else")
-    buttons(ui, "Continue")[0].emit("clicked")
     assert wait_for(lambda: "Your secure connection is turned off" in texts(ui.home_navigation.get_visible_page()))
     buttons(ui, "Continue")[0].emit("clicked")
     drain()
@@ -159,7 +160,6 @@ def test_zerotier_in_the_guide_asks_only_for_the_code(ui, monkeypatch):
     start(ui, HubService())
     choose(ui, "Connect to another computer")
     choose(ui, "Somewhere else")
-    buttons(ui, "Continue")[0].emit("clicked")
     assert wait_for(lambda: visible_tag(ui) == "guided-method")
     choose(ui, "I already use ZeroTier")
     page = ui.home_navigation.get_visible_page()
@@ -181,7 +181,6 @@ def test_without_a_zerotier_code_the_guide_explains_how_to_create_a_network(ui, 
     start(ui, HubService())
     choose(ui, "Connect to another computer")
     choose(ui, "Somewhere else")
-    buttons(ui, "Continue")[0].emit("clicked")
     assert wait_for(lambda: visible_tag(ui) == "guided-method")
     choose(ui, "I already use ZeroTier")
     buttons(ui, "I don't have a code")[0].emit("clicked")
@@ -194,6 +193,51 @@ def test_without_a_zerotier_code_the_guide_explains_how_to_create_a_network(ui, 
     steps = shown[0][1]
     assert len(steps) == 4 and steps[0][5] == "https://my.zerotier.com"  # the one place a network is created
     assert visible_tag(ui) == "guided-zerotier"  # the code field stays open behind the steps
+
+
+def test_the_guide_installs_what_the_task_needs_and_continues_by_itself(ui, monkeypatch):
+    from big_remote_play.utils import dependencies
+
+    installed: set[str] = set()
+    monkeypatch.setattr(dependencies, "_AUDIT", lambda ids: [dependencies.ComponentState(i, i in installed) for i in ids])
+    plan = dependencies.InstallPlan("pamac", ("pamac", "install", "--no-confirm", "moonlight-qt"), ("moonlight",), ("moonlight-qt",), ())
+    monkeypatch.setattr(dependencies, "_PLAN", lambda ids: plan)
+
+    def run(plan, *, on_line=None, start_unit=None, probe=None):
+        on_line("Transaction successfully finished.")
+        installed.update(plan.components)
+        return dependencies.InstallOutcome(tuple(probe(plan.components)), 0)
+
+    monkeypatch.setattr(dependencies, "_RUN", run)
+    start(ui)
+    choose(ui, "Connect to another computer")
+    choose(ui, "On the same network")
+    assert visible_tag(ui) == "guided-ready"
+    checklist = ui.guided_setup.checklist
+    assert wait_for(lambda: checklist.button.get_visible())
+    content = texts(ui.home_navigation.get_visible_page())
+    assert "Moonlight" in content and "Not installed" in content
+    assert ui.current_page == "welcome"  # nothing happens before the button
+    checklist.button.emit("clicked")
+    assert wait_for(lambda: ui.current_page == "guest", timeout=5)
+
+
+def test_a_failed_installation_stays_on_the_page_with_a_retry(ui, monkeypatch):
+    from big_remote_play.utils import dependencies
+
+    monkeypatch.setattr(dependencies, "_AUDIT", lambda ids: [dependencies.ComponentState(i, False) for i in ids])
+    plan = dependencies.InstallPlan("pamac", ("pamac", "install", "--no-confirm", "sunshine-bin"), ("sunshine",), ("sunshine-bin",), ())
+    monkeypatch.setattr(dependencies, "_PLAN", lambda ids: plan)
+    monkeypatch.setattr(dependencies, "_RUN", lambda plan, **kwargs: dependencies.InstallOutcome(tuple(kwargs["probe"](plan.components)), 1))
+    start(ui)
+    choose(ui, "Share my game")
+    choose(ui, "On the same network")
+    checklist = ui.guided_setup.checklist
+    assert wait_for(lambda: checklist.button.get_visible())
+    checklist.button.emit("clicked")
+    assert wait_for(lambda: checklist.button.get_sensitive() and not checklist.busy)
+    assert checklist.button_label.get_label() == "Try again"
+    assert visible_tag(ui) == "guided-ready" and ui.current_page == "welcome"
 
 
 def test_back_goes_one_question_back_and_restarting_is_clean(ui):
