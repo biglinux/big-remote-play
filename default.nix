@@ -1,4 +1,9 @@
-{ lib
+# `version` is the build's YY.MM.DD, which flake.nix derives from the commit
+# date. Nix builds with SOURCE_DATE_EPOCH at 1980, so tools/release/
+# build_version.py would otherwise stamp 80.01.02; BRP_BUILD_VERSION is its
+# explicit override.
+{ version
+, lib
 , python3Packages
 , gtk4
 , libadwaita
@@ -13,8 +18,9 @@
 }:
 python3Packages.buildPythonApplication {
   pname = "big-remote-play";
-  version = "0.0.0";
+  inherit version;
   src = ./.;
+  env.BRP_BUILD_VERSION = version;
   pyproject = true;
 
   build-system = with python3Packages; [ uv-build ];
@@ -44,6 +50,10 @@ python3Packages.buildPythonApplication {
       $out/share/applications/br.com.biglinux.remoteplay.desktop
     install -Dm644 $src/usr/share/metainfo/br.com.biglinux.remoteplay.metainfo.xml \
       $out/share/metainfo/br.com.biglinux.remoteplay.metainfo.xml
+    # The release the checkout leaves neutral, dated as the wheel is.
+    substituteInPlace $out/share/metainfo/br.com.biglinux.remoteplay.metainfo.xml \
+      --replace-fail 'version="0.0.0" date="1970-01-01"' \
+        'version="${version}" date="20${lib.replaceStrings [ "." ] [ "-" ] version}"'
     install -Dm644 $src/usr/share/icons/hicolor/scalable/apps/br.com.biglinux.remoteplay.svg \
       $out/share/icons/hicolor/scalable/apps/br.com.biglinux.remoteplay.svg
 
