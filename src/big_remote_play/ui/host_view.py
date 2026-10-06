@@ -109,6 +109,47 @@ def internet_access_rows(endpoints, *, toast=None) -> list[Gtk.Widget]:
     return rows
 
 
+CONTROLLER_GRACE_SECONDS = 20
+
+
+def controller_connection_text(report, now=None) -> tuple[str, str] | None:
+    """Title and explanation for the other computer's controllers, or ``None``.
+
+    Read from Sunshine's log: a controller it created, one it could not
+    create, or none sent at all some time after the connection began."""
+    if report is None:
+        return None
+    if report.disabled:
+        return (
+            _("Controllers are turned off"),
+            _("Sunshine's settings do not accept controllers from the other computer. Turn on “Enable Gamepad Input” in Share → Support → Advanced server settings."),
+        )
+    connection = report.connection
+    if connection is None:
+        return None
+    if connection.failed:
+        return (
+            _("Sunshine could not create the controller"),
+            _("The other computer's controller reached Sunshine, but it could not create one here. Restart this computer once after installing or updating Sunshine, then connect again."),
+        )
+    if connection.arrived:
+        return (
+            _("The other computer's controller is here"),
+            _("It reached this computer as {controllers}.").format(controllers=", ".join(connection.arrived)),
+        )
+    if connection.connected_at is None:
+        return None
+    import datetime as _dt
+
+    now = now or _dt.datetime.now()
+    if (now - connection.connected_at).total_seconds() < CONTROLLER_GRACE_SECONDS:
+        return None
+    return (
+        _("No controller has arrived from the other computer"),
+        _("Connect the controller to the other computer before starting, and keep Moonlight's window in front: Moonlight only sends controllers it recognises, and only while its window is active."),
+    )
+
+
 class HostView(Gtk.Box):
     def __init__(self):
         self.loading_settings = True
@@ -947,7 +988,9 @@ class HostView(Gtk.Box):
         # does nothing in the game.
         self.controller_local_row = Adw.ActionRow(title=_("This computer's controller comes first"), use_markup=False)
         self.controller_blocked_row = Adw.ActionRow(title=_("Controllers of the other computer cannot work"), use_markup=False)
-        for row in (self.controller_local_row, self.controller_blocked_row):
+        # What Sunshine did with the controllers of the current connection.
+        self.controller_remote_row = Adw.ActionRow(use_markup=False)
+        for row in (self.controller_remote_row, self.controller_local_row, self.controller_blocked_row):
             row.set_title_lines(0)
             row.set_subtitle_lines(0)
             set_row_icon(row, "brp-input-keyboard-symbolic")
@@ -1670,6 +1713,11 @@ class HostView(Gtk.Box):
     def _show_controller_report(self, report) -> None:
         local = bool(report is not None and report.local and self.is_hosting)
         blocked = bool(report is not None and report.unusable and self.is_hosting)
+        remote = controller_connection_text(report if self.is_hosting else None)
+        if remote is not None:
+            self.controller_remote_row.set_title(remote[0])
+            self.controller_remote_row.set_subtitle(remote[1])
+        self.controller_remote_row.set_visible(remote is not None)
         if local and report is not None:
             self.controller_local_row.set_subtitle(
                 _(
