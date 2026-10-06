@@ -37,9 +37,7 @@ Rules that keep the layers honest:
 
 ## Connect your devices
 
-The cards and their switches are described in [cards and switches](connect-devices-cards-redesign.md) (`service.card_summaries()`, `cards.summarize()`); Headscale's **Set up** is the [setup wizard](headscale-setup-wizard.md).
-
-**Connect your devices** is an `Adw.NavigationView` in the main window. Its root, `RemoteConnectionPage`, shows one `ProviderCard` per method with `device_list.simple_state(status)` — **Not installed**, **Off**, **Connecting…**, **Connected** or **Needs attention** — read through `service.overview()`. **Open** pushes `ProviderPage` for that method; every later step (Set up, Add another device, Manage network, API access, Accounts and networks, guides) is pushed on the same navigation, so nothing there is a dialog except short confirmations and inputs. The design and its reasons are in [Connect your devices](connect-your-devices-redesign.md).
+**Connect your devices** is an `Adw.NavigationView` in the main window: a root page with one card per method (`service.card_summaries()`, `cards.summarize()`) and one `ProviderPage` per method pushed on the same navigation, with every later step as a page. Pages, cards and switches are described in [Connect your devices](connect-your-devices.md); Headscale's **Set up** is the [setup wizard](headscale-setup-wizard.md).
 
 A method's page reads only its own provider:
 
@@ -64,7 +62,7 @@ A method's page reads only its own provider:
 
 Names given with **Rename** on a method's page live in `history/devices.json` (0600, two allowlisted fields per device — a name and a favourite flag kept for compatibility — keyed by address); only this computer uses them.
 
-On Connect your devices the sidebar shows the same cards as Share and Connect (the remembered task's streaming component and the three methods, each from its own `ProviderStatus`, never a daemon's "Running"); Home shows two summary indicators. The 3-second service probe checks only the rows the current page shows.
+The sidebar's service cards and Home's two indicators read the same `ProviderStatus`; see [service status cards](service-status-cards.md).
 
 ## State model
 
@@ -82,7 +80,7 @@ A provider reports exactly one `ConnectionState`:
 
 Only `CONNECTED` exposes a `reachable_address`. A stopped Tailscale client still lists the peers and addresses it knew; they are hidden because they cannot be reached.
 
-**Tailscale and Headscale share one daemon.** `service._tailnet_owner()` decides which product the active profile belongs to: first the profile metadata Big Remote Play saved when it joined (`private_network/accounts.json`), then the MagicDNS suffix (`*.ts.net` means the Tailscale service). The other product reports `DISCONNECTED`.
+**Tailscale and Headscale share one daemon.** `tailscaled` keeps several accounts (profiles) and one is active at a time, so the two products cannot both be connected. `service._tailnet_owner()` decides which product the active profile belongs to from the control server the client really uses (`tailscale debug prefs` → `ControlURL`): `*.tailscale.com` is Tailscale, anything else is Headscale. The profile metadata Big Remote Play saved when it joined (`private_network/accounts.json`) is only the fallback when the client cannot say, and it is corrected when it contradicts the client (a custom login server typed on the Tailscale page is recorded as Headscale from then on). The MagicDNS suffix (`*.ts.net` means the Tailscale service) is the last resort. The product that does not own the active profile reports `DISCONNECTED` with the technical detail *tailscaled is using …* and, when it has a saved profile of its own, `Recovery.RECONNECT`. **Start** on that product switches the active profile with `tailscale switch` before `tailscale up`; ZeroTier is a separate program and is not affected.
 
 ## Capabilities
 
@@ -148,11 +146,9 @@ Recent sessions from the history are offered as “Connect again”. Manual addr
 5. Follow `-j listnetworks` every 1.5 s for up to 45 s: `OK` with an address → `CONNECTED`; `OK` without one → `WAITING_ADDRESS`; `REQUESTING_CONFIGURATION` → `WAITING_CONFIGURATION` (`NODE_OFFLINE` when `info` says the node itself is offline); `ACCESS_DENIED` → `WAITING_AUTHORIZATION` (stop following: the owner decides); `NOT_FOUND`, `PORT_ERROR`, `CLIENT_TOO_OLD`, `AUTHENTICATION_REQUIRED` → their own states.
 6. While a waiting state is on screen the panel checks again (read-only `check()`, no join) every 5 s for two minutes, then every 15 s; the timer stops when the panel is unmapped or the network is decided. Authorization given later becomes `CONNECTED` without joining again.
 
-A `NOT_FOUND` for a membership this attempt created is left again, so a typo leaves nothing behind. A code whose controller does not exist never gets any answer and stays `REQUESTING_CONFIGURATION`; after the first wait it is shown as *has not answered yet* with **Cancel the request** (`leave`). Being on one ZeroTier network never hides the join form. With several memberships, the provider status reports the most advanced one (connected, then awaiting authorization, then configuring, then errors), so a stale `NOT_FOUND` membership no longer hides one awaiting approval.
+A `NOT_FOUND` for a membership this attempt created is left again, so a typo leaves nothing behind. A code whose controller does not exist never gets any answer and stays `REQUESTING_CONFIGURATION`; after the first wait it is shown as *has not answered yet* with **Cancel the request** (`leave`). Being on one ZeroTier network never hides the join form. With several memberships, the provider status reports the most advanced one (connected, then awaiting authorization, then configuring, then errors), so a stale `NOT_FOUND` membership never hides one awaiting approval.
 
 Technical details (`JoinSnapshot.technical_lines()`) list provider, network, node, service, daemon, join result, state, addresses, interface and peers (direct/relayed). Peers exclude ZeroTier roots and the networks' controllers, which `listpeers` also reports as `LEAF`. No key or token appears.
-
-The previous join reused an interactive menu script run through `pkexec` with `sudo` calls inside it (already root there; `pkexec` also resets `HOME`, so the user's token file was irrelevant) and fed it `2` and the id on stdin; its successor treated every non-`OK` status as a failure. Both are gone. The failure seen on 2026-09-29 (“0 join connection failed”) was the service stopped by **Disconnect** and the join not starting it.
 
 ## ZeroTier without a password
 

@@ -16,13 +16,7 @@ Avoid copying long sections between documents. Update the source of truth and li
 
 `AGENTS.md` is the only checked-in agent-instruction format for this repository. Keep the root file concise and place specialized rules in the nearest nested `AGENTS.md`.
 
-This follows the hierarchical project-guidance model documented by OpenAI Codex and supported by current GitHub Copilot tooling. Gemini CLI can be configured to include `AGENTS.md` as its context filename. Tools that use a different default should be configured outside the repository rather than creating duplicate vendor-specific files that drift.
-
-Official references:
-
-- [OpenAI: custom instructions with AGENTS.md](https://developers.openai.com/docs/agent-configuration/agents-md)
-- [GitHub Copilot: customization and AGENTS.md](https://docs.github.com/en/copilot/reference/customization-cheat-sheet)
-- [Gemini CLI: configurable context filenames](https://google-gemini.github.io/gemini-cli/docs/cli/gemini-md.html)
+A tool that reads another file name is configured outside the repository; a second, tool-specific copy of these rules would drift from this one.
 
 Review `AGENTS.md` when a repeated review correction reveals a missing repository rule. Do not turn temporary task details, machine paths or review logs into permanent instructions.
 
@@ -47,14 +41,14 @@ A review should answer:
 - Are command arguments explicit and validated?
 - Are translated strings, accessibility semantics and compact layouts updated?
 - Is there behavioral regression coverage?
-- Are documentation, changelog and external-contract references updated when needed?
+- Are documentation and external-contract references updated when needed?
 - Were the relevant gates actually run, with failures distinguished from unavailable tools?
 
 Prefer small, reviewable changes. A broad cleanup should not be mixed with a behavior fix unless the cleanup is required to make the fix safe.
 
 ## Documentation maintenance
 
-GitHub surfaces CONTRIBUTING, security policy, code of conduct, support resources and issue/PR templates as community-health files. Keep those files actionable and short. Issue forms should request information that maintainers genuinely use.
+The repository's community-health file is [CONTRIBUTING.md](../CONTRIBUTING.md) at the root; `.github/` holds only the package build workflow (`.github/workflows/build-package.yml`). Security reports go through the repository's GitHub [security policy](https://github.com/biglinux/big-remote-play/security/policy) page. Keep CONTRIBUTING actionable and short. Issue templates or other community files, if added, belong in `.github/` and should request only information that maintainers genuinely use.
 
 When interface labels change, update screenshots only after the implementation and translations are stable. Screenshots must use simulated/sanitized data and must never contain real accounts, addresses, credentials or certificates.
 
@@ -79,7 +73,7 @@ Do not weaken the private-wheel validator to accommodate a compiled extension. A
 3. Extract the source distribution and repeat the required gates inside it.
 4. Compare a patch-applied tree and extracted source archive against the intended commit.
 5. Complete the target-machine matrix in [release acceptance](release-testing.md).
-6. Update the changelog under **Unreleased**, then publish/tag through the normal project process.
+6. Summarize the user-visible changes in the release notes, then publish/tag through the normal project process.
 7. Preserve the exact build inputs, component versions, hashes and target-machine results.
 
 An automated pass is necessary but not sufficient. Stable means the real package, stream, audio, network, privilege and accessibility paths were accepted by maintainers.
@@ -87,7 +81,7 @@ An automated pass is necessary but not sufficient. Stable means the real package
 ## Repository hygiene
 
 - Keep the root limited to durable project entry points.
-- Put long-lived guides in `docs/` and GitHub community files in `.github/`.
+- Put long-lived guides in `docs/` and GitHub workflows (and any future community files) in `.github/`.
 - Never commit build outputs, caches, audit bundles, generated reports or local virtual environments.
 - Keep symlinks relative and inside the source tree.
 - Use one active gettext domain and exact PO/MO inventories.

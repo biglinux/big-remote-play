@@ -19,7 +19,7 @@ Machine: KDE Plasma 6.7.4 on Wayland, Linux 7.2, PipeWire 1.6.8 with pipewire-pu
 
 Method: an isolated Sunshine configuration (own port, state, credentials and log) and an isolated Moonlight configuration on the same machine. Moonlight's playback was moved to a lab null sink so the stream could not echo into the real output. A 660 Hz tone at −20 dBFS was played by an ordinary application; levels are the tone's own energy (Goertzel), so other sound playing at the time does not count.
 
-### Sunshine behavior (before the fix)
+### Sunshine on its own
 
 | Scenario | Default output during the session | Sunshine records | Other computer |
 |---|---|---|---|
@@ -47,7 +47,7 @@ No Steam Remote Play Together session could be run (it needs a second Steam acco
 
 The 2.x enforcer also moved Telegram, speech and browser streams into the shared output.
 
-### Big Remote Play after the fix
+### With Big Remote Play
 
 | Scenario | This computer's `sunshine.conf` | Other computer | This computer's speaker | Sound graph afterwards |
 |---|---|---|---|---|
@@ -61,7 +61,7 @@ The 2.x enforcer also moved Telegram, speech and browser streams into the shared
 | 44.1 kHz source | unset | −19.6 dB | −19.7 dB | — |
 | Output volume at 50 % | unset | −19.8 dB (unchanged) | — | volume restored |
 
-The first bridge attempt used `module-loopback`. JamesDSP captured the loopback's stream and forwarded it to the default output — Sunshine's virtual output — which the loopback read: a feedback loop, measured as a louder stream and a silent speaker. Bridges are now PipeWire port links, which effects programs do not capture.
+A `module-loopback` bridge was measured as well: JamesDSP captured the loopback's stream and forwarded it to the default output — Sunshine's virtual output — which the loopback read: a feedback loop, measured as a louder stream and a silent speaker. Bridges are therefore PipeWire port links, which effects programs do not capture.
 
 ### Voice calls kept out of the stream
 
@@ -69,7 +69,7 @@ Measured on 2026-09-29 in an isolated PipeWire 1.6.8 + WirePlumber 0.5 instance 
 
 ### Sunshine's recording restored muted (2026-10-02)
 
-The live session of a report (Game Window, *Gauntlet* through Wine, JamesDSP, a client muting the host): the game played here and the other computer heard nothing. Sunshine opened the right monitor, but WirePlumber had restored *muted, 62 %* to its `sunshine-record`. Recording the same monitor at the same moment: as "sunshine" digital silence, under another name −18.5 dBFS. After `restore_capture_level` on the live stream: not muted, 100 %, WirePlumber saved `"mute": false, "volume": 1.0`, and a new "sunshine" recording received −25.1 dBFS. Full account: [remote audio silence investigation](remote-audio-silence-investigation.md).
+The live session of a report (Game Window, *Gauntlet* through Wine, JamesDSP, a client muting the host): the game played here and the other computer heard nothing. Sunshine opened the right monitor, but WirePlumber had restored *muted, 62 %* to its `sunshine-record`. Recording the same monitor at the same moment: as "sunshine" digital silence, under another name −18.5 dBFS. After `restore_capture_level` on the live stream: not muted, 100 %, WirePlumber saved `"mute": false, "volume": 1.0`, and a new "sunshine" recording received −25.1 dBFS. The mechanism and the fix are in [audio architecture](audio-architecture.md#sunshines-recording-level).
 
 ### Game Window: only the game's sound (2026-10-02)
 
@@ -83,9 +83,31 @@ Isolated PipeWire 1.6.8 + WirePlumber (private runtime and state, ALSA and Bluet
 
 Process family read live for *Street Fighter V* (Steam, Proton): `reaper` and its 16 descendants (`srt-bwrap`, `pv-adverb`, `wineserver`, Wine services, the game), and the game's audio stream carried the window's PID.
 
-### Game Window compared with Full Desktop
+### Game Window compared with Full Desktop (2026-10-01)
 
-Measured on 2026-10-01 in an isolated PipeWire instance with a separate Sunshine and Moonlight: KMS capture against the Game Window path (private KWin screen through PipeWire, iGPU encoder, 60 and 240 Hz, 60 and 120 fps). The received 1 kHz tone had at most one isolated event per minute in both modes and PipeWire reported no error. Table and conclusion: [Game Window audio](window-audio-fix.md).
+Isolated rig on the development machine (KDE Plasma 6.7 Wayland, PipeWire 1.6.8, WirePlumber 0.5.17, Sunshine 2026.914, Moonlight Qt 6.1; AMD RX 9060 XT + Renoir iGPU): a private PipeWire instance with only null sinks, a separate Sunshine (port 48989) recording a `game` sink that played a continuous 1 kHz tone at −20 dBFS, and a separate Moonlight on the same machine playing into a `lab` sink. The received tone was analysed in 10 ms windows (amplitude drops > 6 dB, phase jumps > 0.3 rad, silences ≥ 1 ms) together with PipeWire's error counters (`pw-top`), 58 s per run. The Game Window runs used the same private screen as Big Remote Play (`kwin_wayland --virtual`) with an animated client, `capture = kwin` and the iGPU as `adapter_name`.
+
+| Capture | Encoder | Private screen | Client | Runs | Events per run (drops / phase jumps / silences) | PipeWire errors |
+|---|---|---|---|---|---|---|
+| kms | Vulkan, dGPU | — | 60 fps | 2 | at most 1 / 1 / 1 | 0 |
+| kwin | Vulkan, iGPU | 60 Hz | 60 or 120 fps | 3 | at most 0 / 0 / 1 | 0 |
+| kwin | Vulkan, iGPU | 240 Hz | 60 or 120 fps | 3 | at most 1 / 1 / 1 | 0 |
+
+The tone played into Sunshine was clean in every run, and the received sound had at most one isolated event per minute in both modes. The Game Window pipeline (PipeWire video capture with frame pacing, the iGPU encoder, the 240 Hz private screen, 60 or 120 fps) does not by itself break the sound.
+
+### Game Window with real games
+
+*Shadow of the Tomb Raider* (Steam, Proton) at its main menu, shared with Game Window on the development machine (2026-10-01). The game's sound was recorded read-only from the monitor of the real output; focus was moved by KWin scripting:
+
+| Capture | Game is the active window | Game's audio stream (40 s) | PipeWire errors |
+|---|---|---|---|
+| off | yes | present for 40 s, no gaps or clicks | 0 |
+| off | no | **removed by the game**: silence for 40 s | 0 |
+| on | yes, for all 40 s | present for 40 s | 0 |
+
+The game destroys its audio stream as soon as it is not the active window and creates a new one when it is again; the capture itself never took the focus. This is why Game Window activates the game when sharing starts and every time a device starts playing (`window_capture.activate_game`, `tests/test_game_window_focus.py`), and why the game's stream is followed by `new`/`remove` events ([audio architecture](audio-architecture.md#game-window-only-the-games-sound)).
+
+*TMNT: Shredder's Revenge* (Heroic, Wine) shared to a second Linux computer on the same home network running Big Remote Play → Connect (2026-10-01): for 120 s the sound was recorded at the game's own stream, at the output Sunshine records and at the connecting computer's output, with the game's focus logged every second. The game stayed the active window, all three points carried the sound for all 120 s in step, and the person playing heard continuous, clean sound. Earlier in that session the connecting computer had no sound for a few minutes and recovered by itself; its Moonlight log showed *Audio packet queue overflow* / *Network dropped audio data* bursts (also every few minutes during the clean run), which places that silence on the receiving side or the network, not in Big Remote Play's routing or Sunshine's capture.
 
 ## Automated coverage
 
@@ -100,7 +122,7 @@ Measured on 2026-10-01 in an isolated PipeWire instance with a separate Sunshine
 - Watcher: reacts to default and capture events and to programs starting or stopping, ignores their volume changes.
 - Voice calls: recognition by executable, application name, Flatpak id and role, never browsers; PipeWire graph reading (links, link groups, monitors); the call kept out while every other program is linked and nothing is moved; idempotent; a program added during the call; filters and loopbacks never added; a call on a device Sunshine does not record changes nothing; no `pw-dump` without a call program; back to the device and the output removed when the call ends, in that order; the output kept while Sunshine still records it; a host-muting client keeps its bridge; removal on end and after a crash; module arguments that a description cannot break.
 - Interface: labels, migration of the old "Other computer" choice, virtual outputs not offered, stale status rejected, test-tone results in words.
-- Sunshine process: a zombie no longer blocks a new start; a Sunshine that ignores SIGTERM is killed and collected.
+- Sunshine process: a zombie does not block a new start; a Sunshine that ignores SIGTERM is killed and collected.
 
 ## Reproducing the measurements
 

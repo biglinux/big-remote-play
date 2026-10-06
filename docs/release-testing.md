@@ -45,12 +45,12 @@ for screenshots must be labeled as simulated.
 | Streaming | Sunshine → Moonlight connection, pairing, stop/reconnect, custom port and invalid credentials |
 | Capture/audio | Wayland/X11 sessions, actual GPU encoding/decoding, display changes, host/client sound |
 | Game Window | On KDE Plasma Wayland and X11: a native game, a Steam/Proton game and a Gamescope game listed by name; first-share confirmation and silent restore; terminal, browser, Dolphin, a notification and the Plasma menu over the game never reach the client; closing and crashing the game stop sharing with no desktop shown; windowed, borderless and fullscreen; two and three monitors; AMD, Intel and NVIDIA (hybrid laptops included) with hardware encoding; controllers, keyboard and mouse; host and client sound. See [Game Window](game-window.md) |
-| Game Window changes | With a real game of each kind (native, Steam/Proton, Wine, Gamescope; Vulkan and OpenGL): windowed → fullscreen, fullscreen → windowed, windowed → borderless, borderless → fullscreen, Alt+Enter, Alt+Tab, 1920×1080 → 2560×1440, a refresh-rate change; the game closing and crashing; KDE's sharing indicator stopped by hand; Moonlight reconnecting; Sunshine restarted. Expected: at most a few seconds of black with **Reconnecting to the game window…**, never the desktop; two windows of the game end the share. See [fullscreen and new resolutions](game-window-fullscreen-fix.md) |
+| Game Window changes | With a real game of each kind (native, Steam/Proton, Wine, Gamescope; Vulkan and OpenGL): windowed → fullscreen, fullscreen → windowed, windowed → borderless, borderless → fullscreen, Alt+Enter, Alt+Tab, 1920×1080 → 2560×1440, a refresh-rate change; the game closing and crashing; KDE's sharing indicator stopped by hand; Moonlight reconnecting; Sunshine restarted. Expected: at most a few seconds of black with **Reconnecting to the game window…**, never the desktop; two windows of the game end the share. See [when the game changes mode](game-window.md#when-the-game-changes-mode) |
 | Host input priority | Physical USB and Bluetooth keyboards and mice (hot-plugged during a session), a touchpad; Wayland and X11; guest holding a key, Ctrl/Alt/Shift/Super, a mouse button and a drag when this computer takes over; relative mouse in a game; scroll; 1, 5 and 30 s; the guest disconnecting while paused; Moonlight reconnecting; Sunshine restarted; a controller on each side keeps working; a user outside the `input` group with the package's PolicyKit rule; the on-screen message in Full Desktop. See [host input priority](host-input-priority.md) |
-| Internet | Real Tailscale browser authorization and machine sharing, ZeroTier join/approval/managed IP, Headscale server (0.27+) with API key, registration approval and pre-auth key; Share ↔ Connect over each provider, including a relayed path. Track results in the [private-network test matrix](private-network-test-matrix.md) |
+| Internet | Real Tailscale browser authorization, machine sharing and a user invitation, ZeroTier network creation, join/approval/managed IP on a second computer, Headscale server (0.27+) with API key, registration approval and pre-auth key; Share ↔ Connect over each provider, including a relayed path. Track results in [private-network testing](private-network-testing.md) |
 | Privileges | PolicyKit allow/cancel/failure and desktop keyring locked/unavailable states |
 | Installation | From Home, the guided setup and the Tailscale/ZeroTier pages on a machine without the component: Pamac's password dialog (allow, cancel, wrong password), a busy package database, no network; without Pamac, the `install-components.sh` helper; Sunshine installed in another program while Big Remote Play is open is recognized on the next Share; after installing Tailscale the browser sign-in opens by itself. See [installing what a task needs](dependency-installer.md) |
-| Pairing requests | A real Moonlight on another computer: the request dialog appears by itself (also with the window in the background, with a notification), Approve with the PIN shown there, a wrong PIN, Reject, letting it expire, cancelling on the other device; a first Sunshine without a user. See [pairing requests](pairing-ux.md) |
+| Pairing requests | A real Moonlight on another computer: the request dialog appears by itself (also with the window in the background, with a notification), Approve with the PIN shown there, a wrong PIN, Reject, letting it expire, cancelling on the other device; a first Sunshine without a user. See [pairing requests](pairing-requests.md) |
 | Accessibility | Orca/AT-SPI navigation and announcements, keyboard-only use, touch targets and text scaling |
 | Safety | Real backup/restore with native certificates, corrupt/legacy archives, forced apply failure and preserved libraries, Moonlight identity and devices; follow [backup, restore and service cards](#backup-restore-and-service-cards) and the [backup and restore contract](backup-restore.md) |
 | Usability | First-time participants completing Share/Connect without developer guidance |
@@ -80,6 +80,16 @@ sound on this computer** on and off, a chosen device, device removal and the per
 changing output during a stream. Test Steam Remote Play Together with sharing active,
 kill Sunshine during a host-muting session and check that the next start restores
 the output. **Microphone sent to Sunshine** must read **No** throughout.
+
+For Game Window sound, share a game that mutes itself in the background (for
+example *TMNT: Shredder's Revenge* through Heroic/Wine) to a real second
+computer: the sound must stay continuous for the whole session while nobody
+uses the sharing computer, also after the game is reactivated when a device
+connects. Record the game's own options for sound in the background, whether
+the sound is also wrong on the sharing computer itself (then it is the game's
+playback under load, before Sunshine), and CPU and GPU load on a single-GPU
+computer, where the private screen encodes on the GPU the game uses. Measured
+results so far are in [audio testing](audio-testing.md#game-window-with-real-games).
 
 For UPnP, check the router mappings and Sunshine logs, then connect from another
 network. Also test a router without UPnP and a CGNAT/double-NAT connection. Neither

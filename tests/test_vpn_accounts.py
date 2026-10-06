@@ -3,6 +3,7 @@ from __future__ import annotations
 import getpass
 import json
 from pathlib import Path
+from big_remote_play.utils import vpn_accounts
 from big_remote_play.utils.vpn_accounts import CommandResult, VPNAccountManager
 
 
@@ -149,7 +150,8 @@ def test_zerotier_lists_multiple_networks_and_preserves_friendly_names(tmp_path)
     assert runner.calls[-1][0] == ["zerotier-cli", "-j", "listnetworks"]
 
 
-def test_zerotier_permission_failure_can_retry_through_pkexec(tmp_path):
+def test_zerotier_permission_failure_can_retry_through_pkexec(tmp_path, monkeypatch):
+    monkeypatch.setattr(vpn_accounts, "system_zerotier_cli", lambda: "/usr/bin/zerotier-cli")
     mgr, runner = manager(
         tmp_path,
         [
@@ -161,7 +163,17 @@ def test_zerotier_permission_failure_can_retry_through_pkexec(tmp_path):
     assert result.networks == ()
     assert result.needs_privilege is False
     assert runner.calls[0][0] == ["zerotier-cli", "-j", "listnetworks"]
-    assert runner.calls[1][0] == ["pkexec", "zerotier-cli", "-j", "listnetworks"]
+    assert runner.calls[1][0] == ["pkexec", "/usr/bin/zerotier-cli", "-j", "listnetworks"]
+
+
+def test_only_the_systems_zerotier_cli_is_ever_run_as_root(tmp_path, monkeypatch):
+    """A zerotier-cli found first on this user's PATH (~/.local/bin) is never
+    what pkexec runs; without the system's own binary nothing is escalated."""
+    monkeypatch.setattr(vpn_accounts, "system_zerotier_cli", lambda: None)
+    mgr, runner = manager(tmp_path, [(1, "", "cannot read authtoken.secret: Permission denied")])
+    result = mgr.list_zerotier_networks(allow_privileged=True)
+    assert result.needs_privilege is True
+    assert not any(call[0][0] == "pkexec" for call in runner.calls)
 
 
 def test_zerotier_permission_failure_is_reported_without_prompt(tmp_path):

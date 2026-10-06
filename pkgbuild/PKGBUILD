@@ -1,4 +1,5 @@
-# Maintainer: BigLinux Team <biglinux@biglinux.com.br>
+# Maintainer: Rafael Ruscher <rruscher@gmail.com>
+# Contributor: Bruno Gonçalves <bigbruno@gmail.com>
 # shellcheck shell=bash disable=SC2034,SC2154
 
 pkgname=big-remote-play
@@ -23,23 +24,31 @@ makedepends=(
 	'git'
 	'python-build'
 	'python-uv-build'
-	'python-wheel'
 	'gettext'
 )
+# Every dependency above is in Arch's own repositories. Sunshine is not (BigLinux
+# carries it; on Arch it comes from the AUR or its upstream package): a computer
+# that only connects never needs it, and Share says what is missing.
 optdepends=(
-	'sunshine: share games from this computer'
+	'sunshine: share games from this computer (BigLinux repository; AUR or upstream on Arch)'
 	'moonlight-qt: connect to a shared game'
-	'pamac-cli: install missing components through Pamac (PolicyKit), without a terminal'
-	'docker: self-hosted Headscale private network'
-	'docker-compose: self-hosted Headscale orchestration'
-	'miniupnpc: automatic Headscale port mapping'
 	'tailscale: Tailscale or Headscale private network client'
 	'zerotier-one: ZeroTier private network client'
+	'headscale: run your own Headscale server on this computer'
+	'caddy: HTTPS address for a Headscale server on this computer'
+	'miniupnpc: read the router public address in the Headscale setup'
+	'org.freedesktop.secrets: keep passwords and API tokens in the keyring (GNOME Keyring, KWallet)'
+	'libpulse: choose and test the shared sound output (pactl)'
+	'pipewire: send only the game sound and keep sound here while a device mutes it'
+	'kwin: Game Window private screen'
+	'xdg-desktop-portal-kde: Game Window capture on KDE Plasma Wayland'
+	'gst-plugin-pipewire: Game Window sharing on KDE Plasma Wayland'
+	'gst-plugins-bad-libs: Game Window sharing (private game screen)'
+	'gst-plugins-good: Game Window sharing on X11 and title bar removal'
+	'libkscreen: match the screen mode and HDR to the connecting device'
+	'xorg-xrandr: list monitors on X11'
 	'pciutils: graphics adapter detection'
 	'flatpak: detect supported VPN clients installed as Flatpaks'
-	'gst-plugin-pipewire: Game Window sharing on KDE Plasma Wayland'
-	'gst-plugins-bad: Game Window sharing (private game screen)'
-	'gst-plugins-good: Game Window sharing on X11 and title bar removal'
 )
 
 # Dated at build time, never hand-pinned. BRP_BUILD_VERSION and
@@ -143,6 +152,16 @@ package() {
 
 	install -Dm755 usr/bin/${pkgname} "${pkgdir}/usr/bin/${pkgname}"
 	cp -a usr/share/. "${pkgdir}/usr/share/"
+
+	# The AppStream release the checkout leaves neutral (0.0.0, 1970-01-01),
+	# dated as this build, the same version the wheel and the About dialog carry.
+	local metainfo="${pkgdir}/usr/share/metainfo/br.com.biglinux.remoteplay.metainfo.xml"
+	local release_date="20${pkgver:0:2}-${pkgver:3:2}-${pkgver:6:2}"
+	sed -i "s|version=\"0.0.0\" date=\"1970-01-01\"|version=\"${pkgver}\" date=\"${release_date}\"|" "${metainfo}"
+	grep -q "version=\"${pkgver}\" date=\"${release_date}\"" "${metainfo}" || {
+		printf 'The AppStream release could not be dated %s\n' "${pkgver}" >&2
+		return 1
+	}
 	# Catalogs are compiled below from locale/LINGUAS. Never package stale or
 	# unlisted .mo files copied from the development tree.
 	rm -rf "${pkgdir}/usr/share/locale"

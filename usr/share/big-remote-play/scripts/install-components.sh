@@ -67,11 +67,17 @@ if ! command -v pacman &>/dev/null; then
 	exit 3
 fi
 
-# The repository package that provides each name, never an AUR build.
+# The repository package that provides each name, never an AUR build. A name
+# no repository provides is reported, not handed to pacman to fail on.
 resolved=()
 for package in "${packages[@]}"; do
 	provider="$(LC_ALL=C pacman -Sp --print-format '%n' "$package" 2>/dev/null | tail -n 1)"
-	resolved+=("${provider:-$package}")
+	if [ -z "$provider" ]; then
+		echo "BRP_DATA INSTALL_RESULT=unavailable"
+		printf '%s\n' "$(eval_gettext 'Not in the repositories of this system: $package')"
+		exit 4
+	fi
+	resolved+=("$provider")
 done
 
 echo "BRP_PHASE 0.1"

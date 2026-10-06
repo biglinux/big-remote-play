@@ -639,16 +639,15 @@ class MainWindow(Adw.ApplicationWindow):
         row.set_presentation(streaming_presentation(service_id, self._service_installed.get(service_id), self._service_running.get(service_id)))
         self._refresh_summaries()
 
-    def update_server_status(self, run_sun, run_moon, run_docker, run_tailscale, run_zt=False):
-        for service_id, running in [("sunshine", run_sun), ("moonlight", run_moon), ("docker", run_docker), ("tailscale", run_tailscale), ("zerotier", run_zt)]:
+    def update_server_status(self, run_sun, run_moon, run_tailscale, run_zt=False):
+        for service_id, running in [("sunshine", run_sun), ("moonlight", run_moon), ("tailscale", run_tailscale), ("zerotier", run_zt)]:
             self._service_running[service_id] = running
             self._refresh_service_state(service_id)
 
-    def update_dependency_ui(self, has_sun, has_moon, has_docker, has_tailscale, has_zt=False):
+    def update_dependency_ui(self, has_sun, has_moon, has_tailscale, has_zt=False):
         status_items = [
             ("sunshine", "host", has_sun, "Sunshine"),
             ("moonlight", "guest", has_moon, "Moonlight"),
-            ("docker", None, has_docker, "Docker"),
             ("tailscale", None, has_tailscale, "Tailscale"),
             ("zerotier", None, has_zt, "ZeroTier"),
         ]
@@ -1327,20 +1326,18 @@ class MainWindow(Adw.ApplicationWindow):
         def check():
             h_sun = self.system_check.has_sunshine()
             h_moon = self.system_check.has_moonlight()
-            h_docker = self.system_check.has_docker()
             h_tail = self.system_check.has_tailscale()
             h_zt = self.system_check.has_zerotier()
 
             r_sun = self.system_check.is_sunshine_running()
             r_moon = self.system_check.is_moonlight_running()
-            r_docker = self.system_check.is_docker_running()
             r_tail = self.system_check.is_tailscale_running()
             r_zt = self.system_check.is_zerotier_running()
 
             def finish_system_check():
                 self.update_status(h_sun, h_moon)
-                self.update_server_status(r_sun, r_moon, r_docker, r_tail, r_zt)
-                self.update_dependency_ui(h_sun, h_moon, h_docker, h_tail, h_zt)
+                self.update_server_status(r_sun, r_moon, r_tail, r_zt)
+                self.update_dependency_ui(h_sun, h_moon, h_tail, h_zt)
                 return False
 
             GLib.idle_add(finish_system_check)
@@ -1401,7 +1398,6 @@ class MainWindow(Adw.ApplicationWindow):
         probes = {
             "sunshine": self.system_check.is_sunshine_running,
             "moonlight": self.system_check.is_moonlight_running,
-            "docker": self.system_check.is_docker_running,
             "tailscale": self.system_check.is_tailscale_running,
             "zerotier": self.system_check.is_zerotier_running,
         }
@@ -1492,7 +1488,6 @@ class MainWindow(Adw.ApplicationWindow):
                 running_checks = {
                     "sunshine": self.system_check.is_sunshine_running,
                     "moonlight": self.system_check.is_moonlight_running,
-                    "docker": self.system_check.is_docker_running,
                     "tailscale": self.system_check.is_tailscale_running,
                     "zerotier": self.system_check.is_zerotier_running,
                 }
@@ -1511,17 +1506,16 @@ class MainWindow(Adw.ApplicationWindow):
                             is_enabled = subprocess.run([*base, "is-enabled", "--quiet", meta["unit"]], timeout=5).returncode == 0
                     except (OSError, subprocess.SubprocessError):
                         pass
-                containers_running = self.system_check.are_containers_running() if service_id == "docker" else False
                 GLib.idle_add(
                     self.on_service_clicked,
                     service_id,
-                    (is_running, is_enabled, containers_running, has_unit),
+                    (is_running, is_enabled, has_unit),
                 )
 
             threading.Thread(target=probe_service, daemon=True).start()
             return
 
-        is_running, is_enabled, containers_running, has_unit = probe_result
+        is_running, is_enabled, has_unit = probe_result
 
         dialog = Adw.Window(transient_for=self)
         dialog.add_css_class("brp-dialog")
@@ -1558,7 +1552,7 @@ class MainWindow(Adw.ApplicationWindow):
 
         actions = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
 
-        def run_cmd(action, sid=service_id, force_type=None):
+        def run_cmd(action, sid=service_id):
             m = SERVICE_METADATA[sid]
             cmd = []
 
@@ -1568,7 +1562,7 @@ class MainWindow(Adw.ApplicationWindow):
                         return b
                 return None
 
-            current_type = force_type or m["type"]
+            current_type = m["type"]
             # Some builds ship Sunshine without a systemd unit. There, drive the
             # server the way the rest of the app does instead of sending
             # systemctl a unit name it cannot resolve.
@@ -1582,15 +1576,6 @@ class MainWindow(Adw.ApplicationWindow):
                     cmd = ["systemctl", "--user"]
                 cmd.append(action)
                 cmd.append(m["unit"])
-                if sid == "docker" and action == "stop":
-                    cmd.append("docker.socket")
-            elif current_type == "containers":
-                if action == "start":
-                    cmd = ["docker", "start", "caddy", "headscale"]
-                elif action == "stop":
-                    cmd = ["docker", "stop", "caddy", "headscale"]
-                elif action == "restart":
-                    cmd = ["docker", "restart", "caddy", "headscale"]
             else:
                 bin_name = m["bin"]
                 if sid == "moonlight":
@@ -1614,7 +1599,7 @@ class MainWindow(Adw.ApplicationWindow):
             if cmd:
                 try:
                     subprocess.Popen(cmd)
-                    name = _("Containers") if current_type == "containers" else m["name"]
+                    name = m["name"]
                     self.show_toast(_("Action {action} sent to {service}").format(action=action, service=name))
                     dialog.destroy()
                     GLib.timeout_add(1000, self.check_system)
@@ -1637,38 +1622,6 @@ class MainWindow(Adw.ApplicationWindow):
             btn_enable = Gtk.Button(label=_("Disable") if is_enabled else _("Enable"))
             btn_enable.connect("clicked", lambda b: run_cmd("disable" if is_enabled else "enable"))
             actions.append(btn_enable)
-
-        if service_id == "docker":
-            actions.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
-
-            cont_running = containers_running
-            cont_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-
-            cont_header = Gtk.Box(spacing=8)
-            cont_header.set_halign(Gtk.Align.CENTER)
-            cont_header.append(create_icon_widget("brp-service-symbolic", size=16))
-            cont_header.append(Gtk.Label(label=_("Private Network Containers")))
-            cont_box.append(cont_header)
-
-            c_status_box = Gtk.Box(spacing=10, halign=Gtk.Align.CENTER)
-            c_dot = create_icon_widget("brp-media-record-symbolic", size=12, css_class=["status-dot", "status-online" if cont_running else "status-offline"])
-            c_status_box.append(c_dot)
-            c_status_lbl = Gtk.Label(label=_("Running (Caddy + Headscale)") if cont_running else _("Stopped"))
-            c_status_box.append(c_status_lbl)
-            cont_box.append(c_status_box)
-
-            c_btn_main = Gtk.Button(label=_("Stop Containers") if cont_running else _("Start Containers"))
-            c_btn_main.add_css_class("suggested-action" if not cont_running else "destructive-action")
-            c_btn_main.connect("clicked", lambda b: run_cmd("stop" if cont_running else "start", force_type="containers"))
-            cont_box.append(c_btn_main)
-
-            if cont_running:
-                c_btn_restart = Gtk.Button(label=_("Restart Containers"))
-                c_btn_restart.connect("clicked", lambda b: run_cmd("restart", force_type="containers"))
-                cont_box.append(c_btn_restart)
-
-            cont_box.set_sensitive(is_running)
-            actions.append(cont_box)
 
         content.append(actions)
 

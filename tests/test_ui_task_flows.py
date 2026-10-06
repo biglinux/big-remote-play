@@ -50,7 +50,7 @@ def ui(tmp_path, monkeypatch):
     import big_remote_play.ui.main_window as mw
 
     monkeypatch.setattr(mw, "VPN_CONFIG_FILE", str(tmp_path / "vpn.json"))
-    monkeypatch.setattr(MainWindow, "check_system", lambda self: self.update_dependency_ui(True, True, True, True, True))
+    monkeypatch.setattr(MainWindow, "check_system", lambda self: self.update_dependency_ui(True, True, True, True))
     monkeypatch.setattr(HostView, "detect_monitors", lambda self: [("Automatic", "auto")])
     monkeypatch.setattr(HostView, "detect_gpus", lambda self: [{"label": "Automatic", "encoder": "auto", "adapter": "auto"}])
     monkeypatch.setattr(HostView, "_ensure_sunshine_config", lambda self: None)
@@ -377,17 +377,6 @@ def test_network_helper_failure_reenables_connect_and_stops_spinner(ui, monkeypa
     assert not page._c_spinner.get_visible()
     assert page._c_lbl.get_label() == "Try again"
     assert not page._return_to_game.get_visible()
-
-
-def test_helper_failure_is_delivered_to_completion_callback(ui, monkeypatch):
-    import big_remote_play.ui.private_network_view as pnv
-
-    monkeypatch.setattr(pnv.threading, "Thread", InlineThread)
-    monkeypatch.setattr(pnv.subprocess, "Popen", Mock(side_effect=FileNotFoundError("pkexec")))
-    done = Mock(return_value=False)
-    pnv.run_helper_script("install-components.sh", [], on_text=Mock(), on_phase=Mock(), on_done=done)
-    drain()
-    done.assert_called_once_with(127, {})
 
 
 @pytest.mark.parametrize("network_id", ["", "abcdefghijklmnop", "a1b2c3d4", "a1b2c3d4e5f6a7b8;ls"])

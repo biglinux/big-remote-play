@@ -15,7 +15,6 @@ from big_remote_play.private_network.models import ConnectionState, ProviderId
 from big_remote_play.private_network.redaction import redact
 from big_remote_play.utils.secure_io import secure_write_text
 from big_remote_play.utils.secret_store import SecretKey, SecretStore, SecretStoreUnavailable
-from big_remote_play.utils.script_protocol import parse_script_line
 from big_remote_play.utils.uri import open_uri
 from big_remote_play.utils.vpn_accounts import VPNAccountManager, valid_zerotier_network_id
 from .components import content_dialog, content_page, action_row, boxed_rows, intro, note, name_icon_button
@@ -266,68 +265,6 @@ def _update_history(entry_id, updated_entry):
             history[i] = merged
             break
     _write_history(history)
-
-
-def _get_script(name: str) -> str:
-    return paths.script_path(name)
-
-
-def _localized_helper_command(script: str) -> list[str]:
-    """Run a privileged helper with the user's message locale intact.
-
-    BRP_DATA/BRP_PHASE markers are locale-independent, so human-facing output
-    does not need to be forced back to English. ``pkexec`` sanitizes the
-    environment; ``env`` restores only the locale variables required by gettext.
-    """
-    command = ["pkexec", "/usr/bin/env"]
-    for key in ("LANG", "LANGUAGE", "LC_MESSAGES"):
-        value = os.environ.get(key, "").strip()
-        if value:
-            command.append(f"{key}={value}")
-    command.append(f"TEXTDOMAINDIR={paths.LOCALE_DIR}")
-    command.append(script)
-    return command
-
-
-def run_helper_script(script_name, inputs, *, on_text, on_phase, on_done):
-    """Run a bundled privileged helper and stream its BRP_* protocol.
-
-    Callbacks are delivered on the GTK main loop. ``on_done(code, captured)``
-    always runs exactly once, also when the helper cannot be started.
-    """
-    script = _get_script(script_name)
-
-    def run():
-        try:
-            proc = subprocess.Popen(_localized_helper_command(script), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-            proc_stdin = proc.stdin
-            if proc_stdin is not None:
-                for s in inputs:
-                    try:
-                        proc_stdin.write(s)
-                        proc_stdin.flush()
-                    except Exception:
-                        break
-            captured = {}
-            proc_stdout = proc.stdout
-            if proc_stdout is None:
-                raise OSError("Network helper has no output pipe")
-            for line in proc_stdout:
-                kind = parse_script_line(line)
-                if kind[0] == "data":
-                    if kind[2]:
-                        captured[kind[1]] = kind[2]
-                elif kind[0] == "phase":
-                    GLib.idle_add(on_phase, kind[1])
-                elif kind[1]:
-                    GLib.idle_add(on_text, redact(kind[1]))
-            code = proc.wait()
-            GLib.idle_add(on_done, code, captured)
-        except (OSError, ValueError) as error:
-            _log.error("Could not run network helper: %s", error)
-            GLib.idle_add(on_done, 127, {})
-
-    threading.Thread(target=run, daemon=True).start()
 
 
 # ─── Terminal Log Widget ───────────────────────────────────────────────────────

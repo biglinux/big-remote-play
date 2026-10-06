@@ -53,7 +53,10 @@ class _Entry:
 
 
 _TRANSIENT_TOP_LEVEL = frozenset({"logs", "audio-session.json"})
-_TRANSIENT_NAMES = frozenset({"sunshine.log", "sunshine.pid"})
+# sunshine_cert.sha256 pins the certificate Sunshine has on this computer
+# (trust on first use). Sunshine's certificate itself is not in the backup, so
+# a restored pin would make every API call fail after a new certificate.
+_TRANSIENT_NAMES = frozenset({"sunshine.log", "sunshine.pid", "sunshine_cert.sha256"})
 _LEGACY_JSON_SECRET_KEYS = frozenset({"auth_key", "api_key", "cf_token"})
 
 
@@ -335,6 +338,8 @@ class BackupManager:
             size, digest = expected[name]
             if size != len(data) or digest != hashlib.sha256(data).hexdigest():
                 raise BackupValidationError("The backup failed its integrity check.")
+            if parts[-1] in _TRANSIENT_NAMES:
+                continue  # an older backup's certificate pin: trusted again on first use
             relative = PurePosixPath(*parts[1:]).as_posix()
             if _sanitized_data(parts[0], Path(relative), data) != data:
                 raise BackupValidationError("The backup contains a plaintext credential.")

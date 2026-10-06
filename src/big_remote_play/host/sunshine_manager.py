@@ -102,6 +102,17 @@ _PAIRING_ID_RE = re.compile(r"^[0-9a-fA-F]{32}$")
 _CURRENT_GAME_RE = re.compile(r"<currentgame>\s*(\d{1,10})\s*</currentgame>")
 
 
+def game_window_screen() -> tuple[bool, str | None]:
+    """Whether a Game Window share is live, and the private screen it uses."""
+    from big_remote_play.host import window_capture
+
+    state = window_capture.read_state()
+    if not window_capture.helper_running(state):
+        return False, None
+    socket = str((state or {}).get("socket") or "")
+    return True, socket or None
+
+
 class SunshineHost:
     def __init__(self, cdir: Path | None = None):
         self.config_dir = cdir or paths.SUNSHINE_CONFIG_DIR
@@ -202,6 +213,16 @@ class SunshineHost:
             if wayland_display:
                 return False, _("Sunshine is already running.")
             return True, _("Sunshine is already running.")
+        if not wayland_display:
+            # A start without a screen during a Game Window share (a restart, a
+            # password reset, the service dialog) would bring Sunshine up on
+            # the desktop with KWin capture still configured: the private
+            # desktop on the stream, labelled Game Window.
+            live, private = game_window_screen()
+            if live:
+                if not private:
+                    return False, _("Game Window is sharing, but its private screen was not found. Stop sharing, then start again.")
+                wayland_display = private
 
         sc = sunshine_executable()
         if not sc:

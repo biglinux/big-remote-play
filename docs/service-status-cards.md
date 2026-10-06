@@ -113,5 +113,6 @@ account and private addresses are never shown on the card.
   reduce)` removes them, and GTK drops them when animations are disabled.
 - High contrast: full-contrast 1 px borders, an inset ring for active cards and
   full-contrast headings and icons.
-- The Gamer overlay (`gamer.css`) repeats the tone rules with its palette: an
-  active card is lit like the BiGameMode Turbo preset, the rest stay quiet.
+- The **Gamer** appearance (`gamer.css`) repeats the tone rules with its
+  palette: an active card is lit, the rest stay quiet; see
+  [visual design](visual-design.md#component-mapping).

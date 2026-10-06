@@ -29,7 +29,7 @@ Install these through the distribution package manager:
 - `desktop-file-validate` and `appstreamcli`;
 - Bash and ShellCheck for shell validation.
 
-Sunshine, Moonlight, VPN clients, VTE, Avahi and audio tools are needed only for the related runtime paths or target-machine tests.
+Sunshine, Moonlight, VPN clients, Avahi and audio tools are needed only for the related runtime paths or target-machine tests.
 
 ## Isolated developer environment
 

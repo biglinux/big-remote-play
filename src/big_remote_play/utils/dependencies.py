@@ -209,6 +209,7 @@ class InstallOutcome:
     returncode: int
     cancelled: bool = False
     service_failed: tuple[str, ...] = ()
+    unavailable: tuple[str, ...] = ()  # packages no repository of this system provides
 
     @property
     def ok(self) -> bool:
@@ -250,8 +251,18 @@ def run_install(
     start_unit: Callable[[str], int] | None = None,
     probe: Callable[[Sequence[str]], list[ComponentState]] | None = None,
     cancelled: Callable[[], bool] | None = None,
+    resolve: Callable[[str], str] | None = None,
 ) -> InstallOutcome:
-    """Run the plan on the calling (worker) thread, then look again."""
+    """Run the plan on the calling (worker) thread, then look again.
+
+    A package no repository of this system provides (Sunshine on Arch Linux,
+    where it is in the AUR) is reported as such before anything runs: pacman
+    would only fail with "target not found"."""
+    if plan.method == "helper":
+        missing = tuple(package for package in plan.packages if not (resolve or resolve_package)(package))
+        if missing:
+            states = (probe or (lambda ids: audit(ids)))(plan.components)
+            return InstallOutcome(tuple(states), 4, unavailable=missing)
     returncode = 1
     seen: list[str] = []
     try:

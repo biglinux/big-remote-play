@@ -63,3 +63,65 @@ def test_an_unreadable_device_list_means_no_local_controller():
 
     assert REAL_CONTROLLER_REPORT(unreadable).local == ()
     assert REAL_CONTROLLER_REPORT(lambda path: DEVICES).local == ("Microsoft X-Box One pad (Firmware 2015)", "DualSense Wireless Controller")
+
+
+# ------------------------------------------- what Sunshine did in this connection
+
+import datetime as _dt
+
+from big_remote_play.host.controllers import ConnectionControllers, ControllerReport, connection_controllers, controllers_disabled
+from big_remote_play.ui.host_view import CONTROLLER_GRACE_SECONDS, controller_connection_text
+
+_LOG = """[2026-10-05 15:50:00.000]: Info: CLIENT CONNECTED
+[2026-10-05 15:50:10.000]: Info: Gamepad 0 will be Old Pad (manual selection)
+[2026-10-05 15:51:00.000]: Info: CLIENT DISCONNECTED
+[2026-10-05 15:54:40.100]: Info: CLIENT CONNECTED
+[2026-10-05 15:54:44.218]: Info: Gamepad 0 will be Sunshine (libvirtualhid) X-Box 360 Controller (manual selection)
+[2026-10-05 15:54:50.000]: Info: Gamepad 1 will be Sunshine (libvirtualhid) DualSense (auto-selected by client-reported type)
+"""
+
+
+def test_only_the_current_connections_controllers_are_reported():
+    found = connection_controllers(_LOG)
+    assert found == ConnectionControllers(
+        _dt.datetime(2026, 10, 5, 15, 54, 40),
+        ("Sunshine (libvirtualhid) X-Box 360 Controller", "Sunshine (libvirtualhid) DualSense"),
+        False,
+    )
+    assert connection_controllers(_LOG + "[2026-10-05 15:56:00.000]: Info: CLIENT DISCONNECTED\n") is None
+    assert connection_controllers("") is None
+
+
+def test_a_device_failure_in_the_connection_is_reported():
+    log = "[2026-10-05 15:54:40.100]: Info: CLIENT CONNECTED\n[2026-10-05 15:54:41.000]: Error: Failed to open /dev/uhid: Permission denied\n"
+    assert connection_controllers(log).failed is True
+
+
+def test_controllers_turned_off_in_sunshine_are_seen():
+    assert controllers_disabled("port = 47989\ncontroller = disabled\n")
+    assert controllers_disabled("controller=false")
+    assert not controllers_disabled("controller = enabled\n")
+    assert not controllers_disabled("# controller = disabled\n")
+
+
+def test_the_share_page_says_what_happened_to_the_other_computers_controller():
+    started = _dt.datetime(2026, 10, 5, 15, 54, 40)
+    soon = started + _dt.timedelta(seconds=CONTROLLER_GRACE_SECONDS - 1)
+    later = started + _dt.timedelta(seconds=CONTROLLER_GRACE_SECONDS + 1)
+    arrived = ControllerReport(connection=ConnectionControllers(started, ("Pad",)))
+    none_yet = ControllerReport(connection=ConnectionControllers(started))
+    failed = ControllerReport(connection=ConnectionControllers(started, failed=True))
+    assert "Pad" in controller_connection_text(arrived, now=later)[1]
+    assert controller_connection_text(none_yet, now=soon) is None  # give it time to arrive
+    assert controller_connection_text(none_yet, now=later) is not None
+    assert controller_connection_text(failed, now=soon) is not None
+    assert controller_connection_text(ControllerReport(disabled=True)) is not None
+    assert controller_connection_text(ControllerReport()) is None  # nobody connected
+    assert controller_connection_text(None) is None
+
+
+def test_inside_flatpak_the_hosts_devices_are_not_judged():
+    from big_remote_play.host.controllers import unusable_devices
+
+    assert unusable_devices(access=lambda _p, _m: False, sandboxed=True) == []
+    assert unusable_devices(access=lambda _p, _m: False, sandboxed=False) == ["/dev/uinput", "/dev/uhid"]
