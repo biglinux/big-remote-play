@@ -22,6 +22,18 @@ from big_remote_play.host.sunshine_manager import SunshineHost
 from big_remote_play.utils.uri import open_path
 
 
+def live_apply_blocked() -> str | None:
+    """Why settings cannot be pushed to the running server now, if they cannot.
+
+    During a Game Window share the running server is the private screen's. A
+    pushed capture method (KMS, auto) would let it read the real monitors."""
+    from big_remote_play.host.sunshine_manager import game_window_screen
+
+    if game_window_screen()[0]:
+        return _("Game Window is sharing: the settings are saved and apply the next time you share.")
+    return None
+
+
 class SunshineConfigManager:
     def __init__(self):
         self.config_dir = paths.SUNSHINE_CONFIG_DIR
@@ -347,6 +359,10 @@ class SunshineSettings:
     def on_apply_live_clicked(self, btn: Gtk.Widget) -> None:
         if not self.sunshine.is_running():
             self._toast(btn, _("Sunshine is not running. Settings are saved to file."))
+            return
+        blocked = live_apply_blocked()
+        if blocked:
+            self._toast(btn, blocked)
             return
         import threading
 
