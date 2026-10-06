@@ -76,6 +76,14 @@ _METADATA_FILE = paths.CONFIG_DIR / "private_network" / "accounts.json"
 _ROOT_TAILSCALE = ("pkexec", "/usr/bin/tailscale")
 
 
+ZEROTIER_CLI_PATHS = ("/usr/bin/zerotier-cli", "/usr/sbin/zerotier-cli")
+
+
+def system_zerotier_cli() -> str | None:
+    """The distribution's zerotier-cli, the only one ever run as root."""
+    return next((path for path in ZEROTIER_CLI_PATHS if os.path.isfile(path) and os.access(path, os.X_OK)), None)
+
+
 @dataclass(frozen=True)
 class CommandResult:
     returncode: int
@@ -663,7 +671,12 @@ class VPNAccountManager:
             return result, False
         if not allow_privileged or command[:2] == ["flatpak", "run"]:
             return result, True
-        privileged = self._run(["pkexec", *command], timeout=max(timeout, 45))
+        # As root, only the system's own binary: pkexec would otherwise resolve
+        # "zerotier-cli" through this user's PATH (~/.local/bin first).
+        system_cli = system_zerotier_cli()
+        if system_cli is None:
+            return result, True
+        privileged = self._run(["pkexec", system_cli, *args], timeout=max(timeout, 45))
         return privileged, self._permission_error(privileged)
 
     def list_zerotier_networks(self, *, allow_privileged: bool = False) -> ZeroTierNetworks:

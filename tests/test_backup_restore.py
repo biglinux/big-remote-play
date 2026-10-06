@@ -218,3 +218,36 @@ def test_reset_defaults_removes_unknown_keys(fake_home):
     config.config = {"obsolete": True, "theme": "dark"}
     assert config.save() and config.reset_defaults()
     assert "obsolete" not in json.loads(config.config_file.read_text())
+
+
+def test_sunshines_certificate_pin_is_neither_saved_nor_restored(tmp_path):
+    """The pin trusts the certificate Sunshine has on this computer, which the
+    backup does not hold: restored elsewhere, or after a new certificate, it
+    made every Sunshine API call fail (pairing, PIN entry)."""
+    backup = manager(tmp_path)
+    backup.config_dir.mkdir(parents=True)
+    backup.sunshine_dir.mkdir()
+    (backup.config_dir / "config.json").write_text("{}")
+    (backup.sunshine_dir / "sunshine.conf").write_text("port = 47989\n")
+    (backup.sunshine_dir / "sunshine_cert.sha256").write_text("aa" * 32)
+    archive = tmp_path / "settings.tar.gz"
+    backup.create(archive)
+    with tarfile.open(archive) as handle:
+        assert "sunshine/sunshine_cert.sha256" not in handle.getnames()
+
+    # An archive made before the pin was left out still restores; its pin is
+    # not applied, and this computer's own pin (its certificate) stays.
+    older = tmp_path / "older.tar.gz"
+    pin = b"bb" * 32
+    with tarfile.open(archive) as source, tarfile.open(older, "w:gz") as target:
+        for member in source.getmembers():
+            data = source.extractfile(member).read()
+            if member.name == "manifest.json":
+                manifest = json.loads(data)
+                manifest["files"].append({"path": "sunshine/sunshine_cert.sha256", "size": len(pin), "sha256": hashlib.sha256(pin).hexdigest()})
+                data = json.dumps(manifest).encode()
+            add_file(target, member.name, data)
+        add_file(target, "sunshine/sunshine_cert.sha256", pin)
+    backup.restore(older)
+    assert (backup.sunshine_dir / "sunshine.conf").read_text() == "port = 47989\n"
+    assert (backup.sunshine_dir / "sunshine_cert.sha256").read_text() == "aa" * 32
