@@ -115,7 +115,7 @@ same information any Wayland client gets from the idle-notification protocol.
 - When the desktop user can already open the input devices (member of the
   `input` group), the helper runs as that user.
 - Otherwise it runs through PolicyKit (`pkexec`) as the fixed, installed
-  program `/usr/share/big-remote-play/scripts/input-priority-helper`, under the
+  program `/usr/share/big-remote-play/scripts/input-priority-helper.sh`, under the
   action `br.com.biglinux.remoteplay.input-priority` (allowed for the active
   local session without a password; denied for inactive and remote sessions).
   It accepts only a delay in seconds on stdin and touches no file.

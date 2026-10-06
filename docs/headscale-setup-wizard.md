@@ -7,15 +7,6 @@ already knows, and checks the step before it is marked done. Technical words
 are kept in **Technical details** and **Why?** expanders and on the Headscale
 page's **Advanced** tab.
 
-## Before: what was wrong
-
-The old *Set up Headscale* was the generic join form of the Tailscale page with
-a **Server address** field (empty) and an optional auth key under advanced
-options. A separate dialog listed commands for running a server. Nothing told
-the person where a server comes from, whether this computer could be one, what
-a domain has to point at, that Cloudflare's proxy breaks Headscale, or whether
-any step had worked.
-
 ## The flow
 
 ```text
@@ -249,9 +240,10 @@ Then it shows Headscale and Caddy with **Installed** or **Not installed**. It re
    - moves `dns.base_domain` off `example.com` (or off the server's own name) to
      `brp.internal`, as Headscale requires;
    - writes `/etc/caddy/conf.d/big-remote-play-headscale.caddy`
-     (`<host> { reverse_proxy 127.0.0.1:8080 }`), validates the Caddy
-     configuration, enables and starts both services, and waits for
-     `http://127.0.0.1:8080/health`.
+     (`<host> { reverse_proxy 127.0.0.1:<port> }`, with the port chosen
+     above, for example `reverse_proxy 127.0.0.1:18080` when 8080 is taken),
+     validates the Caddy configuration, enables and starts both services, and
+     waits for `http://127.0.0.1:<port>/health`.
 2. `firewall`: allows HTTP and HTTPS in firewalld or ufw, when one is active.
 3. HTTPS check, for up to 90 s while Caddy obtains the certificate:
    `check_server(https://<host>, connect_host=127.0.0.1)`. The certificate is
@@ -274,8 +266,9 @@ When HTTPS cannot be reached:
 - **CGNAT**: *Your internet provider blocks incoming connections. Changing the
   router will probably not help.* **Use a VPS instead**.
 
-Advanced details: Headscale listens on 127.0.0.1:8080 only, and Caddy is the
-only listener (80 and 443/TCP). UDP 3478 is not needed, because the embedded
+Advanced details: Headscale listens only on the loopback port chosen above
+(127.0.0.1, 8080 or the first free one of 18080–18089), and Caddy is the only
+listener on the network (80 and 443/TCP). UDP 3478 is not needed, because the embedded
 DERP stays off and Tailscale's public relays are used.
 
 ### The helper and its safety
@@ -285,12 +278,15 @@ action `br.com.biglinux.remoteplay.headscale-server` (`auth_admin_keep`,
 active local session only):
 
 - one command per run: `configure HOST`, `firewall`, `create-user NAME`,
-  `create-apikey`, `status`, `unconfigure`. Arguments are validated in the
+  `create-apikey`, `status`, `unconfigure`, `hosts-pin HOST`,
+  `hosts-unpin HOST`. Arguments are validated in the
   script (host: lower-case domain or IPv4; name: `[a-z0-9][a-z0-9._-]{0,62}`).
   Anything else exits with `RESULT=invalid` before touching a file;
 - an existing Headscale configuration is changed only while `server_url` is
-  still the package default or the address this helper wrote, and only with
-  `listen_addr 127.0.0.1:8080`. An existing Caddy site file of the same name
+  still the package default or the address this helper wrote, and only while
+  `listen_addr` is 127.0.0.1 with one of the helper's ports (8080 or
+  18080–18089); a custom listen address is refused with
+  `RESULT=custom_listen`. An existing Caddy site file of the same name
   is replaced only if this helper wrote it. Otherwise nothing changes and the
   page says so;
 - the original configuration is kept once as `config.yaml.brp-backup`, and
@@ -301,9 +297,8 @@ active local session only):
 - the API key appears once on the helper's stdout as `BRP_DATA API_KEY=…`. The
   application never logs it, never shows it, and stores it only in the keyring.
 
-The old installer that ran Docker as root, put the Cloudflare token on `curl`'s
-command line and served the API to any origin is not back. This helper uses the
-distribution's packages, stores no token and keeps Headscale off the network.
+The helper uses the distribution's packages, handles no Cloudflare or other
+DNS token and keeps Headscale off the network.
 
 ## Another server
 
@@ -416,7 +411,7 @@ detail in an expander, for example *tcp 203.0.113.10:443: refused*.
 | `private_network/public_address.py` | STUN, HTTPS fallback, validation, CGNAT, cache |
 | `private_network/dns_check.py` | DoH client, domain normalization, nameservers, records, Cloudflare proxy ranges |
 | `private_network/headscale_server.py` | `check_server`, `LocalServer` (helper), `SetupProgress`/`SetupStore`, key kinds |
-| `private_network/headscale_api.py` | `create_user` added; pre-auth keys, users, nodes |
+| `private_network/headscale_api.py` | users (`create_user`), pre-auth keys, nodes, registration approval |
 | `ui/headscale_wizard.py` | the pages, `StepGuide` ("Step 1 of 4") |
 | `ui/provider_page.py` | Set up → wizard; Advanced → Headscale server |
 | `usr/share/big-remote-play/scripts/headscale-server-helper.sh`, `usr/share/polkit-1/actions/br.com.biglinux.remoteplay.headscale-server.policy` | the privileged part |
@@ -454,10 +449,10 @@ detail in an expander, for example *tcp 203.0.113.10:443: refused*.
   served by something else (another Caddy, nginx, a container), Big Remote
   Play does not try to share them. Use another server, or add Headscale to that
   existing reverse proxy yourself (the **Guided server setup** shows the Caddy
-  lines). Found on the development machine on 2026-10-06: Docker containers
-  held 80, 443 and 8080. The first version of the helper assumed 8080 and left
-  Headscale restarting in a loop. The port check and the free-port choice come
-  from that.
+  lines). Containers and web applications often hold 80, 443 and 8080; a
+  Headscale bound to a taken port would restart in a loop, which is why the
+  helper checks the web ports first and picks a free loopback port for
+  Headscale.
 
 - Not run here against real services: a real Let's Encrypt certificate, a real
   router's port forwarding, real DigitalPlat or Cloudflare accounts, or a real

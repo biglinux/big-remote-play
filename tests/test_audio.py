@@ -822,7 +822,7 @@ def test_test_tone_plays_the_generated_tone_and_measures_the_recorded_monitor(pu
 
 # ------------------------------------------- Sunshine's recording level
 #
-# Measured on 2026-10-02 (docs/remote-audio-silence-investigation.md): the
+# Measured on 2026-10-02 (docs/audio-architecture.md#sunshines-recording-level): the
 # session manager saved mute=true at 62 % for application.name "sunshine" and
 # applied it to every new sunshine-record. The game played on this computer,
 # Sunshine opened the right monitor, and the other computer heard silence.

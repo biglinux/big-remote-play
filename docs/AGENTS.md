@@ -21,7 +21,7 @@ These rules apply to files under `docs/`. Repository-wide safety, testing and re
 - `release-testing.md` owns release acceptance.
 - `maintainer-guide.md` owns triage and repository maintenance.
 
-Update the owning document and link to it. Do not maintain long, nearly identical copies in several files. Keep the English and Brazilian Portuguese user guides behaviorally aligned when normal workflows change.
+Update the owning document and link to it. Do not maintain long, nearly identical copies in several files. Keep the user guide aligned with the interface when normal workflows change.
 
 ## Accuracy and evidence
 

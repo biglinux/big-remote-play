@@ -63,10 +63,15 @@ port too. The UI warns about this combination; the default remains LAN-only.
 1. **VPN client setup:** the usual path. Join every computer to a private network;
    use the VPN address when discovery/broadcast does not work across the overlay.
 2. **Headscale control server:** still a VPN. A control-server domain and HTTPS
-   are not a direct-public-game route. Big Remote Play no longer deploys a
-   server; it explains the official installation on a server you administer
-   ([VPS and Headscale](vps-headscale.md)). Headscale does not work behind the
-   Cloudflare proxy or Tunnel ([Cloudflare](cloudflare.md)).
+   are not a direct-public-game route. On **This computer**, the
+   [Headscale setup wizard](headscale-setup-wizard.md) installs Headscale and
+   Caddy from the distribution's packages and configures them through
+   `headscale-server-helper.sh`, only after the person presses its button and
+   authorizes the PolicyKit action `br.com.biglinux.remoteplay.headscale-server`
+   (administrator password). For a server administered elsewhere it explains
+   the official installation ([VPS and Headscale](vps-headscale.md)) and never
+   connects to that server. Headscale does not work behind the Cloudflare proxy
+   or Tunnel ([Cloudflare](cloudflare.md)).
 3. **Direct game access by public IP/domain:** no VPN. A domain only resolves the
    public address. For Cloudflare, delegate the domain as documented and use
    DNS-only A/AAAA records (gray cloud), not the HTTP proxy. It is not Cloudflare
@@ -79,8 +84,8 @@ public exposure relative to a properly restricted private VPN. Keep Sunshine
 updated, approve trusted devices, restrict firewall rules, and do not expose
 its web administration panel (47990 with the default base port).
 
-The new guides only render text and open an official page after a user clicks a
-link. Merely opening a guide changes no DNS, ports, credentials or services.
+The connection guides only render text and open an official page after a user
+clicks a link. Merely opening a guide changes no DNS, ports, credentials or services.
 
 ## Joining a tailnet: privilege, browser and connected state
 
@@ -115,7 +120,7 @@ same rules.
   `logout` (which would expire the node key) and without stopping `tailscaled`.
   ZeroTier is an independent daemon; neither one requires disabling the other.
 
-## Primary references checked for this review
+## Primary references
 
 - [Sunshine configuration](https://docs.lizardbyte.dev/projects/sunshine/latest/md_docs_2configuration.html): `max_bitrate`, codecs, capture, audio and `upnp`.
 - [Sunshine UPnP implementation](https://github.com/LizardByte/Sunshine/blob/master/src/upnp.cpp), blob `ca20e985658cc9fc869f6cc87f59bba7d5cf77b0`: streaming mappings and conditional web-manager mapping.

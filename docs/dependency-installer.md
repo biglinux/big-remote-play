@@ -38,7 +38,7 @@ Only one installation runs at a time in the whole application; a second button w
 1. **Pamac** (BigLinux, Manjaro): `pamac install --no-confirm <packages>` runs as the user. Pamac asks for the password itself through its PolicyKit action `org.manjaro.pamac.commit`, owns the transaction, waits for the package database lock and keeps its log. No terminal, no `sudo`, no password field in Big Remote Play.
 2. **pacman** without Pamac: `pkexec install-components.sh <component ids>`. The helper receives component ids, never package names; it maps them itself, installs with `pacman -S --needed --noconfirm` and enables the services, in the same authorization.
 
-Package names are resolved to the **repository** package that provides them, with the read-only `pacman -Sp --print-format %n <name>`. This matters for Sunshine on BigLinux: the repositories have `sunshine-bin` (`provides=sunshine`) while the AUR has a source package literally named `sunshine`. The previous installer ran `yay -S --needed sunshine` in a terminal, which picked the AUR source build.
+Package names are resolved to the **repository** package that provides them, with the read-only `pacman -Sp --print-format %n <name>`. This matters for Sunshine on BigLinux: the repositories have `sunshine-bin` (`provides=sunshine`) while the AUR has a source package literally named `sunshine`. An AUR helper would pick that source build, a long compilation that can conflict with `sunshine-bin`. A name no repository provides (Sunshine on Arch Linux) is reported before anything runs, with where it comes from, and nothing is installed; the `pkexec` helper refuses it the same way.
 
 After the transaction the components are looked up again, and that decides the result, not the exit code. A package manager that reports success for something still missing is a failure; a noisy transaction that installed the program is a success. With everything there, the services the components need are enabled through the same allowlisted `pkexec /usr/bin/systemctl enable --now <unit>` the network pages use.
 
@@ -52,17 +52,19 @@ After the transaction the components are looked up again, and that decides the r
 
 The flow continues by itself only after an installation started from that checklist. A checklist that finds everything already installed shows the page as it is (for example **Sign in** on Tailscale) instead of starting a sign-in nobody asked for.
 
-## The Sunshine "still asks to install" bug
+## When the state is read again
 
-Reported: Share asked to install Sunshine, Sunshine was installed, and Share kept asking.
+A "not installed" seen earlier is never trusted on its own: the program may
+have been installed since, by Big Remote Play or by another tool. A task whose
+program was missing is looked up again before anything is offered
+(`MainWindow._activate_role`), and only a component that is still missing
+leads to the installation prompt. Coming back to the window (focus) refreshes
+the installed probes and the private-network state, at most every 10 seconds.
 
-Causes, all fixed:
-
-1. The installed state was read once at startup (`MainWindow.check_system`) and only again from the old installer's success callback. Installing in another program, or closing the old installer window after an installation in an external terminal without pressing **Check again**, left `Not installed` for the rest of the session. Now a task whose program was missing is looked up again before anything is offered, and coming back to the window (focus) refreshes all probes at most every 10 seconds.
-2. `yay -S sunshine` resolved to the AUR source package, a long build that often fails or conflicts with `sunshine-bin`, so the transaction failed while the person had already installed Sunshine another way.
-3. Success was taken from the terminal's exit code only.
-
-Covered by `tests/test_installer.py`, `tests/test_guided_home_review.py` (a component installed after startup opens the task without asking; installing from the prompt opens the task by itself; a second click starts no second transaction) and `tests/test_guided_setup.py`.
+Covered by `tests/test_installer.py`, `tests/test_guided_home_review.py` (a
+component installed after startup opens the task without asking; installing
+from the prompt opens the task by itself; a second click starts no second
+transaction) and `tests/test_guided_setup.py`.
 
 ## Checked on a real system (2026-10-01)
 

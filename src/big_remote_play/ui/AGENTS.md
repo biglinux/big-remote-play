@@ -8,6 +8,10 @@ These rules supplement the repository-root `AGENTS.md` for files in this directo
 - Navigation is task-first: Home explains Share, Connect and private networking; selecting a role must not trigger side effects.
 - Use libadwaita patterns and standard controls before custom containers or CSS.
 - Keep one obvious primary action per state. Advanced controls belong in named pages/sheets, not the first screen.
+- A destination that is always in the sidebar is not repeated as a button on other pages.
+- Detect instead of asking: read what this computer already has before posing a question.
+- Install missing programs in place through the shared installer checklist, never in a terminal.
+- In Home and the guided setup, name products (Sunshine, Moonlight, Tailscale, …) only in installer checklist rows, with their purpose written next to them, and in tooltips; questions and choices describe the task.
 - Always implement loading, empty, success, unavailable, cancelled and error states when applicable.
 - Do not encode meaning only through color, icon, position or animation.
 - Give interactive elements accessible names; add descriptions when the label alone does not explain the consequence.

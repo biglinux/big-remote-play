@@ -6,7 +6,7 @@ Big Remote Play coordinates a game computer, a connecting computer and—when ne
 
 The game runs on the **sharing computer**. The person playing remotely uses the **connecting computer**.
 
-- Not sure? **Start with the guided setup** on Home asks two questions, prepares this computer and opens the right page.
+- Home opens with **Start with the guided setup**: not sure what to do? It asks two questions, prepares this computer and opens the right page. The **Share** and **Connect** cards follow under *Or choose what you want to do*; a card that needs a program says *Needs a quick installation*.
 - On the same home network, no VPN is normally required.
 - Across the internet, the guided path is to place both computers on the same private network.
 - Sunshine is required on the sharing computer.
@@ -19,7 +19,7 @@ Open the application menu and use **Appearance**. **Gamer** is the dark
 violet/cyan preset; **Automatic** follows the desktop; **Light** and **Dark**
 force the corresponding system appearance. The choice takes effect immediately
 and is restored the next time Big Remote Play opens. High contrast temporarily
-uses the native high-contrast appearance while keeping the saved choice.
+uses the native high-contrast appearance while keeping the saved choice. Design details: [visual design](visual-design.md).
 
 ## Guided setup
 
@@ -84,7 +84,7 @@ While sharing, **Connected now** says who has them: **You're controlling this PC
 
 ### Approve a new device
 
-When a device that was never paired asks to play, a dialog opens on its own: **New connection request** — *Living room PC wants to connect to this computer. Type the PIN shown on its screen.* The PIN field is ready for typing or pasting; Enter or **Approve** sends it. **Reject** refuses the device; **Not now** keeps the request. While it waits, **Connection request** stays at the top of **Overview** with the time left (*This request expires in 1:42*); after two minutes without an answer it is cancelled. If the window is in the background, a desktop notification tells you. **Type a pairing code yourself**, under **3. Connect the other PC**, is the manual fallback. Nothing is approved without the PIN shown on the other screen. Details: [pairing requests](pairing-ux.md).
+When a device that was never paired asks to play, a dialog opens on its own: **New connection request** — *Living room PC wants to connect to this computer. Type the PIN shown on its screen.* The PIN field is ready for typing or pasting; Enter or **Approve** sends it. **Reject** refuses the device; **Not now** keeps the request. While it waits, **Connection request** stays at the top of **Overview** with the time left (*This request expires in 1:42*); after two minutes without an answer it is cancelled. If the window is in the background, a desktop notification tells you. **Type a pairing code yourself**, under **3. Connect the other PC**, is the manual fallback. Nothing is approved without the PIN shown on the other screen. Details: [pairing requests](pairing-requests.md).
 
 Two options in **Image and capture** decide how faithful the picture is:
 
@@ -101,7 +101,7 @@ While sharing, **Connected now** lists every device playing on this computer at 
 
 1. Ask the other person to start sharing.
 2. On Home, choose **Connect** — the option for playing on this device.
-3. Under **Computers**, choose the game computer: every computer found has its own card, two per line on a wide window. Choosing it connects (*Connecting to Living room PC…*); **Stop** cancels.
+3. Under **Computers**, choose the game computer: every computer found has its own card, two per line on a wide window. Its address is in the card's tooltip (*Available at 192.168.1.30*). Choosing it connects (*Connecting to Living room PC…*); **Stop** cancels.
 4. On the first connection, keep the Moonlight pairing window open while the sharing computer approves the code.
 
 Everything else is on the **Advanced options** tab: **Connect again** (recent computers), **Other ways to connect** (**I have a search code**, **I know the IP address**, **Connection history**) and **On this computer** (**Image**, **Audio**, **Input**, **Game PC and connection**). The address dialog and search-code dialog are separate because they solve different problems.
@@ -153,7 +153,7 @@ Each card is a small panel of its own method only:
 - this computer's private address there (**This computer**);
 - how many devices are online, for example **2 online · 3 devices** — this computer is counted too. When the number cannot be read it says **Devices unavailable** (ZeroTier without an API token) or **Could not load devices**, never a made-up zero.
 
-Several methods can be on at the same time; each keeps its own devices. Tailscale and Headscale are the exception: both use the Tailscale app on this computer, so only one of them is on at a time. Turning one on asks **Switch from Tailscale to Headscale?** first; the other account stays saved. ZeroTier works alongside either. Details: [cards and switches](connect-devices-cards-redesign.md).
+Several methods can be on at the same time; each keeps its own devices. Tailscale and Headscale are the exception: both use the Tailscale app on this computer, so only one of them is on at a time. Turning one on asks **Switch from Tailscale to Headscale?** first; the other account stays saved. ZeroTier works alongside either. Details: [cards and switches](connect-your-devices.md#cards-and-switches).
 
 Select the rest of a card to open that method's page in the same window; **Back** at the top returns. The top of the window switches between **Devices** and **Advanced**.
 
@@ -168,7 +168,7 @@ Select the rest of a card to open that method's page in the same window; **Back*
 
 **Advanced** holds the technical part: **Connection quality** while connected — **In use now** (what this computer sends and receives through the secure connection now, not its maximum speed; no speed test is run), **Network: Stable** or **Unstable** with the measured time, and whether the path is a **Direct connection** or goes **Through a relay server**; this computer's addresses, name, node ID, network name, account and the service details, each with **Copy**; **Manage network** (approvals, **Leave network**, removing members), **Join another network** and **Create a network** (ZeroTier), **Use another account** (Tailscale, Headscale), **API access**, **Accounts and networks**; and **Help** with **Internet, router and firewall**. All of these open as pages of the same window. The Tailscale and Headscale pages list **Tailscale accounts and tailnets** on this computer and say which one is **Active**; **Switch** changes to another. To join a **friend's tailnet** after accepting their invitation, choose **Use another tailnet**: after your password (once), it opens Tailscale's sign-in, where Tailscale shows **Select a tailnet**. Your current tailnet stays in the list.
 
-Below the cards, **Advanced** links to **Internet, router and firewall** and **Without a private network** (a direct connection with a domain and router ports). Technical background: [Connect your devices redesign](connect-your-devices-redesign.md).
+Below the cards, **Advanced** links to **Internet, router and firewall** and **Without a private network** (a direct connection with a domain and router ports). Technical background: [Connect your devices](connect-your-devices.md).
 
 When sharing, **Share** shows under **Available over the internet** the **Secure connection** in use, **This computer**'s name and **Status**, with **Copy connection information** to send to the other person; the private addresses are under **Connection details**. On the other computer, **Connect** lists the computers your private network knows about, next to local ones, marked “Sharing found”, “Sharing not found” or “Offline”. **Check connection** (or **Diagnose** after a failed connection) checks the private network, the computer and Sunshine, and — for Tailscale — whether the route is direct (best performance) or relayed (works, may add latency), with the measured latency.
 
@@ -202,7 +202,7 @@ A private network may use a relay and does not guarantee a direct or low-latency
 
 ## Connection history
 
-On the sharing computer, **Share → Support → Connection history** shows the sessions other devices played here in the **Last 7 days** — one bar per day — with **Sessions**, **Time played**, **Average session length** and **Last connection**. It is kept only on this computer for 90 days and holds no address, password or code; **Clear history** removes it. With nothing yet it says *No connection history yet.* Details: [connection history](connection-history-fix.md). Above it, while sharing, **Latency in the last 3 minutes** is the live ping measurement; a device that does not answer pings plays normally but draws no line.
+On the sharing computer, **Share → Support → Connection history** shows the sessions other devices played here in the **Last 7 days** — one bar per day — with **Sessions**, **Time played**, **Average session length** and **Last connection**. It is kept only on this computer for 90 days and holds no address, password or code; **Clear history** removes it. With nothing yet it says *No connection history yet.* Details: [connection history](connection-status.md#connection-history-share). Above it, while sharing, **Latency in the last 3 minutes** is the live ping measurement; a device that does not answer pings plays normally but draws no line.
 
 On the connecting computer, **Connect → Advanced options → Connection history** lists streams that really started from this computer: the computer, the private-network service, start and end time, duration and the requested resolution and frame rate. It is stored only on this computer and never contains passwords, keys or codes. Choose how long to keep it (30 days, 90 days or always) or **Clear history**. The most recent computers also appear under **Connect again**.
 
@@ -255,7 +255,7 @@ Do not run the UI with `sudo`. Privileged operations request narrowly scoped aut
 
 The application requires Python 3.11+, GTK 4.10+, libadwaita 1.7+, PyGObject, Cairo bindings, the system hicolor icon theme and a graphical desktop session.
 
-Optional/role-specific components include Sunshine, Moonlight Qt, Avahi, `pactl`, VTE, a Secret Service-compatible keyring and one supported private-network client. Install native components through the distribution package manager rather than into the system interpreter with pip.
+Optional/role-specific components include Sunshine, Moonlight Qt, Avahi, `pactl`, a Secret Service-compatible keyring and one supported private-network client. Install native components through the distribution package manager rather than into the system interpreter with pip.
 
 ## When something fails
 
