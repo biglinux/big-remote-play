@@ -55,7 +55,7 @@ There is no proprietary game catalog and no requirement that the game came from 
     <td width="50%"><img src="docs/screenshots/connect.png" alt="Connect: three game computers as cards, two on the local network and one over Tailscale, with the Computers and Advanced options tabs"><br><sub><b>Connect</b>: pick the game computer; other ways to connect are on the <b>Advanced options</b> tab.</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/private-network.png" alt="Play over the internet: ready over Tailscale with two devices online and the list of devices"><br><sub><b>Play over the internet</b>: one sentence and one button tell you what to do next.</sub></td>
+    <td><img src="docs/screenshots/private-network.png" alt="Connect your devices: the Tailscale page, connected, with this computer and two other devices, their addresses and Copy IP"><br><sub><b>Connect your devices</b>: each method is a page with its own devices.</sub></td>
     <td><img src="docs/screenshots/image-settings.png" alt="Image and capture sheet with automatic capture and encoding, the video bitrate ceiling and screen and encoder settings"><br><sub><b>Image and capture</b>: automatic by default, detailed when you need it.</sub></td>
   </tr>
   <tr>
@@ -76,7 +76,7 @@ There is no proprietary game catalog and no requirement that the game came from 
 
 **2. On the computer that will play** — open **Connect** and choose the game computer. The first time, Moonlight shows a four-digit pairing code, and the sharing computer shows **New connection request** by itself: type the code there and choose **Approve**.
 
-**3. When the computers are in different places** — open **Play over the internet**. **Connect your devices** looks at what already works and shows one sentence with one button: **Turn on**, **Fix**, **Sign in**, **Set up** or **Add a device or invite a player**. Not sure where to start? **Start with the guided setup** on Home asks two questions, prepares this computer and takes you there.
+**3. When the computers are in different places** — open **Connect your devices**. Choose **Tailscale** (recommended), **ZeroTier** or **Headscale**: each opens its own page with one button for the next step (**Install and continue**, **Set up**, **Sign in**, **Start**), its devices with **Copy IP**, and **Add device**. Not sure where to start? **Start with the guided setup** on Home asks two questions, prepares this computer and takes you there.
 
 > **Pairing code and search code are different.** A pairing code authorizes a device. A search code only helps find a Big Remote Play computer on a network that permits discovery.
 
@@ -145,7 +145,7 @@ The Python wheel alone is not a complete desktop installation: icons, styles, tr
 | **Share** | `sunshine` |
 | **Connect** | `moonlight-qt` |
 | **Game Window** | Sunshine ≥ 2026.516; KDE Plasma (`kwin`) on Wayland or an X11 desktop with compositing; `gst-plugin-pipewire`, `gst-plugins-bad`, `gst-plugins-good` |
-| **Play over the internet** | one of `tailscale`, `zerotier-one`, or a Headscale server (`docker`, `docker-compose`, `miniupnpc` to host your own) |
+| **Connect your devices** | one of `tailscale`, `zerotier-one`, or a Headscale server (`docker`, `docker-compose`, `miniupnpc` to host your own) |
 | **Optional** | `pamac-cli` (installing missing components without a terminal), `pciutils` (graphics detection), `flatpak` (VPN clients installed as Flatpaks) |
 
 ## Game Window: share the game, not your desktop

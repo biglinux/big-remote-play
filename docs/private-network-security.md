@@ -11,7 +11,7 @@ How Big Remote Play handles credentials, privileges and personal data for Tailsc
 | Stored | Secret Service only, until removed | Never stored; shown once and forgotten |
 | UI | Settings → **API access** | **Add device**, or the auth-key field on **Join a network** |
 
-The API access dialog refuses an auth key pasted into an API field (`tskey-auth-…`) and explains the difference, because that is the most common mix-up.
+The API access dialog refuses an auth key pasted into an API field (`tskey-auth-…`, `hskey-auth-…`) and explains the difference, because that is the most common mix-up. The [Headscale setup wizard](headscale-setup-wizard.md) refuses each kind in the other's field the same way, stores an API key it created or received only in the keyring, and shows a pre-auth key it creates for another device only behind **Copy** (one use, one hour).
 
 ## Where secrets can and cannot be
 
@@ -39,13 +39,16 @@ Each privileged step is a single, explicit, PolicyKit-authorized command started
 | Action | Command | Why |
 |---|---|---|
 | Start a VPN daemon | `pkexec /usr/bin/systemctl enable --now tailscaled` or `zerotier-one` | Only these two units are accepted |
+| Stop ZeroTier (**Stop** in its dialog) | `pkexec /usr/bin/systemctl stop zerotier-one` | Same allowlist; confirmed first. Tailscale and Headscale stop with `tailscale down` as the user |
+| Host input priority | `pkexec /usr/share/big-remote-play/scripts/input-priority-helper.sh` (action `br.com.biglinux.remoteplay.input-priority`, active local session only, no password) | Only when the user cannot open `/dev/input`; reports pauses, never keys; see [host input priority](host-input-priority.md) |
 | Tailscale operator | `pkexec /usr/bin/tailscale set --operator=$USER` | Only after the CLI refused an unprivileged command |
 | ZeroTier user access | `pkexec /usr/bin/cat /var/lib/zerotier-one/authtoken.secret` | The token reaches this process through a pipe; the user writes `~/.zeroTierOneAuthToken` (0600) without following links |
 | Join/leave ZeroTier before access was granted | `pkexec zerotier-cli join|leave <validated id>` | Only a 16-hex-digit Network ID reaches argv |
 | Firewall | `pkexec configure_firewall.sh <base port>` | Confirmed first, listing every port and saying the rule is permanent; the web UI port is never opened. Offered from **Share** when the read-only check (`host/firewall_check.py`: ufw's world-readable rule files, or unprivileged `firewall-cmd` zone queries) finds Sunshine's ports blocked; nothing is changed without this confirmation |
 | Install a component | `pamac install --no-confirm <packages>` as the user (Pamac's own PolicyKit action), or without Pamac `pkexec install-components.sh <component ids>` | Only after **Install what's needed**; the helper accepts only known component ids and maps them to packages itself; no terminal, no password field |
+| Headscale server on this computer | `pkexec headscale-server-helper.sh configure HOST · firewall · create-user NAME · create-apikey · status · unconfigure · hosts-pin HOST · hosts-unpin HOST` (action `br.com.biglinux.remoteplay.headscale-server`, administrator password, kept a few minutes, local active session only) | Only from **Set up the server** in the [Headscale wizard](headscale-setup-wizard.md). Arguments validated in the script; refuses when another program already serves ports 80/443; a Headscale or Caddy configuration it did not write is never changed; the original config is kept as `config.yaml.brp-backup`; Headscale stays on 127.0.0.1; the new API key leaves only through the pipe to the keyring |
 
-The Docker/Caddy/Cloudflare Headscale installer that ran as root, placed the Cloudflare token on `curl`'s command line, opened firewall ports without asking and served the API with `Access-Control-Allow-Origin: *` has been removed. Self-hosting is now a guide with commands the administrator runs on their own server ([VPS and Headscale](vps-headscale.md)).
+The Docker/Caddy/Cloudflare Headscale installer that ran as root, placed the Cloudflare token on `curl`'s command line, opened firewall ports without asking and served the API with `Access-Control-Allow-Origin: *` has been removed. A server on *another* computer is a guide with commands its administrator runs there ([VPS and Headscale](vps-headscale.md)); Big Remote Play never connects to it over SSH. A server on *this* computer uses the distribution's `headscale` and `caddy` packages through the reviewed helper above; no Cloudflare or other token is ever handled, and the page says before **Set up the server** that it opens the web ports (80 and 443) in the firewall.
 
 ## Input validation
 
@@ -60,6 +63,7 @@ The Docker/Caddy/Cloudflare Headscale installer that ran as root, placed the Clo
 
 - **Nothing** is sent to Big Remote Play servers; there are none.
 - Status comes from the local VPN clients. REST calls go only to the provider the person configured (`api.tailscale.com`, `api.zerotier.com` or `central.zerotier.com`, their own Headscale server).
+- **Headscale setup**, only when the person uses the wizard: the public address is asked of STUN servers (`stun.cloudflare.com`, `stun.l.google.com`: a 20-byte request with no content) and, if UDP is blocked, of `1.1.1.1/cdn-cgi/trace` or `api.ipify.org`; only for **This computer**, cached 5 minutes. Domain checks send the name being checked to DNS-over-HTTPS at `cloudflare-dns.com` (falling back to `dns.google`). `upnpc -s` asks the local router its internet address. Caddy obtains the HTTPS certificate from Let's Encrypt. The server check contacts only the address typed.
 - Connect contacts only addresses the VPN clients report, on the Sunshine HTTP port. The connection check page reads local interfaces only; public-address lookups remain the existing opt-in “IPv4/IPv6 Global” rows under Share.
 
 ## Reporting

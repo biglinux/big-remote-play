@@ -18,7 +18,7 @@ Let's get this computer ready    ✓/✕ per program  → [Install what's needed
 same network   → Share or Connect
 somewhere else → Let's create a secure connection (this computer is looked at)
                    ready            → Use this connection → Share or Connect
-                   needs one step   → Play over the internet, whose button does that step
+                   needs one step   → Continue → that method's page, whose Connection button does that step
                    nothing yet      → How do you want to connect?
                                         Tailscale (Recommended) · I already use ZeroTier · Advanced options
 ```

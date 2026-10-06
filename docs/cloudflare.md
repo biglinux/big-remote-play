@@ -4,6 +4,8 @@ What Cloudflare can do for internet play, and — just as important — what it 
 
 Facts about Cloudflare products were checked against Cloudflare's documentation on 2026-09-28. Plans and limits change; the linked pages are authoritative.
 
+For a Headscale server, the [Headscale setup wizard](headscale-setup-wizard.md) walks through DigitalPlat, the Cloudflare nameservers and the **DNS only** record inside Big Remote Play and checks each step.
+
 ## Short answer
 
 | Goal | Use Cloudflare for | Do not use |

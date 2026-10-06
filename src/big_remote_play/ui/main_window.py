@@ -115,12 +115,12 @@ BASE_NAVIGATION_PAGES = {
     # it. Buttons that perform the action use the same words without context.
     "host": {"name": pgettext("navigation", "Share"), "icon": "brp-host-symbolic", "description": _("Run the game on this PC")},
     "guest": {"name": pgettext("navigation", "Connect"), "icon": "brp-client-symbolic", "description": _("Play from another PC")},
-    "vpn_selector": {"name": _("Play over the internet"), "icon": "brp-network-private-symbolic", "description": _("For PCs in different houses")},
+    "vpn_selector": {"name": _("Connect your devices"), "icon": "brp-network-private-symbolic", "description": _("For PCs in different houses")},
 }
 # Home and the internet pages show two indicators in the sidebar instead of
 # one card per service: is streaming ready, is the secure connection on.
 SUMMARY_SERVICES = ("summary-streaming", "summary-network")
-SUMMARY_PAGES = ("welcome", "vpn_selector", "create_private", "connect_private")
+SUMMARY_PAGES = ("welcome", "vpn_selector")
 
 WELCOME_NAVIGATION_PAGE = {"welcome": {"name": _("Home"), "icon": "brp-go-home-symbolic", "description": _("Home Page")}}
 
@@ -176,7 +176,8 @@ class MainWindow(Adw.ApplicationWindow):
         self._network_poll_ticks = 0
         self._network_statuses: dict[str, ProviderStatus] = {}
         self._vpn_choice = load_vpn_choice()  # None if not yet chosen
-        self._vpn_add_account = False
+        self.provider_page = None
+        self.zerotier_network_id = ""  # the ZeroTier network the card and the ZeroTier page show
         self.network_advanced_mode = bool(self.config.get("network_advanced_mode", False))
         self._nav_page_by_row: dict[Gtk.ListBoxRow, str] = {}
         self._service_by_row: dict[Gtk.Widget, str] = {}
@@ -383,7 +384,7 @@ class MainWindow(Adw.ApplicationWindow):
         toolbar.set_content(scroll)
         self.split_view.set_sidebar(Adw.NavigationPage.new(toolbar, _("Navigation")))
 
-    # Home · Share, Connect · Play over the internet: three kinds of place.
+    # Home · Share, Connect · Connect your devices: three kinds of place.
     _NAV_SECTION_STARTS = frozenset({"host", "vpn_selector"})
 
     def _nav_header(self, row: Gtk.ListBoxRow, before: Gtk.ListBoxRow | None) -> None:
@@ -553,14 +554,18 @@ class MainWindow(Adw.ApplicationWindow):
         row.set_header(label)
 
     def _relevant_service_ids(self) -> list[str]:
-        # Home and the internet pages: two indicators, not a component dashboard.
-        if self.current_page in SUMMARY_PAGES:
-            return list(SUMMARY_SERVICES)
-        if self.current_page not in ("host", "guest"):
-            return []
         # Every method keeps its card while it is off, so turning one on or off
         # changes that card in place instead of adding or removing a row.
-        return ["sunshine" if self.current_page == "host" else "moonlight", *self._NETWORK_SERVICES]
+        if self.current_page in ("host", "guest"):
+            return ["sunshine" if self.current_page == "host" else "moonlight", *self._NETWORK_SERVICES]
+        # Connect your devices shows the same cards as Share and Connect: the
+        # streaming component of the remembered task and the three methods.
+        if self.current_page == "vpn_selector":
+            return ["sunshine" if self._summary_role() == "host" else "moonlight", *self._NETWORK_SERVICES]
+        # Home: two indicators, not a component dashboard.
+        if self.current_page in SUMMARY_PAGES:
+            return list(SUMMARY_SERVICES)
+        return []
 
     def _filter_status_rows(self) -> None:
         """Show the streaming component of the task and the network methods."""
@@ -671,11 +676,11 @@ class MainWindow(Adw.ApplicationWindow):
         self.home_back_button.add_css_class("flat")
         self.home_back_button.connect("clicked", lambda _button: self.home_navigation.pop())
         header.pack_start(self.home_back_button)
-        # Network sub-pages (sign-in, network details) return to the hub.
+        # Inside Connect your devices: back from a method's page to the list.
         self.network_back_button = Gtk.Button(icon_name="go-previous-symbolic", visible=False)
-        name_icon_button(self.network_back_button, _("Back"), _("Back to Connect your devices"))
+        name_icon_button(self.network_back_button, _("Back"), _("Back to the previous page"))
         self.network_back_button.add_css_class("flat")
-        self.network_back_button.connect("clicked", lambda _button: self.navigate_to("vpn_selector"))
+        self.network_back_button.connect("clicked", lambda _button: self.network_navigation.pop())
         header.pack_start(self.network_back_button)
         self.content_headerbar = header
         toolbar.add_top_bar(header)
@@ -693,8 +698,6 @@ class MainWindow(Adw.ApplicationWindow):
 
         self.vpn_selector_page = self.create_vpn_selector_page()
         self.content_stack.add_named(self.vpn_selector_page, "vpn_selector")
-        self.create_private_view = None
-        self.connect_private_view = None
 
         # Keep every task switcher in the native headerbar.  On compact widths,
         # the same ViewStack moves to a ViewSwitcherBar at the bottom, following
@@ -809,39 +812,80 @@ class MainWindow(Adw.ApplicationWindow):
     # ─────────────────────────────────────────────────────────────────────────
 
     def create_vpn_selector_page(self):
-        """“Connect your devices”: status, tasks, devices and Advanced mode."""
+        """**Connect your devices**: the methods first; each method is a page pushed here."""
         from .remote_connection import RemoteConnectionPage
 
         self.remote_connection_page = RemoteConnectionPage(self)
-        return self.remote_connection_page
+        self.network_navigation = Adw.NavigationView()
+        self.network_navigation.add(Adw.NavigationPage(child=self.remote_connection_page, title=_("Connect your devices"), tag="providers"))
+        self.network_navigation.connect("notify::visible-page", lambda *_args: self._on_network_page_changed())
+        return self.network_navigation
+
+    def _on_network_page_changed(self) -> None:
+        """The header follows the page: the list, a method (with its tabs) or one of its steps."""
+        if not hasattr(self, "network_back_button"):
+            return
+        on_network = self.current_page == "vpn_selector"
+        page = self.network_navigation.get_visible_page()
+        nested = page is not None and page.get_tag() != "providers"
+        self.network_back_button.set_visible(on_network and nested)
+        self.content_headerbar.set_show_back_button(not (on_network and nested))
+        if not on_network:
+            return
+        from .provider_page import ProviderPage, state_text
+
+        if isinstance(page, ProviderPage):
+            self.provider_page = page
+            subtitle = state_text(page.state) if page.status is not None else _("Checking…")
+            self.header_context_stacks["network"] = page.view_stack
+            self.header_context_specs["network"] = (page.provider.display_name, subtitle, _("{name} sections").format(name=page.provider.display_name))
+            self._set_header_context("network")
+        elif nested and page is not None:
+            from .network_common import in_stack
+
+            method = self.provider_page
+            owner = method.provider.display_name if method is not None and in_stack(self.network_navigation, method) else ""
+            self._set_header_title(page.get_title(), owner)
+        else:
+            self._set_header_title(_("Connect your devices"), "")
 
     def set_network_advanced_mode(self, advanced: bool) -> None:
-        """Remember the disclosure level; network pages follow it when reopened."""
+        """Remember the disclosure level; a method's dialog follows it when opened again."""
         advanced = bool(advanced)
         if advanced == self.network_advanced_mode:
             return
         self.network_advanced_mode = advanced
         self.config.set("network_advanced_mode", advanced)
-        for name in ("create_private", "connect_private"):
-            old = self.content_stack.get_child_by_name(name)
-            if old is not None:
-                self.content_stack.remove(old)
 
-    def show_api_access(self) -> None:
+    def _network_pages(self) -> Adw.NavigationView | None:
+        """Connect your devices' navigation while it is on screen: its tools open there as pages, not dialogs."""
+        navigation = getattr(self, "network_navigation", None)
+        return navigation if self.current_page == "vpn_selector" else None
+
+    def _show_guide(self, build) -> None:
+        from .network_common import push_page
+
+        navigation = self._network_pages()
+        if navigation is None:
+            build().present(self)
+        else:
+            push_page(navigation, build(as_page=True))
+
+    def show_api_access(self, *, focus: str = "", on_changed: Callable[[], None] | None = None) -> None:
         from big_remote_play.private_network.service import default_service
         from .api_access_dialog import ApiAccessDialog
 
-        ApiAccessDialog(self, default_service(), show_toast=self.show_toast, focus=self._vpn_choice or "").present()
+        ApiAccessDialog(self, default_service(), show_toast=self.show_toast, on_changed=on_changed, focus=focus or self._vpn_choice or "", navigation=self._network_pages()).present()
 
     def show_internet_check(self) -> None:
         from .connection_guides import build_internet_check_dialog
 
-        build_internet_check_dialog().present(self)
+        self._show_guide(build_internet_check_dialog)
 
     def show_direct_internet_guide(self) -> None:
         from .connection_guides import build_direct_internet_dialog
 
-        build_direct_internet_dialog().present(self)
+        self._show_guide(build_direct_internet_dialog)
 
     def show_vpn_accounts(self) -> None:
         from big_remote_play.utils.vpn_accounts import VPNAccountManager
@@ -859,39 +903,56 @@ class MainWindow(Adw.ApplicationWindow):
             on_add_headscale=lambda: select("headscale"),
             on_join_zerotier=lambda: select("zerotier"),
             show_toast=self.show_toast,
+            navigation=self._network_pages(),
         )
         self._vpn_accounts_dialog = dialog
         dialog.present()
 
-    def _apply_vpn_selection(self, provider_id, *, add_account: bool = False, destination: str = "connect_private", auto_start: bool = False):
+    # Page names of earlier versions: Set up (join) and the method's devices.
+    _PROVIDER_VIEWS = {"connect_private": "setup", "create_private": "devices", "overview": "devices"}
+
+    def _apply_vpn_selection(self, provider_id, *, add_account: bool = False, destination: str = "connect_private", auto_start: bool = False, prefill: dict | None = None):
+        """Open a method's page: ``connect_private`` → its Set up step, otherwise its devices."""
+        return self.open_provider(provider_id, view=self._PROVIDER_VIEWS.get(destination, "devices"), add_account=add_account, auto_start=auto_start, prefill=prefill)
+
+    def open_provider(self, provider_id: str, *, view: str = "devices", add_account: bool = False, auto_start: bool = False, prefill: dict | None = None):
+        """A method's page (**Devices | Advanced**) inside this window, under Connect your devices.
+
+        Methods are independent: opening one never turns another off. The
+        page offers **Back to Share/Connect** when the person came from there.
+        """
+        if provider_id not in VPN_PROVIDERS:
+            return None
+        from big_remote_play.private_network.models import ProviderId
+
+        from .provider_page import ProviderPage
+
+        if self.current_page in ("host", "guest"):
+            self._network_return_page = self.current_page
+        # Only remembered as the method last opened (older page names use it).
         self._vpn_choice = provider_id
-        self._vpn_add_account = add_account
-        self._vpn_auto_start = auto_start
         save_vpn_choice(provider_id)
-        for name in ("create_private", "connect_private"):
-            old = self.content_stack.get_child_by_name(name)
-            if old:
-                self.content_stack.remove(old)
-        self.navigate_to(destination)
+        self.navigate_to("vpn_selector")
+        self.network_navigation.pop_to_tag("providers")
+        page = ProviderPage(self, ProviderId(provider_id), self.network_navigation)
+        self.provider_page = page
+        self.network_navigation.push(page)
+        if view == "setup":
+            page.show_setup(auto_start=auto_start, add_account=add_account, prefill=prefill)
+        elif view == "advanced":
+            page.view_stack.set_visible_child_name("advanced")
+        self._on_network_page_changed()
+        return page
 
-    def _ensure_private_view(self, name: str) -> None:
-        if self.content_stack.get_child_by_name(name) is not None:
-            return
-        provider = self._vpn_choice
-        if not isinstance(provider, str) or provider not in VPN_PROVIDERS:
-            return
-        from .private_network_view import PrivateNetworkView
-
-        view = PrivateNetworkView(
-            self,
-            mode="create" if name == "create_private" else "connect",
-            vpn_provider=provider,
-            add_account=self._vpn_add_account,
-            auto_start=getattr(self, "_vpn_auto_start", False) and name == "connect_private",
-        )
-        self._vpn_auto_start = False
-        setattr(self, "create_private_view" if name == "create_private" else "connect_private_view", view)
-        self.content_stack.add_named(view, name)
+    def finish_provider(self) -> None:
+        """A method works: back to Share or Connect, or to the internet page with its next steps."""
+        target = self._network_return_page if self._network_return_page in ("host", "guest") else "vpn_selector"
+        if target == "vpn_selector":
+            self.network_navigation.pop_to_tag("providers")
+        if self.current_page != target:
+            self.navigate_to(target)
+        else:
+            self._refresh_private_network_status()
 
     # ─────────────────────────────────────────────────────────────────────────
     #  WELCOME PAGE
@@ -1204,6 +1265,9 @@ class MainWindow(Adw.ApplicationWindow):
             if pid:
                 if pid == "welcome":
                     self.home_navigation.pop_to_tag("choices")
+                if pid == "vpn_selector":
+                    # The sidebar always starts at the list of methods.
+                    self.network_navigation.pop_to_tag("providers")
                 # The home cards offered to install what a task needs; reaching
                 # the same task from the sidebar must offer it too.
                 component = self._ROLE_COMPONENTS.get(pid)
@@ -1215,25 +1279,18 @@ class MainWindow(Adw.ApplicationWindow):
     def navigate_to(self, pid: str) -> None:
         if pid == "change_vpn":
             pid = "vpn_selector"
-        if pid in ("create_private", "connect_private") and not self._vpn_choice:
-            pid = "vpn_selector"
         if pid in ("create_private", "connect_private"):
-            if self.current_page in ("host", "guest"):
-                self._network_return_page = self.current_page
-            self._ensure_private_view(pid)
+            # A method's Set up and Details are views of its dialog, not pages.
+            if self._vpn_choice in VPN_PROVIDERS:
+                self._apply_vpn_selection(self._vpn_choice, destination=pid)
+                return
+            pid = "vpn_selector"
         if self.content_stack.get_child_by_name(pid) is None:
             return
 
-        network_page = pid in ("vpn_selector", "create_private", "connect_private")
+        network_page = pid == "vpn_selector"
         if network_page and self.current_page in ("host", "guest"):
             self._network_return_page = self.current_page
-        if pid in ("create_private", "connect_private"):
-            view = self.content_stack.get_child_by_name(pid)
-            page = view.get_child() if isinstance(view, Adw.Bin) else None
-            guide = getattr(page, "_return_to_game", None)
-            return_row = guide.get_first_child() if guide is not None else None
-            if return_row is not None and isinstance(return_row, Adw.ActionRow):
-                return_row.set_subtitle(self.network_return_label())
         sidebar_pid = "vpn_selector" if network_page else pid
         self.nav_list.handler_block_by_func(self.on_nav_selected)
         try:
@@ -1247,7 +1304,7 @@ class MainWindow(Adw.ApplicationWindow):
         self.content_stack.set_visible_child_name(pid)
         self.current_page = pid
         self.home_back_button.set_visible(False)
-        self.network_back_button.set_visible(pid in ("create_private", "connect_private"))
+        self.network_back_button.set_visible(False)
         self.content_headerbar.set_show_back_button(True)
         self._remember_role(pid)
         self._filter_status_rows()
@@ -1262,12 +1319,7 @@ class MainWindow(Adw.ApplicationWindow):
         elif pid == "welcome":
             self._on_home_page_changed()
         elif pid == "vpn_selector":
-            self._set_header_title(_("Play over the internet"), _("Connect your devices"))
-        else:
-            # The task is the title; the method is only the subtitle.
-            provider = VPN_PROVIDERS[self._vpn_choice]["name"] if self._vpn_choice else ""
-            title = _("Network details") if pid == "create_private" else _("Set up the connection")
-            self._set_header_title(title, provider)
+            self._on_network_page_changed()
         if self.split_view.get_collapsed():
             self.split_view.set_show_content(True)
 
@@ -1430,8 +1482,8 @@ class MainWindow(Adw.ApplicationWindow):
             return
 
         if service_id in ("tailscale", "zerotier", "headscale"):
-            destination = "create_private" if self.current_page == "host" else "connect_private"
-            self._apply_vpn_selection(service_id, destination=destination)
+            # Its own dialog over Share or Connect: the task stays where it was.
+            self.open_provider(service_id)
             return
 
         if probe_result is None:

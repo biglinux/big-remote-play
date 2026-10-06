@@ -45,6 +45,8 @@ for screenshots must be labeled as simulated.
 | Streaming | Sunshine → Moonlight connection, pairing, stop/reconnect, custom port and invalid credentials |
 | Capture/audio | Wayland/X11 sessions, actual GPU encoding/decoding, display changes, host/client sound |
 | Game Window | On KDE Plasma Wayland and X11: a native game, a Steam/Proton game and a Gamescope game listed by name; first-share confirmation and silent restore; terminal, browser, Dolphin, a notification and the Plasma menu over the game never reach the client; closing and crashing the game stop sharing with no desktop shown; windowed, borderless and fullscreen; two and three monitors; AMD, Intel and NVIDIA (hybrid laptops included) with hardware encoding; controllers, keyboard and mouse; host and client sound. See [Game Window](game-window.md) |
+| Game Window changes | With a real game of each kind (native, Steam/Proton, Wine, Gamescope; Vulkan and OpenGL): windowed → fullscreen, fullscreen → windowed, windowed → borderless, borderless → fullscreen, Alt+Enter, Alt+Tab, 1920×1080 → 2560×1440, a refresh-rate change; the game closing and crashing; KDE's sharing indicator stopped by hand; Moonlight reconnecting; Sunshine restarted. Expected: at most a few seconds of black with **Reconnecting to the game window…**, never the desktop; two windows of the game end the share. See [fullscreen and new resolutions](game-window-fullscreen-fix.md) |
+| Host input priority | Physical USB and Bluetooth keyboards and mice (hot-plugged during a session), a touchpad; Wayland and X11; guest holding a key, Ctrl/Alt/Shift/Super, a mouse button and a drag when this computer takes over; relative mouse in a game; scroll; 1, 5 and 30 s; the guest disconnecting while paused; Moonlight reconnecting; Sunshine restarted; a controller on each side keeps working; a user outside the `input` group with the package's PolicyKit rule; the on-screen message in Full Desktop. See [host input priority](host-input-priority.md) |
 | Internet | Real Tailscale browser authorization and machine sharing, ZeroTier join/approval/managed IP, Headscale server (0.27+) with API key, registration approval and pre-auth key; Share ↔ Connect over each provider, including a relayed path. Track results in the [private-network test matrix](private-network-test-matrix.md) |
 | Privileges | PolicyKit allow/cancel/failure and desktop keyring locked/unavailable states |
 | Installation | From Home, the guided setup and the Tailscale/ZeroTier pages on a machine without the component: Pamac's password dialog (allow, cancel, wrong password), a busy package database, no network; without Pamac, the `install-components.sh` helper; Sunshine installed in another program while Big Remote Play is open is recognized on the next Share; after installing Tailscale the browser sign-in opens by itself. See [installing what a task needs](dependency-installer.md) |
@@ -106,7 +108,34 @@ a public report.
 7. On Share and Connect, exercise Sunshine/Moonlight missing, stopped and
    running states plus all VPN model states. Connect two providers together and
    confirm both show Connected while every disconnected method keeps its card.
-8. Repeat cards and guided choices in light, dark, Gamer and high contrast at
+   Open each method's page from the sidebar card and from **Connect your
+   devices**: the state word, the Connection button and **Stop** must match the
+   real client; **Back to Share/Connect** returns to the task it was opened
+   from, and the header's Back returns one page. On each page check **Devices**
+   against the provider's own console (online state, address, **Copy IP**),
+   **Remove device** with an API credential on a disposable test device (it
+   must disappear from the provider and need re-adding), **Manage devices**
+   without one, the ZeroTier network choice with two networks, and Headscale
+   turning Tailscale off (and back) on a computer that has both profiles.
+   Nothing in Connect your devices may open a dialog except confirmations,
+   short inputs, the QR code and a diagnosis result.
+   On **Connect your devices**, move each card's switch both ways against the
+   real clients and confirm the card shows the provider's real state, network,
+   address and device counts (compare with `tailscale status` and ZeroTier
+   Central) and that a refused PolicyKit prompt puts the switch back.
+8. **Headscale setup** ([wizard](headscale-setup-wizard.md)) on a disposable
+   machine and domain: a) *Another server* against a real VPS running
+   Headscale behind Caddy — the check, adding this computer with an API key,
+   with a pre-auth key and with the owner's approval, then a second device;
+   b) *This computer* on a connection with a public IPv4 and router port
+   forwarding of 80/443 — DigitalPlat or an existing domain, Cloudflare
+   nameservers and the A record checked, installation through Pamac, the
+   certificate obtained, the network created, this computer joined; the
+   router step on a router without forwarding; c) on a CGNAT connection the
+   warning and the VPS suggestion; d) **Remove the server setup** restores
+   the original `/etc/headscale/config.yaml`. Confirm the API key exists only
+   in the keyring and never in logs or `headscale-setup.json`.
+9. Repeat cards and guided choices in light, dark, Gamer and high contrast at
    normal/compact width, 150% text, keyboard-only, RTL and CJK locales. Confirm
    focus remains visible without a thick double border.
 

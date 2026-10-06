@@ -478,16 +478,22 @@ def test_direct_and_headscale_guides_are_distinct_and_read_only(ui, monkeypatch)
     drain()
 
 
-def test_provider_page_keeps_non_vpn_help_optional(ui):
+def test_connect_your_devices_keeps_non_vpn_help_secondary(ui):
     ui.navigate_to("vpn_selector")
     page = ui.remote_connection_page
-    rows = [w for w in walk(page.advanced_box) if isinstance(w, Adw.ActionRow) and w.get_title() == "Without a private network"]
-    assert len(rows) == 1
-    assert not rows[0].get_mapped()  # only in Advanced mode
-    page.advanced_row.set_active(True)
+    rows = [w for w in walk(page.advanced_group) if isinstance(w, Adw.ActionRow) and w.get_title() == "Without a private network"]
+    assert len(rows) == 1 and page.advanced_group.get_title() == "Advanced"
+    # Below the three methods, never among them.
+    siblings = []
+    child = page.cards_box.get_parent().get_first_child()
+    while child is not None:
+        siblings.append(child)
+        child = child.get_next_sibling()
+    assert siblings.index(page.cards_box) < siblings.index(page.advanced_group)
+    rows[0].emit("activated")
     drain()
-    assert rows[0].get_mapped()
-    page.advanced_row.set_active(False)
+    assert ui.network_navigation.get_visible_page().get_title() == "Direct connection with a domain"
+    assert ui.get_visible_dialog() is None
 
 
 def test_guide_links_pass_the_requesting_widget_for_wayland_activation(monkeypatch):

@@ -861,3 +861,34 @@ def test_tailnet_owner_follows_the_clients_control_url_when_nothing_was_recorded
     other = ProviderId.TAILSCALE if expected is ProviderId.HEADSCALE else ProviderId.HEADSCALE
     assert not service.status(other).connected
     assert service.headscale_server() == (control if expected is ProviderId.HEADSCALE else "")
+
+
+def test_the_control_server_beats_a_wrong_record_and_the_record_is_corrected(tmp_path):
+    """The 2026-10-06 report: a Headscale profile recorded as Tailscale (joined
+    through the Tailscale page with a custom login server) showed Headscale Off."""
+    service = make_service(
+        tmp_path,
+        {
+            ("tailscale", "status"): CommandResult(0, ts_status()),
+            ("tailscale", "switch"): CommandResult(0, json.dumps([{"id": "b6df", "selected": True}])),
+            ("tailscale", "debug", "prefs"): CommandResult(0, json.dumps({"ControlURL": "https://vpn.example.test"})),
+        },
+    )
+    service.manager.set_tailscale_metadata("b6df", provider="tailscale")
+    assert service.status(ProviderId.HEADSCALE).connected
+    assert not service.status(ProviderId.TAILSCALE).connected
+    recorded = service.manager._metadata()["tailscale_profiles"]["b6df"]
+    assert recorded == {"provider": "headscale", "login_server": "https://vpn.example.test"}
+
+
+def test_the_record_decides_only_when_the_client_cannot_name_its_server(tmp_path):
+    service = make_service(
+        tmp_path,
+        {
+            ("tailscale", "status"): CommandResult(0, ts_status()),
+            ("tailscale", "switch"): CommandResult(0, json.dumps([{"id": "p1", "selected": True}])),
+            ("tailscale", "debug", "prefs"): CommandResult(1, "", "not supported"),
+        },
+    )
+    service.manager.set_tailscale_metadata("p1", provider="headscale")
+    assert service.status(ProviderId.HEADSCALE).connected

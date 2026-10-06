@@ -106,7 +106,7 @@ Use these English terms in new text, and keep each language's established transl
 | **Connect** | The page and action on the computer that plays remotely (Moonlight). |
 | **game PC** | The computer that runs the game, seen from the other computer. |
 | **this computer** | The computer the person is using now. |
-| **Play over the internet** | The page for private networks between distant computers. |
+| **Connect your devices** | The page for private networks between distant computers; each method (Tailscale, ZeroTier, Headscale) has its own page with **Devices** and **Advanced**. |
 | **private network** | Tailscale, ZeroTier or Headscale; "VPN" only where the technical term is clearer. |
 | **pair**, **PIN** | Authorizing a device once with Moonlight's four-digit PIN. |
 | **pairing code** / **search code** | Authorization, as opposed to finding a computer. |

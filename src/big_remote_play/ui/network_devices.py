@@ -1,8 +1,9 @@
 """Manage network (devices and memberships) and the Add device assistant.
 
-Every action shown here maps to a capability the provider really has in the
-current setup. Without an API credential the pages explain the official web
-console path instead of pretending an invitation was sent.
+Both are ordinary pages pushed on the navigation of **Connect your devices**,
+never dialogs. Every action shown here maps to a capability the provider
+really has in the current setup. Without an API credential the pages explain
+the official web console path instead of pretending an invitation was sent.
 """
 
 from __future__ import annotations
@@ -15,7 +16,7 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, GLib, Gtk  # type: ignore
 
-from big_remote_play.private_network.headscale_api import registration_key
+from big_remote_play.private_network.headscale_api import HeadscaleApi, registered_name, registration_key
 from big_remote_play.private_network.http import ApiErrorKind, ApiResult
 from big_remote_play.private_network.models import ConnectionState, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus
 from big_remote_play.private_network.service import PrivateNetworkService
@@ -26,7 +27,7 @@ from big_remote_play.utils.icons import create_icon_widget
 from big_remote_play.utils.uri import open_uri
 
 from .components import action_row, name_icon_button, note
-from .network_common import RowGroup, Worker, add_qr_button, api_error_message, confirm, copy_row, copy_to_clipboard, loading_row, message_row, technical_detail
+from .network_common import RowGroup, Worker, add_qr_button, api_error_message, confirm, copy_row, in_stack, copy_to_clipboard, loading_row, message_row, technical_detail
 
 ZEROTIER_DOWNLOAD = "https://www.zerotier.com/download/"
 TAILSCALE_DOWNLOAD = "https://tailscale.com/download"
@@ -34,21 +35,22 @@ MEMBER_POLL_SECONDS = 5
 MEMBER_POLL_LIMIT = 60  # five minutes of waiting, then an explicit refresh
 
 
-def _page(title: str, child: Gtk.Widget, *, tag: str = "") -> Adw.NavigationPage:
-    toolbar = Adw.ToolbarView()
-    toolbar.add_top_bar(Adw.HeaderBar())
+def page(title: str, child: Gtk.Widget, *, tag: str = "") -> Adw.NavigationPage:
+    """A scrolling page of the main window's navigation (its header bar is the window's)."""
     scroll = Gtk.ScrolledWindow(vexpand=True)
     scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-    clamp = Adw.Clamp(maximum_size=640, tightening_threshold=480)
+    clamp = Adw.Clamp(maximum_size=760, tightening_threshold=520)
     for edge in ("top", "bottom", "start", "end"):
-        getattr(clamp, f"set_margin_{edge}")(16)
+        getattr(clamp, f"set_margin_{edge}")(24)
     clamp.set_child(child)
     scroll.set_child(clamp)
-    toolbar.set_content(scroll)
-    page = Adw.NavigationPage(title=title, child=toolbar)
+    result = Adw.NavigationPage(title=title, child=scroll)
     if tag:
-        page.set_tag(tag)
-    return page
+        result.set_tag(tag)
+    return result
+
+
+_page = page
 
 
 def _column(*widgets: Gtk.Widget) -> Gtk.Box:
@@ -58,16 +60,28 @@ def _column(*widgets: Gtk.Widget) -> Gtk.Box:
     return box
 
 
-def _dialog(title: str, root: Adw.NavigationPage, *, height: int = 640) -> tuple[Adw.Dialog, Adw.NavigationView]:
-    dialog = Adw.Dialog(title=title)
-    dialog.add_css_class("brp-dialog")
-    dialog.set_content_width(680)
-    dialog.set_content_height(height)
-    dialog.set_size_request(320, 240)
-    navigation = Adw.NavigationView()
-    navigation.add(root)
-    dialog.set_child(navigation)
-    return dialog, navigation
+class _Flow:
+    """Pages pushed on a navigation view; work stops when the first one is popped."""
+
+    def __init__(self, parent: Gtk.Widget, navigation: Adw.NavigationView, root: Adw.NavigationPage) -> None:
+        self.parent = parent
+        self.navigation = navigation
+        self.root = root
+        self.worker = Worker()
+        self._popped = 0
+
+    def present(self) -> None:
+        self.navigation.push(self.root)
+        self._popped = self.navigation.connect("popped", self._on_popped)
+
+    def _on_popped(self, _navigation, _popped: Adw.NavigationPage) -> None:
+        # pop_to_page() past several pages reports only the visible one.
+        if not in_stack(self.navigation, self.root):
+            self.navigation.disconnect(self._popped)
+            self._closed()
+
+    def _closed(self) -> None:
+        self.worker.close()
 
 
 def _steps(title: str, steps: list[tuple[str, str]]) -> Adw.PreferencesGroup:
@@ -130,19 +144,25 @@ def member_status_text(member: CentralMember) -> str:
     return _("Seen in the last few minutes") if member.recently_seen() else _("Not seen recently")
 
 
-class ManageNetworkDialog:
-    """Devices on the network and the memberships of this computer."""
+class ManageNetworkFlow(_Flow):
+    """Every device of the network with its approvals, and this computer's memberships (Advanced)."""
 
     def __init__(
-        self, parent: Gtk.Widget, service: PrivateNetworkService, status: ProviderStatus, *, show_toast: Callable[[str], None], on_changed: Callable[[], None] | None = None, advanced: bool = False
+        self,
+        parent: Gtk.Widget,
+        navigation: Adw.NavigationView,
+        service: PrivateNetworkService,
+        status: ProviderStatus,
+        *,
+        show_toast: Callable[[str], None],
+        on_changed: Callable[[], None] | None = None,
+        advanced: bool = True,
     ) -> None:
-        self.parent = parent
         self.service = service
         self.status = status
         self.show_toast = show_toast
         self.on_changed = on_changed or (lambda: None)
         self.advanced = advanced
-        self.worker = Worker()
         self.content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
         self.devices = RowGroup(title=_("Devices"))
         refresh = Gtk.Button(icon_name="brp-view-refresh-symbolic", valign=Gtk.Align.CENTER)
@@ -153,12 +173,10 @@ class ManageNetworkDialog:
         self.membership = RowGroup(title=_("This computer"))
         self.content.append(self.membership)
         self.content.append(self.devices)
-        root = _page(_("Manage network"), self.content)
-        self.dialog, self.navigation = _dialog(_("Manage network"), root)
-        self.dialog.connect("closed", lambda *_args: self.worker.close())
+        super().__init__(parent, navigation, _page(_("Manage network"), self.content, tag="manage-network"))
 
     def present(self) -> None:
-        self.dialog.present(self.parent)
+        super().present()
         self.refresh()
 
     def refresh(self) -> None:
@@ -229,7 +247,7 @@ class ManageNetworkDialog:
 
     def _confirm_leave(self, network_id: str, name: str) -> None:
         confirm(
-            self.dialog,
+            self.parent,
             _("Leave this network?"),
             _("This computer will stop seeing the devices on “{name}” until it joins again. The network is not deleted.").format(name=name or network_id),
             _("Leave network"),
@@ -324,7 +342,7 @@ class ManageNetworkDialog:
                     revoke.connect(
                         "clicked",
                         lambda _button, nid=network_id, item=member: confirm(
-                            self.dialog,
+                            self.parent,
                             _("Revoke access?"),
                             _("{name} stays in the member list but can no longer use the network.").format(name=item.name or item.node_id),
                             _("Revoke access"),
@@ -346,7 +364,7 @@ class ManageNetworkDialog:
 
     def _confirm_remove_device(self, name: str, action: Callable[[], ApiResult]) -> None:
         confirm(
-            self.dialog,
+            self.parent,
             _("Remove this device?"),
             _("{name} will be removed from the network and must be added again to return.").format(name=name),
             _("Remove device"),
@@ -369,30 +387,108 @@ class ManageNetworkDialog:
         self.on_changed()
 
 
-class AddDeviceDialog:
+class ApprovalGroup(RowGroup):
+    """**Approve a device**: the code a device shows at the Headscale sign-in.
+
+    Headscale cannot list devices that are waiting, so the person types or
+    pastes what the other device shows — the whole line, the link or only the
+    code — and Big Remote Play approves it for the network's user through the
+    API. Nothing is typed in a terminal.
+    """
+
+    __gtype_name__ = "BrpApprovalGroup"
+
+    def __init__(self, api_factory: Callable[[], HeadscaleApi | None], *, preferred_user: str = "", on_done: Callable[[str], object] | None = None) -> None:
+        super().__init__(title=_("Approve a device"), description=_("On the other device, Tailscale shows a code that starts with hskey-authreq-. Type or paste it here."))
+        self.api_factory = api_factory
+        self.preferred_user = preferred_user
+        self.on_done = on_done or (lambda _name: None)
+        self.worker = Worker()
+        self.entry = Adw.EntryRow(title=_("Code shown on the other device"), use_markup=False)
+        self.entry.connect("entry-activated", lambda _row: self.approve())
+        self.button = Gtk.Button(label=_("Approve"), valign=Gtk.Align.CENTER)
+        self.button.add_css_class("suggested-action")
+        self.button.connect("clicked", lambda _button: self.approve())
+        self.entry.add_suffix(self.button)
+        self.add(self.entry)
+        self.connect("unrealize", lambda *_args: self.worker.close())
+
+    def approve(self) -> None:
+        key = registration_key(self.entry.get_text())
+        if not key:
+            self.entry.add_css_class("error")
+            self.replace([message_row(_("This is not a code from the other device."), _("It starts with hskey-authreq- and has 24 more letters and numbers."), "dialog-warning-symbolic")])
+            return
+        self.entry.remove_css_class("error")
+        self.button.set_sensitive(False)
+        self.replace([loading_row(_("Approving…"))])
+        preferred = self.preferred_user
+
+        def work():
+            api = self.api_factory()
+            if api is None:
+                return "", None
+            users, result = api.users()
+            if not result.ok:
+                return "", result
+            user = next((item for item in users if item.name == preferred), users[0] if users else None)
+            if user is None:
+                return "", ApiResult.failure(ApiErrorKind.NOT_FOUND, "no user")
+            result = api.register_node(user.name, key)
+            return registered_name(result), result
+
+        def done(value) -> None:
+            name, result = value
+            self.button.set_sensitive(True)
+            if result is not None and result.ok:
+                self.entry.set_text("")
+                shown = name or _("The device")
+                self.replace([message_row(_("{name} was added to your network.").format(name=shown), "", "brp-emblem-ok-symbolic")])
+                self.on_done(shown)
+                return
+            self.replace(
+                [
+                    message_row(
+                        _("The code was not accepted."),
+                        _("It may have expired: start the sign-in again on the other device and use the new code."),
+                        "dialog-warning-symbolic",
+                    )
+                ]
+            )
+
+        self.worker.submit(work, done, failed=lambda _error: done(("", None)))
+
+
+class AddDeviceFlow(_Flow):
     """Explain and, where the API allows it, perform adding another device."""
 
     def __init__(
-        self, parent: Gtk.Widget, service: PrivateNetworkService, status: ProviderStatus, *, show_toast: Callable[[str], None], on_changed: Callable[[], None] | None = None, advanced: bool = False
+        self,
+        parent: Gtk.Widget,
+        navigation: Adw.NavigationView,
+        service: PrivateNetworkService,
+        status: ProviderStatus,
+        *,
+        show_toast: Callable[[str], None],
+        on_changed: Callable[[], None] | None = None,
+        advanced: bool = False,
+        network_id: str = "",
     ) -> None:
-        self.parent = parent
         self.service = service
         self.status = status
         self.show_toast = show_toast
         self.on_changed = on_changed or (lambda: None)
         self.advanced = advanced
-        self.worker = Worker()
+        self.network_id = network_id
         self.capabilities = ProviderCapabilities()
         self._poll_source = 0
         self._polls = 0
         self.root_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
         self.root_box.append(loading_row(_("Checking what this network allows…")))
-        root = _page(_("Add device"), self.root_box, tag="root")
-        self.dialog, self.navigation = _dialog(_("Add device"), root, height=680)
-        self.dialog.connect("closed", self._closed)
+        super().__init__(parent, navigation, _page(_("Add another device"), self.root_box, tag="add-device"))
 
     def present(self) -> None:
-        self.dialog.present(self.parent)
+        super().present()
 
         def load():
             capabilities = self.service.capabilities(self.status.provider)
@@ -405,8 +501,8 @@ class AddDeviceDialog:
 
         self.worker.submit(load, self._build, failed=lambda _error: self._build((None, "", [])))
 
-    def _closed(self, *_args) -> None:
-        self.worker.close()
+    def _closed(self) -> None:
+        super()._closed()
         if self._poll_source:
             GLib.source_remove(self._poll_source)
             self._poll_source = 0
@@ -434,12 +530,13 @@ class AddDeviceDialog:
         if not networks:
             self._set_root(message_row(_("Join or create a network first"), _("Then come back to add the other computer."), "brp-network-offline-symbolic"))
             return
-        network = networks[0]
+        # The network chosen on the ZeroTier page, never another one.
+        network = next((item for item in networks if item.network_id == self.network_id), networks[0])
         steps = _steps(
             _("On the other computer"),
             [
                 (_("Install ZeroTier"), _("Download it from the official website, or use Big Remote Play on that computer.")),
-                (_("Join this network"), _("Enter the ID on this page and choose Connect.") if self.advanced else _("In Big Remote Play, choose Play over the internet and type this code.")),
+                (_("Join this network"), _("Enter the ID on this page and choose Connect.") if self.advanced else _("In Big Remote Play, open Connect your devices → ZeroTier and type this code.")),
                 *(
                     [(_("Wait for it to appear"), _("It shows up in the list below within a minute.")), (_("Approve the device"), _("A new device cannot use the network until it is approved."))]
                     if self.capabilities.can_authorize_member
@@ -458,7 +555,7 @@ class AddDeviceDialog:
         download.add_css_class("flat")
         widgets: list[Gtk.Widget] = [ids, steps, download]
         if self.capabilities.can_authorize_member:
-            self.waiting = RowGroup(title=_("Waiting for approval"), description=_("New devices appear here while this window is open."))
+            self.waiting = RowGroup(title=_("Waiting for approval"), description=_("New devices appear here while this page is open."))
             self.waiting.replace([loading_row(_("Looking for new devices…"))])
             widgets.append(self.waiting)
             self._network_id = network.network_id
@@ -476,7 +573,7 @@ class AddDeviceDialog:
     def _poll_members(self) -> bool:
         self._polls += 1
         if self._polls > MEMBER_POLL_LIMIT:
-            self.waiting.replace([message_row(_("Stopped looking for new devices"), _("Close and open this window again to keep looking."), "brp-network-idle-symbolic")])
+            self.waiting.replace([message_row(_("Stopped looking for new devices"), _("Go back and choose Add device again to keep looking."), "brp-network-idle-symbolic")])
             self._poll_source = 0
             return False
         network_id = self._network_id
@@ -683,7 +780,7 @@ class AddDeviceDialog:
             _("On the other computer"),
             [
                 (_("Install Tailscale"), _("Headscale uses the regular Tailscale client.")),
-                (_("Connect to this server"), _("In Big Remote Play choose Headscale → Join a network and enter the server address, or run the command below.")),
+                (_("Connect to this server"), _("In Big Remote Play, open Connect your devices → Headscale and enter this server address.")),
                 (_("Approve the sign-in"), _("That computer shows a sign-in link. Paste it here to approve it, or approve it on the server.")),
             ],
         )

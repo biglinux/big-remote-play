@@ -28,6 +28,11 @@ TECHNICAL = {
     # ZeroTier's own names for its two management consoles.
     "Legacy Central",
     "New Central",
+    # Cloudflare's own field name, kept as its dashboard shows it.
+    "Proxy status",
+    # A command and a product pair shown as technical details.
+    "journalctl -u headscale",
+    "HTTPS (Caddy)",
 }
 
 PLACEHOLDER = re.compile(
@@ -44,10 +49,10 @@ UNITS = {"FPS", "Hz", "kbps", "Mbps", "ms"}
 # Reviewed translations that are spelled exactly like the English source.
 SAME_AS_SOURCE = {
     "da": {"Software (CPU)", "Start ZeroTier", "Variation (jitter): {ms} ms"},
-    "de": {"Software (CPU)"},
+    "de": {"Software (CPU)", "In Cloudflare: DNS → Records → Add record.", "Optional: IPv6"},
     "es": {"Software (CPU)", "Vulkan (experimental)"},
-    "it": {"Software (CPU)"},
-    "nl": {"Software (CPU)"},
+    "it": {"Software (CPU)", "In Cloudflare: DNS → Records → Add record."},
+    "nl": {"Software (CPU)", "In Cloudflare: DNS → Records → Add record."},
     "no": {"Start ZeroTier"},
     "pt": {"Software (CPU)", "Vulkan (experimental)"},
     "pt_BR": {"Software (CPU)", "Vulkan (experimental)"},

@@ -25,7 +25,7 @@ One widget, `ComponentChecklist` (`ui/dependency_installer.py`), is used everywh
 
 - **Home → Share or Connect** when the task's program is missing: *Let's get this computer ready*, then the task opens by itself;
 - **Guided setup**, right after *Where is the other device?*;
-- **Play over the internet** and the Tailscale, Headscale and ZeroTier connection pages, before sign-in or joining.
+- **Connect your devices**: the Tailscale, Headscale and ZeroTier pages (**Install and continue**), before sign-in or joining.
 
 Each component is a row with a check or a warning icon and its state in words (**Installed**, **Not installed**, **Checking…**). One button, **Install what's needed** (or **Install and continue** on a connection page), installs exactly the missing ones. While it runs the button reads **Installing…** and is disabled, the status line says what happens next (*Confirm with your password in the window that opens.*), and **Technical details** shows the packages, the method and the package manager's own output.
 

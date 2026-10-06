@@ -30,7 +30,7 @@ Not sure where to start? On Home, choose **Start with the guided setup**. It ask
 3. **Let's get this computer ready** checks the program the task needs (Sunshine to share, Moonlight to connect). With everything there it continues by itself; otherwise press **Install what's needed** (see [installing what is missing](#installing-what-is-missing)) and the guide continues when it is done.
 4. On the same network, Share or Connect opens: no private network is needed. Somewhere else continues with **Let's create a secure connection**, where Big Remote Play first looks at this computer:
    - **We found a connection that is ready** shows the method and network with **Use this connection** (then Share or Connect opens) and **Choose another option**;
-   - a connection that needs one step (turned off, service stopped, permission, sign-in) continues on **Play over the internet**, whose button does that step;
+   - a connection that needs one step (turned off, service stopped, permission, sign-in) shows **Continue**, which opens that method's page in **Connect your devices**, where its button does that step;
    - with nothing set up, **How do you want to connect?** offers **Tailscale** (*Recommended*: sign in with your account), **I already use ZeroTier** (type the network code you received, see [joining a ZeroTier network](#joining-a-zerotier-network)) and **Advanced options** (your own Headscale server).
 
 The back arrow goes one question back. After a connection is set up from the guide, **Ready to play?** returns to the task you chose.
@@ -59,7 +59,7 @@ Opening Share does not start the server, install software or change network/fire
 3. If the game is not listed, select **Refresh** (the circular arrow). The list also follows games opening and closing while it is on screen. For an emulator or a game the list does not recognize, turn on **Show all open windows**.
 4. Select **Start sharing**. The first time you share a game, KDE asks you to confirm it: choose the same game, keep **Allow restoring on future sessions** on and select **Share**. Next time it is not asked again.
 
-**Start sharing** stays unavailable until a game is chosen, so nothing else is ever shared instead. If the game closes or crashes while sharing, sharing stops at once with **The game window closed**; open the game and start again.
+**Start sharing** stays unavailable until a game is chosen, so nothing else is ever shared instead. When the game switches between a window and fullscreen, or changes its resolution, the picture follows it; a game that opens a new window for that is found again, and Share says **Reconnecting to the game window…** meanwhile (the other device sees a black picture for a few seconds, never your desktop). If the game closes or crashes, or opens more than one window so that Big Remote Play cannot tell which one to show, sharing stops and says why; open the game and start again.
 
 While sharing, keep the game as the active window: keyboard and mouse input from the other device goes to the active window of this computer, and many games stop their sound while another window is active (measured with *Shadow of the Tomb Raider*: its sound stops as soon as it loses focus). Big Remote Play brings the game to the front when sharing starts and every time a device starts playing. Only the game's sound is sent: other programs, notifications and voice calls stay on this computer, which still hears everything. To send all of this computer's sound instead, turn off **Preferences → Audio → Send only the game's sound**. Game Window needs KDE Plasma on Wayland (or an X11 desktop with window effects on) and some GStreamer plugins; if anything is missing, the list says what to install. Details and limits are in [Game Window](game-window.md).
 
@@ -70,6 +70,17 @@ While sharing, **3. Connect the other PC** also tells you, before any device wai
 - **A stream is open on this computer**: new devices can pair only after **End for everyone**.
 
 Pairing requests that a device abandoned (cancelled, cut by the network or a firewall) are cleared automatically, so the device's next attempt is not refused.
+
+### Mouse and keyboard: this computer first
+
+When someone else plays on this computer, they control its mouse and keyboard too. If you also want to use them, turn on **Preferences → Host input priority → Host has priority**:
+
+- as soon as you move this computer's own mouse or press one of its keys, the other device's mouse and keyboard stop;
+- **Guest control resumes after** (5 seconds unless you choose another time) without using them here, the other device controls them again; each new use here starts the count again;
+- keys and buttons the other person was holding are released first, so nothing stays pressed in the game;
+- controllers are never paused.
+
+While sharing, **Connected now** says who has them: **You're controlling this PC** or **Guests can use the mouse and keyboard**. With **Full Desktop** on KDE Plasma, a short message on the screen (which the other person also sees in their stream) says when the mouse and keyboard pause and when they come back. The setting is off by default and is kept for the next time. Details and limits are in [host input priority](host-input-priority.md).
 
 ### Approve a new device
 
@@ -114,9 +125,9 @@ The word is always written next to its colour. The path (**Local network**, **Ze
 
 ## Services in the sidebar
 
-On Home and **Play over the internet** the bottom of the sidebar shows two indicators: **Streaming** (for example *Sunshine · Running* or *Moonlight · Ready*) and **Secure connection** (for example *Tailscale · Connected*). Selecting one opens its task or the internet page.
+On Home the bottom of the sidebar shows two indicators: **Streaming** (for example *Sunshine · Running* or *Moonlight · Ready*) and **Secure connection** (for example *Tailscale · Connected*). Selecting one opens its task or **Connect your devices**.
 
-On Share and Connect the bottom of the sidebar shows, under **Streaming**, Sunshine (Share) or Moonlight (Connect), and under **Secure connection**, Tailscale, ZeroTier and Headscale. Each card always stays in its place and says its state in words: for example **Running**, **Stopped** or **Ready** for streaming, and **Connected**, **Not connected**, **Sign-in needed**, **Waiting for approval** or **Not installed** for a secure connection. A connected method also shows how many other devices are online (Tailscale, Headscale) or the network name (ZeroTier). Select a card to open its controls or its setup page. Details in [service status cards](service-status-cards.md).
+On Share, Connect and **Connect your devices** the bottom of the sidebar shows (on Connect your devices, the streaming card is the one of your task), under **Streaming**, Sunshine (Share) or Moonlight (Connect), and under **Secure connection**, Tailscale, ZeroTier and Headscale. Each card always stays in its place and says its state in words: for example **Running**, **Stopped** or **Ready** for streaming, and **Connected**, **Not connected**, **Sign-in needed**, **Waiting for approval** or **Not installed** for a secure connection. A connected method also shows how many other devices are online (Tailscale, Headscale) or the network name (ZeroTier). Select a card to open its controls: Sunshine and Moonlight open their window with **Start** and **Stop**; Tailscale, ZeroTier and Headscale open their page in **Connect your devices**, which then offers **Back to Share** or **Back to Connect** (see [Connect your devices](#connect-your-devices)). Details in [service status cards](service-status-cards.md).
 
 ## Pairing code versus search code
 
@@ -124,39 +135,51 @@ The **pairing code** is a four-digit Moonlight code that authorizes a device. It
 
 The optional **search code** only helps locate a Big Remote Play computer on a network that permits the discovery protocol. It does not authorize access, open a firewall, bypass a router or connect two different networks.
 
-## Play over the internet
+## Connect your devices
 
-On Home, Share and Connect work directly when both computers are on the same home network. For computers in different houses, open **Play over the internet**. The page, **Connect your devices**, first looks at what already works on this computer and shows one sentence with one button:
+On Home, Share and Connect work directly when both computers are on the same home network. For computers in different houses, open **Connect your devices** in the sidebar. It shows three large cards, one per way of connecting:
 
-| You see | The button | What it does |
+| Card | Tag | For |
 |---|---|---|
-| Ready to play over the internet | **Add a device or invite a player** | Shows a link, a code or a QR code for the other device |
-| Your secure connection is turned off | **Turn on** | Reconnects the account this computer already uses |
-| The connection service is stopped | **Fix** | Starts the background service (your password may be requested) |
-| Big Remote Play needs your permission | **Allow** | One-time permission to read ZeroTier networks |
-| Sign in to connect this computer | **Sign in** | Opens the sign-in in your browser at once |
-| Waiting for approval | **Check again** | The network owner still has to allow this computer |
-| Set up a secure connection | **Set up** | Joins a network (Tailscale sign-in, a ZeroTier network code or a Headscale server) |
-| One component is needed | **Install what's needed** | Installs the connection program (your password is requested), then continues to sign-in or joining |
-| This computer is not connected to the internet | **Check again** | Connect Wi-Fi or a cable first |
+| **Tailscale** | *Recommended* | the easy way to connect your devices from anywhere, with your account |
+| **ZeroTier** | | a ZeroTier network, joined with its 16-character code |
+| **Headscale** | *Advanced* | your own Headscale server |
 
-Nothing is installed, turned on or changed until you press the button. **Using Tailscale · Change** says which method is used; **Change** lists the three methods in plain words — Tailscale (easy, for your own devices), ZeroTier (a private network between several devices) and Headscale (your own server) — each with its state.
+Each card is a small panel of its own method only:
 
-Below the card:
+- a **switch** that really turns the connection on or off. On means the connection works, not just that a program runs. While it works the card says **Starting…** or **Stopping…**; if it did not work, the switch goes back and the card says **Could not connect** with **See what happened**. A method that is not installed or not set up yet takes you to **Install and continue** or to its setup instead of pretending to be on;
+- the state in words: **Not installed**, **Off**, **Connecting…**, **Connected** or **Needs attention**;
+- **Network:** (Tailscale's tailnet, the ZeroTier network — *+ 1 more network* when this computer is in others) or **Server:** (Headscale);
+- this computer's private address there (**This computer**);
+- how many devices are online, for example **2 online · 3 devices** — this computer is counted too. When the number cannot be read it says **Devices unavailable** (ZeroTier without an API token) or **Could not load devices**, never a made-up zero.
 
-- Once the connection is ready, **Ready to play?** offers **Share this computer** and **Connect to another computer**.
-- **My devices** lists the other devices of your network by name, with **Online**, **Offline** or **Needs to sign in again**. The star keeps a device at the top; **⋮** offers **Connect**, **Details**, **Rename** (a name only this computer uses) and **Check connection**. ZeroTier lists its members only with an API token (Advanced mode → API access).
-- **Recent connections** lists the computers you really played on, with **Last connection: Today at 20:42**, **Connect**, a star, **Rename**, **Check connection** and **Remove from recent connections**.
+Several methods can be on at the same time; each keeps its own devices. Tailscale and Headscale are the exception: both use the Tailscale app on this computer, so only one of them is on at a time. Turning one on asks **Switch from Tailscale to Headscale?** first; the other account stays saved. ZeroTier works alongside either. Details: [cards and switches](connect-devices-cards-redesign.md).
 
-When the connection is ready, a card below the status shows the method and network with **Connected**, **In use now** (what this computer sends and receives through the secure connection now — not its maximum speed; no speed test is run), **Network: Stable** or **Unstable** with the measured time, and whether the path is a **Direct connection** or goes **Through a relay server**. With no other device online it says **No other device online to measure**.
+Select the rest of a card to open that method's page in the same window; **Back** at the top returns. The top of the window switches between **Devices** and **Advanced**.
 
-The Tailscale page lists **Tailscale accounts and tailnets** on this computer and says which one is **Active**; **Switch** changes to another. To join a **friend's tailnet** after accepting their invitation, choose **Use another tailnet**: after your password (once), it opens Tailscale's sign-in, where Tailscale shows **Select a tailnet** (or lets you pick another account). Your current tailnet stays in the list.
+**Devices**, from top to bottom:
 
-**Add a device** explains, step by step, how to bring another device in. For Tailscale it separates **Share this computer** (a friend gets access to this one computer only — recommended for playing together) from **Add a person to my network**. For ZeroTier it shows the **Network code** in groups of four (copied without spaces) with a **QR code**, and — with an API token — lists new devices with **Approve**. Invitation links and the Headscale server address also have a QR code; keys never do. When you type a network code, spaces and dashes are ignored.
+- **Connection**: one sentence and one button — **Start**, **Stop** (asks first), **Set up** (ZeroTier: **Join a network**), **Sign in**, **Allow** or **Try again**. When the program is missing, **Install and continue** installs it (your password may be requested) and goes on to the sign-in or the network code by itself; nothing opens a terminal.
+- **Ready** (once connected): *Your devices can now find each other in Big Remote Play.* with **Back to Share** or **Back to Connect** when you came from there, or **Go to Share** and **Go to Connect**.
+- **Devices**: the computers of this method only — never mixed with another method's. Each shows its name (*This device* for this computer), **Online**, **Offline** or **Waiting for approval**, its private address with **Copy IP**, and, for an offline device, when it was last seen. **⋮** offers **Play on this computer** (opens Connect and connects), **Check connection**, **Rename** (a name only this computer uses) and **Remove device**, which asks *Remove notebook?* first. **Remove device** appears only when the method's API is set up under **Advanced → API access**; without it, **Manage devices** opens the official website instead (Tailscale, ZeroTier). ZeroTier with several networks shows a **Network** choice; without a ZeroTier API token it lists only this computer and says that the others are on the ZeroTier website.
+- **Add device**: how to bring another computer in, step by step. For Tailscale it separates **Share this computer** (a friend gets access to this one computer only — recommended for playing together), **Add a person to my network** and **Add another computer of mine**. For ZeroTier it shows the **Network code** in groups of four (copied without spaces) with a **QR code** and — with an API token — lists new devices with **Approve** while the page is open. For Headscale it shows the server address with a QR code and, with an API key, approves a waiting computer from the sign-in link it shows. Keys never get a QR code.
 
-**Advanced mode** (off by default, remembered) adds the connection methods with their states, this network's name and this computer's private address (with **Copy**), **Network details**, **Manage network** (devices, approvals, **Leave network**, **Remove device**, **Revoke access**), **Accounts and networks**, **API access**, **Internet, router and firewall** and **Without a private network**. Pages opened from here have a **Back** button to Connect your devices.
+**Stop** for Tailscale and Headscale disconnects this computer and keeps you signed in, without a password; for ZeroTier it stops ZeroTier's service, which disconnects all its networks (your password may be requested). Headscale is not a separate program: it is the Tailscale app signed in to your server, and its page says when the app is in use by Tailscale.
+
+**Advanced** holds the technical part: **Connection quality** while connected — **In use now** (what this computer sends and receives through the secure connection now, not its maximum speed; no speed test is run), **Network: Stable** or **Unstable** with the measured time, and whether the path is a **Direct connection** or goes **Through a relay server**; this computer's addresses, name, node ID, network name, account and the service details, each with **Copy**; **Manage network** (approvals, **Leave network**, removing members), **Join another network** and **Create a network** (ZeroTier), **Use another account** (Tailscale, Headscale), **API access**, **Accounts and networks**; and **Help** with **Internet, router and firewall**. All of these open as pages of the same window. The Tailscale and Headscale pages list **Tailscale accounts and tailnets** on this computer and say which one is **Active**; **Switch** changes to another. To join a **friend's tailnet** after accepting their invitation, choose **Use another tailnet**: after your password (once), it opens Tailscale's sign-in, where Tailscale shows **Select a tailnet**. Your current tailnet stays in the list.
+
+Below the cards, **Advanced** links to **Internet, router and firewall** and **Without a private network** (a direct connection with a domain and router ports). Technical background: [Connect your devices redesign](connect-your-devices-redesign.md).
 
 When sharing, **Share** shows under **Available over the internet** the **Secure connection** in use, **This computer**'s name and **Status**, with **Copy connection information** to send to the other person; the private addresses are under **Connection details**. On the other computer, **Connect** lists the computers your private network knows about, next to local ones, marked “Sharing found”, “Sharing not found” or “Offline”. **Check connection** (or **Diagnose** after a failed connection) checks the private network, the computer and Sunshine, and — for Tailscale — whether the route is direct (best performance) or relayed (works, may add latency), with the measured latency.
+
+### Setting up Headscale
+
+**Headscale → Set up** is a step-by-step guide. It first asks **Where will your Headscale server run?**
+
+- **Another server** (*Recommended*): a VPS or a computer that stays online. Type its address and choose **Check server**: Big Remote Play checks the name, that the server answers, the secure connection (HTTPS) and Headscale itself, and says in words what is wrong. **Guided server setup** lists the commands to run on that server, with your address already in them.
+- **This computer**: Big Remote Play finds your public IP (**Detected automatically**, with **Copy**) and warns when your internet provider may block incoming connections (CGNAT). Then **Use a domain** (*Recommended*) or **Use the detected address**. With no domain yet, **Help me get one** guides you through a free name at DigitalPlat and DNS at Cloudflare, step by step; Big Remote Play checks the nameservers itself. The record to add is shown ready to copy — Type **A**, Name **headscale**, the IP, and Proxy status **DNS only** (the cloud must be gray). **Install Headscale** then installs and starts the server with HTTPS (your password is requested) and checks it. If the internet cannot reach it, the page explains the router step or suggests a VPS.
+
+Then **Add this computer** (with the server's API key, a key from the server owner, or the owner's approval) and **Add another device**. A phone or computer that joins with the Tailscale app (**Use an alternate server**) shows a code starting with `hskey-authreq-`: type or paste it — the whole line, the link or only the code — under **Approve a device**, on that step or on the Headscale page, and choose **Approve**. No terminal is needed. Each step is marked done only after it was checked. If you close the app, the Headscale card says **Setup incomplete** and **Continue setup** goes on where you stopped. Details: [Headscale setup wizard](headscale-setup-wizard.md).
 
 ### Joining a ZeroTier network
 
@@ -181,7 +204,7 @@ A private network may use a relay and does not guarantee a direct or low-latency
 
 On the sharing computer, **Share → Support → Connection history** shows the sessions other devices played here in the **Last 7 days** — one bar per day — with **Sessions**, **Time played**, **Average session length** and **Last connection**. It is kept only on this computer for 90 days and holds no address, password or code; **Clear history** removes it. With nothing yet it says *No connection history yet.* Details: [connection history](connection-history-fix.md). Above it, while sharing, **Latency in the last 3 minutes** is the live ping measurement; a device that does not answer pings plays normally but draws no line.
 
-On the connecting computer, **Connect → Advanced options → Connection history** lists streams that really started from this computer: the computer, the private-network service, start and end time, duration and the requested resolution and frame rate. It is stored only on this computer and never contains passwords, keys or codes. Choose how long to keep it (30 days, 90 days or always) or **Clear history**. The most recent computers also appear under **Connect again** and on **Play over the internet → Recent connections**.
+On the connecting computer, **Connect → Advanced options → Connection history** lists streams that really started from this computer: the computer, the private-network service, start and end time, duration and the requested resolution and frame rate. It is stored only on this computer and never contains passwords, keys or codes. Choose how long to keep it (30 days, 90 days or always) or **Clear history**. The most recent computers also appear under **Connect again**.
 
 ## Image quality and host limits
 

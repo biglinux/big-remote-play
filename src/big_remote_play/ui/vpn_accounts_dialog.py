@@ -15,11 +15,15 @@ from gi.repository import Adw, GLib, Gtk  # type: ignore
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.icons import create_icon_widget
 from big_remote_play.utils.vpn_accounts import TailscaleProfile, VPNAccountManager, ZeroTierNetwork
-from .components import content_dialog, name_icon_button
+from .components import content_dialog, content_page, name_icon_button
+from .network_common import push_page
 
 
 class VPNAccountsDialog:
-    """List the accounts/networks that the installed VPN clients actually know."""
+    """List the accounts/networks that the installed VPN clients actually know.
+
+    A sheet, or a page of ``navigation`` (Connect your devices).
+    """
 
     def __init__(
         self,
@@ -30,8 +34,10 @@ class VPNAccountsDialog:
         on_add_headscale: Callable[[], None],
         on_join_zerotier: Callable[[], None],
         show_toast: Callable[[str], None],
+        navigation: Adw.NavigationView | None = None,
     ) -> None:
         self.parent = parent
+        self.navigation = navigation
         self.manager = manager
         self.on_add_tailscale = on_add_tailscale
         self.on_add_headscale = on_add_headscale
@@ -57,18 +63,27 @@ class VPNAccountsDialog:
         actions.add(self._action_row(_("Join a ZeroTier network"), _("Enter another 16-character Network ID"), "brp-zerotier-symbolic", self._join_zerotier))
         self.content.append(actions)
 
-        self.dialog = content_dialog(
-            _("VPN accounts and networks"),
-            self.content,
-            description=_("Accounts are kept by the VPN clients. Big Remote Play stores only the optional names shown here."),
-            width=760,
-            height=620,
-        )
-        self.dialog.connect("closed", self._on_closed)
+        description = _("Accounts are kept by the VPN clients. Big Remote Play stores only the optional names shown here.")
+        self.dialog: Adw.Dialog | None = None
+        self.page: Adw.NavigationPage | None = None
+        if navigation is None:
+            dialog = content_dialog(_("VPN accounts and networks"), self.content, description=description, width=760, height=620)
+            dialog.connect("closed", self._on_closed)
+            self.dialog = dialog
+        else:
+            self.page = content_page(_("VPN accounts and networks"), self.content, description=description, tag="accounts")
 
     def present(self) -> None:
-        self.dialog.present(self.parent)
+        if self.navigation is not None and self.page is not None:
+            push_page(self.navigation, self.page, on_closed=self._on_closed)
+        elif self.dialog is not None:
+            self.dialog.present(self.parent)
         self.refresh()
+
+    def _close(self) -> None:
+        # As a page, the next step's page replaces it: nothing to close.
+        if self.dialog is not None:
+            self.dialog.close()
 
     def _on_closed(self, *_args) -> None:
         self._generation += 1
@@ -82,15 +97,15 @@ class VPNAccountsDialog:
         return row
 
     def _add_tailscale(self) -> None:
-        self.dialog.close()
+        self._close()
         self.on_add_tailscale()
 
     def _add_headscale(self) -> None:
-        self.dialog.close()
+        self._close()
         self.on_add_headscale()
 
     def _join_zerotier(self) -> None:
-        self.dialog.close()
+        self._close()
         self.on_join_zerotier()
 
     def refresh(self, *, privileged_zerotier: bool = False) -> None:

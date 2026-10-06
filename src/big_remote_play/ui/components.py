@@ -77,7 +77,7 @@ def action_row(
     title: str,
     subtitle: str,
     icon: str,
-    callback: Callable[[], None],
+    callback: Callable[[], object],
     *,
     icon_style: Literal["plain", "tile"] = "plain",
     tone: str = "accent",
@@ -153,6 +153,19 @@ def preferences_dialog(
         page.add(group)
     dialog.add(page)
     return dialog
+
+
+def preferences_page(title: str, groups: list[Adw.PreferencesGroup], *, description: str = "", tag: str = "") -> Adw.NavigationPage:
+    """The content of :func:`preferences_dialog` as a page of a navigation view."""
+    content = Adw.PreferencesPage(title=title)
+    if description:
+        content.add(Adw.PreferencesGroup(description=description))
+    for group in groups:
+        content.add(group)
+    page = Adw.NavigationPage(title=title, child=content)
+    if tag:
+        page.set_tag(tag)
+    return page
 
 
 class ChoiceGroup(Adw.PreferencesGroup):
@@ -300,6 +313,28 @@ def set_row_icon(row: Adw.ActionRow | Adw.ExpanderRow, name: str) -> None:
         row._brp_prefix_icon = image
     else:
         set_icon(image, name)
+
+
+def content_page(title: str, content: Gtk.Widget, *, description: str = "", tag: str = "") -> Adw.NavigationPage:
+    """The content of :func:`content_dialog` as a page of a navigation view."""
+    body = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+    if description:
+        label = Gtk.Label(label=description, xalign=0, wrap=True)
+        label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        label.add_css_class("dim-label")
+        body.append(label)
+    body.append(content)
+    clamp = Adw.Clamp(maximum_size=760, tightening_threshold=520)
+    for edge in ("top", "bottom", "start", "end"):
+        getattr(clamp, f"set_margin_{edge}")(24)
+    clamp.set_child(body)
+    scroll = Gtk.ScrolledWindow(vexpand=True)
+    scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+    scroll.set_child(clamp)
+    page = Adw.NavigationPage(title=title, child=scroll)
+    if tag:
+        page.set_tag(tag)
+    return page
 
 
 def content_dialog(title: str, content: Gtk.Widget, *, description: str = "", width: int = 680, height: int = 600) -> Adw.Dialog:
