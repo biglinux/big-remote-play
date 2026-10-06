@@ -16,13 +16,7 @@ Avoid copying long sections between documents. Update the source of truth and li
 
 `AGENTS.md` is the only checked-in agent-instruction format for this repository. Keep the root file concise and place specialized rules in the nearest nested `AGENTS.md`.
 
-This follows the hierarchical project-guidance model documented by OpenAI Codex and supported by current GitHub Copilot tooling. Gemini CLI can be configured to include `AGENTS.md` as its context filename. Tools that use a different default should be configured outside the repository rather than creating duplicate vendor-specific files that drift.
-
-Official references:
-
-- [OpenAI: custom instructions with AGENTS.md](https://developers.openai.com/docs/agent-configuration/agents-md)
-- [GitHub Copilot: customization and AGENTS.md](https://docs.github.com/en/copilot/reference/customization-cheat-sheet)
-- [Gemini CLI: configurable context filenames](https://google-gemini.github.io/gemini-cli/docs/cli/gemini-md.html)
+A tool that reads another file name is configured outside the repository; a second, tool-specific copy of these rules would drift from this one.
 
 Review `AGENTS.md` when a repeated review correction reveals a missing repository rule. Do not turn temporary task details, machine paths or review logs into permanent instructions.
 

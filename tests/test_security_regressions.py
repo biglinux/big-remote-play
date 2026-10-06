@@ -1,4 +1,4 @@
-"""Regression tests for security findings from the Codex Security scan."""
+"""Regression tests for findings of the security review of the helpers and parsers."""
 
 from __future__ import annotations
 
