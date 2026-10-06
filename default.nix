@@ -14,6 +14,10 @@
 , gettext
 , curl
 , iproute2
+, iputils
+, avahi
+, jq
+, procps
 , hicolor-icon-theme
 }:
 python3Packages.buildPythonApplication {
@@ -29,10 +33,8 @@ python3Packages.buildPythonApplication {
   nativeBuildInputs = [ pkg-config wrapGAppsHook4 gobject-introspection gettext ];
   buildInputs = [ gtk4 libadwaita libsecret hicolor-icon-theme ];
 
-  # Runtime tools resolved from PATH at use time (sunshine, moonlight, docker,
-  # tailscale, zerotier) are not Nix build inputs; the app degrades gracefully
-  # when they are absent.
-  propagatedBuildInputs = [ curl iproute2 ];
+  # Sunshine, Moonlight, Tailscale and ZeroTier are found on PATH at use time
+  # and are not build inputs; the app says when one is missing.
 
   dontWrapGApps = false;
 
@@ -40,6 +42,8 @@ python3Packages.buildPythonApplication {
     gappsWrapperArgs+=(
       --set BIG_REMOTE_PLAY_DATADIR "$out/share/big-remote-play"
       --set BIG_REMOTE_PLAY_LOCALEDIR "$out/share/locale"
+      # The tools the app runs itself (network checks, discovery, processes).
+      --prefix PATH : ${lib.makeBinPath [ curl iproute2 iputils avahi jq procps ]}
     )
   '';
 
@@ -48,6 +52,9 @@ python3Packages.buildPythonApplication {
     cp -a $src/usr/share/big-remote-play $out/share/big-remote-play
     install -Dm644 $src/usr/share/applications/br.com.biglinux.remoteplay.desktop \
       $out/share/applications/br.com.biglinux.remoteplay.desktop
+    # /usr/bin does not exist on NixOS: the menu starts this package's launcher.
+    substituteInPlace $out/share/applications/br.com.biglinux.remoteplay.desktop \
+      --replace-fail 'Exec=/usr/bin/big-remote-play' "Exec=$out/bin/big-remote-play"
     install -Dm644 $src/usr/share/metainfo/br.com.biglinux.remoteplay.metainfo.xml \
       $out/share/metainfo/br.com.biglinux.remoteplay.metainfo.xml
     # The release the checkout leaves neutral, dated as the wheel is.
