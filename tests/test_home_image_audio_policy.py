@@ -70,13 +70,13 @@ def test_home_is_one_hero_with_the_guided_start_then_the_two_roles(ui):
 
 
 def test_home_hides_working_component_details_but_explains_missing_ones(ui):
-    ui.update_dependency_ui(True, True, True, True, True)
+    ui.update_dependency_ui(True, True, True, True)
     assert not ui._role_card_ui["host"]["state"].get_visible()
     assert not ui._role_card_ui["guest"]["state"].get_visible()
     # Only the two indicators; no per-service cards on Home.
     assert [service for service, row in ui._status_rows.items() if row.get_visible()] == ["summary-streaming", "summary-network"]
 
-    ui.update_dependency_ui(False, True, True, True, True)
+    ui.update_dependency_ui(False, True, True, True)
     assert ui._role_card_ui["host"]["state"].get_visible()
     # Words for the person, the product name for whoever needs it.
     assert "Sunshine" not in ui._role_card_ui["host"]["label"].get_text()

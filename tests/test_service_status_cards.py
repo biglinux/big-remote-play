@@ -279,7 +279,7 @@ def test_statuses_arriving_after_close_are_dropped(live):
 def test_switching_task_swaps_only_the_streaming_card(live):
     live.navigate_to("host")
     refresh_network(live, TAILSCALE_ON, off(ProviderId.ZEROTIER), off(ProviderId.HEADSCALE))
-    live.update_server_status(True, False, False, True)
+    live.update_server_status(True, False, True)
     assert card(live, "sunshine").tone == "active"
     live.navigate_to("guest")
     drain()
@@ -308,8 +308,8 @@ def test_home_keeps_only_the_streaming_and_secure_connection_indicators(live):
 
 def test_indicators_say_the_streaming_state_and_the_connection_in_use(live):
     live._home_role = "host"
-    live.update_dependency_ui(True, True, False, True, True)
-    live.update_server_status(True, False, False, False)
+    live.update_dependency_ui(True, True, True, True)
+    live.update_server_status(True, False, False)
     refresh_network(live, status(ProviderId.TAILSCALE, ConnectionState.CONNECTED, peers=()), off(ProviderId.ZEROTIER), off(ProviderId.HEADSCALE))
     live.navigate_to("welcome")
     settle(live)
@@ -329,7 +329,7 @@ def test_secure_connection_indicator_names_the_next_step_when_nothing_is_connect
 
 def test_activating_an_indicator_opens_its_task(live):
     live._home_role = "guest"
-    live.update_dependency_ui(True, True, False, True, True)
+    live.update_dependency_ui(True, True, True, True)
     live.navigate_to("welcome")
     card(live, "summary-streaming").emit("activated")
     drain()
@@ -402,7 +402,7 @@ def test_state_motion_is_short_one_shot_and_can_be_reduced():
 
 def test_the_connect_your_devices_sidebar_lists_every_method_with_its_own_state(live):
     live._home_role = "guest"
-    live.update_dependency_ui(True, True, False, True, True)
+    live.update_dependency_ui(True, True, True, True)
     live.navigate_to("vpn_selector")
     refresh_network(live, off(ProviderId.TAILSCALE), status(ProviderId.ZEROTIER, ConnectionState.CONNECTED, peers=()), status(ProviderId.HEADSCALE, ConnectionState.CONNECTED, peers=()))
     visible = [service_id for service_id, row in live._status_rows.items() if row.get_visible()]

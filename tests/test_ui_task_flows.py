@@ -50,7 +50,7 @@ def ui(tmp_path, monkeypatch):
     import big_remote_play.ui.main_window as mw
 
     monkeypatch.setattr(mw, "VPN_CONFIG_FILE", str(tmp_path / "vpn.json"))
-    monkeypatch.setattr(MainWindow, "check_system", lambda self: self.update_dependency_ui(True, True, True, True, True))
+    monkeypatch.setattr(MainWindow, "check_system", lambda self: self.update_dependency_ui(True, True, True, True))
     monkeypatch.setattr(HostView, "detect_monitors", lambda self: [("Automatic", "auto")])
     monkeypatch.setattr(HostView, "detect_gpus", lambda self: [{"label": "Automatic", "encoder": "auto", "adapter": "auto"}])
     monkeypatch.setattr(HostView, "_ensure_sunshine_config", lambda self: None)

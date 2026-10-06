@@ -544,7 +544,7 @@ def test_connect_decides_with_fast_real_signals(ui, monkeypatch, answers, certif
 def test_status_polling_checks_only_the_services_the_page_shows(ui, monkeypatch):
     """The sidebar used to start five probes every 3 s on every page."""
     probed = []
-    for name in ("sunshine", "moonlight", "docker", "tailscale", "zerotier"):
+    for name in ("sunshine", "moonlight", "tailscale", "zerotier"):
         monkeypatch.setattr(ui.system_check, f"is_{name}_running", lambda n=name: probed.append(n) or True)
     ui._status_timer_id = ui._status_timer_id or 1
     ui._home_role = "guest"

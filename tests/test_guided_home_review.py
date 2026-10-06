@@ -62,7 +62,7 @@ def test_missing_component_is_explained_before_installation(ui, monkeypatch, rol
     from big_remote_play.utils import dependencies
 
     monkeypatch.setattr(dependencies, "_AUDIT", lambda ids: [dependencies.ComponentState(i, False) for i in ids])
-    ui.update_dependency_ui(False, False, False, False, False)
+    ui.update_dependency_ui(False, False, False, False)
     ui._select_home_role(role)
     assert wait_until(lambda: isinstance(ui.get_visible_dialog(), InstallDialog))
     dialog = ui.get_visible_dialog()
@@ -77,7 +77,7 @@ def test_missing_component_is_explained_before_installation(ui, monkeypatch, rol
 @pytest.mark.parametrize("role", ["host", "guest"])
 def test_component_installed_after_startup_opens_the_task_without_asking(ui, role):
     """The reported bug: installed, yet Share kept asking to install Sunshine."""
-    ui.update_dependency_ui(False, False, False, False, False)  # what startup saw
+    ui.update_dependency_ui(False, False, False, False)  # what startup saw
     ui._select_home_role(role)  # conftest: the component is there now
     assert wait_until(lambda: ui.current_page == role)
     assert ui.get_visible_dialog() is None
@@ -101,7 +101,7 @@ def test_installing_from_the_prompt_opens_the_task_by_itself(ui, monkeypatch):
         return dependencies.InstallOutcome(tuple(probe(plan.components)), 0)
 
     monkeypatch.setattr(dependencies, "_RUN", run)
-    ui.update_dependency_ui(False, True, False, False, False)
+    ui.update_dependency_ui(False, True, False, False)
     ui._select_home_role("host")
     assert wait_until(lambda: isinstance(ui.get_visible_dialog(), InstallDialog))
     dialog = ui.get_visible_dialog()
