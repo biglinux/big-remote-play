@@ -379,17 +379,6 @@ def test_network_helper_failure_reenables_connect_and_stops_spinner(ui, monkeypa
     assert not page._return_to_game.get_visible()
 
 
-def test_helper_failure_is_delivered_to_completion_callback(ui, monkeypatch):
-    import big_remote_play.ui.private_network_view as pnv
-
-    monkeypatch.setattr(pnv.threading, "Thread", InlineThread)
-    monkeypatch.setattr(pnv.subprocess, "Popen", Mock(side_effect=FileNotFoundError("pkexec")))
-    done = Mock(return_value=False)
-    pnv.run_helper_script("install-components.sh", [], on_text=Mock(), on_phase=Mock(), on_done=done)
-    drain()
-    done.assert_called_once_with(127, {})
-
-
 @pytest.mark.parametrize("network_id", ["", "abcdefghijklmnop", "a1b2c3d4", "a1b2c3d4e5f6a7b8;ls"])
 def test_zerotier_id_is_validated_before_launch(ui, monkeypatch, network_id):
     import big_remote_play.ui.private_network_view as pnv

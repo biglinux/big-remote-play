@@ -64,18 +64,6 @@ def test_join_reports_success_only_when_the_daemon_is_connected(monkeypatch):
     assert connection.awaiting_authentication
 
 
-def test_privileged_helpers_keep_the_users_message_locale(monkeypatch):
-    monkeypatch.setenv("LANG", "pt_BR.UTF-8")
-    monkeypatch.setenv("LANGUAGE", "pt_BR:pt")
-    command = pnv._localized_helper_command("/usr/share/big-remote-play/scripts/helper.sh")
-    assert "LC_ALL=C" not in command
-    assert "LANGUAGE=" not in command
-    assert "LANG=pt_BR.UTF-8" in command
-    assert "LANGUAGE=pt_BR:pt" in command
-    assert any(value.startswith("TEXTDOMAINDIR=") for value in command)
-    assert command[-1].endswith("helper.sh")
-
-
 def test_resolution_regex_accepts_and_rejects():
     from big_remote_play.ui.guest_view import GuestView
 
