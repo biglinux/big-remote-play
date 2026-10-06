@@ -954,6 +954,11 @@ class AudioManager:
         result = self._pactl("set-sink-input-mute", stream_index, "0")
         return result is not None and result.returncode == 0
 
+    def mute_capture(self, stream: AudioStream) -> bool:
+        """Mute ``stream`` (a capture): a microphone nothing can replace."""
+        result = self._pactl("set-source-output-mute", stream.index, "1")
+        return result is not None and result.returncode == 0
+
     def restore_capture_level(self, stream: AudioStream) -> bool:
         """Unmute ``stream`` (a capture) and raise it to 100 % when it is below."""
         ok = True
@@ -1142,10 +1147,13 @@ class GameScope:
 
     @classmethod
     def from_state(cls, data: object) -> GameScope | None:
-        if not isinstance(data, dict) or not isinstance(data.get("pid"), int) or data["pid"] <= 1:
+        """A scope, also for a window with no PID (0): then its names alone
+        decide, and a game nothing matches sends nothing rather than every
+        program's sound."""
+        if not isinstance(data, dict) or not isinstance(data.get("pid"), int) or data["pid"] < 0:
             return None
         names = tuple(str(n)[:256] for n in (data.get("names") or []) if isinstance(n, str))[:8]
-        return cls(data["pid"], names)
+        return cls(data["pid"] if data["pid"] > 1 else 0, names)
 
 
 def _game_process_family(pid: int) -> frozenset[int]:
@@ -1313,6 +1321,18 @@ class AudioRoutingSession:
             if default is not None and default.is_real:
                 self.original_sink = default.name  # the person's latest choice
             for capture in graph.sunshine_captures():
+                recorded = graph.recorded_output(capture)
+                if not recorded:
+                    # Sunshine records an input (a microphone). Its level is
+                    # never restored: replaced by the output's monitor, or kept
+                    # silent when there is no monitor to record instead.
+                    if plan.monitor:
+                        if self.manager.move_capture(capture.index, plan.monitor):
+                            notes.append("microphone-replaced")
+                    elif not capture.muted and self.manager.mute_capture(capture):
+                        notes.append("microphone-muted")
+                        _log.warning("[AUDIO] Sunshine's recording #%s records a microphone and no output can replace it; muted.", capture.index)
+                    continue
                 if capture.silenced and self._level_restores.get(capture.index, 0) < self.MAX_LEVEL_RESTORES:
                     # A saved per-application level (one mute of "sunshine" in a
                     # mixer) is applied to every new recording: the other
@@ -1326,17 +1346,13 @@ class AudioRoutingSession:
                             capture.index,
                             "muted" if capture.muted else f"at {round((capture.volume or 0) * 100 / VOLUME_NORM)} %",
                         )
-                recorded = graph.recorded_output(capture)
                 if recorded == CALL_MIX_SINK:
                     # Our call-free mix; below, it follows the person's output.
                     origin = graph.output(self.capture_origins.get(capture.index, ""))
                     if not self.manual_output and default is not None and default.is_real and origin is not None and origin.is_real and origin.name != default.name:
                         self.capture_origins[capture.index] = default.name
                     continue
-                if not recorded and plan.monitor:
-                    if self.manager.move_capture(capture.index, plan.monitor):
-                        notes.append("microphone-replaced")
-                elif not self.manual_output and default is not None and default.is_real and recorded and recorded != default.name:
+                if not self.manual_output and default is not None and default.is_real and recorded != default.name:
                     # The person changed output during the stream: follow it
                     # instead of recording a device nobody listens to.
                     monitor = graph.monitor_of(default.name)
@@ -1511,7 +1527,7 @@ class AudioRoutingSession:
         if scope is None:
             return []
         try:
-            family = self.game_family(scope.pid)
+            family = self.game_family(scope.pid) if scope.pid > 1 else frozenset()
         except Exception as exc:  # /proc unreadable: names still work
             _log.warning("[AUDIO] Could not read the game's processes: %s", exc)
             family = frozenset()

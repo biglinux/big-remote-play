@@ -3264,9 +3264,11 @@ class HostView(Gtk.Box):
             if item is None:
                 raise ValueError(_("Choose the game window to share."))
             game_window = {"spec": self._game_window_spec(item), "name": item.name}
-            if self.audio_game_only_row.get_active() and item.window.pid > 1:
+            if self.audio_game_only_row.get_active():
+                # A window without a PID (X11 without _NET_WM_PID) is matched
+                # by its names; skipping it would send every program's sound.
                 names = [item.launch.executable, item.name, item.window.title]
-                game_window["audio"] = {"pid": item.window.pid, "names": [name for name in dict.fromkeys(names) if name]}
+                game_window["audio"] = {"pid": item.window.pid if item.window.pid > 1 else 0, "names": [name for name in dict.fromkeys(names) if name]}
             self._game_launch_info = None
         else:
             self._game_launch_info = self._resolve_game_launch_info()
