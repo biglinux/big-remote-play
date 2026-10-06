@@ -22,7 +22,7 @@ from typing import Any
 
 from big_remote_play import paths
 from big_remote_play.utils.secret_store import SecretKey, SecretStore, SecretStoreUnavailable
-from big_remote_play.utils.secure_io import secure_write_text
+from big_remote_play.utils.secure_io import secure_write_text, set_aside_corrupt
 
 MASK = "••••••••"
 _MAX_SECRET_LENGTH = 4096
@@ -152,9 +152,15 @@ class CredentialStore:
     def _load(self) -> dict[str, Any]:
         try:
             payload = json.loads(self.metadata_file.read_text(encoding="utf-8"))
-        except (OSError, ValueError):
+        except OSError:
             return {}
-        return payload if isinstance(payload, dict) else {}
+        except ValueError:  # malformed (UnicodeError too): kept aside, never overwritten
+            set_aside_corrupt(self.metadata_file)
+            return {}
+        if not isinstance(payload, dict):
+            set_aside_corrupt(self.metadata_file)
+            return {}
+        return payload
 
     def _save(self, payload: dict[str, Any]) -> None:
         secure_write_text(str(self.metadata_file), json.dumps(payload, indent=2, sort_keys=True) + "\n")

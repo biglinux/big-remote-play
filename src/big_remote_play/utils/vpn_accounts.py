@@ -24,7 +24,7 @@ from typing import Any, Callable, Sequence
 import urllib.parse
 
 from big_remote_play import paths
-from big_remote_play.utils.secure_io import secure_write_text
+from big_remote_play.utils.secure_io import secure_write_text, set_aside_corrupt
 from big_remote_play.utils.system_check import SystemCheck
 
 _PROFILE_ID_RE = re.compile(r"^[A-Za-z0-9._:@+-]{1,256}$")
@@ -280,9 +280,13 @@ def tailscale_connect_argv(tailscale_cmd: Sequence[str], *, login_server: str = 
 def _load_metadata(path: Path = _METADATA_FILE) -> dict[str, Any]:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError, TypeError):
+    except (OSError, TypeError):
+        return {"version": 1, "tailscale_profiles": {}, "zerotier_networks": {}}
+    except ValueError:  # malformed (UnicodeError too): kept aside, never overwritten
+        set_aside_corrupt(path)
         return {"version": 1, "tailscale_profiles": {}, "zerotier_networks": {}}
     if not isinstance(payload, dict):
+        set_aside_corrupt(path)
         return {"version": 1, "tailscale_profiles": {}, "zerotier_networks": {}}
     payload.setdefault("version", 1)
     for key in ("tailscale_profiles", "zerotier_networks"):
