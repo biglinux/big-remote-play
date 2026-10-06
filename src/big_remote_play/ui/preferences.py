@@ -10,7 +10,7 @@ import logging
 
 _log = logging.getLogger("big-remoteplay")
 
-import os, shutil, threading
+import shutil, threading
 from datetime import datetime
 from pathlib import Path
 
@@ -233,11 +233,12 @@ class PreferencesWindow(Adw.Window):
                         raise OSError("Could not write the default application settings")
                     (paths.CONFIG_DIR / "vpn_choice.json").unlink(missing_ok=True)
 
-                    # 2. Reset Sunshine Config (sunshine.conf)
-                    # Delete the file so it regenerates cleanly or starts empty
-                    sunshine_conf = paths.SUNSHINE_CONF
-                    if sunshine_conf.exists():
-                        os.remove(sunshine_conf)
+                    # Sunshine's tuning goes; its identity, pairings, apps and
+                    # certificates stay, and the old file is kept beside it.
+                    from big_remote_play.ui.sunshine_preferences import reset_sunshine_settings
+
+                    if paths.SUNSHINE_CONF.exists() and not reset_sunshine_settings():
+                        raise OSError("Could not reset Sunshine's settings")
 
                     # 3. Reset Moonlight Config
                     from big_remote_play.utils.moonlight_config import MoonlightConfigManager
