@@ -107,6 +107,7 @@ def test_context_switchers_share_the_native_headerbar_and_adapt_to_a_bottom_bar(
     assert '"host": self.host_view.view_stack' in source
     # Network sub-pages are reached from one hub and return with Back.
     assert "network_navigation_stack" not in source
+    # A method's page and its steps are pages of Connect your devices, with one Back button.
     assert "self.network_back_button" in source
     # Connect: computers first, everything else on a named second tab.
     assert "method_stack" not in source

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
+import time
 from types import SimpleNamespace
 
 import pytest
@@ -23,7 +24,7 @@ from big_remote_play.ui.main_window import MainWindow  # noqa: E402
 from big_remote_play.ui.network_common import state_label  # noqa: E402
 from big_remote_play.ui.service_status_card import checking_presentation, provider_presentation, streaming_presentation  # noqa: E402
 
-from test_private_network_ui import HubService, texts  # noqa: E402
+from test_private_network_ui import HubService  # noqa: E402
 from test_ui_task_flows import drain, ui as _ui_fixture  # noqa: E402
 
 ui = _ui_fixture
@@ -137,20 +138,24 @@ def test_a_task_shows_its_streaming_card_and_every_network_method(page, streamin
     assert MainWindow._relevant_service_ids(window) == [streaming, *NETWORK]
 
 
-@pytest.mark.parametrize("page", ["welcome", "vpn_selector", "connect_private", "create_private"])
-def test_home_and_internet_pages_show_two_indicators_not_component_cards(page):
-    window = SimpleNamespace(current_page=page, _NETWORK_SERVICES=MainWindow._NETWORK_SERVICES)
+def test_home_shows_two_indicators_not_component_cards():
+    window = SimpleNamespace(current_page="welcome", _NETWORK_SERVICES=MainWindow._NETWORK_SERVICES)
     assert MainWindow._relevant_service_ids(window) == ["summary-streaming", "summary-network"]
 
 
-def test_vpn_card_opens_the_role_appropriate_detail_page():
+@pytest.mark.parametrize("role,streaming", [("host", "sunshine"), ("guest", "moonlight")])
+def test_connect_your_devices_shows_the_same_cards_as_share_and_connect(role, streaming):
+    window = SimpleNamespace(current_page="vpn_selector", _NETWORK_SERVICES=MainWindow._NETWORK_SERVICES, _summary_role=lambda: role)
+    assert MainWindow._relevant_service_ids(window) == [streaming, *NETWORK]
+
+
+@pytest.mark.parametrize("page", ["host", "guest"])
+def test_vpn_card_opens_the_methods_own_dialog_over_the_task(page):
+    """Like Sunshine's and Moonlight's cards: a dialog, and the task stays on screen."""
     calls = []
-    host = SimpleNamespace(
-        current_page="host",
-        _apply_vpn_selection=lambda provider, destination: calls.append((provider, destination)),
-    )
-    MainWindow.on_service_clicked(host, "headscale")
-    assert calls == [("headscale", "create_private")]
+    window = SimpleNamespace(current_page=page, open_provider=lambda provider, **kwargs: calls.append((provider, kwargs)))
+    MainWindow.on_service_clicked(window, "headscale")
+    assert calls == [("headscale", {})]
 
 
 # ── the real sidebar ────────────────────────────────────────────────────
@@ -316,7 +321,7 @@ def test_indicators_say_the_streaming_state_and_the_connection_in_use(live):
 
 def test_secure_connection_indicator_names_the_next_step_when_nothing_is_connected(live):
     refresh_network(live, off(ProviderId.TAILSCALE), off(ProviderId.ZEROTIER), off(ProviderId.HEADSCALE))
-    live.navigate_to("vpn_selector")
+    live.navigate_to("welcome")
     settle(live)
     network = card(live, "summary-network").presentation
     assert network.tone != "active" and "Connected" not in network.text
@@ -339,15 +344,18 @@ def test_connection_method_uses_the_same_state_words(ui):
     from big_remote_play.ui.remote_connection import RemoteConnectionPage
 
     signed_out = ProviderStatus(ProviderId.TAILSCALE, ConnectionState.NEEDS_AUTHENTICATION)
-    page = RemoteConnectionPage(ui, service_factory=lambda: HubService([signed_out, ZEROTIER_ON]))
-    page._statuses = [signed_out, ZEROTIER_ON, off(ProviderId.HEADSCALE)]
-    dialog = page.show_methods()
-    drain()
-    content = texts(dialog)
-    for provider_status in page._statuses:
-        assert provider_presentation(provider_status).text in content
-    dialog.close()
-    drain()
+    statuses = [signed_out, ZEROTIER_ON, off(ProviderId.HEADSCALE)]
+    page = RemoteConnectionPage(ui, service_factory=lambda: HubService(statuses))
+    page.refresh()
+    deadline = time.monotonic() + 3
+    while time.monotonic() < deadline and not all(card.state is not None for card in page.cards.values()):
+        drain()
+        time.sleep(0.01)
+    from big_remote_play.private_network.device_list import simple_state
+
+    for provider_status in statuses:
+        # Each method keeps its own state; several can be connected at once.
+        assert page.cards[provider_status.provider].state == simple_state(provider_status)
 
 
 # ── stylesheet contracts ────────────────────────────────────────────────
@@ -390,3 +398,14 @@ def test_state_motion_is_short_one_shot_and_can_be_reduced():
     reduced = css.split("@media (prefers-reduced-motion: reduce)", 1)[1]
     assert "transition: none" in reduced and "animation: none" in reduced
     assert ".role-card" in reduced and "brp-service-card" in reduced
+
+
+def test_the_connect_your_devices_sidebar_lists_every_method_with_its_own_state(live):
+    live._home_role = "guest"
+    live.update_dependency_ui(True, True, False, True, True)
+    live.navigate_to("vpn_selector")
+    refresh_network(live, off(ProviderId.TAILSCALE), status(ProviderId.ZEROTIER, ConnectionState.CONNECTED, peers=()), status(ProviderId.HEADSCALE, ConnectionState.CONNECTED, peers=()))
+    visible = [service_id for service_id, row in live._status_rows.items() if row.get_visible()]
+    assert visible == ["moonlight", "tailscale", "zerotier", "headscale"]
+    assert card(live, "headscale").presentation.text == "Connected"
+    assert card(live, "tailscale").presentation.text != "Connected"

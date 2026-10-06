@@ -3,6 +3,7 @@ import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 import json, os, re, subprocess, threading, time
+from collections.abc import Callable
 from gi.repository import Adw, Gdk, GLib, Gtk  # type: ignore
 import logging
 
@@ -17,16 +18,19 @@ from big_remote_play.utils.secret_store import SecretKey, SecretStore, SecretSto
 from big_remote_play.utils.script_protocol import parse_script_line
 from big_remote_play.utils.uri import open_uri
 from big_remote_play.utils.vpn_accounts import VPNAccountManager, valid_zerotier_network_id
-from .components import content_dialog, action_row, boxed_rows, intro, note, name_icon_button
-from .network_common import copy_row
+from .components import content_dialog, content_page, action_row, boxed_rows, intro, note, name_icon_button
+from .network_common import WindowNavigator, copy_row, in_stack, push_page
 
 
-def show_simple_instructions(parent, title_text, items):
-    """Premium-style step-by-step instructions dialog.
+def show_simple_instructions(parent, title_text, items, *, navigation: Adw.NavigationView | None = None):
+    """Step-by-step instructions: a window, or a page of ``navigation`` (Connect your devices).
 
     `items` are tuples of (group_title, row_title, row_subtitle, icon,
     btn_label, btn_url); the last three are optional.
     """
+    if navigation is not None:
+        push_page(navigation, content_page(title_text, _instruction_groups(items), description=_("Step-by-step guide")))
+        return
     dialog = Adw.Window(transient_for=parent)
     dialog.set_modal(True)
     dialog.add_css_class("brp-dialog")
@@ -47,6 +51,14 @@ def show_simple_instructions(parent, title_text, items):
     for m in ["top", "bottom", "start", "end"]:
         getattr(clamp, f"set_margin_{m}")(24)
 
+    clamp.set_child(_instruction_groups(items))
+    scroll.set_child(clamp)
+    toolbar_view.set_content(scroll)
+    dialog.set_content(toolbar_view)
+    dialog.present()
+
+
+def _instruction_groups(items) -> Gtk.Box:
     main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
     for item in items:
         g_title = item[0]
@@ -75,15 +87,10 @@ def show_simple_instructions(parent, title_text, items):
 
         group.add(row)
         main_box.append(group)
-
-    clamp.set_child(main_box)
-    scroll.set_child(clamp)
-    toolbar_view.set_content(scroll)
-    dialog.set_content(toolbar_view)
-    dialog.present()
+    return main_box
 
 
-def show_create_zerotier_steps(parent) -> None:
+def show_create_zerotier_steps(parent, *, navigation: Adw.NavigationView | None = None) -> None:
     """How to create the ZeroTier network whose code the join page asks for."""
     show_simple_instructions(
         parent,
@@ -480,11 +487,12 @@ class InstallSection(Gtk.Box):
 class ConnectPage(Adw.Bin):
     """Join a network with one provider: browser sign-in, key or Network ID."""
 
-    def __init__(self, vpn_id, main_window, add_account=False, auto_start=False):
+    def __init__(self, vpn_id, main_window, add_account=False, auto_start=False, *, navigator=None, prefill: dict | None = None):
         super().__init__()
         self.vpn_id = vpn_id
         self.vpn = VPN_META[vpn_id]
         self.main_window = main_window
+        self.navigator = navigator or WindowNavigator(main_window, vpn_id)
         self.advanced = bool(getattr(main_window, "network_advanced_mode", False))
         # "Add another account" is a deliberate second sign-in: the page must
         # keep its form even though this PC is already on a network.
@@ -493,6 +501,8 @@ class ConnectPage(Adw.Bin):
         self._auto_start = bool(auto_start) and vpn_id == "tailscale"
         self._fetching = False
         self._build()
+        if prefill:
+            self._fill_from_entry(self, prefill)
         self._probe()
 
     def _probe(self) -> None:
@@ -524,7 +534,7 @@ class ConnectPage(Adw.Bin):
                     self.main_window,
                     on_installed=self._after_install,
                     on_found=self._probe,
-                    on_dismiss=getattr(self.main_window, "return_from_network", None),
+                    on_dismiss=self.navigator.finish,
                     install_label=_("Install and continue"),
                 )
             )
@@ -638,12 +648,10 @@ class ConnectPage(Adw.Bin):
             self._connect_form.append(
                 boxed_rows(action_row(_("About this VPN"), _("How to use the selected private network service."), "brp-dialog-information-symbolic", lambda: self._on_instructions_clicked(None)))
             )
-        self._return_to_game = boxed_rows(action_row(_("Ready to play?"), self.main_window.network_return_label(), "brp-client-symbolic", self.main_window.return_from_network))
+        self._return_to_game = boxed_rows(action_row(_("Ready to play?"), self.navigator.finish_label(), "brp-client-symbolic", self.navigator.finish))
         self._return_to_game.set_visible(False)
         conn_box.append(self._return_to_game)
-        self._open_dashboard = boxed_rows(
-            action_row(_("My network"), _("Devices, private address and how to add another computer."), "brp-network-setup-symbolic", lambda: self.main_window.navigate_to("create_private"))
-        )
+        self._open_dashboard = boxed_rows(action_row(_("My network"), _("Devices, private address and how to add another computer."), "brp-network-setup-symbolic", self.navigator.show_details))
         self._open_dashboard.set_visible(False)
         conn_box.append(self._open_dashboard)
         # `tailscale up` reconnects the current tailnet and never asks which one:
@@ -666,11 +674,7 @@ class ConnectPage(Adw.Bin):
 
         extras = Adw.PreferencesGroup(title=_("More options"))
         self._hist_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        self._history_dialog = content_dialog(
-            _("Previous Networks"),
-            self._hist_list,
-            description=_("Networks this PC joined before."),
-        )
+        self._history_close: Callable[[], object] = lambda: None
         extras.add(action_row(_("Previous Networks"), _("Reuse connection details saved by Big Remote Play"), "brp-document-open-recent-symbolic", self._present_history))
         if self.advanced:
             extras.add(
@@ -708,20 +712,42 @@ class ConnectPage(Adw.Bin):
         if callable(select):
             GLib.idle_add(lambda: select("tailscale", add_account=True) and False)
 
+    def _pages(self) -> Adw.NavigationView | None:
+        """The navigation of Connect your devices when this page is one of its steps."""
+        return getattr(self.navigator, "navigation", None)
+
     def _show_hosting_guide(self) -> None:
         from .connection_guides import build_headscale_hosting_dialog
 
-        build_headscale_hosting_dialog().present(self)
+        navigation = self._pages()
+        if navigation is None:
+            build_headscale_hosting_dialog().present(self)
+        else:
+            push_page(navigation, build_headscale_hosting_dialog(as_page=True))
 
     def _present_history(self) -> None:
         self._refresh_history()
-        self._history_dialog.present(self)
+        previous = self._hist_list.get_parent()
+        if isinstance(previous, Gtk.Box):
+            previous.remove(self._hist_list)
+        title, description = _("Previous Networks"), _("Networks this PC joined before.")
+        navigation = self._pages()
+        if navigation is None:
+            dialog = content_dialog(title, self._hist_list, description=description)
+            self._history_close = dialog.close
+            dialog.present(self)
+            return
+        here = navigation.get_visible_page()
+        page = content_page(title, self._hist_list, description=description, tag="previous-networks")
+        # Choosing an entry returns to the filled form on this page.
+        self._history_close = lambda: in_stack(navigation, page) and navigation.pop_to_page(here)
+        push_page(navigation, page)
 
     def _present_api_access(self) -> None:
         from big_remote_play.private_network.service import default_service
         from .api_access_dialog import ApiAccessDialog
 
-        ApiAccessDialog(self, default_service(), show_toast=self.main_window.show_toast, focus=self.vpn_id).present()
+        ApiAccessDialog(self, default_service(), show_toast=self.main_window.show_toast, focus=self.vpn_id, navigation=self._pages()).present()
 
     def _on_instructions_clicked(self, btn):
         if self.vpn_id == "headscale":
@@ -780,7 +806,14 @@ class ConnectPage(Adw.Bin):
                 hint.set_title_lines(0)
                 hint.add_prefix(create_icon_widget("brp-dialog-information-symbolic", size=18))
                 group.add(hint)
-                group.add(action_row(_("I don't have a code"), _("How to create a free network, step by step."), "brp-network-setup-symbolic", lambda: show_create_zerotier_steps(self.main_window)))
+                group.add(
+                    action_row(
+                        _("I don't have a code"),
+                        _("How to create a free network, step by step."),
+                        "brp-network-setup-symbolic",
+                        lambda: show_create_zerotier_steps(self.main_window, navigation=self._pages()),
+                    )
+                )
 
         self._prefill_from_history()
         if self.vpn_id == "tailscale":
@@ -847,6 +880,7 @@ class ConnectPage(Adw.Bin):
         self._return_to_game.set_visible(True)
         self._open_dashboard.set_visible(True)
         self.main_window.show_toast(_("Connected successfully!"))
+        self.navigator.changed()
 
     def _connect_tailnet(self, *, login_server: str, auth_key: str) -> None:
         """Join a Tailscale/Headscale tailnet and report the daemon's verdict."""
@@ -904,6 +938,15 @@ class ConnectPage(Adw.Bin):
             if self.vpn_id in ("tailscale", "headscale"):
                 provider = self.vpn_id
                 login_server = entry.get("domain", "") if provider == "headscale" else ""
+                custom = entry.get("domain", "") if provider == "tailscale" else ""
+                if custom and custom != "tailscale.com":
+                    # A login server typed on the Tailscale page that is not
+                    # Tailscale's own is a Headscale server: record it as such.
+                    from big_remote_play.private_network.tailscale import is_tailscale_control
+
+                    url = custom if "://" in custom else f"https://{custom}"
+                    if not is_tailscale_control(url):
+                        provider, login_server = "headscale", url
 
                 def remember_profile() -> None:
                     manager = VPNAccountManager(self.main_window.system_check)
@@ -920,6 +963,7 @@ class ConnectPage(Adw.Bin):
 
             self.main_window.show_toast(_("Connected successfully!"))
             self._return_to_game.set_visible(True)
+            self.navigator.changed()
         else:
             # A pending browser sign-in is not a failure of this PC's setup, and
             # telling people to "try again" when they simply have not finished
@@ -1003,24 +1047,14 @@ class ConnectPage(Adw.Bin):
         vpn_id = entry.get("vpn", self.vpn_id)
         vpn_name = VPN_META.get(vpn_id, {}).get("name", vpn_id)
         # The filled form is on the page behind this sheet.
-        self._history_dialog.close()
-
-        if hasattr(self.main_window, "_apply_vpn_selection"):
-            self.main_window._apply_vpn_selection(vpn_id)
-            GLib.idle_add(lambda: self.main_window.navigate_to("connect_private"))
-
-            def _fill_form():
-                view = getattr(self.main_window, "connect_private_view", None)
-                page = view.get_child() if view is not None and hasattr(view, "get_child") else None
-                if page is not None:
-                    self._fill_from_entry(page, entry)
-                self.main_window.show_toast(_("Form filled for {name}").format(name=vpn_name))
-                return False
-
-            GLib.timeout_add(300, _fill_form)
-        else:
-            self._fill_from_entry(self, entry)
-            self.main_window.show_toast(_("Form filled for {name}").format(name=vpn_name))
+        self._history_close()
+        select = getattr(self.main_window, "_apply_vpn_selection", None)
+        if vpn_id != self.vpn_id and callable(select):
+            # Another method's form, in that method's own dialog.
+            GLib.idle_add(lambda: select(vpn_id, destination="connect_private", prefill=dict(entry)) and False)
+            return
+        self._fill_from_entry(self, entry)
+        self.main_window.show_toast(_("Form filled for {name}").format(name=vpn_name))
 
     def _edit_history_entry(self, entry):
         """Open a dialog to edit the non-secret fields of a history entry."""
@@ -1154,7 +1188,7 @@ class ConnectPage(Adw.Bin):
         )
 
     def _show_simple_instructions(self, title_text, items):
-        show_simple_instructions(self.main_window, title_text, items)
+        show_simple_instructions(self.main_window, title_text, items, navigation=self._pages())
 
     def _copy(self, text):
         display = Gdk.Display.get_default()
@@ -1163,24 +1197,4 @@ class ConnectPage(Adw.Bin):
         self.main_window.show_toast(_("Copied"))
 
 
-# ─── MAIN VIEW ────────────────────────────────────────────────────────────────
-class PrivateNetworkView(Adw.Bin):
-    """Entry point: the network dashboard ("create") or the join page."""
-
-    def __init__(self, main_window, mode="create", vpn_provider="headscale", add_account=False, auto_start=False):
-        super().__init__()
-        self.main_window = main_window
-        self.mode = mode
-        self.vpn_provider = vpn_provider if vpn_provider in VPN_META else "headscale"
-
-        if mode == "create":
-            from .network_dashboard import NetworkDashboardPage
-
-            page = NetworkDashboardPage(self.vpn_provider, main_window)
-        else:
-            page = ConnectPage(self.vpn_provider, main_window, add_account=add_account, auto_start=auto_start)
-
-        self.set_child(page)
-
-
-__all__ = ["ConnectPage", "PrivateNetworkView", "InstallSection", "provider_connected", "ProviderId", "ConnectionState"]
+__all__ = ["ConnectPage", "InstallSection", "provider_connected", "ProviderId", "ConnectionState"]

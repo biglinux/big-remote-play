@@ -254,7 +254,7 @@ def test_tailscale_join_uses_browser_before_optional_auth_key(ui, monkeypatch):
 
     monkeypatch.setattr(pnv.ConnectPage, "_prefill_from_history", lambda self: None)
     ui._apply_vpn_selection("tailscale")
-    rows = [w for w in widgets(ui.connect_private_view) if isinstance(w, Adw.ExpanderRow)]
+    rows = [w for w in widgets(ui.provider_page.setup_page.get_child()) if isinstance(w, Adw.ExpanderRow)]
     keys = [row for row in rows if row.get_subtitle() == "Auth Key"]
     assert len(keys) == 1 and not keys[0].get_expanded()
 
@@ -344,7 +344,7 @@ def test_joining_replaces_the_form_with_the_connected_state(ui, monkeypatch):
     monkeypatch.setattr(pnv, "VPNAccountManager", lambda _system_check: Mock())
     monkeypatch.setattr(pnv.threading, "Thread", lambda target, daemon: types.SimpleNamespace(start=lambda: None))
     ui._apply_vpn_selection("tailscale")
-    page = ui.connect_private_view.get_child()
+    page = ui.provider_page.setup_page.get_child()
     assert page._connect_form.get_visible()
 
     page._c_done(True)
@@ -363,7 +363,7 @@ def test_adding_an_account_keeps_the_join_form_on_a_connected_pc(ui, monkeypatch
 
     ui._apply_vpn_selection("tailscale", add_account=True)
     drain()
-    page = ui.connect_private_view.get_child()
+    page = ui.provider_page.setup_page.get_child()
 
     assert page._add_account
     assert page._connect_form.get_visible()

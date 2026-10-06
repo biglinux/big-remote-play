@@ -143,6 +143,10 @@ class HostView(Gtk.Box):
         self._capture_process = None
         self._capture_watch_id = None
         self._game_window_session: dict | None = None
+        from .input_priority import HostInputPriority
+
+        # Share → Preferences → Host input priority, and its row in Connected now.
+        self.input_priority = HostInputPriority(on_changed=lambda: self._schedule_save_host_settings())
 
         from big_remote_play.host.sunshine_manager import SunshineHost
 
@@ -177,6 +181,8 @@ class HostView(Gtk.Box):
         self._recover_game_window_capture()
         if self._source() == "game_window":
             self.refresh_game_windows()
+        # A server still running from before this window was opened.
+        self.input_priority.sync(hosting=self.is_hosting, source=self._source())
 
     def _recover_audio_session(self) -> None:
         """Adopt the audio session of a sharing that is still running, or undo
@@ -1083,6 +1089,7 @@ class HostView(Gtk.Box):
         config_page.append(intro(_("Sound and access on this computer"), _("Image and capture settings are on Overview, next to Start sharing."), "brp-preferences-symbolic"))
         audio_group.set_header_suffix(self.settings_reset_button)
         config_page.append(audio_group)
+        config_page.append(self.input_priority.group)
         settings_links = Adw.PreferencesGroup(title=_("Additional settings"))
         self.quality_sheet = preferences_dialog(
             _("Image and capture"),
@@ -1409,6 +1416,10 @@ class HostView(Gtk.Box):
     def _capture_stop_text(reason: str) -> tuple[str, str]:
         if reason in ("window-closed", "portal-closed", "window-unknown"):
             return _("The game window closed"), _("Sharing stopped so nothing else on this computer is shown. Open the game again to share it.")
+        if reason == "window-ambiguous":
+            return _("Sharing stopped to protect your privacy"), _(
+                "The game opened more than one window, so Big Remote Play could not tell which one to show. Close the extra window, then share again."
+            )
         if reason == "compositing-off":
             return _("Sharing stopped to protect your privacy"), _("Window effects (compositing) are off, so the game cannot be shown on its own. Turn them on, then share again.")
         return _("Sharing stopped to protect your privacy"), _("The game window could no longer be captured on its own, so sharing stopped. Nothing else on this computer was shown.")
@@ -1434,6 +1445,7 @@ class HostView(Gtk.Box):
             process.poll()  # collects the helper once it exits
         state = window_capture.read_state()
         if window_capture.helper_running(state):
+            self._follow_capture_phase(state or {})
             return True
         reason = str(state.get("reason") or "capture-failed") if state else "capture-failed"
         self._capture_watch_id = None
@@ -1443,6 +1455,31 @@ class HostView(Gtk.Box):
         self.stop_hosting()
         self.show_error_dialog(heading, body)
         return False
+
+    def _follow_capture_phase(self, state: dict) -> None:
+        """The game replaced its window (fullscreen, a new mode): say so while
+        the helper finds it again; afterwards, give the new window the keyboard."""
+        session = self._game_window_session
+        if session is None:
+            return
+        phase = str(state.get("state") or "")
+        if phase == session.get("phase"):
+            return
+        session["phase"] = phase
+        if phase == "reacquiring":
+            _log.info("Game Window: waiting for the game's new window")
+            self.overview_status_label.set_label(_("Reconnecting to the game window…"))
+            return
+        handle = str(state.get("handle") or "")
+        spec = session.get("spec")
+        if spec is not None and handle and handle != spec.handle:
+            from dataclasses import replace
+
+            try:
+                session["spec"] = replace(spec, handle=handle)
+            except (TypeError, ValueError):
+                pass
+        self.overview_status_label.set_label(_("Active - Waiting for Connections"))
 
     def _create_app_diagnostics_group(self) -> Adw.PreferencesGroup:
         """Log switch, log cleanup and the config path, beside the other
@@ -2339,6 +2376,8 @@ class HostView(Gtk.Box):
         self.connected_devices_list.add_css_class("brp-boxed")
         self.connected_devices_list.set_accessible_role(Gtk.AccessibleRole.LIST)
         group.add(self.connected_devices_list)
+        # Who has the mouse and keyboard now (Host input priority).
+        group.add(self.input_priority.status_box)
         # The same measurements as Support → monitoring, never a second probe.
         self.perf_monitor.add_listener(self._show_connected_devices)
         self._show_connected_devices([])
@@ -2966,12 +3005,17 @@ class HostView(Gtk.Box):
         """The first audio row: does this computer's sound reach the stream, in words."""
         from big_remote_play.utils import audio
 
+        # Preferences is built before Overview: when Sunshine is already
+        # running at startup, this runs once before Overview's row exists, and
+        # sync_ui_state() renders both rows again right after.
+        session_row = getattr(self, "session_audio_row", None)
         if not self.is_hosting:
             self.audio_stream_row.set_subtitle(_("Checked while sharing."))
             return
         if self._audio_status is None:
             self.audio_stream_row.set_subtitle(_("Checking…"))
-            self.session_audio_row.set_subtitle(_("Checking…"))
+            if session_row is not None:
+                session_row.set_subtitle(_("Checking…"))
             return
         status = self._audio_status
         state = audio.stream_audio_state(status, getattr(self, "_playing_count", 0))
@@ -2995,9 +3039,10 @@ class HostView(Gtk.Box):
                 audio.STREAM_NOT_SEPARATED: _("Sending all of this computer's sound: the game's sound could not be separated."),
             }.get(state, _("System audio unavailable"))
         self.audio_stream_row.set_subtitle(text)
-        self.session_audio_row.set_subtitle(text)
-        description = _("Details and a sound test are in Preferences.")
-        self.session_audio_row.update_property([Gtk.AccessibleProperty.DESCRIPTION], [f"{text} {description}"])
+        if session_row is not None:
+            session_row.set_subtitle(text)
+            description = _("Details and a sound test are in Preferences.")
+            session_row.update_property([Gtk.AccessibleProperty.DESCRIPTION], [f"{text} {description}"])
 
     def _apply_audio_status(self, status, generation: int, from_refresh: bool = False) -> bool:
         if from_refresh:
@@ -3367,6 +3412,7 @@ class HostView(Gtk.Box):
             self._watch_capture()
         self._start_audio_watch()
         self._sync_audio_controls()
+        self.input_priority.sync(hosting=True, source=self._source())
 
         self.sync_ui_state()
         self.show_toast(_("Server started"))
@@ -3495,6 +3541,8 @@ class HostView(Gtk.Box):
         self._stop_audio_watch()
         self._stop_capture_watch()
         self._game_window_session = None
+        # Before Sunshine stops: the other device's keys are released while it can still see them.
+        self.input_priority.sync(hosting=False, source=self._source())
 
         if hasattr(self, "stop_pin_listener") and self.stop_pin_listener:
             try:
@@ -4303,6 +4351,7 @@ class HostView(Gtk.Box):
                 "share_resolution": self._share_resolution(),
                 "optimization_mode": self.optimization_row.get_selected(),
                 "wifi_mode": self.wifi_row.get_active(),
+                **self.input_priority.values(),
             }
         )
 
@@ -4466,6 +4515,7 @@ class HostView(Gtk.Box):
             self.share_resolution_row.set_selected(self.share_resolution_values.index(saved) if saved in self.share_resolution_values else 0)
             self.optimization_row.set_selected(h.get("optimization_mode", 1))
             self.wifi_row.set_active(h.get("wifi_mode", False))
+            self.input_priority.load(h)
         finally:
             self.loading_settings = False
 
@@ -4550,6 +4600,8 @@ class HostView(Gtk.Box):
             GLib.source_remove(self._game_window_timer_id)
             self._game_window_timer_id = None
         self._stop_capture_watch()
+        # Sharing goes on without this window, without the priority it gave.
+        self.input_priority.close()
         if hasattr(self, "_internet_worker"):
             self._internet_worker.close()
         if hasattr(self, "_pair_busy_worker"):

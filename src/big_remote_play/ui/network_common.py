@@ -36,6 +36,46 @@ PROVIDER_ICONS = {
 }
 
 
+class WindowNavigator:
+    """Where a method's Set up and Details views lead when shown on their own.
+
+    Inside the method's dialog the dialog itself is the navigator: "Details"
+    switches its view, "Ready to play?" closes it and returns to the task.
+    """
+
+    def __init__(self, main_window, provider: str) -> None:
+        self.main_window = main_window
+        self.provider = provider
+
+    def _select(self, destination: str) -> None:
+        select = getattr(self.main_window, "_apply_vpn_selection", None)
+        if callable(select):
+            select(self.provider, destination=destination)
+
+    def show_setup(self) -> None:
+        self._select("connect_private")
+
+    def show_details(self) -> None:
+        self._select("create_private")
+
+    def finish(self) -> None:
+        back = getattr(self.main_window, "return_from_network", None)
+        if callable(back):
+            back()
+
+    def finish_label(self) -> str:
+        label = getattr(self.main_window, "network_return_label", None)
+        return str(label()) if callable(label) else ""
+
+    def open_task(self, page: str) -> None:
+        navigate = getattr(self.main_window, "navigate_to", None)
+        if callable(navigate):
+            navigate(page)
+
+    def changed(self) -> None:
+        """A view changed the method's state (joined, signed in, stopped)."""
+
+
 class Worker:
     """Run blocking calls off the GTK thread and deliver only current results.
 
@@ -302,6 +342,26 @@ class RowGroup(Adw.PreferencesGroup):
     @property
     def dynamic_rows(self) -> list[Gtk.Widget]:
         return list(self._rows)
+
+
+def in_stack(navigation: Adw.NavigationView, page: Adw.NavigationPage) -> bool:
+    stack = navigation.get_navigation_stack()
+    return any(stack.get_item(index) is page for index in range(stack.get_n_items()))
+
+
+def push_page(navigation: Adw.NavigationView, page: Adw.NavigationPage, *, on_closed: Callable[[], object] | None = None) -> Adw.NavigationPage:
+    """Push ``page``; ``on_closed`` runs once it leaves the stack (Back, or a pop past it)."""
+    navigation.push(page)
+    if on_closed is not None:
+        handler = 0
+
+        def popped(_navigation, _page) -> None:
+            if not in_stack(navigation, page):
+                navigation.disconnect(handler)
+                on_closed()
+
+        handler = navigation.connect("popped", popped)
+    return page
 
 
 def confirm(parent: Gtk.Widget, heading: str, body: str, action_label: str, on_confirm: Callable[[], object], *, destructive: bool = True) -> Adw.AlertDialog:

@@ -594,6 +594,14 @@ class VPNAccountManager:
             return CommandResult(0)
         return self._run(["pkexec", "/usr/bin/systemctl", "enable", "--now", unit], timeout=120)
 
+    def stop_service(self, unit: str) -> CommandResult:
+        """Stop one VPN daemon through PolicyKit, on explicit request (its networks disconnect)."""
+        if unit not in _STARTABLE_UNITS:
+            return CommandResult(2, "", "unsupported service")
+        if self._run(["systemctl", "is-active", "--quiet", unit], timeout=15).returncode != 0:
+            return CommandResult(0)
+        return self._run(["pkexec", "/usr/bin/systemctl", "stop", unit], timeout=60)
+
     def _ensure_tailscaled(self, on_output: Callable[[str], None] | None) -> None:
         """Start the daemon only when it is not already running."""
         if self._run(["systemctl", "is-active", "--quiet", "tailscaled"], timeout=15).returncode == 0:

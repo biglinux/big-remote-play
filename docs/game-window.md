@@ -45,7 +45,9 @@ hardware encoder → Moonlight
   each game (**Allow restoring on future sessions** keeps that choice) and
   restores it silently afterwards by application id and title.
 - **The private game screen** is a headless KWin that runs no shell, panel or
-  notification service; the only client is the mirror. Its size is the game's
+  notification service; the only client is the mirror. It keeps its settings
+  in its own folder of the session's runtime directory, never in the desktop's
+  `kwinoutputconfig.json`. Its size is the game's
   size in device pixels (width rounded to a multiple of 8) and, when
   `kscreen-doctor` exists, it switches to a 240 Hz mode so a game frame waits
   about 2 ms instead of up to 16.7 ms for the next repaint.
@@ -107,10 +109,16 @@ only when exactly one open window has that identity.
 - No fallback: if the game window cannot be shared, sharing does not start.
 - The helper stops showing the game at once when the window closes or crashes,
   the portal session ends, the mirror fails, the private screen exits or, on
-  X11, compositing is suspended. The private screen then shows nothing; after
-  20 seconds it is removed too. Big Remote Play stops Sunshine and explains:
-  **The game window closed** — *Sharing stopped so nothing else on this
-  computer is shown.*
+  X11, compositing is suspended. The private screen then shows nothing.
+- A game that replaces its window (many do when switching to fullscreen or
+  another mode) is followed for up to 15 seconds, while Share says
+  **Reconnecting to the game window…**: only a window of the same game's
+  processes or identity, only when it is the single such window and the only
+  window of its application (KDE restores a saved permission by application
+  id). A share stopped from KDE while the window stays open is not restarted.
+  Otherwise Big Remote Play stops Sunshine and explains: **The game window
+  closed** — *Sharing stopped so nothing else on this computer is shown.*
+  See [fullscreen and new resolutions](game-window-fullscreen-fix.md).
 - If Big Remote Play was closed meanwhile, the next start stops Sunshine and
   says why.
 - The private screen keeps KWin's permission checks and gets no desktop
@@ -135,19 +143,24 @@ only when exactly one open window has that identity.
 
 - **Input goes to the desktop's active window.** Sunshine injects keyboard,
   mouse and controllers through `uinput` for the whole session, as with Full
-  Desktop. Game Window activates the game when sharing starts and when a
-  device starts playing; if someone at
+  Desktop. Game Window activates the game when sharing starts, when a device
+  starts playing and after the game's window was found again; if someone at
   this computer switches to another window, keys typed on the other device go
-  there, without the other person seeing it. Controllers are read by games
-  directly and are not affected.
+  there, without the other person seeing it — **Host input priority** pauses
+  them while someone here uses the mouse or keyboard
+  ([host input priority](host-input-priority.md)). Controllers are read by
+  games directly and are not affected.
 - **Absolute mouse positions** (touch screens, Moonlight's remote-desktop mouse
   mode) are mapped to the private screen, not to where the game sits on the
   desktop. Games that capture the mouse (relative movement) are not affected.
 - **SDR only.** Window capture is 8-bit SDR; HDR games are sent in SDR. The
   HDR and resolution options of **Image and capture** apply to Full Desktop and
   are disabled for Game Window.
-- **Size is fixed at start.** If the game changes size, the picture is scaled
-  to fit with its aspect ratio kept; start sharing again for a sharp 1:1 picture.
+- **The size follows the game.** When the game's picture changes size
+  (fullscreen, a new resolution), the private screen switches to that size
+  about a second later, so the picture stays 1:1; meanwhile it is scaled with
+  its aspect ratio kept. This needs `kscreen-doctor`; without it the picture
+  stays scaled.
 - **Hybrid graphics.** The private screen renders on libdrm's first GPU, and
   Sunshine encodes there. On a machine whose first GPU is an integrated one the
   encoder is the integrated GPU's.

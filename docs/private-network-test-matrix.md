@@ -40,16 +40,29 @@ Automated tests live in `tests/test_private_network_backend.py`, `tests/test_pri
 | History: only started streams, retention, clear | Unit tested, integration simulated | same | same |
 | Legacy plaintext secrets migrated | Unit tested (keyring available / locked) | same | same |
 
-## Connect your devices (simple page)
+## A method's page (Devices | Advanced)
 
 | Scenario | Status |
 |---|---|
-| Every state maps to one sentence and one button (ready, turned off, service stopped, permission, sign-in, waiting, set up, install, problem, no internet) | Unit tested (`tests/test_network_plan.py`), UI tested (`tests/test_private_network_ui.py`) |
-| Tailscale signed in but turned off → **Turn on** | **Real verified** 2026-09-29: `Stopped` → `Running` in 0.1 s; the first attempt without operator rights answered "Access denied", which led to the one-time operator step (machine restored to `Stopped`, no operator, afterwards) |
+| Five state words per status and the one Connection action per state | Unit tested, UI tested (`tests/test_connect_your_devices.py`) |
+| Pages, not dialogs: the list, a method, Set up, Add device, API access, Accounts and networks, guides; header Back; work stops when navigation jumps past a page | UI tested |
+| Two methods connected at once keep their own devices; ZeroTier one network at a time | Unit tested, UI tested |
+| Remove device only with an API and a matched device, after a confirmation; Manage devices otherwise | Unit tested, UI tested (fake APIs) |
+| Rename (this computer only), Check connection, Play on this computer | UI tested |
+| Start: service first, then a signed-in connection; Headscale switches the Tailscale profile; never a sign-in by itself | Unit tested |
+| Stop: `tailscale down` (accounts kept); ZeroTier's service through PolicyKit; Headscale never stops Tailscale's connection | Unit tested, UI tested |
+| Back to Share / Back to Connect once connected | UI tested |
+| Layout at 400 and 1100 px | Rendered offscreen 2026-10-06 |
+| Against real clients and APIs (start, stop, sign-in, approval, removal) | **Pending** |
+
+## The one next step (guided setup)
+
+| Scenario | Status |
+|---|---|
+| Every state maps to one sentence (ready, turned off, service stopped, permission, sign-in, waiting, set up, install, problem, no internet) | Unit tested (`tests/test_network_plan.py`), UI tested (`tests/test_guided_setup.py`) |
+| Tailscale signed in but turned off → **Start** (`turn_on`) | **Real verified** 2026-09-29 (as the former hub's **Turn on**, same service call): `Stopped` → `Running` in 0.1 s; the first attempt without operator rights answered "Access denied", which led to the one-time operator step (machine restored to `Stopped`, no operator, afterwards) |
 | `tailscale up` asks to repeat non-default settings | Unit tested with the client's own message; keys, `--reset`, `--force-reauth` and unknown flags refused |
-| ZeroTier service stopped → **Fix**; existing networks found after start | **Real verified** 2026-09-29: stopped → "The connection service is stopped"; started → connected with the 12 existing networks, no new setup (service stopped again afterwards) |
-| My devices, favourites, rename, recent connections, remove | Unit tested, UI tested; real Tailscale device list shown 2026-09-29 |
-| Layout at 400, 720 and 1024 px, 150 % text, RTL (Hebrew), Japanese | Rendered offscreen (Broadway) 2026-09-29 |
+| ZeroTier service stopped → **Start** (`start_service`); existing networks found after start | **Real verified** 2026-09-29 (as the former hub's **Fix**, same service call): stopped → "The connection service is stopped"; started → connected with the 12 existing networks, no new setup (service stopped again afterwards) |
 | Two physical computers finishing an invitation (link, QR, ZeroTier approval) | **Pending** |
 
 ## Joining ZeroTier (2026-09-29)
@@ -72,11 +85,11 @@ Real service: ZeroTier One 1.16.2 on the development machine, with three existin
 
 | Scenario | Status |
 |---|---|
-| Share/Connect + same network → the task, no VPN; somewhere else → detection; ready connection → **Use this connection**; one step missing → the internet page; nothing → method choice; ZeroTier code; Back; restart | UI tested (`tests/test_guided_setup.py`); detection **real**: found the connected ZeroTier network |
-| Sidebar groups; the internet item always opens the internet page | UI tested |
+| Share/Connect + same network → the task, no VPN; somewhere else → detection; ready connection → **Use this connection**; one step missing → that method's page; nothing → method choice; ZeroTier code; Back; restart | UI tested (`tests/test_guided_setup.py`); detection **real**: found the connected ZeroTier network |
+| Sidebar groups; the Connect your devices item always opens the list of methods | UI tested |
 | Sunshine session → **Connected now** with the handshake address; gone at disconnect | **Real verified** with an isolated Sunshine 2026.914 + Moonlight Qt 6.1 lab instance (own port, state and credentials; sound output checked unchanged) |
 | Quality thresholds 10/45/120 ms, no answer, jitter, loss, LAN/ZeroTier/Tailscale/Headscale/internet route | Unit tested (`tests/test_connection_health.py`); routes **real** on this machine (`zt…`, `lo`, default gateway) |
-| Internet page card: traffic from interface counters, stability, direct/relay, no device online | UI tested; **real**: ZeroTier with no other device online → “No other device online to measure” (controllers excluded) |
+| Connection quality (a method's Advanced): traffic from interface counters, stability, direct/relay, no device online | UI tested; **real**: ZeroTier with no other device online → “No other device online to measure” (controllers excluded) |
 | Layout: 400, 720, 1100 px, 150 % text, RTL + light theme | Rendered offscreen (Broadway) 2026-09-29 |
 | Connect card during a real stream between two computers | **Pending** (simulated data only) |
 

@@ -255,8 +255,8 @@ class GuidedSetup:
             row.set_subtitle(body)
             row.set_subtitle_lines(0)
             use = Gtk.Button(label=_("Continue"))
-            # The internet page owns every fix (turn on, start, allow, sign in).
-            use.connect("clicked", lambda _button: self.open_internet_page())
+            # The method's page owns every fix (start, allow, sign in): its Connection button.
+            use.connect("clicked", lambda _button, provider=plan.provider: self.open_method_page(provider))
         use.add_css_class("suggested-action")
         use.add_css_class("pill")
         buttons.append(use)
@@ -284,15 +284,17 @@ class GuidedSetup:
         )
 
     def open_method(self, provider: ProviderId) -> None:
-        """The provider's own connection page; it returns to the task when done."""
+        """The method's page, on its Set up step; once it works it offers
+        **Back to Share** or **Back to Connect** for the task chosen here."""
         self._return_to_task()
         self.navigation.pop_to_tag("choices")
         self.window._apply_vpn_selection(provider.value, destination="connect_private")
 
-    def open_internet_page(self) -> None:
+    def open_method_page(self, provider: ProviderId) -> None:
+        """The method's own page (Devices), whose Connection button does the missing step."""
         self._return_to_task()
         self.navigation.pop_to_tag("choices")
-        self.window.navigate_to("vpn_selector")
+        self.window.open_provider(provider.value)
 
     def zerotier_code(self) -> None:
         from .zerotier_join import ZeroTierJoinPanel

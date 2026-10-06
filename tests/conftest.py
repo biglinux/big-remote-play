@@ -59,6 +59,11 @@ def _isolated_user_config(tmp_path_factory, monkeypatch):
     from big_remote_play.host import controllers
 
     monkeypatch.setattr(controllers, "controller_report", lambda read=None: controllers.ControllerReport())
+    # Nor the developer's keyboards and mice: Host input priority finds no way
+    # to start its helper unless a test passes its own process or argv.
+    from big_remote_play.host import input_priority
+
+    monkeypatch.setattr(input_priority, "helper_argv", lambda **_kwargs: None)
     # Nor the developer's packages: every component is reported installed and
     # no package manager can run unless a test installs its own fakes.
     from big_remote_play.utils import dependencies

@@ -20,10 +20,15 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Private-network security](private-network-security.md) — credentials, privileges, legacy-file migration and validation.
 - [Video quality](video-quality.md) — the Sunshine → Moonlight pipeline, HDR screens, scaling, codecs and measured results.
 - [Game Window](game-window.md) — sharing one game window through a private screen: design, safety rules, limits and measurements.
-- [Connection status](connection-status.md) — who is connected now, quality thresholds, the real route and the internet-page measurements.
+- [Game Window: fullscreen and new resolutions](game-window-fullscreen-fix.md) — why the picture turned black, the reacquisition of a replaced window and the private screen that follows the game's size.
+- [Host input priority](host-input-priority.md) — this computer's own mouse and keyboard pause the other device's; device classification, the grab, permissions and limits.
+- [Connection status](connection-status.md) — who is connected now, quality thresholds, the real route and the connection-quality measurements of a method's page.
 - [Audio architecture](audio-architecture.md) — what Sunshine records, the bridges Big Remote Play owns, recovery and Steam coexistence.
 - [Translations](translations.md) — gettext workflow and regional catalog requirements.
 - [UX simplification audit](ux-simplification-audit.md) — what each screen shows first, what moved to secondary places, and why.
+- [Connect your devices](connect-your-devices-redesign.md) — one page per connection method (Devices | Advanced), device lists, removal capabilities and navigation without dialogs.
+- [Connect your devices: cards and switches](connect-devices-cards-redesign.md) — what each card shows, how devices are counted and what the on/off switch really does.
+- [Headscale setup wizard](headscale-setup-wizard.md) — this computer or another server, public IP and CGNAT, DigitalPlat and Cloudflare, HTTPS, keys, progress and checks.
 - [Guided setup](guided-setup-redesign.md) — the questions, the ready step and the hand-over.
 - [Installing what a task needs](dependency-installer.md) — detection, Pamac/PolicyKit installation and the Sunshine detection fix.
 - [Pairing requests](pairing-ux.md) — what Sunshine can tell, the request dialog and its safety rules.

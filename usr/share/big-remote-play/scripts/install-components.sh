@@ -3,7 +3,8 @@
 # Used only where Pamac is not available; with Pamac the application asks
 # Pamac directly and this helper does not run.
 #
-# Arguments: component ids (sunshine, moonlight, tailscale, zerotier), or one
+# Arguments: component ids (sunshine, moonlight, tailscale, zerotier,
+# headscale_server, caddy), or one
 # id per stdin line. No package name comes from the caller: each id maps to a
 # package below, resolved to the repository package that provides it
 # (BigLinux ships Sunshine as sunshine-bin).
@@ -52,6 +53,8 @@ for component in "${ids[@]}"; do
 		packages+=("zerotier-one")
 		units+=("zerotier-one")
 		;;
+	headscale_server) packages+=("headscale") ;;
+	caddy) packages+=("caddy") ;;
 	*)
 		printf '%s\n' "$(eval_gettext 'Unknown component: ${component}')"
 		exit 2

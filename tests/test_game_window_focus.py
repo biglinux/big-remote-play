@@ -79,3 +79,24 @@ def test_activation_uses_the_backend_of_the_shared_window(monkeypatch):
     assert window_capture.activate_game(kwin) is True
     assert window_capture.activate_game(x11) is False  # reported, not raised
     assert calls == [("kwin", "{uuid}"), ("x11", ":0", 42)]
+
+
+def test_a_replaced_game_window_is_followed_without_stopping(ui, activations, monkeypatch):
+    """Fullscreen made the game open a new window: Share waits, then focuses the new one."""
+    host = ui.host_view
+    spec = window_capture.Spec.from_mapping({"version": 1, "backend": "kwin", "handle": "{11111111-2222-3333-4444-555555555555}", "width": 1280, "height": 720})
+    host._game_window_session = {"name": "SuperTuxKart", "spec": spec}
+    stopped = []
+    monkeypatch.setattr(host, "stop_hosting", lambda *args: stopped.append(True))
+    state = {"state": "reacquiring", "pid": 1, "handle": spec.handle}
+    monkeypatch.setattr(window_capture, "read_state", lambda path=None: dict(state))
+    monkeypatch.setattr(window_capture, "helper_running", lambda state=None: True)
+
+    assert host._check_capture() is True
+    assert host.overview_status_label.get_label() == "Reconnecting to the game window…"
+    state.update(state="running", handle="{99999999-2222-3333-4444-555555555555}")
+    assert host._check_capture() is True
+    assert host._game_window_session["spec"].handle == "{99999999-2222-3333-4444-555555555555}"
+    host._refocus_game_when_someone_joins([player()])
+    assert wait(lambda: activations and activations[-1].handle == "{99999999-2222-3333-4444-555555555555}")
+    assert not stopped

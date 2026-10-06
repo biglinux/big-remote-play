@@ -45,14 +45,37 @@ class HeadscaleNode:
     approved_routes: tuple[str, ...] = ()
 
 
-def registration_key(text: str) -> str:
-    """Extract the key from what ``tailscale up`` shows for Headscale approval.
+_AUTH_ID_RE = re.compile(r"hskey-authreq-[A-Za-z0-9_-]{24}")
+_BARE_AUTH_ID_RE = re.compile(r"[A-Za-z0-9_-]{24}")
 
-    The joining computer prints a URL ending in ``/register/<key>``; people may
-    paste the whole URL or only the key.
+
+def registration_key(text: str) -> str:
+    """The registration code in whatever the other device shows.
+
+    Accepted: the whole command Headscale suggests (``headscale auth register
+    --auth-id hskey-authreq-… --user USERNAME``), the sign-in link
+    (``…/register/<code>``), the code itself, or only its 24 characters after
+    ``hskey-authreq-`` (what someone types from a phone screen). Older
+    servers' identifiers are accepted as typed.
     """
-    match = _REGISTRATION_KEY_RE.search((text or "").strip())
+    value = (text or "").strip()
+    found = _AUTH_ID_RE.search(value)
+    if found:
+        return found.group(0)
+    if _BARE_AUTH_ID_RE.fullmatch(value):
+        return f"hskey-authreq-{value}"
+    if any(character.isspace() for character in value):
+        return ""
+    match = _REGISTRATION_KEY_RE.search(value)
     return match.group("key") if match else ""
+
+
+def registered_name(result: ApiResult) -> str:
+    """The name of the node a successful registration created."""
+    node = result.data.get("node") if result.ok and isinstance(result.data, dict) else None
+    if not isinstance(node, dict):
+        return ""
+    return str(node.get("givenName") or node.get("name") or "")
 
 
 class HeadscaleApi:
@@ -82,6 +105,14 @@ class HeadscaleApi:
         items = result.data.get("users", []) if result.ok and isinstance(result.data, dict) else []
         users = [HeadscaleUser(str(item.get("id")), str(item.get("name") or ""), str(item.get("displayName") or "")) for item in items if isinstance(item, dict) and item.get("id") is not None]
         return users, result
+
+    def create_user(self, name: str) -> tuple[HeadscaleUser | None, ApiResult]:
+        """Create a user (a namespace before 0.23); its devices form one network."""
+        result = self._client.post("/api/v1/user", json_body={"name": name})
+        item = result.data.get("user") if result.ok and isinstance(result.data, dict) else None
+        if not isinstance(item, dict) or item.get("id") is None:
+            return None, result
+        return HeadscaleUser(str(item.get("id")), str(item.get("name") or ""), str(item.get("displayName") or "")), result
 
     def nodes(self) -> tuple[list[HeadscaleNode], ApiResult]:
         result = self._client.get("/api/v1/node")

@@ -16,14 +16,16 @@ Sidebar                        Content
   Home                           hero (logo, Start with the guided setup) · Share · Connect
   Share       ─ Overview         source → Start sharing; requests; Connected now;
                                  Available over the internet; 3. Connect the other PC
-              ─ Preferences      sound and access
+              ─ Preferences      sound, mouse and keyboard (Host input priority), access
               ─ Support          live latency · Connection history · server tools · diagnostics
   Connect     ─ Computers        Choose a computer (one card per computer)
               ─ Advanced options Connect again · Other ways to connect · On this computer
-  Play over the internet         one sentence and one button; devices; Advanced mode
+  Connect your devices           three cards (name, tag, state, Open); Advanced links
+    a method (card)              its page: Devices | Advanced (Connection, Ready,
+                                 Devices, Add device; technical part in Advanced)
   ─────────────
-  Streaming          indicator (Home and internet pages): e.g. "Sunshine · Running"
-  Secure connection  indicator (Home and internet pages): e.g. "Tailscale · Connected"
+  Streaming          indicator (Home and Connect your devices): e.g. "Sunshine · Running"
+  Secure connection  indicator (Home and Connect your devices): e.g. "Tailscale · Connected"
   (Share/Connect show one card per service instead)
 ```
 
@@ -37,7 +39,7 @@ Sidebar                        Content
 | **Guided setup** was a separate card between the hero and the tasks | It is the hero's primary button |
 | *Playing over the internet?* repeated the sidebar item and the guide's second question | Removed from Home |
 | Role cards said *Needs Sunshine* | *Needs a quick installation*; the product name stays in the tooltip and the installer |
-| Status of streaming and the secure connection was visible only on Share/Connect | Two sidebar indicators on Home and the internet pages |
+| Status of streaming and the secure connection was visible only on Share/Connect | Two sidebar indicators on Home and Connect your devices |
 
 ### Guided setup — see [guided setup](guided-setup-redesign.md)
 
@@ -74,14 +76,16 @@ Sidebar                        Content
 | *Connect again*, *Other ways to connect*, *On this computer* and an internet link on the same page | **Computers** and **Advanced options** tabs in the header, like Share; the internet link removed (sidebar) |
 | Discovery dropped every result when `avahi-browse` took longer than its timeout (one stale announcement is enough) | The computers already resolved are kept |
 
-### Play over the internet
+### Connect your devices (formerly Play over the internet)
 
 | Found | Change |
 |---|---|
-| **Share this computer** / **Connect to another computer** rows shown in every state | Shown only once the connection is ready (*Ready to play?*) |
+| Methods opened as dialogs, and their tools as more dialogs on top | Every method and tool is a page of the same window with **Back**; see [Connect your devices](connect-your-devices-redesign.md) |
+| Devices lived behind a **Details** view, mixed with IDs and maintenance | **Devices** is the first tab: name, Online/Offline, address with **Copy IP**; IDs and maintenance under **Advanced** |
+| **Share this computer** / **Connect to another computer** rows shown in every state | Shown only once the method is connected (**Ready**: **Back to Share** / **Back to Connect**) |
 | **Sign in** opened a page with a second **Sign in with browser** button | **Sign in** starts the browser sign-in |
 | Tailscale's page offered sign-in when Tailscale was not installed; the sign-in could only fail | *Tailscale is not installed yet* with **Install and continue** / **Not now**; after installing, its service starts and the sign-in opens by itself |
-| An installation from the hub ended on a page with another button | Continues to sign-in (Tailscale) or the join page (ZeroTier) |
+| An installation ended on a page with another button | **Install and continue** goes on to sign-in (Tailscale) or the join page (ZeroTier) by itself |
 
 ### Polling and cost
 
@@ -89,7 +93,7 @@ Home now reads the private-network state like Share and Connect did (every 6 s w
 
 ## Not changed, and why
 
-- **Advanced mode** on the internet page and the **Image and capture** sheet already followed the same principle.
+- The **Image and capture** sheet already followed the same principle.
 - Connection guides for direct internet access, UPnP and firewall stay where they were: they are already secondary.
 - Game Window audio: see [Game Window audio](window-audio-fix.md).
 

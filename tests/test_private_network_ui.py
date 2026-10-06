@@ -21,7 +21,7 @@ from big_remote_play.private_network import service as service_module  # noqa: E
 from big_remote_play.private_network.credentials import CredentialKind, CredentialStore  # noqa: E402
 from big_remote_play.private_network.history import SessionHistory  # noqa: E402
 from big_remote_play.private_network.http import ApiErrorKind, ApiResult  # noqa: E402
-from big_remote_play.private_network.models import ConnectionState, HostCandidate, OverlayNetwork, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus, Recovery  # noqa: E402
+from big_remote_play.private_network.models import ConnectionState, OverlayNetwork, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus  # noqa: E402
 from big_remote_play.private_network.zerotier_api import CentralMember  # noqa: E402
 from big_remote_play.utils.secret_store import InMemorySecretBackend, SecretStore  # noqa: E402
 
@@ -71,6 +71,16 @@ def texts(widget):
 
 def dialog_root(dialog):
     return dialog.get_child()
+
+
+def flow_window():
+    """A window whose content is a navigation view, like Connect your devices."""
+    window = Adw.ApplicationWindow()
+    navigation = Adw.NavigationView()
+    navigation.add(Adw.NavigationPage(child=Gtk.Label(label="root"), title="root", tag="providers"))
+    window.set_content(navigation)
+    window.present()
+    return window, navigation
 
 
 class FakeCentral:
@@ -179,7 +189,6 @@ def test_api_access_saves_to_keyring_clears_the_field_and_never_shows_the_secret
     assert wait_for(lambda: dialog.ts_token.get_text() == "")
     assert wait_for(lambda: "tskey-api-••••••••3FxQ" in texts(dialog_root(dialog.dialog)))
     assert FAKE_TOKEN not in texts(dialog_root(dialog.dialog))
-    dialog.dialog.close()
     window.close()
 
 
@@ -197,7 +206,6 @@ def test_api_access_refuses_an_auth_key_and_explains_the_difference():
     assert wait_for(lambda: bool(toasts))
     assert "auth key" in toasts[-1].lower()
     assert service.credentials.secret(CredentialKind.ZEROTIER_API_TOKEN) == ""
-    dialog.dialog.close()
     window.close()
 
 
@@ -206,14 +214,14 @@ def test_api_access_refuses_an_auth_key_and_explains_the_difference():
 
 def test_zerotier_member_can_be_approved_and_removal_needs_confirmation(monkeypatch):
     from big_remote_play.ui import network_common
-    from big_remote_play.ui.network_devices import ManageNetworkDialog
+    from big_remote_play.ui.network_devices import ManageNetworkFlow
 
     central = FakeCentral([CentralMember("bbbbbbbbbb", "Notebook", False), CentralMember("cccccccccc", "Desk", True)])
     service = FakeService([ZT_CONNECTED], ProviderCapabilities(can_authorize_member=True, can_remove_device=True), central=central)
-    window = Adw.ApplicationWindow()
-    window.present()
-    dialog = ManageNetworkDialog(window, service, ZT_CONNECTED, show_toast=lambda _m: None)
+    window, navigation = flow_window()
+    dialog = ManageNetworkFlow(navigation, navigation, service, ZT_CONNECTED, show_toast=lambda _m: None)
     dialog.present()
+    assert navigation.get_visible_page() is dialog.root  # a page in the window, not a dialog
     assert wait_for(lambda: "Notebook" in texts(dialog.devices))
     assert "Waiting for approval" in texts(dialog.devices)
     approve = next(button for button in _buttons(dialog.devices) if button.get_label() == "Approve")
@@ -228,7 +236,6 @@ def test_zerotier_member_can_be_approved_and_removal_needs_confirmation(monkeypa
     assert presented and not [call for call in central.calls if call[0] == "remove"]
     presented[-1].emit("response", "confirm")
     assert wait_for(lambda: [call for call in central.calls if call[0] == "remove"])
-    dialog.dialog.close()
     window.close()
 
 
@@ -246,31 +253,28 @@ def _buttons(widget):
 
 
 def test_share_this_computer_without_api_explains_the_console_and_sends_nothing():
-    from big_remote_play.ui.network_devices import AddDeviceDialog
+    from big_remote_play.ui.network_devices import AddDeviceFlow
 
     api = FakeTailscaleApi()
     service = FakeService([TS_CONNECTED], ProviderCapabilities(can_join_network=True), tailscale_api=api)
-    window = Adw.ApplicationWindow()
-    window.present()
-    dialog = AddDeviceDialog(window, service, TS_CONNECTED, show_toast=lambda _m: None)
+    window, navigation = flow_window()
+    dialog = AddDeviceFlow(navigation, navigation, service, TS_CONNECTED, show_toast=lambda _m: None)
     dialog.present()
     assert wait_for(lambda: "Share this computer" in texts(dialog.root_box))
     assert "Add a person to my network" in texts(dialog.root_box)  # the two concepts stay distinct
     page = dialog._share_page()
     assert "Open Tailscale admin console" in texts(page)
     assert api.calls == []
-    dialog.dialog.close()
     window.close()
 
 
 def test_share_this_computer_with_api_creates_a_device_invite_not_a_tailnet_invite():
-    from big_remote_play.ui.network_devices import AddDeviceDialog
+    from big_remote_play.ui.network_devices import AddDeviceFlow
 
     api = FakeTailscaleApi()
     service = FakeService([TS_CONNECTED], ProviderCapabilities(can_share_machine=True, can_invite_user=True), tailscale_api=api)
-    window = Adw.ApplicationWindow()
-    window.present()
-    dialog = AddDeviceDialog(window, service, TS_CONNECTED, show_toast=lambda _m: None)
+    window, navigation = flow_window()
+    dialog = AddDeviceFlow(navigation, navigation, service, TS_CONNECTED, show_toast=lambda _m: None)
     dialog.present()
     assert wait_for(lambda: dialog.capabilities is not None and dialog.capabilities.can_share_machine)
     page = dialog._share_page()
@@ -282,22 +286,18 @@ def test_share_this_computer_with_api_creates_a_device_invite_not_a_tailnet_invi
     entry.emit("entry-activated")
     assert wait_for(lambda: api.calls == [("share", "dev1", "friend@example.test")])
     assert wait_for(lambda: "https://login.tailscale.com/admin/invite/simulated" in texts(page))
-    dialog.dialog.close()
     window.close()
 
 
 def test_add_device_keeps_terminal_commands_in_advanced_mode():
-    from big_remote_play.ui.network_devices import AddDeviceDialog
+    from big_remote_play.ui.network_devices import AddDeviceFlow
 
     service = FakeService([TS_CONNECTED], ProviderCapabilities(can_create_auth_key=True))
-    window = Adw.ApplicationWindow()
-    window.present()
-    simple = AddDeviceDialog(window, service, TS_CONNECTED, show_toast=lambda _m: None)
+    window, navigation = flow_window()
+    simple = AddDeviceFlow(navigation, navigation, service, TS_CONNECTED, show_toast=lambda _m: None)
     assert "Linux command" not in texts(simple._own_computer_page())
-    advanced = AddDeviceDialog(window, service, TS_CONNECTED, show_toast=lambda _m: None, advanced=True)
+    advanced = AddDeviceFlow(navigation, navigation, service, TS_CONNECTED, show_toast=lambda _m: None, advanced=True)
     assert "Linux command" in texts(advanced._own_computer_page())
-    simple.dialog.close()
-    advanced.dialog.close()
     window.close()
 
 
@@ -334,14 +334,13 @@ def test_history_dialog_groups_sessions_and_clears_only_after_confirmation(tmp_p
     assert history.sessions()  # nothing removed before confirming
     presented[-1].emit("response", "confirm")
     assert wait_for(lambda: history.sessions() == [])
-    dialog.dialog.close()
     window.close()
 
 
 # ── Connect and Share integration ─────────────────────────────────────────
 
 
-from test_ui_task_flows import drain, ui as _ui_fixture  # noqa: E402  (the hermetic window fixture)
+from test_ui_task_flows import ui as _ui_fixture  # noqa: E402  (the hermetic window fixture)
 
 ui = _ui_fixture
 
@@ -434,162 +433,6 @@ class HubService(FakeService):
         return self._act("start_service", provider)
 
 
-def hub(ui, service, tmp_path=None):
-    from big_remote_play.private_network.devices import DevicePreferences
-
-    service_module.set_default_factory(lambda: service)
-    page = ui.remote_connection_page
-    if tmp_path is not None:
-        page.preferences = DevicePreferences(tmp_path / "devices.json")
-    ui.navigate_to("vpn_selector")
-    page.refresh()
-    return page
-
-
-def test_hub_turns_on_a_signed_in_connection_with_one_click(ui):
-    """Seen on the development machine: signed in, turned off (BackendState=Stopped)."""
-    off = ProviderStatus(ProviderId.TAILSCALE, ConnectionState.DISCONNECTED, recovery=Recovery.RECONNECT)
-    service = HubService([off], after_action=TS_CONNECTED)
-    page = hub(ui, service)
-    assert wait_for(lambda: page.card_title.get_label() == "Your secure connection is turned off")
-    assert page.primary_label.get_label() == "Turn on"
-    assert page.method_label.get_label() == "Using Tailscale"
-    page.primary.emit("clicked")
-    assert wait_for(lambda: page.card_title.get_label() == "Ready to play over the internet")
-    assert service.calls == [("turn_on", ProviderId.TAILSCALE)]
-
-
-def test_hub_recommends_the_connection_that_already_works(ui):
-    ui._vpn_choice = "tailscale"
-    page = hub(ui, HubService([ZT_CONNECTED]))
-    assert wait_for(lambda: page.card_title.get_label() == "Ready to play over the internet")
-    assert page.plan.provider is ProviderId.ZEROTIER
-    assert page.method_label.get_label() == "Using ZeroTier"
-
-
-@pytest.mark.parametrize(
-    "status, internet, title, action",
-    [
-        (ProviderStatus(ProviderId.ZEROTIER, ConnectionState.UNAVAILABLE, recovery=Recovery.START_SERVICE), True, "The connection service is stopped", "Fix"),
-        (ProviderStatus(ProviderId.ZEROTIER, ConnectionState.NEEDS_AUTHORIZATION), True, "Waiting for approval", "Check again"),
-        (ProviderStatus(ProviderId.TAILSCALE, ConnectionState.NEEDS_AUTHENTICATION, recovery=Recovery.SIGN_IN), True, "Sign in to connect this computer", "Sign in"),
-        (ProviderStatus(ProviderId.TAILSCALE, ConnectionState.DISCONNECTED, recovery=Recovery.RECONNECT), False, "This computer is not connected to the internet", "Check again"),
-        (ProviderStatus(ProviderId.TAILSCALE, ConnectionState.ERROR), True, "We need to fix a setting", "See details"),
-    ],
-)
-def test_hub_says_the_problem_in_words_with_one_next_step(ui, status, internet, title, action):
-    others = [ProviderStatus(p, ConnectionState.UNAVAILABLE, installed=False) for p in ProviderId if p is not status.provider]
-    page = hub(ui, HubService([status, *others], internet=internet))
-    assert wait_for(lambda: page.card_title.get_label() == title)
-    assert page.primary_label.get_label() == action
-    assert page.primary.get_visible()
-    # No error code as the main message; the technical detail stays in Advanced mode.
-    assert "BackendState" not in page.card_body.get_label()
-
-
-def test_hub_offers_installation_when_nothing_is_installed(ui):
-    missing = [ProviderStatus(p, ConnectionState.UNAVAILABLE, installed=False, recovery=Recovery.INSTALL) for p in ProviderId]
-    page = hub(ui, HubService(missing))
-    assert wait_for(lambda: page.card_title.get_label() == "One component is needed")
-    assert not page.primary.get_visible()  # the install section carries its own button
-    assert page.install_slot.get_first_child() is not None
-
-
-def test_a_fix_runs_off_the_main_thread_and_rechecks(ui):
-    stopped = ProviderStatus(ProviderId.ZEROTIER, ConnectionState.UNAVAILABLE, recovery=Recovery.START_SERVICE)
-    others = [ProviderStatus(p, ConnectionState.UNAVAILABLE, installed=False) for p in ProviderId if p is not ProviderId.ZEROTIER]
-    service = HubService([stopped, *others], after_action=ZT_CONNECTED)
-    page = hub(ui, service)
-    assert wait_for(lambda: page.primary_label.get_label() == "Fix")
-    page.primary.emit("clicked")
-    assert wait_for(lambda: page.plan.kind.value == "ready")
-    assert service.calls == [("start_service", ProviderId.ZEROTIER)]
-    assert page.primary.get_sensitive()
-
-
-def test_simple_mode_is_the_default_and_advanced_mode_is_persisted(ui):
-    page = hub(ui, HubService([TS_CONNECTED]))
-    assert wait_for(lambda: page.plan.kind.value == "ready")
-    assert not ui.network_advanced_mode
-    assert not page.advanced_box.get_visible()
-    page.advanced_row.set_active(True)
-    assert ui.network_advanced_mode and ui.config.get("network_advanced_mode") is True
-    assert page.advanced_box.get_visible()
-    content = texts(page.advanced_box)
-    assert "Tailscale" in content and "ZeroTier" in content and "Headscale" in content
-    assert "100.64.0.1" in content  # this computer's address, only in Advanced mode
-    page.advanced_row.set_active(False)
-    assert not ui.network_advanced_mode
-
-
-def test_my_devices_use_friendly_names_favourites_first(ui, tmp_path):
-    page = hub(ui, HubService([TS_CONNECTED]), tmp_path)
-    assert wait_for(lambda: page.devices.get_visible() and len(page.devices.dynamic_rows) == 2)
-    titles = [row.get_title() for row in page.devices.dynamic_rows]
-    assert titles == ["notebook", "tv"]  # online first
-    assert [row.get_subtitle() for row in page.devices.dynamic_rows] == ["Online", "Offline"]
-    page.preferences.rename("100.64.0.3", "TV da sala")
-    page._set_favorite("100.64.0.3", True)
-    titles = [row.get_title() for row in page.devices.dynamic_rows]
-    assert titles == ["TV da sala", "notebook"]
-    assert page.preferences.get("100.64.0.3").favorite
-
-
-def test_no_devices_yet_is_an_invitation_not_an_empty_list(ui):
-    alone = ProviderStatus(ProviderId.TAILSCALE, ConnectionState.CONNECTED, self_device=TS_CONNECTED.self_device)
-    page = hub(ui, HubService([alone]))
-    assert wait_for(lambda: page.devices.get_visible())
-    content = texts(page.devices)
-    assert "No other device yet" in content and "Add a device" in content
-
-
-def test_recent_connections_reconnect_and_can_be_removed(ui, tmp_path, monkeypatch):
-    history = SessionHistory(tmp_path / "s.json")
-    session = history.start(host_name="PC do João", host_address="100.64.0.9", port=47989, provider="tailscale")
-    history.finish(session)
-    service = HubService([TS_CONNECTED], history=history)
-    service.recent = history.recent_hosts()
-    page = hub(ui, service, tmp_path)
-    assert wait_for(lambda: any(row.get_title() == "PC do João" for row in page.recent.dynamic_rows))
-    row = next(row for row in page.recent.dynamic_rows if row.get_title() == "PC do João")
-    assert row.get_subtitle().startswith("Last connection: Today at ")
-    connected = []
-    monkeypatch.setattr(ui.guest_view, "connect_to_host", lambda host, **kwargs: connected.append(host))
-    page._connect(service.recent[0])
-    assert ui.current_page == "guest" and connected[0]["ip"] == "100.64.0.9"
-    ui.navigate_to("vpn_selector")
-    monkeypatch.setattr("big_remote_play.ui.remote_connection.confirm", lambda parent, heading, body, label, run: run())
-    service.recent = []
-    page._forget(HostCandidate("PC do João", "100.64.0.9", 47989, provider="tailscale"), "PC do João")
-    assert wait_for(lambda: history.sessions() == [])
-    assert wait_for(lambda: "No connections yet" in texts(page.recent))
-
-
-def test_method_dialog_explains_each_method_in_one_sentence(ui):
-    page = hub(ui, HubService([TS_CONNECTED]))
-    assert wait_for(lambda: page.plan.kind.value == "ready")
-    dialog = page.show_methods()
-    drain()
-    content = texts(dialog)
-    assert "Easy to set up and great for connecting your own devices." in content
-    assert "Headscale (advanced)" in content
-    assert "Connected" in content
-    dialog.close()
-    drain()
-
-
-def test_simple_dashboard_uses_human_names_for_zerotier_codes(ui):
-    service_module.set_default_factory(lambda: FakeService([ZT_CONNECTED]))
-    ui._vpn_choice = "zerotier"
-    ui.navigate_to("create_private")
-    page = ui.content_stack.get_child_by_name("create_private").get_child()
-    assert wait_for(lambda: page.status is not None)
-    content = texts(page)
-    assert "Network code" in content
-    technical = [widget for widget in _walk(page) if isinstance(widget, Adw.ExpanderRow) and widget.get_title() == "Technical details"]
-    assert technical and all(not widget.get_mapped() for widget in technical)
-
-
 def test_simple_join_form_uses_network_code_and_hides_auth_keys(ui):
     from big_remote_play.ui.private_network_view import ConnectPage
 
@@ -622,12 +465,11 @@ def test_api_error_is_explained_without_leaking_detail_secrets():
 
 
 def test_zerotier_add_device_offers_the_network_id_as_text_and_qr_code():
-    from big_remote_play.ui.network_devices import AddDeviceDialog
+    from big_remote_play.ui.network_devices import AddDeviceFlow
 
     service = FakeService([ZT_CONNECTED], ProviderCapabilities(can_join_network=True))
-    window = Adw.ApplicationWindow()
-    window.present()
-    dialog = AddDeviceDialog(window, service, ZT_CONNECTED, show_toast=lambda _m: None)
+    window, navigation = flow_window()
+    dialog = AddDeviceFlow(navigation, navigation, service, ZT_CONNECTED, show_toast=lambda _m: None)
     dialog.present()
     # Shown in groups of four to read aloud; the QR code and the copy keep the exact ID.
     assert wait_for(lambda: "8056 c2e2 1c00 0001" in texts(dialog.root_box))
@@ -637,7 +479,6 @@ def test_zerotier_add_device_offers_the_network_id_as_text_and_qr_code():
     shown = window.get_visible_dialog()
     assert shown is not None and any(getattr(widget, "_brp_qr_text", "") == "8056c2e21c000001" for widget in _walk(shown))
     shown.close()
-    dialog.dialog.close()
     window.close()
 
 
@@ -719,14 +560,6 @@ def test_status_polling_checks_only_the_services_the_page_shows(ui, monkeypatch)
     ui.p_check()
     assert wait_for(lambda: probed == ["moonlight", "sunshine"])
     assert wait_for(lambda: not ui._polling_status)
-
-
-def test_zerotier_without_a_member_list_does_not_claim_there_are_no_devices(ui):
-    page = hub(ui, HubService([ZT_CONNECTED]))
-    assert wait_for(lambda: page.devices.get_visible())
-    content = texts(page.devices)
-    assert "No other device yet" not in content
-    assert "listed on the ZeroTier website" in content
 
 
 def test_simple_join_pages_ask_for_one_thing_in_plain_words(ui):
@@ -817,16 +650,3 @@ def test_after_installing_tailscale_the_sign_in_starts_by_itself(ui, monkeypatch
     assert started == ["tailscaled"]  # its service was started for the sign-in
     assert page._connect_form.get_visible() and not page._install_slot.get_visible()
     assert len(signed_in) == 1
-
-
-def test_the_internet_page_sign_in_button_signs_in_at_once(ui, monkeypatch):
-    import big_remote_play.ui.private_network_view as pnv
-
-    signed_in = []
-    monkeypatch.setattr(pnv.ConnectPage, "_connect_tailnet", lambda self, **kwargs: signed_in.append(kwargs))
-    signed_out = ProviderStatus(ProviderId.TAILSCALE, ConnectionState.NEEDS_AUTHENTICATION, installed=True)
-    page = hub(ui, HubService([signed_out]))
-    assert wait_for(lambda: page.primary.get_visible() and page.primary_label.get_label() == "Sign in")
-    page.primary.emit("clicked")
-    assert wait_for(lambda: bool(signed_in))
-    assert ui.current_page == "connect_private"

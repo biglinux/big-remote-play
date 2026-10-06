@@ -8,7 +8,7 @@ What the connection cards show, where each value comes from and what it does not
 |---|---|---|
 | **Connect** | **Playing now** | The computer Moonlight is streaming from |
 | **Share → Overview** | **Connected now** (one card per device) | Every device streaming from this computer now |
-| **Play over the internet** | The connection in use | The private network itself |
+| **Connect your devices → a method → Advanced** | **Connection quality** | The private network itself |
 
 All three use `utils/connection_health.py` for quality, thresholds and the path, and `ui/connection_cards.py` for the words. Connect and Share take their measurements from the existing `PerformanceMonitor` worker (the same data as **Support → monitoring**); no second monitor runs.
 
@@ -53,9 +53,9 @@ The path is the kernel's real route (`ip -j route get <address>`), cached for a 
 | loopback, no gateway, or a non-global address | **Local network** |
 | a gateway to a global address | **Internet** |
 
-## The connection in use (Play over the internet)
+## Connection quality (Connect your devices)
 
-Shown only when the page's plan is *ready*, and measured only while the page is on screen (every 5 seconds, one worker, cancelled on leaving).
+Shown on a method's page under **Advanced** while that method is connected, and measured only while that tab is on screen (every 5 seconds, one worker, cancelled on leaving).
 
 - **In use now**: received and sent bits per second of the `zt*` or `tailscale*` interfaces, from the kernel counters in `/sys/class/net`. This is current traffic, not the connection's capacity; no speed test is ever run.
 - **Network: Stable / Unstable**: the quality window above, fed by the provider's own measurement. Tailscale and Headscale: one `tailscale ping --c=1` of an online device (answered by the client on any system, and it says **Direct connection** or **Through a relay server**). ZeroTier: the latencies ZeroTier keeps for its peers, so nothing is sent. ZeroTier lists network controllers as `LEAF` peers too; they are excluded (a controller's node ID is the first 10 hex digits of its network ID), so with no other device online the card says **No other device online to measure** instead of a controller's latency.
@@ -67,7 +67,7 @@ Shown only when the page's plan is *ready*, and measured only while the page is 
 | Sunshine log read + one `ss -tan` | 3 s | sharing |
 | One ping per connected device | 5 s | a session is active |
 | Route lookup | 60 s per address | a session is active |
-| Interface counters + one provider probe | 5 s | the internet page is visible and ready |
+| Interface counters + one provider probe | 5 s | a connected method's **Advanced** tab is visible |
 
 Nothing runs on the GTK main thread; timers stop when the page is unmapped or sharing stops.
 

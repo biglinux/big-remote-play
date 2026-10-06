@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "https://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+
+<!--
+  Headscale server on this computer (Big Remote Play → Connect your devices →
+  Headscale → Set up → This computer).
+
+  The helper changes system configuration: Headscale's server address, a Caddy
+  site file for HTTPS, the two services and, when asked, HTTP/HTTPS in the
+  firewall. It accepts one validated command per run, refuses to overwrite a
+  configuration it did not write, and keeps Headscale itself on 127.0.0.1.
+
+  An administrator password is always required (kept for a few minutes so the
+  setup steps do not ask again); remote and inactive sessions are refused.
+-->
+<policyconfig>
+  <vendor>BigLinux</vendor>
+  <vendor_url>https://www.biglinux.com.br</vendor_url>
+  <icon_name>br.com.biglinux.remoteplay</icon_name>
+
+  <action id="br.com.biglinux.remoteplay.headscale-server">
+    <description>Set up a Headscale server on this computer</description>
+    <message>Authentication is required to set up a Headscale server on this computer</message>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/share/big-remote-play/scripts/headscale-server-helper.sh</annotate>
+  </action>
+</policyconfig>

@@ -45,10 +45,13 @@ _LEGACY_KEYS = {CredentialKind.ZEROTIER_API_TOKEN: SecretKey("zerotier", "api_to
 
 # Recognisable prefixes of provisioning keys that must never be accepted as an
 # administrative credential (and vice versa).
-_PROVISIONING_PREFIXES = ("tskey-auth-",)
+# Headscale pre-auth keys start with hskey-auth- since 0.28 (older ones are
+# plain hex and cannot be told apart).
+_PROVISIONING_PREFIXES = ("tskey-auth-", "hskey-auth-")
 _EXPECTED_PREFIX = {
     CredentialKind.TAILSCALE_API_TOKEN: "tskey-api-",
     CredentialKind.TAILSCALE_OAUTH_CLIENT: "tskey-client-",
+    CredentialKind.HEADSCALE_API_KEY: "hskey-api-",
 }
 
 
@@ -87,7 +90,7 @@ def classify_secret(secret: str) -> str:
     value = (secret or "").strip()
     if value.startswith(_PROVISIONING_PREFIXES):
         return "auth_key"
-    if value.startswith("tskey-api-"):
+    if value.startswith(("tskey-api-", "hskey-api-")):
         return "api_token"
     if value.startswith("tskey-client-"):
         return "oauth_client"

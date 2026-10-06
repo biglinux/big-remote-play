@@ -5,11 +5,11 @@ This document describes how Big Remote Play talks to Tailscale, Headscale and Ze
 ## Layers
 
 ```text
-UI (GTK, main thread)            ui/remote_connection.py (Connect your devices hub),
-                                 ui/network_dashboard.py (Network details),
-                                 ui/network_devices.py (Add a device, Manage network),
-                                 ui/api_access_dialog.py, ui/history_dialog.py,
-                                 ui/private_network_view.py (Set up the connection),
+UI (GTK, main thread)            ui/remote_connection.py (Connect your devices: three cards),
+                                 ui/provider_page.py (one method: Devices | Advanced),
+                                 ui/network_devices.py (Add another device, Manage network pages),
+                                 ui/api_access_dialog.py, ui/vpn_accounts_dialog.py (pages there),
+                                 ui/private_network_view.py (Set up page),
                                  guest_view.py / host_view.py integration
         │  plain data only (models.py), through ui/network_common.Worker
         ▼
@@ -20,7 +20,11 @@ Service facade (worker threads)  private_network/service.py
         │                        all built on http.py
         ├── Credentials          credentials.py (Secret Service) · legacy.py (one-time cleanup)
         ├── Next step            plan.py (pure: statuses → one ConnectionPlan)
-        ├── History              history.py (local streaming sessions) · devices.py (names, favourites)
+        ├── Devices              device_list.py (pure: one provider's devices, five state words)
+        ├── Cards                cards.py (pure: what each Connect your devices card shows)
+        ├── Headscale setup      headscale_server.py (server check, local helper, wizard progress),
+        │                        public_address.py (STUN/HTTPS, CGNAT), dns_check.py (DNS over HTTPS)
+        ├── History              history.py (local streaming sessions) · devices.py (names given here)
         └── Diagnostics          diagnostics.py (bounded, read-only checks)
 ```
 
@@ -31,26 +35,36 @@ Rules that keep the layers honest:
 - **The facade returns plain dataclasses** (`ProviderStatus`, `PeerDevice`, `HostCandidate`, `HostDiagnosis`), never widgets, subprocess objects or credentials.
 - **`default_service()`** is the only way the UI obtains the facade. The test suite replaces its factory with `OfflinePrivateNetworkService`, so no test can reach a real daemon, keyring or API.
 
-## The hub and its one next step
+## Connect your devices
 
-**Play over the internet** opens `RemoteConnectionPage`. It never asks for a product first. `plan.plan_connection(statuses, internet=…, preferred=…)` turns every provider's status into one `ConnectionPlan`, in this order:
+The cards and their switches are described in [cards and switches](connect-devices-cards-redesign.md) (`service.card_summaries()`, `cards.summarize()`); Headscale's **Set up** is the [setup wizard](headscale-setup-wizard.md).
 
-1. a connected provider → `READY` (primary: Add a device or invite a player);
+**Connect your devices** is an `Adw.NavigationView` in the main window. Its root, `RemoteConnectionPage`, shows one `ProviderCard` per method with `device_list.simple_state(status)` — **Not installed**, **Off**, **Connecting…**, **Connected** or **Needs attention** — read through `service.overview()`. **Open** pushes `ProviderPage` for that method; every later step (Set up, Add another device, Manage network, API access, Accounts and networks, guides) is pushed on the same navigation, so nothing there is a dialog except short confirmations and inputs. The design and its reasons are in [Connect your devices](connect-your-devices-redesign.md).
+
+A method's page reads only its own provider:
+
+- `service.status(provider)` → the Connection sentence and its one action (`provider_page.connection_words`): **Start**, **Stop**, **Set up**/**Join a network**, **Sign in**, **Allow**, **Try again**, or **Install and continue**.
+- `service.device_listing(provider, network_id)` → a `DeviceListing` of that provider (one ZeroTier network at a time): the local client's peers for Tailscale and Headscale, matched to the administrative API's devices when one is configured; for ZeroTier, Central's members of that network with an API token, otherwise only this computer. Lists of different providers are never merged.
+- `service.remove_device(provider, id, network_id)` → Tailscale `DELETE /device/{id}`, ZeroTier Central member removal, Headscale `DELETE /api/v1/node/{id}`. The UI offers it only when the listing came from the API and matched that device (`DeviceListing.can_remove`, `ProviderDevice.removable`); otherwise **Manage devices** opens the provider's website (`TAILSCALE_MACHINES`, `ZEROTIER_NETWORK`).
+
+**Start** is `service.start()`: start the service if it is stopped (`systemctl enable --now` of the allowlisted unit through PolicyKit), switch the Tailscale app to this product's saved profile when it belongs to the other one (Tailscale vs Headscale), then `turn_on` a signed-in connection. **Stop** is `service.stop()`: `tailscale down` for Tailscale/Headscale — only for the product that owns the active connection, see below — and `systemctl stop zerotier-one` through PolicyKit for ZeroTier. Neither signs in, joins or forgets anything.
+
+**Turn on** (`turn_on`, used by Start) — `VPNAccountManager.resume_tailscale()`: `tailscale up --timeout=30s` as the user. On "access denied" it asks once, through PolicyKit, for the documented `tailscale set --operator=$USER`, then retries as the user; `up` is never run as root. When `up` demands the profile's non-default settings, the command the client prints is run only if every flag is a plain setting from an allowlist (`--login-server`, `--operator`, `--accept-routes`, …); keys, `--reset` and `--force-reauth` are refused. **Allow**, **Sign in**, **Set up** and **Install** reuse the existing ZeroTier permission, join page and installer.
+
+## The one next step (guided setup and sidebar)
+
+`plan.plan_connection(statuses, internet=…, preferred=…)` turns every provider's status into one `ConnectionPlan`, in this order:
+
+1. a connected provider → `READY`;
 2. no interface has an address (`service.internet_available()`, local `ip -j addr` only) → `OFFLINE`;
 3. the recommended provider's recovery: `WAITING` (approval), `TURNED_OFF` (`Recovery.RECONNECT`, e.g. Tailscale `Stopped`), `SERVICE_STOPPED`, `ALLOW` (ZeroTier permission), `SIGN_IN`, `PROBLEM` (client error);
 4. nothing installed → `INSTALL` (Tailscale unless a method was chosen before); otherwise `SET_UP`.
 
-`recommended_status()` chooses the provider: connected, then installed-with-a-recovery, then installed, then missing; the remembered method only breaks ties. The page maps each kind to one sentence and one button (`remote_connection.plan_words`); Home uses the same sentence.
+`recommended_status()` chooses the provider: connected, then installed-with-a-recovery, then installed, then missing; the remembered method only breaks ties. The guided setup words it with `remote_connection.plan_words` and, when one step is missing, opens that method's page; the sidebar's **Secure connection** summary uses the same plan.
 
-One-click actions run on a `Worker` and re-read the state afterwards:
+Names given with **Rename** on a method's page live in `history/devices.json` (0600, two allowlisted fields per device — a name and a favourite flag kept for compatibility — keyed by address); only this computer uses them.
 
-- **Turn on** — `VPNAccountManager.resume_tailscale()`: `tailscale up --timeout=30s` as the user. On "access denied" it asks once, through PolicyKit, for the documented `tailscale set --operator=$USER`, then retries as the user; `up` is never run as root. When `up` demands the profile's non-default settings, the command the client prints is run only if every flag is a plain setting from an allowlist (`--login-server`, `--operator`, `--accept-routes`, …); keys, `--reset` and `--force-reauth` are refused.
-- **Fix** — `service.start_service()` → `systemctl enable --now` of the allowlisted unit through PolicyKit.
-- **Allow**, **Sign in**, **Set up**, **Install** reuse the existing ZeroTier permission, join page and installer.
-
-Friendly names and favourites live in `history/devices.json` (0600, two allowlisted fields per device, keyed by address). Removing a recent connection deletes that computer's sessions from the history and its preferences.
-
-The sidebar's service rows are hidden on network pages — the card is the one source of truth, so a daemon "Running" never sits beside "Turned off" — and the 3-second service probe checks only the rows the current page shows (none on Home and network pages).
+On Connect your devices the sidebar shows the same cards as Share and Connect (the remembered task's streaming component and the three methods, each from its own `ProviderStatus`, never a daemon's "Running"); Home shows two summary indicators. The 3-second service probe checks only the rows the current page shows.
 
 ## State model
 
@@ -123,7 +137,7 @@ Recent sessions from the history are offered as “Connect again”. Manual addr
 
 ## Joining a ZeroTier network
 
-**Play over the internet** starts a stopped client the same way (`PrivateNetworkService.start_service`, for `zerotier-one` and `tailscaled`) and then waits up to 15 s for its client to answer — `zerotier-cli -j info` (an address, or a refusal that needs **Allow**) or `tailscale status` (anything but *tailscaled is not running*) — so the next screen shows the real next step (sign in, **Allow**, join) instead of a service still starting.
+**Connect your devices** starts a stopped client the same way (`PrivateNetworkService.start_service`, for `zerotier-one` and `tailscaled`) and then waits up to 15 s for its client to answer — `zerotier-cli -j info` (an address, or a refusal that needs **Allow**) or `tailscale status` (anything but *tailscaled is not running*) — so the next screen shows the real next step (sign in, **Allow**, join) instead of a service still starting.
 
 `zerotier-cli join` only *asks*: the network's controller then sends a configuration, refuses the computer until its owner authorizes it, or says the network does not exist, seconds or minutes later. `private_network/zerotier_join.py` models this as one `JoinPhase` at a time; `ui/zerotier_join.py` (`ZeroTierJoinPanel`) renders it on the ZeroTier connection page and in the guided setup, so both say the same thing.
 

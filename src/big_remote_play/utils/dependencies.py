@@ -52,6 +52,8 @@ def _purpose(component_id: str) -> str:
         "moonlight": _("Receives the game from the other computer."),
         "tailscale": _("Creates a secure connection between your computers."),
         "zerotier": _("Joins the private network of a friend or a club."),
+        "headscale_server": _("Your own private network server."),
+        "caddy": _("Gives the server a secure HTTPS address."),
     }.get(component_id, "")
 
 
@@ -60,6 +62,10 @@ COMPONENTS: dict[str, Component] = {
     "moonlight": Component("moonlight", "Moonlight", ("moonlight-qt", "moonlight"), "moonlight-qt"),
     "tailscale": Component("tailscale", "Tailscale", ("tailscale",), "tailscale", unit="tailscaled", flatpak_keyword="tailscale"),
     "zerotier": Component("zerotier", "ZeroTier", ("zerotier-cli",), "zerotier-one", unit="zerotier-one", flatpak_keyword="zerotier"),
+    # A Headscale server on this computer; the setup helper configures and
+    # starts their services, so none is enabled at installation.
+    "headscale_server": Component("headscale_server", "Headscale", ("headscale",), "headscale"),
+    "caddy": Component("caddy", "Caddy", ("caddy",), "caddy"),
 }
 
 # What each task cannot work without. The secure connection is added only when

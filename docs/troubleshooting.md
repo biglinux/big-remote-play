@@ -1,13 +1,35 @@
 # Troubleshooting
 
-## Play over the internet says something is wrong
+## Host input priority does not pause the other device
 
-The card on **Play over the internet** names the problem and its fix:
+- **Host input priority is not working — not allowed to notice…**: the desktop user cannot read input devices and the installed helper is missing or was refused. Install Big Remote Play from its package (it ships the PolicyKit rule that allows it for the person at the computer); a source checkout works only for members of the `input` group.
+- **Waiting for Sunshine's mouse and keyboard…**: Sunshine has not created its virtual devices yet, or uses its X11 fallback, which cannot be paused. Stop and start sharing.
+- A key the other person kept holding while paused has to be pressed again after the pause. Controllers are never paused, by design.
 
-- **Your secure connection is turned off → Turn on.** The account is kept; it only reconnects. The first time, your password may be requested once so your user can control Tailscale; later it needs none.
-- **The connection service is stopped → Fix.** Starts the service and keeps it enabled (password requested).
-- **This computer is not connected to the internet.** No network interface has an address: connect Wi-Fi or a cable and choose **Check again**.
-- **We need to fix a setting → See details.** Opens the network details, where **Technical details** shows what the connection program reported.
+## Connect your devices says something is wrong
+
+Each card on **Connect your devices** says its state in one word. **Open** the method: its **Connection** section names the problem and has the button that fixes it.
+
+- **Off → Start.** The account or network is kept; it only reconnects. If the service was stopped it is started and kept enabled (your password may be requested once).
+- **Needs attention → Sign in, Allow or Try again.** *Sign in to finish* opens the browser sign-in; *Big Remote Play needs your permission* asks once to read ZeroTier networks; *… reported a problem* keeps what the program said under **Advanced → Service details**.
+- **Not installed → Install and continue.** Installs the program and continues to the sign-in or the network code by itself.
+- **Headscale is off although the server works.** Tailscale and Headscale share the Tailscale app on this computer: starting one turns the other off. The page says so before you press **Start**.
+- **The full device list could not be read.** The method's API (under **Advanced → API access**) answered with an error; the list shows what this computer knows. Check or replace the credential there.
+
+## A card's switch goes back to Off
+
+The switch shows the real connection: after **Start** it stays on only if the provider reports a working connection. **Could not connect** means it did not: select **See what happened** — the method's page names the problem (sign-in, permission, service) and **Advanced → Service details** keeps what the program said. Turning Headscale on while Tailscale is active (or the other way round) asks first, because both use the same Tailscale app on this computer.
+
+## Headscale setup
+
+- **We could not find your public address** — this computer has no internet connection, or both the STUN and the HTTPS lookups were blocked. Check the connection and **Check again**, or use another server.
+- **Your internet provider may block incoming connections** — evidence of CGNAT (a shared address on this computer, or the router reporting a different internet address). A server here would not be reachable from outside; a small VPS is the reliable way.
+- **We are still waiting for DNS** — the record was not found yet; changes can take from a minute to a few hours. **Your domain is not pointing to this server yet** shows where it points now; fix the record's address. **Cloudflare's proxy is on** — click the orange cloud so it turns gray (**DNS only**).
+- **Your domain still uses other nameservers** — the two Cloudflare nameservers were not saved at the registrar (DigitalPlat) yet, or the change has not reached the resolvers.
+- **Your router needs one more step** — the certificate could not be obtained because the internet cannot reach ports 80 and 443 of this computer. Add the two port-forwarding rules shown, then **Check again**.
+- **Headscale on this computer is already set up for another address** — nothing was changed; your existing server configuration is kept. See the Headscale page's **Advanced**.
+- **The server's secure certificate is not valid** (another server) — HTTPS is not set up for that name on the server; **Guided server setup** shows the Caddy step.
+- **This computer could not join** — check **Advanced → Test connection**. If it says the server works but this computer still cannot join, your router may not let this computer reach its own public name (no "hairpin NAT"); other devices still work.
 
 ## Share keeps asking to install Sunshine, or an installation does not finish
 
@@ -62,7 +84,7 @@ Without a network code, choose **I don't have a code**: in the guided setup and 
 
 ## ZeroTier shows “Waiting for authorization”
 
-The network is private: its owner must authorize this computer. Send them the **Node ID** under **Your device**. The owner approves it in **Play over the internet → Add a device or invite a player** (with a ZeroTier API token) or on the ZeroTier website (**Approve on the ZeroTier website**). Keep the page open: it checks again by itself and turns into **Connected** without joining again. A network that approves the computer but assigns no address shows **Almost there**; the owner must assign an address or enable automatic IPv4 assignment.
+The network is private: its owner must authorize this computer. Send them the **Node ID** under **Your device**. The owner approves it in **Connect your devices → ZeroTier → Add device** (with a ZeroTier API token) or on the ZeroTier website (**Approve on the ZeroTier website**). Keep the page open: it checks again by itself and turns into **Connected** without joining again. A network that approves the computer but assigns no address shows **Almost there**; the owner must assign an address or enable automatic IPv4 assignment.
 
 ## ZeroTier says “Network code not found” or “The network has not answered yet”
 
@@ -104,7 +126,9 @@ Sunshine probes every display and encoder when capture and encoder are set to au
 - **The other device gets sound but a black picture** (Moonlight: *No video traffic was ever received from the host*): the sharing computer needs Sunshine v2026.516 or newer for Game Window. Update Sunshine; Big Remote Play also reports an older Sunshine in the Game window list.
 - **The game window was not confirmed**: KDE's **Share screen with** dialog was cancelled or closed. Start again and choose the same game.
 - **The window chosen in the system dialog is not the selected game**: a different window was chosen in KDE's dialog; start again and choose the game selected in Big Remote Play.
-- **The game window closed**: the game exited or crashed. Nothing else was shown; open the game and share again.
+- **Reconnecting to the game window…** (the other device sees black for a few seconds): the game opened a new window, usually when switching to fullscreen or another resolution. It continues by itself when that window appears.
+- **The game window closed**: the game exited or crashed, or no window of the same game appeared within 15 seconds. Nothing else was shown; open the game and share again.
+- **The game opened more than one window**: Big Remote Play could not tell which one to show (a launcher and the game, or two windows of the same program). Close the extra window and share again.
 - On X11, **Window effects (compositing) are off**: many games suspend compositing in fullscreen. In **System Settings → Display and Monitor → Compositor**, turn off *Allow applications to block compositing*, or play in borderless windowed mode.
 - Keys from the other device reach another program: Sunshine sends input to the active window. Click the game once on this computer.
 

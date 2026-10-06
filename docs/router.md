@@ -1,10 +1,10 @@
 # Router, NAT and firewall
 
-Why playing over the internet sometimes fails, explained without networking jargon, and the safest fix for each case. In Big Remote Play the same information, with what your computer shows, is under **Play over the internet → Internet, router and firewall**.
+Why playing over the internet sometimes fails, explained without networking jargon, and the safest fix for each case. In Big Remote Play the same information, with what your computer shows, is under **Connect your devices → Internet, router and firewall**.
 
 ## The recommended path: a private network
 
-Install **Tailscale**, **ZeroTier** or **Headscale** on both computers and join the same network (see the [user guide](user-guide.md#play-over-the-internet)). This normally works behind any home router, including CGNAT, and needs **no port forwarding**. Sunshine stays invisible to the rest of the internet.
+Install **Tailscale**, **ZeroTier** or **Headscale** on both computers and join the same network (see the [user guide](user-guide.md#connect-your-devices)). This normally works behind any home router, including CGNAT, and needs **no port forwarding**. Sunshine stays invisible to the rest of the internet.
 
 Use the rest of this page only if you choose direct access without a VPN, or to understand an error.
 

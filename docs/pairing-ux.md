@@ -14,7 +14,7 @@ Current Sunshine lists the devices that are waiting (`GET /api/pin`: an id, the 
 | B. The waiting request is detected; the person types the PIN shown on the other screen | Yes | **Yes** |
 | C. Two Big Remote Play computers exchange the PIN between themselves | Only with a new authenticated channel between the apps; sending the PIN over the network would defeat the reason it exists, and a new protocol would be a new attack surface | No |
 
-Moonlight Qt sends the same placeholder device name (`roth`) from every computer, so the name shown is the one this computer gives the address — a name set on the internet page, the private network's name for that peer, or the local network name — and otherwise *Device at 192.168.1.30*.
+Moonlight Qt sends the same placeholder device name (`roth`) from every computer, so the name shown is the one this computer gives the address — a name given with **Rename** in Connect your devices, the private network's name for that peer, or the local network name — and otherwise *Device at 192.168.1.30*.
 
 ## What happens
 
