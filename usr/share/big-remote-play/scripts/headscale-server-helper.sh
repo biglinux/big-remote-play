@@ -54,6 +54,9 @@ LISTEN_PORTS="8080 18080 18081 18082 18083 18084 18085 18086 18087 18088 18089"
 METRICS_PORTS="9090 19090 19091 19092 19093 19094 19095"
 GRPC_PORTS="50443 50444 50445 50446 50447 50448 50449"
 CADDY_MARK=/etc/headscale/.brp-enabled-caddy
+# Present when headscale.service was already enabled before setup: undoing the
+# setup then leaves it enabled.
+HEADSCALE_KEEP=/etc/headscale/.brp-headscale-was-enabled
 HOSTS=/etc/hosts
 HOSTS_MARK="# big-remote-play headscale"
 LOCAL_LISTEN=""
@@ -207,7 +210,19 @@ cmd_configure() {
 	fi
 
 	say "$(gettext 'Configuring…')"
-	[ -e "$BACKUP" ] || cp -p "$CONFIG" "$BACKUP"
+	# The first setup keeps the original; only then is the state before Big
+	# Remote Play known.
+	first_setup=0
+	if [ ! -e "$BACKUP" ]; then
+		cp -p "$CONFIG" "$BACKUP" || finish error 1
+		first_setup=1
+	fi
+	# This run's starting point, put back when the HTTPS part is refused.
+	before="$(mktemp /etc/headscale/.config-before.XXXXXX)" || finish error 1
+	cp -p "$CONFIG" "$before" || {
+		rm -f "$before"
+		finish error 1
+	}
 	base="$(awk '$1 == "base_domain:" { v = $2; gsub(/"|'\''/, "", v); print v; exit }' "$CONFIG")"
 	tmp="$(mktemp /etc/headscale/.config.XXXXXX)" || finish error 1
 	# The MagicDNS domain must not contain the server's own name.
@@ -240,15 +255,20 @@ cmd_configure() {
 	mv -f "$tmp" "$SITE"
 	if ! caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null 2>&1; then
 		rm -f "$SITE"
+		mv -f "$before" "$CONFIG"
 		say "$(gettext 'The HTTPS configuration was not accepted. Nothing was enabled.')"
 		finish caddy_invalid 1
 	fi
+	rm -f "$before"
 
 	echo "BRP_PHASE 0.5"
 	say "$(gettext 'Starting…')"
 	# Remember whether Caddy was off before, so "unconfigure" can turn it off again.
 	if ! systemctl is-enabled --quiet caddy.service 2>/dev/null; then
 		touch "$CADDY_MARK"
+	fi
+	if [ "$first_setup" = 1 ] && systemctl is-enabled --quiet headscale.service 2>/dev/null; then
+		touch "$HEADSCALE_KEEP"
 	fi
 	systemctl enable headscale.service caddy.service >/dev/null 2>&1
 	systemctl restart headscale.service
@@ -326,15 +346,17 @@ valid_domain() {
 	[ "${#1}" -le 253 ] && [[ "$1" =~ ^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]([a-z0-9-]{0,61}[a-z0-9])?$ ]]
 }
 
-# Rewrite /etc/hosts atomically, keeping its owner and mode.
+# Rewrite /etc/hosts atomically, keeping its owner and mode. A symlinked
+# /etc/hosts is written through to its target, never replaced by a file.
 write_hosts() {
-	local tmp
-	tmp="$(mktemp /etc/.hosts.XXXXXX)" || finish error 1
+	local tmp target
+	target="$(readlink -f -- "$HOSTS")" || finish error 1
+	tmp="$(mktemp "${target%/*}/.hosts.XXXXXX")" || finish error 1
 	cat >"$tmp" || {
 		rm -f "$tmp"
 		finish error 1
 	}
-	if ! { chmod --reference="$HOSTS" "$tmp" && chown --reference="$HOSTS" "$tmp" && mv -f "$tmp" "$HOSTS"; }; then
+	if ! { chmod --reference="$target" "$tmp" && chown --reference="$target" "$tmp" && mv -f "$tmp" "$target"; }; then
 		rm -f "$tmp"
 		finish error 1
 	fi
@@ -379,9 +401,22 @@ cmd_unconfigure() {
 		systemctl reload-or-restart caddy.service >/dev/null 2>&1 || true
 	fi
 	if [ -f "$BACKUP" ]; then
-		cp -p "$BACKUP" "$CONFIG" && rm -f "$BACKUP"
+		# Changes made after setup are kept beside it, then the original goes back.
+		cp -p "$CONFIG" "$CONFIG.brp-before-undo" 2>/dev/null
+		tmp="$(mktemp /etc/headscale/.config.XXXXXX)" || finish error 1
+		if cp -p "$BACKUP" "$tmp" && mv -f "$tmp" "$CONFIG"; then
+			rm -f "$BACKUP"
+		else
+			rm -f "$tmp"
+			finish error 1
+		fi
 	fi
-	systemctl disable --now headscale.service >/dev/null 2>&1 || true
+	if [ -e "$HEADSCALE_KEEP" ]; then
+		rm -f "$HEADSCALE_KEEP"
+		systemctl restart headscale.service >/dev/null 2>&1 || true
+	else
+		systemctl disable --now headscale.service >/dev/null 2>&1 || true
+	fi
 	if [ -f "$CADDY_MARK" ]; then
 		systemctl disable --now caddy.service >/dev/null 2>&1 || true
 		rm -f "$CADDY_MARK"

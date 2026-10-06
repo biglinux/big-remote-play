@@ -290,9 +290,14 @@ active local session only):
   is replaced only if this helper wrote it. Otherwise nothing changes and the
   page says so;
 - the original configuration is kept once as `config.yaml.brp-backup`, and
-  **Remove the server setup** (Advanced) restores it, removes the site file,
-  stops Headscale, and disables Caddy again when it was the helper that
-  enabled it;
+  **Remove the server setup** (Advanced) restores it (the configuration as it
+  was then is kept as `config.yaml.brp-before-undo`), removes the site file,
+  and disables Headscale and Caddy again only when the helper was the one
+  that enabled them;
+- when Caddy refuses the HTTPS configuration, `config.yaml` goes back to how
+  it was before that attempt;
+- a symlinked `/etc/hosts` is written through to its target, never replaced by
+  a regular file;
 - files are written atomically with the original owner and mode;
 - the API key appears once on the helper's stdout as `BRP_DATA API_KEY=…`. The
   application never logs it, never shows it, and stores it only in the keyring.
