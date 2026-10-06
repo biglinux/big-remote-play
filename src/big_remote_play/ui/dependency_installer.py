@@ -264,6 +264,12 @@ class ComponentChecklist(Gtk.Box):
         self.button_label.set_label(_("Try again"))
         if outcome.cancelled:
             self._say(_("The installation was cancelled. Nothing was changed."))
+        elif outcome.unavailable:
+            self._say(
+                _("{packages} is not in this system's repositories. On Arch Linux it comes from the AUR or from its own project's package: install it that way, then try again.").format(
+                    packages=", ".join(outcome.unavailable)
+                )
+            )
         else:
             self._say(_("The installation did not finish. Check your internet connection and try again. The technical details say what happened."))
 
