@@ -41,6 +41,7 @@ Remote play on Linux usually means learning several unrelated tools before the f
 | 🔒 **Play across the internet** | Put both computers on the same private network with Tailscale, Headscale or ZeroTier. No open router ports needed. |
 | 🕵️ **Keep your desktop private** | **Game Window** streams one game through a private screen: notifications, chats and other windows never reach the other device. |
 | 🧭 **Guided from the first click** | **Start with the guided setup** asks what you want to do and where the other device is, installs what this computer needs without a terminal, then opens the right page. |
+| 🎮 **Controllers too** | Keyboard, mouse and controllers of the other device reach the game through Sunshine. While someone plays, **Share** says which controller arrived, or why none did. |
 | 🔊 **Sound that just works** | Game audio is sent, the microphone and voice calls are not. Everything returns to normal when sharing stops. |
 | 🛡️ **Respects what you have** | Existing Sunshine libraries, paired devices, Moonlight identity and VPN profiles are preserved, never overwritten. |
 | ♿ **Made for everyone** | Adaptive GTK 4/libadwaita interface for keyboard, touch, compact windows, high contrast, large text, RTL and CJK, in 32 languages. |
@@ -55,7 +56,7 @@ There is no proprietary game catalog and no requirement that the game came from 
     <td width="50%"><img src="docs/screenshots/connect.png" alt="Connect: three game computers as cards, two on the local network and one over Tailscale, with the Computers and Advanced options tabs"><br><sub><b>Connect</b>: pick the game computer; other ways to connect are on the <b>Advanced options</b> tab.</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/private-network.png" alt="Connect your devices: the Tailscale page, connected, with this computer and two other devices, their addresses and Copy IP"><br><sub><b>Connect your devices</b>: each method is a page with its own devices.</sub></td>
+    <td><img src="docs/screenshots/private-network.png" alt="Connect your devices: Tailscale, ZeroTier and Headscale as cards with a switch each; Tailscale is connected with this computer's address and 3 online of 3 devices"><br><sub><b>Connect your devices</b>: each method with a real switch, its address and its devices.</sub></td>
     <td><img src="docs/screenshots/image-settings.png" alt="Image and capture sheet with automatic capture and encoding, the video bitrate ceiling and screen and encoder settings"><br><sub><b>Image and capture</b>: automatic by default, detailed when you need it.</sub></td>
   </tr>
   <tr>
@@ -99,6 +100,10 @@ sudo pacman -S --needed sunshine        # on the computer that shares games
 sudo pacman -S --needed moonlight-qt    # on the computer that plays
 ```
 
+### Arch Linux
+
+Every dependency of the package is in Arch's own repositories; no extra repository has to be added. Moonlight, Tailscale, ZeroTier, Headscale and Caddy are in `extra`. Sunshine is not in the Arch repositories: on the computer that shares games, install it from the AUR or from Sunshine's own package first. **Install what's needed** says so instead of failing.
+
 ### Build the package from source
 
 `makepkg` run inside a checkout packages that checkout:
@@ -117,7 +122,7 @@ Set `BIGREMOTEPLAY_FROM_GIT=1` to build `ruscher/main` instead of the local chec
 nix run github:biglinux/big-remote-play
 ```
 
-The Nix expression does not include GStreamer; add its plugins to the environment to use Game Window there.
+The flake dates each build from its commit (`YY.MM.DD`), like the native package. It does not include GStreamer, so add its plugins to the environment to use Game Window. The PolicyKit helpers and their `/usr` paths are not installed by Nix: on NixOS the actions that need administrator rights (firewall rules, a Headscale server, host input priority) are unavailable.
 
 ### Run from a checkout
 
@@ -144,9 +149,9 @@ The Python wheel alone is not a complete desktop installation: icons, styles, tr
 | **Required** | `python` ≥ 3.11, `gtk4`, `libadwaita` ≥ 1.7, `python-gobject`, `libsecret`, `avahi`, `curl`, `iproute2`, `iputils`, `jq`, `polkit`, `hicolor-icon-theme` |
 | **Share** | `sunshine` |
 | **Connect** | `moonlight-qt` |
-| **Game Window** | Sunshine ≥ 2026.516; KDE Plasma (`kwin`) on Wayland or an X11 desktop with compositing; `gst-plugin-pipewire`, `gst-plugins-bad`, `gst-plugins-good` |
-| **Connect your devices** | one of `tailscale`, `zerotier-one`, or a Headscale server (`docker`, `docker-compose`, `miniupnpc` to host your own) |
-| **Optional** | `pamac-cli` (installing missing components without a terminal), `pciutils` (graphics detection), `flatpak` (VPN clients installed as Flatpaks) |
+| **Game Window** | Sunshine ≥ 2026.516; KDE Plasma (`kwin`, `xdg-desktop-portal-kde`) on Wayland or an X11 desktop with compositing; `gst-plugin-pipewire`, `gst-plugins-bad-libs`, `gst-plugins-good` |
+| **Connect your devices** | one of `tailscale` or `zerotier-one`; to host your own Headscale server on this computer, `headscale` and `caddy` (`miniupnpc` reads the router's public address) |
+| **Optional** | a Secret Service provider (GNOME Keyring or KWallet) for saved passwords, `libpulse` and `pipewire` for sound, `libkscreen` (screen mode and HDR for the connecting device), `pciutils` (graphics detection), `flatpak` (VPN clients installed as Flatpaks). Pamac is used to install components when it is present. |
 
 ## Game Window: share the game, not your desktop
 
@@ -194,7 +199,7 @@ Version fields in the checkout stay at `0.0.0`. Builds derive `YY.MM.DD` automat
 | Contributors | [Contributing](CONTRIBUTING.md), [development](docs/development.md), [documentation index](docs/README.md) |
 | UI contributors | [Visual design](docs/visual-design.md), [UI instructions](src/big_remote_play/ui/AGENTS.md) |
 | Maintainers | [Architecture](docs/architecture.md), [maintainer guide](docs/maintainer-guide.md), [release testing](docs/release-testing.md) |
-| Coding agents | [AGENTS.md](AGENTS.md) |
+| Repository rules | [AGENTS.md](AGENTS.md) and the nested `AGENTS.md` files |
 
 ## Contribute
 
@@ -219,9 +224,9 @@ Never publish passwords, API tokens, authentication keys, private certificates, 
 
 ## Credits
 
-Big Remote Play is made by the **[BigLinux](https://www.biglinux.com.br/) team** and its community.
+**Author / Lead Developer:** Rafael Ruscher
 
-- **Development:** Ruscher, Bruno Gonçalves, Tales A. Mendonça and everyone in the [contributors list](https://github.com/biglinux/big-remote-play/graphs/contributors).
+- **Development:** Rafael Ruscher, with contributions from Bruno Gonçalves, Tales A. Mendonça and everyone in the [contributors list](https://github.com/biglinux/big-remote-play/graphs/contributors), for the **[BigLinux](https://www.biglinux.com.br/)** community.
 - **Translations, testing and feedback:** the BigLinux community, whose real computers, games and networks shape every release.
 
 ## Acknowledgements
