@@ -711,7 +711,7 @@ class CaptureSupport:
 # GStreamer element → the Arch package that ships it (the name shown to the user).
 _ELEMENT_PACKAGES = {
     "pipewiresrc": "gst-plugin-pipewire",
-    "waylandsink": "gst-plugins-bad",
+    "waylandsink": "gst-plugins-bad-libs",
     "ximagesrc": "gst-plugins-good",
     "videocrop": "gst-plugins-good",
     "videoconvert": "gst-plugins-base",
