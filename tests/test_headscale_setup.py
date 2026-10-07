@@ -502,6 +502,11 @@ def test_the_local_api_follows_the_port_the_helper_chose():
     assert SetupProgress(local_listen="127.0.0.1:18080").local_api == "http://127.0.0.1:18080"
 
 
+@pytest.mark.parametrize("listen", ["198.51.100.7:8080", "example.test:8080", "127.0.0.1:0", "127.0.0.1:70000", "127.0.0.1:80/x", "127.0.0.1"])
+def test_the_local_api_never_leaves_this_computer(listen):
+    assert SetupProgress(local_listen=listen).local_api == "http://127.0.0.1:8080"
+
+
 @pytest.mark.parametrize(
     "shown",
     [
