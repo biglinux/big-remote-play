@@ -62,7 +62,7 @@ A method's page reads only its own provider:
 
 Names given with **Rename** on a method's page live in `history/devices.json` (0600, two allowlisted fields per device — a name and a favourite flag kept for compatibility — keyed by address); only this computer uses them.
 
-The sidebar's service cards and Home's two indicators read the same `ProviderStatus`; see [service status cards](service-status-cards.md).
+The sidebar's service cards and the **Connect your devices** Running/Stopped pill read the same `ProviderStatus`; see [service status cards](service-status-cards.md).
 
 ## State model
 

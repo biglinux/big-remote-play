@@ -23,6 +23,7 @@ from big_remote_play.private_network.models import ConnectionState, OverlayNetwo
 from big_remote_play.ui.main_window import MainWindow  # noqa: E402
 from big_remote_play.ui.network_common import state_label  # noqa: E402
 from big_remote_play.ui.service_status_card import checking_presentation, provider_presentation, streaming_presentation  # noqa: E402
+from big_remote_play.ui.task_activity import Activity, activity_text, connect_activity, network_activity, share_activity  # noqa: E402
 
 from test_private_network_ui import HubService  # noqa: E402
 from test_ui_task_flows import drain, ui as _ui_fixture  # noqa: E402
@@ -128,6 +129,52 @@ def test_ready_moonlight_and_stopped_sunshine_are_worded_differently():
     assert streaming_presentation("moonlight", True, False).text != streaming_presentation("sunshine", True, False).text
 
 
+# ── task states (pure) ──────────────────────────────────────────────────
+
+
+@pytest.mark.parametrize(
+    "kwargs,expected",
+    [
+        ({}, Activity.CHECKING),
+        ({"server_running": False}, Activity.STOPPED),
+        ({"server_running": True}, Activity.RUNNING),  # a server started elsewhere shares too
+        ({"sharing": True, "server_running": False}, Activity.RUNNING),
+        ({"transition": "starting", "server_running": False}, Activity.STARTING),
+        ({"transition": "stopping", "sharing": True, "server_running": True}, Activity.STOPPING),
+    ],
+)
+def test_share_state_follows_sharing_and_the_server(kwargs, expected):
+    assert share_activity(**kwargs) is expected
+
+
+@pytest.mark.parametrize(
+    "kwargs,expected",
+    [
+        ({}, Activity.CHECKING),
+        ({"client_running": False}, Activity.STOPPED),
+        ({"client_running": True}, Activity.RUNNING),
+        ({"streaming": True, "client_running": False}, Activity.RUNNING),
+        ({"connecting": True, "client_running": False}, Activity.CONNECTING),
+    ],
+)
+def test_connect_state_follows_the_stream_and_the_client(kwargs, expected):
+    assert connect_activity(**kwargs) is expected
+
+
+def test_network_state_needs_one_connected_method():
+    assert network_activity(None) is Activity.CHECKING
+    assert network_activity(None, read_failed=True) is Activity.STOPPED
+    assert network_activity([off(p) for p in ProviderId]) is Activity.STOPPED
+    assert network_activity([TAILSCALE_ON, off(ProviderId.ZEROTIER)]) is Activity.RUNNING
+    assert network_activity([status(ProviderId.ZEROTIER, ConnectionState.CONNECTING)]) is Activity.CONNECTING
+    assert network_activity([status(ProviderId.ZEROTIER, ConnectionState.NEEDS_AUTHORIZATION)]) is Activity.STOPPED
+
+
+def test_every_task_state_has_its_own_words():
+    words = [activity_text(activity) for activity in Activity]
+    assert all(words) and len(set(words)) == len(words)
+
+
 # ── which cards a task shows ────────────────────────────────────────────
 
 
@@ -138,9 +185,10 @@ def test_a_task_shows_its_streaming_card_and_every_network_method(page, streamin
     assert MainWindow._relevant_service_ids(window) == [streaming, *NETWORK]
 
 
-def test_home_shows_two_indicators_not_component_cards():
+def test_home_shows_no_service_cards():
+    """Home is two choices; the states sit next to Share, Connect and Connect your devices."""
     window = SimpleNamespace(current_page="welcome", _NETWORK_SERVICES=MainWindow._NETWORK_SERVICES)
-    assert MainWindow._relevant_service_ids(window) == ["summary-streaming", "summary-network"]
+    assert MainWindow._relevant_service_ids(window) == []
 
 
 @pytest.mark.parametrize("role,streaming", [("host", "sunshine"), ("guest", "moonlight")])
@@ -300,44 +348,161 @@ def test_cards_are_grouped_under_two_headings(live):
     assert headers["zerotier"] is None and headers["headscale"] is None
 
 
-def test_home_keeps_only_the_streaming_and_secure_connection_indicators(live):
+def test_home_shows_no_service_cards_in_the_sidebar(live):
     live.navigate_to("guest")
     live.navigate_to("welcome")
-    assert visible_cards(live) == ["summary-streaming", "summary-network"]
+    assert visible_cards(live) == []
+    assert "summary-streaming" not in live._status_rows and "summary-network" not in live._status_rows
 
 
-def test_indicators_say_the_streaming_state_and_the_connection_in_use(live):
-    live._home_role = "host"
-    live.update_dependency_ui(True, True, True, True)
-    live.update_server_status(True, False, False)
-    refresh_network(live, status(ProviderId.TAILSCALE, ConnectionState.CONNECTED, peers=()), off(ProviderId.ZEROTIER), off(ProviderId.HEADSCALE))
-    live.navigate_to("welcome")
-    settle(live)
-    streaming = card(live, "summary-streaming").presentation
-    network = card(live, "summary-network").presentation
-    assert (streaming.text, streaming.tone) == ("Sunshine · Running", "active")
-    assert (network.text, network.tone) == ("Tailscale · Connected", "active")
+@pytest.fixture
+def probes(live, monkeypatch):
+    """What pgrep would say about Sunshine and Moonlight, without running it."""
+    running = {"sunshine": False, "moonlight": False}
+    monkeypatch.setattr(live.system_check, "is_sunshine_running", lambda: running["sunshine"])
+    monkeypatch.setattr(live.system_check, "is_moonlight_running", lambda: running["moonlight"])
+    return running
 
 
-def test_secure_connection_indicator_names_the_next_step_when_nothing_is_connected(live):
+def probe_now(live) -> None:
+    live._probe_streaming(["sunshine", "moonlight"])
+    deadline = GLib.get_monotonic_time() + 3_000_000
+    while live._polling_status and GLib.get_monotonic_time() < deadline:
+        GLib.MainContext.default().iteration(False)
+    drain()
+
+
+def nav_state(live, page: str):
+    return live._task_activity.get(page)
+
+
+def test_every_task_says_stopped_when_nothing_runs(live, probes):
     refresh_network(live, off(ProviderId.TAILSCALE), off(ProviderId.ZEROTIER), off(ProviderId.HEADSCALE))
-    live.navigate_to("welcome")
+    probe_now(live)
+    for page in ("host", "guest", "vpn_selector"):
+        assert nav_state(live, page) is Activity.STOPPED
+        label = live._nav_state_labels[page]
+        assert label.get_label() == activity_text(Activity.STOPPED)
+        assert label.has_css_class("offline") and not label.has_css_class("online")
+
+
+@pytest.mark.parametrize("page", ["welcome", "host", "guest", "vpn_selector"])
+def test_running_states_come_from_the_backend_not_the_open_page(live, probes, page):
+    live.navigate_to(page)
+    probes["sunshine"] = True
+    probe_now(live)
+    refresh_network(live, TAILSCALE_ON, off(ProviderId.ZEROTIER), off(ProviderId.HEADSCALE))
+    assert nav_state(live, "host") is Activity.RUNNING
+    assert nav_state(live, "guest") is Activity.STOPPED  # Moonlight is not running
+    assert nav_state(live, "vpn_selector") is Activity.RUNNING
+    assert live._nav_state_labels["host"].has_css_class("online")
+
+    probes["sunshine"], probes["moonlight"] = False, True
+    probe_now(live)
+    refresh_network(live, off(ProviderId.TAILSCALE), off(ProviderId.ZEROTIER), off(ProviderId.HEADSCALE))
+    assert nav_state(live, "host") is Activity.STOPPED
+    assert nav_state(live, "guest") is Activity.RUNNING
+    assert nav_state(live, "vpn_selector") is Activity.STOPPED
+
+
+def test_any_connected_method_makes_connect_your_devices_running(live, probes):
+    refresh_network(live, off(ProviderId.TAILSCALE), ZEROTIER_ON, off(ProviderId.HEADSCALE))
+    assert nav_state(live, "vpn_selector") is Activity.RUNNING
+    refresh_network(live, status(ProviderId.TAILSCALE, ConnectionState.CONNECTING), off(ProviderId.ZEROTIER), off(ProviderId.HEADSCALE))
+    assert nav_state(live, "vpn_selector") is Activity.CONNECTING
+    # Signed out or waiting for approval is not running.
+    refresh_network(live, status(ProviderId.TAILSCALE, ConnectionState.NEEDS_AUTHENTICATION), off(ProviderId.ZEROTIER), off(ProviderId.HEADSCALE))
+    assert nav_state(live, "vpn_selector") is Activity.STOPPED
+
+
+def test_a_failed_network_read_never_claims_running(live, probes, monkeypatch):
+    class Broken(HubService):
+        def overview(self):
+            raise RuntimeError("tailscaled did not answer")
+
     settle(live)
-    network = card(live, "summary-network").presentation
-    assert network.tone != "active" and "Connected" not in network.text
+    live._network_statuses = {}
+    service_module.set_default_factory(lambda: Broken())
+    live._refresh_private_network_status()
+    settle(live)
+    assert nav_state(live, "vpn_selector") is Activity.STOPPED
 
 
-def test_activating_an_indicator_opens_its_task(live):
-    live._home_role = "guest"
-    live.update_dependency_ui(True, True, True, True)
-    live.navigate_to("welcome")
-    card(live, "summary-streaming").emit("activated")
-    drain()
-    assert live.current_page == "guest"
-    live.navigate_to("welcome")
-    card(live, "summary-network").emit("activated")
-    drain()
-    assert live.current_page == "vpn_selector"
+def test_sharing_started_and_stopped_here_updates_share_at_once(live, probes):
+    probe_now(live)
+    host = live.host_view
+    host._set_sharing_transition("starting")
+    assert nav_state(live, "host") is Activity.STARTING
+    assert live._nav_state_labels["host"].has_css_class("starting")
+    # The start worker finished: Running without waiting for the next probe.
+    host.sharing_transition = None
+    host.is_hosting = True
+    live._on_task_state_changed()
+    assert nav_state(live, "host") is Activity.RUNNING
+    host._set_sharing_transition("stopping")
+    assert nav_state(live, "host") is Activity.STOPPING
+    host.sharing_transition = None
+    host.is_hosting = False
+    live._on_task_state_changed()
+    assert nav_state(live, "host") is Activity.STOPPED
+
+
+def test_connecting_and_streaming_update_connect(live, probes):
+    probe_now(live)
+    guest = live.guest_view
+    guest.show_loading(True)
+    assert nav_state(live, "guest") is Activity.CONNECTING
+    guest.show_loading(False)
+    assert nav_state(live, "guest") is Activity.STOPPED
+    guest.is_connected = True
+    guest._announce_state()
+    assert nav_state(live, "guest") is Activity.RUNNING
+
+
+def test_task_state_is_announced_in_words(live, probes):
+    probes["sunshine"] = True
+    probe_now(live)
+    label = live._nav_state_labels["host"]
+    row = label.get_ancestor(Gtk.ListBoxRow)
+    assert row is not None
+    # The label is reinforcement; the row's description carries the state for screen readers.
+    assert label.get_accessible_role() == Gtk.AccessibleRole.PRESENTATION
+    assert label.get_label() == activity_text(Activity.RUNNING)
+
+
+def test_task_states_survive_the_sidebar_being_rebuilt(live, probes):
+    probes["sunshine"] = True
+    probe_now(live)
+    old = live._nav_state_labels["host"]
+    live._refresh_nav_list(select="host")
+    new = live._nav_state_labels["host"]
+    assert new is not old
+    assert new.get_label() == activity_text(Activity.RUNNING)
+
+
+def test_background_window_probes_nothing_again(live, probes, monkeypatch):
+    probe_now(live)
+    started = []
+    monkeypatch.setattr(live, "is_active", lambda: False)
+    monkeypatch.setattr(live, "_probe_streaming", lambda wanted: started.append(list(wanted)))
+    monkeypatch.setattr(live, "_refresh_private_network_status", lambda: None)
+    for _tick in range(6):
+        live.p_check()
+    assert all(wanted == [] for wanted in started)
+
+
+def test_streaming_components_are_probed_at_a_modest_pace(live, probes, monkeypatch):
+    probe_now(live)
+    live.navigate_to("host")
+    started = []
+    monkeypatch.setattr(live, "is_active", lambda: True)
+    monkeypatch.setattr(live, "_probe_streaming", lambda wanted: started.append(tuple(wanted)))
+    monkeypatch.setattr(live, "_refresh_private_network_status", lambda: None)
+    for _tick in range(6):
+        live.p_check()
+    # Share's own card every tick (3 s); Moonlight for Connect's state every third tick (9 s).
+    assert started.count(("sunshine",)) == 4
+    assert started.count(("sunshine", "moonlight")) == 2
 
 
 def test_connection_method_uses_the_same_state_words(ui):

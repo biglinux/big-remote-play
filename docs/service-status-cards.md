@@ -18,12 +18,8 @@ Streaming                         Secure connection
 - **Connect your devices** shows the same cards as Share and Connect: the
   streaming component of the remembered task (Sunshine or Moonlight) and
   Tailscale, ZeroTier and Headscale, each with its own state.
-- Home shows two indicators instead of cards: **Streaming** (the component of the remembered task, for example
-  *Sunshine · Running*) and **Secure connection** (the connected method, or
-  the one the guided setup would set up next, for example
-  *Tailscale · Connected* or *Tailscale · Not installed*). Selecting one opens
-  its task or Connect your devices. They use the same presentations as the
-  cards below.
+- Home shows no cards. The navigation entries above say whether each task is
+  active (see [task states](#task-states-in-the-navigation)).
 - Share shows Sunshine, Connect shows Moonlight, and both always show
   Tailscale, ZeroTier and Headscale in that order.
 - A card never appears or disappears because its service changed state. It
@@ -37,6 +33,34 @@ network card opens that method's page in **Connect your devices**
 (**Devices | Advanced**), which remembers Share or Connect and offers **Back
 to Share** or **Back to Connect** once the method works. Sign-in, approval
 and permission steps live on that page and are never duplicated in the card.
+
+## Task states in the navigation
+
+**Share**, **Connect** and **Connect your devices** carry a small pill with
+one word: **Running** or **Stopped**, and during a transition **Starting…**,
+**Stopping…** or **Connecting…** (**Checking…** before the first read). It is
+the task's real state on every page, never a consequence of the page that is
+open.
+
+| Entry | Running when | Transition |
+|---|---|---|
+| Share | this window shares, or the Sunshine probe finds a running server (one started elsewhere shares too) | **Starting…** / **Stopping…** while this window's start or stop worker runs |
+| Connect | this window streams, or the Moonlight probe finds Moonlight running | **Connecting…** while a connection attempt runs |
+| Connect your devices | at least one `ProviderStatus` is `CONNECTED` | **Connecting…** while one is `CONNECTING` and none is connected |
+
+A failed private-network read never claims **Running**. `ui/task_activity.py`
+(GTK-free) decides the state as an `Activity` value; only `activity_text`
+turns it into words, and logic never compares those words. The pill reuses the
+round `state-pill` of Share's own Running/Stopped label: success colour for
+running, accent for a transition, neutral for stopped, plus a 1 px outline in
+high contrast. The pill itself is hidden from assistive technologies; the
+navigation row's accessible description carries the page description and the
+state instead.
+
+Starts and stops made in this window update the pill at once:
+`HostView` and `GuestView` call their state listeners when sharing starts,
+stops or changes phase and when a connection attempt or a stream begins or
+ends. The probes below catch changes made outside Big Remote Play.
 
 ## Components
 
@@ -62,14 +86,16 @@ No second source of truth is created.
 - Sunshine and Moonlight: `SystemCheck` installed probes at startup, again
   whenever the window comes back to the front (at most every 10 s) and before
   a task whose program was missing opens; the running probe (`pgrep`) that
-  `MainWindow.p_check` runs every 3 s, only for the streaming card or
-  indicator of the visible page, and not while the window is in the
-  background.
+  `MainWindow.p_check` runs on a background thread every 3 s for the
+  streaming card of the visible page, and for both programs every third tick
+  (9 s) for the Share and Connect pills. One probe runs at a time, and none
+  while the window is in the background.
 - Network methods: `PrivateNetworkService.overview()` (`ProviderStatus` per
-  provider), read on a background thread when Share or Connect opens and then
-  every 6 s while one of them is visible. Overlapping reads are refused and
-  results arriving after the window closes are dropped. Tailscale and Headscale
-  share `tailscaled`; only the product that owns the daemon reports Connected.
+  provider), read on a background thread when a page opens and then every
+  6 s while the window is in front; the same read feeds the cards and the
+  Connect your devices pill. Overlapping reads are refused and results
+  arriving after the window closes are dropped. Tailscale and Headscale share
+  `tailscaled`; only the product that owns the daemon reports Connected.
 
 | Source | Card text | Tone |
 |---|---|---|

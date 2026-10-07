@@ -42,11 +42,12 @@ When a task needs a program this computer does not have yet, Big Remote Play say
 ## Share a game
 
 1. On Home, choose **Share** — the option that says this computer runs the game.
-2. In **Overview**, under **Source**, choose **Full Desktop**, **Game Window** (only one open game is sent, see below), or a game or app to start.
-3. Open **Image and capture** only when the default display, GPU, encoder or host video ceiling needs to change. If displays have the same name, choose **Identify monitors** to show 01, 02 and 03 on the physical screens; the chosen screen then appears in the **Image and capture** summary.
+2. In **Overview**, under **Source**, choose **Full Desktop**, **Game Window** (only one open game is sent, see below), or a game or app to start (**Steam**, **Lutris** or **Custom App**). Each source has its own icon.
+3. The **Image and capture** card below shows what the next session will use: **Screen**, **Encoding**, **Video limit**, **Compression**, **Priority**, and **HDR screen** or **Screen resolution** when they apply. These are the configured values, not measurements; the other computer asks for the resolution and frame rate when it connects. Choose **Configure** only when the display, GPU, encoder or video ceiling needs to change. If displays have the same name, choose **Identify monitors** to show 01, 02 and 03 on the physical screens; the chosen screen then appears on the card.
 4. Sound works without setup: the other computer hears what this computer plays. **Preferences → Audio** has **Test audio** and the options below.
 5. Start sharing and leave the game computer running.
 6. The first time a device connects, **New connection request** appears by itself: type the four digits the other computer shows and choose **Approve** (see [approve a new device](#approve-a-new-device)).
+7. Each time a device starts playing, a desktop notification says so, for example *Living Room TV connected* with *Connection: Tailscale* and *IP address: 100.64.0.2*. It appears once per connection; a device that disconnects and connects again is announced again.
 
 Opening Share does not start the server, install software or change network/firewall settings by itself.
 
@@ -61,7 +62,7 @@ Opening Share does not start the server, install software or change network/fire
 
 **Start sharing** stays unavailable until a game is chosen, so nothing else is ever shared instead. When the game switches between a window and fullscreen, or changes its resolution, the picture follows it; a game that opens a new window for that is found again, and Share says **Reconnecting to the game window…** meanwhile (the other device sees a black picture for a few seconds, never your desktop). If the game closes or crashes, or opens more than one window so that Big Remote Play cannot tell which one to show, sharing stops and says why; open the game and start again.
 
-While sharing, keep the game as the active window: keyboard and mouse input from the other device goes to the active window of this computer, and many games stop their sound while another window is active (measured with *Shadow of the Tomb Raider*: its sound stops as soon as it loses focus). Big Remote Play brings the game to the front when sharing starts and every time a device starts playing. Only the game's sound is sent: other programs, notifications and voice calls stay on this computer, which still hears everything. To send all of this computer's sound instead, turn off **Preferences → Audio → Send only the game's sound**. Game Window needs KDE Plasma on Wayland (or an X11 desktop with window effects on) and some GStreamer plugins; if anything is missing, the list says what to install. Details and limits are in [Game Window](game-window.md).
+While sharing, keep the game as the active window: keyboard and mouse input from the other device goes to the active window of this computer, and many games stop their sound while another window is active (measured with *Shadow of the Tomb Raider*: its sound stops as soon as it loses focus). Big Remote Play brings the game to the front when sharing starts and every time a device starts playing. Only the game's sound is sent: other programs, notifications and voice calls stay on this computer, which still hears everything (calls are sent too when **Voice calls** is on, and the microphone when **Microphone** is on). To send all of this computer's sound instead, turn off **Preferences → Audio → Send only the game's sound**. Game Window needs KDE Plasma on Wayland (or an X11 desktop with window effects on) and some GStreamer plugins; if anything is missing, the list says what to install. Details and limits are in [Game Window](game-window.md).
 
 While sharing, **3. Connect the other PC** also tells you, before any device waits:
 
@@ -101,7 +102,7 @@ While sharing, **Connected now** lists every device playing on this computer at 
 
 1. Ask the other person to start sharing.
 2. On Home, choose **Connect** — the option for playing on this device.
-3. Under **Computers**, choose the game computer: every computer found has its own card, two per line on a wide window. Its address is in the card's tooltip (*Available at 192.168.1.30*). Choosing it connects (*Connecting to Living room PC…*); **Stop** cancels.
+3. Under **Computers**, choose the game computer: every computer found has its own card, two per line on a wide window. Its address is in the card's tooltip (*Available at 192.168.1.30*). Choosing it connects (*Connecting to Living room PC…*); **Stop** cancels. Next to the search button, **Connect by IP address** opens **I know the IP address** directly; when no computer was found, the same button sits next to **Search again**.
 4. On the first connection, keep the Moonlight pairing window open while the sharing computer approves the code.
 
 Everything else is on the **Advanced options** tab: **Connect again** (recent computers), **Other ways to connect** (**I have a search code**, **I know the IP address**, **Connection history**) and **On this computer** (**Image**, **Audio**, **Input**, **Game PC and connection**). The address dialog and search-code dialog are separate because they solve different problems.
@@ -125,9 +126,13 @@ The word is always written next to its colour. The path (**Local network**, **Ze
 
 ## Services in the sidebar
 
-On Home the bottom of the sidebar shows two indicators: **Streaming** (for example *Sunshine · Running* or *Moonlight · Ready*) and **Secure connection** (for example *Tailscale · Connected*). Selecting one opens its task or **Connect your devices**.
+Next to **Share**, **Connect** and **Connect your devices**, the sidebar says whether each one is active, in words: **Running** or **Stopped**, and while it happens **Starting…**, **Stopping…** or **Connecting…**. The state is the real one, whatever page is open:
 
-On Share, Connect and **Connect your devices** the bottom of the sidebar shows (on Connect your devices, the streaming card is the one of your task), under **Streaming**, Sunshine (Share) or Moonlight (Connect), and under **Secure connection**, Tailscale, ZeroTier and Headscale. Each card always stays in its place and says its state in words: for example **Running**, **Stopped** or **Ready** for streaming, and **Connected**, **Not connected**, **Sign-in needed**, **Waiting for approval** or **Not installed** for a secure connection. A connected method also shows how many other devices are online (Tailscale, Headscale) or the network name (ZeroTier). Select a card to open its controls: Sunshine and Moonlight open their window with **Start** and **Stop**; Tailscale, ZeroTier and Headscale open their page in **Connect your devices**, which then offers **Back to Share** or **Back to Connect** (see [Connect your devices](#connect-your-devices)). Details in [service status cards](service-status-cards.md).
+- **Share** is running while this computer shares, including a Sunshine started outside Big Remote Play.
+- **Connect** is running while Moonlight is open or this computer plays from another one.
+- **Connect your devices** is running while at least one private network (Tailscale, ZeroTier or Headscale) is connected.
+
+Home shows no service cards. On Share, Connect and **Connect your devices** the bottom of the sidebar shows (on Connect your devices, the streaming card is the one of your task), under **Streaming**, Sunshine (Share) or Moonlight (Connect), and under **Secure connection**, Tailscale, ZeroTier and Headscale. Each card always stays in its place and says its state in words: for example **Running**, **Stopped** or **Ready** for streaming, and **Connected**, **Not connected**, **Sign-in needed**, **Waiting for approval** or **Not installed** for a secure connection. A connected method also shows how many other devices are online (Tailscale, Headscale) or the network name (ZeroTier). Select a card to open its controls: Sunshine and Moonlight open their window with **Start** and **Stop**; Tailscale, ZeroTier and Headscale open their page in **Connect your devices**, which then offers **Back to Share** or **Back to Connect** (see [Connect your devices](#connect-your-devices)). Details in [service status cards](service-status-cards.md).
 
 ## Pairing code versus search code
 
@@ -218,17 +223,20 @@ Displayed configuration is not a live measurement. Network ping is not end-to-en
 
 ## Audio behavior
 
-The other computer hears the sound this computer plays — games, the desktop and effects such as EasyEffects. **The microphone is not sent.** Voice chat keeps working in its own apps.
+The other computer hears the sound this computer plays — games, the desktop and effects such as EasyEffects. Two switches in **Preferences → Audio** decide the rest; both are off by default and are remembered:
 
-**Voice calls are not sent either.** A call app on this computer plays the voices of everyone in the call, including the person connecting, who would otherwise hear their own voice come back. While Discord, Zoom, Teams, Telegram, Fluxer or another call app plays here, the other computer receives every other sound without it, and this computer still hears the call and the game. **Voice calls** in the audio settings names the apps kept out. A call in a web browser cannot be separated from the rest of the browser's sound, so it is still sent. During the call, the other computer hears programs without the effects of EasyEffects or JamesDSP.
+- **Microphone**: off, the microphone is not sent and voice chat keeps working in its own apps. On, the other computer also hears this computer's default microphone while it plays. The microphone is mixed only into what is sent, never played on this computer's speakers. Use headphones here, or the microphone picks up the game and the other person hears it twice. The row names the microphone being sent, or says when none was found.
+- **Voice calls**: off, calls are kept out. A call app on this computer plays the voices of everyone in the call, including the person connecting, who would otherwise hear their own voice come back. While Discord, Zoom, Teams, Telegram, Fluxer or another call app plays here, the other computer receives every other sound without it, and this computer still hears the call and the game; the row names the apps kept out. On, calls are sent like any other sound (also with Game Window). A call in a web browser cannot be separated from the rest of the browser's sound, so it is always sent. While a call is kept out or the microphone is sent, the other computer hears programs without the effects of EasyEffects or JamesDSP.
+
+Both switches apply at once, also while sharing.
 
 - **Server output — Automatic — use the current output** (recommended): shares whatever output you are using. If you switch output during a stream, the stream follows. Nothing in the sound settings changes.
 - **Also play sound on this computer** (on by default): keeps the game audible here even when the connecting computer asks for silence on the game PC. Turn it off to make only the other computer hear the game; Sunshine then switches this computer's output to its own silent output during sessions and switches it back afterwards.
 - **Server output — a device**: always share that device (headphones, HDMI, Bluetooth). Sunshine makes it the output during the session, so it also plays here. Effect outputs are not listed; use Automatic for them.
 - **Sound for the other computer** (and **Sound** under *Sharing now* on Overview) says, from what the sound system and Sunshine report, whether this computer's sound is being sent, or why not. If Sunshine's recording was muted or turned down in a mixer, Big Remote Play turns it back up and says so.
-- **Test audio** plays a short tone and says whether it reached the sound that is shared and, while a device is connected, whether Sunshine is recording it. **Technical audio details** shows what is recorded right now, Sunshine's recording level, what Sunshine's log says, the default microphone, the line **Microphone sent to Sunshine: No** and the calls kept out of the stream.
+- **Test audio** plays a short tone and says whether it reached the sound that is shared and, while a device is connected, whether Sunshine is recording it. **Technical audio details** shows what is recorded right now, Sunshine's recording level, what Sunshine's log says, the default microphone, the line **Microphone sent to Sunshine: No** (Sunshine itself never records a microphone; the **Microphone** switch mixes it in instead) and the calls kept out of the stream.
 
-Changes apply the next time you start sharing. The volume on this computer does not change the volume heard on the other computer.
+Changes to the output and to **Also play sound on this computer** apply the next time you start sharing. The volume on this computer does not change the volume heard on the other computer.
 
 ## Direct public access without a VPN
 

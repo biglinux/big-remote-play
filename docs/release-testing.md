@@ -81,6 +81,24 @@ changing output during a stream. Test Steam Remote Play Together with sharing ac
 kill Sunshine during a host-muting session and check that the next start restores
 the output. **Microphone sent to Sunshine** must read **No** throughout.
 
+With **Microphone** on, a real second computer must hear this computer's
+default microphone while playing and this computer's speakers must not play
+it; check with headphones and without (echo), with a USB headset plugged in
+during the session and with no microphone at all. With **Voice calls** on, a
+Discord or Zoom call must reach the other computer, also with Game Window;
+turning either switch off during the session must remove it within a second.
+Both choices must survive closing and reopening Big Remote Play.
+
+For the sidebar states, start and stop sharing, a Moonlight stream and each
+private network both from Big Remote Play and from outside it (`systemctl
+--user start sunshine`, `moonlight-qt`, `tailscale up`/`down`): **Share**,
+**Connect** and **Connect your devices** must say **Running** and **Stopped**
+within about 10 s on every page, and never only because a page is open. For
+connection notifications, connect a real Moonlight from the local network and
+over Tailscale, stay connected for several minutes, disconnect and reconnect:
+one notification per connection, with the device name, the path and the
+address; none while the window is opened during a stream.
+
 For Game Window sound, share a game that mutes itself in the background (for
 example *TMNT: Shredder's Revenge* through Heroic/Wine) to a real second
 computer: the sound must stay continuous for the whole session while nobody

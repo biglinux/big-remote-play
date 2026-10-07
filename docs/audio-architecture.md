@@ -4,11 +4,11 @@ How the game PC's sound reaches the other computer, what Big Remote Play changes
 
 ## The one rule
 
-**The other computer hears what this computer plays. The microphone is not part of the stream.**
+**The other computer hears what this computer plays. The microphone is not part of the stream unless the person turns on Microphone.**
 
-Sunshine records the *monitor* of an output — a copy of the sound going to a device — and never a microphone, line-in or other input. Big Remote Play never configures a microphone for Sunshine, never loops a microphone into an output and never enables microphone monitoring. Voice chat keeps working in its own apps; it is not carried by Sunshine.
+Sunshine records the *monitor* of an output — a copy of the sound going to a device — and never a microphone, line-in or other input. Big Remote Play never configures a microphone for Sunshine, never loops a microphone into a device and never enables microphone monitoring. With **Preferences → Audio → Microphone** on (off by default), the default microphone is linked into Big Remote Play's own output, which Sunshine records as a monitor; see [Microphone and Voice calls](#microphone-and-voice-calls-the-persons-choice). Voice chat keeps working in its own apps either way.
 
-One kind of playback is kept out as well: a **voice call**. A call program plays the voices of everyone in the call, including the person connecting, so the monitor carried their own voice back to them. See [Voice calls](#voice-calls-stay-out-of-the-stream).
+One kind of playback is kept out as well, unless **Voice calls** is on: a **voice call**. A call program plays the voices of everyone in the call, including the person connecting, so the monitor carried their own voice back to them. See [Voice calls](#voice-calls-stay-out-of-the-stream).
 
 ## How Sunshine captures sound on Linux
 
@@ -82,6 +82,37 @@ Measured in the isolated instance (tone levels on Sunshine's capture; this compu
 | The call ended | −283 dB (none) | −8 dB | — ; capture back on the device monitor, output removed |
 
 Links carry `big-remote-play.owner=<session token>`. Their ids and exact port names are kept in the session record and are removed only while each id still joins the same two ports. Other programs' links, loopbacks and virtual outputs are never removed.
+
+## Microphone and Voice calls: the person's choice
+
+**Preferences → Audio** has two switches, both off by default and saved in the
+`host` settings (`audio_send_microphone`, `audio_send_calls`; only an explicit
+`true` turns one on). The start worker passes them to `AudioRoutingSession`,
+and a change while sharing calls `set_options` and asks the watcher for a
+check, so it applies within about half a second. They are stored in the
+session record too, so a window that adopts a running session after a crash
+keeps them (the switches on screen then win).
+
+- **Microphone.** While a device receives sound, the private output
+  `big-remote-play-stream` exists even without a call, every program that
+  reaches the recorded output is linked into it as for calls, and the output
+  ports of the **default input** are linked into it as well (a mono microphone
+  into both front channels), tagged with the session token. The input must be
+  a real source, never a monitor. Nothing links the microphone to a device, so
+  this computer never plays its own microphone; Sunshine still records a
+  monitor, so **Microphone sent to Sunshine** stays *No*. Without a microphone
+  the switch says so (`microphone-missing`); when PipeWire's graph cannot be
+  read, sound is sent without it (`microphone-not-sent`). The microphone also
+  hears this computer's speakers, so headphones avoid sending the game twice.
+- **Voice calls.** Call programs are no longer kept out: they are linked like
+  any other program, and in Game Window they are linked next to the game. With
+  no other reason for the private output, none is created and Sunshine records
+  the output directly.
+
+Turning either off removes its links at the next check; when nothing needs the
+private output any more, Sunshine is moved back to the output's monitor before
+the output is removed, as when a call ends. Covered by
+`tests/test_voice_calls_audio.py` and `tests/test_share_audio_choices.py`.
 
 ## Game Window: only the game's sound
 

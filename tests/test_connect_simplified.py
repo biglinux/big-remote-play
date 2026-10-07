@@ -104,3 +104,48 @@ def test_connect_does_not_repeat_the_internet_page(ui):
             stack.append(child)
             child = child.get_next_sibling()
     assert "Play over the internet" not in titles
+
+
+# ── IP shortcut next to Search again ───────────────────────────────────
+
+
+def _walk(widget):
+    child = widget.get_first_child()
+    while child is not None:
+        yield child
+        yield from _walk(child)
+        child = child.get_next_sibling()
+
+
+def test_ip_button_sits_next_to_search_again_and_opens_i_know_the_ip_address(ui):
+    guest = ui.guest_view
+    ui.navigate_to("guest")
+    assert guest.ip_button.get_parent() is guest.refresh_button.get_parent()
+    assert guest.ip_button.get_prev_sibling() is guest.refresh_button
+    # A compact button is named for screen readers and has a tooltip; it says "IP" next to its icon.
+    assert guest.ip_button.get_tooltip_text() == "Connect by IP address"
+    assert [label.get_label() for label in _walk(guest.ip_button) if isinstance(label, Gtk.Label)] == ["IP"]
+    guest.ip_button.emit("clicked")
+    drain()
+    # The same dialog as Advanced options → I know the IP address, not a copy of it.
+    assert ui.get_visible_dialog() is guest._address_dialog
+    assert guest.manual_ip_entry.is_ancestor(guest._address_dialog)
+    guest._address_dialog.close()
+    drain()
+    guest.address_row.emit("activated")
+    drain()
+    assert ui.get_visible_dialog() is guest._address_dialog
+
+
+def test_the_empty_list_offers_search_again_and_the_ip_address(ui):
+    guest = ui.guest_view
+    ui.navigate_to("guest")
+    empty = guest._build_discover_empty_state()
+    buttons = [widget for widget in _walk(empty) if isinstance(widget, Gtk.Button)]
+    labels = [" ".join(label.get_label() for label in _walk(button) if isinstance(label, Gtk.Label)) for button in buttons]
+    assert labels == ["Search again", "Connect by IP address"]
+    # One primary action: searching again stays the suggested one.
+    assert buttons[0].has_css_class("suggested-action") and not buttons[1].has_css_class("suggested-action")
+    buttons[1].emit("clicked")
+    drain()
+    assert ui.get_visible_dialog() is guest._address_dialog

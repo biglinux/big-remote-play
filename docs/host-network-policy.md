@@ -21,7 +21,7 @@ Automatic mode. Reapplying Automatic preserves that ceiling and the selected
 capture screen. Encoding priority, advertised codecs and FEC have a single
 mapping used both when saving and when the start worker snapshots settings.
 
-## Audio: the current output, never the microphone
+## Audio: the current output; the microphone only when chosen
 
 `audio_output_name=""` (**Automatic — use the current output**) leaves Sunshine's
 `audio_sink` unset, so Sunshine records the monitor of whatever output is current
@@ -44,6 +44,12 @@ default. Details and measurements: [audio architecture](audio-architecture.md).
 
 A third-party Moonlight client still decides whether it asks Sunshine to mute this
 computer; the setting above decides whether this computer keeps playing anyway.
+
+**Microphone** and **Voice calls** (both off by default) add to what is sent and
+apply at once, also while sharing: the default microphone is linked into the
+app's own output (never played here), and call programs stop being kept out.
+Sunshine's `audio_sink` is not changed by either. See
+[audio architecture](audio-architecture.md#microphone-and-voice-calls-the-persons-choice).
 
 ## UPnP is an attempt, not a connection test
 

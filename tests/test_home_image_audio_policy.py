@@ -73,8 +73,8 @@ def test_home_hides_working_component_details_but_explains_missing_ones(ui):
     ui.update_dependency_ui(True, True, True, True)
     assert not ui._role_card_ui["host"]["state"].get_visible()
     assert not ui._role_card_ui["guest"]["state"].get_visible()
-    # Only the two indicators; no per-service cards on Home.
-    assert [service for service, row in ui._status_rows.items() if row.get_visible()] == ["summary-streaming", "summary-network"]
+    # No per-service cards on Home: the tasks in the sidebar say their state.
+    assert [service for service, row in ui._status_rows.items() if row.get_visible()] == []
 
     ui.update_dependency_ui(False, True, True, True)
     assert ui._role_card_ui["host"]["state"].get_visible()
@@ -99,7 +99,7 @@ def test_home_card_does_not_start_a_service_or_install(ui, monkeypatch, role):
 
 def test_host_has_one_image_dialog_with_limits_and_capture(ui):
     h = ui.host_view
-    h.quality_summary_row.emit("activated")
+    h.quality_configure_button.emit("clicked")
     drain()
     assert ui.get_visible_dialog() is h.quality_sheet
     for row in (
@@ -142,8 +142,9 @@ def test_automatic_mode_preserves_explicit_video_ceiling_and_screen(ui):
     assert h._build_sunshine_config()["max_bitrate"] == 25000
     assert h._build_sunshine_config()["output_name"] == "DP-2"
     assert "Monitor 02: LG UltraGear (DP-2)" in h.auto_status_row.get_subtitle()
-    assert "Monitor 02: LG UltraGear (DP-2)" in h.quality_summary_row.get_subtitle()
-    assert "25" in h.quality_summary_row.get_subtitle()
+    assert h.quality_fact("screen") == "Monitor 02: LG UltraGear (DP-2)"
+    assert h.quality_fact("limit") == "25 Mbps"
+    assert "Monitor 02: LG UltraGear (DP-2)" in h._quality_summary()
 
 
 def test_saved_monitor_follows_connector_when_display_order_changes(ui):
