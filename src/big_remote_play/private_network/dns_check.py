@@ -33,25 +33,26 @@ NOERROR, NXDOMAIN = 0, 3
 
 # Cloudflare's published proxy ranges (https://www.cloudflare.com/ips/,
 # unchanged since 2021, checked 2026-10-06). An A/AAAA answer inside them
-# means the record is proxied (orange cloud).
+# means the record is proxied (orange cloud). These are published reference
+# data, never a destination (NOSONAR for the address-literal rule).
 CLOUDFLARE_RANGES = tuple(
     ipaddress.ip_network(net)
     for net in (
-        "173.245.48.0/20",
-        "103.21.244.0/22",
-        "103.22.200.0/22",
-        "103.31.4.0/22",
-        "141.101.64.0/18",
-        "108.162.192.0/18",
-        "190.93.240.0/20",
-        "188.114.96.0/20",
-        "197.234.240.0/22",
-        "198.41.128.0/17",
-        "162.158.0.0/15",
-        "104.16.0.0/13",
-        "104.24.0.0/14",
-        "172.64.0.0/13",
-        "131.0.72.0/22",
+        "173.245.48.0/20",  # NOSONAR
+        "103.21.244.0/22",  # NOSONAR
+        "103.22.200.0/22",  # NOSONAR
+        "103.31.4.0/22",  # NOSONAR
+        "141.101.64.0/18",  # NOSONAR
+        "108.162.192.0/18",  # NOSONAR
+        "190.93.240.0/20",  # NOSONAR
+        "188.114.96.0/20",  # NOSONAR
+        "197.234.240.0/22",  # NOSONAR
+        "198.41.128.0/17",  # NOSONAR
+        "162.158.0.0/15",  # NOSONAR
+        "104.16.0.0/13",  # NOSONAR
+        "104.24.0.0/14",  # NOSONAR
+        "172.64.0.0/13",  # NOSONAR
+        "131.0.72.0/22",  # NOSONAR
         "2400:cb00::/32",
         "2606:4700::/32",
         "2803:f800::/32",

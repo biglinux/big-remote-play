@@ -59,6 +59,7 @@ CADDY_MARK=/etc/headscale/.brp-enabled-caddy
 HEADSCALE_KEEP=/etc/headscale/.brp-headscale-was-enabled
 HOSTS=/etc/hosts
 HOSTS_MARK="# big-remote-play headscale"
+LOCAL_PORT=""
 LOCAL_LISTEN=""
 
 say() { printf '%s\n' "$1"; }
@@ -144,7 +145,7 @@ our_port() {
 wait_health() {
 	local _
 	for _ in $(seq 1 30); do
-		if curl -fsS --max-time 2 "http://${LOCAL_LISTEN}/health" >/dev/null 2>&1; then
+		if curl -fsS --max-time 2 "http://127.0.0.1:${LOCAL_PORT}/health" >/dev/null 2>&1; then
 			return 0
 		fi
 		sleep 1
@@ -195,7 +196,8 @@ cmd_configure() {
 		say "$(gettext 'No free local port was found for Headscale. Nothing was changed.')"
 		finish ports_busy 4
 	}
-	LOCAL_LISTEN="127.0.0.1:${listen_port}"
+	LOCAL_PORT="$listen_port"
+	LOCAL_LISTEN="127.0.0.1:${LOCAL_PORT}"
 	metrics="$(config_value metrics_listen_addr)"
 	grpc="$(config_value grpc_listen_addr)"
 	# The metrics and gRPC listeners move too, but only from their default

@@ -339,8 +339,16 @@ class SetupProgress:
 
     @property
     def local_api(self) -> str:
-        """The local server's own API address (loopback, plain HTTP)."""
-        return f"http://{self.local_listen}" if self.local_listen else LOCAL_API
+        """The local server's own API address (loopback, plain HTTP).
+
+        The helper only ever listens on ``127.0.0.1:<port>``; anything else in
+        the saved progress is ignored, so the API key never goes in clear text
+        to another host.
+        """
+        host, _, port = self.local_listen.rpartition(":")
+        if host == "127.0.0.1" and port.isdigit() and 0 < int(port) < 65536:
+            return f"http://127.0.0.1:{int(port)}"
+        return LOCAL_API
 
     @property
     def steps(self) -> tuple[str, ...]:

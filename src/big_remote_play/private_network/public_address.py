@@ -38,8 +38,10 @@ from .diagnostics import NetworkFacts, local_network_facts
 from .http import _default_transport
 
 STUN_SERVERS: tuple[tuple[str, int], ...] = (("stun.cloudflare.com", 3478), ("stun.l.google.com", 19302))
-HTTPS_IPV4: tuple[str, ...] = ("https://1.1.1.1/cdn-cgi/trace", "https://api.ipify.org?format=json")
-HTTPS_IPV6: tuple[str, ...] = ("https://[2606:4700:4700::1111]/cdn-cgi/trace", "https://api6.ipify.org?format=json")
+# Cloudflare's public resolver answers the trace over HTTPS with a valid
+# certificate for its IP; 100.64.0.0/10 is the RFC 6598 shared address space.
+HTTPS_IPV4: tuple[str, ...] = ("https://1.1.1.1/cdn-cgi/trace", "https://api.ipify.org?format=json")  # NOSONAR
+HTTPS_IPV6: tuple[str, ...] = ("https://[2606:4700:4700::1111]/cdn-cgi/trace", "https://api6.ipify.org?format=json")  # NOSONAR
 CACHE_SECONDS = 300.0
 TIMEOUT = 2.5
 
@@ -48,7 +50,7 @@ _BINDING_REQUEST = 0x0001
 _BINDING_SUCCESS = 0x0101
 _ATTR_MAPPED_ADDRESS = 0x0001
 _ATTR_XOR_MAPPED_ADDRESS = 0x0020
-_CGNAT = ipaddress.ip_network("100.64.0.0/10")
+_CGNAT = ipaddress.ip_network("100.64.0.0/10")  # NOSONAR
 _UPNP_EXTERNAL_RE = re.compile(r"ExternalIPAddress\s*=\s*([0-9a-fA-F.:]+)")
 _TRACE_IP_RE = re.compile(r"^ip=([0-9a-fA-F.:]+)\s*$", re.MULTILINE)
 _JSON_IP_RE = re.compile(r'"ip"\s*:\s*"([0-9a-fA-F.:]+)"')
