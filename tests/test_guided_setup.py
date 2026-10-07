@@ -17,9 +17,9 @@ from gi.repository import GLib, Gtk  # noqa: E402
 
 from big_remote_play.private_network import service as service_module  # noqa: E402
 from big_remote_play.private_network.models import ConnectionState, ProviderId, ProviderStatus, Recovery  # noqa: E402
-from big_remote_play.utils.connection_health import ConnectionInfo, Health, LinkSample, Quality, Transport  # noqa: E402
+from big_remote_play.utils.connection_health import ConnectionInfo, Health, Quality, Transport  # noqa: E402
 
-from test_private_network_ui import TS_CONNECTED, ZT_CONNECTED, HubService, texts  # noqa: E402
+from test_private_network_ui import ZT_CONNECTED, HubService, texts  # noqa: E402
 from test_ui_task_flows import drain, ui as _ui_fixture  # noqa: E402
 
 ui = _ui_fixture
@@ -140,11 +140,12 @@ def test_internet_without_any_connection_asks_how_with_a_recommendation(ui):
     assert "Recommended" in texts(options["Tailscale"])
     options["Tailscale"].emit("clicked")
     drain()
-    assert ui.current_page == "connect_private" and ui._vpn_choice == "tailscale"
-    assert ui._network_return_page == "guest"  # "Ready to play?" leads back to Connect
+    assert ui.current_page == "vpn_selector" and ui.provider_page.provider.value == "tailscale"
+    assert ui.network_navigation.get_visible_page() is ui.provider_page.setup_page
+    assert ui._network_return_page == "guest"  # "Back to Connect" once it works
 
 
-def test_a_connection_that_needs_one_step_hands_over_to_the_internet_page(ui):
+def test_a_connection_that_needs_one_step_hands_over_to_that_methods_page(ui):
     off = ProviderStatus(ProviderId.TAILSCALE, ConnectionState.DISCONNECTED, recovery=Recovery.RECONNECT)
     start(ui, HubService([off]))
     choose(ui, "Share my game")
@@ -152,7 +153,10 @@ def test_a_connection_that_needs_one_step_hands_over_to_the_internet_page(ui):
     assert wait_for(lambda: "Your secure connection is turned off" in texts(ui.home_navigation.get_visible_page()))
     buttons(ui, "Continue")[0].emit("clicked")
     drain()
-    assert ui.current_page == "vpn_selector"
+    assert ui.current_page == "vpn_selector" and ui.network_navigation.get_visible_page() is ui.provider_page
+    assert ui.provider_page.provider is ProviderId.TAILSCALE
+    assert wait_for(lambda: ui.provider_page.connection_label.get_label() == "Start")  # the one step, on that page
+    assert ui._network_return_page == "host"  # and Back to Share once it works
 
 
 def test_zerotier_in_the_guide_asks_only_for_the_code(ui, monkeypatch):
@@ -322,51 +326,6 @@ def test_share_lists_devices_connected_now_apart_from_paired_ones(ui):
 
 
 # ── Play over the internet: the connection in use ────────────────────────
-
-
-class LinkService(HubService):
-    def __init__(self, statuses, samples):
-        super().__init__(statuses)
-        self.samples = list(samples)
-
-    def link_sample(self, status):
-        return self.samples.pop(0) if len(self.samples) > 1 else self.samples[0]
-
-
-def test_internet_page_shows_the_connection_in_use_with_measured_stability(ui, monkeypatch):
-    from test_private_network_ui import hub
-
-    monkeypatch.setattr("big_remote_play.ui.remote_connection.read_interface_bytes", lambda prefixes: (1_000_000, 500_000))
-    page = hub(ui, LinkService([TS_CONNECTED], [LinkSample(18.0, "direct", "notebook")]))
-    assert wait_for(lambda: page.link_card.get_visible())
-    assert page.link_title.get_label() == "Tailscale"
-    for _ in range(3):
-        page._sample_link()
-        wait_for(lambda: not page._link_busy)
-    values = page.link_values
-    assert values["stability"].get_label() == "Stable · 18 ms"
-    assert values["path"].get_label() == "Direct connection"
-    assert "Mbps" in values["traffic"].get_label()
-    assert page._link_timer  # measuring while on screen
-    ui.navigate_to("host")
-    assert wait_for(lambda: not page._link_timer)  # and never after leaving
-
-
-def test_internet_page_says_when_there_is_nobody_to_measure(ui):
-    from test_private_network_ui import hub
-
-    page = hub(ui, LinkService([ZT_CONNECTED], [LinkSample(path="none")]))
-    assert wait_for(lambda: page.link_card.get_visible())
-    assert wait_for(lambda: page.link_values["stability"].get_label() == "No other device online to measure")
-
-
-def test_internet_page_hides_the_card_when_not_connected(ui):
-    from test_private_network_ui import hub
-
-    off = ProviderStatus(ProviderId.TAILSCALE, ConnectionState.DISCONNECTED, recovery=Recovery.RECONNECT)
-    page = hub(ui, LinkService([off], [LinkSample(path="none")]))
-    assert wait_for(lambda: page.plan.kind.value == "turned_off")
-    assert not page.link_card.get_visible() and not page._link_timer
 
 
 # ── ZeroTier: being on one network never hides joining another ───────────

@@ -22,7 +22,7 @@ from typing import Any
 
 from big_remote_play import paths
 from big_remote_play.utils.secret_store import SecretKey, SecretStore, SecretStoreUnavailable
-from big_remote_play.utils.secure_io import secure_write_text
+from big_remote_play.utils.secure_io import secure_write_text, set_aside_corrupt
 
 MASK = "••••••••"
 _MAX_SECRET_LENGTH = 4096
@@ -45,10 +45,13 @@ _LEGACY_KEYS = {CredentialKind.ZEROTIER_API_TOKEN: SecretKey("zerotier", "api_to
 
 # Recognisable prefixes of provisioning keys that must never be accepted as an
 # administrative credential (and vice versa).
-_PROVISIONING_PREFIXES = ("tskey-auth-",)
+# Headscale pre-auth keys start with hskey-auth- since 0.28 (older ones are
+# plain hex and cannot be told apart).
+_PROVISIONING_PREFIXES = ("tskey-auth-", "hskey-auth-")
 _EXPECTED_PREFIX = {
     CredentialKind.TAILSCALE_API_TOKEN: "tskey-api-",
     CredentialKind.TAILSCALE_OAUTH_CLIENT: "tskey-client-",
+    CredentialKind.HEADSCALE_API_KEY: "hskey-api-",
 }
 
 
@@ -87,7 +90,7 @@ def classify_secret(secret: str) -> str:
     value = (secret or "").strip()
     if value.startswith(_PROVISIONING_PREFIXES):
         return "auth_key"
-    if value.startswith("tskey-api-"):
+    if value.startswith(("tskey-api-", "hskey-api-")):
         return "api_token"
     if value.startswith("tskey-client-"):
         return "oauth_client"
@@ -149,9 +152,15 @@ class CredentialStore:
     def _load(self) -> dict[str, Any]:
         try:
             payload = json.loads(self.metadata_file.read_text(encoding="utf-8"))
-        except (OSError, ValueError):
+        except OSError:
             return {}
-        return payload if isinstance(payload, dict) else {}
+        except ValueError:  # malformed (UnicodeError too): kept aside, never overwritten
+            set_aside_corrupt(self.metadata_file)
+            return {}
+        if not isinstance(payload, dict):
+            set_aside_corrupt(self.metadata_file)
+            return {}
+        return payload
 
     def _save(self, payload: dict[str, Any]) -> None:
         secure_write_text(str(self.metadata_file), json.dumps(payload, indent=2, sort_keys=True) + "\n")

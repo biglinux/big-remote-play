@@ -111,10 +111,13 @@ def _provider_detail(status: ProviderStatus) -> str:
 class ServiceStatusCard(Adw.ActionRow):
     """A service, its state in words and one icon; activating opens its page."""
 
-    def __init__(self, service_id: str, title: str, icon_name: str, description: str = "", *, primary: bool = False):
+    def __init__(self, service_id: str, title: str, icon_name: str, description: str = "", *, primary: bool = False, tag: str = "", show_description: bool = False):
         super().__init__(title=title, use_markup=False)
         self.service_id = service_id
         self.description = description
+        self.tag = tag
+        # Where there is room (the internet page), the one-line summary is shown too.
+        self.show_description = show_description
         self.presentation: CardPresentation | None = None
         self.set_subtitle_lines(0)
         self.add_css_class("brp-service-card")
@@ -123,6 +126,13 @@ class ServiceStatusCard(Adw.ActionRow):
 
         # The same icon tile as the Connection method choices.
         self.add_prefix(icon_tile(icon_name))
+        if tag:
+            # "Recommended" / "Advanced": a hint, read before the state.
+            badge = Gtk.Label(label=tag, valign=Gtk.Align.CENTER)
+            badge.add_css_class("state-pill")
+            badge.add_css_class("caption")
+            badge.add_css_class("offline")
+            self.add_suffix(badge)
         self.state_icon = create_icon_widget(_IDLE_ICON[0], size=_IDLE_ICON[1], css_class="brp-service-state")
         self.state_icon.set_valign(Gtk.Align.CENTER)
         self.add_suffix(self.state_icon)
@@ -139,7 +149,8 @@ class ServiceStatusCard(Adw.ActionRow):
             return  # a periodic probe must not restart the state transition
         previous = self.presentation
         self.presentation = presentation
-        self.set_subtitle(f"{presentation.text}\n{presentation.detail}" if presentation.detail else presentation.text)
+        lines = [presentation.text, presentation.detail, self.description if self.show_description else ""]
+        self.set_subtitle("\n".join(line for line in lines if line))
         if previous is None or previous.tone != presentation.tone:
             for tone in TONES:
                 self.remove_css_class(tone)
@@ -147,7 +158,7 @@ class ServiceStatusCard(Adw.ActionRow):
             name, size = _TONE_ICONS.get(presentation.tone, _IDLE_ICON)
             set_icon(self.state_icon, name)
             self.state_icon.set_pixel_size(size)
-        parts = [presentation.text, presentation.detail, self.description]
+        parts = [self.tag, presentation.text, presentation.detail, self.description]
         self.update_property([Gtk.AccessibleProperty.DESCRIPTION], [". ".join(part for part in parts if part)])
 
 

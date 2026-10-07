@@ -70,13 +70,13 @@ def test_home_is_one_hero_with_the_guided_start_then_the_two_roles(ui):
 
 
 def test_home_hides_working_component_details_but_explains_missing_ones(ui):
-    ui.update_dependency_ui(True, True, True, True, True)
+    ui.update_dependency_ui(True, True, True, True)
     assert not ui._role_card_ui["host"]["state"].get_visible()
     assert not ui._role_card_ui["guest"]["state"].get_visible()
     # Only the two indicators; no per-service cards on Home.
     assert [service for service, row in ui._status_rows.items() if row.get_visible()] == ["summary-streaming", "summary-network"]
 
-    ui.update_dependency_ui(False, True, True, True, True)
+    ui.update_dependency_ui(False, True, True, True)
     assert ui._role_card_ui["host"]["state"].get_visible()
     # Words for the person, the product name for whoever needs it.
     assert "Sunshine" not in ui._role_card_ui["host"]["label"].get_text()
@@ -478,16 +478,22 @@ def test_direct_and_headscale_guides_are_distinct_and_read_only(ui, monkeypatch)
     drain()
 
 
-def test_provider_page_keeps_non_vpn_help_optional(ui):
+def test_connect_your_devices_keeps_non_vpn_help_secondary(ui):
     ui.navigate_to("vpn_selector")
     page = ui.remote_connection_page
-    rows = [w for w in walk(page.advanced_box) if isinstance(w, Adw.ActionRow) and w.get_title() == "Without a private network"]
-    assert len(rows) == 1
-    assert not rows[0].get_mapped()  # only in Advanced mode
-    page.advanced_row.set_active(True)
+    rows = [w for w in walk(page.advanced_group) if isinstance(w, Adw.ActionRow) and w.get_title() == "Without a private network"]
+    assert len(rows) == 1 and page.advanced_group.get_title() == "Advanced"
+    # Below the three methods, never among them.
+    siblings = []
+    child = page.cards_box.get_parent().get_first_child()
+    while child is not None:
+        siblings.append(child)
+        child = child.get_next_sibling()
+    assert siblings.index(page.cards_box) < siblings.index(page.advanced_group)
+    rows[0].emit("activated")
     drain()
-    assert rows[0].get_mapped()
-    page.advanced_row.set_active(False)
+    assert ui.network_navigation.get_visible_page().get_title() == "Direct connection with a domain"
+    assert ui.get_visible_dialog() is None
 
 
 def test_guide_links_pass_the_requesting_widget_for_wayland_activation(monkeypatch):

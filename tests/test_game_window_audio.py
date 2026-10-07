@@ -93,6 +93,25 @@ def test_only_the_games_sound_is_sent_and_nothing_is_moved(tmp_path):
     assert audio.stream_audio_state(status, 1) == audio.STREAM_SENDING
 
 
+def test_a_game_window_without_a_pid_still_sends_only_the_game(tmp_path):
+    """X11 windows without _NET_WM_PID: the game is found by name, and no
+    process family is read for PID 0."""
+    pulse = desktop_with_game()
+    asked: list[int] = []
+    session = AudioRoutingSession(
+        AudioManager(runner=pulse),
+        state_path=tmp_path / "audio-session.json",
+        game=GameScope(0, ("STREET FIGHTER™ V",)),
+        game_family=lambda pid: asked.append(pid) or frozenset(),
+    )
+    session.begin(AudioManager(runner=pulse).snapshot())
+    pulse.sunshine_starts_session(host_audio=True)
+    status = session.reconcile()
+    assert sent(pulse) == {"game"}
+    assert asked == []
+    assert status.game_only and status.game_separated
+
+
 def test_a_call_and_other_programs_stay_out_even_through_effects(tmp_path):
     pulse = desktop_with_game()
     pulse.playback.append(Stream(HDMI, dict(CALL, **{"application.process.id": "7000"})))
@@ -192,7 +211,10 @@ def test_an_adopted_session_keeps_sending_only_the_game(tmp_path):
     assert state["game"] == {"pid": GAME_PID, "names": ["StreetFighterV.exe"]}
     loaded = AudioRoutingSession.load(AudioManager(runner=pulse), tmp_path / "audio-session.json")
     assert loaded is not None and loaded.game == GameScope(GAME_PID, ("StreetFighterV.exe",))
-    assert GameScope.from_state({"pid": "4242"}) is None and GameScope.from_state({"pid": 1}) is None
+    assert GameScope.from_state({"pid": "4242"}) is None and GameScope.from_state({"pid": -1}) is None
+    # A window with no PID is still a game scope (names only), never "everything".
+    assert GameScope.from_state({"pid": 1}) == GameScope(0, ())
+    assert GameScope.from_state({"pid": 0, "names": ["STREET FIGHTER™ V"]}) == GameScope(0, ("STREET FIGHTER™ V",))
 
 
 def test_the_tone_test_says_the_tone_is_not_sent_in_game_only(tmp_path):

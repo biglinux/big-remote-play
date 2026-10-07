@@ -175,8 +175,24 @@ def test_services_start_only_after_the_component_is_really_there():
 
 def test_a_dismissed_password_dialog_is_a_cancellation_not_an_error():
     plan = deps.InstallPlan("helper", ("pkexec", "/h.sh", "sunshine"), ("sunshine",), ("sunshine",), ())
-    outcome = deps.run_install(plan, popen=lambda argv, **kwargs: FakeProcess([], 126), probe=lambda ids: [deps.ComponentState("sunshine", False)])
+    outcome = deps.run_install(plan, popen=lambda argv, **kwargs: FakeProcess([], 126), probe=lambda ids: [deps.ComponentState("sunshine", False)], resolve=lambda name: name)
     assert outcome.cancelled and not outcome.ok
+
+
+def test_a_package_no_repository_provides_is_reported_before_anything_runs():
+    """Sunshine on Arch Linux is in the AUR: pacman would only fail with
+    "target not found", which the page read as a network problem."""
+    plan = deps.InstallPlan("helper", ("pkexec", "/h.sh", "sunshine", "moonlight"), ("sunshine", "moonlight"), ("sunshine", "moonlight-qt"), ())
+    started: list[object] = []
+    outcome = deps.run_install(
+        plan,
+        popen=lambda argv, **kwargs: started.append(argv) or FakeProcess([], 0),
+        probe=lambda ids: [deps.ComponentState(i, False) for i in ids],
+        resolve=lambda name: "" if name == "sunshine" else name,
+    )
+    assert started == []
+    assert outcome.unavailable == ("sunshine",)
+    assert not outcome.ok and not outcome.cancelled
 
 
 def test_the_transaction_runs_without_a_terminal_or_a_shell():

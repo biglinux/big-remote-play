@@ -50,7 +50,7 @@ def ui(tmp_path, monkeypatch):
     import big_remote_play.ui.main_window as mw
 
     monkeypatch.setattr(mw, "VPN_CONFIG_FILE", str(tmp_path / "vpn.json"))
-    monkeypatch.setattr(MainWindow, "check_system", lambda self: self.update_dependency_ui(True, True, True, True, True))
+    monkeypatch.setattr(MainWindow, "check_system", lambda self: self.update_dependency_ui(True, True, True, True))
     monkeypatch.setattr(HostView, "detect_monitors", lambda self: [("Automatic", "auto")])
     monkeypatch.setattr(HostView, "detect_gpus", lambda self: [{"label": "Automatic", "encoder": "auto", "adapter": "auto"}])
     monkeypatch.setattr(HostView, "_ensure_sunshine_config", lambda self: None)
@@ -216,18 +216,20 @@ def test_connect_is_one_page_and_private_network_keeps_the_header_switcher(ui):
     assert not hasattr(guest, "method_stack")
     assert guest.connect_card.is_ancestor(guest)
 
-    # Network sub-pages are titled by the task and return to the hub with Back.
+    # A method is an ordinary page of Connect your devices: its tabs move to
+    # the header, Back returns to the list, and Connect is remembered.
     ui._vpn_choice = "tailscale"
     ui.navigate_to("create_private")
-    assert ui._header_context is None
-    assert ui.content_title.get_title() == "Network details"
-    assert ui.content_title.get_subtitle() == "Tailscale"
-    assert ui.network_back_button.get_visible()
+    page = ui.provider_page
+    assert ui.current_page == "vpn_selector" and page.provider.value == "tailscale"
+    assert ui._header_context == "network" and ui.header_view_switcher.get_stack() is page.view_stack
+    assert ui._network_return_page == "guest"
     ui.navigate_to("connect_private")
-    assert ui.content_title.get_title() == "Set up the connection"
+    assert ui.network_navigation.get_visible_page() is ui.provider_page.setup_page
+    assert ui.get_visible_dialog() is None
     ui.network_back_button.emit("clicked")
-    assert ui.current_page == "vpn_selector"
-    assert not ui.network_back_button.get_visible()
+    drain()
+    assert ui.network_navigation.get_visible_page() is ui.provider_page
 
 
 def _descendants(widget):
@@ -375,17 +377,6 @@ def test_network_helper_failure_reenables_connect_and_stops_spinner(ui, monkeypa
     assert not page._c_spinner.get_visible()
     assert page._c_lbl.get_label() == "Try again"
     assert not page._return_to_game.get_visible()
-
-
-def test_helper_failure_is_delivered_to_completion_callback(ui, monkeypatch):
-    import big_remote_play.ui.private_network_view as pnv
-
-    monkeypatch.setattr(pnv.threading, "Thread", InlineThread)
-    monkeypatch.setattr(pnv.subprocess, "Popen", Mock(side_effect=FileNotFoundError("pkexec")))
-    done = Mock(return_value=False)
-    pnv.run_helper_script("install-components.sh", [], on_text=Mock(), on_phase=Mock(), on_done=done)
-    drain()
-    done.assert_called_once_with(127, {})
 
 
 @pytest.mark.parametrize("network_id", ["", "abcdefghijklmnop", "a1b2c3d4", "a1b2c3d4e5f6a7b8;ls"])
@@ -586,18 +577,16 @@ def _wait_for(predicate, timeout=2.0):
 
 
 def test_my_network_without_a_client_explains_installation_and_shows_no_address(ui):
-    from big_remote_play.ui.network_dashboard import NetworkDashboardPage
+    from big_remote_play.ui.provider_page import ProviderPage
 
     ui._vpn_choice = "tailscale"
     ui.navigate_to("create_private")
-    page = ui.content_stack.get_child_by_name("create_private").get_child()
-    assert isinstance(page, NetworkDashboardPage)
+    page = ui.provider_page
+    assert isinstance(page, ProviderPage)
     # The hermetic service reports no client: the page must say so, not hang.
     assert _wait_for(lambda: page.status is not None)
-    assert page.status.state.value == "unavailable"
-    assert not page._return_to_game.get_visible()
-    # API/account/router administration is intentionally absent in simple mode.
-    assert not page._maintenance_group.get_visible()
+    assert page.state.key == "not_installed" and page.install_slot.get_visible()
+    assert not page.ready.get_visible() and not page.add_button.get_visible()
 
 
 def test_home_always_opens_the_connection_hub_first(ui):
@@ -736,8 +725,12 @@ def test_reused_network_page_updates_return_label_for_current_role(ui, monkeypat
     for role, title in (("host", "Share"), ("guest", "Connect")):
         ui.navigate_to(role)
         ui.navigate_to("connect_private")
-        page = ui.connect_private_view.get_child()
+        page = ui.provider_page.setup_page.get_child()
         assert page._return_to_game.get_first_child().get_subtitle() == title
+        # Ready to play? leaves the person on that task.
+        page.navigator.finish()
+        drain()
+        assert ui.current_page == role
 
 
 @pytest.mark.parametrize("installed", [True, False])
@@ -1063,3 +1056,20 @@ def test_game_window_sends_only_the_games_sound_unless_turned_off(ui, open_games
     host.audio_game_only_row.set_active(True)
     host._select_source("desktop")
     assert host._collect_hosting_config()["game_window"] is None  # Full Desktop sends everything
+
+
+def test_share_opens_while_sunshine_is_already_running(ui, monkeypatch):
+    """Reopening the app during a share: the page is built in the sharing state.
+
+    The audio row of Preferences used to update Overview's row before it
+    existed; the exception left the application running without a window.
+    """
+    monkeypatch.setattr(SunshineHost, "is_running", lambda self: True)
+    host = HostView()
+    try:
+        assert host.is_hosting
+        assert host.session_audio_row.get_subtitle()
+        assert host.audio_stream_row.get_subtitle()
+    finally:
+        host.is_hosting = False
+        host.cleanup()

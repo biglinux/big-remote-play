@@ -1,5 +1,7 @@
 # Your own Headscale server on a Linux VPS
 
+> In Big Remote Play, **Connect your devices → Headscale → Set up → Another server** checks your server step by step and shows these commands with your address already filled in. This page is the reference behind that [wizard](headscale-setup-wizard.md).
+
 A self-hosted control server for a private Tailscale-compatible network. Use this when you want full control instead of an account at Tailscale. Everything on this page is run **by you, on your server**; Big Remote Play never connects to a server over SSH or changes it.
 
 Checked against Headscale **v0.29.4** (released 2026-09-23) and its [official documentation](https://headscale.net/stable/). Commands and file names can change between versions: when they differ, the official documentation for your version wins.
@@ -59,13 +61,13 @@ sudo headscale users list
 sudo headscale apikeys create --expiration 90d
 ```
 
-In Big Remote Play open **Play over the internet → API access → Headscale**, enter `https://vpn.example.com` and paste the API key. **Test connection** should succeed. The API key manages the server; keep it only in the keyring and expire it with `headscale apikeys expire --prefix <prefix>` if it leaks.
+In Big Remote Play open **Connect your devices → Headscale → Advanced → API access**, enter `https://vpn.example.com` and paste the API key. **Test connection** should succeed. The API key manages the server; keep it only in the keyring and expire it with `headscale apikeys expire --prefix <prefix>` if it leaks.
 
 ## 5. Add computers
 
 On each computer, in Big Remote Play choose **Headscale → Join a network** and enter the server address. Without a key, a sign-in link appears on that computer; approve it:
 
-- in Big Remote Play on a computer that has the API key: **Play over the internet → Add a device or invite a player → Approve a waiting computer**, paste the link; or
+- in Big Remote Play on a computer that has the API key: **Connect your devices → Headscale → Add device → Approve a waiting computer**, paste the link; or
 - on the server: `sudo headscale auth register --auth-id hskey-authreq-… --user gaming`.
 
 Alternatively create a one-time pre-auth key (**Add device → Without a browser**, or `sudo headscale preauthkeys create --user <ID> --expiration 1h`). It is shown once; save it in a file, run `sudo tailscale up --login-server=https://vpn.example.com --auth-key=file:<file>`, then delete the file. Avoid reusable keys.

@@ -5,8 +5,12 @@ must not be world-readable. These helpers create the file mode 0o600 and tighten
 the containing directory to 0o700.
 """
 
+import logging
 import os
 import tempfile
+import time
+
+_log = logging.getLogger(__name__)
 
 
 def _secure_dir(path: str) -> None:
@@ -38,3 +42,19 @@ def secure_write_text(path: str, text: str) -> None:
         except OSError:
             pass
         raise
+
+
+def set_aside_corrupt(path) -> str | None:
+    """Rename a file that reads but does not parse to ``<name>.corrupt-<time>``.
+
+    Called before the defaults it fell back to are saved over it: the person
+    keeps the original to inspect or repair. Returns the new name, or None.
+    """
+    path = os.fspath(path)
+    target = f"{path}.corrupt-{int(time.time())}"
+    try:
+        os.replace(path, target)
+    except OSError:
+        return None
+    _log.warning("%s could not be read as settings; kept as %s", path, target)
+    return target

@@ -11,6 +11,7 @@ from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
 import logging
 import time
+from dataclasses import replace
 from types import SimpleNamespace
 
 from big_remote_play.integration_contracts import SUNSHINE_DEFAULT_BASE_PORT
@@ -28,12 +29,25 @@ from .history import SessionHistory
 from .http import ApiErrorKind, ApiResult, Transport, normalize_base_url
 from .tailscale_api import TailscaleApi
 from .zerotier_api import ZeroTierCentral
+from . import device_list
+from .cards import CardSummary, summarize
+from .device_list import DeviceListing
 from .models import ConnectionState, HostCandidate, HostDiagnosis, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus, Recovery
 
 _log = logging.getLogger("big-remoteplay")
 
+
+def _api_problem(result: ApiResult) -> str:
+    """A short, secret-free reason for the UI (the UI words it)."""
+    return result.error.value if result.error is not None else "failed"
+
+
 # systemctl returns once the unit runs; the client answers a moment later.
 SERVICE_ANSWER_SECONDS = 15.0
+
+# The cards refresh every few seconds; ZeroTier Central is asked at most this often.
+ZEROTIER_COUNT_SECONDS = 60.0
+_zerotier_counts: dict[str, tuple[float, DeviceListing]] = {}
 
 
 def _installed(check: Callable[[], bool]) -> bool:
@@ -122,22 +136,32 @@ class PrivateNetworkService:
     def _tailnet_owner(self, status: ProviderStatus) -> ProviderId:
         """Which product the *active* tailscaled profile belongs to.
 
-        Both products use one daemon. In order of authority: the provider Big
-        Remote Play recorded when it joined; the client's own control URL
-        (``*.tailscale.com`` is the Tailscale service, anything else is a
-        self-hosted Headscale); finally the MagicDNS suffix.
+        Both products use one daemon. The control server the client really
+        uses decides: ``*.tailscale.com`` is the Tailscale service, anything
+        else is a self-hosted Headscale. What Big Remote Play recorded when it
+        joined is only the fallback when the client cannot say (and it is
+        corrected when it contradicts the client); the MagicDNS suffix is the
+        last resort.
         """
         try:
             selected = self.manager.list_tailscale_profiles().selected
             recorded = self.manager._metadata()["tailscale_profiles"].get(selected.profile_id, {}) if selected else {}
         except Exception:
-            recorded = {}
+            selected, recorded = None, {}
         explicit = recorded.get("provider") if isinstance(recorded, dict) else None
-        if explicit in ("tailscale", "headscale"):
-            return ProviderId(explicit)
         control = self._tailscale_cli().control_url()
         if control:
-            return ProviderId.TAILSCALE if tailscale_provider.is_tailscale_control(control) else ProviderId.HEADSCALE
+            owner = ProviderId.TAILSCALE if tailscale_provider.is_tailscale_control(control) else ProviderId.HEADSCALE
+            if selected is not None and explicit != owner.value:
+                # A profile joined through the wrong page (a custom login server
+                # typed on the Tailscale page) is recorded right from now on.
+                try:
+                    self.manager.set_tailscale_metadata(selected.profile_id, provider=owner.value, login_server=control if owner is ProviderId.HEADSCALE else "")
+                except Exception:
+                    _log.debug("could not correct the recorded product of the Tailscale profile")
+            return owner
+        if explicit in ("tailscale", "headscale"):
+            return ProviderId(explicit)
         suffix = (status.network_name or "").lower()
         dns = status.self_device.dns_name.lower() if status.self_device else ""
         if suffix.endswith("ts.net") or dns.endswith(".ts.net"):
@@ -169,8 +193,23 @@ class PrivateNetworkService:
         owner = self._tailnet_owner(status)
         if owner is provider:
             return status
-        # The daemon is busy with the other product: this one is simply not in use.
-        return ProviderStatus(provider, ConnectionState.DISCONNECTED, technical_detail=f"tailscaled is using {owner.display_name}")
+        # The daemon is busy with the other product: this one is simply not in
+        # use. With an account of its own saved, Start switches to it.
+        saved = self._saved_profile(provider)
+        return ProviderStatus(provider, ConnectionState.DISCONNECTED, technical_detail=f"tailscaled is using {owner.display_name}", recovery=Recovery.RECONNECT if saved else None)
+
+    def _saved_profile(self, provider: ProviderId) -> str:
+        """A saved Tailscale-app account of ``provider`` (``""`` when none)."""
+        try:
+            profiles = self.manager.list_tailscale_profiles().profiles
+        except Exception:
+            return ""
+        wanted = provider.value
+        found = next((p for p in profiles if p.provider == wanted), None)
+        if found is None and provider is ProviderId.TAILSCALE:
+            # Accounts joined before Big Remote Play recorded the product.
+            found = next((p for p in profiles if not p.provider and not p.login_server), None)
+        return found.profile_id if found is not None else ""
 
     def overview(self) -> list[ProviderStatus]:
         with ThreadPoolExecutor(max_workers=3) as pool:
@@ -342,6 +381,120 @@ class PrivateNetworkService:
                 return False
             self._sleep(0.5)
         return True
+
+    def start(self, provider: ProviderId) -> bool:
+        """Start: the service if it is stopped, then a signed-in connection that was switched off.
+
+        Never signs in or joins anything: that is the method's Set up step.
+        """
+        status = self.status(provider)
+        if status.recovery is Recovery.START_SERVICE:
+            if not self.start_service(provider):
+                return False
+            status = self.status(provider)
+        if status.recovery is Recovery.RECONNECT and status.technical_detail.startswith("tailscaled is using"):
+            # Tailscale and Headscale share the Tailscale app: switch to this one's account.
+            profile = self._saved_profile(provider)
+            if not profile or self.manager.switch_tailscale_profile(profile).returncode != 0:
+                return False
+            status = self.status(provider)
+            if status.connected:
+                return True
+        if status.recovery is Recovery.RECONNECT:
+            return self.turn_on(provider)
+        return status.state is not ConnectionState.UNAVAILABLE
+
+    def stop(self, provider: ProviderId) -> bool:
+        """Stop: Tailscale/Headscale disconnect and stay signed in (``tailscale down``,
+        no password); ZeroTier's service stops, which disconnects all its networks."""
+        if provider is ProviderId.ZEROTIER:
+            return self.manager.stop_service("zerotier-one").returncode == 0
+        if self.status(provider).state not in (ConnectionState.CONNECTED, ConnectionState.CONNECTING, ConnectionState.NEEDS_AUTHORIZATION):
+            # The daemon belongs to the other product (Tailscale vs Headscale): not ours to stop.
+            return False
+        return self.manager.pause_tailscale().returncode == 0
+
+    # ── devices of one provider ────────────────────────────────────────────
+    def device_listing(self, provider: ProviderId, network_id: str = "") -> DeviceListing:
+        """This provider's devices only (one ZeroTier network at a time), never mixed."""
+        status = self.status(provider)
+        if provider is ProviderId.ZEROTIER:
+            return self._zerotier_listing(status, network_id)
+        api_devices = None
+        problem = ""
+        if status.connected:
+            if provider is ProviderId.HEADSCALE:
+                api = self.headscale_api() if self.capabilities(provider).can_manage_devices else None
+                if api is not None:
+                    nodes, result = api.nodes()
+                    api_devices, problem = (nodes, "") if result.ok else (None, _api_problem(result))
+            else:
+                api = self.tailscale_api()
+                if api is not None:
+                    found, result = api.list_devices()
+                    api_devices, problem = (found, "") if result.ok else (None, _api_problem(result))
+        return device_list.tailnet_listing(status, api_devices, api_problem=problem)
+
+    def _zerotier_listing(self, status: ProviderStatus, network_id: str = "") -> DeviceListing:
+        listing = device_list.zerotier_listing(status, network_id)
+        central = self.zerotier_central()
+        if central is None or not listing.network_id:
+            return listing
+        members, result = central.list_members(listing.network_id)
+        if not result.ok:
+            return replace(listing, problem=_api_problem(result))
+        return device_list.zerotier_listing(status, listing.network_id, members)
+
+    # ── the three cards of Connect your devices ────────────────────────────
+    def card_summaries(self, zerotier_network: str = "") -> list[CardSummary]:
+        """One summary per provider, each built from that provider alone."""
+        from .headscale_server import SetupStore
+
+        statuses = self.overview()
+        try:
+            setup = SetupStore().load()
+        except Exception:
+            setup = None
+        cards: list[CardSummary] = []
+        for status in statuses:
+            if status.provider is ProviderId.ZEROTIER:
+                listing = self._zerotier_card_listing(status, zerotier_network) if status.connected else None
+                cards.append(summarize(status, listing=listing, network_id=zerotier_network))
+            elif status.provider is ProviderId.HEADSCALE:
+                server = self.headscale_server() if status.installed else ""
+                started = setup is not None and setup.started and not setup.complete
+                cards.append(summarize(status, headscale_server=server, saved_profile=bool(self._saved_profile(status.provider)), setup_incomplete=started))
+            else:
+                cards.append(summarize(status, saved_profile=bool(self._saved_profile(status.provider))))
+        return cards
+
+    def _zerotier_card_listing(self, status: ProviderStatus, network_id: str) -> DeviceListing:
+        """Central's member list, remembered for a minute; never asked without a token."""
+        try:
+            has_token = self.has_credential(CredentialKind.ZEROTIER_API_TOKEN)
+        except Exception:
+            has_token = False
+        if not has_token:
+            return device_list.zerotier_listing(status, network_id)
+        chosen = device_list.zerotier_listing(status, network_id).network_id
+        cached = _zerotier_counts.get(chosen)
+        if cached is not None and self._clock() - cached[0] < ZEROTIER_COUNT_SECONDS:
+            return cached[1]
+        listing = self._zerotier_listing(status, chosen)
+        if not listing.problem:
+            _zerotier_counts[chosen] = (self._clock(), listing)
+        return listing
+
+    def remove_device(self, provider: ProviderId, device_id: str, network_id: str = "") -> ApiResult:
+        """Remove one device through the provider's API (only offered when it is configured)."""
+        if provider is ProviderId.ZEROTIER:
+            central = self.zerotier_central()
+            return central.remove_member(network_id, device_id) if central is not None else ApiResult(False, error=ApiErrorKind.AUTH)
+        if provider is ProviderId.HEADSCALE:
+            api = self.headscale_api()
+            return api.delete_node(device_id) if api is not None else ApiResult(False, error=ApiErrorKind.AUTH)
+        api = self.tailscale_api()
+        return api.delete_device(device_id) if api is not None else ApiResult(False, error=ApiErrorKind.AUTH)
 
     def _service_answers(self, provider: ProviderId) -> bool:
         try:

@@ -66,10 +66,6 @@ class SystemCheck:
         """Checks if Avahi is installed"""
         return shutil.which("avahi-browse") is not None
 
-    def has_docker(self) -> bool:
-        """Checks if Docker is installed"""
-        return shutil.which("docker") is not None
-
     def zerotier_cmd(self) -> list[str]:
         """Argv prefix to invoke the ZeroTier CLI (native or Flatpak)."""
         if shutil.which("zerotier-cli") is not None:
@@ -87,40 +83,11 @@ class SystemCheck:
         """Checks if Tailscale is installed (native or Flatpak)"""
         return shutil.which("tailscale") is not None or self.flatpak_app_id("tailscale") is not None
 
-    def check_all(self) -> dict:
-        """Checks all components"""
-        return {
-            "sunshine": self.has_sunshine(),
-            "moonlight": self.has_moonlight(),
-            "avahi": self.has_avahi(),
-            "docker": self.has_docker(),
-            "tailscale": self.has_tailscale(),
-            "zerotier": self.has_zerotier(),
-        }
-
     def is_sunshine_running(self) -> bool:
         """Checks if Sunshine process is running"""
         try:
             result = subprocess.run(["pgrep", "-x", "sunshine"], capture_output=True, timeout=2)
             return result.returncode == 0
-        except Exception:
-            return False
-
-    def is_docker_running(self) -> bool:
-        """Checks if Docker daemon is running"""
-        try:
-            return subprocess.run(["systemctl", "is-active", "--quiet", "docker"], timeout=5).returncode == 0
-        except Exception:
-            return False
-
-    def are_containers_running(self) -> bool:
-        """Checks if app containers (caddy, headscale) are running"""
-        try:
-            result = subprocess.run(["docker", "ps", "--format", "{{.Names}}"], capture_output=True, text=True, timeout=2)
-            if result.returncode == 0:
-                output = result.stdout.strip()
-                return "caddy" in output and "headscale" in output
-            return False
         except Exception:
             return False
 
@@ -193,18 +160,3 @@ class SystemCheck:
             return False, detail or _("Sunshine failed to report its version")
         except Exception as exc:
             return False, str(exc)
-
-    def get_moonlight_version(self) -> str:
-        """Gets Moonlight version"""
-        try:
-            # Try different variants
-            for cmd in ["moonlight-qt", "moonlight"]:
-                result = subprocess.run([cmd, "--version"], capture_output=True, text=True, timeout=2)
-
-                if result.returncode == 0:
-                    return result.stdout.strip()
-
-            return _("Unknown")
-
-        except Exception:
-            return _("Unknown")

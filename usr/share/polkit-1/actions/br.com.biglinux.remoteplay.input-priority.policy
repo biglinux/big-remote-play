@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "https://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+
+<!--
+  Host input priority (Big Remote Play → Share → Preferences).
+
+  Used only when the desktop user cannot open /dev/input itself. The helper
+  reads this computer's keyboards and mice to notice that someone here is
+  using them and holds Sunshine's virtual keyboard and mouse meanwhile. It
+  never reports keys, only that a pause started or ended: the same
+  information any Wayland client receives from the idle-notification
+  protocol. It takes a delay on stdin, writes no file and exits with its
+  caller.
+
+  Allowed without a password for the active local session, the one sitting at
+  this computer; refused for remote and inactive sessions.
+-->
+<policyconfig>
+  <vendor>BigLinux</vendor>
+  <vendor_url>https://www.biglinux.com.br</vendor_url>
+  <icon_name>br.com.biglinux.remoteplay</icon_name>
+
+  <action id="br.com.biglinux.remoteplay.input-priority">
+    <description>Give this computer's mouse and keyboard priority over a remote player</description>
+    <message>Authentication is required to give this computer's mouse and keyboard priority over a remote player</message>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/share/big-remote-play/scripts/input-priority-helper.sh</annotate>
+  </action>
+</policyconfig>

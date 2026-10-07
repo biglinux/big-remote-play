@@ -41,6 +41,7 @@ Remote play on Linux usually means learning several unrelated tools before the f
 | 🔒 **Play across the internet** | Put both computers on the same private network with Tailscale, Headscale or ZeroTier. No open router ports needed. |
 | 🕵️ **Keep your desktop private** | **Game Window** streams one game through a private screen: notifications, chats and other windows never reach the other device. |
 | 🧭 **Guided from the first click** | **Start with the guided setup** asks what you want to do and where the other device is, installs what this computer needs without a terminal, then opens the right page. |
+| 🎮 **Controllers too** | Keyboard, mouse and controllers of the other device reach the game through Sunshine. While someone plays, **Share** says which controller arrived, or why none did. |
 | 🔊 **Sound that just works** | Game audio is sent, the microphone and voice calls are not. Everything returns to normal when sharing stops. |
 | 🛡️ **Respects what you have** | Existing Sunshine libraries, paired devices, Moonlight identity and VPN profiles are preserved, never overwritten. |
 | ♿ **Made for everyone** | Adaptive GTK 4/libadwaita interface for keyboard, touch, compact windows, high contrast, large text, RTL and CJK, in 32 languages. |
@@ -55,7 +56,7 @@ There is no proprietary game catalog and no requirement that the game came from 
     <td width="50%"><img src="docs/screenshots/connect.png" alt="Connect: three game computers as cards, two on the local network and one over Tailscale, with the Computers and Advanced options tabs"><br><sub><b>Connect</b>: pick the game computer; other ways to connect are on the <b>Advanced options</b> tab.</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/private-network.png" alt="Play over the internet: ready over Tailscale with two devices online and the list of devices"><br><sub><b>Play over the internet</b>: one sentence and one button tell you what to do next.</sub></td>
+    <td><img src="docs/screenshots/private-network.png" alt="Connect your devices: Tailscale, ZeroTier and Headscale as cards with a switch each; Tailscale is connected with this computer's address and 3 online of 3 devices"><br><sub><b>Connect your devices</b>: each method with a real switch, its address and its devices.</sub></td>
     <td><img src="docs/screenshots/image-settings.png" alt="Image and capture sheet with automatic capture and encoding, the video bitrate ceiling and screen and encoder settings"><br><sub><b>Image and capture</b>: automatic by default, detailed when you need it.</sub></td>
   </tr>
   <tr>
@@ -76,7 +77,7 @@ There is no proprietary game catalog and no requirement that the game came from 
 
 **2. On the computer that will play** — open **Connect** and choose the game computer. The first time, Moonlight shows a four-digit pairing code, and the sharing computer shows **New connection request** by itself: type the code there and choose **Approve**.
 
-**3. When the computers are in different places** — open **Play over the internet**. **Connect your devices** looks at what already works and shows one sentence with one button: **Turn on**, **Fix**, **Sign in**, **Set up** or **Add a device or invite a player**. Not sure where to start? **Start with the guided setup** on Home asks two questions, prepares this computer and takes you there.
+**3. When the computers are in different places** — open **Connect your devices**. Choose **Tailscale** (recommended), **ZeroTier** or **Headscale**: each opens its own page with one button for the next step (**Install and continue**, **Set up**, **Sign in**, **Start**), its devices with **Copy IP**, and **Add device**. Not sure where to start? **Start with the guided setup** on Home asks two questions, prepares this computer and takes you there.
 
 > **Pairing code and search code are different.** A pairing code authorizes a device. A search code only helps find a Big Remote Play computer on a network that permits discovery.
 
@@ -99,6 +100,10 @@ sudo pacman -S --needed sunshine        # on the computer that shares games
 sudo pacman -S --needed moonlight-qt    # on the computer that plays
 ```
 
+### Arch Linux
+
+Every dependency of the package is in Arch's own repositories; no extra repository has to be added. Moonlight, Tailscale, ZeroTier, Headscale and Caddy are in `extra`. Sunshine is not in the Arch repositories: on the computer that shares games, install it from the AUR or from Sunshine's own package first. **Install what's needed** says so instead of failing.
+
 ### Build the package from source
 
 `makepkg` run inside a checkout packages that checkout:
@@ -117,7 +122,7 @@ Set `BIGREMOTEPLAY_FROM_GIT=1` to build `ruscher/main` instead of the local chec
 nix run github:biglinux/big-remote-play
 ```
 
-The Nix expression does not include GStreamer; add its plugins to the environment to use Game Window there.
+The flake dates each build from its commit (`YY.MM.DD`), like the native package. It does not include GStreamer, so add its plugins to the environment to use Game Window. The PolicyKit helpers and their `/usr` paths are not installed by Nix: on NixOS the actions that need administrator rights (firewall rules, a Headscale server, host input priority) are unavailable.
 
 ### Run from a checkout
 
@@ -144,9 +149,9 @@ The Python wheel alone is not a complete desktop installation: icons, styles, tr
 | **Required** | `python` ≥ 3.11, `gtk4`, `libadwaita` ≥ 1.7, `python-gobject`, `libsecret`, `avahi`, `curl`, `iproute2`, `iputils`, `jq`, `polkit`, `hicolor-icon-theme` |
 | **Share** | `sunshine` |
 | **Connect** | `moonlight-qt` |
-| **Game Window** | Sunshine ≥ 2026.516; KDE Plasma (`kwin`) on Wayland or an X11 desktop with compositing; `gst-plugin-pipewire`, `gst-plugins-bad`, `gst-plugins-good` |
-| **Play over the internet** | one of `tailscale`, `zerotier-one`, or a Headscale server (`docker`, `docker-compose`, `miniupnpc` to host your own) |
-| **Optional** | `pamac-cli` (installing missing components without a terminal), `pciutils` (graphics detection), `flatpak` (VPN clients installed as Flatpaks) |
+| **Game Window** | Sunshine ≥ 2026.516; KDE Plasma (`kwin`, `xdg-desktop-portal-kde`) on Wayland or an X11 desktop with compositing; `gst-plugin-pipewire`, `gst-plugins-bad-libs`, `gst-plugins-good` |
+| **Connect your devices** | one of `tailscale` or `zerotier-one`; to host your own Headscale server on this computer, `headscale` and `caddy` (`miniupnpc` reads the router's public address) |
+| **Optional** | a Secret Service provider (GNOME Keyring or KWallet) for saved passwords, `libpulse` and `pipewire` for sound, `libkscreen` (screen mode and HDR for the connecting device), `pciutils` (graphics detection), `flatpak` (VPN clients installed as Flatpaks). Pamac is used to install components when it is present. |
 
 ## Game Window: share the game, not your desktop
 
@@ -170,7 +175,7 @@ Games are listed by name from their process tree — Steam, Proton, Wine, Lutris
 | Streaming | [Sunshine](https://github.com/LizardByte/Sunshine) server (NVENC, VAAPI, Vulkan and software encoders) and [Moonlight Qt](https://github.com/moonlight-stream/moonlight-qt) client, configured through their native files and APIs |
 | Game Window | [xdg-desktop-portal](https://flatpak.github.io/xdg-desktop-portal/) ScreenCast, [KWin](https://invent.kde.org/plasma/kwin) scripting and a headless `kwin_wayland`, [PipeWire](https://pipewire.org/) DMA-BUF, [GStreamer](https://gstreamer.freedesktop.org/); EWMH through `libX11` on X11 |
 | Screen and colors | `kscreen-doctor` for HDR-to-SDR and per-session resolution, restored after every session |
-| Audio | PipeWire/PulseAudio through `pactl`: automatic output capture, voice calls kept out, loopbacks owned and removed by the app |
+| Audio | PipeWire/PulseAudio through `pactl` and `pw-link`: automatic output capture, voice calls kept out, PipeWire port links ("bridges") made by the app, which removes only what it created |
 | Networks | mDNS discovery with [Avahi](https://avahi.org/); [Tailscale](https://tailscale.com/), [Headscale](https://headscale.net/) and [ZeroTier](https://www.zerotier.com/) clients and APIs |
 | Security | Secret Service keyring (`libsecret`) for passwords and tokens, narrowly scoped PolicyKit helpers, ufw/firewalld checks, owner-only atomic writes |
 | Internationalization | gettext, 32 translated catalogs (distinct `pt`/`pt_BR` and `zh_CN`/`zh_TW`) |
@@ -192,9 +197,9 @@ Version fields in the checkout stay at `0.0.0`. Builds derive `YY.MM.DD` automat
 | Players and helpers | [User guide](docs/user-guide.md), [troubleshooting](docs/troubleshooting.md), [Game Window](docs/game-window.md) |
 | Playing over the internet | [Router, NAT and firewall](docs/router.md), [your own Headscale server](docs/vps-headscale.md), [Cloudflare](docs/cloudflare.md) |
 | Contributors | [Contributing](CONTRIBUTING.md), [development](docs/development.md), [documentation index](docs/README.md) |
-| UI contributors | [Iconography](docs/iconography.md), [UI instructions](src/big_remote_play/ui/AGENTS.md) |
+| UI contributors | [Visual design](docs/visual-design.md), [UI instructions](src/big_remote_play/ui/AGENTS.md) |
 | Maintainers | [Architecture](docs/architecture.md), [maintainer guide](docs/maintainer-guide.md), [release testing](docs/release-testing.md) |
-| Coding agents | [AGENTS.md](AGENTS.md) |
+| Repository rules | [AGENTS.md](AGENTS.md) and the nested `AGENTS.md` files |
 
 ## Contribute
 
@@ -219,9 +224,9 @@ Never publish passwords, API tokens, authentication keys, private certificates, 
 
 ## Credits
 
-Big Remote Play is made by the **[BigLinux](https://www.biglinux.com.br/) team** and its community.
+**Author / Lead Developer:** Rafael Ruscher
 
-- **Development:** Ruscher, Bruno Gonçalves, Tales A. Mendonça and everyone in the [contributors list](https://github.com/biglinux/big-remote-play/graphs/contributors).
+- **Development:** Rafael Ruscher, with contributions from Bruno Gonçalves, Tales A. Mendonça and everyone in the [contributors list](https://github.com/biglinux/big-remote-play/graphs/contributors), for the **[BigLinux](https://www.biglinux.com.br/)** community.
 - **Translations, testing and feedback:** the BigLinux community, whose real computers, games and networks shape every release.
 
 ## Acknowledgements

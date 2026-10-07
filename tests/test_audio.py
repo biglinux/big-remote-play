@@ -504,6 +504,28 @@ def test_sunshine_recording_a_microphone_is_moved_back_to_the_output_monitor(pul
     assert status.microphone_sent is False and "microphone-replaced" in status.notes
 
 
+def test_a_muted_microphone_recording_is_never_unmuted(pulse, manager, tmp_path):
+    """A saved level is restored only on a recording of an output: Sunshine
+    recording a muted microphone stays muted, and is moved to the monitor."""
+    session = session_for(manager, tmp_path)
+    session.begin(manager.snapshot())
+    pulse.capture.append(Stream(MIC, {"application.process.binary": "sunshine", "application.name": "sunshine", "media.name": "sunshine-record"}, muted=True))
+    session.reconcile()
+    assert ["set-source-output-mute", "800", "0"] not in pulse.writes
+    assert ["move-source-output", "800", f"{HDMI}.monitor"] in pulse.writes
+
+
+def test_a_microphone_recording_with_no_output_to_replace_it_is_muted(pulse, manager, tmp_path):
+    pulse.sinks = []  # nothing to record instead
+    session = session_for(manager, tmp_path)
+    session.begin(manager.snapshot())
+    pulse.capture.append(Stream(MIC, {"application.process.binary": "sunshine", "application.name": "sunshine", "media.name": "sunshine-record"}))
+    status = session.reconcile()
+    assert ["set-source-output-mute", "800", "1"] in pulse.writes
+    assert pulse.capture[0].muted is True
+    assert "microphone-muted" in status.notes
+
+
 def test_capture_follows_an_output_change_made_during_the_stream(pulse, manager, tmp_path):
     session = session_for(manager, tmp_path)
     session.begin(manager.snapshot())
@@ -800,7 +822,7 @@ def test_test_tone_plays_the_generated_tone_and_measures_the_recorded_monitor(pu
 
 # ------------------------------------------- Sunshine's recording level
 #
-# Measured on 2026-10-02 (docs/remote-audio-silence-investigation.md): the
+# Measured on 2026-10-02 (docs/audio-architecture.md#sunshines-recording-level): the
 # session manager saved mute=true at 62 % for application.name "sunshine" and
 # applied it to every new sunshine-record. The game played on this computer,
 # Sunshine opened the right monitor, and the other computer heard silence.

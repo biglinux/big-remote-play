@@ -19,19 +19,16 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Private-network architecture](private-network-architecture.md) — providers, capabilities, state model and upstream contracts.
 - [Private-network security](private-network-security.md) — credentials, privileges, legacy-file migration and validation.
 - [Video quality](video-quality.md) — the Sunshine → Moonlight pipeline, HDR screens, scaling, codecs and measured results.
-- [Game Window](game-window.md) — sharing one game window through a private screen: design, safety rules, limits and measurements.
-- [Connection status](connection-status.md) — who is connected now, quality thresholds, the real route and the internet-page measurements.
-- [Audio architecture](audio-architecture.md) — what Sunshine records, the bridges Big Remote Play owns, recovery and Steam coexistence.
+- [Game Window](game-window.md) — sharing one game window through a private screen: design, safety rules, following the game through fullscreen and new resolutions, limits and measurements.
+- [Host input priority](host-input-priority.md) — this computer's own mouse and keyboard pause the other device's; device classification, the grab, permissions and limits.
+- [Connection status](connection-status.md) — who is connected now, quality thresholds, the real route, the live latency chart and Share's connection history.
+- [Audio architecture](audio-architecture.md) — what Sunshine records, the bridges Big Remote Play owns, Sunshine's recording level, recovery and Steam coexistence.
 - [Translations](translations.md) — gettext workflow and regional catalog requirements.
-- [UX simplification audit](ux-simplification-audit.md) — what each screen shows first, what moved to secondary places, and why.
-- [Guided setup](guided-setup-redesign.md) — the questions, the ready step and the hand-over.
-- [Installing what a task needs](dependency-installer.md) — detection, Pamac/PolicyKit installation and the Sunshine detection fix.
-- [Pairing requests](pairing-ux.md) — what Sunshine can tell, the request dialog and its safety rules.
-- [Connection history](connection-history-fix.md) — the stored sessions of Share, the 7-day chart and the live latency chart.
-- [Game Window audio](window-audio-fix.md) — investigation of corrupted sound when sharing one game window.
-- [Remote audio silence](remote-audio-silence-investigation.md) — investigation of a session where the other computer received no sound while the game played on the game PC.
-- [Iconography](iconography.md) — native, symbolic and project icon rules.
-- [Gamer theme design](gamer-theme-design.md) — provider ownership, compatibility and visual tokens.
+- [Connect your devices](connect-your-devices.md) — one page per connection method (Devices | Advanced), the cards and their switches, device lists, removal capabilities and navigation without dialogs.
+- [Headscale setup wizard](headscale-setup-wizard.md) — this computer or another server, public IP and CGNAT, DigitalPlat and Cloudflare, HTTPS, keys, progress and checks.
+- [Installing what a task needs](dependency-installer.md) — detection, Pamac/PolicyKit installation and when the state is read again.
+- [Pairing requests](pairing-requests.md) — what Sunshine can tell, the request dialog and its safety rules.
+- [Visual design](visual-design.md) — the Gamer appearance, its tokens and accessibility, and the icon rules.
 - [Backup and restore](backup-restore.md) — storage inventory, archive format, validation, rollback and data ownership.
 - [Service status cards](service-status-cards.md) — stable Share/Connect service cards and their state contract.
 
@@ -40,7 +37,7 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [AGENTS.md](../AGENTS.md) — canonical repository instructions for coding agents and concise operational rules for maintainers.
 - [Maintainer guide](maintainer-guide.md) — issue triage, documentation ownership, repository hygiene and release preparation.
 - [Release acceptance](release-testing.md) — automated gates and mandatory target-machine checks.
-- [Private-network test matrix](private-network-test-matrix.md) — what is unit tested, simulated or verified on real services.
+- [Private-network testing](private-network-testing.md) — what is unit tested, simulated or verified on real services.
 - [Audio testing](audio-testing.md) — measured Sunshine/PipeWire behavior, automated coverage and pending hardware tests.
 
 ## Documentation rules

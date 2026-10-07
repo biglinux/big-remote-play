@@ -23,8 +23,8 @@ from big_remote_play.utils.i18n import _
 from big_remote_play.utils.secret_store import SecretStoreUnavailable
 from big_remote_play.utils.uri import open_uri
 
-from .components import content_dialog, note
-from .network_common import RowGroup, Worker, api_error_message, confirm, loading_row, message_row, technical_detail
+from .components import content_dialog, content_page, note
+from .network_common import RowGroup, Worker, api_error_message, confirm, loading_row, message_row, push_page, technical_detail
 
 ZEROTIER_TOKEN_HELP = "https://docs.zerotier.com/tokens/"
 TAILSCALE_KEYS_PAGE = "https://login.tailscale.com/admin/settings/keys"
@@ -43,8 +43,20 @@ def credential_error_message(error: CredentialError) -> str:
 
 
 class ApiAccessDialog:
-    def __init__(self, parent: Gtk.Widget, service: PrivateNetworkService, *, show_toast: Callable[[str], None], on_changed: Callable[[], None] | None = None, focus: str = "") -> None:
+    """API access as a sheet, or as a page of ``navigation`` (Connect your devices)."""
+
+    def __init__(
+        self,
+        parent: Gtk.Widget,
+        service: PrivateNetworkService,
+        *,
+        show_toast: Callable[[str], None],
+        on_changed: Callable[[], None] | None = None,
+        focus: str = "",
+        navigation: Adw.NavigationView | None = None,
+    ) -> None:
         self.parent = parent
+        self.navigation = navigation
         self.service = service
         self.show_toast = show_toast
         self.on_changed = on_changed or (lambda: None)
@@ -68,11 +80,25 @@ class ApiAccessDialog:
         first = sections.pop(focus, None)
         for group in ([first] if first is not None else []) + list(sections.values()):
             content.append(group)
-        self.dialog = content_dialog(_("API access"), content, description=_("Credentials are kept in the system keyring. They are never shown again after saving."), width=720, height=680)
-        self.dialog.connect("closed", lambda *_args: self.worker.close())
+        description = _("Credentials are kept in the system keyring. They are never shown again after saving.")
+        self.dialog: Adw.Dialog | None = None
+        self.page: Adw.NavigationPage | None = None
+        if navigation is None:
+            dialog = content_dialog(_("API access"), content, description=description, width=720, height=680)
+            dialog.connect("closed", lambda *_args: self.worker.close())
+            self.dialog = dialog
+        else:
+            self.page = content_page(_("API access"), content, description=description, tag="api-access")
+
+    @property
+    def widget(self) -> Gtk.Widget:
+        return self.page if self.page is not None else self.dialog  # type: ignore[return-value]
 
     def present(self) -> None:
-        self.dialog.present(self.parent)
+        if self.navigation is not None and self.page is not None:
+            push_page(self.navigation, self.page, on_closed=self.worker.close)
+        elif self.dialog is not None:
+            self.dialog.present(self.parent)
         self.refresh()
 
     # ── sections ───────────────────────────────────────────────────────────
@@ -340,7 +366,7 @@ class ApiAccessDialog:
             self.service.credentials.remove(kind, scope)
 
         confirm(
-            self.dialog,
+            self.widget,
             _("Remove this credential?"),
             _("Big Remote Play will stop managing this network. The credential is not revoked at the provider; revoke it there if it may have leaked."),
             _("Remove credential"),

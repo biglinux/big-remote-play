@@ -14,7 +14,7 @@ from gi.repository import Adw  # type: ignore
 
 from big_remote_play.utils.i18n import _
 from big_remote_play.utils.uri import open_uri
-from .components import action_row, preferences_dialog
+from .components import action_row, preferences_dialog, preferences_page
 
 SUNSHINE_NETWORK_DOCS = "https://docs.lizardbyte.dev/projects/sunshine/latest/md_docs_2configuration.html#upnp"
 MOONLIGHT_SETUP_DOCS = "https://github.com/moonlight-stream/moonlight-docs/wiki/Setup-Guide"
@@ -36,7 +36,14 @@ def _link(title: str, url: str) -> Adw.ActionRow:
     return row
 
 
-def build_direct_internet_dialog() -> Adw.PreferencesDialog:
+def _sheet(as_page: bool, title: str, groups: list[Adw.PreferencesGroup], *, description: str = "", height: int = 520) -> Adw.PreferencesDialog | Adw.NavigationPage:
+    """A guide as a sheet, or as a page of Connect your devices (no dialogs for navigation there)."""
+    if as_page:
+        return preferences_page(title, groups, description=description)
+    return preferences_dialog(title, groups, description=description, height=height)
+
+
+def build_direct_internet_dialog(*, as_page: bool = False) -> Adw.PreferencesDialog | Adw.NavigationPage:
     """Public DNS and direct Sunshine access — deliberately NOT a VPN guide."""
     warning = _section(
         _("More exposed than a private VPN"),
@@ -78,7 +85,8 @@ def build_direct_internet_dialog() -> Adw.PreferencesDialog:
             "Pair the devices on a trusted network first. Start sharing, then open Connect → I know the IP address and enter the domain name without https://. Use the configured port if it differs from the default. Test from outside your home network. Remove public port mappings when they are no longer needed."
         ),
     )
-    return preferences_dialog(
+    return _sheet(
+        as_page,
         _("Direct connection with a domain"),
         [warning, connection, domain, dns, ports, play],
         description=_(
@@ -88,12 +96,12 @@ def build_direct_internet_dialog() -> Adw.PreferencesDialog:
     )
 
 
-def build_headscale_hosting_dialog() -> Adw.PreferencesDialog:
+def build_headscale_hosting_dialog(*, as_page: bool = False) -> Adw.PreferencesDialog | Adw.NavigationPage:
     """Self-hosting a control server still creates a private Tailscale network."""
     role = _section(
         _("This still creates a VPN"),
         _(
-            "Headscale is a self-hosted control server for a private network. Its domain points to that control server, not directly to the game stream. For direct game access without a VPN, use the separate guide on the provider selection page."
+            "Headscale is a self-hosted control server for a private network. Its domain points to that control server, not directly to the game stream. For direct game access without a VPN, use the separate guide on the Connect your devices page."
         ),
     )
     needs = _section(
@@ -129,10 +137,11 @@ def build_headscale_hosting_dialog() -> Adw.PreferencesDialog:
     join = _section(
         _("5. Join the private network on every computer"),
         _(
-            "Choose Headscale → Join a network, enter the server address, and approve each computer from Add device. Once the computers can reach one another privately, share on the game computer and connect using its private address."
+            "Open Connect your devices → Headscale → Set up, enter the server address, and approve each computer from Add device. Once the computers can reach one another privately, share on the game computer and connect using its private address."
         ),
     )
-    return preferences_dialog(
+    return _sheet(
+        as_page,
         _("Host a Headscale VPN server"),
         [role, needs, install, tls, ports, keys, join],
         description=_("For administrators who want to run their own VPN. This is separate from direct internet play through a public domain."),
@@ -140,7 +149,7 @@ def build_headscale_hosting_dialog() -> Adw.PreferencesDialog:
     )
 
 
-def build_internet_check_dialog(facts_loader=None, firewall_loader=None) -> Adw.PreferencesDialog:
+def build_internet_check_dialog(facts_loader=None, firewall_loader=None, *, as_page: bool = False) -> Adw.PreferencesDialog | Adw.NavigationPage:
     """Explain CGNAT, IPv6, UPnP and firewalls, with what this computer shows.
 
     The facts come from this computer's own interfaces; no external address
@@ -224,7 +233,8 @@ def build_internet_check_dialog(facts_loader=None, firewall_loader=None) -> Adw.
         GLib.idle_add(apply, facts, active)
 
     threading.Thread(target=load, daemon=True).start()
-    return preferences_dialog(
+    return _sheet(
+        as_page,
         _("Internet, router and firewall"),
         [this_pc, recommended, cgnat, ipv6, ports, upnp, firewall],
         description=_("Why a connection over the internet can fail, and the safest way around each problem."),

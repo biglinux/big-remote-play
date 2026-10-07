@@ -3,7 +3,8 @@
 # Used only where Pamac is not available; with Pamac the application asks
 # Pamac directly and this helper does not run.
 #
-# Arguments: component ids (sunshine, moonlight, tailscale, zerotier), or one
+# Arguments: component ids (sunshine, moonlight, tailscale, zerotier,
+# headscale_server, caddy), or one
 # id per stdin line. No package name comes from the caller: each id maps to a
 # package below, resolved to the repository package that provides it
 # (BigLinux ships Sunshine as sunshine-bin).
@@ -52,6 +53,8 @@ for component in "${ids[@]}"; do
 		packages+=("zerotier-one")
 		units+=("zerotier-one")
 		;;
+	headscale_server) packages+=("headscale") ;;
+	caddy) packages+=("caddy") ;;
 	*)
 		printf '%s\n' "$(eval_gettext 'Unknown component: ${component}')"
 		exit 2
@@ -64,11 +67,17 @@ if ! command -v pacman &>/dev/null; then
 	exit 3
 fi
 
-# The repository package that provides each name, never an AUR build.
+# The repository package that provides each name, never an AUR build. A name
+# no repository provides is reported, not handed to pacman to fail on.
 resolved=()
 for package in "${packages[@]}"; do
 	provider="$(LC_ALL=C pacman -Sp --print-format '%n' "$package" 2>/dev/null | tail -n 1)"
-	resolved+=("${provider:-$package}")
+	if [ -z "$provider" ]; then
+		echo "BRP_DATA INSTALL_RESULT=unavailable"
+		printf '%s\n' "$(eval_gettext 'Not in the repositories of this system: $package')"
+		exit 4
+	fi
+	resolved+=("$provider")
 done
 
 echo "BRP_PHASE 0.1"

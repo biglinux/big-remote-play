@@ -14,7 +14,7 @@ Current Sunshine lists the devices that are waiting (`GET /api/pin`: an id, the 
 | B. The waiting request is detected; the person types the PIN shown on the other screen | Yes | **Yes** |
 | C. Two Big Remote Play computers exchange the PIN between themselves | Only with a new authenticated channel between the apps; sending the PIN over the network would defeat the reason it exists, and a new protocol would be a new attack surface | No |
 
-Moonlight Qt sends the same placeholder device name (`roth`) from every computer, so the name shown is the one this computer gives the address — a name set on the internet page, the private network's name for that peer, or the local network name — and otherwise *Device at 192.168.1.30*.
+Moonlight Qt sends the same placeholder device name (`roth`) from every computer, so the name shown is the one this computer gives the address — a name given with **Rename** in Connect your devices, the private network's name for that peer, or the local network name — and otherwise *Device at 192.168.1.30*.
 
 ## What happens
 
@@ -27,11 +27,11 @@ While sharing, the existing upkeep (every few seconds, on a worker) reads the wa
 
 If Sunshine cannot be read for a moment, nothing on screen changes: an unknown state is not treated as "nobody waits". Stopping sharing clears every request.
 
-**Type a pairing code yourself**, under **3. Connect the other PC**, keeps the previous manual path for older Sunshine versions or when no password is saved.
+**Type a pairing code yourself**, under **3. Connect the other PC**, is the manual path for Sunshine versions that do not list waiting devices, or when no password is saved.
 
 ## Sunshine's password
 
-Approving needs Sunshine's administrator user. When Sunshine has **no user at all** (its first start, the API answers 307) and the keyring is available, Big Remote Play creates one — the desktop user name and a random 24+ character password — and keeps the password only in the keyring, so the first request can be approved without asking anything. An existing Sunshine user is never replaced; when its password is not saved or is rejected, Share asks for it as before (**Enter Sunshine password**). **Support → Server password** changes it.
+Approving needs Sunshine's administrator user. When Sunshine has **no user at all** (its first start, the API answers 307) and the keyring is available, Big Remote Play creates one — the desktop user name and a random 24+ character password — and keeps the password only in the keyring, so the first request can be approved without asking anything. An existing Sunshine user is never replaced; when its password is not saved or is rejected, Share asks for it (**Enter Sunshine password**). **Support → Server password** changes it.
 
 ## Safety rules
 
@@ -47,7 +47,9 @@ Sunshine 2026.914 on its own port and three never-paired Moonlight Qt 6.1 identi
 - Moonlight sent the placeholder name `roth`; the request was shown as the name this computer gives the address.
 - **Approve** with the right PIN for that `pairing_id`: Sunshine answered at once and the device appeared among the paired devices.
 - **Reject**: the request was cancelled and the device was not paired.
-- A wrong PIN: Sunshine holds the answer for about **10 seconds** (while the device checks it) and then returns `{"status": false}`; the device is not paired. The application used to stop waiting after 5 seconds and called this a connection error. It now waits up to 20 seconds, says *Checking the PIN with …* meanwhile, and then *The PIN did not match. On the other computer, start pairing again and type the new PIN here.*
+- A wrong PIN: Sunshine holds the answer for about **10 seconds** (while the device checks it) and then returns `{"status": false}`; the device is not paired.
+
+Because of that delay the application waits up to 20 seconds for Sunshine's answer (`PIN_ANSWER_TIMEOUT` in `host/sunshine_manager.py`), says *Checking the PIN with …* meanwhile, and then, for a wrong PIN, *The PIN did not match. On the other computer, start pairing again and type the new PIN here.*
 
 ## Tests
 

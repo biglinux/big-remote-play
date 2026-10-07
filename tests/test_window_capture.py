@@ -90,6 +90,12 @@ def test_private_screen_cannot_reach_the_desktop():
     assert env == {"XDG_RUNTIME_DIR": "/run/user/1000", "LANG": "C"}
 
 
+def test_private_screen_keeps_its_settings_out_of_the_desktops():
+    """Otherwise it writes its output into the desktop's kwinoutputconfig.json."""
+    env = wc.compositor_env({"XDG_CONFIG_HOME": "/home/me/.config", "LANG": "C"}, "/run/user/1000/big-remote-play/private-screen")
+    assert env["XDG_CONFIG_HOME"] == "/run/user/1000/big-remote-play/private-screen"
+
+
 def test_mirror_reads_only_the_chosen_window():
     kwin = wc.mirror_description(wc.Spec.from_mapping(spec()), SOCKET, node=77, fd=9)
     assert kwin.startswith("pipewiresrc name=source fd=9 path=77 ")
@@ -278,17 +284,35 @@ def session(backend="kwin", **extra):
     item._frames = item._frames_seen = 0
     item._still_since = time.monotonic()
     item._stall_reported = False
+    item.phase = "running"
+    item.screen = (1920, 1080)
+    item.render_node = ""
+    item._node = 55
+    item._family = frozenset({4242})
+    item._root = 0
+    item._lost_reason = ""
+    item._reacquire_deadline = 0.0
+    item._resize_timer = 0
+    item._awaiting_since = None
+    item._stall_retried = ""
     item.__dict__.update(extra)
     return item
 
 
 def test_closed_window_stops_the_picture_at_once_and_never_shows_anything_else(monkeypatch):
     monkeypatch.setattr(game_windows, "kwin_window_info", lambda uuid, connection=None: {})
+    monkeypatch.setattr(game_windows, "kwin_windows", lambda timeout_ms=4000: [])  # no new window either
     item = session()
     pipeline = item.pipeline
-    assert item._check() is False
-    assert item.ended and item.reason == "window-closed"
+    assert item._check() is True
+    # Nothing is shown while the same game's new window is looked for.
     assert pipeline.states == ["null"] and item.pipeline is None
+    assert item.phase == "reacquiring" and not item.ended
+    state = wc.read_state()
+    assert state["state"] == "reacquiring"
+    item._reacquire_deadline = time.monotonic() - 1
+    assert item._reacquire_tick() is False
+    assert item.ended and item.reason == "window-closed"
     state = wc.read_state()
     assert state["state"] == "ended" and state["reason"] == "window-closed"
     assert not wc.helper_running(state)
@@ -318,11 +342,13 @@ def test_x11_capture_stops_when_compositing_is_suspended(monkeypatch):
     assert item._check() is False and item.reason == "compositing-off"
 
 
-def test_x11_window_gone_or_display_gone_ends(monkeypatch):
-    for alive in (False, None):
-        monkeypatch.setattr(x11_windows, "window_alive", lambda display, xid, alive=alive: alive)
-        item = session("x11")
-        assert item._check() is False and item.reason == "window-closed"
+def test_x11_display_gone_ends_and_a_closed_window_is_looked_for(monkeypatch):
+    monkeypatch.setattr(x11_windows, "window_alive", lambda display, xid: None)
+    item = session("x11")
+    assert item._check() is False and item.reason == "window-closed"
+    monkeypatch.setattr(x11_windows, "window_alive", lambda display, xid: False)
+    item = session("x11")
+    assert item._check() is True and item.phase == "reacquiring" and item.pipeline is None
 
 
 def test_private_screen_exit_ends_the_session():
@@ -492,3 +518,172 @@ def test_without_the_application_the_capture_ends_its_sunshine_after_the_hold(mo
     item = session()
     assert item._stop_sunshine_and_quit() is False
     assert stopped == [SOCKET]
+
+
+# ── fullscreen, new modes and replaced windows ─────────────────────────────
+
+
+def raw(handle, pid, *, app_id="steam_app_750920", width=1920, height=1080, minimized=False, normal=True, fullscreen=False, decoration=(0, 0, 0, 0)):
+    return game_windows.RawWindow("kwin", handle, "Game", pid, app_id, app_id, width, height, decoration, 1.0, "DP-1", normal, minimized, fullscreen)
+
+
+def game(window, identity="steam:750920"):
+    steam = identity.split(":", 1)[1] if identity.startswith("steam:") else ""
+    return game_windows.GameWindow(window, "Game", game_windows.Launch(launcher="steam" if steam else "", steam_app_id=steam), True)
+
+
+NEW_UUID = "{99999999-2222-3333-4444-555555555555}"
+OTHER_UUID = "{88888888-2222-3333-4444-555555555555}"
+
+
+def test_the_same_games_only_new_window_is_found():
+    new = raw(NEW_UUID, 4242)
+    verdict, found = wc.pick_replacement([new], [game(new)], family=frozenset({4242}), identity="steam:750920")
+    assert verdict == "found" and found.window.handle == NEW_UUID
+    # The identity alone is enough when the game restarted its process.
+    respawned = raw(NEW_UUID, 777)
+    assert wc.pick_replacement([respawned], [game(respawned)], family=frozenset({4242}), identity="steam:750920")[0] == "found"
+
+
+@pytest.mark.parametrize(
+    "windows, verdict",
+    [
+        ([], "none"),
+        ([raw(NEW_UUID, 5000, app_id="firefox")], "none"),  # another program: never shown
+        ([raw(NEW_UUID, 4242, minimized=True)], "none"),  # no picture yet
+        ([raw(NEW_UUID, 4242), raw(OTHER_UUID, 4242)], "ambiguous"),  # a launcher and the game: never guessed
+    ],
+)
+def test_no_window_or_two_candidates_are_never_guessed(windows, verdict):
+    games = [game(window, "steam:750920" if window.pid == 4242 else "app:firefox") for window in windows]
+    assert wc.pick_replacement(windows, games, family=frozenset({4242}), identity="steam:750920") == (verdict, None)
+
+
+def test_a_second_window_of_the_same_application_blocks_a_silent_restore():
+    """KDE restores a saved permission by application id: it could pick the other one."""
+    candidate = raw(NEW_UUID, 4242, app_id="steam_app_default")
+    unrelated = raw(OTHER_UUID, 9999, app_id="steam_app_default")
+    assert wc.pick_replacement([candidate, unrelated], [game(candidate)], family=frozenset({4242}), identity="steam:750920") == ("ambiguous", None)
+
+
+def test_crop_has_a_scale_per_axis_and_one_matching_side_is_the_same_window():
+    # Xwayland shows a 1920-wide game in a 2560-wide frame: only the width is scaled.
+    window = wc.Spec.from_mapping(spec(width=2560, height=1080, scale=1.0, decoration=[0, 30, 0, 0]))
+    assert wc.crop_for(window, 1920, True, 1110) == (0, 30, 0, 0)
+    assert wc.aspect_matches((2560, 1110), (1920, 1110))  # the Cyberpunk 2077 case of the investigation
+    assert not wc.aspect_matches((2560, 1110), (1280, 720))
+
+
+def test_helper_counts_as_running_while_it_looks_for_the_new_window(monkeypatch):
+    monkeypatch.setattr(wc, "_is_helper", lambda pid: True)
+    assert wc.helper_running({"state": "reacquiring", "pid": 4242})
+    assert not wc.helper_running({"state": "ended", "pid": 4242})
+
+
+class FakePortal:
+    instances: list = []
+
+    def __init__(self, *_args):
+        self.closed = False
+        self.remotes = 0
+        FakePortal.instances.append(self)
+
+    def open(self, token, *, timeout=0):
+        return 66, 31, "newtoken"
+
+    def open_remote(self):
+        self.remotes += 1
+        return 32
+
+    def close(self):
+        self.closed = True
+
+
+def reacquiring_session(monkeypatch, windows):
+    monkeypatch.setattr(game_windows, "kwin_window_info", lambda uuid, connection=None: {})
+    monkeypatch.setattr(game_windows, "kwin_windows", lambda timeout_ms=4000: list(windows))
+    monkeypatch.setattr(game_windows, "read_process", lambda pid, proc=None: None)
+    monkeypatch.setattr(game_windows, "all_processes", lambda proc=None: [])
+    monkeypatch.setattr(wc, "_Portal", FakePortal)
+    monkeypatch.setattr(wc, "save_restore_token", lambda identity, token, path=None: None)
+    item = session()
+    mirrors, activated, resized = [], [], []
+    item._start_mirror = lambda node: mirrors.append((node, item.spec.handle))
+    item._verify_window = lambda: None
+    item._activate_game = lambda: activated.append(item.spec.handle)
+    item._use_fast_refresh = lambda width, height: resized.append((width, height)) or True
+    assert item._check() is True and item.phase == "reacquiring"
+    return item, mirrors, activated, resized
+
+
+def test_a_game_that_replaces_its_window_keeps_being_shared(monkeypatch):
+    new = raw(NEW_UUID, 4242, width=2560, height=1440, fullscreen=True)
+    item, mirrors, activated, resized = reacquiring_session(monkeypatch, [new])
+    assert item._reacquire_tick() is False
+    assert item.phase == "running" and not item.ended
+    assert mirrors == [(66, NEW_UUID)] and activated == [NEW_UUID]
+    assert item.spec.width == 2560 and item.screen == (2560, 1440) and resized == [(2560, 1440)]
+    state = wc.read_state()
+    assert state["state"] == "running" and state["handle"] == NEW_UUID
+
+
+def test_two_possible_windows_end_the_share_instead_of_guessing(monkeypatch):
+    item, mirrors, _activated, _resized = reacquiring_session(monkeypatch, [raw(NEW_UUID, 4242), raw(OTHER_UUID, 4242)])
+    assert item._reacquire_tick() is True and mirrors == []  # waits for one of them to go
+    item._reacquire_deadline = time.monotonic() - 1
+    assert item._reacquire_tick() is False
+    assert item.ended and item.reason == "window-ambiguous" and mirrors == []
+
+
+def test_a_share_stopped_from_kde_while_the_window_is_open_is_not_restarted(monkeypatch):
+    monkeypatch.setattr(game_windows, "kwin_window_info", lambda uuid, connection=None: {"fullscreen": False})
+    item = session()
+    item._source_lost("portal-closed")
+    assert item.ended and item.reason == "portal-closed" and item.phase == "ended"
+
+
+def test_a_new_size_reconnects_the_mirror_after_the_screen_changed_mode(monkeypatch):
+    """GStreamer's Wayland sink crashes when its output changes mode: never while connected."""
+    monkeypatch.setattr(wc.shutil, "which", lambda name: "/usr/bin/" + name)
+    item = session(portal=FakePortal())
+    events = []
+    item._find_window = lambda handle: raw(UUID, 4242, width=3440, height=1440, fullscreen=True)
+    item._stop_mirror = lambda: events.append("mirror down")
+    item._use_fast_refresh = lambda width, height: events.append(("mode", width, height)) or True
+    item._start_mirror = lambda node: events.append(("mirror up", node, item._fd))
+    item._follow_new_size()
+    assert events == ["mirror down", ("mode", 3440, 1440), ("mirror up", 55, 32)]
+    assert item.screen == (3440, 1440) and item._decorated is False
+    assert wc.read_state()["state"] == "running"
+
+
+def test_a_resize_to_the_same_screen_only_updates_the_crop(monkeypatch):
+    item = session(portal=FakePortal())
+    item.screen = (1920, 1080)
+    item._find_window = lambda handle: raw(UUID, 4242, width=1920, height=1080, decoration=(0, 30, 0, 0))  # windowed again, same size
+    item._stop_mirror = lambda: pytest.fail("the mirror must stay connected")
+    item._follow_new_size()
+    assert item.spec.decoration == (0, 30, 0, 0) and item._decorated
+
+
+def test_a_dead_stream_is_restarted_once_per_window(monkeypatch):
+    monkeypatch.setattr(game_windows, "kwin_window_info", lambda uuid, connection=None: {"minimized": False})
+    lost = []
+    item = session()
+    item._source_lost = lambda reason, detail="": lost.append(reason)
+    item._awaiting_since = time.monotonic() - wc.FIRST_PICTURE_SECONDS - 1
+    assert item._check() is True and lost == ["stalled"]
+    item._awaiting_since = time.monotonic() - wc.FIRST_PICTURE_SECONDS - 1
+    assert item._check() is True and lost == ["stalled"]  # the same window: only logged
+
+
+def test_a_minimized_or_drawing_game_is_not_a_dead_stream(monkeypatch):
+    monkeypatch.setattr(game_windows, "kwin_window_info", lambda uuid, connection=None: {"minimized": True})
+    item = session()
+    item._source_lost = lambda reason, detail="": pytest.fail("minimized games send no picture")
+    item._awaiting_since = time.monotonic() - wc.FIRST_PICTURE_SECONDS - 1
+    assert item._check() is True
+    item._frames = 3  # pictures arrived
+    item._awaiting_since = time.monotonic() - wc.FIRST_PICTURE_SECONDS - 1
+    monkeypatch.setattr(game_windows, "kwin_window_info", lambda uuid, connection=None: {"minimized": False})
+    assert item._check() is True and item._awaiting_since is None

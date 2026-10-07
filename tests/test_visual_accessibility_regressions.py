@@ -145,11 +145,13 @@ def test_discovery_empty_state_is_text_first_without_large_search_artwork() -> N
     assert "large=True" not in block
 
 
-def test_network_pages_use_a_titled_back_button_instead_of_tabs() -> None:
+def test_method_views_are_a_native_switcher_that_moves_to_the_bottom_when_narrow() -> None:
     source = (ROOT / "src/big_remote_play/ui/main_window.py").read_text()
-    # Three product-shaped tabs were cut off at 1024 px; one hub plus Back replaces them.
+    # A method's Devices | Advanced tabs use the window's own header switcher,
+    # which moves to the bottom bar on narrow windows like Share and Connect.
     assert "network_navigation_stack" not in source
-    assert 'name_icon_button(self.network_back_button, _("Back"), _("Back to Connect your devices"))' in source
+    assert 'self.header_context_stacks["network"] = page.view_stack' in source
+    assert "self.compact_view_switcher.set_stack(stack)" in source
     assert 'self.header_title_stack.add_named(self.header_view_switcher, "switcher")' in source
     assert "header.set_title_widget(self.header_title_stack)" in source
     assert "Adw.ViewSwitcherTitle" not in source
@@ -191,7 +193,8 @@ def test_icon_colour_hierarchy_is_explicit_and_consistent() -> None:
     assert 'icon_style: Literal["plain", "tile"] = "plain"' in components
     assert 'if icon_style == "tile":' in components
     assert 'css_class="brp-row-icon"' in components
-    assert 'icon_style="tile"' in hub  # connection method choice
+    cards = (ROOT / "src/big_remote_play/ui/service_status_card.py").read_text(encoding="utf-8")
+    assert "icon_tile(PROVIDER_ICONS[provider])" in hub and "self.add_prefix(icon_tile(icon_name))" in cards  # connection method choice
 
     # Adjacent client utility rows now share one visual treatment and use the
     # concrete keyboard metaphor instead of a generic help glyph.

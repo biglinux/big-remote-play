@@ -45,7 +45,9 @@ hardware encoder → Moonlight
   each game (**Allow restoring on future sessions** keeps that choice) and
   restores it silently afterwards by application id and title.
 - **The private game screen** is a headless KWin that runs no shell, panel or
-  notification service; the only client is the mirror. Its size is the game's
+  notification service; the only client is the mirror. It keeps its settings
+  in its own folder of the session's runtime directory, never in the desktop's
+  `kwinoutputconfig.json`. Its size is the game's
   size in device pixels (width rounded to a multiple of 8) and, when
   `kscreen-doctor` exists, it switches to a 240 Hz mode so a game frame waits
   about 2 ms instead of up to 16.7 ms for the next repaint.
@@ -70,7 +72,7 @@ hardware encoder → Moonlight
   would be Big Remote Play itself), and again every time a device starts
   playing (approving that device happened in Big Remote Play). Many games also
   slow down or mute themselves while they are not the active window; see
-  [Game Window audio](window-audio-fix.md).
+  [audio testing](audio-testing.md#game-window-with-real-games).
 
 `host/game_windows.py` lists open windows (KWin scripting on Wayland, EWMH on
 X11), reads each window's process tree and names it. `host/window_capture.py`
@@ -107,16 +109,87 @@ only when exactly one open window has that identity.
 - No fallback: if the game window cannot be shared, sharing does not start.
 - The helper stops showing the game at once when the window closes or crashes,
   the portal session ends, the mirror fails, the private screen exits or, on
-  X11, compositing is suspended. The private screen then shows nothing; after
-  20 seconds it is removed too. Big Remote Play stops Sunshine and explains:
-  **The game window closed** — *Sharing stopped so nothing else on this
-  computer is shown.*
+  X11, compositing is suspended. The private screen then shows nothing.
+- A game that replaces its window (many do when switching to fullscreen or
+  another mode) is followed for up to 15 seconds, only to a single window of
+  the same game ([when the game changes mode](#when-the-game-changes-mode)).
+  Otherwise Big Remote Play stops Sunshine and explains: **The game window
+  closed** — *Sharing stopped so nothing else on this computer is shown.*
 - If Big Remote Play was closed meanwhile, the next start stops Sunshine and
   says why.
 - The private screen keeps KWin's permission checks and gets no desktop
   display, session bus or Wayland socket.
 - Portal restore tokens are stored per game in
   `~/.config/big-remote-play/game-window-portal.json` (owner-only).
+
+## When the game changes mode
+
+Switching between windowed, borderless and fullscreen, or changing resolution,
+does one of two things to the window the capture follows. All of it is handled
+in the capture helper (`host/window_capture.py`); the desktop is never a
+fallback.
+
+**The game keeps its window.** KWin keeps the same window id; only the size
+changes (and the title bar disappears in fullscreen). The PipeWire stream is
+renegotiated to the new size. The helper waits 0.8 s (`RESIZE_SETTLE_MS`) for
+the size to settle, reads the window's size, title bar and fullscreen state
+from KWin again and recomputes the crop, with one scale per axis for games
+Xwayland shows scaled on one axis. If the private screen needs another size,
+it disconnects the mirror, switches the screen to that size with
+`kscreen-doctor` (the same path that sets its 240 Hz mode) and connects the
+mirror again to the same portal session. Sunshine keeps its session and
+re-creates its encoder for the new size by itself. The other device sees about
+a second of black, then a 1:1 picture.
+
+The mirror is disconnected first because GStreamer 1.28.6's `waylandsink`
+segfaults in its display thread when its output reports a new mode while it is
+connected, which leaves the stream black.
+
+**The game replaces its window.** Wine/Proton, Unity and some SDL games
+destroy the window and create a new one (a new KWin id). KWin ends that
+stream: the portal session closes (`portal-closed`), the 1-second watch finds
+the id gone (`window-closed`), the mirror errors or the stream ends. Unless
+the helper was asked to stop, it then enters *reacquiring* instead of ending:
+
+1. The picture stops at once; the private screen stays and shows black,
+   because nothing else exists there. Sunshine keeps the session, and Share
+   says **Reconnecting to the game window…**.
+2. For up to 15 seconds (`REACQUIRE_SECONDS`) it looks for the **same game**:
+   a window of the original game's process family (the window's process, the
+   game's launcher root and everything started below it) or with the same
+   game identity (`steam:<AppID>`, `app:<id>`, `exe:<name>`). It must be
+   exactly one open, non-minimized candidate, never a guess between two, and
+   the only open window of its application id, because KDE restores a saved
+   permission by application id.
+3. It opens a new portal session with the game's saved permission. When KDE
+   falls back to its window dialog, the helper waits up to 60 seconds
+   (`REACQUIRE_PORTAL_TIMEOUT`) for the person.
+4. It checks that the new picture has the new window's shape, rebuilds the
+   mirror and gives the game the keyboard again.
+
+A share stopped from KDE while the window stays open is respected and not
+restarted. When no single window of the same game appears in time, sharing
+ends with the reason explained.
+
+**No silent black picture.** After the mirror (re)connects or the size
+changes, a window that is shown but delivers no picture for 10 seconds
+(`FIRST_PICTURE_SECONDS`) counts as a lost stream and is opened again, once
+per window, so a game that simply draws nothing cannot keep reopening the
+portal. No pixel is inspected; only the frame counter is read.
+
+**Starting right after a change.** The size check at start compares the
+stream with the window's size read *now* from KWin, not with the window list
+(refreshed every few seconds), and accepts a picture whose aspect matches or
+that matches one side exactly (Xwayland's one-axis scaling).
+
+Covered by `tests/test_window_capture.py` (finding the replacement, never
+guessing between two, the application-id rule, a share stopped from KDE, the
+mirror reconnected only after the mode change, the once-per-window watchdog,
+the private screen's own settings) and `tests/test_game_window_focus.py`
+(Share keeps sharing while the helper reconnects and focuses the new window).
+The portal part of a reacquisition, KDE restoring the saved permission for
+the new window, needs a real game and a person
+([release acceptance](release-testing.md#required-target-machine-checks)).
 
 ## Requirements
 
@@ -135,19 +208,25 @@ only when exactly one open window has that identity.
 
 - **Input goes to the desktop's active window.** Sunshine injects keyboard,
   mouse and controllers through `uinput` for the whole session, as with Full
-  Desktop. Game Window activates the game when sharing starts and when a
-  device starts playing; if someone at
+  Desktop. Game Window activates the game when sharing starts, when a device
+  starts playing and after the game's window was found again; if someone at
   this computer switches to another window, keys typed on the other device go
-  there, without the other person seeing it. Controllers are read by games
-  directly and are not affected.
+  there, without the other person seeing it — **Host input priority** pauses
+  them while someone here uses the mouse or keyboard
+  ([host input priority](host-input-priority.md)). Controllers are not
+  paused, but many games read a controller only while their window is active,
+  so the same applies to them.
 - **Absolute mouse positions** (touch screens, Moonlight's remote-desktop mouse
   mode) are mapped to the private screen, not to where the game sits on the
   desktop. Games that capture the mouse (relative movement) are not affected.
 - **SDR only.** Window capture is 8-bit SDR; HDR games are sent in SDR. The
   HDR and resolution options of **Image and capture** apply to Full Desktop and
   are disabled for Game Window.
-- **Size is fixed at start.** If the game changes size, the picture is scaled
-  to fit with its aspect ratio kept; start sharing again for a sharp 1:1 picture.
+- **The size follows the game.** When the game's picture changes size
+  (fullscreen, a new resolution), the private screen switches to that size
+  about a second later, so the picture stays 1:1; meanwhile it is scaled with
+  its aspect ratio kept. This needs `kscreen-doctor`; without it the picture
+  stays scaled.
 - **Hybrid graphics.** The private screen renders on libdrm's first GPU, and
   Sunshine encodes there. On a machine whose first GPU is an integrated one the
   encoder is the integrated GPU's.
@@ -156,6 +235,13 @@ only when exactly one open window has that identity.
   covers the window.
 - A game that shows several top-level windows (a separate launcher, a video
   window) is shared one window at a time.
+- A game that opens a *different* program for fullscreen (a separate process
+  outside the game's process tree and without its identity) is not followed;
+  sharing stops and says why.
+- Exclusive fullscreen on X11 suspends compositing, so X11 Game Window stops
+  then (privacy).
+- With Gamescope the Gamescope window is the one followed; a Gamescope restart
+  is a new process tree and is followed only by the game's identity.
 
 ## Measured results
 

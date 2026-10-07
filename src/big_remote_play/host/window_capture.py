@@ -27,10 +27,10 @@ in the private runtime directory until it exits.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 import ctypes
 import ctypes.util
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import json
 import logging
 import os
@@ -62,6 +62,13 @@ WATCH_INTERVAL_MS = 1000
 STALL_SECONDS = 5
 STOP_GRACE = 5.0
 HOLD_SECONDS = 8  # the empty private screen waits this long for the application to stop Sunshine
+# A game that replaces its window (fullscreen, a new mode) gets this long to show the new one.
+REACQUIRE_SECONDS = 15.0
+REACQUIRE_PORTAL_TIMEOUT = 60.0  # a restore that falls back to KDE's window dialog
+# A new size settles (games switch mode in a few steps) before the private screen follows it.
+RESIZE_SETTLE_MS = 800
+# After the picture was (re)connected or changed size, this long without one picture is a dead stream.
+FIRST_PICTURE_SECONDS = 10.0
 
 # Why a session ended. The UI maps these codes to sentences.
 REASONS = (
@@ -77,6 +84,8 @@ REASONS = (
     "different-window",
     "compositor-failed",
     "invalid-spec",
+    "window-ambiguous",
+    "stalled",
 )
 
 
@@ -221,9 +230,18 @@ def compositor_argv(socket: str, width: int, height: int, *, which: Callable[[st
     return [session_bus, "--", *argv] if session_bus else argv
 
 
-def compositor_env(base: Mapping[str, str]) -> dict[str, str]:
-    """No path back to the desktop: no display, no session bus, normal permission checks."""
-    return {key: value for key, value in base.items() if key not in ("WAYLAND_DISPLAY", "WAYLAND_SOCKET", "DISPLAY", "DBUS_SESSION_BUS_ADDRESS", "KWIN_WAYLAND_NO_PERMISSION_CHECKS")}
+def compositor_env(base: Mapping[str, str], config_home: str = "") -> dict[str, str]:
+    """No path back to the desktop: no display, no session bus, normal permission checks.
+
+    With ``config_home`` the private screen keeps its settings there: KWin
+    otherwise saves its output layout into the desktop's own
+    ``kwinoutputconfig.json`` (two compositors writing one file) and the next
+    private screen comes back with an earlier game's size.
+    """
+    env = {key: value for key, value in base.items() if key not in ("WAYLAND_DISPLAY", "WAYLAND_SOCKET", "DISPLAY", "DBUS_SESSION_BUS_ADDRESS", "KWIN_WAYLAND_NO_PERMISSION_CHECKS")}
+    if config_home:
+        env["XDG_CONFIG_HOME"] = config_home
+    return env
 
 
 def mirror_description(spec: Spec, socket: str, *, node: int = 0, fd: int = -1) -> str:
@@ -427,7 +445,7 @@ class _Portal:
             self.bus.signal_unsubscribe(subscription)
         return int(result["code"]), dict(result["results"])  # type: ignore[arg-type]
 
-    def open(self, restore_token: str) -> tuple[int, int, str]:
+    def open(self, restore_token: str, *, timeout: float = PORTAL_TIMEOUT) -> tuple[int, int, str]:
         """``(node id, PipeWire fd, new restore token)`` for the window the person confirms."""
         GLib = self.GLib
         try:
@@ -456,13 +474,23 @@ class _Portal:
             code, _results = self._request("SelectSources", "(oa{sv})", [self.session, options], 30)
             if code != 0:
                 raise CaptureError("portal-unavailable", "sources refused")
-            code, results = self._request("Start", "(osa{sv})", [self.session, "", {}], PORTAL_TIMEOUT)
+            code, results = self._request("Start", "(osa{sv})", [self.session, "", {}], timeout)
             if code != 0:
                 raise CaptureError("portal-cancelled", "window not confirmed")
             streams = results.get("streams") or []
             if len(streams) != 1 or int(dict(streams[0][1]).get("source_type", self.SOURCE_WINDOW)) != self.SOURCE_WINDOW:
                 raise CaptureError("different-window", "the portal did not return one window")
             node = int(streams[0][0])
+        except GLib.Error as error:
+            raise CaptureError("portal-unavailable", error.message) from error
+        fd = self.open_remote()
+        token = str(results.get("restore_token") or "")
+        return node, fd, token if _TOKEN_RE.fullmatch(token) else ""
+
+    def open_remote(self) -> int:
+        """A new connection to this session's stream (the mirror owns and closes each one)."""
+        GLib = self.GLib
+        try:
             reply, fds = self.bus.call_with_unix_fd_list_sync(
                 "org.freedesktop.portal.Desktop",
                 "/org/freedesktop/portal/desktop",
@@ -475,11 +503,9 @@ class _Portal:
                 None,
                 None,
             )
-            fd = fds.get(reply.unpack()[0])
+            return fds.get(reply.unpack()[0])
         except GLib.Error as error:
             raise CaptureError("portal-unavailable", error.message) from error
-        token = str(results.get("restore_token") or "")
-        return node, fd, token if _TOKEN_RE.fullmatch(token) else ""
 
     def close(self) -> None:
         if self._closed_subscription:
@@ -494,24 +520,66 @@ class _Portal:
 
 
 def aspect_matches(expected: tuple[float, float], actual: tuple[int, int], tolerance: float = 0.04) -> bool:
-    """Whether the stream has the chosen window's shape (catches a different window picked in the dialog)."""
+    """Whether the stream has the chosen window's shape (catches a different window picked in the dialog).
+
+    One side equal to the window's (within 2 %) also counts: Xwayland shows a
+    game that set a lower resolution scaled on one axis only, so its picture
+    keeps the window's height while the width differs.
+    """
     if not all(expected) or not all(actual):
         return True
     wanted = expected[0] / expected[1]
-    return abs(actual[0] / actual[1] - wanted) <= wanted * tolerance
+    if abs(actual[0] / actual[1] - wanted) <= wanted * tolerance:
+        return True
+    return any(abs(have - want) <= want * 0.02 for have, want in zip(actual, expected))
 
 
-def crop_for(spec: Spec, buffer_width: int, decorated: bool) -> tuple[int, int, int, int]:
-    """Title bar and borders in buffer pixels (none for fullscreen/borderless)."""
+def crop_for(spec: Spec, buffer_width: int, decorated: bool, buffer_height: int = 0) -> tuple[int, int, int, int]:
+    """Title bar and borders in buffer pixels (none for fullscreen/borderless).
+
+    Each axis has its own scale: a game shown scaled by Xwayland fills the
+    window's frame with a picture of another shape.
+    """
     if spec.backend != "kwin" or not decorated or not any(spec.decoration):
         return (0, 0, 0, 0)
-    frame_width = spec.width + spec.decoration[0] + spec.decoration[2]
-    scale = buffer_width / frame_width if frame_width else spec.scale
-    return tuple(int(round(value * scale)) for value in spec.decoration)  # type: ignore[return-value]
+    left, top, right, bottom = spec.decoration
+    frame_width = spec.width + left + right
+    frame_height = spec.height + top + bottom
+    scale_x = buffer_width / frame_width if frame_width else spec.scale
+    scale_y = buffer_height / frame_height if buffer_height and frame_height else scale_x
+    return (int(round(left * scale_x)), int(round(top * scale_y)), int(round(right * scale_x)), int(round(bottom * scale_y)))
+
+
+def pick_replacement(raw: Sequence, games: Sequence, *, family: frozenset[int], identity: str) -> tuple[str, object | None]:
+    """The window that took over from a game's closed one: ``("found", game)``,
+    ``("none", None)`` while it is not open yet, or ``("ambiguous", None)``.
+
+    It must belong to the same game (its process family, or the same game
+    identity), be the only such window, and be the only window of its
+    application: KDE restores a saved permission by application id, so with
+    two windows of one application the portal could show the other one.
+    Never a guess: privacy comes before keeping the stream.
+    """
+    candidates = [game for game in games if game.window.normal and not game.window.minimized and ((game.window.pid and game.window.pid in family) or (identity and game.identity == identity))]
+    if not candidates:
+        return "none", None
+    if len(candidates) > 1:
+        return "ambiguous", None
+    found = candidates[0]
+    app_id = (found.window.app_id or found.window.wm_class).lower()
+    siblings = [window for window in raw if window.normal and (window.app_id or window.wm_class).lower() == app_id and window.handle != found.window.handle]
+    if app_id and siblings:
+        return "ambiguous", None
+    return "found", found
 
 
 class CaptureSession:
-    """Everything one Game Window session owns, torn down in one place."""
+    """Everything one Game Window session owns, torn down in one place.
+
+    ``phase`` is ``running`` while the game is shown, ``reacquiring`` while the
+    game's window was replaced and the same game's new window is looked for
+    (the private screen shows nothing then), and ``ended``.
+    """
 
     def __init__(self, spec: Spec, *, emit: Callable[[dict], None]) -> None:
         import gi
@@ -540,6 +608,19 @@ class CaptureSession:
         self._frames_seen = 0
         self._still_since = time.monotonic()
         self._stall_reported = False
+        self.phase = "running"
+        self.screen = (0, 0)  # the private screen's size now
+        self.render_node = ""
+        self._node = 0
+        self._family: frozenset[int] = frozenset()
+        self._root = 0  # the process whose subtree is the game (Steam's reaper, Lutris's wrapper, the game)
+        self._stall_retried = ""  # a window whose dead stream was already restarted once
+        self._lost_reason = ""
+        self._reacquire_deadline = 0.0
+        self._resize_timer = 0
+        # Set when a picture is due (connected, or a new size): no picture for
+        # FIRST_PICTURE_SECONDS while the window is shown means a dead stream.
+        self._awaiting_since: float | None = None
 
     # -- start ------------------------------------------------------------
 
@@ -547,23 +628,66 @@ class CaptureSession:
         node = 0
         token = ""
         if self.spec.backend == "kwin":
-            self.portal = _Portal(self.Gio, self.GLib, lambda: self.end("portal-closed"))
+            self.spec = self._live_spec(self.spec)
+            self.portal = _Portal(self.Gio, self.GLib, lambda: self._source_lost("portal-closed"))
             node, self._fd, token = self.portal.open(load_restore_token(self.spec.identity))
         else:
             self._check_x11()
+        self._node = node
+        self._family, self._root = self._game_family()
         width, height = screen_size(self.spec)
         self._start_compositor(width, height)
         self._use_fast_refresh(width, height)
+        self.screen = (width, height)
         self._start_mirror(node)
         if self.spec.backend == "kwin":
             self._verify_window()
             if token:
                 save_restore_token(self.spec.identity, token)
         self._activate_game()
-        render_node = isolated_render_node()
-        write_state(self._state("running", render_node=render_node or "", width=width, height=height))
-        _log.info("Game Window: sharing %s window on private screen %s (%dx%d, GPU %s)", self.spec.backend, self.socket, width, height, render_node or "default")
-        self.emit({"state": "ready", "socket": self.socket, "render_node": render_node or "", "width": width, "height": height})
+        self.render_node = isolated_render_node() or ""
+        self._write_running()
+        _log.info("Game Window: sharing %s window on private screen %s (%dx%d, GPU %s)", self.spec.backend, self.socket, width, height, self.render_node or "default")
+        self.emit({"state": "ready", "socket": self.socket, "render_node": self.render_node, "width": width, "height": height})
+
+    def _write_running(self) -> None:
+        width, height = self.screen
+        write_state(self._state("running", render_node=self.render_node, width=width, height=height, handle=self.spec.handle))
+
+    def _live_spec(self, spec: Spec) -> Spec:
+        """The window as KWin shows it now: the list it was chosen from can be seconds old."""
+        window = self._find_window(spec.handle)
+        if window is None:
+            return spec
+        return replace(spec, width=max(64, window.width), height=max(64, window.height), decoration=window.decoration, scale=window.scale)
+
+    def _find_window(self, handle: str):
+        try:
+            return next((window for window in self._list_windows() if window.handle == handle), None)
+        except Exception as error:  # the window list is a best effort here
+            _log.info("Game Window: could not read the window list (%s)", error)
+            return None
+
+    def _list_windows(self) -> list:
+        from big_remote_play.host import game_windows
+
+        if self.spec.backend == "kwin":
+            return game_windows.kwin_windows()
+        return game_windows.x11_windows(self.spec.display)
+
+    def _game_family(self) -> tuple[frozenset[int], int]:
+        """The game's processes and their root: a replacement window must come from them."""
+        from big_remote_play.host import game_windows
+
+        window = self._find_window(self.spec.handle)
+        pid = window.pid if window is not None else 0
+        if pid <= 1:
+            return frozenset(), 0
+        try:
+            root = game_windows.game_audio_root(game_windows.process_chain(pid, game_windows.read_process)) or pid
+            return game_windows.game_process_family(pid), root
+        except OSError:
+            return frozenset({pid}), pid
 
     def _activate_game(self) -> None:
         """Give the game the keyboard: Sunshine types into the active window,
@@ -584,13 +708,23 @@ class CaptureSession:
 
         return bool(x11_windows.compositing_active(self.spec.display)) and kwin_compositing_active() is not False
 
+    def _config_home(self) -> str:
+        folder = runtime_dir() / "private-screen"
+        folder.mkdir(mode=0o700, parents=True, exist_ok=True)
+        return str(folder)
+
     def _start_compositor(self, width: int, height: int) -> None:
         log = runtime_dir() / "game-window-screen.log"
         log.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
         with open(log, "w", encoding="utf-8") as handle:
             os.chmod(log, 0o600)
             self.compositor = subprocess.Popen(
-                compositor_argv(self.socket, width, height), env=compositor_env(os.environ), stdin=subprocess.DEVNULL, stdout=handle, stderr=subprocess.STDOUT, start_new_session=True
+                compositor_argv(self.socket, width, height),
+                env=compositor_env(os.environ, self._config_home()),
+                stdin=subprocess.DEVNULL,
+                stdout=handle,
+                stderr=subprocess.STDOUT,
+                start_new_session=True,
             )
         socket_path = Path(os.environ.get("XDG_RUNTIME_DIR") or f"/run/user/{os.getuid()}") / self.socket
         deadline = time.monotonic() + COMPOSITOR_TIMEOUT
@@ -602,24 +736,30 @@ class CaptureSession:
             time.sleep(0.05)
         raise CaptureError("compositor-failed", "the private screen did not start")
 
-    def _use_fast_refresh(self, width: int, height: int) -> None:
-        """Best effort: without kscreen-doctor the screen stays at 60 Hz."""
+    def _use_fast_refresh(self, width: int, height: int) -> bool:
+        """Give the private screen a ``width``×``height`` 240 Hz mode (best effort).
+
+        Also how the screen follows a game that changed size. Never while the
+        mirror is connected: GStreamer's Wayland sink (1.28) crashes when its
+        output changes mode. Without kscreen-doctor the screen keeps its size.
+        """
         tool = shutil.which("kscreen-doctor")
         if not tool:
-            return
-        env = {**compositor_env(os.environ), "WAYLAND_DISPLAY": self.socket}
+            return False
+        env = {**compositor_env(os.environ, self._config_home()), "WAYLAND_DISPLAY": self.socket}
         # Adding the mode, then selecting it, needs two rounds.
         for _round in range(3):
             try:
                 listed = subprocess.run([tool, "-j"], env=env, capture_output=True, text=True, timeout=10, check=False)
                 commands = fast_mode_commands(json.loads(listed.stdout or "null"), width, height, tool)
                 if not commands:
-                    break
+                    return True
                 for argv in commands:
                     subprocess.run(argv, env=env, capture_output=True, text=True, timeout=10, check=False)
             except (OSError, ValueError, subprocess.SubprocessError) as error:
-                _log.info("Game Window: private screen stays at 60 Hz (%s)", error)
-                return
+                _log.info("Game Window: private screen mode unchanged (%s)", error)
+                return False
+        return False
 
     def _start_mirror(self, node: int) -> None:
         Gst = self.Gst
@@ -629,15 +769,17 @@ class CaptureSession:
             raise CaptureError("capture-failed", error.message) from error
         # The pipeline owns the PipeWire connection from here on.
         self._fd = -1
+        self._buffer_width = self._buffer_height = 0
         bus = self.pipeline.get_bus()
         bus.add_signal_watch()
-        bus.connect("message::error", lambda _bus, message: self.end("capture-failed", message.parse_error()[0].message))
-        bus.connect("message::eos", lambda *_args: self.end("capture-failed", "stream ended"))
+        bus.connect("message::error", lambda _bus, message: self._source_lost("capture-failed", message.parse_error()[0].message))
+        bus.connect("message::eos", lambda *_args: self._source_lost("capture-failed", "stream ended"))
         bus.connect("message::warning", lambda _bus, message: _log.warning("Game Window: mirror warning: %s", message.parse_warning()[0].message))
         source = self.pipeline.get_by_name("source")
         pad = source.get_static_pad("src")
         pad.connect("notify::caps", self._on_caps)
         pad.add_probe(Gst.PadProbeType.BUFFER, self._count_frame)
+        self._awaiting_since = time.monotonic()
         if self.pipeline.set_state(Gst.State.PLAYING) == Gst.StateChangeReturn.FAILURE:
             raise CaptureError("capture-failed", "the mirror did not start")
 
@@ -646,6 +788,7 @@ class CaptureSession:
         return self.Gst.PadProbeReturn.OK
 
     def _on_caps(self, pad, _pspec) -> None:
+        """Streaming thread: the window's picture has a (new) size."""
         caps = pad.get_current_caps()
         if caps is None or caps.get_size() == 0:
             return
@@ -654,13 +797,24 @@ class CaptureSession:
         ok_w, width = structure.get_int("width")
         ok_h, height = structure.get_int("height")
         if ok_w and ok_h:
-            self._buffer_width, self._buffer_height = width, height
-            self.GLib.idle_add(self._apply_crop)
+            self.GLib.idle_add(self._picture_size, width, height)
+
+    def _picture_size(self, width: int, height: int) -> bool:
+        changed = bool(self._buffer_width) and (width, height) != (self._buffer_width, self._buffer_height)
+        self._buffer_width, self._buffer_height = width, height
+        self._apply_crop()
+        if changed and self.phase == "running" and not self.ended:
+            # Fullscreen, a new resolution: the screen follows once the size settles.
+            self._awaiting_since = time.monotonic()
+            if self._resize_timer:
+                self.GLib.source_remove(self._resize_timer)
+            self._resize_timer = self.GLib.timeout_add(RESIZE_SETTLE_MS, self._follow_new_size)
+        return False
 
     def _apply_crop(self) -> bool:
         crop = self.pipeline.get_by_name("crop") if self.pipeline is not None else None
         if crop is not None and self._buffer_width:
-            left, top, right, bottom = crop_for(self.spec, self._buffer_width, self._decorated)
+            left, top, right, bottom = crop_for(self.spec, self._buffer_width, self._decorated, self._buffer_height)
             for name, value in (("left", left), ("top", top), ("right", right), ("bottom", bottom)):
                 if crop.get_property(name) != value:
                     crop.set_property(name, value)
@@ -679,6 +833,124 @@ class CaptureSession:
         expected = ((spec.width + spec.decoration[0] + spec.decoration[2]) * spec.scale, (spec.height + spec.decoration[1] + spec.decoration[3]) * spec.scale)
         if self._buffer_width and not aspect_matches(expected, (self._buffer_width, self._buffer_height)):
             raise CaptureError("different-window", f"stream {self._buffer_width}x{self._buffer_height}, window {expected[0]:.0f}x{expected[1]:.0f}")
+
+    # -- the game changed size ----------------------------------------------
+
+    def _follow_new_size(self) -> bool:
+        """Same window, new size: read its geometry and give the private screen that size.
+
+        The mirror is disconnected while the screen changes mode and then
+        connected again to the same stream (a new PipeWire connection of the
+        same portal session); Sunshine keeps its session and re-creates its
+        encoder for the new size by itself.
+        """
+        self._resize_timer = 0
+        if self.ended or self.phase != "running":
+            return False
+        window = self._find_window(self.spec.handle)
+        if window is None:
+            return False  # the watch decides what happened to it
+        self.spec = replace(self.spec, width=max(64, window.width), height=max(64, window.height), decoration=window.decoration, scale=window.scale)
+        self._decorated = not window.fullscreen and any(window.decoration)
+        self._apply_crop()
+        target = screen_size(self.spec)
+        if target == self.screen or self.spec.backend != "kwin" or self.portal is None or not shutil.which("kscreen-doctor"):
+            return False
+        _log.info("Game Window: the game picture changed size (%dx%d → %dx%d); resizing the private game screen", *self.screen, *target)
+        self._stop_mirror()
+        try:
+            self._use_fast_refresh(*target)
+            self.screen = target
+            self._fd = self.portal.open_remote()
+            self._start_mirror(self._node)
+        except CaptureError as error:
+            self._source_lost(error.reason, error.detail)
+            return False
+        self._write_running()
+        return False
+
+    # -- the game's window went away ------------------------------------------
+
+    def _source_lost(self, reason: str, detail: str = "") -> None:
+        """The picture's source ended. Show nothing at once; then look for the same game.
+
+        A share the person ended themselves (the window is still open, the
+        portal was closed from KDE) is respected and not restarted.
+        """
+        if self.ended or self.phase == "reacquiring":
+            return
+        if reason == "portal-closed" and self.spec.backend == "kwin" and self._window_still_open():
+            self.end(reason, "the share was stopped while the window stayed open")
+            return
+        self.phase = "reacquiring"
+        self._lost_reason = reason
+        self._reacquire_deadline = time.monotonic() + REACQUIRE_SECONDS
+        self.stop_picture()
+        write_state(self._state("reacquiring", reason=reason, handle=self.spec.handle))
+        _log.warning("Game Window: game window surface changed (%s); attempting secure reacquisition. %s", reason, detail[:200])
+        self.GLib.timeout_add(WATCH_INTERVAL_MS, self._reacquire_tick)
+
+    def _window_still_open(self) -> bool:
+        from big_remote_play.host.game_windows import kwin_window_info
+
+        return bool(kwin_window_info(self.spec.handle))
+
+    def _reacquire_tick(self) -> bool:
+        if self.ended or self.phase != "reacquiring":
+            return False
+        if self.compositor is not None and self.compositor.poll() is not None:
+            self.end("compositor-exited")
+            return False
+        verdict, found = self._replacement()
+        if verdict == "found" and found is not None:
+            try:
+                self._attach(found)
+            except CaptureError as error:
+                self.end(error.reason, error.detail)
+            return False
+        if time.monotonic() >= self._reacquire_deadline:
+            self.end("window-ambiguous" if verdict == "ambiguous" else (self._lost_reason or "window-closed"), "no single window of the same game appeared")
+            return False
+        return True
+
+    def _replacement(self) -> tuple[str, object | None]:
+        from big_remote_play.host import game_windows
+
+        try:
+            raw = self._list_windows()
+        except Exception as error:
+            _log.info("Game Window: could not read the window list (%s)", error)
+            return "none", None
+        games = game_windows.build_game_windows(raw, read=game_windows.read_process, table=game_windows.all_processes, include_other_windows=True, own_pid=os.getppid())
+        # Processes the game started since sharing began belong to it too.
+        family = self._family | (game_windows.game_process_family(self._root) if self._root > 1 else frozenset())
+        return pick_replacement(raw, games, family=family, identity=self.spec.identity)
+
+    def _attach(self, game) -> None:
+        """Show the same game's new window: a new portal session, then the mirror."""
+        window = game.window
+        if self.spec.backend == "x11":
+            self.spec = replace(self.spec, handle=window.handle, width=max(64, window.width), height=max(64, window.height))
+            self._check_x11()
+            node = 0
+        else:
+            self.spec = replace(self.spec, handle=window.handle, width=max(64, window.width), height=max(64, window.height), decoration=window.decoration, scale=window.scale)
+            self.portal = _Portal(self.Gio, self.GLib, lambda: self._source_lost("portal-closed"))
+            node, self._fd, token = self.portal.open(load_restore_token(self.spec.identity), timeout=REACQUIRE_PORTAL_TIMEOUT)
+            if token:
+                save_restore_token(self.spec.identity, token)
+        self._node = node
+        self._decorated = not window.fullscreen and any(self.spec.decoration)
+        target = screen_size(self.spec)
+        if target != self.screen and self._use_fast_refresh(*target):
+            self.screen = target
+        self.phase = "running"
+        self._start_mirror(node)
+        if self.spec.backend == "kwin":
+            self._verify_window()
+        self._activate_game()
+        self._write_running()
+        _log.info("Game Window: game window reacquired: %s (%dx%d)", self.spec.identity or "unnamed game", *self.screen)
 
     # -- watch ------------------------------------------------------------
 
@@ -712,6 +984,7 @@ class CaptureSession:
             if self._stall_reported:
                 _log.info("Game Window: the game is sending pictures again")
             self._frames_seen, self._still_since, self._stall_reported = self._frames, now, False
+            self._awaiting_since = None
         elif not self._stall_reported and now - self._still_since >= STALL_SECONDS:
             self._stall_reported = True
             if self._frames:
@@ -722,7 +995,10 @@ class CaptureSession:
     def _check(self) -> bool:
         if self.ended:
             return False
-        self._note_frames(time.monotonic())
+        if self.phase != "running":
+            return True  # reacquiring: the private screen shows nothing meanwhile
+        now = time.monotonic()
+        self._note_frames(now)
         if self.compositor is not None and self.compositor.poll() is not None:
             self.end("compositor-exited")
             return False
@@ -739,22 +1015,35 @@ class CaptureSession:
                 return True
             self._kwin_misses = 0
             if not info:
-                self.end("window-closed")
-                return False
+                self._source_lost("window-closed")
+                return True
             decorated = not (bool(info.get("fullscreen")) or bool(info.get("noBorder")))
             if decorated != self._decorated:
                 self._decorated = decorated
                 self._apply_crop()
+            shown = not bool(info.get("minimized"))
         else:
             from big_remote_play.host import x11_windows
 
             alive = x11_windows.window_alive(self.spec.display, int(self.spec.handle, 16))
             if not alive:
-                self.end("window-closed")
-                return False
+                if alive is None:
+                    self.end("window-closed")  # the X server itself is gone
+                    return False
+                self._source_lost("window-closed")
+                return True
             if not self._x11_private():
                 self.end("compositing-off")
                 return False
+            shown = True
+        if shown and self._awaiting_since is not None and now - self._awaiting_since >= FIRST_PICTURE_SECONDS:
+            self._awaiting_since = None
+            # Connected (or resized) but not one picture since: the stream is
+            # dead, not the game still. Restarted once per window, so a game
+            # that simply draws nothing cannot keep reopening the portal.
+            if self._stall_retried != self.spec.handle:
+                self._stall_retried = self.spec.handle
+                self._source_lost("stalled", f"no picture for {FIRST_PICTURE_SECONDS:.0f} s while the window is shown")
         return True
 
     # -- stop -------------------------------------------------------------
@@ -772,6 +1061,7 @@ class CaptureSession:
         if self.ended:
             return
         self.ended = True
+        self.phase = "ended"
         self.reason = reason if reason in REASONS else "capture-failed"
         if self.reason != "stopped":
             _log.warning("Game Window: the game picture stopped (%s); nothing else is shown. %s", self.reason, detail[:200])
@@ -807,13 +1097,20 @@ class CaptureSession:
             self.loop.quit()
         return False
 
-    def stop_picture(self) -> None:
+    def _stop_mirror(self) -> None:
         if self.pipeline is not None:
             self.pipeline.set_state(self.Gst.State.NULL)
             self.pipeline = None
         if self._fd >= 0:
             os.close(self._fd)
             self._fd = -1
+        self._awaiting_since = None
+
+    def stop_picture(self) -> None:
+        if getattr(self, "_resize_timer", 0):
+            self.GLib.source_remove(self._resize_timer)
+            self._resize_timer = 0
+        self._stop_mirror()
         if self.portal is not None:
             self.portal.close()
             self.portal = None
@@ -823,6 +1120,7 @@ class CaptureSession:
         if self.compositor is not None:
             stop_process_group(self.compositor.pid, wait=self.compositor.wait)
             self.compositor = None
+        shutil.rmtree(runtime_dir() / "private-screen", ignore_errors=True)
 
 
 def stop_private_sunshine(socket: str, *, proc: Path = Path("/proc"), grace: float = 10.0) -> int:
@@ -931,7 +1229,7 @@ def run(stdin=sys.stdin, stdout=sys.stdout) -> int:
     finally:
         session.teardown()
         state = read_state()
-        if not state or state.get("pid") != os.getpid() or state.get("state") == "running":
+        if not state or state.get("pid") != os.getpid() or state.get("state") in ("running", "reacquiring"):
             write_state({"version": 1, "state": "ended", "reason": session.reason, "pid": os.getpid(), "ended_at": time.time()})
     return 0
 
@@ -999,8 +1297,9 @@ def _read_line(process: subprocess.Popen, timeout: float) -> str:
 
 
 def helper_running(state: Mapping[str, object] | None = None) -> bool:
+    """Running, or briefly looking for the game's new window (``reacquiring``)."""
     state = read_state() if state is None else state
-    if not state or state.get("state") != "running":
+    if not state or state.get("state") not in ("running", "reacquiring"):
         return False
     pid = state.get("pid")
     return isinstance(pid, int) and _is_helper(pid)
@@ -1047,7 +1346,7 @@ def stop_helper(state: Mapping[str, object] | None = None) -> None:
     socket = str(state.get("socket") or "")
     if isinstance(pgid, int) and pgid > 1 and _is_private_screen(pgid, socket):
         stop_process_group(pgid)
-    if state.get("state") == "running":
+    if state.get("state") in ("running", "reacquiring"):
         write_state({"version": 1, "state": "ended", "reason": "stopped", "pid": pid if isinstance(pid, int) else 0, "ended_at": time.time()})
 
 

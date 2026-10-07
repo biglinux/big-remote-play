@@ -66,9 +66,9 @@ def test_tailscale_browser_login_is_offered_once() -> None:
     # the auth key field.
     src = PNV.read_text()
     assert "Sign in with browser" in src
-    dashboard = Path("src/big_remote_play/ui/network_dashboard.py").read_text()
-    assert "Auth Key" not in dashboard
-    assert 'navigate_to("connect_private")' in dashboard
+    provider_page = Path("src/big_remote_play/ui/provider_page.py").read_text()
+    assert "Auth Key" not in provider_page
+    assert "def show_setup" in provider_page
     assert "_run_tailscale_login" not in src
 
 
@@ -100,10 +100,11 @@ def test_tailscale_browser_login_opens_url_as_user_not_root() -> None:
 
 
 def test_no_bigsudo_uses_pkexec_for_cross_distro() -> None:
-    for p in (MAIN, PNV):
+    accounts = Path("src/big_remote_play/utils/vpn_accounts.py")
+    for p in (MAIN, PNV, accounts):
         src = p.read_text()
         assert "bigsudo" not in src, f"{p} still uses bigsudo"
-    assert "pkexec" in PNV.read_text()
+    assert "pkexec" in accounts.read_text()
     # Privilege-elevation scripts no longer reference the BigLinux-only helper.
     for script in Path("usr/share/big-remote-play/scripts").glob("*.sh"):
         assert "bigsudo" not in script.read_text(), script.name

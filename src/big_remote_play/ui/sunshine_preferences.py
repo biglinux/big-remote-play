@@ -22,6 +22,34 @@ from big_remote_play.host.sunshine_manager import SunshineHost
 from big_remote_play.utils.uri import open_path
 
 
+def live_apply_blocked() -> str | None:
+    """Why settings cannot be pushed to the running server now, if they cannot.
+
+    During a Game Window share the running server is the private screen's. A
+    pushed capture method (KMS, auto) would let it read the real monitors."""
+    from big_remote_play.host.sunshine_manager import game_window_screen
+
+    if game_window_screen()[0]:
+        return _("Game Window is sharing: the settings are saved and apply the next time you share.")
+    return None
+
+
+def web_ui_origin(anyone: bool, current: str) -> str:
+    """Who may open Sunshine's web interface: "wan" when the person allows
+    anyone; otherwise their own narrower choice ("pc", this computer only) is
+    kept rather than widened to the local network."""
+    if anyone:
+        return "wan"
+    return current if current in ("pc", "lan") else "lan"
+
+
+def current_web_ui_origin() -> str:
+    try:
+        return SunshineConfigManager().config.get("origin_web_ui_allowed", "lan")
+    except OSError:
+        return "lan"
+
+
 class SunshineConfigManager:
     def __init__(self):
         self.config_dir = paths.SUNSHINE_CONFIG_DIR
@@ -32,6 +60,9 @@ class SunshineConfigManager:
 
     def load(self):
         self.config = {}
+        # An unreadable file is never taken as empty: saving would replace it
+        # with only the keys this page knows, losing the user's own.
+        self.load_error = ""
         if self.config_file.exists():
             try:
                 with open(self.config_file, "r") as f:
@@ -44,30 +75,41 @@ class SunshineConfigManager:
                             if len(parts) == 2:
                                 self.config[parts[0].strip()] = parts[1].strip()
             except Exception as e:
+                self.load_error = str(e)
                 _log.error(f"Error loading Sunshine config: {e}")
 
-    def save(self) -> None:
+    def save(self) -> bool:
+        """Write the settings; the previous file is kept as ``sunshine.conf.previous``."""
+        if self.load_error:
+            _log.error("Sunshine config not saved: %s could not be read (%s)", self.config_file, self.load_error)
+            return False
         try:
             settings = {key: value for key, value in self.config.items() if key not in LEGACY_SECRET_KEYS}
             body = "".join(f"{key} = {value}\n" for key, value in settings.items())
+            if self.config_file.exists():
+                previous = self.config_file.read_text(encoding="utf-8")
+                if previous != body:
+                    secure_write_text(str(self.config_file) + ".previous", previous)
             secure_write_text(str(self.config_file), body)
+            return True
         except Exception as e:
             _log.error(f"Error saving Sunshine config: {e}")
+            return False
 
     def get(self, key, default=None):
         return self.config.get(key, str(default))
 
-    def set(self, key, value):
+    def set(self, key, value) -> bool:
         self.load()  # Another settings page may have changed unrelated keys.
         self.config[key] = str(value)
-        self.save()
+        return self.save()
 
-    def update(self, values: dict) -> None:
+    def update(self, values: dict) -> bool:
         """Set many keys and persist once (one file write, not one per key)."""
         self.load()
         for key, value in values.items():
             self.config[key] = str(value)
-        self.save()
+        return self.save()
 
 
 class SunshineSettings:
@@ -347,6 +389,10 @@ class SunshineSettings:
     def on_apply_live_clicked(self, btn: Gtk.Widget) -> None:
         if not self.sunshine.is_running():
             self._toast(btn, _("Sunshine is not running. Settings are saved to file."))
+            return
+        blocked = live_apply_blocked()
+        if blocked:
+            self._toast(btn, blocked)
             return
         import threading
 
@@ -658,3 +704,19 @@ class SunshineSettings:
                 _("Tuning options, which are applied after the preset. Defaults to zerolatency."),
             ),
         ]
+
+
+# What a reset keeps: the server's identity, its paired devices, its apps and
+# its certificates. Without sunshine_user the saved password in the keyring
+# cannot be used any more.
+RESET_KEEPS = ("sunshine_user", "file_apps", "file_state", "credentials_file", "pkey", "cert", "port")
+
+
+def reset_sunshine_settings(manager: SunshineConfigManager | None = None) -> bool:
+    """Back to Sunshine's defaults except :data:`RESET_KEEPS`; the previous
+    file stays as ``sunshine.conf.previous``. An unreadable file is left alone."""
+    manager = manager or SunshineConfigManager()
+    if manager.load_error:
+        return False
+    manager.config = {key: value for key, value in manager.config.items() if key in RESET_KEEPS}
+    return manager.save()

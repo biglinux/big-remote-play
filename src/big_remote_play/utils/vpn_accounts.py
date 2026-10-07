@@ -24,7 +24,7 @@ from typing import Any, Callable, Sequence
 import urllib.parse
 
 from big_remote_play import paths
-from big_remote_play.utils.secure_io import secure_write_text
+from big_remote_play.utils.secure_io import secure_write_text, set_aside_corrupt
 from big_remote_play.utils.system_check import SystemCheck
 
 _PROFILE_ID_RE = re.compile(r"^[A-Za-z0-9._:@+-]{1,256}$")
@@ -74,6 +74,14 @@ _PERMISSION_MARKERS = (
 _METADATA_FILE = paths.CONFIG_DIR / "private_network" / "accounts.json"
 # Privileged Tailscale commands go through PolicyKit with an absolute path.
 _ROOT_TAILSCALE = ("pkexec", "/usr/bin/tailscale")
+
+
+ZEROTIER_CLI_PATHS = ("/usr/bin/zerotier-cli", "/usr/sbin/zerotier-cli")
+
+
+def system_zerotier_cli() -> str | None:
+    """The distribution's zerotier-cli, the only one ever run as root."""
+    return next((path for path in ZEROTIER_CLI_PATHS if os.path.isfile(path) and os.access(path, os.X_OK)), None)
 
 
 @dataclass(frozen=True)
@@ -272,9 +280,13 @@ def tailscale_connect_argv(tailscale_cmd: Sequence[str], *, login_server: str = 
 def _load_metadata(path: Path = _METADATA_FILE) -> dict[str, Any]:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError, TypeError):
+    except (OSError, TypeError):
+        return {"version": 1, "tailscale_profiles": {}, "zerotier_networks": {}}
+    except ValueError:  # malformed (UnicodeError too): kept aside, never overwritten
+        set_aside_corrupt(path)
         return {"version": 1, "tailscale_profiles": {}, "zerotier_networks": {}}
     if not isinstance(payload, dict):
+        set_aside_corrupt(path)
         return {"version": 1, "tailscale_profiles": {}, "zerotier_networks": {}}
     payload.setdefault("version", 1)
     for key in ("tailscale_profiles", "zerotier_networks"):
@@ -594,6 +606,14 @@ class VPNAccountManager:
             return CommandResult(0)
         return self._run(["pkexec", "/usr/bin/systemctl", "enable", "--now", unit], timeout=120)
 
+    def stop_service(self, unit: str) -> CommandResult:
+        """Stop one VPN daemon through PolicyKit, on explicit request (its networks disconnect)."""
+        if unit not in _STARTABLE_UNITS:
+            return CommandResult(2, "", "unsupported service")
+        if self._run(["systemctl", "is-active", "--quiet", unit], timeout=15).returncode != 0:
+            return CommandResult(0)
+        return self._run(["pkexec", "/usr/bin/systemctl", "stop", unit], timeout=60)
+
     def _ensure_tailscaled(self, on_output: Callable[[str], None] | None) -> None:
         """Start the daemon only when it is not already running."""
         if self._run(["systemctl", "is-active", "--quiet", "tailscaled"], timeout=15).returncode == 0:
@@ -655,7 +675,12 @@ class VPNAccountManager:
             return result, False
         if not allow_privileged or command[:2] == ["flatpak", "run"]:
             return result, True
-        privileged = self._run(["pkexec", *command], timeout=max(timeout, 45))
+        # As root, only the system's own binary: pkexec would otherwise resolve
+        # "zerotier-cli" through this user's PATH (~/.local/bin first).
+        system_cli = system_zerotier_cli()
+        if system_cli is None:
+            return result, True
+        privileged = self._run(["pkexec", system_cli, *args], timeout=max(timeout, 45))
         return privileged, self._permission_error(privileged)
 
     def list_zerotier_networks(self, *, allow_privileged: bool = False) -> ZeroTierNetworks:

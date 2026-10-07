@@ -10,7 +10,9 @@ the utility module owns archive validation, atomic writes and rollback.
 |---|---|---:|---|
 | Big Remote Play settings | `$XDG_CONFIG_HOME/big-remote-play/config.json` | Yes | Replaces the backed-up application scope |
 | Selected VPN and non-secret network/account metadata | Files below the Big Remote Play configuration directory | Yes | Restored; a new machine may require sign-in again |
-| Sunshine configuration, applications and local TLS material | `big-remote-play/sunshine/` | Yes | Separate `sunshine/` namespace; never duplicated |
+| The Sunshine settings Big Remote Play manages (`sunshine.conf` and the other files in its folder) | `big-remote-play/sunshine/` | Yes | Separate `sunshine/` namespace; never duplicated |
+| Sunshine's own data: its application list, paired devices and the certificate it serves | `$XDG_CONFIG_HOME/sunshine/` | No | Untouched; after a restore on another computer, pair devices again |
+| The pin of Sunshine's certificate on this computer (`sunshine_cert.sha256`) | `big-remote-play/sunshine/` | No | Kept; a pin in an older archive is not applied |
 | Moonlight configuration, identity and paired hosts | The native or Flatpak `Moonlight.conf` actually selected by Moonlight support code | Yes | Only that file, in `moonlight/Moonlight.conf` |
 | Application logs | `big-remote-play/logs/` | No | Preserved during restore |
 | Runtime audio state, PID/log and temporary files | App/Sunshine runtime paths | No | Preserved or regenerated |

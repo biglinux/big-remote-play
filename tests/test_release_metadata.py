@@ -19,15 +19,26 @@ def test_application_version_is_consistent() -> None:
     pyproject = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     assert pyproject["project"]["version"] == __version__
 
-    default_nix = (ROOT / "default.nix").read_text(encoding="utf-8")
-    nix_match = re.search(r'^\s*version\s*=\s*"([^"]+)";', default_nix, re.MULTILINE)
-    assert nix_match is not None
-    assert nix_match.group(1) == __version__
-
     metainfo = ET.parse(ROOT / "usr/share/metainfo/br.com.biglinux.remoteplay.metainfo.xml").getroot()
     release = metainfo.find("releases/release")
     assert release is not None
     assert release.attrib.get("version") == __version__
+
+
+def test_nix_builds_carry_the_commit_date_not_the_sandbox_epoch() -> None:
+    """Nix builds with SOURCE_DATE_EPOCH at 1980: left to the build backend,
+    the wheel was stamped 80.01.02 while the derivation said 0.0.0. The flake
+    passes the commit date as YY.MM.DD, and the derivation hands it to the
+    backend as its explicit override."""
+    flake = (ROOT / "flake.nix").read_text(encoding="utf-8")
+    assert "self.lastModifiedDate" in flake
+    assert "callPackage ./. { inherit version; }" in flake
+    default_nix = (ROOT / "default.nix").read_text(encoding="utf-8")
+    assert re.search(r"(?m)^\{ version$", default_nix)
+    assert "inherit version;" in default_nix
+    assert "env.BRP_BUILD_VERSION = version;" in default_nix
+    # The AppStream file it installs is dated as the wheel, not left neutral.
+    assert '--replace-fail \'version="0.0.0" date="1970-01-01"\'' in default_nix
 
 
 def test_about_window_uses_canonical_version() -> None:

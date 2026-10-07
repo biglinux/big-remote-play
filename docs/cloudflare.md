@@ -4,6 +4,8 @@ What Cloudflare can do for internet play, and — just as important — what it 
 
 Facts about Cloudflare products were checked against Cloudflare's documentation on 2026-09-28. Plans and limits change; the linked pages are authoritative.
 
+For a Headscale server, the [Headscale setup wizard](headscale-setup-wizard.md) walks through DigitalPlat, the Cloudflare nameservers and the **DNS only** record inside Big Remote Play and checks each step.
+
 ## Short answer
 
 | Goal | Use Cloudflare for | Do not use |
@@ -55,4 +57,4 @@ Cloudflare Tunnel plus Access is a good fit for a web page you host yourself (fo
 
 ## What Big Remote Play does with Cloudflare
 
-Nothing automatically. The previous Headscale installer that asked for a Cloudflare API token has been removed. The app only shows guidance and opens Cloudflare documentation when you click a link. It never asks for a Cloudflare token.
+It never changes anything at Cloudflare and never asks for or stores Cloudflare credentials. The guides show the steps and open Cloudflare's dashboard or documentation when you click a link; you create the records yourself. The [Headscale setup wizard](headscale-setup-wizard.md#dns-checks-no-dig) then checks the domain's nameservers and records read-only through DNS over HTTPS (`cloudflare-dns.com`, falling back to `dns.google`), sending only the name being checked, and says when the proxy (orange cloud) is still on.

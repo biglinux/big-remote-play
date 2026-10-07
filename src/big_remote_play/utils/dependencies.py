@@ -52,6 +52,8 @@ def _purpose(component_id: str) -> str:
         "moonlight": _("Receives the game from the other computer."),
         "tailscale": _("Creates a secure connection between your computers."),
         "zerotier": _("Joins the private network of a friend or a club."),
+        "headscale_server": _("Your own private network server."),
+        "caddy": _("Gives the server a secure HTTPS address."),
     }.get(component_id, "")
 
 
@@ -60,6 +62,10 @@ COMPONENTS: dict[str, Component] = {
     "moonlight": Component("moonlight", "Moonlight", ("moonlight-qt", "moonlight"), "moonlight-qt"),
     "tailscale": Component("tailscale", "Tailscale", ("tailscale",), "tailscale", unit="tailscaled", flatpak_keyword="tailscale"),
     "zerotier": Component("zerotier", "ZeroTier", ("zerotier-cli",), "zerotier-one", unit="zerotier-one", flatpak_keyword="zerotier"),
+    # A Headscale server on this computer; the setup helper configures and
+    # starts their services, so none is enabled at installation.
+    "headscale_server": Component("headscale_server", "Headscale", ("headscale",), "headscale"),
+    "caddy": Component("caddy", "Caddy", ("caddy",), "caddy"),
 }
 
 # What each task cannot work without. The secure connection is added only when
@@ -203,6 +209,7 @@ class InstallOutcome:
     returncode: int
     cancelled: bool = False
     service_failed: tuple[str, ...] = ()
+    unavailable: tuple[str, ...] = ()  # packages no repository of this system provides
 
     @property
     def ok(self) -> bool:
@@ -244,8 +251,18 @@ def run_install(
     start_unit: Callable[[str], int] | None = None,
     probe: Callable[[Sequence[str]], list[ComponentState]] | None = None,
     cancelled: Callable[[], bool] | None = None,
+    resolve: Callable[[str], str] | None = None,
 ) -> InstallOutcome:
-    """Run the plan on the calling (worker) thread, then look again."""
+    """Run the plan on the calling (worker) thread, then look again.
+
+    A package no repository of this system provides (Sunshine on Arch Linux,
+    where it is in the AUR) is reported as such before anything runs: pacman
+    would only fail with "target not found"."""
+    if plan.method == "helper":
+        missing = tuple(package for package in plan.packages if not (resolve or resolve_package)(package))
+        if missing:
+            states = (probe or (lambda ids: audit(ids)))(plan.components)
+            return InstallOutcome(tuple(states), 4, unavailable=missing)
     returncode = 1
     seen: list[str] = []
     try:

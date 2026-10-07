@@ -15,12 +15,14 @@ Streaming                         Secure connection
                                     Headscale
 ```
 
-- Home and the private-network pages show two indicators instead of
-  cards: **Streaming** (the component of the remembered task, for example
+- **Connect your devices** shows the same cards as Share and Connect: the
+  streaming component of the remembered task (Sunshine or Moonlight) and
+  Tailscale, ZeroTier and Headscale, each with its own state.
+- Home shows two indicators instead of cards: **Streaming** (the component of the remembered task, for example
   *Sunshine · Running*) and **Secure connection** (the connected method, or
-  the one the internet page would set up next, for example
+  the one the guided setup would set up next, for example
   *Tailscale · Connected* or *Tailscale · Not installed*). Selecting one opens
-  its task or the internet page. They use the same presentations as the
+  its task or Connect your devices. They use the same presentations as the
   cards below.
 - Share shows Sunshine, Connect shows Moonlight, and both always show
   Tailscale, ZeroTier and Headscale in that order.
@@ -31,21 +33,25 @@ Streaming                         Secure connection
   sidebar becomes its own page and the same column fills its width.
 
 Activating Sunshine or Moonlight opens its component controls. Activating a
-network card opens that method's page for the current task (network details
-from Share, setup from Connect); sign-in, approval and permission steps stay
-on those pages and are never duplicated in the card.
+network card opens that method's page in **Connect your devices**
+(**Devices | Advanced**), which remembers Share or Connect and offers **Back
+to Share** or **Back to Connect** once the method works. Sign-in, approval
+and permission steps live on that page and are never duplicated in the card.
 
 ## Components
 
 - `ServiceStatusCard` (`ui/service_status_card.py`) is an activatable
-  `Adw.ActionRow`: the same small icon tile as **Connection method**, the
+  `Adw.ActionRow`: the same small icon tile as the methods in Connect your devices, the
   product name as title, the state (and an optional second line) as subtitle,
   and one state icon.
 - `streaming_presentation(service_id, installed, running)` and
   `provider_presentation(ProviderStatus)` are the only places that turn
-  backend facts into a `CardPresentation(text, tone, detail)`. The
-  **Connection method** dialog uses the same `provider_presentation`, so a
-  method is named the same way in the sidebar and in the dialog.
+  backend facts into a `CardPresentation(text, tone, detail)` for the
+  sidebar. The large cards of **Connect your devices** and a method's page
+  reduce the same `ProviderStatus` to five words with
+  `device_list.simple_state` (**Not installed**, **Off**, **Connecting…**,
+  **Connected**, **Needs attention**); both read the same status, so they
+  never disagree about whether a method is connected.
 - `DeviceConnectionCard` (`ui/connection_cards.py`) is a different concept, a
   device you stream with, and is not reused for services.
 
@@ -107,5 +113,6 @@ account and private addresses are never shown on the card.
   reduce)` removes them, and GTK drops them when animations are disabled.
 - High contrast: full-contrast 1 px borders, an inset ring for active cards and
   full-contrast headings and icons.
-- The Gamer overlay (`gamer.css`) repeats the tone rules with its palette: an
-  active card is lit like the BiGameMode Turbo preset, the rest stay quiet.
+- The **Gamer** appearance (`gamer.css`) repeats the tone rules with its
+  palette: an active card is lit, the rest stay quiet; see
+  [visual design](visual-design.md#component-mapping).

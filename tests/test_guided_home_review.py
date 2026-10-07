@@ -62,7 +62,7 @@ def test_missing_component_is_explained_before_installation(ui, monkeypatch, rol
     from big_remote_play.utils import dependencies
 
     monkeypatch.setattr(dependencies, "_AUDIT", lambda ids: [dependencies.ComponentState(i, False) for i in ids])
-    ui.update_dependency_ui(False, False, False, False, False)
+    ui.update_dependency_ui(False, False, False, False)
     ui._select_home_role(role)
     assert wait_until(lambda: isinstance(ui.get_visible_dialog(), InstallDialog))
     dialog = ui.get_visible_dialog()
@@ -77,7 +77,7 @@ def test_missing_component_is_explained_before_installation(ui, monkeypatch, rol
 @pytest.mark.parametrize("role", ["host", "guest"])
 def test_component_installed_after_startup_opens_the_task_without_asking(ui, role):
     """The reported bug: installed, yet Share kept asking to install Sunshine."""
-    ui.update_dependency_ui(False, False, False, False, False)  # what startup saw
+    ui.update_dependency_ui(False, False, False, False)  # what startup saw
     ui._select_home_role(role)  # conftest: the component is there now
     assert wait_until(lambda: ui.current_page == role)
     assert ui.get_visible_dialog() is None
@@ -101,7 +101,7 @@ def test_installing_from_the_prompt_opens_the_task_by_itself(ui, monkeypatch):
         return dependencies.InstallOutcome(tuple(probe(plan.components)), 0)
 
     monkeypatch.setattr(dependencies, "_RUN", run)
-    ui.update_dependency_ui(False, True, False, False, False)
+    ui.update_dependency_ui(False, True, False, False)
     ui._select_home_role("host")
     assert wait_until(lambda: isinstance(ui.get_visible_dialog(), InstallDialog))
     dialog = ui.get_visible_dialog()
@@ -254,7 +254,7 @@ def test_tailscale_join_uses_browser_before_optional_auth_key(ui, monkeypatch):
 
     monkeypatch.setattr(pnv.ConnectPage, "_prefill_from_history", lambda self: None)
     ui._apply_vpn_selection("tailscale")
-    rows = [w for w in widgets(ui.connect_private_view) if isinstance(w, Adw.ExpanderRow)]
+    rows = [w for w in widgets(ui.provider_page.setup_page.get_child()) if isinstance(w, Adw.ExpanderRow)]
     keys = [row for row in rows if row.get_subtitle() == "Auth Key"]
     assert len(keys) == 1 and not keys[0].get_expanded()
 
@@ -344,7 +344,7 @@ def test_joining_replaces_the_form_with_the_connected_state(ui, monkeypatch):
     monkeypatch.setattr(pnv, "VPNAccountManager", lambda _system_check: Mock())
     monkeypatch.setattr(pnv.threading, "Thread", lambda target, daemon: types.SimpleNamespace(start=lambda: None))
     ui._apply_vpn_selection("tailscale")
-    page = ui.connect_private_view.get_child()
+    page = ui.provider_page.setup_page.get_child()
     assert page._connect_form.get_visible()
 
     page._c_done(True)
@@ -363,7 +363,7 @@ def test_adding_an_account_keeps_the_join_form_on_a_connected_pc(ui, monkeypatch
 
     ui._apply_vpn_selection("tailscale", add_account=True)
     drain()
-    page = ui.connect_private_view.get_child()
+    page = ui.provider_page.setup_page.get_child()
 
     assert page._add_account
     assert page._connect_form.get_visible()

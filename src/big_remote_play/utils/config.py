@@ -9,6 +9,7 @@ import logging
 import threading
 
 from big_remote_play import paths
+from big_remote_play.utils.secure_io import set_aside_corrupt
 
 _log = logging.getLogger("big-remoteplay")
 
@@ -35,6 +36,12 @@ class Config:
                     if not isinstance(value, dict):
                         raise ValueError("Configuration root must be an object")
                     return value
+            except (ValueError, UnicodeError) as e:
+                # Malformed, not unreadable: kept aside so the defaults saved
+                # next never overwrite the person's file.
+                _log.error(f"Error loading configuration: {e}")
+                set_aside_corrupt(self.config_file)
+                return self.default_config()
             except Exception as e:
                 _log.error(f"Error loading configuration: {e}")
                 return self.default_config()
