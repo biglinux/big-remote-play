@@ -568,7 +568,8 @@ def test_state_file_is_private_and_holds_no_stream_ids(pulse, manager, tmp_path)
     path = tmp_path / "audio-session.json"
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
     state = json.loads(path.read_text())
-    assert set(state) == {"owner_pid", "token", "original_sink", "manual_output", "play_on_host", "bridges", "feeders", "mix_module", "game"}
+    assert set(state) == {"owner_pid", "token", "original_sink", "manual_output", "play_on_host", "bridges", "feeders", "mix_module", "game", "send_microphone", "send_calls"}
+    assert state["send_microphone"] is False and state["send_calls"] is False
     assert state["original_sink"] == HDMI and len(state["bridges"]) == 1 and len(state["bridges"][0]["links"]) == 2
     assert state["game"] is None  # Full Desktop: no game scope
 

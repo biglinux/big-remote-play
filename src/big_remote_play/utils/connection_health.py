@@ -266,6 +266,8 @@ class ConnectionInfo:
     video: str = ""
     # Problems the person can fix, as (code, detail): "scaled", "hdr_as_sdr".
     warnings: tuple[tuple[str, str], ...] = ()
+    # Share: already playing when this computer started watching, not a new connection.
+    preexisting: bool = False
 
 
 __all__ = [

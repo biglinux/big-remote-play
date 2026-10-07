@@ -114,7 +114,7 @@ def test_installing_from_the_prompt_opens_the_task_by_itself(ui, monkeypatch):
 
 
 def test_home_vpn_action_can_return_directly_to_home(ui):
-    ui._status_rows["summary-network"].emit("activated")
+    ui._go_to_private_network_setup()
     assert ui.current_page == "vpn_selector"
     ui.return_from_network()
     assert ui.current_page == "welcome"

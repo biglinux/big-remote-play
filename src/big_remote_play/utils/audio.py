@@ -474,6 +474,9 @@ class AudioStatus:
     game_only: bool = False  # Game Window sends only the game's sound
     game_programs: tuple[str, ...] = ()  # the game's streams linked into the mix now
     game_separated: bool | None = None  # every Sunshine recording is on the game-only mix; None without a client
+    send_microphone: bool = False  # the person chose to send this computer's microphone
+    microphone_in_mix: str = ""  # the microphone linked into the mix now (its description)
+    send_calls: bool = False  # the person chose to send voice calls too
 
 
 def audio_status(graph: AudioGraph | None, manual_output: str = "", bridges: Iterable[Bridge] = ()) -> AudioStatus:
@@ -1209,8 +1212,16 @@ class AudioRoutingSession:
         state_path: Path | None = None,
         game: GameScope | None = None,
         game_family: Callable[[int], frozenset[int]] | None = None,
+        send_microphone: bool = False,
+        send_calls: bool = False,
     ) -> None:
         self.manager = manager
+        # Chosen in Preferences → Audio; both off by default. The microphone is
+        # linked into the mix only (never played here); calls, when sent, are
+        # treated like every other program.
+        self.send_microphone = send_microphone
+        self.send_calls = send_calls
+        self.microphone_in_mix = ""
         # Game Window with "only the game's sound": the mix carries the game alone.
         self.game = game
         self.game_family = game_family or _game_process_family
@@ -1254,6 +1265,8 @@ class AudioRoutingSession:
             "feeders": sorted(self.feeders),
             "mix_module": self.mix_module,
             "game": {"pid": self.game.pid, "names": list(self.game.names)} if self.game is not None else None,
+            "send_microphone": self.send_microphone,
+            "send_calls": self.send_calls,
         }
         try:
             secure_write_text(str(self.state_path), json.dumps(state))
@@ -1277,7 +1290,15 @@ class AudioRoutingSession:
             return None
         if not isinstance(state, dict) or not re.fullmatch(r"[0-9a-f]{16}", str(state.get("token", ""))):
             return None
-        session = cls(manager, manual_output=str(state.get("manual_output") or ""), play_on_host=bool(state.get("play_on_host", True)), state_path=path, game=GameScope.from_state(state.get("game")))
+        session = cls(
+            manager,
+            manual_output=str(state.get("manual_output") or ""),
+            play_on_host=bool(state.get("play_on_host", True)),
+            state_path=path,
+            game=GameScope.from_state(state.get("game")),
+            send_microphone=state.get("send_microphone") is True,
+            send_calls=state.get("send_calls") is True,
+        )
         session.token = state["token"]
         session.original_sink = str(state.get("original_sink") or "")
         for entry in state.get("bridges") or []:
@@ -1301,6 +1322,15 @@ class AudioRoutingSession:
         except (TypeError, ValueError):
             session._owner_pid = 0
         return session
+
+    def set_options(self, *, send_microphone: bool, send_calls: bool) -> None:
+        """The person changed Microphone or Voice calls while sharing; the next reconcile applies it.
+
+        Plain attribute writes, so the GTK thread never waits for a reconcile
+        that is talking to the sound server.
+        """
+        self.send_microphone = bool(send_microphone)
+        self.send_calls = bool(send_calls)
 
     # -- lifecycle ---------------------------------------------------------
     def begin(self, graph: AudioGraph | None) -> None:
@@ -1399,6 +1429,9 @@ class AudioRoutingSession:
             game_only=self.game is not None,
             game_programs=self.game_programs if self.game is not None else (),
             game_separated=separated,
+            send_microphone=self.send_microphone,
+            microphone_in_mix=self.microphone_in_mix,
+            send_calls=self.send_calls,
         )
 
     def allow_level_restore(self) -> None:
@@ -1416,6 +1449,10 @@ class AudioRoutingSession:
         }
         if self.game is not None:
             facts["game"] = f"Only the game's sound is sent; game streams: {', '.join(self.game_programs) if self.game_programs else 'none playing'}"
+        if self.send_microphone:
+            facts["microphone"] = f"Microphone sent by choice: {self.microphone_in_mix or 'none linked'}"
+        if self.send_calls:
+            facts["calls"] = "Voice calls are sent by choice"
         captures = graph.sunshine_captures()
         if not captures:
             facts["sunshine"] = "Sunshine is not recording (no client playing)"
@@ -1438,6 +1475,12 @@ class AudioRoutingSession:
         computer still hears it; nothing is moved, so this computer hears
         everything as before. Without a call, Sunshine records the output
         again and the mix is removed.
+
+        The same mix carries the two choices of Preferences → Audio: with
+        **Microphone** on, the default microphone's ports are linked into it
+        (into the mix only, so this computer never plays its own microphone);
+        with **Voice calls** on, call programs are linked like any other
+        program instead of being kept out.
         """
         captures = graph.sunshine_captures()
         origins: dict[str, str] = {}  # capture index -> the output Sunshine chose
@@ -1453,9 +1496,11 @@ class AudioRoutingSession:
                 origins[capture.index] = recorded
         # Only a capture in the mix needs its origin remembered.
         self.capture_origins = {index: origin for index, origin in origins.items() if index in on_mix}
-        candidates = [s for s in graph.playback if is_call_stream(s)]
+        send_calls = self.send_calls
+        send_microphone = self.send_microphone
+        candidates = [] if send_calls else [s for s in graph.playback if is_call_stream(s)]
         game_only = self.game is not None
-        pw = self.manager.pipewire() if origins and (candidates or game_only) else None
+        pw = self.manager.pipewire() if origins and (candidates or game_only or send_microphone) else None
         targets = {node for node in (pw.node_named(name) for name in set(origins.values())) if node is not None} if pw is not None else set()
 
         def reaching(stream: AudioStream) -> bool:
@@ -1465,17 +1510,22 @@ class AudioRoutingSession:
         calls = [s for s in candidates if reaching(s)]
         game = self._game_streams(graph) if game_only and origins else []
         self.game_programs = tuple(dict.fromkeys(call_program_name(s) for s in game))
+        self.microphone_in_mix = ""
+        microphone_lost = ["microphone-not-sent"] if send_microphone and origins else []
         if game_only and origins and pw is None:
             # Never fall back to sending everything on purpose: what Sunshine
             # records stays as it is, and the interface says so.
             self.calls_kept_out = ()
-            return graph, ["game-not-separated"]
-        if not game_only and (not calls or pw is None):
+            return graph, ["game-not-separated", *microphone_lost]
+        if not game_only and not send_microphone and (not calls or pw is None):
             self.calls_kept_out = ()
             return self._release_mix(graph, captures, origins), (["calls-unreadable"] if candidates and origins and pw is None else [])
         if not origins or pw is None:
             self.calls_kept_out = ()
-            return self._release_mix(graph, captures, origins), []
+            return self._release_mix(graph, captures, origins), microphone_lost
+        # What could not be done when the mix itself is unusable.
+        mix_failed = ["game-not-separated" if game_only else "calls-not-separated"] if game_only or calls else []
+        mix_failed += microphone_lost
         if graph.output(CALL_MIX_SINK) is None:
             origin = graph.output(next(iter(origins.values())))
             self.mix_module = self.manager.create_call_mix(self.token, origin.channel_map if origin else "", self.mix_description)
@@ -1483,40 +1533,57 @@ class AudioRoutingSession:
             fresh, fresh_pw = self.manager.snapshot(), self.manager.pipewire()
             if not self.mix_module or fresh is None or fresh_pw is None or fresh.output(CALL_MIX_SINK) is None:
                 self.calls_kept_out = ()
-                return self._release_mix(fresh or graph, captures, origins), ["game-not-separated" if game_only else "calls-not-separated"]
+                return self._release_mix(fresh or graph, captures, origins), mix_failed
             graph, pw = fresh, fresh_pw
             targets = {node for node in (pw.node_named(name) for name in set(origins.values())) if node is not None}
         mix = graph.output(CALL_MIX_SINK)
         mix_node = pw.node_named(CALL_MIX_SINK)
         if mix is None or mix.kind != OWNED or mix_node is None:
             self.calls_kept_out = ()
-            return graph, ["game-not-separated" if game_only else "calls-not-separated"]  # someone else's output with our name
+            return graph, mix_failed  # someone else's output with our name
         inputs = pw.ports_of(mix_node, "input")
         wanted: set[tuple[int, int]] = set()
         game_nodes = {_stream_node(s) for s in game}
+        notes = []
         for stream in graph.playback:
             node = _stream_node(stream)
+            call = is_call_stream(stream)
             # Only programs themselves: a node others play into, or half of a
             # loopback or filter chain, forwards sound that is linked already.
-            if node is None or is_call_stream(stream) or _is_sunshine_process(stream) or pw.is_fed(node) or pw.link_group(node):
+            if node is None or (call and not send_calls) or _is_sunshine_process(stream) or pw.is_fed(node) or pw.link_group(node):
                 continue
-            # Game Window sends the game wherever it plays; otherwise every
-            # program that reaches the recorded output, except calls.
-            if (node not in game_nodes) if game_only else not reaching(stream):
+            # Game Window sends the game wherever it plays (and calls, when
+            # chosen); otherwise every program that reaches the recorded
+            # output, except calls unless they are chosen.
+            if game_only:
+                if node not in game_nodes and not call:
+                    continue
+            elif not reaching(stream):
                 continue
             for channel, port in pw.ports_of(node, "output").items():
                 wanted |= {(port, inputs[target]) for target in mix_channels(channel, inputs)}
+        if send_microphone:
+            # The default input, only when it really is an input (never a monitor).
+            source = graph.source(graph.default_source)
+            mic_node = pw.node_named(source.name) if source is not None and not source.is_monitor else None
+            mic_ports = pw.ports_of(mic_node, "output") if mic_node is not None else {}
+            mic_links = {(port, inputs[target]) for channel, port in mic_ports.items() for target in mix_channels(channel, inputs)}
+            if mic_links and source is not None:
+                wanted |= mic_links
+                self.microphone_in_mix = source.description or source.name
+            else:
+                notes.append("microphone-missing")
         into_mix = {link_id: link for link_id, link in pw.links.items() if link.input_node == mix_node}
         present = {(link.output_port, link.input_port) for link in into_mix.values()}
         self.manager.unlink_ids(link_id for link_id, link in into_mix.items() if link.owner == self.token and (link.output_port, link.input_port) not in wanted)
         self.manager.link_port_ids(sorted(wanted - present), self.token)
-        notes = []
         for capture in captures:
             if capture.index in origins and graph.recorded_output(capture) != CALL_MIX_SINK:
                 if self.manager.move_capture(capture.index, f"{CALL_MIX_SINK}.monitor"):
                     self.capture_origins[capture.index] = origins[capture.index]
                 else:
-                    notes.append("game-not-separated" if game_only else "calls-not-separated")
+                    notes += mix_failed
+                    self.microphone_in_mix = ""
         self.calls_kept_out = tuple(dict.fromkeys(call_program_name(s) for s in calls))
         self._save()
         return self.manager.snapshot() or graph, notes
@@ -1732,6 +1799,10 @@ class AudioWatcher:
                     self._pending.set()
             if self._stop.wait(2.0):  # the server restarted; subscribe again
                 return
+
+    def request_check(self) -> None:
+        """Check again soon, as if the sound server had reported a change."""
+        self._pending.set()
 
     def _dispatch(self) -> None:
         while not self._stop.is_set():

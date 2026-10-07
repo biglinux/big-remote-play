@@ -214,13 +214,16 @@ def test_share_says_when_the_shared_screen_is_in_hdr(ui):
     host = ui.host_view
     host._hdr_outputs = {"DP-1"}
     host._sync_quality_controls()
-    assert "shared in SDR" in host.quality_summary_row.get_subtitle()
+    assert "shared in SDR" in host._quality_summary()
+    assert host.quality_fact("hdr") == "Shared in SDR"
     host.hdr_sdr_row.set_active(False)
     host._sync_quality_controls()
-    assert "washed out" in host.quality_summary_row.get_subtitle()
+    assert "washed out" in host._quality_summary()
+    assert host.quality_fact("hdr") == "Washed out on devices without HDR"
     host._hdr_outputs = set()
     host._sync_quality_controls()
-    assert "HDR" not in host.quality_summary_row.get_subtitle()
+    assert "HDR" not in host._quality_summary()
+    assert host.quality_fact("hdr") == ""  # the tile is hidden without an HDR screen
 
 
 def test_the_prep_command_never_fails_so_sunshine_still_streams(monkeypatch):

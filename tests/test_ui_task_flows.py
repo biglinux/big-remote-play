@@ -86,7 +86,8 @@ def test_sharing_selects_source_before_start_and_keeps_advanced_off_main(ui):
     host = ui.host_view
     assert host.share_controls.get_last_child() is host.overview_start_button
     # The page states the picture settings; the controls themselves stay in the sheet.
-    assert host.quality_summary_row.is_ancestor(host)
+    assert host.quality_card.is_ancestor(host)
+    assert host.quality_configure_button.is_ancestor(host.quality_card)
     assert not host.fps_row.is_ancestor(host)
     assert not host.bandwidth_row.is_ancestor(host)
     assert host.overview_start_button.get_accessible_role() == Gtk.AccessibleRole.BUTTON
@@ -101,10 +102,14 @@ def test_automatic_quality_locks_the_rows_it_owns_and_frees_them_when_turned_off
     assert not host.fps_row.get_sensitive()
     assert not host.gpu_row.get_sensitive()
     # What it chose is visible on the page, not only inside the sheet.
-    assert "Automatic capture and encoding" in host.quality_summary_row.get_subtitle()
+    assert "Automatic capture and encoding" in host._quality_summary()
+    assert host.quality_fact("encoding") == "Automatic"
     assert host.bandwidth_row.get_sensitive()
     assert host.bandwidth_row.get_value() == 0
-    assert "FPS" not in host.quality_summary_row.get_subtitle()
+    assert host.quality_fact("limit") == "No limit"
+    # The card states configured values, never a frame rate it cannot know.
+    assert "FPS" not in host._quality_summary()
+    assert all("FPS" not in host.quality_fact(key) for key in host._QUALITY_FACTS)
 
     host.auto_quality_row.set_active(False)
     assert not host.redetect_row.get_visible()
@@ -883,6 +888,64 @@ def test_game_window_is_a_source_and_needs_an_open_game_before_starting(ui, open
     with pytest.raises(ValueError):
         host._collect_hosting_config()
     assert "stay on this computer" in host.game_group.get_description()
+
+
+def test_every_source_has_an_icon_and_stays_selectable(ui):
+    from big_remote_play.ui.host_view import _SOURCE_ICONS, _SOURCE_KEYS
+
+    host = ui.host_view
+    display = Gdk.Display.get_default()
+    theme = Gtk.IconTheme.get_for_display(display)
+    assert host.game_mode_row.get_list_factory() is not None  # the list shows icon and name
+    seen = set()
+    for index, key in enumerate(_SOURCE_KEYS):
+        host.game_mode_row.set_selected(index)
+        drain()
+        assert host._source() == key
+        icon = _SOURCE_ICONS[key]
+        assert theme.has_icon(icon), icon
+        assert host.game_mode_row._brp_prefix_icon.get_icon_name() == icon
+        seen.add(icon)
+    assert len(seen) == len(_SOURCE_KEYS)  # five distinct icons
+    host.game_mode_row.set_selected(0)
+    assert host._source() == "desktop"
+
+
+def test_image_and_capture_card_follows_the_settings(ui, monkeypatch):
+    host = ui.host_view
+    card = host.quality_card
+    assert card.get_accessible_role() == Gtk.AccessibleRole.GROUP
+    host.auto_quality_row.set_active(True)
+    host.bandwidth_row.set_value(0)
+    host.codecs_row.set_active(True)
+    host._sync_quality_controls()
+    assert host.quality_fact("limit") == "No limit"
+    assert host.quality_fact("compression") == "HEVC or AV1 when supported"
+    host.bandwidth_row.set_value(40)
+    host.auto_quality_row.set_active(False)
+    host.codecs_row.set_active(False)
+    host._sync_quality_controls()
+    assert host.quality_fact("limit") == "40 Mbps"
+    assert host.quality_fact("compression") == "H.264 only"
+    assert host.quality_fact("encoding") == "Automatic"  # the graphics card choice of the sheet
+    assert host.quality_fact("priority") == host._choice_text(host.optimization_row)  # shown for a manual choice
+    host.auto_quality_row.set_active(True)
+    host._sync_quality_controls()
+    assert host.quality_fact("priority") == ""  # Automatic always balances: not repeated
+    host.auto_quality_row.set_active(False)
+    # Game Window has its own screen (the game list itself is not needed here).
+    monkeypatch.setattr(host, "_source", lambda: "game_window")
+    host._sync_quality_controls()
+    assert host.quality_fact("screen") == "Only the game window"
+    monkeypatch.setattr(host, "_source", lambda: "desktop")
+    host._sync_quality_controls()
+    assert host.quality_fact("screen") == "Automatic"
+    # Configured values only: the card never claims a measured frame rate or latency.
+    for key in host._QUALITY_FACTS:
+        assert not any(word in host.quality_fact(key) for word in ("FPS", "ms", "Current"))
+    host.quality_configure_button.emit("clicked")
+    drain()
+    assert ui.get_visible_dialog() is host.quality_sheet
 
 
 def test_refresh_adds_new_games_drops_closed_ones_and_keeps_the_choice(ui, open_games):

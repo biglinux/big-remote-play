@@ -38,6 +38,14 @@ _SOURCE_KEYS = ("desktop", "game_window", "steam", "lutris", "custom")
 # Versions before Game Window saved only the row position.
 _LEGACY_SOURCE_BY_INDEX = {0: "desktop", 1: "steam", 2: "lutris", 3: "custom"}
 _LAUNCH_PLATFORMS = {"steam": "Steam", "lutris": "Lutris"}
+# One symbolic icon per source, recoloured with the theme like every row icon.
+_SOURCE_ICONS = {
+    "desktop": "brp-view-fullscreen-symbolic",
+    "game_window": "brp-window-symbolic",
+    "steam": "brp-steam-symbolic",
+    "lutris": "brp-lutris-symbolic",
+    "custom": "brp-application-symbolic",
+}
 # The list follows games opening and closing while it is on screen.
 _GAME_WINDOW_REFRESH_SECONDS = 8
 
@@ -158,6 +166,10 @@ class HostView(Gtk.Box):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.config = Config()
         self.is_hosting = False
+        # "starting"/"stopping" while this window's start or stop worker runs.
+        self.sharing_transition: str | None = None
+        # The window's sidebar shows whether Share is running.
+        self._state_listeners: list[Callable[[], None]] = []
         self.process = None  # Initialize to avoid AttributeError
         self.pin_code = None
         self.audio_devices = []
@@ -225,6 +237,19 @@ class HostView(Gtk.Box):
         # A server still running from before this window was opened.
         self.input_priority.sync(hosting=self.is_hosting, source=self._source())
 
+    def add_state_listener(self, callback: Callable[[], None]) -> None:
+        """``callback()`` on the GTK thread when sharing starts, stops or changes phase."""
+        self._state_listeners.append(callback)
+
+    def _announce_state(self) -> None:
+        for listener in list(self._state_listeners):
+            listener()
+
+    def _set_sharing_transition(self, transition: str | None) -> None:
+        if transition != self.sharing_transition:
+            self.sharing_transition = transition
+            self._announce_state()
+
     def _recover_audio_session(self) -> None:
         """Adopt the audio session of a sharing that is still running, or undo
         what a crashed window left (only resources carrying our token)."""
@@ -277,6 +302,8 @@ class HostView(Gtk.Box):
         if self._closed:
             return False
         if session is not None and self.is_hosting and self.audio_session is None:
+            # The switches on screen are the person's current choice.
+            session.set_options(send_microphone=self.audio_microphone_row.get_active(), send_calls=self.audio_calls_row.get_active())
             self.audio_session = session
             self._start_audio_watch()
         else:
@@ -430,12 +457,15 @@ class HostView(Gtk.Box):
         for m in [_("Full Desktop"), _("Game Window"), "Steam", "Lutris", _("Custom App")]:
             modes.append(m)
         self.game_mode_row.set_model(modes)
+        self.game_mode_row.set_list_factory(self._source_list_factory())
         self.game_mode_row.set_selected(0)
+        set_row_icon(self.game_mode_row, _SOURCE_ICONS["desktop"])
         self.game_mode_row.connect("notify::selected", self.on_game_mode_changed)
         game_group.add(self.game_mode_row)
         self._create_game_window_selector(game_group)
 
         self.platform_games_expander = Adw.ExpanderRow()
+        set_row_icon(self.platform_games_expander, _SOURCE_ICONS["steam"])
         self.platform_games_expander.set_title(_("Game Selection"))
         self.platform_games_expander.set_subtitle(_("Choose game from list"))
         self.platform_games_expander.set_visible(False)
@@ -449,6 +479,7 @@ class HostView(Gtk.Box):
         game_group.add(self.platform_games_expander)
 
         self.custom_app_expander = Adw.ExpanderRow()
+        set_row_icon(self.custom_app_expander, _SOURCE_ICONS["custom"])
         self.custom_app_expander.set_title(_("Application Details"))
         self.custom_app_expander.set_subtitle(_("Configure name and command"))
         self.custom_app_expander.set_visible(False)
@@ -628,7 +659,7 @@ class HostView(Gtk.Box):
         # --- Audio Group ---
         audio_group = Adw.PreferencesGroup()
         audio_group.set_title(_("Audio"))
-        audio_group.set_description(_("The other computer hears the sound this computer plays. The microphone is not sent."))
+        audio_group.set_description(_("The other computer hears the sound this computer plays."))
 
         # Measured, not configured: what the sound server and Sunshine report.
         self.audio_stream_row = Adw.ActionRow(title=_("Sound for the other computer"), use_markup=False)
@@ -654,24 +685,27 @@ class HostView(Gtk.Box):
         audio_group.add(self.audio_play_here_row)
 
         self.audio_game_only_row = Adw.SwitchRow(title=_("Send only the game's sound"))
-        self.audio_game_only_row.set_subtitle(_("With Game Window, other programs, notifications and voice calls stay on this computer. This computer still hears everything."))
+        self.audio_game_only_row.set_subtitle(_("With Game Window, other programs and notifications stay on this computer. This computer still hears everything."))
         self.audio_game_only_row.set_subtitle_lines(0)
         self.audio_game_only_row.set_active(True)
         set_row_icon(self.audio_game_only_row, "brp-audio-x-generic-symbolic")
         self.audio_game_only_row.connect("notify::active", self.on_audio_mode_changed)
         audio_group.add(self.audio_game_only_row)
 
-        microphone_row = Adw.ActionRow(title=_("Microphone"), subtitle=_("Not sent by Big Remote Play. Voice chat apps keep using it normally."), use_markup=False)
-        microphone_row.set_subtitle_lines(0)
-        set_row_icon(microphone_row, "brp-media-record-symbolic")
-        audio_group.add(microphone_row)
+        # Off by default: the microphone is private. On, it is mixed into
+        # what the other computer hears, never played on this computer.
+        self.audio_microphone_row = Adw.SwitchRow(title=_("Microphone"), use_markup=False)
+        self.audio_microphone_row.set_subtitle_lines(0)
+        set_row_icon(self.audio_microphone_row, "brp-audio-input-microphone-symbolic")
+        audio_group.add(self.audio_microphone_row)
 
         # A call program here plays everyone's voice, the other person's too:
-        # sent back to them, they would hear themselves.
-        self.audio_calls_row = Adw.ActionRow(title=_("Voice calls"), use_markup=False)
+        # sent back to them, they would hear themselves. Off by default.
+        self.audio_calls_row = Adw.SwitchRow(title=_("Voice calls"), use_markup=False)
         self.audio_calls_row.set_subtitle_lines(0)
-        set_row_icon(self.audio_calls_row, "brp-audio-x-generic-symbolic")
+        set_row_icon(self.audio_calls_row, "brp-call-symbolic")
         audio_group.add(self.audio_calls_row)
+        self._show_microphone_state(None)
         self._show_calls_kept_out(())
 
         self.audio_test_row = Adw.ActionRow(title=_("Test audio"), subtitle=_("Plays a short tone and checks that it reaches the shared sound."), use_markup=False)
@@ -1072,14 +1106,8 @@ class HostView(Gtk.Box):
         self.share_controls.append(game_group)
         # The picture settings are stated on the page that starts the stream, so
         # nobody has to open a sheet to learn what they are about to send.
-        self.quality_summary_row = action_row(
-            _("Image and capture"),
-            _("Checking…"),
-            "brp-quality-symbolic",
-            self._open_quality_sheet,
-        )
-        self.quality_summary_box = boxed_rows(self.quality_summary_row)
-        self.share_controls.append(self.quality_summary_box)
+        self.quality_card = self._create_quality_card()
+        self.share_controls.append(self.quality_card)
 
         # While sharing, these controls decide nothing: the session is running
         # with the values it started with. The page states what is being sent
@@ -1195,7 +1223,7 @@ class HostView(Gtk.Box):
         self._game_window_worker = Worker()
         self.game_window_expander = Adw.ExpanderRow(title=_("Game Window"), use_markup=False)
         self.game_window_expander.set_subtitle_lines(0)
-        set_row_icon(self.game_window_expander, "brp-input-gaming-symbolic")
+        set_row_icon(self.game_window_expander, _SOURCE_ICONS["game_window"])
         self.game_window_expander.set_visible(False)
 
         self.game_window_refresh_button = Gtk.Button(valign=Gtk.Align.CENTER)
@@ -1215,6 +1243,41 @@ class HostView(Gtk.Box):
         # The list follows games opening and closing only while it is visible.
         self.game_window_expander.connect("map", lambda *_args: self._sync_game_window_timer())
         self.game_window_expander.connect("unmap", lambda *_args: self._sync_game_window_timer())
+
+    @staticmethod
+    def _source_list_factory() -> Gtk.SignalListItemFactory:
+        """Source choices with their icon: the icon reinforces, the name says it."""
+        factory = Gtk.SignalListItemFactory()
+
+        def show_selected(item, *_args) -> None:
+            check = item.get_child().get_last_child()
+            check.set_opacity(1.0 if item.get_selected() else 0.0)
+
+        def setup(_factory, item) -> None:
+            box = Gtk.Box(spacing=12)
+            image = create_icon_widget(_SOURCE_ICONS["desktop"], size=16)
+            image.set_valign(Gtk.Align.CENTER)
+            box.append(image)
+            # Long translations wrap instead of being cut.
+            label = Gtk.Label(xalign=0, hexpand=True, wrap=True, max_width_chars=32)
+            label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+            box.append(label)
+            # The current choice keeps its checkmark, as in every other list of the app.
+            box.append(create_icon_widget("object-select-symbolic", size=16))
+            item.set_child(box)
+            item.connect("notify::selected", show_selected)
+
+        def bind(_factory, item) -> None:
+            image = item.get_child().get_first_child()
+            position = item.get_position()
+            key = _SOURCE_KEYS[position] if 0 <= position < len(_SOURCE_KEYS) else "desktop"
+            set_icon(image, _SOURCE_ICONS[key])
+            image.get_next_sibling().set_label(item.get_item().get_string())
+            show_selected(item)
+
+        factory.connect("setup", setup)
+        factory.connect("bind", bind)
+        return factory
 
     def _source(self) -> str:
         index = self.game_mode_row.get_selected()
@@ -1573,6 +1636,110 @@ class HostView(Gtk.Box):
         self.show_toast(message)
 
     # ── Automatic quality ────────────────────────────────────────────────────
+
+    # Image and capture card: (id, label). Values come from the sheet's own rows.
+    _QUALITY_FACTS = ("screen", "encoding", "limit", "compression", "priority", "hdr", "resolution")
+
+    def _create_quality_card(self) -> Gtk.Box:
+        """A compact summary of the next session's picture; the controls stay in the sheet."""
+        from .components import icon_tile
+
+        card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12, accessible_role=Gtk.AccessibleRole.GROUP)
+        card.add_css_class("card")
+        card.add_css_class("brp-capture-card")
+        card.update_property([Gtk.AccessibleProperty.LABEL], [_("Image and capture")])
+        header = Gtk.Box(spacing=12)
+        tile = icon_tile("brp-screen-capture-symbolic")
+        header.append(tile)
+        titles = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, hexpand=True, valign=Gtk.Align.CENTER)
+        title = Gtk.Label(label=_("Image and capture"), xalign=0, wrap=True)
+        title.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        title.add_css_class("heading")
+        titles.append(title)
+        subtitle = Gtk.Label(label=_("Configured for the next sharing session"), xalign=0, wrap=True)
+        subtitle.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        subtitle.add_css_class("caption")
+        subtitle.add_css_class("dim-label")
+        titles.append(subtitle)
+        header.append(titles)
+        self.quality_configure_button = Gtk.Button(label=_("Configure"), valign=Gtk.Align.CENTER)
+        self.quality_configure_button.update_property(
+            [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
+            [_("Configure image and capture"), _("Screen, graphics card, encoding and video limit")],
+        )
+        self.quality_configure_button.connect("clicked", lambda _button: self._open_quality_sheet())
+        header.append(self.quality_configure_button)
+        card.append(header)
+
+        # Facts as small tiles, two per line: an even grid at every width and in every language.
+        facts = Gtk.FlowBox(selection_mode=Gtk.SelectionMode.NONE, homogeneous=True, column_spacing=8, row_spacing=8)
+        facts.set_min_children_per_line(1)
+        facts.set_max_children_per_line(2)
+        facts.set_focusable(False)
+        titles_by_fact = {
+            "screen": _("Screen"),
+            "encoding": _("Encoding"),
+            "limit": _("Video limit"),
+            "compression": _("Compression"),
+            "priority": _("Priority"),
+            "hdr": _("HDR screen"),
+            "resolution": _("Screen resolution"),
+        }
+        self.quality_facts: dict[str, tuple[Gtk.FlowBoxChild, Gtk.Label]] = {}
+        for key in self._QUALITY_FACTS:
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+            box.add_css_class("brp-metric")
+            # A modest natural width lets two tiles share a phone-width line; text wraps.
+            name = Gtk.Label(label=titles_by_fact[key], xalign=0, wrap=True, max_width_chars=12)
+            name.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+            name.add_css_class("caption")
+            name.add_css_class("dim-label")
+            box.append(name)
+            value = Gtk.Label(label="…", xalign=0, wrap=True, max_width_chars=12)
+            value.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+            value.add_css_class("heading")
+            box.append(value)
+            child = Gtk.FlowBoxChild(child=box, focusable=False)
+            facts.append(child)
+            self.quality_facts[key] = (child, value)
+        card.append(facts)
+        # Configured values, not measurements; and what this computer does not decide.
+        note = Gtk.Label(label=_("The other computer asks for the resolution and frame rate when it connects."), xalign=0, wrap=True)
+        note.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        note.add_css_class("caption")
+        note.add_css_class("dim-label")
+        card.append(note)
+        return card
+
+    def quality_fact(self, key: str) -> str:
+        """The value a fact of the Image and capture card shows, or "" when hidden."""
+        child, value = self.quality_facts[key]
+        return value.get_label() if child.get_visible() else ""
+
+    def _sync_quality_card(self) -> None:
+        game_window = self._source() == "game_window"
+        limit = self.bandwidth_row.get_value()
+        hdr = ""
+        if not game_window and self._hdr_summary():
+            hdr = _("Shared in SDR") if self.hdr_sdr_row.get_active() else _("Washed out on devices without HDR")
+        resolution = ""
+        if self.share_resolution_row.get_sensitive() and self._share_resolution():
+            resolution = self._choice_text(self.share_resolution_row)
+        values = {
+            "screen": _("Only the game window") if game_window else self._choice_text(self.monitor_row),
+            "encoding": _("Automatic") if self.auto_quality_row.get_active() else self._choice_text(self.gpu_row),
+            "limit": _("No limit") if limit <= 0 else f"{limit:g} Mbps",
+            "compression": _("HEVC or AV1 when supported") if self.codecs_row.get_active() else _("H.264 only"),
+            # Automatic always uses the balanced priority: only a manual choice is news.
+            "priority": "" if self.auto_quality_row.get_active() else self._choice_text(self.optimization_row),
+            "hdr": hdr,
+            "resolution": resolution,
+        }
+        for key, text in values.items():
+            child, label = self.quality_facts[key]
+            child.set_visible(bool(text))
+            label.set_label(text)
+        self.quality_card.update_property([Gtk.AccessibleProperty.DESCRIPTION], [self._quality_summary()])
 
     def _open_quality_sheet(self) -> None:
         sheet = getattr(self, "quality_sheet", None)
@@ -2071,7 +2238,7 @@ class HostView(Gtk.Box):
             _("Error correction: {value}%").format(value=30 if self.wifi_row.get_active() else 20),
         ]
         self.auto_status_row.set_subtitle("\n".join(configured))
-        self.quality_summary_row.set_subtitle(self._quality_summary())
+        self._sync_quality_card()
 
     def _monitor_identifier_specs(self) -> list[tuple[object, str, str, str]]:
         """Return connected GDK monitors with the numbers shown in the selector."""
@@ -2416,6 +2583,11 @@ class HostView(Gtk.Box):
         dialog.present(self)
 
     def _create_connected_devices_group(self) -> Adw.PreferencesGroup:
+        from big_remote_play.host.connection_notices import ConnectionNotices
+
+        # One desktop notification per new session, from the same list.
+        self._connection_notices = ConnectionNotices()
+        self._notice_count = 0
         group = Adw.PreferencesGroup(title=_("Connected now"), description=_("Devices playing on this computer at this moment."))
         group.set_visible(False)
         self.connected_devices_group = group
@@ -2482,10 +2654,50 @@ class HostView(Gtk.Box):
 
         self._history_writer.submit(work, done, keep_previous=True)
 
+    def _announce_connections(self, infos) -> None:
+        """A desktop notification for each device that just started playing."""
+        placeholders = {_("Connected device"), *(_("Device at {address}").format(address=info.address) for info in infos if info.address)}
+        for notice in self._connection_notices.update(infos, known_names=placeholders):
+            self._notice_count += 1
+            title, body = self._connection_notice_text(notice)
+            self._deliver_notification(f"brp-device-connected-{self._notice_count}", title, body)
+
+    @staticmethod
+    def _connection_notice_text(notice) -> tuple[str, str]:
+        from big_remote_play.utils.connection_health import Transport
+
+        from .connection_cards import transport_words
+
+        # TRANSLATORS: desktop notification title; {name} is the other device's name.
+        title = _("{name} connected").format(name=notice.device_name) if notice.device_name else _("A device connected")
+        lines = []
+        if notice.transport is not Transport.UNKNOWN:
+            # TRANSLATORS: desktop notification line; {method} is Local network, Internet, Tailscale, ZeroTier or Headscale.
+            lines.append(_("Connection: {method}").format(method=transport_words(notice.transport)))
+        if notice.address:
+            # TRANSLATORS: desktop notification line; {address} is an IP address such as 192.168.1.45.
+            lines.append(_("IP address: {address}").format(address=notice.address))
+        return title, "\n".join(lines) or _("A device started playing on this computer.")
+
+    def _deliver_notification(self, notification_id: str, title: str, body: str) -> None:
+        """Send one desktop notification; nothing about the device is logged."""
+        root = self._root_window()
+        application = root.get_application() if root is not None else None
+        if application is None:
+            return
+        from gi.repository import Gio  # type: ignore
+
+        # The title is plain text by specification; the body holds only
+        # our own words and a validated address, never a device's text.
+        notification = Gio.Notification.new(title)
+        notification.set_body(body)
+        application.send_notification(notification_id, notification)
+
     def _show_connected_devices(self, infos) -> None:
         from .connection_cards import DeviceConnectionCard
 
         self._check_pairing_busy()
+        self._announce_connections(infos)
         if hasattr(self, "share_history_card") and (infos or self._history_sessions):
             self._record_history(infos)
         self._refocus_game_when_someone_joins(infos)
@@ -2826,7 +3038,7 @@ class HostView(Gtk.Box):
         if not self.is_hosting:
             self._show_connected_devices([])
         # Running: state, not a form. Stopped: the choices that start it.
-        for widget in (self.game_group, self.quality_summary_box):
+        for widget in (self.game_group, self.quality_card):
             widget.set_visible(not self.is_hosting)
         self.session_summary_box.set_visible(self.is_hosting)
         if hasattr(self, "audio_stream_row"):
@@ -2919,6 +3131,7 @@ class HostView(Gtk.Box):
             )
             self._sync_start_availability()
         self._sync_game_window_timer()
+        self._announce_state()
 
     def _refresh_internet_access(self) -> None:
         """How the other person reaches this PC over a private network, in plain words."""
@@ -3140,8 +3353,12 @@ class HostView(Gtk.Box):
             rows["game"].set_subtitle(", ".join(status.game_programs))
         else:
             rows["game"].set_subtitle(_("The game is not playing sound right now."))
-        rows["calls"].set_subtitle(", ".join(status.calls_kept_out) if status.calls_kept_out else _("No call app is playing into the shared sound"))
+        if status.send_calls:
+            rows["calls"].set_subtitle(_("None: voice calls are sent (Voice calls is on)"))
+        else:
+            rows["calls"].set_subtitle(", ".join(status.calls_kept_out) if status.calls_kept_out else _("No call app is playing into the shared sound"))
         self._show_calls_kept_out(status.calls_kept_out)
+        self._show_microphone_state(status)
         if status.bridges:
             rows["bridges"].set_subtitle("\n".join(_("{source} → {target}").format(source=b.source, target=b.target_sink) for b in status.bridges))
         else:
@@ -3154,7 +3371,9 @@ class HostView(Gtk.Box):
         return False
 
     def _show_calls_kept_out(self, programs) -> None:
-        if programs:
+        if self.audio_calls_row.get_active():
+            self.audio_calls_row.set_subtitle(_("Sent: the other computer hears calls in Discord, Zoom, Teams and other call apps. Someone who is also in the call hears their own voice come back."))
+        elif programs:
             self.audio_calls_row.set_subtitle(_("Not sent now: {programs}. The call plays only on this computer.").format(programs=", ".join(programs)))
         else:
             self.audio_calls_row.set_subtitle(
@@ -3162,6 +3381,35 @@ class HostView(Gtk.Box):
                     "Not sent. Calls in Discord, Zoom, Teams and other call apps play only on this computer, so nobody hears their own voice come back. A call in a web browser is sent with the browser's sound."
                 )
             )
+
+    def _show_microphone_state(self, status) -> None:
+        """Microphone: the choice, then what the sound server shows while someone plays."""
+        if not self.audio_microphone_row.get_active():
+            text = _("Not sent. The other computer does not hear this computer's microphone; voice chat apps keep using it normally.")
+        elif status is not None and status.microphone_in_mix:
+            text = _("Sent now: {microphone}. Use headphones on this computer, or the other person hears the game twice.").format(microphone=status.microphone_in_mix)
+        elif status is not None and "microphone-missing" in status.notes:
+            text = _("On, but no microphone was found. Connect one or choose it as this computer's input.")
+        elif status is not None and "microphone-not-sent" in status.notes:
+            text = _("On, but this computer's sound system could not add the microphone. Sound is still sent without it.")
+        else:
+            text = _("On: the other computer hears this computer's microphone while it plays. Use headphones on this computer to avoid an echo.")
+        self.audio_microphone_row.set_subtitle(text)
+
+    def on_audio_sharing_choice_changed(self, *_args) -> None:
+        """Microphone or Voice calls: saved, shown, and applied at once while sharing."""
+        if self.loading_settings:
+            return
+        status = self._audio_status if self.is_hosting else None
+        self._show_microphone_state(status)
+        self._show_calls_kept_out(status.calls_kept_out if status is not None else ())
+        session = self.audio_session
+        if session is not None:
+            session.set_options(send_microphone=self.audio_microphone_row.get_active(), send_calls=self.audio_calls_row.get_active())
+            watcher = self.audio_watcher
+            if watcher is not None:
+                watcher.request_check()
+        self._schedule_save_host_settings()
 
     @staticmethod
     def _describe_source(source: str, is_monitor: bool) -> str:
@@ -3220,6 +3468,8 @@ class HostView(Gtk.Box):
         return False
 
     def start_hosting(self, b=None):
+        from .task_activity import TRANSITION_STARTING
+
         self.loading_bar.set_visible(True)
         self.loading_bar.pulse()
         # Read all GTK-bound values on the main thread, then run the blocking
@@ -3229,6 +3479,7 @@ class HostView(Gtk.Box):
         except Exception as e:
             self._on_hosting_error(str(e))
             return
+        self._set_sharing_transition(TRANSITION_STARTING)
         threading.Thread(target=self._run_start_hosting, args=(cfg,), daemon=True).start()
 
     def _resolve_game_launch_info(self) -> dict | None:
@@ -3344,6 +3595,8 @@ class HostView(Gtk.Box):
             "pin_code": self.pin_code,
             "audio_output_name": self._selected_audio_sink(),
             "audio_play_on_host": self.audio_play_here_row.get_active(),
+            "audio_send_microphone": self.audio_microphone_row.get_active(),
+            "audio_send_calls": self.audio_calls_row.get_active(),
             "game_window": game_window,
         }
 
@@ -3383,7 +3636,14 @@ class HostView(Gtk.Box):
             # Records the output in use. Nothing is written to the sound server
             # here; loopbacks are added later only if Sunshine mutes this computer.
             game_audio = (cfg.get("game_window") or {}).get("audio")
-            session = AudioRoutingSession(self.audio_manager, manual_output=manual, play_on_host=play_on_host, game=GameScope.from_state(game_audio))
+            session = AudioRoutingSession(
+                self.audio_manager,
+                manual_output=manual,
+                play_on_host=play_on_host,
+                game=GameScope.from_state(game_audio),
+                send_microphone=bool(cfg.get("audio_send_microphone", False)),
+                send_calls=bool(cfg.get("audio_send_calls", False)),
+            )
             session.begin(graph)
             self.audio_session = session
 
@@ -3447,6 +3707,7 @@ class HostView(Gtk.Box):
     def _on_hosting_started(self, result: dict) -> bool:
         if self._closed:
             return False
+        self.sharing_transition = None  # announced by sync_ui_state() below
         self.loading_bar.set_visible(False)
         if hasattr(self, "overview_start_button"):
             self.overview_start_button.set_sensitive(True)
@@ -3480,6 +3741,7 @@ class HostView(Gtk.Box):
     def _on_hosting_error(self, message: str) -> bool:
         if self._closed:
             return False
+        self.sharing_transition = None  # announced by sync_ui_state() below
         self.loading_bar.set_visible(False)
         if hasattr(self, "overview_start_button"):
             self.overview_start_button.set_sensitive(True)
@@ -3583,9 +3845,12 @@ class HostView(Gtk.Box):
         self._game_launch_info = None
 
     def stop_hosting(self, b=None) -> None:
+        from .task_activity import TRANSITION_STOPPING
+
         self.show_toast(_("Stopping server…"))
         self.loading_bar.set_visible(True)
         self.loading_bar.pulse()
+        self._set_sharing_transition(TRANSITION_STOPPING)
 
         # Main-thread teardown: kill launched games, stop the GLib timers, drop
         # the PIN listener. The blocking audio-restore + server stop go to a worker.
@@ -3647,6 +3912,7 @@ class HostView(Gtk.Box):
 
     def _on_hosting_stopped(self) -> bool:
         self.is_hosting = False
+        self.sharing_transition = None  # announced by sync_ui_state() below
         self.sync_ui_state()
         self.loading_bar.set_visible(False)
         if hasattr(self, "overview_start_button"):
@@ -4322,6 +4588,9 @@ class HostView(Gtk.Box):
     def on_game_mode_changed(self, row, _param):
         source = self._source()
         launch = source in _LAUNCH_PLATFORMS
+        set_row_icon(self.game_mode_row, _SOURCE_ICONS[source])
+        if launch:
+            set_row_icon(self.platform_games_expander, _SOURCE_ICONS[source])
         self.platform_games_expander.set_visible(launch)
         self.platform_games_expander.set_expanded(launch)
         self.custom_app_expander.set_visible(source == "custom")
@@ -4393,6 +4662,8 @@ class HostView(Gtk.Box):
                 "platform_idx": self.platform_row.get_selected(),
                 "audio_play_on_host": self.audio_play_here_row.get_active(),
                 "audio_game_only": self.audio_game_only_row.get_active(),
+                "audio_send_microphone": self.audio_microphone_row.get_active(),
+                "audio_send_calls": self.audio_calls_row.get_active(),
                 "audio_output_name": self._selected_audio_sink(),
                 "upnp": self.upnp_row.get_active(),
                 "ipv6": self.ipv6_row.get_active(),
@@ -4551,6 +4822,11 @@ class HostView(Gtk.Box):
                 play_on_host = h.get("audio_mode") != 1
             self.audio_play_here_row.set_active(play_on_host)
             self.audio_game_only_row.set_active(h.get("audio_game_only", True) is not False)
+            # Only an explicit choice turns either on.
+            self.audio_microphone_row.set_active(h.get("audio_send_microphone") is True)
+            self.audio_calls_row.set_active(h.get("audio_send_calls") is True)
+            self._show_microphone_state(None)
+            self._show_calls_kept_out(())
             desired_output = h.get("audio_output_name", "")
             if desired_output in self._audio_choice_names:
                 self.audio_output_row.set_selected(self._audio_choice_names.index(desired_output))
@@ -4575,6 +4851,8 @@ class HostView(Gtk.Box):
     def connect_settings_signals(self):
         for r in [self.upnp_row, self.ipv6_row, self.webui_anyone_row, self.codecs_row, self.wifi_row, self.audio_play_here_row, self.audio_game_only_row, self.hdr_sdr_row, self.game_window_all_row]:
             r.connect("notify::active", self._schedule_save_host_settings)
+        for r in (self.audio_microphone_row, self.audio_calls_row):
+            r.connect("notify::active", self.on_audio_sharing_choice_changed)
 
         for r in [
             self.game_mode_row,

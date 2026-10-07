@@ -14,7 +14,7 @@ import subprocess
 import threading
 import time
 
-from test_audio import EASY, HDMI, SUNSHINE_STEREO_SINK, FakePulse, FakeSubscribe, Sink, Stream
+from test_audio import EASY, HDMI, MIC, SUNSHINE_STEREO_SINK, FakePulse, FakeSubscribe, Sink, Stream
 
 from big_remote_play.utils.audio import (
     CALL_MIX_SINK,
@@ -23,6 +23,7 @@ from big_remote_play.utils.audio import (
     AudioStream,
     AudioWatcher,
     Bridge,
+    GameScope,
     desired_bridges,
     is_call_stream,
     mix_channels,
@@ -43,6 +44,7 @@ class FakePipeWire(FakePulse):
         self.id_links: dict[int, tuple[int, int, str]] = {}  # link id -> (out port, in port, owner)
         self.next_id_link = 5000
         self.dumps = 0
+        self.mic_channels: tuple[str, ...] = ("MONO",)  # a headset microphone
 
     # -- model -------------------------------------------------------------
     def _layout(self):
@@ -62,6 +64,8 @@ class FakePipeWire(FakePulse):
             add_node(int(stream.props["object.id"]), {"node.name": stream.props["node.name"], "media.class": "Stream/Output/Audio"}, (), ["output_FL", "output_FR"])
         for offset, (name, group) in enumerate(self.filters.items()):
             add_node(3000 + offset, {"node.name": name, **({"node.link-group": group} if group else {})}, ["input_FL", "input_FR"], ["output_FL", "output_FR"])
+        for offset, (name, _description) in enumerate(self.mics):
+            add_node(3500 + offset, {"node.name": name, "media.class": "Audio/Source"}, (), [f"capture_{c}" for c in self.mic_channels])
         by_name = {}
         for port_id, (_node, _direction, _channel, _monitor, name) in ports.items():
             by_name.setdefault(name, port_id)
@@ -397,3 +401,166 @@ def test_watcher_reacts_to_a_program_starting_or_stopping_but_not_to_its_volume(
         time.sleep(0.02)
     watcher.stop()
     assert len(calls) == 2
+
+
+# ------------------------------------------------- Microphone and Voice calls
+
+
+def links_from(pulse: FakePipeWire, node: str) -> set[str]:
+    """Where the ports of ``node`` are linked to, by our links or anyone's."""
+    _nodes, ports, links = pulse._layout()
+    return {ports[i][4] for o, i, _owner in links.values() if ports[o][4].startswith(f"{node}:")}
+
+
+def test_the_microphone_is_off_by_default_and_nothing_is_added(tmp_path):
+    pulse = FakePipeWire()
+    pulse.playback = [Stream(HDMI, dict(GAME))]
+    routing = session(pulse, tmp_path)
+    routing.begin(AudioManager(runner=pulse).snapshot())
+    pulse.sunshine_starts_session(host_audio=True)
+    status = routing.reconcile()
+    assert pulse.writes == [] and pulse.dumps == 0
+    assert not status.send_microphone and status.microphone_in_mix == ""
+    assert not links_from(pulse, MIC) - {"hw:playback_FL"}  # only someone else's old link
+
+
+def test_microphone_on_is_mixed_into_the_stream_and_never_played_here(tmp_path):
+    pulse = FakePipeWire()
+    pulse.playback = [Stream(HDMI, dict(GAME))]
+    routing = session(pulse, tmp_path, send_microphone=True)
+    routing.begin(AudioManager(runner=pulse).snapshot())
+    pulse.sunshine_starts_session(host_audio=True)
+
+    status = routing.reconcile()
+
+    assert pulse.capture[0].target == f"{CALL_MIX_SINK}.monitor"
+    assert pulse.mix_inputs() == {
+        ("game:output_FL", f"{CALL_MIX_SINK}:playback_FL"),
+        ("game:output_FR", f"{CALL_MIX_SINK}:playback_FR"),
+        (f"{MIC}:capture_MONO", f"{CALL_MIX_SINK}:playback_FL"),  # a mono microphone into both sides
+        (f"{MIC}:capture_MONO", f"{CALL_MIX_SINK}:playback_FR"),
+    }
+    # Into the mix only: this computer's speakers never play its own microphone.
+    assert not any(target.startswith(HDMI) for target in links_from(pulse, MIC) - {"hw:playback_FL"})
+    assert status.send_microphone and status.microphone_in_mix == "Microfone do fone"
+    # Sunshine still records a monitor; the safety check for a recorded input stays quiet.
+    assert status.sunshine_records_monitor and not status.microphone_sent
+    assert all(owner == routing.token for _o, _i, owner in pulse.id_links.values())
+    writes = len(pulse.writes)
+    routing.reconcile()
+    assert len(pulse.writes) == writes  # idempotent
+
+
+def test_turning_the_microphone_off_while_sharing_removes_it(tmp_path):
+    pulse = FakePipeWire()
+    pulse.playback = [Stream(HDMI, dict(GAME))]
+    routing = session(pulse, tmp_path, send_microphone=True)
+    routing.begin(AudioManager(runner=pulse).snapshot())
+    pulse.sunshine_starts_session(host_audio=True)
+    routing.reconcile()
+
+    routing.set_options(send_microphone=False, send_calls=False)
+    status = routing.reconcile()
+
+    assert pulse.capture[0].target == f"{HDMI}.monitor"
+    assert not any(s.name == CALL_MIX_SINK for s in pulse.sinks) and routing.mix_module == ""
+    assert status.microphone_in_mix == "" and not status.send_microphone
+
+
+def test_microphone_on_without_a_microphone_says_so(tmp_path):
+    pulse = FakePipeWire()
+    pulse.mics = []
+    pulse.default_source = f"{HDMI}.monitor"  # the default input is a monitor: never treated as a microphone
+    pulse.playback = [Stream(HDMI, dict(GAME))]
+    routing = session(pulse, tmp_path, send_microphone=True)
+    routing.begin(AudioManager(runner=pulse).snapshot())
+    pulse.sunshine_starts_session(host_audio=True)
+    status = routing.reconcile()
+    assert "microphone-missing" in status.notes and status.microphone_in_mix == ""
+    assert not any(out.startswith(f"{HDMI}:monitor") for out, _in in pulse.mix_inputs())
+
+
+def test_the_microphone_waits_for_someone_to_play(tmp_path):
+    """No device receives sound yet: nothing is created for the microphone."""
+    pulse = FakePipeWire()
+    pulse.playback = [Stream(HDMI, dict(GAME))]
+    routing = session(pulse, tmp_path, send_microphone=True)
+    routing.begin(AudioManager(runner=pulse).snapshot())
+    status = routing.reconcile()
+    assert pulse.writes == [] and status.microphone_in_mix == "" and "microphone-missing" not in status.notes
+
+
+def test_voice_calls_on_are_sent_like_any_other_program(tmp_path):
+    pulse = FakePipeWire()
+    call_through_effects(pulse)
+    routing = session(pulse, tmp_path, send_calls=True)
+    routing.begin(AudioManager(runner=pulse).snapshot())
+    pulse.sunshine_starts_session(host_audio=True)
+    status = routing.reconcile()
+    # Sunshine keeps recording the output, call included; nothing is created.
+    assert pulse.capture[0].target == f"{HDMI}.monitor"
+    assert pulse.writes == [] and status.calls_kept_out == () and status.send_calls
+
+
+def test_turning_voice_calls_on_during_a_call_sends_it(tmp_path):
+    pulse = FakePipeWire()
+    call_through_effects(pulse)
+    routing = session(pulse, tmp_path)
+    routing.begin(AudioManager(runner=pulse).snapshot())
+    pulse.sunshine_starts_session(host_audio=True)
+    assert routing.reconcile().calls_kept_out == ("Fluxer",)
+    routing.set_options(send_microphone=False, send_calls=True)
+    status = routing.reconcile()
+    assert status.calls_kept_out == ()
+    assert pulse.capture[0].target == f"{HDMI}.monitor"
+    assert not any(s.name == CALL_MIX_SINK for s in pulse.sinks)
+
+
+def test_microphone_and_voice_calls_together(tmp_path):
+    pulse = FakePipeWire()
+    call_through_effects(pulse)
+    routing = session(pulse, tmp_path, send_microphone=True, send_calls=True)
+    routing.begin(AudioManager(runner=pulse).snapshot())
+    pulse.sunshine_starts_session(host_audio=True)
+    status = routing.reconcile()
+    assert {out.split(":")[0] for out, _in in pulse.mix_inputs()} == {"game", "Fluxer", MIC}
+    assert status.calls_kept_out == () and status.microphone_in_mix
+
+
+def test_game_window_sends_the_call_only_when_voice_calls_is_on(tmp_path):
+    for send_calls, expected in ((False, {"game"}), (True, {"game", "Fluxer"})):
+        pulse = FakePipeWire()
+        pulse.playback = [Stream(HDMI, dict(GAME)), Stream(HDMI, dict(CALL)), Stream(HDMI, dict(MUSIC))]
+        routing = session(pulse, tmp_path, game=GameScope(0, ("Game",)), send_calls=send_calls)
+        routing.begin(AudioManager(runner=pulse).snapshot())
+        pulse.sunshine_starts_session(host_audio=True)
+        routing.reconcile()
+        assert {out.split(":")[0] for out, _in in pulse.mix_inputs()} == expected  # never the music
+
+
+def test_the_choices_survive_a_crash_of_the_window(tmp_path):
+    pulse = FakePipeWire()
+    routing = session(pulse, tmp_path, send_microphone=True, send_calls=True)
+    routing.begin(AudioManager(runner=pulse).snapshot())
+    loaded = AudioRoutingSession.load(AudioManager(runner=pulse), tmp_path / "audio-session.json")
+    assert loaded is not None and loaded.send_microphone and loaded.send_calls
+    state = json.loads((tmp_path / "audio-session.json").read_text())
+    state["send_microphone"] = "yes"  # anything but true is off
+    (tmp_path / "audio-session.json").write_text(json.dumps(state))
+    loaded = AudioRoutingSession.load(AudioManager(runner=pulse), tmp_path / "audio-session.json")
+    assert loaded is not None and not loaded.send_microphone
+
+
+def test_a_watcher_can_be_asked_to_check_again():
+    calls = []
+    watcher = AudioWatcher(lambda: calls.append(1), debounce=0.01, safety_interval=60, spawn=lambda: FakeSubscribe([]))
+    watcher.start()
+    deadline = time.monotonic() + 2
+    while time.monotonic() < deadline and not calls:
+        time.sleep(0.01)
+    first = len(calls)
+    watcher.request_check()
+    while time.monotonic() < deadline and len(calls) == first:
+        time.sleep(0.01)
+    watcher.stop()
+    assert len(calls) > first
