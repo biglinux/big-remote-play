@@ -15,7 +15,7 @@ Home's **Guided setup** (`ui/guided_setup.py`) asks two questions, gets this com
 
 `utils/dependencies.py` (GTK-free) owns which components a task needs, how they are detected (a fresh `PATH` lookup each time, Flatpak for the VPN clients) and the installation plan: Pamac as the user, or the allowlisted `install-components.sh` through `pkexec`; success is decided by looking again. `ui/dependency_installer.py` (`ComponentChecklist`, `InstallDialog`) is the only installation interface and allows one transaction at a time. See [installing what a task needs](dependency-installer.md).
 
-Share's pairing requests come from `host/pairing_requests.py` (`RequestTracker`: new, gone and expired requests from Sunshine's `GET /api/pin`) and are answered in `ui/pairing_prompt.py`; see [pairing requests](pairing-requests.md). `host/share_history.py` stores the sessions **Connected now** showed (start, end, device name, 0600) for **Support → Connection history** (`ui/connection_history.py`); see [connection history](connection-status.md#connection-history-share). Connect is a native `Adw.ViewStack` with **Computers** and **Advanced options**, like Share's tabs. Connection cards (`ui/connection_cards.py`) render `utils/connection_health.py` values; Share's live sessions come from `host/sunshine_sessions.py` through the existing `PerformanceMonitor` worker. See [connection status](connection-status.md). `host/stream_display.py` is Sunshine's `global_prep_cmd`: it switches an HDR screen to SDR for SDR clients and optionally to the client's resolution, and restores it; see [video quality](video-quality.md).
+Share's pairing requests come from `host/pairing_requests.py` (`RequestTracker`: new, gone and expired requests from Sunshine's `GET /api/pin`) and are answered in `ui/pairing_prompt.py`; see [pairing requests](pairing-requests.md). `host/share_history.py` stores the sessions **Connected now** showed (start, end, device name, 0600) for **Support → Connection history** (`ui/connection_history.py`); see [connection history](connection-status.md#connection-history-share). `host/connection_notices.py` (GTK-free) turns the same list into one desktop notification per new session, sent with `Gio.Application.send_notification`; see [connection notifications](connection-status.md#connection-notifications-share). Connect is a native `Adw.ViewStack` with **Computers** and **Advanced options**, like Share's tabs. Connection cards (`ui/connection_cards.py`) render `utils/connection_health.py` values; Share's live sessions come from `host/sunshine_sessions.py` through the existing `PerformanceMonitor` worker. See [connection status](connection-status.md). `host/stream_display.py` is Sunshine's `global_prep_cmd`: it switches an HDR screen to SDR for SDR clients and optionally to the client's resolution, and restores it; see [video quality](video-quality.md).
 
 **Game Window** shares one game window without the desktop. `host/game_windows.py` lists open, capturable game windows (KWin scripting on Wayland, EWMH through `host/x11_windows.py` on X11), classifies their process trees and never persists window ids. `host/window_capture.py` is a helper process that owns the ScreenCast portal session (or X11 source), a private headless `kwin_wayland --virtual` screen and the GStreamer mirror, and tears them down together; Sunshine is started with `capture = kwin` and only that screen's `WAYLAND_DISPLAY`. `StreamDisplay` keeps owning the real monitors and is not used by this mode. When the game replaces its window or changes size, the helper follows the same game only; see [when the game changes mode](game-window.md#when-the-game-changes-mode).
 
@@ -35,7 +35,8 @@ Sidebar                        Content
   Connect your devices           three cards (switch, state, network, devices); Advanced links
     a method (card)              its page: Devices | Advanced
   ─────────────
-  Home: two indicators, Streaming and Secure connection
+  Share, Connect, Connect your devices: a Running/Stopped pill on the entry
+  Home: no service cards
   Share, Connect, Connect your devices: one card per service
 ```
 
@@ -46,6 +47,9 @@ named secondary places (**Advanced options**, **Technical details**,
 **Connection details**, **Support**). The sidebar's service cards and
 indicators are described in [service status cards](service-status-cards.md),
 the private-network pages in [Connect your devices](connect-your-devices.md).
+The navigation pill of each task comes from `ui/task_activity.py` (GTK-free:
+probes, the views' own state listeners and `ProviderStatus`); see
+[task states](service-status-cards.md#task-states-in-the-navigation).
 
 ## Settings ownership
 
@@ -106,7 +110,9 @@ The app coordinates separately installed Sunshine, Moonlight, VPN clients, Polic
 ## Audio ownership
 
 `utils/audio.py` owns every sound-server call. Sunshine records the monitor of an
-output, never a microphone. Automatic mode leaves `audio_sink` unset and writes
+output, never a microphone; **Preferences → Audio → Microphone** (off by
+default) links the default microphone into the app's own output instead, and
+**Voice calls** (off by default) stops keeping call programs out. Automatic mode leaves `audio_sink` unset and writes
 nothing to the sound server; application streams are never moved. The app adds
 only PipeWire port links ("bridges", for example while a client makes Sunshine
 mute this computer) and, during a voice call or a Game Window share, its own

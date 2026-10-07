@@ -27,7 +27,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/home.png" width="860" alt="Home: the logo with Start with the guided setup, then Share and Connect; the sidebar shows Streaming and Secure connection">
+  <img src="docs/screenshots/home.png" width="860" alt="Home: the logo with Start with the guided setup, then Share and Connect; in the sidebar Share and Connect say Stopped and Connect your devices says Running">
 </p>
 
 ## Why Big Remote Play?
@@ -42,7 +42,7 @@ Remote play on Linux usually means learning several unrelated tools before the f
 | 🕵️ **Keep your desktop private** | **Game Window** streams one game through a private screen: notifications, chats and other windows never reach the other device. |
 | 🧭 **Guided from the first click** | **Start with the guided setup** asks what you want to do and where the other device is, installs what this computer needs without a terminal, then opens the right page. |
 | 🎮 **Controllers too** | Keyboard, mouse and controllers of the other device reach the game through Sunshine. While someone plays, **Share** says which controller arrived, or why none did. |
-| 🔊 **Sound that just works** | Game audio is sent, the microphone and voice calls are not. Everything returns to normal when sharing stops. |
+| 🔊 **Sound that just works** | Game audio is sent; the microphone and voice calls only when you turn them on. Everything returns to normal when sharing stops. |
 | 🛡️ **Respects what you have** | Existing Sunshine libraries, paired devices, Moonlight identity and VPN profiles are preserved, never overwritten. |
 | ♿ **Made for everyone** | Adaptive GTK 4/libadwaita interface for keyboard, touch, compact windows, high contrast, large text, RTL and CJK, in 32 languages. |
 
@@ -52,7 +52,7 @@ There is no proprietary game catalog and no requirement that the game came from 
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/share.png" alt="Share: Source set to Game Window, listing Shadow of the Tomb Raider (Steam · Proton), SuperTuxKart (Linux native) and Cyberpunk 2077 (Steam · Proton · Gamescope)"><br><sub><b>Share</b>: choose Full Desktop, a game to start, or only one open game window.</sub></td>
+    <td width="50%"><img src="docs/screenshots/share.png" alt="Share: Source set to Game Window, listing Shadow of the Tomb Raider (Steam · Proton), SuperTuxKart (Linux native) and Cyberpunk 2077 (Steam · Proton · Gamescope), then the Image and capture card"><br><sub><b>Share</b>: choose Full Desktop, a game to start, or only one open game window.</sub></td>
     <td width="50%"><img src="docs/screenshots/connect.png" alt="Connect: three game computers as cards, two on the local network and one over Tailscale, with the Computers and Advanced options tabs"><br><sub><b>Connect</b>: pick the game computer; other ways to connect are on the <b>Advanced options</b> tab.</sub></td>
   </tr>
   <tr>
@@ -60,7 +60,7 @@ There is no proprietary game catalog and no requirement that the game came from 
     <td><img src="docs/screenshots/image-settings.png" alt="Image and capture sheet with automatic capture and encoding, the video bitrate ceiling and screen and encoder settings"><br><sub><b>Image and capture</b>: automatic by default, detailed when you need it.</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/preferences.png" alt="Preferences: audio output, play sound on this computer, microphone and voice calls not sent, audio test"><br><sub><b>Sound</b>: what the other computer hears, said in plain words.</sub></td>
+    <td><img src="docs/screenshots/preferences.png" alt="Preferences: audio output, play sound on this computer, and the Microphone and Voice calls switches off, audio test"><br><sub><b>Sound</b>: what the other computer hears, said in plain words.</sub></td>
     <td><img src="docs/screenshots/home-pt-BR.png" alt="Home in Brazilian Portuguese"><br><sub><b>32 languages</b>: here in Brazilian Portuguese.</sub></td>
   </tr>
   <tr>
@@ -175,7 +175,7 @@ Games are listed by name from their process tree — Steam, Proton, Wine, Lutris
 | Streaming | [Sunshine](https://github.com/LizardByte/Sunshine) server (NVENC, VAAPI, Vulkan and software encoders) and [Moonlight Qt](https://github.com/moonlight-stream/moonlight-qt) client, configured through their native files and APIs |
 | Game Window | [xdg-desktop-portal](https://flatpak.github.io/xdg-desktop-portal/) ScreenCast, [KWin](https://invent.kde.org/plasma/kwin) scripting and a headless `kwin_wayland`, [PipeWire](https://pipewire.org/) DMA-BUF, [GStreamer](https://gstreamer.freedesktop.org/); EWMH through `libX11` on X11 |
 | Screen and colors | `kscreen-doctor` for HDR-to-SDR and per-session resolution, restored after every session |
-| Audio | PipeWire/PulseAudio through `pactl` and `pw-link`: automatic output capture, voice calls kept out, PipeWire port links ("bridges") made by the app, which removes only what it created |
+| Audio | PipeWire/PulseAudio through `pactl` and `pw-link`: automatic output capture, voice calls kept out and the microphone left out unless you choose otherwise, PipeWire port links ("bridges") made by the app, which removes only what it created |
 | Networks | mDNS discovery with [Avahi](https://avahi.org/); [Tailscale](https://tailscale.com/), [Headscale](https://headscale.net/) and [ZeroTier](https://www.zerotier.com/) clients and APIs |
 | Security | Secret Service keyring (`libsecret`) for passwords and tokens, narrowly scoped PolicyKit helpers, ufw/firewalld checks, owner-only atomic writes |
 | Internationalization | gettext, 32 translated catalogs (distinct `pt`/`pt_BR` and `zh_CN`/`zh_TW`) |
