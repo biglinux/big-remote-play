@@ -92,6 +92,8 @@ TECHNICAL_WORDS = {
     "GNOME",
     "Headscale",
     "Heroic",
+    # Protocols.
+    "IP",
     "KWin",
     "Lutris",
     "Manjaro",

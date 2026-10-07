@@ -546,20 +546,27 @@ def test_status_polling_checks_only_the_services_the_page_shows(ui, monkeypatch)
     probed = []
     for name in ("sunshine", "moonlight", "tailscale", "zerotier"):
         monkeypatch.setattr(ui.system_check, f"is_{name}_running", lambda n=name: probed.append(n) or True)
+    monkeypatch.setattr(ui, "is_active", lambda: True)
     ui._status_timer_id = ui._status_timer_id or 1
     ui._home_role = "guest"
+    ui._service_running.update({"sunshine": False, "moonlight": False})  # both read once already
     ui.navigate_to("vpn_selector")
+    ui._activity_ticks = 0  # the next two ticks are ordinary ones
     ui._polling_status = False
     ui.p_check()
-    # Only the Streaming indicator's component; the network methods come
+    # Only the visible streaming card's component; the network methods come
     # from the private-network overview, not from process probes.
     assert wait_for(lambda: probed == ["moonlight"])
     assert wait_for(lambda: not ui._polling_status)
     ui.navigate_to("host")
-    ui._polling_status = False
     ui.p_check()
     assert wait_for(lambda: probed == ["moonlight", "sunshine"])
     assert wait_for(lambda: not ui._polling_status)
+    # Every third tick both programs, for the Share and Connect states in the sidebar.
+    ui.p_check()
+    assert wait_for(lambda: probed == ["moonlight", "sunshine", "sunshine", "moonlight"])
+    assert wait_for(lambda: not ui._polling_status)
+    assert "tailscale" not in probed and "zerotier" not in probed
 
 
 def test_simple_join_pages_ask_for_one_thing_in_plain_words(ui):

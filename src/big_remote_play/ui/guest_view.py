@@ -12,6 +12,7 @@ _log = logging.getLogger("big-remoteplay")
 
 import re
 import threading, time
+from collections.abc import Callable
 from big_remote_play.utils import auto_quality
 from big_remote_play.utils.config import Config
 from big_remote_play.guest.moonlight_client import MoonlightClient
@@ -60,6 +61,10 @@ class GuestView(Gtk.Box):
         self._last_fps_idx = 1
         self.discovered_hosts = []
         self.is_connected = False
+        self.is_connecting = False
+        # The window's sidebar shows whether Connect is running.
+        self._state_listeners: list[Callable[[], None]] = []
+        self._announced_state = (False, False)
         self._attempt_id = 0
         self._attempt_cancel = threading.Event()
         self._closed = False
@@ -88,6 +93,18 @@ class GuestView(Gtk.Box):
         self._connection_timer = GLib.timeout_add(1000, self.monitor_connection)
         # The other PC usually starts sharing after this page is already open.
         self._discovery_timer = GLib.timeout_add_seconds(10, self._auto_discover)
+
+    def add_state_listener(self, callback: Callable[[], None]) -> None:
+        """``callback()`` on the GTK thread when connecting or streaming starts or stops."""
+        self._state_listeners.append(callback)
+
+    def _announce_state(self) -> None:
+        state = (bool(self.is_connecting), bool(self.is_connected))
+        if state == self._announced_state:
+            return
+        self._announced_state = state
+        for listener in list(self._state_listeners):
+            listener()
 
     def _root_window(self):
         root = self.get_root()
@@ -826,6 +843,7 @@ class GuestView(Gtk.Box):
 
             # Update UI visibility
             self.update_ui_state()
+            self._announce_state()
 
         return True  # Continue polling
 
@@ -1011,10 +1029,14 @@ class GuestView(Gtk.Box):
         description = Gtk.Label(label=_("Start sharing on the game PC, then search again."), wrap=True, justify=Gtk.Justification.CENTER)
         description.add_css_class("dim-label")
         empty.append(description)
-        retry = Gtk.Button(label=_("Search again"), halign=Gtk.Align.CENTER)
+        retry = Gtk.Button(label=_("Search again"))
         retry.add_css_class("suggested-action")
         retry.connect("clicked", lambda _button: self.discover_hosts())
-        empty.append(retry)
+        # Side by side when they fit, one under the other when they do not.
+        actions = Adw.WrapBox(halign=Gtk.Align.CENTER, child_spacing=12, line_spacing=8)
+        actions.append(retry)
+        actions.append(self._ip_button(compact=False))
+        empty.append(actions)
         box.append(empty)
 
         return box
@@ -1048,8 +1070,11 @@ class GuestView(Gtk.Box):
         refresh.update_property([Gtk.AccessibleProperty.LABEL], [_("Search for game PCs again")])
         refresh.connect("clicked", lambda b: self.discover_hosts())
         self.refresh_button = refresh
+        self.ip_button = self._ip_button(compact=True)
+        self.ip_button.set_valign(Gtk.Align.START)
         header.append(text_box)
         header.append(refresh)
+        header.append(self.ip_button)
         # One card per computer, two per line when there is room, every one
         # visible: no inner scroller hiding the third and fourth computer.
         self.hosts_list = Gtk.FlowBox(selection_mode=Gtk.SelectionMode.NONE, homogeneous=True, min_children_per_line=1, max_children_per_line=2)
@@ -1120,6 +1145,26 @@ class GuestView(Gtk.Box):
         box.append(action)
         box.set_hexpand(True)
         return box
+
+    def _ip_button(self, *, compact: bool) -> Gtk.Button:
+        """A shortcut to “I know the IP address”: the same dialog as Advanced options."""
+        button = Gtk.Button()
+        content = Gtk.Box(spacing=8, halign=Gtk.Align.CENTER)
+        content.append(create_icon_widget("brp-address-symbolic", size=16))
+        if compact:
+            button.add_css_class("flat")
+            # The protocol's name next to the icon: "IP" says more than the icon alone.
+            content.append(Gtk.Label(label="IP"))
+        else:
+            label = Gtk.Label(label=_("Connect by IP address"), wrap=True, justify=Gtk.Justification.CENTER)
+            content.append(label)
+        button.set_child(content)
+        if compact:
+            name_icon_button(button, _("Connect by IP address"), _("Type the game PC's IP address or name"))
+        else:
+            button.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Type the game PC's IP address or name")])
+        button.connect("clicked", lambda _button: self.present_other_ways("ip"))
+        return button
 
     def listed_hosts(self) -> list[dict]:
         """The computers on screen, in their order."""
@@ -1656,6 +1701,7 @@ class GuestView(Gtk.Box):
     def show_loading(self, show=True, message=""):
         self.is_connecting = show
         self._update_all_buttons_state()
+        self._announce_state()
 
     def on_cancel_connection(self, btn):
         self._attempt_cancel.set()

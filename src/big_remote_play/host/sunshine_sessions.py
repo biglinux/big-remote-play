@@ -195,6 +195,9 @@ class LiveSession:
     address: str
     started_at: float
     video: VideoInfo | None = None
+    # Already playing when this tracker first read the log (for example,
+    # Big Remote Play was opened during a stream): not a new connection.
+    preexisting: bool = False
 
 
 class LogReader:
@@ -266,9 +269,11 @@ class SessionTracker:
         self._running = running
         self._seen: dict[str, float] = {}  # handshake peer → last seen
         self.sessions: list[LiveSession] = []
+        self._first_poll = True
 
     def poll(self) -> list[LiveSession]:
         now = self._clock()
+        first, self._first_poll = self._first_poll, False
         active = self.log.poll() if self._running() else 0
         if active == 0:
             self.sessions = []
@@ -282,10 +287,10 @@ class SessionTracker:
             unknown = next((index for index, session in enumerate(self.sessions) if not session.address), None)
             self.sessions.pop(unknown if unknown is not None else 0)
         while len(self.sessions) < active:
-            self.sessions.append(LiveSession(self._claim_handshake(now), now))
+            self.sessions.append(LiveSession(self._claim_handshake(now), now, preexisting=first))
         # Sunshine logs the encoder once per session; the newest one is shown.
         video = self.log.video if self.log.video.encoder else None
-        return [LiveSession(session.address, session.started_at, video) for session in self.sessions]
+        return [LiveSession(session.address, session.started_at, video, session.preexisting) for session in self.sessions]
 
     def _remember_handshakes(self, now: float) -> None:
         for peer in handshake_peers(self._ss(["ss", "-tan"]), self.rtsp_port):

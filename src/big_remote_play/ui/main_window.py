@@ -18,7 +18,8 @@ import os
 from .host_view import HostView
 from .guest_view import GuestView
 from .components import name_icon_button, icon_tile
-from .service_status_card import CardPresentation, ServiceStatusCard, checking_presentation, provider_presentation, streaming_presentation, unknown_presentation
+from .service_status_card import ServiceStatusCard, provider_presentation, streaming_presentation, unknown_presentation
+from .task_activity import Activity, activity_text, connect_activity, network_activity, pill_class, share_activity
 from big_remote_play.private_network.models import ProviderStatus
 from big_remote_play.utils.config import Config
 from big_remote_play.utils.network import NetworkDiscovery
@@ -117,10 +118,8 @@ BASE_NAVIGATION_PAGES = {
     "guest": {"name": pgettext("navigation", "Connect"), "icon": "brp-client-symbolic", "description": _("Play from another PC")},
     "vpn_selector": {"name": _("Connect your devices"), "icon": "brp-network-private-symbolic", "description": _("For PCs in different houses")},
 }
-# Home and the internet pages show two indicators in the sidebar instead of
-# one card per service: is streaming ready, is the secure connection on.
-SUMMARY_SERVICES = ("summary-streaming", "summary-network")
-SUMMARY_PAGES = ("welcome", "vpn_selector")
+# The tasks whose sidebar entry carries a Running/Stopped state.
+ACTIVITY_PAGES = ("host", "guest", "vpn_selector")
 
 WELCOME_NAVIGATION_PAGE = {"welcome": {"name": _("Home"), "icon": "brp-go-home-symbolic", "description": _("Home Page")}}
 
@@ -188,6 +187,10 @@ class MainWindow(Adw.ApplicationWindow):
         self._service_running: dict[str, bool] = {}
         self._service_full_name: dict[str, str] = {}
         self._role_card_ui: dict[str, dict[str, Gtk.Widget]] = {}
+        # The state shown next to Share, Connect and Connect your devices.
+        self._nav_state_labels: dict[str, Gtk.Label] = {}
+        self._task_activity: dict[str, Activity] = {}
+        self._activity_ticks = 0
 
         self._install_window_actions()
         self.setup_ui()
@@ -418,8 +421,11 @@ class MainWindow(Adw.ApplicationWindow):
         while child := self.nav_list.get_first_child():
             self.nav_list.remove(child)
         self._nav_page_by_row.clear()
+        self._nav_state_labels.clear()
         for pid, info in self._navigation_pages().items():
             self.nav_list.append(self.create_nav_row(pid, info))
+        self._task_activity.clear()
+        self._refresh_task_activity()
         self.nav_list.handler_block_by_func(self.on_nav_selected)
         try:
             for row, page in self._nav_page_by_row.items():
@@ -453,13 +459,17 @@ class MainWindow(Adw.ApplicationWindow):
         label.set_xalign(0)
         box.append(label)
 
-        # Badge showing selected VPN name
-        if badge_text := page_info.get("badge"):
-            badge = Gtk.Label(label=badge_text)
-            badge.add_css_class("caption")
-            badge.add_css_class("dim-label")
-            badge.set_halign(Gtk.Align.END)
-            box.append(badge)
+        # Running or Stopped, in words: the task's real state, whatever page is open.
+        if page_id in ACTIVITY_PAGES:
+            # The row's description announces the state; the label is not read twice.
+            state = Gtk.Label(label=activity_text(Activity.CHECKING), valign=Gtk.Align.CENTER, halign=Gtk.Align.END, accessible_role=Gtk.AccessibleRole.PRESENTATION)
+            state.set_wrap(True)
+            state.set_max_width_chars(12)
+            state.set_justify(Gtk.Justification.CENTER)
+            for css_class in ("caption", "state-pill", "brp-nav-state", "offline"):
+                state.add_css_class(css_class)
+            box.append(state)
+            self._nav_state_labels[page_id] = state
 
         # The row itself is the control. A Gtk.Button inside would draw button
         # chrome and Adwaita's bold button text, which is not how a navigation
@@ -493,22 +503,6 @@ class MainWindow(Adw.ApplicationWindow):
         status_list.update_property([Gtk.AccessibleProperty.LABEL], [_("Services")])
         self.service_list = status_list
 
-        # Home and the internet pages show two indicators only: is streaming
-        # ready, and is the secure connection on. The task pages show the
-        # detail behind them, one card per service.
-        for summary_id, title, icon, description in (
-            # TRANSLATORS: sidebar indicator: the state of the streaming program this computer uses.
-            ("summary-streaming", _("Streaming"), "brp-host-symbolic", _("The program that sends or receives the game.")),
-            # TRANSLATORS: sidebar indicator: the state of Tailscale, ZeroTier or Headscale.
-            ("summary-network", _("Secure connection"), "brp-network-private-symbolic", _("Lets computers in different places play together.")),
-        ):
-            row = ServiceStatusCard(summary_id, title, icon, description, primary=summary_id == "summary-streaming")
-            row.set_activatable(True)
-            self._service_by_row[row] = summary_id
-            row.connect("activated", lambda _r, sid=summary_id: self._on_summary_activated(sid))
-            self._status_rows[summary_id] = row
-            status_list.append(row)
-
         for service_id, label_text in (("sunshine", "Sunshine"), ("moonlight", "Moonlight"), ("tailscale", "Tailscale"), ("zerotier", "ZeroTier"), ("headscale", "Headscale")):
             meta = SERVICE_METADATA.get(service_id, {})
             row = ServiceStatusCard(
@@ -532,10 +526,6 @@ class MainWindow(Adw.ApplicationWindow):
     def _service_header(self, row: Gtk.ListBoxRow, before: Gtk.ListBoxRow | None) -> None:
         """“Streaming” above Sunshine/Moonlight, “Secure connection” above the VPNs."""
         service_id = self._service_by_row.get(row)
-        if service_id in SUMMARY_SERVICES:
-            # The two indicators carry their own titles.
-            row.set_header(None)
-            return
         if service_id in self._STREAMING_SERVICES:
             # TRANSLATORS: sidebar heading above the Sunshine or Moonlight card.
             text = _("Streaming")
@@ -562,9 +552,7 @@ class MainWindow(Adw.ApplicationWindow):
         # streaming component of the remembered task and the three methods.
         if self.current_page == "vpn_selector":
             return ["sunshine" if self._summary_role() == "host" else "moonlight", *self._NETWORK_SERVICES]
-        # Home: two indicators, not a component dashboard.
-        if self.current_page in SUMMARY_PAGES:
-            return list(SUMMARY_SERVICES)
+        # Home shows no service cards: the states sit next to the tasks above.
         return []
 
     def _filter_status_rows(self) -> None:
@@ -577,7 +565,7 @@ class MainWindow(Adw.ApplicationWindow):
             service_list.invalidate_headers()
 
     def _summary_role(self) -> str:
-        """The task the Streaming indicator is about."""
+        """The task whose streaming card Connect your devices shows."""
         role = getattr(self, "_home_role", None) or self.config.get("home_role") or self._chosen_role()
         if role in ("host", "guest"):
             return role
@@ -586,37 +574,53 @@ class MainWindow(Adw.ApplicationWindow):
             return "guest"
         return "host"
 
-    def _refresh_summaries(self) -> None:
-        streaming = self._status_rows.get("summary-streaming")
-        network = self._status_rows.get("summary-network")
-        if streaming is None or network is None:
-            return
-        service_id = "sunshine" if self._summary_role() == "host" else "moonlight"
-        state = streaming_presentation(service_id, self._service_installed.get(service_id), self._service_running.get(service_id))
-        # TRANSLATORS: {service} is Sunshine, Moonlight, Tailscale, ZeroTier or Headscale; {state} its state, such as Running.
-        text = _("{service} · {state}").format(service="Sunshine" if service_id == "sunshine" else "Moonlight", state=state.text) if state.tone != "checking" else state.text
-        streaming.set_presentation(CardPresentation(text, state.tone))
-        statuses = list(self._network_statuses.values())
-        if not statuses:
-            network.set_presentation(checking_presentation() if not getattr(self, "_network_read_failed", False) else unknown_presentation())
-            return
-        from big_remote_play.private_network.plan import plan_connection
+    def _refresh_task_activity(self) -> None:
+        """Share, Connect and Connect your devices: Running or Stopped, from real state."""
+        host = getattr(self, "host_view", None)
+        guest = getattr(self, "guest_view", None)
+        activities = {
+            "host": share_activity(
+                transition=getattr(host, "sharing_transition", None),
+                sharing=bool(getattr(host, "is_hosting", False)),
+                server_running=self._service_running.get("sunshine"),
+            ),
+            "guest": connect_activity(
+                connecting=bool(getattr(guest, "is_connecting", False)),
+                streaming=bool(getattr(guest, "is_connected", False)),
+                client_running=self._service_running.get("moonlight"),
+            ),
+            "vpn_selector": network_activity(
+                self._network_statuses.values() if self._network_statuses else None,
+                read_failed=getattr(self, "_network_read_failed", False),
+            ),
+        }
+        pages = self._navigation_pages()
+        for page_id, activity in activities.items():
+            label = self._nav_state_labels.get(page_id)
+            if label is None or self._task_activity.get(page_id) is activity:
+                continue
+            self._task_activity[page_id] = activity
+            label.set_label(activity_text(activity))
+            for css_class in ("online", "offline", "starting"):
+                label.remove_css_class(css_class)
+            label.add_css_class(pill_class(activity))
+            row = label.get_ancestor(Gtk.ListBoxRow)
+            if row is not None:
+                info = pages.get(page_id, {})
+                # TRANSLATORS: accessible description of a sidebar entry: {description} explains the task, {state} is Running, Stopped…
+                description = _("{description}. {state}").format(description=info.get("description", ""), state=activity_text(activity))
+                row.update_property([Gtk.AccessibleProperty.DESCRIPTION], [description])
 
-        connected = [status for status in statuses if status.connected]
-        status = connected[0] if connected else plan_connection(statuses).status
-        if status is None:
-            # TRANSLATORS: state of the secure connection: no method is set up on this computer.
-            network.set_presentation(CardPresentation(_("Not set up"), "inactive"))
-            return
-        shown = provider_presentation(status)
-        network.set_presentation(CardPresentation(_("{service} · {state}").format(service=status.provider.display_name, state=shown.text), shown.tone))
-
-    def _on_summary_activated(self, summary_id: str) -> None:
-        if summary_id == "summary-streaming":
-            role = self._summary_role()
-            self._select_home_role(role, remember=False)
-        else:
-            self._go_to_private_network_setup()
+    def _on_task_state_changed(self) -> None:
+        """Share or Connect changed state in this window: say so at once, then confirm with a probe."""
+        host = getattr(self, "host_view", None)
+        if host is not None and getattr(host, "sharing_transition", None) is None:
+            # A finished start or stop is what the Sunshine probe would now report.
+            self._service_running["sunshine"] = bool(host.is_hosting)
+            self._refresh_service_state("sunshine")
+        self._refresh_task_activity()
+        if getattr(self, "_status_timer_id", None) is not None:  # not while the window opens or closes
+            self._probe_streaming(list(self._STREAMING_SERVICES))
 
     def _refresh_network_card(self, service_id: str) -> None:
         row = self._status_rows.get(service_id)
@@ -637,7 +641,7 @@ class MainWindow(Adw.ApplicationWindow):
         if row is None or self._service_installed.get(service_id) is None:
             return
         row.set_presentation(streaming_presentation(service_id, self._service_installed.get(service_id), self._service_running.get(service_id)))
-        self._refresh_summaries()
+        self._refresh_task_activity()
 
     def update_server_status(self, run_sun, run_moon, run_tailscale, run_zt=False):
         for service_id, running in [("sunshine", run_sun), ("moonlight", run_moon), ("tailscale", run_tailscale), ("zerotier", run_zt)]:
@@ -694,6 +698,8 @@ class MainWindow(Adw.ApplicationWindow):
         self.content_stack.add_named(self.host_view, "host")
         self.guest_view = GuestView()
         self.content_stack.add_named(self.guest_view, "guest")
+        for view in (self.host_view, self.guest_view):
+            view.add_state_listener(self._on_task_state_changed)
 
         self.vpn_selector_page = self.create_vpn_selector_page()
         self.content_stack.add_named(self.vpn_selector_page, "vpn_selector")
@@ -1242,7 +1248,6 @@ class MainWindow(Adw.ApplicationWindow):
             self._refresh_service_state(state.id)
             if state.id in names:
                 self._set_role_card_state(names[state.id][0], names[state.id][1], state.installed)
-        self._refresh_summaries()
 
     def _on_active_changed(self, *_args) -> None:
         """Coming back to the window: what was installed meanwhile is seen."""
@@ -1307,9 +1312,7 @@ class MainWindow(Adw.ApplicationWindow):
         self.content_headerbar.set_show_back_button(True)
         self._remember_role(pid)
         self._filter_status_rows()
-        if pid in ("host", "guest", *SUMMARY_PAGES):
-            self._refresh_private_network_status()
-        self._refresh_summaries()
+        self._refresh_private_network_status()
 
         if pid == "host":
             self._set_header_context("host")
@@ -1347,8 +1350,10 @@ class MainWindow(Adw.ApplicationWindow):
             self._status_timer_id = GLib.timeout_add_seconds(3, self.p_check)
 
     def _refresh_private_network_status(self) -> None:
-        """Fetch provider membership off the GTK thread, with no overlap."""
-        if self._network_polling or self.current_page not in ("host", "guest", *SUMMARY_PAGES):
+        """Fetch provider membership off the GTK thread, with no overlap.
+
+        Every page needs it: the sidebar says whether Connect your devices is running."""
+        if self._network_polling:
             return
         self._network_polling = True
 
@@ -1366,7 +1371,7 @@ class MainWindow(Adw.ApplicationWindow):
                 self._network_read_failed = True
                 for provider in self._NETWORK_SERVICES:
                     self._status_rows[provider].set_presentation(unknown_presentation())
-            self._refresh_summaries()
+            self._refresh_task_activity()
             return False
 
         def check():
@@ -1383,32 +1388,38 @@ class MainWindow(Adw.ApplicationWindow):
         threading.Thread(target=check, daemon=True).start()
 
     def p_check(self):
-        """Refresh only the service rows the current page shows.
+        """Refresh what the sidebar shows, cheaply.
 
-        Home and the network pages show none, so they start no process at all;
-        Share and Connect check one service each.
+        The streaming card on screen is probed every 3 s; Sunshine and
+        Moonlight for the Share and Connect states every third tick (9 s), as
+        starts and stops made in this window arrive at once through
+        ``_on_task_state_changed``. A window in the background probes nothing.
         """
         self._network_poll_ticks += 1
         # A window in the background polls nothing; focusing it reads again.
         if self._network_poll_ticks >= 2 and (self.is_active() or not self._network_statuses):
             self._network_poll_ticks = 0
             self._refresh_private_network_status()
-        if self._polling_status:
-            return True
+        self._activity_ticks = (self._activity_ticks + 1) % 3
+        known = all(service_id in self._service_running for service_id in self._STREAMING_SERVICES)
+        wanted: list[str]
+        if self._activity_ticks == 0 or not known:
+            wanted = list(self._STREAMING_SERVICES)
+        else:
+            wanted = [service_id for service_id in self._relevant_service_ids() if service_id in self._STREAMING_SERVICES]
+        if not self.is_active() and known:
+            wanted = []  # in the background nothing is probed again
+        self._probe_streaming(wanted)
+        return True
+
+    def _probe_streaming(self, wanted: list[str]) -> None:
+        """Whether Sunshine and Moonlight run, off the GTK thread, one probe at a time."""
+        if not wanted or self._polling_status:
+            return
         probes = {
             "sunshine": self.system_check.is_sunshine_running,
             "moonlight": self.system_check.is_moonlight_running,
-            "tailscale": self.system_check.is_tailscale_running,
-            "zerotier": self.system_check.is_zerotier_running,
         }
-        relevant = self._relevant_service_ids()
-        wanted = [service_id for service_id in relevant if service_id in ("sunshine", "moonlight")]
-        if "summary-streaming" in relevant:
-            wanted.append("sunshine" if self._summary_role() == "host" else "moonlight")
-        if not self.is_active() and self._service_running:
-            wanted = []  # in the background nothing is probed again
-        if not wanted:
-            return True
         self._polling_status = True
 
         def finish(states):
@@ -1429,7 +1440,6 @@ class MainWindow(Adw.ApplicationWindow):
                 GLib.idle_add(finish, states)
 
         threading.Thread(target=check, daemon=True).start()
-        return True
 
     def update_status(self, h_sun, h_moon):
         # System readiness is reflected in the role cards and sidebar. Startup

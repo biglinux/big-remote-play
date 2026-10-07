@@ -785,7 +785,7 @@ class PerformanceMonitor(Gtk.Box):
                     window = self._windows.setdefault(address, LatencyWindow())
                     health = window.add(ping_once(address)) if sample else window.health
                     transport = self._transport(address, now)
-                infos.append(ConnectionInfo(name, address, transport, health, True, started, video, warnings))
+                infos.append(ConnectionInfo(name, address, transport, health, True, started, video, warnings, bool(getattr(session, "preexisting", False))))
             current = {target[0] for target in targets}
             for address in list(self._windows):
                 if address not in current:

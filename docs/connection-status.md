@@ -79,6 +79,38 @@ and follow the text size; a drawing error is logged once per failure streak
 and the values stay readable as labels. The widget's accessible name is
 *Latency in the last 3 minutes*.
 
+## Connection notifications (Share)
+
+Each new session in **Connected now** produces one desktop notification,
+whether or not the window is in front: *Living Room TV connected*, with
+*Connection: Tailscale* and *IP address: 100.64.0.2* when they are known. The
+source is the same evidence as above (Sunshine's `CLIENT CONNECTED` marker and
+the RTSP handshake address); a ping, a pairing or Moonlight's `/serverinfo`
+polling never notifies.
+
+- **One per session.** `host/connection_notices.py` identifies a session by
+  its handshake address and the moment the tracker first saw it, so a device
+  that stays connected is announced once, and one that disconnects and
+  connects again is a new session and is announced again. Stopping sharing
+  forgets every session.
+- **Already playing is not new.** Sessions found on the tracker's first read
+  of the log (Big Remote Play opened during a stream) are remembered without a
+  notification.
+- **What is shown.** The title carries the device name from **Connected now**
+  (a saved name, the private network's name or the reverse DNS name), cleaned
+  of control and bidirectional characters and cut to 64 characters; a
+  placeholder (*Connected device*, *Device at …*) is replaced by *A device
+  connected*. The body holds only the connection path (**Local network**,
+  **Internet**, **Tailscale**, **ZeroTier** or **Headscale**, from the real
+  route) and a validated literal IP address; each line is left out when it is
+  unknown.
+- **Privacy.** Names and addresses go to the notification only: they are not
+  logged and not stored. The notification is plain text.
+
+The session list is read every 3 s while sharing, so a notification arrives
+within a few seconds of the stream starting. Covered by
+`tests/test_connection_notices.py`.
+
 ## Connection history (Share)
 
 `host/share_history.py` keeps what **Connected now** showed, so **Share →
