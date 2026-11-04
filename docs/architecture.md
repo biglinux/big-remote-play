@@ -26,10 +26,12 @@ Share's pairing requests come from `host/pairing_requests.py` (`RequestTracker`:
 ```text
 Sidebar                        Content
   Home                           hero (logo, Start with the guided setup) · Share · Connect
-  Share       ─ Overview         source → Start sharing; requests; Connected now;
-                                 Available over the internet; 3. Connect the other PC
-              ─ Preferences      sound, mouse and keyboard (Host input priority), access
-              ─ Support          live latency · Connection history · server tools · diagnostics
+  Share       ─ Overview         What to share → Start/Stop sharing; requests; Pair a new device;
+                                 Needs attention; Connected now; Available over the internet
+              ─ Preferences      Picture and performance · Sound · Mouse, keyboard and controllers ·
+                                 Security and access · Advanced
+              ─ Support          Check this computer · Common problems · live latency ·
+                                 Connection history · server log · diagnostics
   Connect     ─ Computers        one card per computer; choosing it connects
               ─ Advanced options Connect again · Other ways to connect · On this computer
   Connect your devices           three cards (switch, state, network, devices); Advanced links
@@ -50,6 +52,10 @@ the private-network pages in [Connect your devices](connect-your-devices.md).
 The navigation pill of each task comes from `ui/task_activity.py` (GTK-free:
 probes, the views' own state listeners and `ProviderStatus`); see
 [task states](service-status-cards.md#task-states-in-the-navigation).
+
+## Sunshine's administrator password
+
+`utils/sunshine_credentials.SunshineCredentials` is the only owner of the password the app uses for Sunshine's API, one instance per Share window. It reads the keyring once per session (again only after an explicit retry), serves the password from memory afterwards, serializes keyring and `sunshine.conf` writes, and records the keyring state (`available`, `unavailable`, `unresponsive`) and whether Sunshine rejected the password. `get()`, `remember()` and `persist()` may wait for the keyring and run only on workers; `cached()` and `status()` read memory and are safe on the GTK thread. A verified password is held in memory before it is written, so a keyring that cannot save it never undoes a working login. Every libsecret call goes through `utils/secret_store.SecretStore`, which runs it on a helper thread, gives up after 10 seconds and refuses further calls for a minute after a timeout. The test suite replaces `secret_store.default_backend_factory` with an in-memory keyring.
 
 ## Settings ownership
 

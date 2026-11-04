@@ -27,7 +27,8 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Connect your devices](connect-your-devices.md) — one page per connection method (Devices | Advanced), the cards and their switches, device lists, removal capabilities and navigation without dialogs.
 - [Headscale setup wizard](headscale-setup-wizard.md) — this computer or another server, public IP and CGNAT, DigitalPlat and Cloudflare, HTTPS, keys, progress and checks.
 - [Installing what a task needs](dependency-installer.md) — detection, Pamac/PolicyKit installation and when the state is read again.
-- [Pairing requests](pairing-requests.md) — what Sunshine can tell, the request dialog and its safety rules.
+- [Pairing requests](pairing-requests.md) — what Sunshine can tell, the request dialog, Sunshine's password and the keyring, and the safety rules.
+- [Mouse pointer compatibility](mouse-cursor-compatibility.md) — why the other device may not see the pointer, per capture method and symptom, and what the app checks.
 - [Visual design](visual-design.md) — the Gamer appearance, its tokens and accessibility, and the icon rules.
 - [Backup and restore](backup-restore.md) — storage inventory, archive format, validation, rollback and data ownership.
 - [Service status cards](service-status-cards.md) — stable Share/Connect service cards and their state contract.

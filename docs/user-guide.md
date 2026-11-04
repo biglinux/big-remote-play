@@ -42,11 +42,11 @@ When a task needs a program this computer does not have yet, Big Remote Play say
 ## Share a game
 
 1. On Home, choose **Share** — the option that says this computer runs the game.
-2. In **Overview**, under **Source**, choose **Full Desktop**, **Game Window** (only one open game is sent, see below), or a game or app to start (**Steam**, **Lutris** or **Custom App**). Each source has its own icon.
+2. In **Overview**, under **What to share → Source**, choose **Full Desktop**, **Game Window** (only one open game is sent, see below), or a game or app to start (**Steam**, **Lutris** or **Custom App**). Each source has its own icon.
 3. The **Image and capture** card below shows what the next session will use: **Screen**, **Encoding**, **Video limit**, **Compression**, **Priority**, and **HDR screen** or **Screen resolution** when they apply. These are the configured values, not measurements; the other computer asks for the resolution and frame rate when it connects. Choose **Configure** only when the display, GPU, encoder or video ceiling needs to change. If displays have the same name, choose **Identify monitors** to show 01, 02 and 03 on the physical screens; the chosen screen then appears on the card.
-4. Sound works without setup: the other computer hears what this computer plays. **Preferences → Audio** has **Test audio** and the options below.
-5. Start sharing and leave the game computer running.
-6. The first time a device connects, **New connection request** appears by itself: type the four digits the other computer shows and choose **Approve** (see [approve a new device](#approve-a-new-device)).
+4. Sound works without setup: the other computer hears what this computer plays. **Preferences → Sound** has **Test audio** and the options below.
+5. Select the large **Start sharing** button and leave the game computer running. The card above it says **Starting…**, then **Sharing**; the same button then reads **Stop sharing**.
+6. The first time a device connects, **New connection request** appears by itself: type the four digits the other computer shows and choose **Approve** (see [approve a new device](#approve-a-new-device)). You can also type them in **Pair a new device**, right under the button.
 7. Each time a device starts playing, a desktop notification says so, for example *Living Room TV connected* with *Connection: Tailscale* and *IP address: 100.64.0.2*. It appears once per connection; a device that disconnects and connects again is announced again.
 
 Opening Share does not start the server, install software or change network/firewall settings by itself.
@@ -62,19 +62,26 @@ Opening Share does not start the server, install software or change network/fire
 
 **Start sharing** stays unavailable until a game is chosen, so nothing else is ever shared instead. When the game switches between a window and fullscreen, or changes its resolution, the picture follows it; a game that opens a new window for that is found again, and Share says **Reconnecting to the game window…** meanwhile (the other device sees a black picture for a few seconds, never your desktop). If the game closes or crashes, or opens more than one window so that Big Remote Play cannot tell which one to show, sharing stops and says why; open the game and start again.
 
-While sharing, keep the game as the active window: keyboard and mouse input from the other device goes to the active window of this computer, and many games stop their sound while another window is active (measured with *Shadow of the Tomb Raider*: its sound stops as soon as it loses focus). Big Remote Play brings the game to the front when sharing starts and every time a device starts playing. Only the game's sound is sent: other programs, notifications and voice calls stay on this computer, which still hears everything (calls are sent too when **Voice calls** is on, and the microphone when **Microphone** is on). To send all of this computer's sound instead, turn off **Preferences → Audio → Send only the game's sound**. Game Window needs KDE Plasma on Wayland (or an X11 desktop with window effects on) and some GStreamer plugins; if anything is missing, the list says what to install. Details and limits are in [Game Window](game-window.md).
+While sharing, keep the game as the active window: keyboard and mouse input from the other device goes to the active window of this computer, and many games stop their sound while another window is active (measured with *Shadow of the Tomb Raider*: its sound stops as soon as it loses focus). Big Remote Play brings the game to the front when sharing starts and every time a device starts playing. Only the game's sound is sent: other programs, notifications and voice calls stay on this computer, which still hears everything (calls are sent too when **Voice calls** is on, and the microphone when **Microphone** is on). To send all of this computer's sound instead, turn off **Preferences → Sound → Send only the game's sound**. Game Window needs KDE Plasma on Wayland (or an X11 desktop with window effects on) and some GStreamer plugins; if anything is missing, the list says what to install. Details and limits are in [Game Window](game-window.md).
 
-While sharing, **3. Connect the other PC** also tells you, before any device waits:
+While sharing, **Needs attention** appears under **Pair a new device** only when something needs you, before any device waits:
 
-- **Sunshine's password is needed to approve devices** (or **Sunshine rejected the saved password**): **Enter Sunshine password** checks it with Sunshine and keeps it in the system keyring, so a code is approved the moment you type it;
+- **Sunshine's password is needed to approve devices**, **Sunshine rejected the saved password**, **The system keyring did not answer** (with **Try the keyring again**) or **Choose a password for sharing**: normally Big Remote Play creates and keeps Sunshine's password by itself, so these appear only when that is impossible. The password is checked with Sunshine, then kept in the system keyring, or only until you close the app when the keyring cannot keep it;
+- **The other device may not see the mouse pointer**: Sunshine reported that its screen capture cannot draw the pointer; **Use it** restarts sharing with the capture of this desktop that does (see [mouse pointer compatibility](mouse-cursor-compatibility.md));
 - **The firewall blocks other computers**: this computer's firewall (ufw or firewalld) does not allow Sunshine's ports from the local network, ZeroTier, Tailscale or Headscale. **Allow in firewall** lists the ports and asks for your password;
 - **A stream is open on this computer**: new devices can pair only after **End for everyone**.
 
 Pairing requests that a device abandoned (cancelled, cut by the network or a firewall) are cleared automatically, so the device's next attempt is not refused.
 
+### Preferences and Support
+
+**Preferences** groups the settings by what they change: **Picture and performance** (**Image and capture**, **Game Library**), **Sound**, **Mouse, keyboard and controllers**, **Security and access** (where Sunshine's password is kept, **Change Sunshine password**, **Paired devices**, **Network and access**) and **Advanced** (**Advanced server settings**, **Server control panel**). Most people can keep the automatic choices.
+
+**Support** starts with **Check this computer**: read-only checks, each stated in words (**OK**, **Check**, **Problem**, **Info**) with a button only when there is a safe fix — sharing, Moonlight, the desktop session, remote mouse and controllers, the mouse pointer, the system keyring, the firewall and video encoding. The checks run when Support is opened or with **Check again**, never in the background. **Common problems** explains, in order, what to try for *I cannot connect*, *The PIN does not appear*, *The PIN is not accepted*, *There is no picture*, *There is no sound*, *My controller does not work*, *The mouse pointer is missing* and *The connection is slow*, with this computer's current state next to the steps. The live monitor, connection history, **Server log** and diagnostics follow.
+
 ### Mouse and keyboard: this computer first
 
-When someone else plays on this computer, they control its mouse and keyboard too. If you also want to use them, turn on **Preferences → Host input priority → Host has priority**:
+When someone else plays on this computer, they control its mouse and keyboard too. If you also want to use them, turn on **Preferences → Mouse, keyboard and controllers → Host has priority**:
 
 - as soon as you move this computer's own mouse or press one of its keys, the other device's mouse and keyboard stop;
 - **Guest control resumes after** (5 seconds unless you choose another time) without using them here, the other device controls them again; each new use here starts the count again;
@@ -85,7 +92,7 @@ While sharing, **Connected now** says who has them: **You're controlling this PC
 
 ### Approve a new device
 
-When a device that was never paired asks to play, a dialog opens on its own: **New connection request** — *Living room PC wants to connect to this computer. Type the PIN shown on its screen.* The PIN field is ready for typing or pasting; Enter or **Approve** sends it. **Reject** refuses the device; **Not now** keeps the request. While it waits, **Connection request** stays at the top of **Overview** with the time left (*This request expires in 1:42*); after two minutes without an answer it is cancelled. If the window is in the background, a desktop notification tells you. **Type a pairing code yourself**, under **3. Connect the other PC**, is the manual fallback. Nothing is approved without the PIN shown on the other screen. Details: [pairing requests](pairing-requests.md).
+When a device that was never paired asks to play, a dialog opens on its own: **New connection request** — *Living room PC wants to connect to this computer. Type the PIN shown on its screen.* The PIN field is ready for typing or pasting; Enter or **Approve** sends it. **Reject** refuses the device; **Not now** keeps the request. While it waits, **Connection request** stays at the top of **Overview** with the time left (*This request expires in 1:42*); after two minutes without an answer it is cancelled. If the window is in the background, a desktop notification tells you; clicking it brings the request back, also after **Not now**. When several devices wait, each gets its own request and, after you answer one, the next opens. **Pair a new device** on **Overview** always accepts the PIN too: type it and press Enter. If no device is waiting, it says so and sends nothing. Only the PIN is asked for; Sunshine's password is asked for once, by itself, only when none works. Nothing is approved without the PIN shown on the other screen. Details: [pairing requests](pairing-requests.md).
 
 Two options in **Image and capture** decide how faithful the picture is:
 
