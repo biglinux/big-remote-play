@@ -121,8 +121,11 @@ def test_without_an_open_stream_the_plain_explanation_stays(ui, host):
     host.fake.app_id = 0
     host.pair_entry.set_text("1234")
     host.pair_with_entered_pin()
-    assert wait_for(lambda: ui.get_visible_dialog() is not None)
-    assert not ui.get_visible_dialog().has_response("end")
+    # Said under the PIN, which stays editable; no dialog offers to end anything.
+    assert wait_for(lambda: "No device is waiting" in host.pair_status_label.get_label())
+    assert host.pair_status_label.has_css_class("error")
+    assert ui.get_visible_dialog() is None
+    assert host.pair_entry.get_text() == "1234" and host.pair_entry.get_editable()
 
 
 def test_a_stream_sunshine_does_not_close_is_reported(ui, host):
@@ -151,6 +154,8 @@ def test_a_missing_sunshine_password_is_asked_for_before_any_device_waits(host, 
     assert wait_for(host.sunshine_password_row.get_visible)
     assert host.sunshine_password_button.get_visible()
     assert "password" in host.sunshine_password_row.get_title().lower()
+    # Requests cannot be read without it: the page does not claim to be waiting for one.
+    assert "Waiting for a device" not in host.pair_status_label.get_label()
 
 
 def test_a_rejected_password_is_said_and_abandoned_requests_wait_for_a_working_one(host, monkeypatch):
@@ -173,34 +178,8 @@ def test_a_rejected_password_is_said_and_abandoned_requests_wait_for_a_working_o
     assert wait_for(lambda: discarded == [("admin", "secret")])  # abandoned requests are cleared while sharing
 
 
-def test_the_password_is_checked_with_sunshine_before_it_is_kept(ui, host, monkeypatch):
-    saved = []
-    monkeypatch.setattr(host, "_save_sunshine_creds", lambda user, password: saved.append((user, password)) or True)
-    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: ([], 200 if auth == ("admin", "right") else 401))
-    host.open_sunshine_credentials_dialog()
-    dialog = ui.get_visible_dialog()
-    rows = []
-    stack = [dialog.get_extra_child()]
-    while stack:
-        widget = stack.pop()
-        if isinstance(widget, (Adw.EntryRow,)):
-            rows.append(widget)
-        child = widget.get_first_child()
-        while child is not None:
-            stack.append(child)
-            child = child.get_next_sibling()
-    user_row = next(r for r in rows if not isinstance(r, Adw.PasswordEntryRow))
-    pass_row = next(r for r in rows if isinstance(r, Adw.PasswordEntryRow))
-    user_row.set_text("admin")
-    pass_row.set_text("wrong")
-    dialog.emit("response", "save")
-    dialog.close()
-    assert wait_for(lambda: ui.get_visible_dialog() is not None and ui.get_visible_dialog() is not dialog)
-    assert saved == []  # a wrong password is never stored
-    ui.get_visible_dialog().close()
-    host.open_sunshine_credentials_dialog()
-    dialog = ui.get_visible_dialog()
-    stack, rows = [dialog.get_extra_child()], []
+def _password_sheet_rows(dialog):
+    rows, stack = [], [dialog]
     while stack:
         widget = stack.pop()
         if isinstance(widget, Adw.EntryRow):
@@ -209,11 +188,69 @@ def test_the_password_is_checked_with_sunshine_before_it_is_kept(ui, host, monke
         while child is not None:
             stack.append(child)
             child = child.get_next_sibling()
-    next(r for r in rows if not isinstance(r, Adw.PasswordEntryRow)).set_text("admin")
-    next(r for r in rows if isinstance(r, Adw.PasswordEntryRow)).set_text("right")
-    dialog.emit("response", "save")
-    dialog.close()
+    user = next(r for r in rows if not isinstance(r, Adw.PasswordEntryRow))
+    password = next(r for r in rows if isinstance(r, Adw.PasswordEntryRow) and r.get_visible())
+    return user, password
+
+
+def test_the_password_is_checked_with_sunshine_before_it_is_kept(ui, host, monkeypatch):
+    saved = []
+    monkeypatch.setattr(host, "_save_sunshine_creds", lambda user, password, persist=True: saved.append((user, password)) or True)
+    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: ([], 200 if auth == ("admin", "right") else 401))
+    resumed = []
+    host.open_sunshine_credentials_dialog(then=resumed.append)
+    dialog = ui.get_visible_dialog()
+    user_row, pass_row = _password_sheet_rows(dialog)
+    user_row.set_text("admin")
+    pass_row.set_text("wrong")
+    dialog.save_button.emit("clicked")
+    # A wrong password keeps the sheet open, with what was typed, and is never stored.
+    assert wait_for(lambda: dialog.save_button.get_sensitive())
+    assert ui.get_visible_dialog() is dialog and saved == [] and resumed == []
+    assert pass_row.get_text() == "wrong"
+    pass_row.set_text("right")
+    pass_row.emit("entry-activated")  # Enter saves too
     assert wait_for(lambda: saved == [("admin", "right")])
+    assert wait_for(lambda: resumed == [("admin", "right")])  # the waiting approval goes on
+    assert wait_for(lambda: ui.get_visible_dialog() is None)
+
+
+def test_saving_the_password_never_blocks_the_window(ui, host, monkeypatch):
+    """The reported freeze: "Save password" with a keyring that does not answer."""
+    import threading
+
+    from big_remote_play.utils import secret_store
+
+    release = threading.Event()
+
+    class HangingKeyring(secret_store.InMemorySecretBackend):
+        def store(self, key, value, label):
+            release.wait(5)  # a locked KWallet waiting for its unlock prompt
+
+    monkeypatch.setattr(secret_store, "default_backend_factory", lambda: HangingKeyring())
+    monkeypatch.setattr(secret_store, "KEYRING_TIMEOUT_SECONDS", 0.5)
+    monkeypatch.setattr(host.credentials, "_store_factory", lambda: secret_store.SecretStore(timeout=0.5))
+    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: ([], 200))
+    host.open_sunshine_credentials_dialog()
+    dialog = ui.get_visible_dialog()
+    user_row, pass_row = _password_sheet_rows(dialog)
+    user_row.set_text("admin")
+    pass_row.set_text("right")
+    started = time.monotonic()
+    dialog.save_button.emit("clicked")
+    assert time.monotonic() - started < 0.2  # the click returns at once
+    ticks = []
+    GLib.timeout_add(50, lambda: ticks.append(1) or True)
+    assert wait_for(lambda: ui.get_visible_dialog() is None, timeout=4)
+    assert len(ticks) >= 5  # the main loop kept running meanwhile
+    assert host.credentials.cached() == ("admin", "right")  # works for this session
+    assert not host.credentials.status().persisted
+    assert any("did not answer" in toast for toast in host.toasts)
+    # The person finishes KWallet's own window afterwards: the save still counts.
+    release.set()
+    assert wait_for(lambda: host.credentials.status().persisted, timeout=4)
+    assert wait_for(lambda: any("saved in the system keyring" in toast for toast in host.toasts))
+    assert "sunshine_user = admin" in host._get_sunshine_conf_path().read_text()
 
 
 def test_abandoned_requests_are_cleared_before_a_pin_is_sent(host, monkeypatch):

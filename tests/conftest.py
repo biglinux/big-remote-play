@@ -37,6 +37,13 @@ def _isolated_user_config(tmp_path_factory, monkeypatch):
     from big_remote_play.private_network import service
 
     monkeypatch.setattr(service, "_default_factory", lambda: service.OfflinePrivateNetworkService())
+    # Nor the developer's keyring: every SecretStore created without an
+    # explicit backend gets one in-memory keyring per test.
+    from big_remote_play.utils import secret_store
+
+    keyring = secret_store.InMemorySecretBackend()
+    monkeypatch.setattr(secret_store, "default_backend_factory", lambda: keyring)
+    secret_store.retry_keyring()
     # Nor the sound server: AudioManager sees no PulseAudio/PipeWire server
     # unless a test passes its own runner, and session state stays temporary.
     from big_remote_play.utils import audio

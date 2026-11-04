@@ -80,6 +80,21 @@
 .brp-slider-control { padding: 0 12px 12px; }
 .brp-terminal { border-radius: 12px; padding: 8px; background: @view_bg_color; }
 .brp-code-entry text { font-family: monospace; }
+/* Share → Overview. The start/stop action is the largest control of the page;
+ * the pair card keeps the routine PIN in view with one accent line. */
+.brp-hero-action { min-height: 52px; border-radius: 14px; font-size: 1.1em; font-weight: 700;
+    transition: background-color 200ms ease-out, color 200ms ease-out; }
+.brp-pair-card {
+    padding: 18px 20px;
+    border-radius: 20px;
+    border: 1px solid alpha(@accent_bg_color, 0.22);
+    background: alpha(@card_bg_color, 0.65);
+}
+/* One field drawn as four boxes: wide spacing between the digits. */
+.brp-pin-entry { min-height: 48px; border-radius: 12px; }
+.brp-pin-entry text { font-family: monospace; font-size: 1.6em; font-weight: 700; letter-spacing: 0.45em; }
+.brp-step-number { min-width: 24px; min-height: 24px; border-radius: 9999px; font-weight: 700;
+    color: @accent_color; background: alpha(@accent_bg_color, 0.12); }
 /* Rounded backing AND row corners. Native lists still own focus/hover behavior. */
 .brp-boxed, .brp-window list.boxed-list, .brp-dialog list.boxed-list { border-radius: 16px; }
 .brp-boxed > row:first-child, .brp-window list.boxed-list > row:first-child, .brp-dialog list.boxed-list > row:first-child { border-top-left-radius: 16px; border-top-right-radius: 16px; }
@@ -120,7 +135,7 @@
 }
 /* Do not make users trade accessibility for the custom visual treatment. */
 .high-contrast .role-card, .high-contrast .welcome-hero, .high-contrast .brp-computer-card,
-.high-contrast .session-hero,
+.high-contrast .session-hero, .high-contrast .brp-pair-card,
 .high-contrast .brp-empty, .high-contrast .brp-session-panel, .high-contrast .brp-note {
     background-image: none;
     background-color: @window_bg_color;
@@ -290,7 +305,7 @@ list.brp-service-list > row.brp-service-card.error .brp-service-state { color: @
 /* Reduced motion: every state is still in words, surface and icon. GTK also
  * drops these transitions when animations are disabled system-wide. */
 @media (prefers-reduced-motion: reduce) {
-    .role-card, .role-card .brp-choice-arrow, .brp-computer-card,
+    .role-card, .role-card .brp-choice-arrow, .brp-computer-card, .brp-hero-action,
     list.brp-service-list > row.brp-service-card,
     list.brp-service-list > row.brp-service-card .brp-icon-tile {
         transition: none;

@@ -255,30 +255,228 @@ def test_placeholder_names_use_the_name_the_network_gives(host):
 # ── Sunshine without a user yet ───────────────────────────────────────────
 
 
+class FailingKeyring:
+    """A keyring that is installed but does not work (no session service, locked)."""
+
+    def __init__(self, error=None):
+        from big_remote_play.utils.secret_store import SecretStoreUnavailable
+
+        self.error = error or SecretStoreUnavailable("No session service")
+
+    def is_available(self):
+        return True
+
+    def store(self, key, value, label):
+        raise self.error
+
+    def lookup(self, key):
+        raise self.error
+
+    def clear(self, key):
+        raise self.error
+
+
 def test_a_first_sunshine_gets_a_user_kept_in_the_keyring(ui, monkeypatch):
-    import big_remote_play.ui.host_view as hv
-    from big_remote_play.utils import secret_store
+    from big_remote_play.utils.secret_store import SecretStore
+    from big_remote_play.utils.sunshine_credentials import SUNSHINE_PASSWORD_KEY
 
     host = ui.host_view
-    created, saved = [], []
+    created = []
     monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: (None, 307))
-    monkeypatch.setattr(host.sunshine, "create_user", lambda user, password: created.append((user, len(password))) or (True, ""))
-    monkeypatch.setattr(hv, "save_sunshine_credentials", lambda user, password, **kwargs: saved.append(user))
-    monkeypatch.setattr(secret_store.SecretStore, "is_available", lambda self: True)
+    monkeypatch.setattr(host.sunshine, "create_user", lambda user, password: created.append((user, password)) or (True, ""))
     credentials = host._create_sunshine_credentials()
-    assert credentials is not None and created and saved == [credentials[0]]
-    assert created[0][1] >= 24  # a long random password, never shown or logged
+    assert credentials is not None and created == [credentials]
+    assert credentials[0] == "sunshine"
+    assert len(credentials[1]) >= 24  # a long random password, never shown or logged
+    assert SecretStore().lookup(SUNSHINE_PASSWORD_KEY) == credentials[1]
+    assert credentials[1] not in host._get_sunshine_conf_path().read_text()  # never in a file
+    assert host.credentials.status().persisted
     assert host._create_sunshine_credentials() is None  # once per session
 
 
-@pytest.mark.parametrize("status,keyring", [(401, True), (200, True), (0, True), (307, False)])
-def test_an_existing_sunshine_user_is_never_replaced(ui, monkeypatch, status, keyring):
+def test_a_keyring_that_does_not_answer_never_gets_an_unrecoverable_user(ui, monkeypatch):
     from big_remote_play.utils import secret_store
 
     host = ui.host_view
     created = []
-    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: (None, status))
+    monkeypatch.setattr(secret_store, "default_backend_factory", lambda: FailingKeyring())
+    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: (None, 307))
     monkeypatch.setattr(host.sunshine, "create_user", lambda user, password: created.append(user) or (True, ""))
-    monkeypatch.setattr(secret_store.SecretStore, "is_available", lambda self: keyring)
     assert host._create_sunshine_credentials() is None
     assert created == []
+    assert host._password_state() == "create"  # the person chooses one instead
+
+
+def test_a_keyring_that_refuses_to_save_never_gets_a_sunshine_user(ui, monkeypatch):
+    """Cancelling the keyring's own creation prompt: lookups answer, saving fails.
+
+    Measured on Big GNOME and BigLinux KDE live sessions: the password must be
+    in the keyring before Sunshine gets it, or nobody could recover it.
+    """
+    from big_remote_play.utils import secret_store
+    from big_remote_play.utils.secret_store import InMemorySecretBackend
+
+    class SavesNothing(InMemorySecretBackend):
+        def store(self, key, value, label):
+            raise secret_store.SecretStoreUnavailable("Prompt dismissed")
+
+    host = ui.host_view
+    created = []
+    monkeypatch.setattr(secret_store, "default_backend_factory", lambda: SavesNothing())
+    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: (None, 307))
+    monkeypatch.setattr(host.sunshine, "create_user", lambda user, password: created.append(user) or (True, ""))
+    assert host._create_sunshine_credentials() is None
+    assert created == []
+    assert host._password_state() == "create"
+
+
+def test_a_sunshine_that_refuses_the_new_user_leaves_no_password_behind(ui, monkeypatch):
+    from big_remote_play.utils.secret_store import SecretStore
+    from big_remote_play.utils.sunshine_credentials import SUNSHINE_PASSWORD_KEY
+
+    host = ui.host_view
+    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: (None, 307))
+    monkeypatch.setattr(host.sunshine, "create_user", lambda user, password: (False, "refused"))
+    assert host._create_sunshine_credentials() is None
+    assert SecretStore().lookup(SUNSHINE_PASSWORD_KEY) == ""
+
+
+def test_a_keyring_prompt_still_open_is_tried_again_later(ui, monkeypatch):
+    from big_remote_play.utils import secret_store
+
+    host = ui.host_view
+    created = []
+    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: (None, 307))
+    monkeypatch.setattr(host.sunshine, "create_user", lambda user, password: created.append(user) or (True, ""))
+    monkeypatch.setattr(secret_store.SecretStore, "store", lambda self, *a, **k: (_ for _ in ()).throw(secret_store.SecretStoreTimeout("prompting")))
+    assert host._create_sunshine_credentials() is None
+    assert created == [] and not getattr(host, "_credentials_need_keyring", False)
+    assert host._password_state() == "locked"  # with "Try the keyring again"
+    stores = []
+    monkeypatch.setattr(secret_store.SecretStore, "store", lambda self, *a, **k: stores.append(1))
+    assert host._create_sunshine_credentials() is None and stores == []  # no new prompt by itself
+    host._retry_keyring()
+    assert host._create_sunshine_credentials() is not None and created == ["sunshine"]
+
+
+@pytest.mark.parametrize("status,keyring_works", [(401, True), (200, True), (0, True), (307, False)])
+def test_an_existing_sunshine_user_is_never_replaced(ui, monkeypatch, status, keyring_works):
+    from big_remote_play.utils import secret_store
+
+    host = ui.host_view
+    created = []
+    if not keyring_works:
+        monkeypatch.setattr(secret_store, "default_backend_factory", lambda: FailingKeyring())
+    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: (None, status))
+    monkeypatch.setattr(host.sunshine, "create_user", lambda user, password: created.append(user) or (True, ""))
+    assert host._create_sunshine_credentials() is None
+    assert created == []
+
+
+# ── one request, one modal ─────────────────────────────────────────────────
+
+
+def test_a_request_being_checked_is_not_announced_again(host):
+    """Sunshine lists a request for ~10 s while the device checks a wrong PIN."""
+    host.fake.pending = [PendingPairing(ID_A, "Living room", "192.168.1.30")]
+    slow = []
+    host.fake.send_pin = lambda pin, name=None, auth=None, pairing_id=None: slow.append(pin) or PinResult(False, 200, "The PIN did not match.")
+    host.sunshine.send_pin = host.fake.send_pin
+    check(host)
+    assert wait_for(lambda: host._pair_dialog is not None)
+    first = host._pair_dialog
+    first.entry.set_text("9999")
+    first.entry.emit("entry-activated")
+    assert wait_for(lambda: host._pair_dialog is None)
+    check(host)  # Sunshine still lists ID_A
+    wait_for(lambda: False, timeout=0.3)
+    assert host._pair_dialog is None
+    assert not host.pair_requests_group.get_visible()
+
+
+def test_after_answering_the_next_waiting_device_is_asked(host):
+    host.fake.pending = [PendingPairing(ID_A, "Living room", "192.168.1.30"), PendingPairing(ID_B, "Laptop", "192.168.1.31")]
+    check(host)
+    assert wait_for(lambda: host._pair_dialog is not None)
+    assert host._pair_dialog.request.pairing_id == ID_A
+    host._pair_dialog.entry.set_text("1234")
+    host._pair_dialog.entry.emit("entry-activated")
+    assert wait_for(lambda: host._pair_dialog is not None and host._pair_dialog.request.pairing_id == ID_B)
+    assert wait_for(lambda: host.fake.sent == [("1234", "Living room", ID_A)])
+
+
+def test_not_now_keeps_the_request_on_the_page_without_reopening(host):
+    host.fake.pending = [PendingPairing(ID_A, "Living room", "192.168.1.30")]
+    check(host)
+    assert wait_for(lambda: host._pair_dialog is not None)
+    host._pair_dialog.close()
+    assert wait_for(lambda: host._pair_dialog is None)
+    check(host)
+    wait_for(lambda: False, timeout=0.2)
+    assert host._pair_dialog is None and host.pair_requests_group.get_visible()
+    assert "Living room is waiting" in host.pair_status_label.get_label()
+    host.show_waiting_request()  # the notification's action brings it back
+    assert host._pair_dialog is not None and host._pair_dialog.request.pairing_id == ID_A
+
+
+def test_tracker_never_reannounces_an_answered_request():
+    tracker = RequestTracker()
+    request = [PendingPairing(ID_A, "Laptop", "10.0.0.2")]
+    tracker.update(request)
+    tracker.forget(ID_A)
+    assert tracker.update(request).new == ()
+    assert tracker.update([]).gone == ()  # answered, so not "stopped waiting" either
+    assert [item.pairing_id for item in tracker.update(request).new] == [ID_A]  # only a new snapshot after it left
+
+
+def test_a_new_request_clears_the_result_of_an_earlier_attempt(host):
+    host._set_pair_feedback("The PIN did not match.", error=True)
+    host.fake.pending = [PendingPairing(ID_A, "Living room", "192.168.1.30")]
+    check(host)
+    assert wait_for(lambda: "Living room is waiting" in host.pair_status_label.get_label())
+    assert not host.pair_status_label.has_css_class("error")
+
+
+def test_a_password_already_in_the_keyring_becomes_sunshines_first_user(host, monkeypatch):
+    """The keyring finished saving after its own prompt; Sunshine still has no user."""
+    created = []
+    state = {"user": False}
+    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: ([], 200) if state["user"] else (None, 307))
+
+    def create(user, password):
+        created.append((user, password))
+        state["user"] = True
+        return True, ""
+
+    monkeypatch.setattr(host.sunshine, "create_user", create)
+    check(host)
+    assert created == [("admin", "secret")]
+    assert not host.sunshine_password_row.get_visible()
+
+
+def test_sharing_is_not_claimed_while_sunshine_does_not_answer(host, monkeypatch):
+    """Seen on Big GNOME: the process ran, no port was open, the page said "Sharing"."""
+    monkeypatch.setattr(host.sunshine, "_api_is_reachable", lambda: False)
+    host.sync_ui_state()
+    check(host)
+    assert host.overview_state_label.get_label() == "Sharing"  # one reading may be the start-up
+    check(host)
+    assert host.overview_state_label.get_label() == "Not responding"
+    assert "not answering" in host.overview_status_label.get_label()
+    monkeypatch.setattr(host.sunshine, "_api_is_reachable", lambda: True)
+    check(host)
+    assert host.overview_state_label.get_label() == "Sharing"
+
+
+def test_a_sharing_without_any_picture_is_said_with_a_restart(host, monkeypatch):
+    """Seen on a hybrid Intel/NVIDIA notebook: Sunshine served, but every encoder had failed."""
+    from big_remote_play.host.cursor_check import CursorReport
+
+    restarted = []
+    monkeypatch.setattr(host, "stop_hosting", lambda *a: restarted.append(True))
+    host.sync_ui_state()
+    host._show_cursor_report(CursorReport(no_picture=True))
+    assert host.picture_row.get_visible() and host.attention_group.get_visible()
+    host._restart_sharing()
+    assert restarted == [True] and host._restart_after_stop
+    host._restart_after_stop = False

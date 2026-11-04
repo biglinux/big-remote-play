@@ -797,7 +797,7 @@ def test_support_lists_are_rounded_and_discovery_empty_state_is_text_first(ui):
     ui.navigate_to("host")
     ui.host_view.view_stack.set_visible_child_name("support")
     groups = {widget.get_title(): widget for widget in _walk_widgets(ui.host_view) if isinstance(widget, Adw.PreferencesGroup) and widget.get_title()}
-    for title in ("Server tools", "Advanced administration"):
+    for title in ("Server tools",):
         assert groups[title].has_css_class("brp-rounded-group")
 
     empty = ui.guest_view._build_discover_empty_state()

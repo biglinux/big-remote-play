@@ -564,6 +564,10 @@ class PerformanceMonitor(Gtk.Box):
             # Remove domain part if it looks like a local domain
             if ".local" in hostname:
                 hostname = hostname.split(".")[0]
+            if hostname.startswith("_"):
+                # systemd-resolved's synthetic names ("_gateway", "_outbound")
+                # describe a route, not a device a person would recognize.
+                raise OSError("synthetic resolver name")
             self.hostname_cache[ip] = hostname
             return hostname
         except (FutureTimeoutError, OSError, socket.herror, socket.gaierror):
@@ -575,7 +579,7 @@ class PerformanceMonitor(Gtk.Box):
             return self.hostname_cache[ip]
 
     def _sunshine_auth(self) -> tuple[str, str] | None:
-        """Reads Sunshine admin credentials from the system keyring, or None."""
+        """Worker thread only: Sunshine admin credentials from the keyring, or None."""
         from big_remote_play.utils.sunshine_credentials import load_sunshine_credentials
 
         return load_sunshine_credentials()
@@ -613,9 +617,9 @@ class PerformanceMonitor(Gtk.Box):
             return
         sunshine = self.sunshine
         self.set_sensitive(False)
-        auth = self._sunshine_auth()
 
         def work():
+            auth = self._sunshine_auth()  # worker: the keyring may take a moment
             ok = sunshine.close_app(auth=auth)
             GLib.idle_add(self._on_disconnect_done, ok)
 

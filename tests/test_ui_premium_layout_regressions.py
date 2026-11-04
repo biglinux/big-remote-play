@@ -147,7 +147,9 @@ def test_host_overview_places_source_before_primary_action_with_state_visible() 
     assert "self.overview_hero_actions" in source
     assert 'self.overview_state_label.add_css_class("state-pill")' in source
     assert 'self.overview_state_label.add_css_class("offline")' in source
-    assert 'self.overview_state_label.add_css_class("online")' in source
+    # Sharing and Stopped are words in the pill; its tone only repeats them.
+    assert 'self._set_state_pill(_("Sharing"), "online")' in source
+    assert 'self._set_state_pill(_("Stopped"), "offline")' in source
     assert "self.overview_hero_actions.append(self.overview_start_button)" not in source
     assert source.index("self.share_controls.append(game_group)") < source.index("self.share_controls.append(self.overview_start_button)")
     assert "overview_body.append(self.overview_start_button)" not in source
@@ -160,7 +162,7 @@ def test_sharing_button_icon_follows_the_action_it_performs() -> None:
     # While sharing, the button stops it; a play glyph there promised the
     # opposite of what pressing it does.
     source = HOST.read_text()
-    assert 'self.overview_start_icon = create_icon_widget("media-playback-start-symbolic", size=16)' in source
+    assert 'self.overview_start_icon = create_icon_widget("media-playback-start-symbolic", size=20)' in source
     stop_block = source.split('self.overview_start_label.set_label(_("Stop sharing"))', 1)[1].split("\n\n", 1)[0]
     assert 'set_icon(self.overview_start_icon, "media-playback-stop-symbolic")' in stop_block
     start_block = source.split('self.overview_start_label.set_label(_("Start sharing"))', 1)[1].split("\n\n", 1)[0]
@@ -178,9 +180,8 @@ def test_share_and_access_keep_native_view_stacks_and_distinct_task_icons() -> N
     assert "brp-preferences-symbolic" != "brp-support-symbolic"
     assert "support_page.append(self.summary_box)" in host_source
     assert "support_page.append(server_tools_group)" in host_source
-    assert "support_page.append(advanced_tools_group)" in host_source
+    assert "support_page.append(self.support_center)" in host_source
     assert 'server_tools_group.add_css_class("brp-rounded-group")' in host_source
-    assert 'advanced_tools_group.add_css_class("brp-rounded-group")' in host_source
     assert 'self.summary_box.add_css_class("brp-rounded-group")' in host_source
     assert ".brp-rounded-group list.boxed-list" in stylesheet
     assert "overview_body.append(self._create_paired_devices_overview())" in host_source
