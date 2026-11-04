@@ -39,7 +39,7 @@ The installation runs through Pamac (or pacman with PolicyKit where Pamac is abs
 
 ## A device wants to connect, but nothing appears on the sharing computer
 
-The request dialog needs Sunshine's password to read the waiting devices. When Share shows **Sunshine's password is needed to approve devices**, choose **Enter Sunshine password** once. On a first Sunshine without any user, Big Remote Play creates one itself and keeps it in the keyring. With an older Sunshine that does not list waiting devices, use **Type a pairing code yourself** under **3. Connect the other PC**. Requests expire after two minutes: start pairing again on the other device. See [pairing requests](pairing-requests.md).
+The request dialog needs Sunshine's password to read the waiting devices. On a first Sunshine without any user, Big Remote Play creates the user `sunshine` with a random password and keeps it in the keyring. Otherwise, when **Needs attention** shows **Sunshine's password is needed to approve devices**, choose **Enter Sunshine password** once; when it shows **The system keyring did not answer**, unlock the keyring (KWallet or GNOME Keyring) and choose **Try the keyring again**. With an older Sunshine that does not list waiting devices, type the PIN in **Pair a new device** on **Overview**. Requests expire after two minutes: start pairing again on the other device. **Support → Common problems → The PIN does not appear** shows the current state. See [pairing requests](pairing-requests.md).
 
 ## Connection history is empty
 
@@ -100,7 +100,7 @@ Reconnecting (`tailscale up`) reuses the tailnet this computer is already on, so
 
 The private network can work (both computers listed, pings answered) while the game PC's firewall drops Sunshine's ports; the connecting computer then sees exactly what it would see if sharing were off. Big Remote Play tells the two apart:
 
-- **On the game PC**, while sharing, **Share → 3. Connect the other PC** says **The firewall blocks other computers**, naming the firewall (ufw or firewalld), the blocked ports and the networks affected (the local network, ZeroTier, Tailscale or Headscale). **Allow in firewall** first lists the ports it will open — TCP 47984, 47989, 48010 and UDP 47998–48000 for the default base port; never the administration page — then asks for your password. The check only reads: ufw's own rule files (`/etc/ufw/ufw.conf`, `/etc/default/ufw`, `/etc/ufw/user.rules`) or firewalld's zone queries. The first ufw rule that matches decides, as in ufw; a rule limited to the local network does not cover ZeroTier; an interface rule such as `allow in on tailscale0` covers only that interface. Plain nftables/iptables rules need root to read, so they are never reported as blocking.
+- **On the game PC**, while sharing, **Share → Overview → Needs attention** says **The firewall blocks other computers**, naming the firewall (ufw or firewalld), the blocked ports and the networks affected (the local network, ZeroTier, Tailscale or Headscale). **Allow in firewall** first lists the ports it will open — TCP 47984, 47989, 48010 and UDP 47998–48000 for the default base port; never the administration page — then asks for your password. The check only reads: ufw's own rule files (`/etc/ufw/ufw.conf`, `/etc/default/ufw`, `/etc/ufw/user.rules`) or firewalld's zone queries. The first ufw rule that matches decides, as in ufw; a rule limited to the local network does not cover ZeroTier; an interface rule such as `allow in on tailscale0` covers only that interface. Plain nftables/iptables rules need root to read, so they are never reported as blocking.
 - **On the connecting computer**, a refused connection means the game PC answered but sharing is not running; silence from a game PC that still answers a ping means its firewall filters the ports, and the message and **Diagnose** say so.
 
 ## A computer shows “Sign-in expired” or “Sharing not found”
@@ -136,7 +136,7 @@ See [Game Window](game-window.md) for what it guarantees and its limits.
 
 ## A device says “The computer is currently in a game” or asks to close the game
 
-Moonlight pairs only when Sunshine has no stream open, and Sunshine counts the shared **Desktop** as a game while it is open — also after every device disconnected, until it is closed. While a stream is open, **Share → 3. Connect the other PC** says **A stream is open on this computer** with **End for everyone**, and a PIN sent then offers the same action instead of only **No computer is waiting**. **End for everyone** asks first, closes the stream on every device (Sunshine's own close, as in its web panel) and checks that nothing is open any more; then start pairing again on the new device and enter its new code. The devices already paired reconnect afterwards without a new PIN.
+Moonlight pairs only when Sunshine has no stream open, and Sunshine counts the shared **Desktop** as a game while it is open — also after every device disconnected, until it is closed. While a stream is open, **Share → Overview → Needs attention** says **A stream is open on this computer** with **End for everyone**, and a PIN sent then offers the same action instead of only *No device is waiting* under the PIN field. **End for everyone** asks first, closes the stream on every device (Sunshine's own close, as in its web panel) and checks that nothing is open any more; then start pairing again on the new device and enter its new code. The devices already paired reconnect afterwards without a new PIN.
 
 To pair several new devices, pair them one at a time, each while nobody is playing; the devices already paired reconnect afterwards without a new PIN. A device that never lists the computer has not found it on the network (some TV apps keep an empty computer list): add it by the sharing computer's address, shown in **Share**, then pair.
 
@@ -190,7 +190,7 @@ A configured value in the monitor is not a measured frame rate. Network ping is 
 
 ## The other computer's controller does nothing in the game
 
-Sunshine gives each controller of the connecting computer a virtual controller on the game PC. While someone is connected, **Share → 3. Connect the other PC** reads Sunshine's log for this connection and says what happened:
+Sunshine gives each controller of the connecting computer a virtual controller on the game PC. While someone is connected, **Share → Overview → Needs attention** reads Sunshine's log for this connection and says what happened:
 
 - **The other computer's controller is here**: Sunshine created it, and names it. If the game still ignores it, see the next item or check that the game window is in front: many games read a controller only while their window is active.
 - **No controller has arrived from the other computer** (20 seconds after the connection began): the other computer sent none. Connect the controller there before starting, and keep Moonlight's window in front; Moonlight sends only controllers it recognises.
@@ -206,7 +206,19 @@ If neither appears, check on the connecting computer that Moonlight sees the con
 
 ## Unable to save credentials
 
-Unlock or start the desktop's Secret Service keyring. The app does not intentionally fall back to writing these passwords into ordinary settings. Do not post passwords, tokens or the unredacted keyring error context publicly.
+Unlock or start the desktop's Secret Service keyring (KWallet on KDE, GNOME Keyring on GNOME). Every keyring call runs off the window and gives up after 10 seconds, so a locked or missing keyring never freezes Big Remote Play; after a call that did not answer, the keyring is not asked again for a minute unless you choose **Try the keyring again** or **Save in keyring**. A Sunshine password that works but cannot be saved is used until you close the app — **Preferences → Security and access** says *Kept only until you close Big Remote Play* and offers **Save in keyring**. The app never falls back to writing passwords into ordinary settings. Do not post passwords, tokens or the unredacted keyring error context publicly.
+
+## Share says “Not responding” while sharing
+
+Sunshine runs but does not accept connections yet. With the desktop portal (GNOME, or **Capture method → Portal**), Sunshine waits until the desktop's **Remote desktop** / screen-sharing window is answered: choose the screen and **Share**. Otherwise **Support → Server log** shows why it stopped (often an encoder or capture that could not open). The state returns to **Sharing** by itself as soon as Sunshine answers.
+
+## Share says “The picture could not start”
+
+Sunshine runs and accepts connections, but it found no way to capture or encode the screen, so nobody would get a picture. The usual cause is the desktop's screen-sharing questions answered too late: Sunshine gives up the permission its screen capture needs shortly after starting. Choose **Restart sharing** and answer the questions right away. On a notebook with two graphics cards (Intel or AMD plus NVIDIA), a stream may also end at once with nothing on the other device; Sunshine's log then says `Couldn't find monitor`. That is a Sunshine limitation with hybrid graphics: see [mouse pointer compatibility](mouse-cursor-compatibility.md#a-real-hybrid-notebook-intel--nvidia).
+
+## The other device does not see the mouse pointer
+
+In Moonlight's normal mouse mode the other device hides its own pointer and shows the one this computer draws into the picture. When the pointer moves things but is invisible, the screen capture did not draw it. While sharing, **Needs attention** says **The other device may not see the mouse pointer** when Sunshine's log reports it (for example *No KMS cursor plane found*); **Use it** restarts sharing with the capture of this desktop that draws the pointer (KWin on KDE Plasma Wayland, the desktop portal on GNOME Wayland, X11 capture on X11). **Preferences → Mouse, keyboard and controllers → Use automatic** goes back. In Moonlight, Ctrl+Alt+Shift+N asks Sunshine to draw the pointer again, and in “Optimize mouse for remote desktop” mode Ctrl+Alt+Shift+C shows the other device's own pointer. If the pointer does not move at all, **Support → Check this computer** says whether Sunshine can open `/dev/uinput`. Details and the symptom table: [mouse pointer compatibility](mouse-cursor-compatibility.md).
 
 ## Wrong colors or missing symbols
 

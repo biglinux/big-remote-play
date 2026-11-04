@@ -106,3 +106,18 @@ def test_valid_address_accepts_only_literal_addresses():
     assert valid_address("[fe80::1%eth0]") == "fe80::1"
     assert valid_address("host.local") is None
     assert valid_address("--help") is None
+
+
+def test_a_synthetic_resolver_name_is_not_shown_as_a_device(monkeypatch):
+    """systemd-resolved answers "_gateway" for the default gateway (a VM host, a router)."""
+    import socket
+
+    from big_remote_play.ui import performance_monitor as pm
+
+    monkeypatch.setattr(socket, "gethostbyaddr", lambda ip: ("_gateway", [], [ip]))
+    import big_remote_play.utils.network as network
+
+    monkeypatch.setattr(network, "mdns_name", lambda ip: "")
+    monitor = pm.PerformanceMonitor.__new__(pm.PerformanceMonitor)
+    monitor.hostname_cache = {}
+    assert monitor._resolve_hostname("192.168.122.1") is None

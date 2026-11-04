@@ -44,16 +44,18 @@ def test_copy_pin_button_has_accessible_name() -> None:
     assert '"Copy code"' in pin_block
 
 
-def test_pairing_is_numbered_steps_with_one_code_to_type() -> None:
+def test_pairing_has_one_code_to_type_and_no_technical_form() -> None:
     """Two four-digit codes in opposite directions confused everyone; the page
-    now numbers the steps and keeps the discovery code as the fallback."""
+    keeps one PIN field in view and the discovery code as the fallback. The
+    five-field form (PIN, device name, user, password, save) is gone: the
+    password is asked for once, by itself, only when none works."""
     source = Path("src/big_remote_play/ui/host_view.py").read_text()
-    assert "Open Connect on the other computer" in source
-    assert "Pairing code shown on the other PC" in source
+    assert '_("Pair a new device")' in source
     assert "This PC did not appear in the list?" in source
     assert "def pair_with_entered_pin" in source
-    # The full form is the exception, not the routine path.
-    assert "self.open_pin_dialog(None, prefill_pin=pin)" in source
+    assert "def open_pin_dialog" not in source
+    assert '_("Save Password")' not in source
+    assert '_("Device Name")' not in source
 
 
 def test_server_page_explains_network_requirement_for_guests() -> None:

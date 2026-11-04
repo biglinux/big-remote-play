@@ -125,3 +125,9 @@ def test_inside_flatpak_the_hosts_devices_are_not_judged():
 
     assert unusable_devices(access=lambda _p, _m: False, sandboxed=True) == []
     assert unusable_devices(access=lambda _p, _m: False, sandboxed=False) == ["/dev/uinput", "/dev/uhid"]
+
+
+def test_a_drawing_tablet_or_virtual_machine_tablet_is_not_a_controller():
+    tablet = 'I: Bus=0003 Vendor=0627 Product=0001 Version=0001\nN: Name="QEMU QEMU USB Tablet"\nS: Sysfs=/devices/pci0000:00/usb1/1-1/input/input3\nH: Handlers=event2 mouse0 js0\n'
+    pad = 'I: Bus=0003 Vendor=045e Product=028e Version=0110\nN: Name="Microsoft X-Box 360 pad"\nS: Sysfs=/devices/pci0000:00/usb1/1-2/input/input9\nH: Handlers=event5 js1\n'
+    assert controllers.local_controllers(tablet + "\n" + pad) == ["Microsoft X-Box 360 pad"]

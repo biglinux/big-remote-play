@@ -214,11 +214,17 @@ def test_active_share_does_not_tell_user_to_start_again(ui, monkeypatch):
     monkeypatch.setattr(host, "_refresh_paired_devices", lambda: None)
     host.is_hosting = True
     host.sync_ui_state()
-    assert not host.start_heading.get_visible()
-    assert host.guest_access_group.get_visible()
+    # Sharing: the one big button stops it, and pairing is ready.
+    assert host.overview_start_label.get_label() == "Stop sharing"
+    assert host.overview_state_label.get_label() == "Sharing"
+    assert host.pair_entry.get_sensitive() and host.guest_pair_button.get_sensitive()
+    assert "Start sharing first" not in host.pair_status_label.get_label()
     host.is_hosting = False
     host.sync_ui_state()
-    assert host.start_heading.get_visible()
+    assert host.overview_start_label.get_label() == "Start sharing"
+    assert host.overview_state_label.get_label() == "Stopped"
+    assert not host.guest_pair_button.get_sensitive()
+    assert "Start sharing first" in host.pair_status_label.get_label()
 
 
 def test_closed_host_cannot_start_new_server(ui, monkeypatch):
