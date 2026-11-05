@@ -3,14 +3,18 @@
 # shellcheck shell=bash disable=SC2034,SC2154
 
 pkgname=big-remote-play
-pkgdesc="Integrated remote cooperative gaming system"
+pkgdesc="Play PC games together over the local network or the internet, with Sunshine and Moonlight"
 
 depends=(
 	'bash'
 	'python>=3.11'
 	'gtk4'
 	'libadwaita>=1.7'
+	'glib2'
+	'gdk-pixbuf2'
+	'pango'
 	'python-gobject'
+	'python-cairo'
 	'libsecret'
 	'avahi'
 	'curl'
@@ -18,6 +22,9 @@ depends=(
 	'iputils'
 	'jq'
 	'polkit'
+	'procps-ng'
+	'systemd'
+	'util-linux'
 	'hicolor-icon-theme'
 )
 makedepends=(
@@ -26,6 +33,10 @@ makedepends=(
 	'python-uv-build'
 	'gettext'
 )
+# glib2, gdk-pixbuf2 and pango come with gtk4 but are imported directly; the
+# command-line tools (avahi, curl, iproute2, iputils, jq, polkit, procps-ng,
+# systemd) are run as programs, which namcap cannot see; util-linux's setsid
+# starts the games added to Sunshine's library.
 # Every dependency above is in Arch's own repositories. Sunshine is not (BigLinux
 # carries it; on Arch it comes from the AUR or its upstream package): a computer
 # that only connects never needs it, and Share says what is missing.
@@ -38,17 +49,23 @@ optdepends=(
 	'caddy: HTTPS address for a Headscale server on this computer'
 	'miniupnpc: read the router public address in the Headscale setup'
 	'org.freedesktop.secrets: keep passwords and API tokens in the keyring (GNOME Keyring, KWallet)'
-	'libpulse: choose and test the shared sound output (pactl)'
+	'libpulse: choose and test the shared sound output (pactl, paplay, parecord)'
 	'pipewire: send only the game sound and keep sound here while a device mutes it'
 	'kwin: Game Window private screen'
 	'xdg-desktop-portal-kde: Game Window capture on KDE Plasma Wayland'
 	'gst-plugin-pipewire: Game Window sharing on KDE Plasma Wayland'
+	'gst-plugins-base: Game Window sharing on X11 (color conversion)'
 	'gst-plugins-bad-libs: Game Window sharing (private game screen)'
 	'gst-plugins-good: Game Window sharing on X11 and title bar removal'
 	'libkscreen: match the screen mode and HDR to the connecting device'
-	'xorg-xrandr: list monitors on X11'
+	'xorg-xrandr: list monitors and the main screen on X11'
 	'pciutils: graphics adapter detection'
-	'flatpak: detect supported VPN clients installed as Flatpaks'
+	'flatpak: use Moonlight, VPN clients, Steam, Lutris or Heroic installed as Flatpaks'
+	'steam: Steam games in Share and the Game Library'
+	'lutris: Lutris games in the Game Library'
+	'heroic-games-launcher: Epic, GOG and Amazon games in the Game Library (Manjaro and BigLinux repositories; AUR on Arch)'
+	'xdg-utils: start Heroic games through its link handler'
+	'gettext: translated messages from the administrator helpers'
 )
 
 # Dated at build time, never hand-pinned. BRP_BUILD_VERSION and

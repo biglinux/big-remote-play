@@ -33,6 +33,8 @@ _ZEROTIER_NODE_ID_RE = re.compile(r"^[0-9a-f]{10}$")
 _ZEROTIER_LOCAL_TOKEN_RE = re.compile(r"^[A-Za-z0-9]{16,128}$")
 ZEROTIER_SERVICE_TOKEN = "/var/lib/zerotier-one/authtoken.secret"
 _STARTABLE_UNITS = frozenset({"tailscaled", "zerotier-one"})
+# Starts/stops only those two units; see its PolicyKit action vpn-service.
+VPN_SERVICE_HELPER = "/usr/share/big-remote-play/scripts/vpn-service-helper.sh"
 # Settings `tailscale up` may be asked to repeat when a turned-off client is
 # turned on again. Anything else it suggests (a key, --reset, --force-reauth)
 # is refused: turning on must never change the account or the settings.
@@ -598,13 +600,29 @@ class VPNAccountManager:
             state = self.tailscale_backend_state()
         return TailscaleConnection(state == "Running", backend_state=state, auth_url=auth_url, detail=output.strip()[-500:])
 
+    def _service_argv(self, action: str, unit: str) -> list[str]:
+        """The privileged command for one daemon: the narrow helper when installed.
+
+        The helper's PolicyKit action lets the person at this computer turn
+        the network on and off without a password (see
+        docs/zerotier-permissions.md); a source checkout without it falls
+        back to systemctl, which asks for the administrator password.
+        """
+        if self._service_helper_installed():
+            return ["pkexec", VPN_SERVICE_HELPER, action, unit]
+        return ["pkexec", "/usr/bin/systemctl", *(["enable", "--now"] if action == "start" else ["stop"]), unit]
+
+    @staticmethod
+    def _service_helper_installed() -> bool:
+        return os.access(VPN_SERVICE_HELPER, os.X_OK)
+
     def start_service(self, unit: str) -> CommandResult:
         """Enable and start one VPN daemon through PolicyKit, on explicit request."""
         if unit not in _STARTABLE_UNITS:
             return CommandResult(2, "", "unsupported service")
         if self._run(["systemctl", "is-active", "--quiet", unit], timeout=15).returncode == 0:
             return CommandResult(0)
-        return self._run(["pkexec", "/usr/bin/systemctl", "enable", "--now", unit], timeout=120)
+        return self._run(self._service_argv("start", unit), timeout=120)
 
     def stop_service(self, unit: str) -> CommandResult:
         """Stop one VPN daemon through PolicyKit, on explicit request (its networks disconnect)."""
@@ -612,13 +630,13 @@ class VPNAccountManager:
             return CommandResult(2, "", "unsupported service")
         if self._run(["systemctl", "is-active", "--quiet", unit], timeout=15).returncode != 0:
             return CommandResult(0)
-        return self._run(["pkexec", "/usr/bin/systemctl", "stop", unit], timeout=60)
+        return self._run(self._service_argv("stop", unit), timeout=60)
 
     def _ensure_tailscaled(self, on_output: Callable[[str], None] | None) -> None:
         """Start the daemon only when it is not already running."""
         if self._run(["systemctl", "is-active", "--quiet", "tailscaled"], timeout=15).returncode == 0:
             return
-        result = self._run(["pkexec", "/usr/bin/systemctl", "enable", "--now", "tailscaled"], timeout=120)
+        result = self._run(self._service_argv("start", "tailscaled"), timeout=120)
         if result.returncode != 0 and on_output is not None:
             on_output((result.stderr or result.stdout).strip())
 
@@ -641,15 +659,20 @@ class VPNAccountManager:
         auth_url = ""
         stream = getattr(process, "stdout", None)
         if stream is not None:
-            for raw in stream:
-                line = raw.rstrip("\n")
-                collected.append(line)
-                if on_output is not None and line.strip():
-                    on_output(line.strip())
-                if not auth_url:
-                    auth_url = extract_auth_url(line)
-                    if auth_url and on_auth_url is not None:
-                        on_auth_url(auth_url)
+            try:
+                for raw in stream:
+                    line = raw.rstrip("\n")
+                    collected.append(line)
+                    if on_output is not None and line.strip():
+                        on_output(line.strip())
+                    if not auth_url:
+                        auth_url = extract_auth_url(line)
+                        if auth_url and on_auth_url is not None:
+                            on_auth_url(auth_url)
+            finally:
+                close = getattr(stream, "close", None)
+                if callable(close):
+                    close()
         process.wait()
         return "\n".join(collected), auth_url
 

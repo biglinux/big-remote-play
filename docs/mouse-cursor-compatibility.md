@@ -8,7 +8,7 @@ In Moonlight's normal (game) mouse mode, Moonlight Qt uses SDL's relative mouse 
 
 ## Capture methods and the pointer
 
-With **Capture method** set to **Automatic**, Big Remote Play leaves Sunshine's `capture` option unset and Sunshine tries NvFBC, wlroots, KMS, X11, KWin and the portal in that order (Sunshine `src/platform/linux/misc.cpp`). The Arch/BigLinux package gives `/usr/bin/sunshine` the `cap_sys_admin` capability that KMS needs, so on KDE Plasma and GNOME Sunshine normally ends up on **KMS**, on Wayland and also on X11. Observed on the development machine (X11 session, Sunshine 2026.914): the log says `Screencasting with KMS` and `Found cursor plane [105]`.
+With **Capture Method** set to **Automatic**, Big Remote Play leaves Sunshine's `capture` option unset and Sunshine tries NvFBC, wlroots, KMS, X11, KWin and the portal in that order (Sunshine `src/platform/linux/misc.cpp`). The Arch/BigLinux package gives `/usr/bin/sunshine` the `cap_sys_admin` capability that KMS needs, so on KDE Plasma and GNOME Sunshine normally ends up on **KMS**, on Wayland and also on X11. Observed on the development machine (X11 session, Sunshine 2026.914): the log says `Screencasting with KMS` and `Found cursor plane [105]`, but the stream has no pointer (next section).
 
 | Capture | How the pointer gets into the picture | When it is lost |
 |---|---|---|
@@ -27,6 +27,12 @@ The KMS messages Big Remote Play looks for (Sunshine 2026.914):
 - `Unsupported cursor format` / `Unsupported non-linear cursor modifier`
 - `Failed to map cursor FB` / `Failed to mmap cursor FB`
 
+## X11 sessions: X11 capture by default
+
+Checked frame by frame on 2026-11-05 (X11 with WindowMaker, amdgpu, three monitors, Sunshine 2026.914): with KMS the log said `Found cursor plane [97]` and no error, yet the pointer never appeared in the stream, wherever it was placed on the shared monitor. With `capture = x11` the pointer was in the picture. Moonlight on a phone shows only that pointer, so the phone showed none.
+
+So when **Capture Method** is **Automatic** in an X11 session, Big Remote Play gives Sunshine `capture = x11`, with the monitor's X11 name as `output_name` (X11 capture finds it by that name; numbers all gave the first monitor). It costs more CPU: on that computer, at 1080p 60 FPS, Sunshine used about 25 % of one core with X11 capture against about 6 % with KMS. A manual **Capture Method** (KMS included) always wins, and **Preferences → Mouse, keyboard and controllers** says which capture is used and why. If Sunshine still ends up on KMS in an X11 session, **Needs attention** offers X11 capture even without a log error.
+
 ## What the app does
 
 `host/cursor_check.py` reads the last 256 KiB of Sunshine's log a few seconds after sharing starts and whenever someone joins or leaves. Only lines after the last `Screencasting with …` choice count, so an earlier capture's problem is not reported after it was fixed. When the capture in use is KMS and one of the messages above is present, **Share → Overview → Needs attention** shows **The other device may not see the mouse pointer** and, if this desktop has a capture that embeds the pointer, **Use it**:
@@ -37,7 +43,7 @@ The KMS messages Big Remote Play looks for (Sunshine 2026.914):
 | GNOME or another portal desktop, Wayland | `portal` |
 | Any desktop, X11 | `x11` |
 
-**Use it** asks first, stores the choice as `pointer_capture` in the application settings (not in Sunshine's own file) and restarts sharing; Sunshine then receives that `capture` value whenever **Capture method** is Automatic. A manual **Capture method** always wins. **Preferences → Mouse, keyboard and controllers → Use automatic** removes the choice. **Support → Check this computer** shows the same result and whether Sunshine can open `/dev/uinput` (needed for the remote mouse to move at all).
+**Use it** asks first, stores the choice as `pointer_capture` in the application settings (not in Sunshine's own file) and restarts sharing; Sunshine then receives that `capture` value whenever **Capture Method** is Automatic. A manual **Capture Method** always wins. **Preferences → Mouse, keyboard and controllers → Use automatic** removes the choice. **Support → Check this computer** shows the same result and whether Sunshine can open `/dev/uinput` (needed for the remote mouse to move at all).
 
 The app never changes the desktop's own cursor settings (`KWIN_FORCE_SW_CURSOR`, `MUTTER_DEBUG_DISABLE_HW_CURSORS`), KWin or Mutter configuration, or input devices, and never draws a fake pointer.
 

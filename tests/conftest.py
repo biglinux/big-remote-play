@@ -32,6 +32,9 @@ def _isolated_user_config(tmp_path_factory, monkeypatch):
     layout still override HOME/XDG_CONFIG_HOME or paths.CONFIG_DIR themselves.
     """
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path_factory.mktemp("xdg-config")))
+    # Nor the developer's kind of session: on X11 Share picks X11 capture by
+    # itself, so tests that need a session type set it explicitly.
+    monkeypatch.delenv("XDG_SESSION_TYPE", raising=False)
     # The UI must never reach a real VPN client from a test: the private-network
     # facade is replaced by an offline one unless a test installs its own.
     from big_remote_play.private_network import service

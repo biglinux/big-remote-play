@@ -79,6 +79,8 @@ Pairing requests that a device abandoned (cancelled, cut by the network or a fir
 
 **Support** starts with **Check this computer**: read-only checks, each stated in words (**OK**, **Check**, **Problem**, **Info**) with a button only when there is a safe fix — sharing, Moonlight, the desktop session, remote mouse and controllers, the mouse pointer, the system keyring, the firewall and video encoding. The checks run when Support is opened or with **Check again**, never in the background. **Common problems** explains, in order, what to try for *I cannot connect*, *The PIN does not appear*, *The PIN is not accepted*, *There is no picture*, *There is no sound*, *My controller does not work*, *The mouse pointer is missing* and *The connection is slow*, with this computer's current state next to the steps. The live monitor, connection history, **Server log** and diagnostics follow.
 
+**Game Library** lists the games Moonlight offers and the games installed on this computer (Steam on every disk and as a Flatpak, Lutris and Heroic). Check the ones to offer and choose **Add Selected**; it works with sharing off too. Details: [game library](game-library-detection.md).
+
 ### Mouse and keyboard: this computer first
 
 When someone else plays on this computer, they control its mouse and keyboard too. If you also want to use them, turn on **Preferences → Mouse, keyboard and controllers → Host has priority**:
@@ -115,6 +117,18 @@ While sharing, **Connected now** lists every device playing on this computer at 
 Everything else is on the **Advanced options** tab: **Connect again** (recent computers), **Other ways to connect** (**I have a search code**, **I know the IP address**, **Connection history**) and **On this computer** (**Image**, **Audio**, **Input**, **Game PC and connection**). The address dialog and search-code dialog are separate because they solve different problems.
 
 While a stream runs, **Playing now** at the top of Connect shows the computer's name, the quality, the round trip in ms and whether it is reached on the local network or through ZeroTier, Tailscale or Headscale.
+
+### Which screen, and controls on a phone
+
+**Image → Playback on this computer → Open on** chooses the screen of this computer where the game appears (X11; on Wayland the desktop chooses). The game PC's screen is chosen on that computer under **Share**. Both are explained in [several screens](moonlight-multi-monitor.md).
+
+**Shortcuts & Instructions** has a tab for Moonlight on a computer, on Android, on iPhone/iPad and for controllers, and a QR code that opens the same guide on the phone: [controlling the game PC from a phone](mobile-controls.md).
+
+### Playing with friends
+
+Up to four devices can play on the same computer at the same time: each friend connects from their own computer as above, and each controller becomes its own player in games made for several players. Every device receives its own stream, so the game PC's upload and each friend's download must carry it.
+
+If a stream ends a few seconds after the game appears, Connect shows **The connection to the game PC was lost** with the reason. When the network could not carry the chosen quality, **Lower quality and connect again** halves the video bitrate, keeps it as your choice and reconnects; repeat until the stream holds. A friend on slow Wi-Fi or watching a video call's screen share at the same time usually needs a lower rate than the others. More in [troubleshooting](troubleshooting.md#the-connection-to-the-game-pc-was-lost-a-few-seconds-after-the-game-appears).
 
 ## See how good the connection is
 
@@ -192,6 +206,12 @@ When sharing, **Share** shows under **Available over the internet** the **Secure
 - **This computer**: Big Remote Play finds your public IP (**Detected automatically**, with **Copy**) and warns when your internet provider may block incoming connections (CGNAT). Then **Use a domain** (*Recommended*) or **Use the detected address**. With no domain yet, **Help me get one** guides you through a free name at DigitalPlat and DNS at Cloudflare, step by step; Big Remote Play checks the nameservers itself. The record to add is shown ready to copy — Type **A**, Name **headscale**, the IP, and Proxy status **DNS only** (the cloud must be gray). **Install Headscale** then installs and starts the server with HTTPS (your password is requested) and checks it. If the internet cannot reach it, the page explains the router step or suggests a VPS.
 
 Then **Add this computer** (with the server's API key, a key from the server owner, or the owner's approval) and **Add another device**. A phone or computer that joins with the Tailscale app (**Use an alternate server**) shows a code starting with `hskey-authreq-`: type or paste it — the whole line, the link or only the code — under **Approve a device**, on that step or on the Headscale page, and choose **Approve**. No terminal is needed. Each step is marked done only after it was checked. If you close the app, the Headscale card says **Setup incomplete** and **Continue setup** goes on where you stopped. Details: [Headscale setup wizard](headscale-setup-wizard.md).
+
+### Computers on someone else's ZeroTier network
+
+On a network you joined, only the owner's ZeroTier account lists every member. **Connect your devices → ZeroTier → Find computers to play on → Search** asks the network which computers share games; the search button in **Connect** does the same while ZeroTier is on. A computer that answered just now is **Ready to play** and appears under **Connect → Computers**; one found earlier says **Not checked since the last search** until it answers again. Nothing is changed on the other computers, and **Cancel** stops the search. When nothing is found, **Add by Address** opens the address form. How it works, its limits and what is remembered: [finding computers on a ZeroTier network](zerotier-discovery.md).
+
+Turning ZeroTier on or off with its switch no longer asks for the password on the computer where you are sitting ([why](zerotier-permissions.md)). Turning it off disconnects all of this computer's ZeroTier networks and keeps them for the next time.
 
 ### Joining a ZeroTier network
 

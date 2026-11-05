@@ -112,7 +112,10 @@ def problems() -> tuple[Problem, ...]:
             _("The mouse pointer is missing"),
             (
                 _("If the pointer moves things but is not visible, the screen capture did not draw it. Check this computer shows whether another capture method draws it."),
-                _("In Moonlight, Ctrl+Alt+Shift+N asks Sunshine to draw the pointer again."),
+                _(
+                    "On a phone the only pointer is the one drawn into the picture. In an X11 session Big Remote Play uses X11 screen capture, which draws it; after changing Capture Method, start sharing again."
+                ),
+                _("In Moonlight on a computer, Ctrl+Alt+Shift+N asks Sunshine to draw the pointer again; pressed by accident, it hides it."),
                 _("With Moonlight's “Optimize mouse for remote desktop”, Ctrl+Alt+Shift+C shows the other device's own pointer."),
                 _("If the pointer does not move at all, the remote mouse cannot reach this computer: see the row about mouse, keyboard and controllers."),
             ),

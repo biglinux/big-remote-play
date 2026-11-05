@@ -32,6 +32,7 @@ from .zerotier_api import ZeroTierCentral
 from . import device_list
 from .cards import CardSummary, summarize
 from .device_list import DeviceListing
+from .discovery import FoundComputer, FoundStore, SearchResult, find_computers
 from .models import ConnectionState, HostCandidate, HostDiagnosis, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus, Recovery
 
 _log = logging.getLogger("big-remoteplay")
@@ -101,6 +102,7 @@ class PrivateNetworkService:
         transport: Transport | None = None,
         sunshine_probe: Callable[..., object] = probe_sunshine,
         network_facts: Callable[[], NetworkFacts] = local_network_facts,
+        found_store: FoundStore | None = None,
     ) -> None:
         self.system_check = system_check or SystemCheck()
         self.manager = manager or VPNAccountManager(self.system_check)
@@ -109,6 +111,7 @@ class PrivateNetworkService:
         self._transport = transport
         self._probe_sunshine = sunshine_probe
         self._network_facts = network_facts
+        self.found_store = found_store or FoundStore()
         self._ping: Callable[[str], float | None] = ping_once
         self._sleep: Callable[[float], None] = time.sleep
         self._clock: Callable[[], float] = time.monotonic
@@ -227,13 +230,15 @@ class PrivateNetworkService:
     def candidate_hosts(self, statuses: Iterable[ProviderStatus] | None = None, *, port: int = SUNSHINE_DEFAULT_BASE_PORT) -> list[HostCandidate]:
         """Peers reported by connected providers, in the provider priority order.
 
-        Only the providers' own knowledge is used: no subnet is scanned. The
-        address is the one the provider assigned, so it is usable by Moonlight
-        through the overlay, and MagicDNS names are kept as an alternative.
+        The providers' own knowledge, plus the computers a search of a ZeroTier
+        network found before (no subnet is scanned here). The address is the
+        one the provider assigned, so it is usable by Moonlight through the
+        overlay, and MagicDNS names are kept as an alternative.
         """
         candidates: list[HostCandidate] = []
         seen: set[str] = set()
-        for status in statuses if statuses is not None else self.overview():
+        statuses_list = list(statuses if statuses is not None else self.overview())
+        for status in statuses_list:
             if not status.connected:
                 continue
             for peer in status.peers:
@@ -254,13 +259,68 @@ class PrivateNetworkService:
                         addresses=alternatives,
                     )
                 )
+        for status in statuses_list:
+            if status.provider is ProviderId.ZEROTIER and status.connected:
+                candidates.extend(self._found_candidates(status, seen, port))
         candidates.sort(key=lambda candidate: (candidate.online is not True,))
         return candidates
+
+    def _found_candidates(self, status: ProviderStatus, seen: set[str], port: int) -> list[HostCandidate]:
+        """Computers a search found on the ZeroTier networks this computer is in now.
+
+        Only networks joined and connected now: an address remembered from a
+        network that was left, or from another network with the same
+        addresses, is never offered.
+        """
+        joined = {network.network_id for network in status.networks if network.state is ConnectionState.CONNECTED}
+        try:
+            remembered = self.found_store.load()
+        except Exception:
+            return []
+        candidates = []
+        for network_id in sorted(joined):
+            for computer in remembered.get(network_id, []):
+                if computer.address in seen or not computer.sharing or not valid_host(computer.address):
+                    continue
+                seen.add(computer.address)
+                candidates.append(
+                    HostCandidate(name=computer.name or computer.address, address=computer.address, port=port, provider=ProviderId.ZEROTIER.value, source="found", identity=computer.uniqueid)
+                )
+        return candidates
+
+    # ── ZeroTier: search a network for computers that share ────────────────
+    def zerotier_found(self, network_id: str) -> list[FoundComputer]:
+        try:
+            return self.found_store.for_network(network_id)
+        except Exception:
+            return []
+
+    def find_zerotier_computers(self, network_id: str = "", *, cancel=None, progress=None) -> SearchResult:
+        """Search one joined network (the first ready one when not given); remember what answered."""
+        networks = self.manager.list_zerotier_networks(allow_privileged=False).networks
+        chosen = next((n for n in networks if n.network_id == network_id), None) if network_id else next((n for n in networks if n.ready), None)
+        if chosen is None:
+            return SearchResult(None, problem="no_network")
+        known = [computer.address for computer in self.zerotier_found(chosen.network_id)]
+        known += [host.address for host in self.history.recent_hosts(20) if host.provider == ProviderId.ZEROTIER.value]
+        result = find_computers(chosen, known=known, cancel=cancel, progress=progress)
+        if result.area is not None and not result.cancelled:
+            try:
+                self.found_store.remember(result)
+            except OSError as exc:
+                _log.warning("Cannot remember the computers found: %s", exc)
+        return result
 
     def sunshine_ready(self, address: str, port: int = SUNSHINE_DEFAULT_BASE_PORT) -> bool:
         """Does Sunshine answer at this address? One bounded TCP/HTTP check."""
         probe = self._probe_sunshine(address, port)
         return bool(getattr(probe, "answered", False) or getattr(probe, "listening", False))
+
+    def sunshine_identity(self, address: str, port: int = SUNSHINE_DEFAULT_BASE_PORT) -> tuple[bool, str]:
+        """``(sharing, Sunshine's uniqueid)``: one bounded check, as ``sunshine_ready``."""
+        probe = self._probe_sunshine(address, port)
+        ready = bool(getattr(probe, "answered", False) or getattr(probe, "listening", False))
+        return ready, str(getattr(probe, "uniqueid", "") or "")
 
     def recent_hosts(self, limit: int = 5) -> list[HostCandidate]:
         return self.history.recent_hosts(limit)
@@ -436,14 +496,16 @@ class PrivateNetworkService:
         return device_list.tailnet_listing(status, api_devices, api_problem=problem)
 
     def _zerotier_listing(self, status: ProviderStatus, network_id: str = "") -> DeviceListing:
-        listing = device_list.zerotier_listing(status, network_id)
+        chosen = device_list.zerotier_listing(status, network_id).network_id
+        found = self.zerotier_found(chosen) if chosen else []
+        listing = device_list.zerotier_listing(status, chosen, found=found)
         central = self.zerotier_central()
         if central is None or not listing.network_id:
             return listing
         members, result = central.list_members(listing.network_id)
         if not result.ok:
             return replace(listing, problem=_api_problem(result))
-        return device_list.zerotier_listing(status, listing.network_id, members)
+        return device_list.zerotier_listing(status, listing.network_id, members, found=found)
 
     # ── the three cards of Connect your devices ────────────────────────────
     def card_summaries(self, zerotier_network: str = "") -> list[CardSummary]:
@@ -475,7 +537,8 @@ class PrivateNetworkService:
         except Exception:
             has_token = False
         if not has_token:
-            return device_list.zerotier_listing(status, network_id)
+            chosen = device_list.zerotier_listing(status, network_id).network_id
+            return device_list.zerotier_listing(status, chosen, found=self.zerotier_found(chosen) if chosen else [])
         chosen = device_list.zerotier_listing(status, network_id).network_id
         cached = _zerotier_counts.get(chosen)
         if cached is not None and self._clock() - cached[0] < ZEROTIER_COUNT_SECONDS:

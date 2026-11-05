@@ -54,6 +54,11 @@ _BACKENDS = {
     "Screencasting with XDG portal": "portal",
     "Screencasting with KWin ScreenCast": "kwin",
 }
+# Not a log line: KMS chosen in an X11 session. Sunshine logged "Found cursor
+# plane" and no error, yet the stream had no pointer (X11, amdgpu, three
+# monitors, Sunshine 2026.914, checked frame by frame on 2026-11-05).
+KMS_ON_X11 = "kms-on-x11"
+
 LOG_TAIL_BYTES = 256 * 1024
 # The run started but no picture can ever be sent (every encoder failed,
 # usually because no capture could open). Seen on a hybrid Intel/NVIDIA
@@ -131,6 +136,8 @@ def read_cursor_report(log_text: str, *, session: str, desktop: str, configured:
         return CursorReport()
     tail = log_text[start:]
     problem = next((marker for marker in CURSOR_LOST_MARKERS if marker in tail), "")
+    if not problem and backend == "kms" and session == "x11" and not configured:
+        problem = KMS_ON_X11
     if not problem or backend != "kms":
         return CursorReport(backend, problem)
     recommended = capture_with_pointer(session, desktop)
@@ -153,4 +160,4 @@ def cursor_report(log_path: Path, *, configured: str = "", environ: Mapping[str,
     return read_cursor_report(text, session=session, desktop=desktop, configured=configured)
 
 
-__all__ = ["CURSOR_LOST_MARKERS", "CursorReport", "capture_with_pointer", "cursor_report", "desktop_session", "read_cursor_report"]
+__all__ = ["CURSOR_LOST_MARKERS", "KMS_ON_X11", "CursorReport", "capture_with_pointer", "cursor_report", "desktop_session", "read_cursor_report"]

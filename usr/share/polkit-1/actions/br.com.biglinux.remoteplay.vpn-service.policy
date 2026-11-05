@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "https://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+
+<!--
+  Private-network service (Big Remote Play → Connect your devices).
+
+  Starts or stops the ZeroTier or Tailscale daemon when the person turns the
+  connection on or off, like Tailscale's own "down"/"up" that needs no
+  password. The helper accepts only start|stop and zerotier-one|tailscaled:
+  it cannot run other commands, touch other services or change a network's
+  settings, memberships or keys.
+
+  Allowed without a password for the active local session, the one sitting at
+  this computer; refused for remote and inactive sessions. An administrator
+  can require a password again with a PolicyKit rule for this action id.
+-->
+<policyconfig>
+  <vendor>BigLinux</vendor>
+  <vendor_url>https://www.biglinux.com.br</vendor_url>
+  <icon_name>br.com.biglinux.remoteplay</icon_name>
+
+  <action id="br.com.biglinux.remoteplay.vpn-service">
+    <description>Turn the private network used for remote play on or off</description>
+    <message>Authentication is required to turn the private network used for remote play on or off</message>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/share/big-remote-play/scripts/vpn-service-helper.sh</annotate>
+  </action>
+</policyconfig>

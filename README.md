@@ -19,6 +19,7 @@
 </p>
 
 <p align="center">
+  <a href="#whats-new">What's new</a> ·
   <a href="#install">Install</a> ·
   <a href="docs/user-guide.md">User guide</a> ·
   <a href="docs/troubleshooting.md">Troubleshooting</a> ·
@@ -36,11 +37,17 @@ Remote play on Linux usually means learning several unrelated tools before the f
 
 | | |
 |---|---|
-| 🎮 **Share a game** | Share the whole desktop with [Sunshine](https://github.com/LizardByte/Sunshine), start a Steam, Lutris or custom game, or send **only one game window**. |
+| 🎮 **Share a game** | Share the whole desktop with [Sunshine](https://github.com/LizardByte/Sunshine), start a Steam, Lutris or custom game, or send **only one game window**. The **Game Library** finds your installed Steam, Lutris and Heroic games and offers the ones you choose in Moonlight. |
 | 🖥️ **Connect from anywhere** | Find the game computer and play it with [Moonlight](https://moonlight-stream.org/) on another PC, a TV or a laptop. |
-| 🔒 **Play across the internet** | Put both computers on the same private network with Tailscale, Headscale or ZeroTier. No open router ports needed. |
+| 🔒 **Play across the internet** | Put both computers on the same private network with Tailscale, Headscale or ZeroTier. No open router ports needed. On a friend's ZeroTier network, **Find computers to play on** finds the game PC without the owner's account. |
 | 🕵️ **Keep your desktop private** | **Game Window** streams one game through a private screen: notifications, chats and other windows never reach the other device. |
 | 🧭 **Guided from the first click** | **Start with the guided setup** asks what you want to do and where the other device is, installs what this computer needs without a terminal, then opens the right page. |
+| 🔑 **Pair in seconds** | **Start sharing** is one large button, and **Pair a new device** keeps the PIN field in view. When Moonlight asks to pair, the request opens by itself: type the four digits and choose **Approve**. The first time, Sunshine's administrator password is created for you and kept in the system keyring. |
+| 👥 **Play together** | Up to four devices can play on the same computer at once, each with its own controller: invite friends to a local multiplayer game from wherever they are. |
+| 🖱️ **The pointer you can see** | When the screen capture leaves the mouse pointer out (KMS on KDE and GNOME Wayland), Share notices it in Sunshine's log and offers the capture that draws it. |
+| 🖥️ **Every screen in its place** | Choose which monitor of the game PC is shared and on which screen of this computer the game opens. |
+| 📱 **Play from a phone** | Touch, keyboard and controller instructions for Moonlight on Android and iPhone/iPad, with a QR code to read them on the phone. |
+| 🩺 **Help when something fails** | **Support** checks this computer without changing anything and explains common problems. If a stream drops because the network cannot carry it, Connect says so and offers **Lower quality and connect again**. |
 | 🎮 **Controllers too** | Keyboard, mouse and controllers of the other device reach the game through Sunshine. While someone plays, **Share** says which controller arrived, or why none did. |
 | 🔊 **Sound that just works** | Game audio is sent; the microphone and voice calls only when you turn them on. Everything returns to normal when sharing stops. |
 | 🛡️ **Respects what you have** | Existing Sunshine libraries, paired devices, Moonlight identity and VPN profiles are preserved, never overwritten. |
@@ -52,20 +59,24 @@ There is no proprietary game catalog and no requirement that the game came from 
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/share.png" alt="Share: Source set to Game Window, listing Shadow of the Tomb Raider (Steam · Proton), SuperTuxKart (Linux native) and Cyberpunk 2077 (Steam · Proton · Gamescope), then the Image and capture card"><br><sub><b>Share</b>: choose Full Desktop, a game to start, or only one open game window.</sub></td>
-    <td width="50%"><img src="docs/screenshots/connect.png" alt="Connect: three game computers as cards, two on the local network and one over Tailscale, with the Computers and Advanced options tabs"><br><sub><b>Connect</b>: pick the game computer; other ways to connect are on the <b>Advanced options</b> tab.</sub></td>
+    <td width="50%"><img src="docs/screenshots/share.png" alt="Share while sharing: the Sharing badge, what is being shared and the sound state, a large Stop sharing button, then Pair a new device with a four-digit PIN field and Approve, and Connected now saying no one is playing yet"><br><sub><b>Share</b>: the state in words, one large button, and the PIN field always in view.</sub></td>
+    <td width="50%"><img src="docs/screenshots/pairing.png" alt="New connection request dialog over Share: Living room PC wants to connect, a PIN field, the time left, and Approve, Reject and Not now"><br><sub><b>New connection request</b>: opens by itself when a device asks to pair.</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/private-network.png" alt="Connect your devices: Tailscale, ZeroTier and Headscale as cards with a switch each; Tailscale is connected with this computer's address and 3 online of 3 devices"><br><sub><b>Connect your devices</b>: each method with a real switch, its address and its devices.</sub></td>
-    <td><img src="docs/screenshots/image-settings.png" alt="Image and capture sheet with automatic capture and encoding, the video bitrate ceiling and screen and encoder settings"><br><sub><b>Image and capture</b>: automatic by default, detailed when you need it.</sub></td>
+    <td><img src="docs/screenshots/connect.png" alt="Connect: four game computers as cards, two on the local network and two over Tailscale, with the Computers and Advanced options tabs"><br><sub><b>Connect</b>: pick the game computer; other ways to connect are on <b>Advanced options</b>.</sub></td>
+    <td><img src="docs/screenshots/private-network.png" alt="Connect your devices: Tailscale, ZeroTier and Headscale as cards with a switch each; Tailscale is connected with its network, this computer's address and 3 online of 3 devices"><br><sub><b>Connect your devices</b>: each method with a real switch, its address and its devices.</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/preferences.png" alt="Preferences: audio output, play sound on this computer, and the Microphone and Voice calls switches off, audio test"><br><sub><b>Sound</b>: what the other computer hears, said in plain words.</sub></td>
-    <td><img src="docs/screenshots/home-pt-BR.png" alt="Home in Brazilian Portuguese"><br><sub><b>32 languages</b>: here in Brazilian Portuguese.</sub></td>
+    <td><img src="docs/screenshots/support.png" alt="Support: Check this computer lists sharing, Moonlight, the desktop session, remote input, mouse pointer, saved password, firewall and video encoding, each with OK or Info; Common problems below"><br><sub><b>Support</b>: read-only checks in plain words, then what to try for common problems.</sub></td>
+    <td><img src="docs/screenshots/stream-lost.png" alt="The connection to the game PC was lost: the network could not carry 12 Mbps, the delay reached 372 ms; buttons Lower quality and connect again, and Close"><br><sub><b>A dropped stream, explained</b>: and one button to try again at a rate the network carries.</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/home-gamer.png" alt="Home in the Gamer appearance"><br><sub><b>Gamer appearance</b>: a dark, colorful preset next to Automatic, Light and Dark.</sub></td>
-    <td><img src="docs/screenshots/share-gamer.png" alt="Share with Game Window in the Gamer appearance"><br><sub><b>Game Window</b> in the Gamer appearance.</sub></td>
+    <td><img src="docs/screenshots/preferences.png" alt="Share Preferences: Picture and performance with Image and capture and Game Library, then Sound with the output, play sound on this computer, send only the game's sound, Microphone and Voice calls off, and Test audio"><br><sub><b>Preferences</b>: grouped by purpose; most people keep the automatic choices.</sub></td>
+    <td><img src="docs/screenshots/share-pt-BR.png" alt="Share while sharing, in Brazilian Portuguese: Compartilhando, Parar compartilhamento and Parear um novo dispositivo"><br><sub><b>32 languages</b>: here in Brazilian Portuguese.</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/home-gamer.png" alt="Home in the Gamer appearance: Start with the guided setup, then Share and Connect cards in purple and cyan tones"><br><sub><b>Gamer appearance</b>: a dark, colorful preset next to Automatic, Light and Dark.</sub></td>
+    <td><img src="docs/screenshots/share-gamer.png" alt="Share while sharing in the Gamer appearance"><br><sub><b>Share</b> in the Gamer appearance.</sub></td>
   </tr>
 </table>
 
@@ -73,15 +84,30 @@ There is no proprietary game catalog and no requirement that the game came from 
 
 ## Try it in three steps
 
-**1. On the computer running the game** — open **Share**, choose what to share and select **Start sharing**. Under **Source**, **Game Window** sends only the game you pick; **Full Desktop** sends the whole screen.
+**1. On the computer running the game** — open **Share**, choose what to share and press **Start sharing**. Under **What to share**, **Game Window** sends only the game you pick; **Full Desktop** sends the whole screen. The first time, Big Remote Play creates Sunshine's administrator password for you and keeps it in the system keyring.
 
-**2. On the computer that will play** — open **Connect** and choose the game computer. The first time, Moonlight shows a four-digit pairing code, and the sharing computer shows **New connection request** by itself: type the code there and choose **Approve**.
+**2. On the computer that will play** — open **Connect** and choose the game computer. The first time, Moonlight shows a four-digit PIN, and the sharing computer opens **New connection request** by itself: type the PIN there and choose **Approve**. You can also type it any time under **Pair a new device**.
+
+**Playing with friends?** Each friend repeats step 2 on their own computer. Up to four devices can play at once, each with its own controller.
 
 **3. When the computers are in different places** — open **Connect your devices**. Choose **Tailscale** (recommended), **ZeroTier** or **Headscale**: each opens its own page with one button for the next step (**Install and continue**, **Set up**, **Sign in**, **Start**), its devices with **Copy IP**, and **Add device**. Not sure where to start? **Start with the guided setup** on Home asks two questions, prepares this computer and takes you there.
 
-> **Pairing code and search code are different.** A pairing code authorizes a device. A search code only helps find a Big Remote Play computer on a network that permits discovery.
+> **The PIN and the search code are different.** The PIN authorizes a device. A search code only helps find a Big Remote Play computer on a network that permits discovery.
 
 The full walkthrough — audio, image quality, Game Window, direct public access and safety limits — is in the [user guide](docs/user-guide.md).
+
+## What's new
+
+This release is about finding things by themselves: your installed games, the computers on a friend's ZeroTier network and the right screen. Each item was checked on a real computer (X11 with three monitors, a ZeroTier /16 network, Steam libraries on two disks and Heroic); what still needs a real phone, Wayland desktop or second player is listed in the linked guides.
+
+- **A game library that finds your games** — Steam (native and Flatpak, every library on every disk), Lutris and Heroic (Epic, GOG, Amazon). Only installed games are listed, Proton and Steam runtimes are left out, and you choose which ones Moonlight offers. It works with sharing off ([details](docs/game-library-detection.md)).
+- **Computers on someone else's ZeroTier network** — **Find computers to play on** asks the network which computers share games, without the owner's ZeroTier account; they appear in **Connect** as **Ready to play** ([how it works](docs/zerotier-discovery.md)).
+- **ZeroTier on and off without a password** — a helper limited to starting and stopping the private-network service, allowed for the person at the computer; no sudoers rule ([details](docs/zerotier-permissions.md)).
+- **Choose the screen where the game opens** — **Connect → Image → Open on** opens Moonlight on the chosen screen of this computer on X11 ([several screens](docs/moonlight-multi-monitor.md)).
+- **The shared monitor you chose, really shared** — on X11 the game PC now sends the monitor picked in **Share**, and each monitor is listed once instead of twice.
+- **Controls on the phone** — **Shortcuts & Instructions** has a tab for Moonlight on a computer, Android, iPhone/iPad and controllers, and a QR code that opens the guide on the phone ([guide](docs/mobile-controls.md)).
+
+Earlier: a simpler Share page, automatic pairing with Sunshine's password kept in the keyring, up to four players at once, streams that drop explained with **Lower quality and connect again**, and the mouse pointer on Wayland.
 
 ## Install
 
@@ -100,13 +126,15 @@ sudo pacman -S --needed sunshine        # on the computer that shares games
 sudo pacman -S --needed moonlight-qt    # on the computer that plays
 ```
 
+Moonlight installed as a Flatpak (`com.moonlight_stream.Moonlight`) also works.
+
 ### Arch Linux
 
 Every dependency of the package is in Arch's own repositories; no extra repository has to be added. Moonlight, Tailscale, ZeroTier, Headscale and Caddy are in `extra`. Sunshine is not in the Arch repositories: on the computer that shares games, install it from the AUR or from Sunshine's own package first. **Install what's needed** says so instead of failing.
 
 ### Build the package from source
 
-`makepkg` run inside a checkout packages that checkout:
+`makepkg` run inside a checkout packages that checkout. Always build from an up-to-date checkout: an old clone carries an old recipe (one that copied only `usr/` installs a launcher without the application, which now says so in a window).
 
 ```bash
 git clone https://github.com/ruscher/big-remote-play.git
@@ -146,12 +174,12 @@ The Python wheel alone is not a complete desktop installation: icons, styles, tr
 
 | | Packages (Arch/BigLinux names) |
 |---|---|
-| **Required** | `python` ≥ 3.11, `gtk4`, `libadwaita` ≥ 1.7, `python-gobject`, `libsecret`, `avahi`, `curl`, `iproute2`, `iputils`, `jq`, `polkit`, `hicolor-icon-theme` |
-| **Share** | `sunshine` |
-| **Connect** | `moonlight-qt` |
-| **Game Window** | Sunshine ≥ 2026.516; KDE Plasma (`kwin`, `xdg-desktop-portal-kde`) on Wayland or an X11 desktop with compositing; `gst-plugin-pipewire`, `gst-plugins-bad-libs`, `gst-plugins-good` |
+| **Required** | `python` ≥ 3.11, `gtk4`, `libadwaita` ≥ 1.7, `glib2`, `gdk-pixbuf2`, `pango`, `python-gobject`, `python-cairo`, `libsecret`, `avahi`, `curl`, `iproute2`, `iputils`, `jq`, `polkit`, `procps-ng`, `systemd`, `util-linux`, `hicolor-icon-theme` |
+| **Share** | `sunshine`; for the Game Library, the launchers whose games you offer: `steam`, `lutris`, Heroic Games Launcher (native or Flatpak) |
+| **Connect** | `moonlight-qt` (or the Moonlight Flatpak with `flatpak`) |
+| **Game Window** | Sunshine ≥ 2026.516; KDE Plasma (`kwin`, `xdg-desktop-portal-kde`) on Wayland or an X11 desktop with compositing; `gst-plugin-pipewire`, `gst-plugins-base`, `gst-plugins-bad-libs`, `gst-plugins-good` |
 | **Connect your devices** | one of `tailscale` or `zerotier-one`; to host your own Headscale server on this computer, `headscale` and `caddy` (`miniupnpc` reads the router's public address) |
-| **Optional** | a Secret Service provider (GNOME Keyring or KWallet) for saved passwords, `libpulse` and `pipewire` for sound, `libkscreen` (screen mode and HDR for the connecting device), `pciutils` (graphics detection), `flatpak` (VPN clients installed as Flatpaks). Pamac is used to install components when it is present. |
+| **Optional** | a Secret Service provider (GNOME Keyring or KWallet) for saved passwords, `libpulse` and `pipewire` for sound, `libkscreen` (screen mode and HDR for the connecting device), `pciutils` (graphics detection), `xorg-xrandr` (monitors and the main screen on X11), `flatpak` (Moonlight, VPN clients, Steam, Lutris or Heroic installed as Flatpaks), `xdg-utils` (start Heroic games when only its link handler exists). Pamac is used to install components when it is present. |
 
 ## Game Window: share the game, not your desktop
 
@@ -176,11 +204,12 @@ Games are listed by name from their process tree — Steam, Proton, Wine, Lutris
 | Game Window | [xdg-desktop-portal](https://flatpak.github.io/xdg-desktop-portal/) ScreenCast, [KWin](https://invent.kde.org/plasma/kwin) scripting and a headless `kwin_wayland`, [PipeWire](https://pipewire.org/) DMA-BUF, [GStreamer](https://gstreamer.freedesktop.org/); EWMH through `libX11` on X11 |
 | Screen and colors | `kscreen-doctor` for HDR-to-SDR and per-session resolution, restored after every session |
 | Audio | PipeWire/PulseAudio through `pactl` and `pw-link`: automatic output capture, voice calls kept out and the microphone left out unless you choose otherwise, PipeWire port links ("bridges") made by the app, which removes only what it created |
-| Networks | mDNS discovery with [Avahi](https://avahi.org/); [Tailscale](https://tailscale.com/), [Headscale](https://headscale.net/) and [ZeroTier](https://www.zerotier.com/) clients and APIs |
+| Networks | mDNS discovery with [Avahi](https://avahi.org/); [Tailscale](https://tailscale.com/), [Headscale](https://headscale.net/) and [ZeroTier](https://www.zerotier.com/) clients and APIs; a bounded, on-demand search of ZeroTier networks for Sunshine |
+| Games | Steam (`libraryfolders.vdf`, `appmanifest_*.acf`), Lutris (`pga.db`) and Heroic (Legendary, GOG, Nile) libraries, read-only |
 | Security | Secret Service keyring (`libsecret`) for passwords and tokens, narrowly scoped PolicyKit helpers, ufw/firewalld checks, owner-only atomic writes |
 | Internationalization | gettext, 32 translated catalogs (distinct `pt`/`pt_BR` and `zh_CN`/`zh_TW`) |
 | Packaging | PEP 517 build on `uv_build`, private `/usr/lib/big-remote-play` layout that survives Python upgrades, PKGBUILD and Nix flake, reproducible `YY.MM.DD` versions |
-| Quality | pytest (over 1,000 tests, GTK task flows under Xvfb and D-Bus), ruff, pyright, catalog and metadata validators |
+| Quality | pytest (over 1,700 tests, GTK task flows under Xvfb and D-Bus), ruff, pyright, catalog and metadata validators |
 
 How the pieces fit together is described in [architecture](docs/architecture.md) and the [host and network policy](docs/host-network-policy.md).
 
@@ -194,7 +223,8 @@ Version fields in the checkout stay at `0.0.0`. Builds derive `YY.MM.DD` automat
 
 | Audience | Start here |
 |---|---|
-| Players and helpers | [User guide](docs/user-guide.md), [troubleshooting](docs/troubleshooting.md), [Game Window](docs/game-window.md) |
+| Players and helpers | [User guide](docs/user-guide.md), [troubleshooting](docs/troubleshooting.md), [Game Window](docs/game-window.md), [game library](docs/game-library-detection.md), [phone controls](docs/mobile-controls.md), [several screens](docs/moonlight-multi-monitor.md) |
+| ZeroTier | [Finding computers on a network](docs/zerotier-discovery.md), [no repeated passwords](docs/zerotier-permissions.md) |
 | Playing over the internet | [Router, NAT and firewall](docs/router.md), [your own Headscale server](docs/vps-headscale.md), [Cloudflare](docs/cloudflare.md) |
 | Contributors | [Contributing](CONTRIBUTING.md), [development](docs/development.md), [documentation index](docs/README.md) |
 | UI contributors | [Visual design](docs/visual-design.md), [UI instructions](src/big_remote_play/ui/AGENTS.md) |

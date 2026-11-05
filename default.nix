@@ -18,6 +18,10 @@
 , avahi
 , jq
 , procps
+, pulseaudio
+, pipewire
+, pciutils
+, xrandr
 , hicolor-icon-theme
 }:
 python3Packages.buildPythonApplication {
@@ -42,8 +46,9 @@ python3Packages.buildPythonApplication {
     gappsWrapperArgs+=(
       --set BIG_REMOTE_PLAY_DATADIR "$out/share/big-remote-play"
       --set BIG_REMOTE_PLAY_LOCALEDIR "$out/share/locale"
-      # The tools the app runs itself (network checks, discovery, processes).
-      --prefix PATH : ${lib.makeBinPath [ curl iproute2 iputils avahi jq procps ]}
+      # The tools the app runs itself (network checks, discovery, processes,
+      # sound routing and graphics/monitor detection).
+      --prefix PATH : ${lib.makeBinPath [ curl iproute2 iputils avahi jq procps pulseaudio pipewire pciutils xrandr ]}
     )
   '';
 

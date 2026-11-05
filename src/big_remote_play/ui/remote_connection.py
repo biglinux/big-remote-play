@@ -479,7 +479,7 @@ class ProviderCard(Gtk.Box):
         devices = devices_line(summary)
         self.devices_label.set_label(devices)
         self.devices_label.set_visible(bool(devices))
-        self.devices_label.set_tooltip_text(_("Add a ZeroTier API token in Advanced to count the devices.") if summary.devices.problem == "api_missing" else None)
+        self.devices_label.set_tooltip_text(_("Open ZeroTier to search this network for computers that share games.") if summary.devices.problem == "api_missing" else None)
         problem = {"connect": _("Could not connect"), "disconnect": _("Could not disconnect")}.get(self.problem, "")
         self.problem_label.set_label(problem)
         self.problem_label.set_visible(bool(problem))
@@ -522,7 +522,10 @@ def devices_line(summary: CardSummary) -> str:
     if count.problem == "api_failed":
         return _("Could not load devices")
     if count.problem == "api_missing":
-        return _("Devices unavailable")
+        # ZeroTier gives members no list of the others: what a search found.
+        if count.found:
+            return ngettext("{count} computer to play on", "{count} computers to play on", count.found).format(count=count.found)
+        return _("No computer found yet")
     return ""
 
 

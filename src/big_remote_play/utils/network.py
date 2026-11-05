@@ -330,8 +330,16 @@ class NetworkDiscovery:
 
         return results["v4"] or results["v6"] or ""
 
-    def start_pin_listener(self, pin: str, name: str):
+    def start_pin_listener(self, pin: str, name: str, port: int = 47989):
+        """Answer, while sharing, the PIN question and the private-network search.
+
+        ``BRP_WHO_SHARES`` comes from Connect's search of a private network
+        (ZeroTier gives members no list of the others): the answer tells the
+        asking computer only that this one shares, its name and its port.
+        """
         import threading
+
+        from big_remote_play.private_network.discovery import QUESTION, answer_for
 
         running = [True]
 
@@ -356,8 +364,11 @@ class NetworkDiscovery:
                         while running[0]:
                             try:
                                 data, addr = sock.recvfrom(1024)
-                                if data.decode().strip() == f"WHO_HAS_PIN {pin}":
+                                text = data.decode(errors="replace").strip()
+                                if text == f"WHO_HAS_PIN {pin}":
                                     sock.sendto(f"I_HAVE_PIN {name}".encode(), addr)
+                                elif text == QUESTION:
+                                    sock.sendto(answer_for(name, port), addr)
                             except Exception:
                                 pass
                         sock.close()

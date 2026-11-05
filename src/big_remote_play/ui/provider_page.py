@@ -103,6 +103,16 @@ def device_lines(device: ProviderDevice, *, now: float | None = None) -> list[st
     """What a device row says under its name, in order."""
     lines: list[str] = []
     state = _("Waiting for approval") if device.waiting else (_("Online") if device.online else (_("Offline") if device.online is False else _("Status unknown")))
+    if device.found and not device.waiting:
+        # Found by a search: available only if it answered just now.
+        if device.online and device.sunshine:
+            state = _("Ready to play")
+        elif device.online:
+            state = _("Answers, but does not share games")
+        else:
+            state = _("Not checked since the last search")
+    elif device.sunshine and device.online and not device.waiting:
+        state = _("Ready to play")
     lines.append(_("This device · {state}").format(state=state) if device.is_local else state)
     if device.address:
         lines.append(device.address)
@@ -111,6 +121,29 @@ def device_lines(device: ProviderDevice, *, now: float | None = None) -> list[st
         if seen:
             lines.append(seen)
     return lines
+
+
+def search_summary(result) -> str:
+    """One sentence on what the search of a ZeroTier network found."""
+    if result is None:
+        return _("The search could not run. Try again.")
+    problem = getattr(result, "problem", "")
+    if problem in ("no_network", "not_ready"):
+        return _("This computer is not connected to this network yet.")
+    if problem == "no_address":
+        return _("This network gave this computer no IPv4 address, so it cannot be searched. Add the other computer by its address.")
+    if result.cancelled:
+        return _("The search was cancelled.")
+    sharing = sum(1 for computer in result.found if computer.sharing)
+    if sharing:
+        text = ngettext("{count} computer sharing games was found.", "{count} computers sharing games were found.", sharing).format(count=sharing)
+    else:
+        text = _("No computer sharing games answered. Check that the other computer is sharing and on this network, or add it by its address.")
+    if result.area is not None and result.area.partial:
+        text += " " + _("This network is large: the addresses near this computer and the computers that answered were checked.")
+    if result.timed_out:
+        text += " " + _("The search stopped before checking every address.")
+    return text
 
 
 def connection_words(provider: ProviderId, status: ProviderStatus, state: SimpleState) -> tuple[str, str, str]:
@@ -234,6 +267,10 @@ class ProviderPage(Adw.NavigationPage):
         self._status_worker = Worker()
         self._devices_worker = Worker()
         self._action_worker = Worker()
+        self._search_worker = Worker()
+        self._search_cancel = None  # threading.Event of the running search
+        self._search_text = ""  # what the last search found, kept across re-renders
+        self._search_progress = ""
         self.setup_page: Adw.NavigationPage | None = None
         self.add_device_flow = None
         self._built_advanced_for: tuple | None = None
@@ -452,6 +489,7 @@ class ProviderPage(Adw.NavigationPage):
 
     def _cancel(self) -> None:
         self._stop_timer()
+        self.cancel_search()
         for worker in (self._status_worker, self._devices_worker, self._action_worker):
             worker.cancel()
 
@@ -597,6 +635,9 @@ class ProviderPage(Adw.NavigationPage):
             # The ZeroTier card follows the network chosen here.
             self.main_window.zerotier_network_id = self.network_id
             self.listing = None
+            # What was found belongs to the other network.
+            self.cancel_search()
+            self._search_text = ""
             self.refresh_devices()
 
     def _render_devices(self, listing: DeviceListing) -> None:
@@ -611,15 +652,102 @@ class ProviderPage(Adw.NavigationPage):
             else:
                 rows.append(message_row(_("No devices to show"), _("Devices appear here once {name} is on.").format(name=self.provider.display_name), "brp-network-offline-symbolic"))
         elif not listing.complete:
-            row = message_row(_("Your other devices are listed on the ZeroTier website"), _("To see and remove them here, add a ZeroTier API token in Advanced."), "brp-network-workgroup-symbolic")
+            # ZeroTier gives members no list of the others: search the network.
+            rows.append(self._search_row(listing))
+            row = message_row(
+                _("Every member is listed on the ZeroTier website"),
+                _("Only the network owner's account sees all members. A ZeroTier API token in Advanced lists them here too."),
+                "brp-network-workgroup-symbolic",
+            )
             if listing.manage_url:
                 button = Gtk.Button(label=_("Manage devices"), valign=Gtk.Align.CENTER)
+                button.add_css_class("flat")
                 button.connect("clicked", lambda widget: open_uri(widget, listing.manage_url))
                 row.add_suffix(button)
             rows.append(row)
         elif connected and len(listing.devices) == 1:
             rows.append(message_row(_("No other device yet"), _("Use Add device to connect another computer."), "brp-computer-symbolic"))
         self.devices.replace(rows)
+
+    # ── ZeroTier: search the network for computers that share games ──────
+    def _search_row(self, listing: DeviceListing) -> Adw.ActionRow:
+        running = self._search_cancel is not None
+        subtitle = self._search_progress if running else (self._search_text or _("Asks this network which computers share games. Nothing is changed on them."))
+        row = Adw.ActionRow(title=_("Find computers to play on"), subtitle=subtitle, use_markup=False)
+        row.set_title_lines(0)
+        row.set_subtitle_lines(0)
+        if running:
+            spinner = Adw.Spinner()
+            spinner.set_size_request(18, 18)
+            row.add_prefix(spinner)
+        else:
+            icon = create_icon_widget("brp-system-search-symbolic", size=18, css_class="brp-row-icon")
+            icon.set_valign(Gtk.Align.CENTER)
+            row.add_prefix(icon)
+        buttons = Gtk.Box(spacing=6, valign=Gtk.Align.CENTER)
+        if not running and self._search_text and not any(device.found for device in listing.devices):
+            add = Gtk.Button(label=_("Add by Address"))
+            add.connect("clicked", lambda _b: self.add_by_address())
+            buttons.append(add)
+        button = Gtk.Button(label=_("Cancel") if running else _("Search"))
+        if not running:
+            button.add_css_class("suggested-action")
+        button.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Asks the computers of this ZeroTier network whether they share games")])
+        button.connect("clicked", lambda _b: self.cancel_search() if running else self.search_network())
+        buttons.append(button)
+        row.add_suffix(buttons)
+        self._search_row_widget = row
+        return row
+
+    def search_network(self) -> None:
+        import threading
+
+        if self._search_cancel is not None or not self.network_id:
+            return
+        cancel = threading.Event()
+        self._search_cancel = cancel
+        self._search_progress = _("Searching this network…")
+        generation = self._search_worker.generation + 1
+        network_id = self.network_id
+
+        def progress(asked: int, total: int) -> None:
+            def show() -> bool:
+                if self._search_worker.generation == generation and self._search_cancel is cancel:
+                    self._search_progress = ngettext("Searching… {asked} of {total} address checked", "Searching… {asked} of {total} addresses checked", total).format(asked=asked, total=total)
+                    row = getattr(self, "_search_row_widget", None)
+                    if row is not None:
+                        row.set_subtitle(self._search_progress)
+                return False
+
+            GLib.idle_add(show)
+
+        self._search_worker.submit(lambda: self.service_factory().find_zerotier_computers(network_id, cancel=cancel, progress=progress), self._search_done, failed=lambda _e: self._search_done(None))
+        if self.listing is not None:
+            self._render_devices(self.listing)
+
+    def cancel_search(self) -> None:
+        if self._search_cancel is None:
+            return
+        self._search_cancel.set()
+        self._search_cancel = None
+        self._search_worker.cancel()
+        self._search_text = _("The search was cancelled.")
+        if self.listing is not None:
+            self._render_devices(self.listing)
+
+    def _search_done(self, result) -> None:
+        self._search_cancel = None
+        self._search_text = search_summary(result)
+        self.refresh_devices()
+
+    def add_by_address(self) -> None:
+        """Connect's address form: for a computer the search could not reach."""
+        guest = getattr(self.main_window, "guest_view", None)
+        if guest is None:
+            return
+        self.main_window._network_return_page = "guest"
+        self.main_window.navigate_to("guest")
+        guest.present_other_ways("ip")
 
     def device_row(self, device: ProviderDevice, listing: DeviceListing) -> Adw.ActionRow:
         if device.address and not device.is_local:
@@ -643,7 +771,7 @@ class ProviderPage(Adw.NavigationPage):
             row.add_suffix(copy)
         if not device.is_local:
             items: list[tuple[str, Callable[[], object]]] = []
-            if device.address and device.online:
+            if device.address and (device.online or device.sunshine):
                 items.append((_("Play on this computer"), lambda d=device: self.play_on(d)))
             if device.address:
                 items.append((_("Check connection"), lambda d=device: self.check_connection(d)))

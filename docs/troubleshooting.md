@@ -59,6 +59,8 @@ Text is sharp when the stream has the sharing screen's resolution. A wide or hig
 
 ## No computer found
 
+On a ZeroTier network joined from someone else, use **Find computers to play on** on the ZeroTier page; see [finding computers on a ZeroTier network](zerotier-discovery.md) for what it can and cannot find.
+
 First start sharing on the game PC. Every computer found gets its own card under **Connect → Computers**; the other ways to connect are on the **Advanced options** tab. Check that both PCs are reachable on the same home or private network. Search again. Across a VPN, use the game PC's private IP address; broadcast discovery is not universally supported. A search code does not create network connectivity.
 
 ## The browser sign-in for the private network did not open, or the PC is not really connected
@@ -102,6 +104,17 @@ The private network can work (both computers listed, pings answered) while the g
 
 - **On the game PC**, while sharing, **Share → Overview → Needs attention** says **The firewall blocks other computers**, naming the firewall (ufw or firewalld), the blocked ports and the networks affected (the local network, ZeroTier, Tailscale or Headscale). **Allow in firewall** first lists the ports it will open — TCP 47984, 47989, 48010 and UDP 47998–48000 for the default base port; never the administration page — then asks for your password. The check only reads: ufw's own rule files (`/etc/ufw/ufw.conf`, `/etc/default/ufw`, `/etc/ufw/user.rules`) or firewalld's zone queries. The first ufw rule that matches decides, as in ufw; a rule limited to the local network does not cover ZeroTier; an interface rule such as `allow in on tailscale0` covers only that interface. Plain nftables/iptables rules need root to read, so they are never reported as blocking.
 - **On the connecting computer**, a refused connection means the game PC answered but sharing is not running; silence from a game PC that still answers a ping means its firewall filters the ports, and the message and **Diagnose** say so.
+
+## “The connection to the game PC was lost” a few seconds after the game appears
+
+Moonlight ends a running stream by itself (its window says “Connection terminated”, error code -1) when the game PC stops answering for about ten seconds. Big Remote Play then says which of two causes it saw:
+
+- **The delay reached hundreds of milliseconds**: the stream asks for more than the network between the two computers carries. Over ZeroTier, Tailscale or Headscale that is the internet connection of both places, not the Wi-Fi to the router, so the automatic bitrate can be too high. **Lower quality and connect again** halves the bitrate and keeps it as a manual value; repeat until the stream holds. A screen share or video call running at the same time uses the same connection.
+- **The network stopped answering**: both computers lost each other for several seconds. A computer with cable and Wi-Fi both connected to the same router can make ZeroTier switch between the two; when it uses the Wi-Fi one and that adapter pauses, everything stops. Turn off the connection it does not use, or tell ZeroTier to ignore it: add `{"settings": {"interfacePrefixBlacklist": ["wlp"]}}` to `/var/lib/zerotier-one/local.conf` (merge it with what is there) and restart `zerotier-one`.
+
+## Several people cannot play at the same time
+
+Sunshine accepts one stream at a time unless its **Maximum Connected Clients** (`channels`) is raised; the second Moonlight is then refused. Big Remote Play sets it to 4 when sharing starts, and keeps a higher value you chose. Each player's controller becomes its own virtual controller on the game PC; games made for several players give each one the next player.
 
 ## A computer shows “Sign-in expired” or “Sharing not found”
 
@@ -224,6 +237,9 @@ Sunshine runs and accepts connections, but it found no way to capture or encode 
 
 In Moonlight's normal mouse mode the other device hides its own pointer and shows the one this computer draws into the picture. When the pointer moves things but is invisible, the screen capture did not draw it. While sharing, **Needs attention** says **The other device may not see the mouse pointer** when Sunshine's log reports it (for example *No KMS cursor plane found*); **Use it** restarts sharing with the capture of this desktop that draws the pointer (KWin on KDE Plasma Wayland, the desktop portal on GNOME Wayland, X11 capture on X11). **Preferences → Mouse, keyboard and controllers → Use automatic** goes back. In Moonlight, Ctrl+Alt+Shift+N asks Sunshine to draw the pointer again, and in “Optimize mouse for remote desktop” mode Ctrl+Alt+Shift+C shows the other device's own pointer. If the pointer does not move at all, **Support → Check this computer** says whether Sunshine can open `/dev/uinput`. Details and the symptom table: [mouse pointer compatibility](mouse-cursor-compatibility.md).
 
+
+On a phone the only pointer is the one the game PC draws into the picture. In an X11 session the game PC now uses X11 screen capture for that by itself; restart sharing once after updating. If **Capture Method** was set to KMS by hand, set it back to **Automatic**. In Moonlight on a computer, Ctrl+Alt+Shift+N shows or hides the drawn pointer, so pressing it by accident hides it. Details: [mouse pointer compatibility](mouse-cursor-compatibility.md#x11-sessions-x11-capture-by-default).
+
 ## Wrong colors or missing symbols
 
 Install the native hicolor icon theme and keep the supplied relative symbolic links intact. Do not replace its directory index with a stripped custom index. Test the default Adwaita theme before diagnosing a third-party theme override. Reload the application after replacing resource files.
@@ -237,3 +253,11 @@ Check file ownership and permissions. An unreadable or malformed Moonlight/Sunsh
 Back up before testing a new build. Backups may contain native private keys and Moonlight identity; keyring secrets are separate. Restore checks the versioned inventory, paths, types, sizes and hashes before writing to the actual configuration locations, including Flatpak Moonlight. If applying any file fails, files already changed are rolled back and the error reports that the previous settings were restored.
 
 If both legacy and current Big Remote Play config directories exist, the migration preserves conflicting old files rather than deleting them. Keep those files until a maintainer or administrator confirms which version is needed.
+
+## The game library does not list a game
+
+The library lists only games that are really installed: a Steam game still downloading, a game on a disk that is not mounted, a Lutris game marked as not installed or a Heroic catalog entry is left out. **Add Manually…** adds any program by name and command. Where each launcher is read: [game library](game-library-detection.md).
+
+## Moonlight opens on the wrong screen
+
+**Connect → Image → Open on** chooses the screen on X11. On Wayland the desktop opens Moonlight on the screen in use: move the window to the screen you want and press Ctrl+Alt+Shift+X twice. The shared screen of the game PC is chosen there, in **Share**. See [several screens](moonlight-multi-monitor.md).

@@ -9,6 +9,8 @@ runs the application in this same interpreter process.
 
 from __future__ import annotations
 
+import gettext
+import os
 from pathlib import Path
 import sys
 
@@ -24,6 +26,64 @@ def _application_root() -> Path:
     return prefix / "lib" / _PRIVATE_DIRECTORY
 
 
+def _(message: str) -> str:
+    """Translate with the installed catalogs, which ship even when the code is missing."""
+    prefix = Path(__file__).resolve().parent.parent
+    try:
+        return gettext.translation("big-remote-play", localedir=str(prefix / "share" / "locale")).gettext(message)
+    except OSError:
+        return message
+
+
+def _report(title: str, body: str) -> None:
+    """Tell the person, not only the terminal: started from the menu, stderr is invisible.
+
+    A window is shown only in a graphical session, with plain GTK 4 (the
+    application's own code may be the part that is missing).
+    """
+    print(f"big-remote-play: {body}", file=sys.stderr)
+    if not (os.environ.get("WAYLAND_DISPLAY") or os.environ.get("DISPLAY")):
+        return
+    try:
+        import gi
+
+        gi.require_version("Gtk", "4.0")
+        from gi.repository import GLib, Gtk  # type: ignore
+
+        if not Gtk.init_check():
+            return
+        loop = GLib.MainLoop()
+        window = Gtk.Window(title="Big Remote Play", resizable=False)
+        window.set_default_size(480, -1)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        for edge in ("top", "bottom", "start", "end"):
+            getattr(box, f"set_margin_{edge}")(24)
+        heading = Gtk.Label(label=title, xalign=0, wrap=True)
+        heading.add_css_class("title-3")
+        box.append(heading)
+        text = Gtk.Label(label=body, xalign=0, wrap=True, selectable=True)
+        box.append(text)
+        close = Gtk.Button(label=_("Close"), halign=Gtk.Align.END)
+        close.connect("clicked", lambda _button: window.close())
+        box.append(close)
+        window.set_child(box)
+        window.set_default_widget(close)
+        window.connect("close-request", lambda _window: (loop.quit(), False)[1])
+        window.present()
+
+        def focus_button() -> bool:
+            # Once mapped, GTK focuses the first focusable child, the
+            # selectable text, and selects all of it: give the focus to Close.
+            close.grab_focus()
+            text.select_region(0, 0)
+            return False
+
+        GLib.idle_add(focus_button)
+        loop.run()
+    except Exception:  # the message is already on stderr
+        return
+
+
 def _run() -> int:
     if sys.version_info < _MINIMUM_PYTHON:
         required = ".".join(str(part) for part in _MINIMUM_PYTHON)
@@ -37,9 +97,13 @@ def _run() -> int:
     application_root = _application_root()
     package_init = application_root / _PACKAGE_DIRECTORY / "__init__.py"
     if not package_init.is_file():
-        print(
-            f"big-remote-play: native application files are missing; expected {package_init}",
-            file=sys.stderr,
+        # Seen for real: an old PKGBUILD that copies only usr/ packaged the
+        # launcher without the application (it lives in src/ since 2026-10).
+        _report(
+            _("Big Remote Play is not installed completely"),
+            _(
+                "The application files are missing ({path}). This happens when the package was built with an old PKGBUILD that copies only the usr folder. Install the Big Remote Play package of your distribution, or update the source code (git pull) and build it again with pkgbuild/PKGBUILD."
+            ).format(path=package_init),
         )
         return 1
 
@@ -53,10 +117,10 @@ def _run() -> int:
     try:
         from big_remote_play.app import main
     except ModuleNotFoundError as exc:
-        dependency = exc.name or "an unknown Python module"
-        print(
-            f"big-remote-play: required Python module is unavailable: {dependency}",
-            file=sys.stderr,
+        dependency = exc.name or "?"
+        _report(
+            _("Big Remote Play cannot start"),
+            _("A program it needs is missing: the Python module {module}. Install the package that provides it, or reinstall Big Remote Play.").format(module=dependency),
         )
         return 1
 

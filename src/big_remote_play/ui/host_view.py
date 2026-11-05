@@ -18,7 +18,7 @@ from big_remote_play.utils.game_detector import GameDetector
 from big_remote_play.utils import auto_quality
 from big_remote_play.utils.config import Config
 import threading
-from big_remote_play.utils.i18n import _, ngettext
+from big_remote_play.utils.i18n import _, ngettext, pgettext
 from big_remote_play.utils.icons import create_icon_widget, set_icon
 from big_remote_play.integration_contracts import MOONLIGHT_PAIRING_PIN_LENGTH, BRP_DISCOVERY_CODE_LENGTH
 from big_remote_play import paths
@@ -63,6 +63,12 @@ def _parse_xrandr_monitor_names(output: str) -> list[str]:
         if parts:
             names.append(parts[-1])
     return names
+
+
+def _unlisted_connectors(connected: list[str], listed: list[str], kms_names: dict[str, str]) -> list[str]:
+    """Kernel connectors that are not a screen already listed under its X11 name."""
+    known = set(listed) | {kms_names[name] for name in listed if name in kms_names}
+    return [name for name in dict.fromkeys(connected) if name not in known]
 
 
 def _split_launch_command(command: str) -> list[str]:
@@ -218,6 +224,7 @@ class HostView(Gtk.Box):
         if self.sunshine.is_running():
             self.is_hosting = True
 
+        self._kms_connectors: dict[str, str] = {}
         self.available_monitors = self.detect_monitors()
         self.available_gpus = self.detect_gpus()
         self.setup_ui()
@@ -287,7 +294,7 @@ class HostView(Gtk.Box):
             self._set_state_pill(_("Not responding"), "attention")
             self.overview_status_label.set_label(_("Sunshine is not answering yet. If the desktop asks which screen to share, choose one; otherwise Support → Server log shows why."))
         elif reachable and self.overview_state_label.has_css_class("attention"):
-            self._set_state_pill(_("Sharing"), "online")
+            self._set_state_pill(pgettext("sharing state", "Sharing"), "online")
             self.overview_status_label.set_label(_("Sharing. Other devices can connect now."))
             # It just started serving: its capture and encoders are known now.
             self._check_cursor()
@@ -402,6 +409,9 @@ class HostView(Gtk.Box):
         except Exception as e:
             _log.error(f"Error detecting GDK monitors: {e}")
 
+        # Sunshine's KMS capture knows the kernel names, not X11's.
+        self._kms_connectors = {} if is_wayland else self._x11_kms_connectors()
+
         # Fallback for X11/DRM if GDK didn't find everything
         if not is_wayland:
             # Xrandr (Reinforcement for X11)
@@ -414,20 +424,36 @@ class HostView(Gtk.Box):
             except Exception:
                 pass
 
-            # DRM (Reinforcement for KMS/DRM)
+            # DRM (Reinforcement for KMS/DRM): only screens X11 does not
+            # list. The kernel names of X11's screens would show each twice.
             try:
                 from pathlib import Path
 
-                for p in Path("/sys/class/drm").glob("card*-*"):
-                    if (p / "status").exists() and (p / "status").read_text().strip() == "connected":
-                        name = p.name.split("-", 1)[1]
-                        if name not in names:
-                            monitors.append((_monitor_choice_label(len(monitors), _("Monitor / Display"), name), name))
-                            names.append(name)
+                connected = [p.name.split("-", 1)[1] for p in sorted(Path("/sys/class/drm").glob("card*-*")) if (p / "status").exists() and (p / "status").read_text().strip() == "connected"]
+                for name in _unlisted_connectors(connected, names, self._kms_connectors):
+                    monitors.append((_monitor_choice_label(len(monitors), _("Monitor / Display"), name), name))
+                    names.append(name)
             except Exception:
                 pass
 
         return monitors
+
+    @staticmethod
+    def _x11_kms_connectors() -> dict[str, str]:
+        from big_remote_play.host.display_connectors import drm_connector_edids, kms_connector_names, parse_xrandr_edids
+
+        try:
+            props = subprocess.run(["xrandr", "--props"], capture_output=True, text=True, timeout=5, check=False).stdout
+            return kms_connector_names(parse_xrandr_edids(props), drm_connector_edids())
+        except (OSError, subprocess.SubprocessError) as exc:
+            _log.debug("Cannot pair X11 outputs with kernel connectors: %s", exc)
+            return {}
+
+    def _capture_output_name(self, output: str, capture: str | None) -> str:
+        """The name Sunshine's capture finds ``output`` by (see host/display_connectors.py)."""
+        if capture in (None, "kms"):
+            return self._kms_connectors.get(output, output)
+        return output
 
     def detect_gpus(self):
         gpus = []
@@ -1278,6 +1304,7 @@ class HostView(Gtk.Box):
         automatic_button.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Let Sunshine choose the screen capture again")])
         automatic_button.connect("clicked", lambda _button: self._clear_pointer_capture())
         self.pointer_capture_row.add_suffix(automatic_button)
+        self._pointer_automatic_button = automatic_button
         input_group.add(self.pointer_capture_row)
         self._sync_pointer_capture_row()
         config_page.append(input_group)
@@ -2151,6 +2178,24 @@ class HostView(Gtk.Box):
         value = str(self.config.get("pointer_capture", "") or "")
         return value if value in self._POINTER_CAPTURES else ""
 
+    @staticmethod
+    def _session_capture() -> str:
+        """The capture used when nothing else was chosen, for this kind of session.
+
+        On X11 Sunshine prefers KMS (it has cap_sys_admin), which on a real
+        X11 desktop (amdgpu, three monitors) streamed no mouse pointer even
+        though its log said "Found cursor plane": a phone, which shows only
+        the pointer drawn into the picture, saw none. X11 capture draws the
+        pointer with XFixes; it costs more CPU (about 25 % of one core at
+        1080p60 against 6 % for KMS there). Wayland keeps Sunshine's choice;
+        Needs attention handles the KMS problems Sunshine reports there.
+        """
+        return "x11" if os.environ.get("XDG_SESSION_TYPE") == "x11" and os.environ.get("DISPLAY") else ""
+
+    def _automatic_capture(self) -> str:
+        """What Automatic means now: the pointer fix chosen before, else the session's."""
+        return self._pointer_capture() or self._session_capture()
+
     def _pointer_capture_name(self, value: str) -> str:
         return {"kwin": _("KDE screen capture (KWin)"), "portal": _("Desktop screen capture (portal)"), "x11": _("X11 screen capture")}.get(value, _("Automatic"))
 
@@ -2163,7 +2208,7 @@ class HostView(Gtk.Box):
         from big_remote_play.host.cursor_check import cursor_report
 
         index = self.platform_row.get_selected()
-        configured = (self._capture_values[index] if 0 <= index < len(self._capture_values) else "") or self._pointer_capture()
+        configured = (self._capture_values[index] if 0 <= index < len(self._capture_values) else "") or self._automatic_capture()
         log_path = self.sunshine.config_dir / "sunshine.log"
         self._cursor_worker.submit(lambda: cursor_report(log_path, configured=configured), self._show_cursor_report, failed=lambda _error: self._show_cursor_report(None))
 
@@ -2171,7 +2216,17 @@ class HostView(Gtk.Box):
         self._cursor_report = report
         lost = bool(report is not None and report.lost and self.is_hosting and self._source() != "game_window")
         if lost and report is not None:
-            if report.recommended:
+            from big_remote_play.host.cursor_check import KMS_ON_X11
+
+            if report.problem == KMS_ON_X11 and report.recommended:
+                self.cursor_row.set_subtitle(
+                    _("In this X11 session Sunshine uses KMS capture, which can leave the mouse pointer out of the picture: a phone then shows no pointer at all. {capture} draws it.").format(
+                        capture=self._pointer_capture_name(report.recommended)
+                    )
+                )
+                self.cursor_fix_button.set_label(_("Use it"))
+                self.cursor_fix_button.update_property([Gtk.AccessibleProperty.LABEL], [_("Use {capture}").format(capture=self._pointer_capture_name(report.recommended))])
+            elif report.recommended:
                 self.cursor_row.set_subtitle(
                     _(
                         "Sunshine reports that it cannot capture the pointer with its automatic screen capture. The mouse still works, but the other device may not see where it is. {capture} draws the pointer into the picture."
@@ -2241,10 +2296,20 @@ class HostView(Gtk.Box):
     def _sync_pointer_capture_row(self) -> None:
         if not hasattr(self, "pointer_capture_row"):
             return
-        capture = self._pointer_capture()
+        chosen = self._pointer_capture()
+        capture = chosen or self._session_capture()
         self.pointer_capture_row.set_visible(bool(capture))
-        if capture:
+        button = getattr(self, "_pointer_automatic_button", None)
+        if button is not None:
+            button.set_visible(bool(chosen))
+        if chosen:
             self.pointer_capture_row.set_subtitle(_("{capture}, chosen so the other device sees the mouse pointer.").format(capture=self._pointer_capture_name(capture)))
+        elif capture:
+            self.pointer_capture_row.set_subtitle(
+                _("{capture}, used automatically in this X11 session so the other device, a phone too, sees the mouse pointer. Capture Method in Image and capture can choose another.").format(
+                    capture=self._pointer_capture_name(capture)
+                )
+            )
 
     # ------------------------------------------------------------------
     # Security and access, and Support's checks.
@@ -2293,7 +2358,7 @@ class HostView(Gtk.Box):
         from big_remote_play.host.health_checks import gather_facts
 
         index = self.platform_row.get_selected()
-        configured = (self._capture_values[index] if 0 <= index < len(self._capture_values) else "") or self._pointer_capture()
+        configured = (self._capture_values[index] if 0 <= index < len(self._capture_values) else "") or self._automatic_capture()
         encoders = tuple(str(gpu.get("label", "")) for gpu in self.available_gpus if gpu.get("encoder") not in (None, "", "auto", "software"))
         self.credentials.get()  # bounded; read once per session
         return gather_facts(sunshine=self.sunshine, credentials_status=self.credentials.status(), configured_capture=configured, encoders=encoders)
@@ -2382,9 +2447,15 @@ class HostView(Gtk.Box):
         from big_remote_play.utils.secret_store import SecretStore, SecretStoreTimeout, SecretStoreUnavailable
         from big_remote_play.utils.sunshine_credentials import SUNSHINE_PASSWORD_KEY, save_sunshine_credentials
 
-        if getattr(self, "_credentials_created", False) or getattr(self, "_auto_create_paused", False):
+        if getattr(self, "_credentials_created", False) or getattr(self, "_auto_create_paused", False) or getattr(self, "_sunshine_has_user", False):
             return None
         _pending, status = self.sunshine.pending_pairings(None)
+        if status == 401:
+            # A user exists (one we do not know the password of). Asking again
+            # every upkeep only filled Sunshine's log with "not authorized";
+            # the next start of sharing asks once more.
+            self._sunshine_has_user = True
+            return None
         if status != 307:
             return None
         store = SecretStore()
@@ -3628,7 +3699,7 @@ class HostView(Gtk.Box):
             if hasattr(self, "overview_status_label"):
                 self.overview_status_label.set_label(_("Sharing. Other devices can connect now."))
             if hasattr(self, "overview_state_label"):
-                self._set_state_pill(_("Sharing"), "online")
+                self._set_state_pill(pgettext("sharing state", "Sharing"), "online")
             if hasattr(self, "guest_pair_button"):
                 self.guest_pair_button.set_sensitive(True)
 
@@ -4032,6 +4103,7 @@ class HostView(Gtk.Box):
         return False
 
     def start_hosting(self, b=None):
+        self._sunshine_has_user = False  # this start may meet a Sunshine without a user
         from .task_activity import TRANSITION_STARTING
 
         self.loading_bar.set_visible(True)
@@ -4056,7 +4128,9 @@ class HostView(Gtk.Box):
             if idx != Gtk.INVALID_LIST_POSITION and 0 <= idx < len(games):
                 game = games[idx]
                 if source == "steam":
-                    return {"type": "steam", "app_id": game.get("id", ""), "name": game["name"]}
+                    # The detected launcher (native or Flatpak Steam), without the game URL.
+                    launcher = list(game.get("argv") or ["steam", ""])[:-1] or ["steam"]
+                    return {"type": "steam", "app_id": game.get("id", ""), "name": game["name"], "launcher": launcher}
                 return {"type": "lutris", "cmd": game["cmd"], "name": game["name"]}
         elif source == "custom":
             name, cmd = self.custom_name_entry.get_text().strip(), self.custom_cmd_entry.get_text().strip()
@@ -4082,7 +4156,7 @@ class HostView(Gtk.Box):
 
     def _build_sunshine_config(self) -> dict:
         """Assemble the sunshine.conf mapping from the current widget state."""
-        from big_remote_play.ui.sunshine_preferences import current_web_ui_origin, web_ui_origin
+        from big_remote_play.ui.sunshine_preferences import current_connected_clients, current_web_ui_origin, web_ui_origin
 
         bw_mbps = self.bandwidth_row.get_value()
         index = self.gpu_row.get_selected()
@@ -4096,19 +4170,18 @@ class HostView(Gtk.Box):
             "upnp": "enabled" if self.upnp_row.get_active() else "disabled",
             "address_family": "both" if self.ipv6_row.get_active() else "ipv4",
             "origin_web_ui_allowed": web_ui_origin(self.webui_anyone_row.get_active(), current_web_ui_origin()),
+            "channels": current_connected_clients(),
         }
         index = self.platform_row.get_selected()
         platform = self._capture_values[index] if 0 <= index < len(self._capture_values) else ""
         # Automatic, unless the person chose the capture that shows the
         # mouse pointer (Needs attention → the pointer row).
-        config["capture"] = platform or self._pointer_capture() or None
+        config["capture"] = platform or self._automatic_capture() or None
 
-        config["output_name"] = None
-        monitor_idx = self.monitor_row.get_selected()
-        if 0 < monitor_idx < len(self.available_monitors):
-            mon_name = self.available_monitors[monitor_idx][1]
-            if mon_name != "auto":
-                config["output_name"] = mon_name
+        # The screen as this session names it, for the screen settings below;
+        # Sunshine gets the name its capture method finds it by.
+        shared = self._shared_output()
+        config["output_name"] = self._capture_output_name(shared, config["capture"]) if shared else None
 
         config["adapter_name"] = gpu["adapter"] if gpu["encoder"] == "vaapi" and gpu["adapter"] != "auto" else None
         # Sunshine runs this before capture and after each session; merged
@@ -4116,9 +4189,9 @@ class HostView(Gtk.Box):
         from big_remote_play.host.stream_display import prep_command
 
         config["brp_stream_display"] = prep_command(
-            target=config["output_name"],
+            target=shared,
             sdr_for_sdr_clients=self.hdr_sdr_row.get_active(),
-            resolution=self._share_resolution() if config["output_name"] is not None else "",
+            resolution=self._share_resolution() if shared is not None else "",
         )
         return config
 
@@ -4178,7 +4251,8 @@ class HostView(Gtk.Box):
 
             from big_remote_play.utils.network import NetworkDiscovery
 
-            self.stop_pin_listener = NetworkDiscovery().start_pin_listener(cfg["pin_code"], socket.gethostname())
+            # Also answers Connect's search of a private network (ZeroTier).
+            self.stop_pin_listener = NetworkDiscovery().start_pin_listener(cfg["pin_code"], socket.gethostname(), self.sunshine.api_port - 1)
 
             # Always Desktop in apps.json — games are launched directly.
             if not self.sunshine.ensure_desktop_app():
@@ -4337,7 +4411,8 @@ class HostView(Gtk.Box):
                 _log.debug(f"DIRECT LAUNCH: Steam Big Picture + {game_name} (ID: {app_id})")
 
                 # 1. Open Steam Big Picture Mode
-                p1 = subprocess.Popen(["steam", "steam://open/bigpicture"], env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                steam = list(info.get("launcher") or ["steam"])
+                p1 = subprocess.Popen([*steam, "steam://open/bigpicture"], env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 self._game_processes.append(p1)
                 self.show_toast(_("Opening Steam Big Picture…"))
 
@@ -4347,7 +4422,7 @@ class HostView(Gtk.Box):
 
                     time.sleep(4)
                     try:
-                        p2 = subprocess.Popen(["steam", f"steam://rungameid/{app_id}"], env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                        p2 = subprocess.Popen([*steam, f"steam://rungameid/{app_id}"], env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                         self._game_processes.append(p2)
                         GLib.idle_add(self.show_toast, _("Launching {game}…").format(game=game_name))
                         _log.debug(f"DIRECT LAUNCH: Game {game_name} launched (PID: {p2.pid})")
@@ -4394,7 +4469,7 @@ class HostView(Gtk.Box):
         # Close Steam Big Picture if we opened it
         if info and info.get("type") == "steam":
             try:
-                subprocess.Popen(["steam", "steam://close/bigpicture"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.Popen([*(info.get("launcher") or ["steam"]), "steam://close/bigpicture"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 _log.debug("Closing Steam Big Picture")
             except Exception:
                 pass
@@ -4801,131 +4876,16 @@ class HostView(Gtk.Box):
 
     # --- Game library (Sunshine apps API) --------------------------------
 
-    def open_game_library_dialog(self, _widget):
-        if not self.sunshine.is_running():
-            self.show_error_dialog(_("Sharing is off"), _("Start sharing first to manage the game library."))
-            return
+    def open_game_library_dialog(self, _widget=None):
+        """Installed games offered in Moonlight; works with sharing on or off."""
+        from big_remote_play.host.game_library import GameLibrary
 
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        toolbar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        toolbar.set_halign(Gtk.Align.END)
-        add_btn = Gtk.Button(label=_("Add Detected Games"))
-        add_btn.add_css_class("suggested-action")
-        add_btn.connect("clicked", lambda b: self._add_detected_games())
-        toolbar.append(add_btn)
+        from .game_library_dialog import GameLibraryDialog
 
-        group = Adw.PreferencesGroup()
-        self._library_rows = []
-        loading = Adw.ActionRow(title=_("Loading…"))
-        group.add(loading)
-        self._library_rows.append(loading)
-
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scroll.set_min_content_height(280)
-        scroll.set_vexpand(True)
-        scroll.set_child(group)
-
-        box.append(toolbar)
-        box.append(scroll)
-        dialog = content_dialog(_("Game Library"), box, description=_("Games shown on the other computer in Moonlight. Add detected games or remove entries."))
-        self._library_group = group
-        self._refresh_game_library()
+        dialog = GameLibraryDialog(GameLibrary(self.sunshine, self._get_sunshine_creds), self.game_detector)
+        self._game_library_dialog = dialog
         dialog.present(self)
-
-    def _refresh_game_library(self):
-        if getattr(self, "_library_group", None) is None:
-            return
-        import threading
-
-        def work():
-            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
-            apps = self.sunshine.get_apps(auth=auth)
-            GLib.idle_add(self._populate_game_library, apps)
-
-        threading.Thread(target=work, daemon=True).start()
-
-    def _populate_game_library(self, apps):
-        group = getattr(self, "_library_group", None)
-        if group is None:
-            return False
-        for row in getattr(self, "_library_rows", []):
-            group.remove(row)
-        self._library_rows = []
-
-        if not apps:
-            empty = Adw.ActionRow(title=_("No apps configured"))
-            group.add(empty)
-            self._library_rows.append(empty)
-            return False
-
-        # Sunshine identifies apps by their position in the list (DELETE
-        # /api/apps/{index}); the entries themselves carry no index field.
-        for index, app in enumerate(apps):
-            name = app.get("name") or _("Unnamed")
-            row = Adw.ActionRow(title=name, use_markup=False)
-            row.set_title_lines(0)
-            row.set_subtitle_lines(2)
-            cmd = app.get("cmd")
-            if cmd:
-                row.set_subtitle(cmd)
-            # Desktop is the fallback target; do not let the user delete it.
-            if name != "Desktop":
-                remove = Gtk.Button()
-                remove.set_child(create_icon_widget("brp-trash-symbolic", size=16))
-                remove.add_css_class("flat")
-                remove.set_valign(Gtk.Align.CENTER)
-                remove.set_tooltip_text(_("Remove app"))
-                remove.update_property([Gtk.AccessibleProperty.LABEL], [_("Remove app")])
-                remove.connect("clicked", self._on_library_remove, index)
-                row.add_suffix(remove)
-            group.add(row)
-            self._library_rows.append(row)
-        return False
-
-    def _on_library_remove(self, _button, index):
-        import threading
-
-        def work():
-            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
-            ok = self.sunshine.delete_app(index, auth=auth)
-            GLib.idle_add(self._after_library_change, ok)
-
-        threading.Thread(target=work, daemon=True).start()
-
-    def _add_detected_games(self):
-        import threading
-
-        def work():
-            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
-            games = self.game_detector.detect_all()
-            existing = {a.get("name") for a in self.sunshine.get_apps(auth=auth)}
-            added = 0
-            for game in games:
-                if game["name"] in existing:
-                    continue
-                entry = {
-                    "name": game["name"],
-                    "cmd": game.get("cmd", ""),
-                    "output": "",
-                    "image-path": "",
-                    "detached": [],
-                }
-                if self.sunshine.add_app(entry, auth=auth):
-                    added += 1
-            GLib.idle_add(self._after_library_add, added)
-
-        threading.Thread(target=work, daemon=True).start()
-
-    def _after_library_add(self, added):
-        self.show_toast(_("Games added: {count}").format(count=added))
-        self._refresh_game_library()
-        return False
-
-    def _after_library_change(self, ok):
-        self.show_toast(_("Library updated") if ok else _("Operation failed"))
-        self._refresh_game_library()
-        return False
+        return dialog
 
     # --- Host file browser (browse API) ----------------------------------
 
@@ -5255,7 +5215,7 @@ class HostView(Gtk.Box):
 
         # Sync to Sunshine Config — build the full mapping, then write once.
         try:
-            from big_remote_play.ui.sunshine_preferences import SunshineConfigManager, web_ui_origin
+            from big_remote_play.ui.sunshine_preferences import SunshineConfigManager, connected_clients, web_ui_origin
 
             scm = SunshineConfigManager()
 
@@ -5267,6 +5227,7 @@ class HostView(Gtk.Box):
                 "origin_web_ui_allowed": web_ui_origin(self.webui_anyone_row.get_active(), scm.config.get("origin_web_ui_allowed", "lan")),
                 "stream_audio": "enabled",
                 "max_bitrate": str(bw) if bw > 0 else "0",
+                "channels": connected_clients(scm.config.get("channels")),
                 **self._encoding_settings(),
             }
             if not scm.update(sunshine_settings) and scm.load_error:
@@ -5370,6 +5331,12 @@ class HostView(Gtk.Box):
 
             saved_monitor = h.get("monitor_output_name")
             if isinstance(saved_monitor, str):
+                # A screen saved under its kernel name (listed twice by older
+                # versions) is the same screen as its X11 name.
+                x11_names = {kms: x11 for x11, kms in self._kms_connectors.items()}
+                values = [value for _label, value in self.available_monitors]
+                if saved_monitor not in values:
+                    saved_monitor = x11_names.get(saved_monitor, saved_monitor)
                 monitor_idx = next(
                     (index for index, (_label, value) in enumerate(self.available_monitors) if value == saved_monitor),
                     0,
