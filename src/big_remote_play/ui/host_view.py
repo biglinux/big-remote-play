@@ -4089,7 +4089,9 @@ class HostView(Gtk.Box):
             if idx != Gtk.INVALID_LIST_POSITION and 0 <= idx < len(games):
                 game = games[idx]
                 if source == "steam":
-                    return {"type": "steam", "app_id": game.get("id", ""), "name": game["name"]}
+                    # The detected launcher (native or Flatpak Steam), without the game URL.
+                    launcher = list(game.get("argv") or ["steam", ""])[:-1] or ["steam"]
+                    return {"type": "steam", "app_id": game.get("id", ""), "name": game["name"], "launcher": launcher}
                 return {"type": "lutris", "cmd": game["cmd"], "name": game["name"]}
         elif source == "custom":
             name, cmd = self.custom_name_entry.get_text().strip(), self.custom_cmd_entry.get_text().strip()
@@ -4210,7 +4212,8 @@ class HostView(Gtk.Box):
 
             from big_remote_play.utils.network import NetworkDiscovery
 
-            self.stop_pin_listener = NetworkDiscovery().start_pin_listener(cfg["pin_code"], socket.gethostname())
+            # Also answers Connect's search of a private network (ZeroTier).
+            self.stop_pin_listener = NetworkDiscovery().start_pin_listener(cfg["pin_code"], socket.gethostname(), port=self.sunshine.api_port - 1)
 
             # Always Desktop in apps.json — games are launched directly.
             if not self.sunshine.ensure_desktop_app():
@@ -4369,7 +4372,8 @@ class HostView(Gtk.Box):
                 _log.debug(f"DIRECT LAUNCH: Steam Big Picture + {game_name} (ID: {app_id})")
 
                 # 1. Open Steam Big Picture Mode
-                p1 = subprocess.Popen(["steam", "steam://open/bigpicture"], env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                steam = list(info.get("launcher") or ["steam"])
+                p1 = subprocess.Popen([*steam, "steam://open/bigpicture"], env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 self._game_processes.append(p1)
                 self.show_toast(_("Opening Steam Big Picture…"))
 
@@ -4379,7 +4383,7 @@ class HostView(Gtk.Box):
 
                     time.sleep(4)
                     try:
-                        p2 = subprocess.Popen(["steam", f"steam://rungameid/{app_id}"], env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                        p2 = subprocess.Popen([*steam, f"steam://rungameid/{app_id}"], env=env, start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                         self._game_processes.append(p2)
                         GLib.idle_add(self.show_toast, _("Launching {game}…").format(game=game_name))
                         _log.debug(f"DIRECT LAUNCH: Game {game_name} launched (PID: {p2.pid})")
@@ -4426,7 +4430,7 @@ class HostView(Gtk.Box):
         # Close Steam Big Picture if we opened it
         if info and info.get("type") == "steam":
             try:
-                subprocess.Popen(["steam", "steam://close/bigpicture"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.Popen([*(info.get("launcher") or ["steam"]), "steam://close/bigpicture"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 _log.debug("Closing Steam Big Picture")
             except Exception:
                 pass
@@ -4833,131 +4837,16 @@ class HostView(Gtk.Box):
 
     # --- Game library (Sunshine apps API) --------------------------------
 
-    def open_game_library_dialog(self, _widget):
-        if not self.sunshine.is_running():
-            self.show_error_dialog(_("Sharing is off"), _("Start sharing first to manage the game library."))
-            return
+    def open_game_library_dialog(self, _widget=None):
+        """Installed games offered in Moonlight; works with sharing on or off."""
+        from big_remote_play.host.game_library import GameLibrary
 
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        toolbar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        toolbar.set_halign(Gtk.Align.END)
-        add_btn = Gtk.Button(label=_("Add Detected Games"))
-        add_btn.add_css_class("suggested-action")
-        add_btn.connect("clicked", lambda b: self._add_detected_games())
-        toolbar.append(add_btn)
+        from .game_library_dialog import GameLibraryDialog
 
-        group = Adw.PreferencesGroup()
-        self._library_rows = []
-        loading = Adw.ActionRow(title=_("Loading…"))
-        group.add(loading)
-        self._library_rows.append(loading)
-
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scroll.set_min_content_height(280)
-        scroll.set_vexpand(True)
-        scroll.set_child(group)
-
-        box.append(toolbar)
-        box.append(scroll)
-        dialog = content_dialog(_("Game Library"), box, description=_("Games shown on the other computer in Moonlight. Add detected games or remove entries."))
-        self._library_group = group
-        self._refresh_game_library()
+        dialog = GameLibraryDialog(GameLibrary(self.sunshine, self._get_sunshine_creds), self.game_detector)
+        self._game_library_dialog = dialog
         dialog.present(self)
-
-    def _refresh_game_library(self):
-        if getattr(self, "_library_group", None) is None:
-            return
-        import threading
-
-        def work():
-            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
-            apps = self.sunshine.get_apps(auth=auth)
-            GLib.idle_add(self._populate_game_library, apps)
-
-        threading.Thread(target=work, daemon=True).start()
-
-    def _populate_game_library(self, apps):
-        group = getattr(self, "_library_group", None)
-        if group is None:
-            return False
-        for row in getattr(self, "_library_rows", []):
-            group.remove(row)
-        self._library_rows = []
-
-        if not apps:
-            empty = Adw.ActionRow(title=_("No apps configured"))
-            group.add(empty)
-            self._library_rows.append(empty)
-            return False
-
-        # Sunshine identifies apps by their position in the list (DELETE
-        # /api/apps/{index}); the entries themselves carry no index field.
-        for index, app in enumerate(apps):
-            name = app.get("name") or _("Unnamed")
-            row = Adw.ActionRow(title=name, use_markup=False)
-            row.set_title_lines(0)
-            row.set_subtitle_lines(2)
-            cmd = app.get("cmd")
-            if cmd:
-                row.set_subtitle(cmd)
-            # Desktop is the fallback target; do not let the user delete it.
-            if name != "Desktop":
-                remove = Gtk.Button()
-                remove.set_child(create_icon_widget("brp-trash-symbolic", size=16))
-                remove.add_css_class("flat")
-                remove.set_valign(Gtk.Align.CENTER)
-                remove.set_tooltip_text(_("Remove app"))
-                remove.update_property([Gtk.AccessibleProperty.LABEL], [_("Remove app")])
-                remove.connect("clicked", self._on_library_remove, index)
-                row.add_suffix(remove)
-            group.add(row)
-            self._library_rows.append(row)
-        return False
-
-    def _on_library_remove(self, _button, index):
-        import threading
-
-        def work():
-            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
-            ok = self.sunshine.delete_app(index, auth=auth)
-            GLib.idle_add(self._after_library_change, ok)
-
-        threading.Thread(target=work, daemon=True).start()
-
-    def _add_detected_games(self):
-        import threading
-
-        def work():
-            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
-            games = self.game_detector.detect_all()
-            existing = {a.get("name") for a in self.sunshine.get_apps(auth=auth)}
-            added = 0
-            for game in games:
-                if game["name"] in existing:
-                    continue
-                entry = {
-                    "name": game["name"],
-                    "cmd": game.get("cmd", ""),
-                    "output": "",
-                    "image-path": "",
-                    "detached": [],
-                }
-                if self.sunshine.add_app(entry, auth=auth):
-                    added += 1
-            GLib.idle_add(self._after_library_add, added)
-
-        threading.Thread(target=work, daemon=True).start()
-
-    def _after_library_add(self, added):
-        self.show_toast(_("Games added: {count}").format(count=added))
-        self._refresh_game_library()
-        return False
-
-    def _after_library_change(self, ok):
-        self.show_toast(_("Library updated") if ok else _("Operation failed"))
-        self._refresh_game_library()
-        return False
+        return dialog
 
     # --- Host file browser (browse API) ----------------------------------
 

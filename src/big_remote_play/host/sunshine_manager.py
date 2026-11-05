@@ -201,6 +201,34 @@ class SunshineHost:
         except (OSError, ValueError):
             return False
 
+    def read_apps_file(self) -> list[dict] | None:
+        """The apps in the library file; ``None`` when it cannot be read as one."""
+        app_file = self.apps_file()
+        try:
+            data = json.loads(app_file.read_text(encoding="utf-8")) if app_file.exists() else {"apps": []}
+        except (OSError, ValueError):
+            return None
+        apps = data.get("apps") if isinstance(data, dict) else None
+        return [app for app in apps if isinstance(app, dict)] if isinstance(apps, list) else None
+
+    def edit_apps_file(self, change: Callable[[list], bool]) -> bool:
+        """Apply ``change`` to the library's app list and save it atomically.
+
+        ``change`` edits the list in place and says whether anything changed.
+        The environment, every other app and every other key are kept; a file
+        that is not a valid library is never replaced.
+        """
+        app_file = self.apps_file()
+        try:
+            data = json.loads(app_file.read_text(encoding="utf-8")) if app_file.exists() else {"env": {}, "apps": []}
+            if not isinstance(data, dict) or not isinstance(data.get("apps"), list):
+                return False
+            if change(data["apps"]):
+                secure_write_text(str(app_file), json.dumps(data, indent=2))
+            return True
+        except (OSError, ValueError):
+            return False
+
     def start(self, *, wayland_display: str | None = None, **kwargs):
         """Start Sunshine; ``wayland_display`` makes it see only that compositor.
 
@@ -840,6 +868,18 @@ class SunshineHost:
         except Exception:
             return []
         return obj.get("apps", []) if isinstance(obj, dict) else []
+
+    def apps_with_status(self, auth: tuple[str, str] | None = None) -> tuple[int, list[dict] | None]:
+        """GET /api/apps with its HTTP status (0: no answer); ``None`` if unusable."""
+        status, data = self._api_request("GET", "/api/apps", auth=auth)
+        if status != 200:
+            return status, None
+        try:
+            obj = json.loads(data)
+        except ValueError:
+            return status, None
+        apps = obj.get("apps") if isinstance(obj, dict) else None
+        return status, [app for app in apps if isinstance(app, dict)] if isinstance(apps, list) else None
 
     def add_app(self, entry: dict, auth: tuple[str, str] | None = None) -> bool:
         """Adds or replaces a Sunshine app (POST /api/apps).
