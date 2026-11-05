@@ -32,11 +32,11 @@
 .role-card.role-guest { border-color: alpha(@success_bg_color, 0.26); }
 .role-card:hover {
     border-color: alpha(@accent_bg_color, 0.42);
-    background: mix(@card_bg_color, @accent_bg_color, 0.05);
+    background: mix(@card_bg_color, @accent_bg_color, 0.05); /* NOSONAR: mix() is a GTK CSS function */
     box-shadow: 0 2px 8px alpha(#000000, 0.07);
 }
 .role-card:active {
-    background: mix(@card_bg_color, @accent_bg_color, 0.1);
+    background: mix(@card_bg_color, @accent_bg_color, 0.1); /* NOSONAR: mix() is a GTK CSS function */
     box-shadow: none;
     transition-duration: 80ms;
 }
@@ -204,14 +204,14 @@
 }
 .brp-computer-card:hover {
     border-color: alpha(@accent_bg_color, 0.42);
-    background: mix(@card_bg_color, @accent_bg_color, 0.05);
+    background: mix(@card_bg_color, @accent_bg_color, 0.05); /* NOSONAR: mix() is a GTK CSS function */
 }
-.brp-computer-card:active { background: mix(@card_bg_color, @accent_bg_color, 0.1); transition-duration: 80ms; }
+.brp-computer-card:active { background: mix(@card_bg_color, @accent_bg_color, 0.1); transition-duration: 80ms; } /* NOSONAR: mix() is a GTK CSS function */
 .brp-computer-card:focus-visible { outline: 2px solid alpha(@accent_color, 0.6); outline-offset: 2px; }
 /* The computer being connected stays readable while the others wait. */
 .brp-computer-card.selected, .brp-computer-card.selected:disabled {
     border-color: alpha(@accent_bg_color, 0.6);
-    background: mix(@card_bg_color, @accent_bg_color, 0.1);
+    background: mix(@card_bg_color, @accent_bg_color, 0.1); /* NOSONAR: mix() is a GTK CSS function */
 }
 .brp-computer-card:disabled { opacity: 0.75; }
 .brp-computer-card .brp-choice-arrow { opacity: 0.55; }
@@ -253,7 +253,7 @@ list.brp-service-list > row.brp-service-card:hover {
     border-color: alpha(@window_fg_color, 0.15);
 }
 list.brp-service-list > row.brp-service-card:active {
-    background: mix(@card_bg_color, @window_fg_color, 0.05);
+    background: mix(@card_bg_color, @window_fg_color, 0.05); /* NOSONAR: mix() is a GTK CSS function */
     transition-duration: 80ms;
 }
 list.brp-service-list > row.brp-service-card:focus-visible {
@@ -278,7 +278,7 @@ list.brp-service-list > row.brp-service-card.checking .brp-icon-tile {
 list.brp-service-list > row.brp-service-card.ready .brp-service-state { color: @accent_color; }
 /* On: an accent surface that stays still after one short acknowledgement. */
 list.brp-service-list > row.brp-service-card.active {
-    background: mix(@card_bg_color, @accent_bg_color, 0.08);
+    background: mix(@card_bg_color, @accent_bg_color, 0.08); /* NOSONAR: mix() is a GTK CSS function */
     border-color: alpha(@accent_bg_color, 0.45);
     animation: brp-service-on 420ms ease-out 1;
 }
