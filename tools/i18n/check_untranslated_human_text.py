@@ -33,6 +33,9 @@ TECHNICAL = {
     # A command and a product pair shown as technical details.
     "journalctl -u headscale",
     "HTTPS (Caddy)",
+    # Controller button names, as printed on the controller.
+    "L1 + Start",
+    "Start + Select",
 }
 
 PLACEHOLDER = re.compile(
@@ -49,11 +52,11 @@ UNITS = {"FPS", "Hz", "kbps", "Mbps", "ms"}
 # Reviewed translations that are spelled exactly like the English source.
 SAME_AS_SOURCE = {
     "da": {"Software (CPU)", "Start ZeroTier", "Variation (jitter): {ms} ms"},
-    "de": {"Software (CPU)", "In Cloudflare: DNS → Records → Add record.", "Optional: IPv6"},
+    "de": {"Software (CPU)", "In Cloudflare: DNS → Records → Add record.", "Optional: IPv6", "In Moonlight"},
     "es": {"Software (CPU)", "Vulkan (experimental)"},
-    "it": {"Software (CPU)", "In Cloudflare: DNS → Records → Add record."},
-    "nl": {"Software (CPU)", "In Cloudflare: DNS → Records → Add record."},
-    "no": {"Start ZeroTier"},
+    "it": {"Software (CPU)", "In Cloudflare: DNS → Records → Add record.", "In Moonlight"},
+    "nl": {"Software (CPU)", "In Cloudflare: DNS → Records → Add record.", "In Moonlight"},
+    "no": {"Start ZeroTier", "Moonlight for Android"},
     "pt": {"Software (CPU)", "Vulkan (experimental)"},
     "pt_BR": {"Software (CPU)", "Vulkan (experimental)"},
     "ro": {"Software (CPU)", "Vulkan (experimental)"},
