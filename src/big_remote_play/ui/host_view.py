@@ -65,6 +65,12 @@ def _parse_xrandr_monitor_names(output: str) -> list[str]:
     return names
 
 
+def _unlisted_connectors(connected: list[str], listed: list[str], kms_names: dict[str, str]) -> list[str]:
+    """Kernel connectors that are not a screen already listed under its X11 name."""
+    known = set(listed) | {kms_names[name] for name in listed if name in kms_names}
+    return [name for name in dict.fromkeys(connected) if name not in known]
+
+
 def _split_launch_command(command: str) -> list[str]:
     try:
         return shlex.split(command)
@@ -218,6 +224,7 @@ class HostView(Gtk.Box):
         if self.sunshine.is_running():
             self.is_hosting = True
 
+        self._kms_connectors: dict[str, str] = {}
         self.available_monitors = self.detect_monitors()
         self.available_gpus = self.detect_gpus()
         self.setup_ui()
@@ -402,6 +409,9 @@ class HostView(Gtk.Box):
         except Exception as e:
             _log.error(f"Error detecting GDK monitors: {e}")
 
+        # Sunshine's KMS capture knows the kernel names, not X11's.
+        self._kms_connectors = {} if is_wayland else self._x11_kms_connectors()
+
         # Fallback for X11/DRM if GDK didn't find everything
         if not is_wayland:
             # Xrandr (Reinforcement for X11)
@@ -414,20 +424,36 @@ class HostView(Gtk.Box):
             except Exception:
                 pass
 
-            # DRM (Reinforcement for KMS/DRM)
+            # DRM (Reinforcement for KMS/DRM): only screens X11 does not
+            # list. The kernel names of X11's screens would show each twice.
             try:
                 from pathlib import Path
 
-                for p in Path("/sys/class/drm").glob("card*-*"):
-                    if (p / "status").exists() and (p / "status").read_text().strip() == "connected":
-                        name = p.name.split("-", 1)[1]
-                        if name not in names:
-                            monitors.append((_monitor_choice_label(len(monitors), _("Monitor / Display"), name), name))
-                            names.append(name)
+                connected = [p.name.split("-", 1)[1] for p in sorted(Path("/sys/class/drm").glob("card*-*")) if (p / "status").exists() and (p / "status").read_text().strip() == "connected"]
+                for name in _unlisted_connectors(connected, names, self._kms_connectors):
+                    monitors.append((_monitor_choice_label(len(monitors), _("Monitor / Display"), name), name))
+                    names.append(name)
             except Exception:
                 pass
 
         return monitors
+
+    @staticmethod
+    def _x11_kms_connectors() -> dict[str, str]:
+        from big_remote_play.host.display_connectors import drm_connector_edids, kms_connector_names, parse_xrandr_edids
+
+        try:
+            props = subprocess.run(["xrandr", "--props"], capture_output=True, text=True, timeout=5, check=False).stdout
+            return kms_connector_names(parse_xrandr_edids(props), drm_connector_edids())
+        except (OSError, subprocess.SubprocessError) as exc:
+            _log.debug("Cannot pair X11 outputs with kernel connectors: %s", exc)
+            return {}
+
+    def _capture_output_name(self, output: str, capture: str | None) -> str:
+        """The name Sunshine's capture finds ``output`` by (see host/display_connectors.py)."""
+        if capture in (None, "kms"):
+            return self._kms_connectors.get(output, output)
+        return output
 
     def detect_gpus(self):
         gpus = []
@@ -4111,12 +4137,10 @@ class HostView(Gtk.Box):
         # mouse pointer (Needs attention → the pointer row).
         config["capture"] = platform or self._pointer_capture() or None
 
-        config["output_name"] = None
-        monitor_idx = self.monitor_row.get_selected()
-        if 0 < monitor_idx < len(self.available_monitors):
-            mon_name = self.available_monitors[monitor_idx][1]
-            if mon_name != "auto":
-                config["output_name"] = mon_name
+        # The screen as this session names it, for the screen settings below;
+        # Sunshine gets the name its capture method finds it by.
+        shared = self._shared_output()
+        config["output_name"] = self._capture_output_name(shared, config["capture"]) if shared else None
 
         config["adapter_name"] = gpu["adapter"] if gpu["encoder"] == "vaapi" and gpu["adapter"] != "auto" else None
         # Sunshine runs this before capture and after each session; merged
@@ -4124,9 +4148,9 @@ class HostView(Gtk.Box):
         from big_remote_play.host.stream_display import prep_command
 
         config["brp_stream_display"] = prep_command(
-            target=config["output_name"],
+            target=shared,
             sdr_for_sdr_clients=self.hdr_sdr_row.get_active(),
-            resolution=self._share_resolution() if config["output_name"] is not None else "",
+            resolution=self._share_resolution() if shared is not None else "",
         )
         return config
 
@@ -5379,6 +5403,12 @@ class HostView(Gtk.Box):
 
             saved_monitor = h.get("monitor_output_name")
             if isinstance(saved_monitor, str):
+                # A screen saved under its kernel name (listed twice by older
+                # versions) is the same screen as its X11 name.
+                x11_names = {kms: x11 for x11, kms in self._kms_connectors.items()}
+                values = [value for _label, value in self.available_monitors]
+                if saved_monitor not in values:
+                    saved_monitor = x11_names.get(saved_monitor, saved_monitor)
                 monitor_idx = next(
                     (index for index, (_label, value) in enumerate(self.available_monitors) if value == saved_monitor),
                     0,
