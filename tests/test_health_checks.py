@@ -75,4 +75,17 @@ def test_moonlight_found_by_command_or_flatpak(tmp_path):
     assert hc.moonlight_installed(lambda name: "/usr/bin/moonlight" if name == "moonlight" else None, home=tmp_path)
     assert not hc.moonlight_installed(lambda name: None, home=tmp_path)
     (tmp_path / ".local/share/flatpak/app/com.moonlight_stream.Moonlight").mkdir(parents=True)
-    assert hc.moonlight_installed(lambda name: None, home=tmp_path)
+    # The Flatpak counts only when flatpak itself can start it.
+    assert not hc.moonlight_installed(lambda name: None, home=tmp_path)
+    assert hc.moonlight_installed(lambda name: "/usr/bin/flatpak" if name == "flatpak" else None, home=tmp_path)
+
+
+def test_a_flatpak_only_moonlight_is_started_through_flatpak(tmp_path):
+    """It used to be reported as installed, then the client found nothing to run."""
+    from big_remote_play.guest.moonlight_client import moonlight_command
+
+    (tmp_path / ".local/share/flatpak/app/com.moonlight_stream.Moonlight").mkdir(parents=True)
+    flatpak_only = lambda name: "/usr/bin/flatpak" if name == "flatpak" else None  # noqa: E731
+    assert moonlight_command(flatpak_only, home=tmp_path) == ["/usr/bin/flatpak", "run", "com.moonlight_stream.Moonlight"]
+    both = lambda name: f"/usr/bin/{name}"  # noqa: E731
+    assert moonlight_command(both, home=tmp_path) == "moonlight-qt"

@@ -64,10 +64,10 @@ class Facts:
 
 
 def moonlight_installed(which: Callable[[str], str | None] = shutil.which, home: Path | None = None) -> bool:
-    if which("moonlight") or which("moonlight-qt"):
-        return True
-    home = home or Path.home()
-    return any((root / "com.moonlight_stream.Moonlight").is_dir() for root in (Path("/var/lib/flatpak/app"), home / ".local/share/flatpak/app"))
+    """Installed in a way Big Remote Play can start (a Flatpak needs flatpak itself)."""
+    from big_remote_play.guest.moonlight_client import moonlight_command
+
+    return moonlight_command(which, home) is not None
 
 
 def gather_facts(*, sunshine, credentials_status, configured_capture: str = "", encoders: tuple[str, ...] = (), check_firewall: bool = True, environ: Mapping[str, str] | None = None) -> Facts:

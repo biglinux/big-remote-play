@@ -294,6 +294,22 @@ def test_a_first_sunshine_gets_a_user_kept_in_the_keyring(ui, monkeypatch):
     assert host._create_sunshine_credentials() is None  # once per session
 
 
+def test_an_existing_sunshine_user_is_asked_about_once_per_start(ui, monkeypatch):
+    """Seen on a real game PC: a user from an older setup, no saved password.
+
+    The probe went out every 3 s and filled Sunshine's log with "not authorized".
+    """
+    host = ui.host_view
+    probes = []
+    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: probes.append(auth) or (None, 401))
+    assert host._create_sunshine_credentials() is None
+    assert host._create_sunshine_credentials() is None
+    assert probes == [None]
+    host._sunshine_has_user = False  # what starting to share does
+    assert host._create_sunshine_credentials() is None
+    assert probes == [None, None]
+
+
 def test_a_keyring_that_does_not_answer_never_gets_an_unrecoverable_user(ui, monkeypatch):
     from big_remote_play.utils import secret_store
 

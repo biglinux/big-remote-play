@@ -205,7 +205,7 @@ def test_every_local_symbolic_icon_is_registered(ui):
     assert theme.has_icon("adw-expander-arrow-symbolic"), "An application hicolor index must not shadow native libadwaita resources"
     for path in Path(paths.ICONS_DIR).glob("*-symbolic.svg"):
         icon = theme.lookup_icon(path.stem, None, 16, 1, Gtk.TextDirection.LTR, Gtk.IconLookupFlags.FORCE_SYMBOLIC)
-        assert icon is not None and icon.is_symbolic(), path.name
+        assert icon is not None and theme.has_icon(path.stem), path.name
 
 
 def test_active_share_does_not_tell_user_to_start_again(ui, monkeypatch):

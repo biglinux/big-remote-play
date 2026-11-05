@@ -16,8 +16,23 @@
       <li>Connect from another computer with Moonlight and pair it with a PIN</li>
       <li>Play over the internet through Tailscale, ZeroTier, or Headscale</li>
       <li>On KDE Plasma, share only the game window and keep the rest of the desktop private</li>
+      <li>Approve a new device by typing the PIN that Moonlight shows; up to four people can play at once</li>
     </ul>
   </description>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Share a game and approve devices with their PIN</caption>
+      <image>https://raw.githubusercontent.com/biglinux/big-remote-play/main/docs/screenshots/share.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Choose the computer to play on</caption>
+      <image>https://raw.githubusercontent.com/biglinux/big-remote-play/main/docs/screenshots/connect.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Connect computers in different places with a private network</caption>
+      <image>https://raw.githubusercontent.com/biglinux/big-remote-play/main/docs/screenshots/private-network.png</image>
+    </screenshot>
+  </screenshots>
   <launchable type="desktop-id">br.com.biglinux.remoteplay.desktop</launchable>
   <url type="homepage">https://github.com/biglinux/big-remote-play</url>
   <url type="bugtracker">https://github.com/biglinux/big-remote-play/issues</url>
@@ -34,7 +49,15 @@
   <releases>
     <release version="0.0.0" date="1970-01-01">
       <description translate="no">
-        <p>Improves guided setup, adaptive layouts, accessibility, and secure credential handling.</p>
+        <p>A simpler Share page, automatic pairing and up to four players at once.</p>
+        <ul>
+          <li>Share: one large Start sharing button, the PIN field always in view, and connection requests that open by themselves</li>
+          <li>Sunshine's password is created automatically and kept in the system keyring; a slow or locked keyring no longer freezes the window</li>
+          <li>Up to four devices can play at once</li>
+          <li>A stream dropped by a slow network is explained, with a button to reconnect at a lower quality</li>
+          <li>The missing mouse pointer with KMS capture on KDE and GNOME Wayland is detected and fixed in one click</li>
+          <li>Support checks this computer without changing anything and explains common problems</li>
+        </ul>
       </description>
     </release>
   </releases>

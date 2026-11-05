@@ -641,15 +641,20 @@ class VPNAccountManager:
         auth_url = ""
         stream = getattr(process, "stdout", None)
         if stream is not None:
-            for raw in stream:
-                line = raw.rstrip("\n")
-                collected.append(line)
-                if on_output is not None and line.strip():
-                    on_output(line.strip())
-                if not auth_url:
-                    auth_url = extract_auth_url(line)
-                    if auth_url and on_auth_url is not None:
-                        on_auth_url(auth_url)
+            try:
+                for raw in stream:
+                    line = raw.rstrip("\n")
+                    collected.append(line)
+                    if on_output is not None and line.strip():
+                        on_output(line.strip())
+                    if not auth_url:
+                        auth_url = extract_auth_url(line)
+                        if auth_url and on_auth_url is not None:
+                            on_auth_url(auth_url)
+            finally:
+                close = getattr(stream, "close", None)
+                if callable(close):
+                    close()
         process.wait()
         return "\n".join(collected), auth_url
 

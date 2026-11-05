@@ -18,7 +18,7 @@ from big_remote_play.utils.game_detector import GameDetector
 from big_remote_play.utils import auto_quality
 from big_remote_play.utils.config import Config
 import threading
-from big_remote_play.utils.i18n import _, ngettext
+from big_remote_play.utils.i18n import _, ngettext, pgettext
 from big_remote_play.utils.icons import create_icon_widget, set_icon
 from big_remote_play.integration_contracts import MOONLIGHT_PAIRING_PIN_LENGTH, BRP_DISCOVERY_CODE_LENGTH
 from big_remote_play import paths
@@ -287,7 +287,7 @@ class HostView(Gtk.Box):
             self._set_state_pill(_("Not responding"), "attention")
             self.overview_status_label.set_label(_("Sunshine is not answering yet. If the desktop asks which screen to share, choose one; otherwise Support → Server log shows why."))
         elif reachable and self.overview_state_label.has_css_class("attention"):
-            self._set_state_pill(_("Sharing"), "online")
+            self._set_state_pill(pgettext("sharing state", "Sharing"), "online")
             self.overview_status_label.set_label(_("Sharing. Other devices can connect now."))
             # It just started serving: its capture and encoders are known now.
             self._check_cursor()
@@ -2382,9 +2382,15 @@ class HostView(Gtk.Box):
         from big_remote_play.utils.secret_store import SecretStore, SecretStoreTimeout, SecretStoreUnavailable
         from big_remote_play.utils.sunshine_credentials import SUNSHINE_PASSWORD_KEY, save_sunshine_credentials
 
-        if getattr(self, "_credentials_created", False) or getattr(self, "_auto_create_paused", False):
+        if getattr(self, "_credentials_created", False) or getattr(self, "_auto_create_paused", False) or getattr(self, "_sunshine_has_user", False):
             return None
         _pending, status = self.sunshine.pending_pairings(None)
+        if status == 401:
+            # A user exists (one we do not know the password of). Asking again
+            # every upkeep only filled Sunshine's log with "not authorized";
+            # the next start of sharing asks once more.
+            self._sunshine_has_user = True
+            return None
         if status != 307:
             return None
         store = SecretStore()
@@ -3628,7 +3634,7 @@ class HostView(Gtk.Box):
             if hasattr(self, "overview_status_label"):
                 self.overview_status_label.set_label(_("Sharing. Other devices can connect now."))
             if hasattr(self, "overview_state_label"):
-                self._set_state_pill(_("Sharing"), "online")
+                self._set_state_pill(pgettext("sharing state", "Sharing"), "online")
             if hasattr(self, "guest_pair_button"):
                 self.guest_pair_button.set_sensitive(True)
 
@@ -4032,6 +4038,7 @@ class HostView(Gtk.Box):
         return False
 
     def start_hosting(self, b=None):
+        self._sunshine_has_user = False  # this start may meet a Sunshine without a user
         from .task_activity import TRANSITION_STARTING
 
         self.loading_bar.set_visible(True)

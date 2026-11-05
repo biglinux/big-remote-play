@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, TextIO
 import logging
 import re
@@ -27,6 +28,31 @@ STREAM_TERMINATED_MARKER = "Connection terminated:"
 _NET_LATENCY = re.compile(r"net latency: (\d+) ms")
 
 
+FLATPAK_ID = "com.moonlight_stream.Moonlight"
+
+
+def moonlight_command(which: Callable[[str], str | None] = shutil.which, home: Path | None = None) -> str | list[str] | None:
+    """How to run Moonlight: its program, or the Flatpak when only that is installed.
+
+    Its settings are read from the Flatpak's folder too (see moonlight_config),
+    so a Flatpak-only computer must also be able to start it.
+    """
+    native = next((name for name in ("moonlight-qt", "moonlight") if which(name)), None)
+    if native:
+        return native
+    flatpak = which("flatpak")
+    home = home or Path.home()
+    if flatpak and any((root / FLATPAK_ID).is_dir() for root in (Path("/var/lib/flatpak/app"), home / ".local/share/flatpak/app")):
+        return [flatpak, "run", FLATPAK_ID]
+    return None
+
+
+def _argv(command: str | list[str] | None) -> list[str]:
+    if command is None:
+        return []
+    return [command] if isinstance(command, str) else list(command)
+
+
 @dataclass(frozen=True)
 class StreamEnd:
     """How a running stream ended: Moonlight's error code and the worst delay."""
@@ -43,7 +69,7 @@ class MoonlightClient:
         self._pair_cancel = threading.Event()
         self._pair_lock = threading.Lock()
         self.logger = logger
-        self.moonlight_cmd = next((c for c in ["moonlight-qt", "moonlight"] if shutil.which(c)), None)
+        self.moonlight_cmd: str | list[str] | None = moonlight_command()
         self.stream_confirmed = threading.Event()
         # Moonlight's sound messages for the current connection.
         self.audio = MoonlightAudioReport()
@@ -132,7 +158,7 @@ class MoonlightClient:
         try:
             target_ip = self.target_address(ip, kw.get("port", 47989))
 
-            cmd = [moonlight_cmd, "stream", target_ip, "Desktop"]
+            cmd = [*_argv(moonlight_cmd), "stream", target_ip, "Desktop"]
             if kw.get("width") and kw.get("height") and kw.get("width") != "custom":
                 cmd.extend(["--resolution", f"{kw['width']}x{kw['height']}"])
             if kw.get("fps") and kw.get("fps") != "custom":
@@ -253,7 +279,7 @@ class MoonlightClient:
         try:
             target_ip = self._prepare_ip(host_ip)
             # Aggressive timeout for probe
-            res = subprocess.run([self.moonlight_cmd, "list", target_ip], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=1.5)
+            res = subprocess.run([*_argv(self.moonlight_cmd), "list", target_ip], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=1.5)
             return res.returncode == 0
         except Exception as e:
             if self.logger:
@@ -274,7 +300,7 @@ class MoonlightClient:
             if cancel_event is not None and cancel_event.is_set():
                 return False
             pin = f"{secrets.randbelow(10000):04d}"
-            command = [self.moonlight_cmd, "pair", self.target_address(host_ip, port), "--pin", pin]
+            command = [*_argv(self.moonlight_cmd), "pair", self.target_address(host_ip, port), "--pin", pin]
             # Current Moonlight can finish pairing yet leave the process
             # running. The certificate it stores for the host appears (or
             # changes) only after the PIN was accepted, so that is the signal.
@@ -329,7 +355,7 @@ class MoonlightClient:
         try:
             target_ip = self.target_address(host_ip, port)
             # Uses start_new_session=True instead of external setsid for better compatibility
-            r = subprocess.run([self.moonlight_cmd, "list", target_ip], capture_output=True, text=True, timeout=5, start_new_session=True)
+            r = subprocess.run([*_argv(self.moonlight_cmd), "list", target_ip], capture_output=True, text=True, timeout=5, start_new_session=True)
 
             if self.logger:
                 self.logger.debug(f"List apps {host_ip} (target: {target_ip}) stdout: {r.stdout}")

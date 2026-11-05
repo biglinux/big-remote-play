@@ -116,6 +116,12 @@ Everything else is on the **Advanced options** tab: **Connect again** (recent co
 
 While a stream runs, **Playing now** at the top of Connect shows the computer's name, the quality, the round trip in ms and whether it is reached on the local network or through ZeroTier, Tailscale or Headscale.
 
+### Playing with friends
+
+Up to four devices can play on the same computer at the same time: each friend connects from their own computer as above, and each controller becomes its own player in games made for several players. Every device receives its own stream, so the game PC's upload and each friend's download must carry it.
+
+If a stream ends a few seconds after the game appears, Connect shows **The connection to the game PC was lost** with the reason. When the network could not carry the chosen quality, **Lower quality and connect again** halves the video bitrate, keeps it as your choice and reconnects; repeat until the stream holds. A friend on slow Wi-Fi or watching a video call's screen share at the same time usually needs a lower rate than the others. More in [troubleshooting](troubleshooting.md#the-connection-to-the-game-pc-was-lost-a-few-seconds-after-the-game-appears).
+
 ## See how good the connection is
 
 The connection cards on Connect and Share measure the network round trip with one ping every five seconds and judge the last minute, so one slow reply does not change the verdict:

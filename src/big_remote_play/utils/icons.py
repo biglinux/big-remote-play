@@ -87,6 +87,12 @@ def create_icon_widget(icon_name, size=None, css_class=None):
     return img
 
 
+def _texture_from_pixbuf(pixbuf) -> Gdk.Texture:
+    """A texture with the pixbuf's pixels (Gdk.Texture.new_for_pixbuf is deprecated)."""
+    memory_format = Gdk.MemoryFormat.R8G8B8A8 if pixbuf.get_has_alpha() else Gdk.MemoryFormat.R8G8B8
+    return Gdk.MemoryTexture.new(pixbuf.get_width(), pixbuf.get_height(), memory_format, pixbuf.read_pixel_bytes(), pixbuf.get_rowstride())
+
+
 def create_logo_widget(icon_name, size, css_class=None):
     """Crisp full-color logo from an SVG/PNG, rasterized at the target size.
 
@@ -102,7 +108,7 @@ def create_logo_widget(icon_name, size, css_class=None):
             target = max(1, int(size)) * _LOGO_OVERSAMPLE
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path, target, target)
             if pixbuf is not None:
-                img.set_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
+                img.set_from_paintable(_texture_from_pixbuf(pixbuf))
             else:
                 gicon = get_gicon(icon_name)
                 if gicon:
