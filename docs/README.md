@@ -10,6 +10,11 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Router, NAT and firewall](router.md) — CGNAT, IPv6, UPnP and port forwarding, with the private-network alternative first.
 - [Cloudflare](cloudflare.md) — what DNS, Tunnel and Access can and cannot do for internet play.
 - [VPS and Headscale](vps-headscale.md) — running your own Headscale server.
+- [Controlling the game PC from a phone](mobile-controls.md) — touch gestures, keyboard and leaving the game in Moonlight for Android, iPhone/iPad and computers.
+- [Several screens](moonlight-multi-monitor.md) — the screen where Moonlight opens and the game PC's shared screen.
+- [Game library](game-library-detection.md) — where installed games are found and how they are added to Moonlight.
+- [Finding computers on a ZeroTier network](zerotier-discovery.md) — the search, its limits and what is remembered.
+- [ZeroTier and Tailscale without repeated passwords](zerotier-permissions.md) — the narrow helper and its PolicyKit action.
 
 ## Contributors
 

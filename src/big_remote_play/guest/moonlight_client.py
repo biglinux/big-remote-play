@@ -158,7 +158,13 @@ class MoonlightClient:
         try:
             target_ip = self.target_address(ip, kw.get("port", 47989))
 
-            cmd = [*_argv(moonlight_cmd), "stream", target_ip, "Desktop"]
+            cmd = [*_argv(moonlight_cmd)]
+            # Qt's own option places Moonlight's window; the stream then opens
+            # on that screen (guest/local_screens.py). Only "WxH+X+Y" is accepted.
+            geometry = str(kw.get("window_geometry") or "")
+            if re.fullmatch(r"\d{1,5}x\d{1,5}[+-]\d{1,6}[+-]\d{1,6}", geometry):
+                cmd += ["-qwindowgeometry", geometry]
+            cmd += ["stream", target_ip, "Desktop"]
             if kw.get("width") and kw.get("height") and kw.get("width") != "custom":
                 cmd.extend(["--resolution", f"{kw['width']}x{kw['height']}"])
             if kw.get("fps") and kw.get("fps") != "custom":

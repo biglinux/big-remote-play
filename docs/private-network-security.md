@@ -38,8 +38,8 @@ Each privileged step is a single, explicit, PolicyKit-authorized command started
 
 | Action | Command | Why |
 |---|---|---|
-| Start a VPN daemon | `pkexec /usr/bin/systemctl enable --now tailscaled` or `zerotier-one` | Only these two units are accepted |
-| Stop ZeroTier (**Stop** in its dialog) | `pkexec /usr/bin/systemctl stop zerotier-one` | Same allowlist; confirmed first. Tailscale and Headscale stop with `tailscale down` as the user |
+| Start a VPN daemon | `pkexec /usr/share/big-remote-play/scripts/vpn-service-helper.sh start tailscaled` or `zerotier-one` (action `br.com.biglinux.remoteplay.vpn-service`, active local session only, no password); `pkexec /usr/bin/systemctl enable --now <unit>` when the helper is not installed | The helper accepts only `start`/`stop` and these two units, before running anything; see [ZeroTier and Tailscale without repeated passwords](zerotier-permissions.md) |
+| Stop ZeroTier (**Stop** in its dialog, or the card's switch) | `pkexec …/vpn-service-helper.sh stop zerotier-one`; `pkexec /usr/bin/systemctl stop zerotier-one` without the helper | Same allowlist; confirmed first when other networks would disconnect. Tailscale and Headscale stop with `tailscale down` as the user |
 | Host input priority | `pkexec /usr/share/big-remote-play/scripts/input-priority-helper.sh` (action `br.com.biglinux.remoteplay.input-priority`, active local session only, no password) | Only when the user cannot open `/dev/input`; reports pauses, never keys; see [host input priority](host-input-priority.md) |
 | Tailscale operator | `pkexec /usr/bin/tailscale set --operator=$USER` | Only after the CLI refused an unprivileged command |
 | ZeroTier user access | `pkexec /usr/bin/cat /var/lib/zerotier-one/authtoken.secret` | The token reaches this process through a pipe; the user writes `~/.zeroTierOneAuthToken` (0600) without following links |

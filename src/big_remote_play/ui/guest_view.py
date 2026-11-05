@@ -16,11 +16,11 @@ from collections.abc import Callable
 from big_remote_play.utils import auto_quality
 from big_remote_play.utils.config import Config
 from big_remote_play.guest.moonlight_client import MoonlightClient
-from big_remote_play.utils.i18n import _
+from big_remote_play.utils.i18n import _, pgettext
 from big_remote_play.utils.icons import create_icon_widget
 from big_remote_play.integration_contracts import BRP_DISCOVERY_CODE_LENGTH, SUNSHINE_DEFAULT_BASE_PORT
 from big_remote_play.utils.moonlight_config import MoonlightConfigManager
-from .components import physical_size, action_row, content_dialog, icon_tile, intro, note, set_row_icon, name_icon_button, preferences_dialog
+from .components import physical_size, action_row, content_dialog, icon_tile, note, set_row_icon, name_icon_button, preferences_dialog
 from .network_common import RowGroup, Worker, path_summary
 
 PRIVATE_PROVIDER_NAMES = {"tailscale": "Tailscale", "headscale": "Headscale", "zerotier": "ZeroTier"}
@@ -253,7 +253,7 @@ class GuestView(Gtk.Box):
         # Adw.PreferencesRow titles accept Pango markup. Escape translated text
         # so a literal ampersand (as in the English title) is not parsed as an
         # unterminated entity and remains visible without GTK warnings.
-        help_row = Adw.ActionRow(title=GLib.markup_escape_text(help_title), subtitle=_("Keyboard Shortcuts"))
+        help_row = Adw.ActionRow(title=GLib.markup_escape_text(help_title), subtitle=_("On a computer, a phone or a controller"))
         set_row_icon(help_row, "brp-input-keyboard-symbolic")
         help_row.set_activatable(True)
         help_row.add_suffix(create_icon_widget("go-next-symbolic", size=16))
@@ -326,6 +326,13 @@ class GuestView(Gtk.Box):
         self.fps_row.add_suffix(self.custom_fps_edit)
         self.display_mode_row = Adw.ComboRow(title=_("Display mode"), use_markup=False)
         self.display_mode_row.set_model(Gtk.StringList.new([_("Borderless Window"), _("Fullscreen"), _("Windowed")]))
+        # Where Moonlight opens on this computer (not the game PC's screen,
+        # which is chosen in Share on that computer).
+        self.local_screen_row = Adw.ComboRow(title=_("Open on"), use_markup=False)
+        self.local_screen_row.set_subtitle(_("The screen of this computer where the game appears"))
+        self._local_screens: list = []
+        self._saved_local_screen = ""
+        self.refresh_local_screens()
 
         decoding_group = Adw.PreferencesGroup()
         decoding_group.add(self.hw_decode_row)
@@ -394,7 +401,7 @@ class GuestView(Gtk.Box):
             "true",
         )
         playback_group = Adw.PreferencesGroup(title=_("Playback on this computer"))
-        for row in (self.display_mode_row, self.vsync_row, self.frame_pacing_row, self.keep_awake_row):
+        for row in (self.display_mode_row, self.local_screen_row, self.vsync_row, self.frame_pacing_row, self.keep_awake_row):
             playback_group.add(row)
         compatibility_group = Adw.PreferencesGroup()
         self.image_details = Adw.ExpanderRow(title=_("Video format and diagnostics"), use_markup=False)
@@ -1231,6 +1238,7 @@ class GuestView(Gtk.Box):
         def discover_once() -> bool:
             self._auto_discover()
             self.refresh_recent_hosts()
+            self.refresh_local_screens()  # a screen may have been plugged in
             return False
 
         GLib.idle_add(discover_once)
@@ -1664,6 +1672,7 @@ class GuestView(Gtk.Box):
             "fps": fps,
             "bitrate": int(self.bitrate_scale.get_value() * 1000),
             "display_mode": ["borderless", "fullscreen", "windowed"][self.display_mode_row.get_selected()],
+            "window_geometry": self.local_window_geometry(),
             "play_audio_on_host": self.audio_row.get_active(),
             "hw_decode": self.hw_decode_row.get_active(),
         }
@@ -2325,7 +2334,65 @@ class GuestView(Gtk.Box):
         s["audio"] = self.audio_row.get_active()
         s["auto_quality"] = bool(s.get("auto_quality", True))
         s["auto_signature"] = getattr(self, "_auto_signature", "")
+        chosen = self._chosen_local_screen()
+        if chosen is not None:
+            # A screen that is unplugged now keeps the saved choice for later.
+            s["local_screen"] = chosen
         self.config.set("guest", s)
+
+    # ── the screen of this computer where Moonlight opens ─────────────────
+    def refresh_local_screens(self) -> None:
+        from big_remote_play.guest.local_screens import local_screens, placement_supported
+
+        row = self.local_screen_row
+        settings = self.config.get("guest", {}) if isinstance(self.config.get("guest", {}), dict) else {}
+        self._saved_local_screen = str(settings.get("local_screen", "") or "")
+        supported = placement_supported()
+        try:
+            screens = local_screens() if supported else []
+        except Exception:
+            screens = []
+        self._local_screens = screens
+        labels = [_("Automatic")]
+        for number, screen in enumerate(screens, start=1):
+            # TRANSLATORS: one choice of screen, e.g. "2 · DisplayPort-1 · 2560×1080 · main".
+            parts = [str(number), screen.connector, f"{screen.width}×{screen.height}"]
+            if screen.primary:
+                parts.append(pgettext("screen", "main"))
+            labels.append(" · ".join(parts))
+        missing = bool(self._saved_local_screen) and supported and not any(screen.connector == self._saved_local_screen for screen in screens)
+        loading, self.loading_settings = getattr(self, "loading_settings", False), True
+        try:
+            row.set_model(Gtk.StringList.new(labels))
+            index = next((i for i, screen in enumerate(screens, start=1) if screen.connector == self._saved_local_screen), 0)
+            row.set_selected(index)
+        finally:
+            self.loading_settings = loading
+        row.set_sensitive(supported and bool(screens))
+        if not supported:
+            row.set_subtitle(_("On this desktop (Wayland) Moonlight opens on the screen you are using."))
+        elif missing:
+            row.set_subtitle(_("The saved screen ({name}) is not connected; Moonlight opens on the main screen.").format(name=self._saved_local_screen))
+        else:
+            row.set_subtitle(_("The screen of this computer where the game appears"))
+        if not getattr(self, "_local_screen_signal", 0):
+            self._local_screen_signal = row.connect("notify::selected", lambda *_a: self.save_guest_settings())
+
+    def _chosen_local_screen(self) -> str | None:
+        """The connector chosen, "" for Automatic, ``None`` when nothing can be chosen."""
+        if not self.local_screen_row.get_sensitive():
+            return None
+        index = self.local_screen_row.get_selected()
+        screens = self._local_screens
+        return screens[index - 1].connector if 1 <= index <= len(screens) else ""
+
+    def local_window_geometry(self) -> str:
+        from big_remote_play.guest.local_screens import find_screen, placement_supported
+
+        if not placement_supported():
+            return ""
+        screen = find_screen(self._local_screens, self._chosen_local_screen() or "")
+        return screen.geometry() if screen is not None else ""
 
     def load_guest_settings(self):
         # Force reload from file to catch external changes (e.g. from Preferences)
@@ -2501,65 +2568,9 @@ class GuestView(Gtk.Box):
             _log.info(f"Toast: {m}")
 
     def show_shortcuts_dialog(self):
-        dialog = Adw.Window(transient_for=self._root_window())
-        dialog.add_css_class("brp-dialog")
-        dialog.set_modal(True)
-        dialog.set_title(_("Shortcuts & Instructions"))
-        dialog.set_default_size(500, 600)
+        """Controls of Moonlight on a computer, Android, iPhone/iPad and controllers."""
+        from .controls_help import controls_help_dialog
 
-        content = Adw.ToolbarView()
-
-        # Header
-        header = Adw.HeaderBar()
-        content.add_top_bar(header)
-
-        # Body
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-
-        clamp = Adw.Clamp()
-        clamp.set_maximum_size(600)
-        for m in ["top", "bottom", "start", "end"]:
-            getattr(clamp, f"set_margin_{m}")(16)
-
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
-        box.append(intro(_("Keyboard Shortcuts"), _("Common shortcuts used during streaming"), "brp-input-keyboard-symbolic"))
-
-        # Shortcuts Group
-        grp = Adw.PreferencesGroup()
-        grp.set_title(_("Keyboard Shortcuts"))
-        grp.set_description(_("Common shortcuts used during streaming"))
-
-        shortcuts = [
-            ("Ctrl+Alt+Shift+Q", _("Quit Stream")),
-            ("Ctrl+Alt+Shift+Z", _("Toggle Mouse Capture")),
-            ("Ctrl+Alt+Shift+S", _("Toggle Stats Overlay")),
-            ("Ctrl+Alt+Shift+M", _("Toggle Mouse Mode (Remote/Absolute)")),
-            ("Ctrl+Alt+Shift+X", _("Toggle Fullscreen")),
-        ]
-
-        for keys, desc in shortcuts:
-            row = Adw.ActionRow()
-            row.set_title(keys)
-            row.set_subtitle(desc)
-            # Make keys bold/styled
-            # We can't style title easily without custom child, but title is fine.
-            grp.add(row)
-
-        box.append(grp)
-
-        monitor_group = Adw.PreferencesGroup(title=_("Multi-Monitor Support"))
-        monitor_row = Adw.ActionRow(
-            title=_("Switching Monitors"),
-            subtitle=_("Choose the display on the game PC under Share → Preferences → Hardware and Capture. Reconnect after changing it."),
-            use_markup=False,
-        )
-        monitor_group.add(monitor_row)
-        box.append(monitor_group)
-
-        clamp.set_child(box)
-        scroll.set_child(clamp)
-        content.set_content(scroll)
-
-        dialog.set_content(content)
-        dialog.present()
+        dialog = controls_help_dialog()
+        dialog.present(self)
+        return dialog

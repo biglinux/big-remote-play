@@ -4213,7 +4213,7 @@ class HostView(Gtk.Box):
             from big_remote_play.utils.network import NetworkDiscovery
 
             # Also answers Connect's search of a private network (ZeroTier).
-            self.stop_pin_listener = NetworkDiscovery().start_pin_listener(cfg["pin_code"], socket.gethostname(), port=self.sunshine.api_port - 1)
+            self.stop_pin_listener = NetworkDiscovery().start_pin_listener(cfg["pin_code"], socket.gethostname(), self.sunshine.api_port - 1)
 
             # Always Desktop in apps.json — games are launched directly.
             if not self.sunshine.ensure_desktop_app():

@@ -59,6 +59,8 @@ Text is sharp when the stream has the sharing screen's resolution. A wide or hig
 
 ## No computer found
 
+On a ZeroTier network joined from someone else, use **Find computers to play on** on the ZeroTier page; see [finding computers on a ZeroTier network](zerotier-discovery.md) for what it can and cannot find.
+
 First start sharing on the game PC. Every computer found gets its own card under **Connect → Computers**; the other ways to connect are on the **Advanced options** tab. Check that both PCs are reachable on the same home or private network. Search again. Across a VPN, use the game PC's private IP address; broadcast discovery is not universally supported. A search code does not create network connectivity.
 
 ## The browser sign-in for the private network did not open, or the PC is not really connected
@@ -248,3 +250,11 @@ Check file ownership and permissions. An unreadable or malformed Moonlight/Sunsh
 Back up before testing a new build. Backups may contain native private keys and Moonlight identity; keyring secrets are separate. Restore checks the versioned inventory, paths, types, sizes and hashes before writing to the actual configuration locations, including Flatpak Moonlight. If applying any file fails, files already changed are rolled back and the error reports that the previous settings were restored.
 
 If both legacy and current Big Remote Play config directories exist, the migration preserves conflicting old files rather than deleting them. Keep those files until a maintainer or administrator confirms which version is needed.
+
+## The game library does not list a game
+
+The library lists only games that are really installed: a Steam game still downloading, a game on a disk that is not mounted, a Lutris game marked as not installed or a Heroic catalog entry is left out. **Add Manually…** adds any program by name and command. Where each launcher is read: [game library](game-library-detection.md).
+
+## Moonlight opens on the wrong screen
+
+**Connect → Image → Open on** chooses the screen on X11. On Wayland the desktop opens Moonlight on the screen in use: move the window to the screen you want and press Ctrl+Alt+Shift+X twice. The shared screen of the game PC is chosen there, in **Share**. See [several screens](moonlight-multi-monitor.md).

@@ -570,9 +570,10 @@ def test_tailscale_stop_is_down_never_logout():
     assert ["tailscale", "down"] in commands and not any("logout" in command for command in commands)
 
 
-def test_stopping_a_service_is_allowlisted_and_skipped_when_already_stopped():
+def test_stopping_a_service_is_allowlisted_and_skipped_when_already_stopped(monkeypatch):
     from big_remote_play.utils.vpn_accounts import VPNAccountManager
 
+    monkeypatch.setattr(VPNAccountManager, "_service_helper_installed", staticmethod(lambda: False))
     commands: list = []
     manager = VPNAccountManager(SimpleNamespace(tailscale_cmd=lambda: ["tailscale"]), runner=lambda argv, timeout=15: commands.append(list(argv)) or CommandResult(0))
     assert manager.stop_service("sshd").returncode == 2 and commands == []
@@ -711,3 +712,33 @@ def test_a_device_can_be_renamed_here_and_checked_through_connect(ui, monkeypatc
     monkeypatch.setattr(ui.guest_view, "diagnose_host", lambda host: checked.append(host))
     page.check_connection(notebook)
     assert checked and checked[0]["ip"] == "100.64.0.2" and checked[0]["provider"] == "tailscale"
+
+
+def test_the_installed_helper_turns_zerotier_on_and_off_without_a_generic_command(monkeypatch):
+    """Turning ZeroTier off asked for the administrator password every time;
+    the narrow helper's PolicyKit action allows the person at the computer."""
+    from big_remote_play.utils.vpn_accounts import VPN_SERVICE_HELPER, VPNAccountManager
+
+    monkeypatch.setattr(VPNAccountManager, "_service_helper_installed", staticmethod(lambda: True))
+    commands: list = []
+    active = iter([CommandResult(0), CommandResult(0), CommandResult(3), CommandResult(0)])
+    manager = VPNAccountManager(SimpleNamespace(tailscale_cmd=lambda: ["tailscale"]), runner=lambda argv, timeout=15: commands.append(list(argv)) or next(active))
+    manager.stop_service("zerotier-one")
+    manager.start_service("zerotier-one")
+    assert [c for c in commands if c[0] == "pkexec"] == [["pkexec", VPN_SERVICE_HELPER, "stop", "zerotier-one"], ["pkexec", VPN_SERVICE_HELPER, "start", "zerotier-one"]]
+
+
+def test_the_vpn_helper_and_its_policy_allow_only_two_services_for_the_local_session(tmp_path):
+    import subprocess
+    from pathlib import Path
+
+    from big_remote_play.utils.vpn_accounts import VPN_SERVICE_HELPER
+
+    root = Path(__file__).resolve().parents[1]
+    helper = root / "usr/share/big-remote-play/scripts" / Path(VPN_SERVICE_HELPER).name
+    policy = (root / "usr/share/polkit-1/actions/br.com.biglinux.remoteplay.vpn-service.policy").read_text(encoding="utf-8")
+    assert f'"org.freedesktop.policykit.exec.path">{VPN_SERVICE_HELPER}<' in policy
+    assert "<allow_any>no</allow_any>" in policy and "<allow_inactive>no</allow_inactive>" in policy and "<allow_active>yes</allow_active>" in policy
+    # Refusals happen before systemctl could ever run.
+    for argv in (["start"], ["restart", "zerotier-one"], ["stop", "sshd"], ["stop", "zerotier-one;reboot"], ["start", "tailscaled", "extra"]):
+        assert subprocess.run(["sh", str(helper), *argv], capture_output=True, timeout=5).returncode == 2
