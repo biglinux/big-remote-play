@@ -459,6 +459,20 @@ def test_connecting_and_streaming_update_connect(live, probes):
     assert nav_state(live, "guest") is Activity.RUNNING
 
 
+def test_connect_changes_keep_a_sunshine_started_elsewhere_running(live, probes):
+    probes["sunshine"] = True  # started outside Big Remote Play
+    probe_now(live)
+    assert not live.host_view.is_hosting
+    assert nav_state(live, "host") is Activity.RUNNING
+    guest = live.guest_view
+    guest.show_loading(True)
+    assert nav_state(live, "host") is Activity.RUNNING
+    guest.show_loading(False)
+    guest.is_connected = True
+    guest._announce_state()
+    assert nav_state(live, "host") is Activity.RUNNING
+
+
 def test_task_state_is_announced_in_words(live, probes):
     probes["sunshine"] = True
     probe_now(live)

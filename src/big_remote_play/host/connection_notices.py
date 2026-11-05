@@ -67,17 +67,16 @@ class ConnectionNotices:
     def __init__(self) -> None:
         self._seen: set[tuple[str, float]] = set()
 
-    def update(self, infos: Iterable[ConnectionInfo], *, known_names: Iterable[str] = ()) -> list[ConnectionNotice]:
+    def update(self, infos: Iterable[ConnectionInfo]) -> list[ConnectionNotice]:
         """The sessions in ``infos`` that were not there before.
 
         ``infos`` is the complete current list: sessions missing from it have
         ended and are forgotten, so the same device connecting again later is
         new. A session listed as ``preexisting`` (already playing when this
         computer started watching) is remembered without being announced.
-        ``known_names`` are placeholder names (such as "Connected device")
-        that do not identify a device and are not shown as its name.
+        A stand-in name (``name_known`` false, such as "Connected device")
+        does not identify a device and is not shown as its name.
         """
-        placeholders = {name for name in known_names if name}
         current: dict[tuple[str, float], ConnectionInfo] = {}
         for info in infos:
             if not getattr(info, "connected", True):
@@ -92,9 +91,9 @@ class ConnectionNotices:
             info = current[key]
             if getattr(info, "preexisting", False):
                 continue
-            name = clean_name(info.device_name)
+            name = clean_name(info.device_name) if getattr(info, "name_known", True) else ""
             transport = info.transport if isinstance(info.transport, Transport) else Transport.UNKNOWN
-            notices.append(ConnectionNotice(key, "" if name in placeholders else name, key[0], transport))
+            notices.append(ConnectionNotice(key, name, key[0], transport))
         return notices
 
     def clear(self) -> None:

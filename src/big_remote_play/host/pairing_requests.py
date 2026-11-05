@@ -72,11 +72,19 @@ class RequestTracker:
     timeout: float = REQUEST_TIMEOUT_SECONDS
     clock: Callable[[], float] = time.monotonic
     requests: dict[str, PairRequest] = field(default_factory=dict)
+    # Requests answered here. Sunshine keeps listing a request while the
+    # device checks the PIN (about ten seconds for a wrong one); it must not
+    # come back as a new request meanwhile. Pairing ids are never reused.
+    answered: set[str] = field(default_factory=set)
 
     def update(self, pending: Iterable[PendingPairing], names: dict[str, str] | None = None) -> TrackerEvents:
         now = self.clock()
         names = names or {}
         current = {item.pairing_id: item for item in pending}
+        # Forget answers whose request Sunshine no longer lists.
+        self.answered &= set(current)
+        for pairing_id in self.answered:
+            current.pop(pairing_id, None)
         new: list[PairRequest] = []
         for pairing_id, item in current.items():
             if pairing_id not in self.requests:
@@ -92,11 +100,13 @@ class RequestTracker:
         return TrackerEvents(tuple(new), tuple(gone), tuple(expired))
 
     def forget(self, pairing_id: str) -> None:
-        """Answered here (approved or rejected): not a request any more."""
+        """Answered here (approved or rejected): not a request any more, nor again."""
         self.requests.pop(pairing_id, None)
+        self.answered.add(pairing_id)
 
     def clear(self) -> None:
         self.requests.clear()
+        self.answered.clear()
 
     def oldest(self) -> PairRequest | None:
         return min(self.requests.values(), key=lambda request: request.first_seen, default=None)

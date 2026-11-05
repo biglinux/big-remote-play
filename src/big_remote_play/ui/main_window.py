@@ -611,10 +611,10 @@ class MainWindow(Adw.ApplicationWindow):
                 description = _("{description}. {state}").format(description=info.get("description", ""), state=activity_text(activity))
                 row.update_property([Gtk.AccessibleProperty.DESCRIPTION], [description])
 
-    def _on_task_state_changed(self) -> None:
+    def _on_task_state_changed(self, *, from_share: bool = True) -> None:
         """Share or Connect changed state in this window: say so at once, then confirm with a probe."""
         host = getattr(self, "host_view", None)
-        if host is not None and getattr(host, "sharing_transition", None) is None:
+        if from_share and host is not None and getattr(host, "sharing_transition", None) is None:
             # A finished start or stop is what the Sunshine probe would now report.
             self._service_running["sunshine"] = bool(host.is_hosting)
             self._refresh_service_state("sunshine")
@@ -698,8 +698,9 @@ class MainWindow(Adw.ApplicationWindow):
         self.content_stack.add_named(self.host_view, "host")
         self.guest_view = GuestView()
         self.content_stack.add_named(self.guest_view, "guest")
-        for view in (self.host_view, self.guest_view):
-            view.add_state_listener(self._on_task_state_changed)
+        self.host_view.add_state_listener(self._on_task_state_changed)
+        # Connect says nothing about Sunshine: keep its probed state.
+        self.guest_view.add_state_listener(lambda: self._on_task_state_changed(from_share=False))
 
         self.vpn_selector_page = self.create_vpn_selector_page()
         self.content_stack.add_named(self.vpn_selector_page, "vpn_selector")

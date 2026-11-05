@@ -831,7 +831,7 @@ def test_clear_all_data_removes_every_api_credential_and_migrated_legacy_secret(
 
     monkeypatch.setitem(paths.__dict__, "CONFIG_DIR", tmp_path)
     backend = InMemorySecretBackend()
-    monkeypatch.setattr(secret_store, "LibsecretBackend", lambda: backend)
+    monkeypatch.setattr(secret_store, "default_backend_factory", lambda: backend)
     store = CredentialStore(SecretStore(backend))
     store.save(CredentialKind.ZEROTIER_API_TOKEN, FAKE_ZT_TOKEN)
     store.save(CredentialKind.TAILSCALE_API_TOKEN, FAKE_TS_TOKEN)

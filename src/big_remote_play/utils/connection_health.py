@@ -268,6 +268,8 @@ class ConnectionInfo:
     warnings: tuple[tuple[str, str], ...] = ()
     # Share: already playing when this computer started watching, not a new connection.
     preexisting: bool = False
+    # False when ``device_name`` is only a stand-in ("Connected device", "Device at …").
+    name_known: bool = True
 
 
 __all__ = [

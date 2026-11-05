@@ -376,6 +376,7 @@ class SunshineSettings:
         # Management → Server Password). Not duplicated here.
 
     def _api_auth(self) -> tuple[str, str] | None:
+        """Worker thread only: reads the keyring (bounded)."""
         return load_sunshine_credentials(conf_path=self.config.config_file)
 
     def _toast(self, widget, message):
@@ -396,11 +397,11 @@ class SunshineSettings:
             return
         import threading
 
-        auth = self._api_auth()
         # Credentials are managed separately; do not push them as config keys.
         settings = {k: v for k, v in self.config.config.items() if k not in LEGACY_SECRET_KEYS}
 
         def work() -> None:
+            auth = self._api_auth()  # worker: the keyring may take a moment
             ok = self.sunshine.save_config(settings, auth=auth)
             if ok:
                 self.sunshine.restart_via_api(auth=auth)
@@ -414,9 +415,8 @@ class SunshineSettings:
             return
         import threading
 
-        auth = self._api_auth()
-
         def work():
+            auth = self._api_auth()  # worker: the keyring may take a moment
             cfg = self.sunshine.get_config(auth=auth)
             GLib.idle_add(self._apply_reloaded_config, cfg, btn)
 

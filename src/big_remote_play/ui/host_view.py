@@ -10,6 +10,7 @@ import logging
 _log = logging.getLogger("big-remoteplay")
 
 import subprocess, random, string, json, socket, os, time
+import re
 import shlex
 from pathlib import Path
 from big_remote_play.utils.game_detector import GameDetector
@@ -21,9 +22,8 @@ from big_remote_play.utils.i18n import _, ngettext
 from big_remote_play.utils.icons import create_icon_widget, set_icon
 from big_remote_play.integration_contracts import MOONLIGHT_PAIRING_PIN_LENGTH, BRP_DISCOVERY_CODE_LENGTH
 from big_remote_play import paths
-from big_remote_play.utils.secret_store import SecretStoreUnavailable
 from big_remote_play.host.sunshine_manager import PIN_CHOOSE, PIN_NONE_WAITING
-from big_remote_play.utils.sunshine_credentials import ensure_sunshine_api_config, load_sunshine_credentials, save_sunshine_credentials
+from big_remote_play.utils.sunshine_credentials import DEFAULT_SUNSHINE_USER, SAVED, SunshineCredentials
 from big_remote_play.utils.uri import open_uri, open_path
 from .components import physical_size, action_row, boxed_rows, intro, preferences_dialog, set_row_icon, content_dialog, name_icon_button
 
@@ -48,6 +48,12 @@ _SOURCE_ICONS = {
 }
 # The list follows games opening and closing while it is on screen.
 _GAME_WINDOW_REFRESH_SECONDS = 8
+
+
+def display_controllers(lspci_output: str) -> str:
+    """The graphics lines of ``lspci`` (VGA, 3D and display controllers), lower-cased."""
+    lines = [line for line in lspci_output.splitlines() if re.search(r"\b(vga compatible controller|3d controller|display controller)\b", line, re.IGNORECASE)]
+    return "\n".join(lines).lower()
 
 
 def _parse_xrandr_monitor_names(output: str) -> list[str]:
@@ -204,6 +210,10 @@ class HostView(Gtk.Box):
         from big_remote_play.host.sunshine_manager import SunshineHost
 
         self.sunshine = SunshineHost(paths.SUNSHINE_CONFIG_DIR)
+        # The only owner of Sunshine's administrator password in this window.
+        self.credentials = SunshineCredentials(self._get_sunshine_conf_path)
+        # A keyring prompt finished late: show it on the GTK thread.
+        self.credentials.on_change = lambda: GLib.idle_add(self._credentials_saved_late)
 
         if self.sunshine.is_running():
             self.is_hosting = True
@@ -225,9 +235,9 @@ class HostView(Gtk.Box):
         self._apply_auto_quality()
         self._probe_hdr_outputs()
 
-        # Ensure config is correct (API enabled)
-        if hasattr(self, "_ensure_sunshine_config"):
-            self._ensure_sunshine_config()
+        # Read the saved password (and move a legacy plain-text one) off the
+        # GTK thread: a locked keyring must never delay the window.
+        self._ensure_sunshine_config()
 
         self.sync_ui_state()
         self._recover_audio_session()
@@ -248,7 +258,45 @@ class HostView(Gtk.Box):
     def _set_sharing_transition(self, transition: str | None) -> None:
         if transition != self.sharing_transition:
             self.sharing_transition = transition
+            self._show_transition()
             self._announce_state()
+
+    def _show_transition(self) -> None:
+        """Starting or stopping: the hero says so in words; the button waits."""
+        from .task_activity import TRANSITION_STARTING, TRANSITION_STOPPING
+
+        if not hasattr(self, "overview_state_label") or self.sharing_transition not in (TRANSITION_STARTING, TRANSITION_STOPPING):
+            return
+        starting = self.sharing_transition == TRANSITION_STARTING
+        self._set_state_pill(_("Starting…") if starting else _("Stopping…"), "starting")
+        self.overview_status_label.set_label(_("Starting Sunshine and preparing the picture and sound…") if starting else _("Ending the stream and restoring this computer's settings…"))
+        self.overview_start_label.set_label(_("Starting…") if starting else _("Stopping…"))
+        self.overview_start_button.set_sensitive(False)
+
+    def _show_server_answering(self, reachable: bool) -> None:
+        """While sharing: "Sharing" only when Sunshine really serves.
+
+        Two readings in a row (about six seconds) before saying it does not
+        answer, so the seconds Sunshine needs to start never flicker.
+        """
+        if not self.is_hosting or self.sharing_transition is not None:
+            self._unanswered = 0
+            return
+        self._unanswered = 0 if reachable else getattr(self, "_unanswered", 0) + 1
+        if self._unanswered >= 2:
+            self._set_state_pill(_("Not responding"), "attention")
+            self.overview_status_label.set_label(_("Sunshine is not answering yet. If the desktop asks which screen to share, choose one; otherwise Support → Server log shows why."))
+        elif reachable and self.overview_state_label.has_css_class("attention"):
+            self._set_state_pill(_("Sharing"), "online")
+            self.overview_status_label.set_label(_("Sharing. Other devices can connect now."))
+            # It just started serving: its capture and encoders are known now.
+            self._check_cursor()
+
+    def _set_state_pill(self, text: str, tone: str) -> None:
+        for css in ("online", "offline", "starting", "attention"):
+            self.overview_state_label.remove_css_class(css)
+        self.overview_state_label.set_label(text)
+        self.overview_state_label.add_css_class(tone)
 
     def _recover_audio_session(self) -> None:
         """Adopt the audio session of a sharing that is still running, or undo
@@ -384,7 +432,10 @@ class HostView(Gtk.Box):
     def detect_gpus(self):
         gpus = []
         try:
-            lspci = subprocess.check_output(["lspci"], text=True, timeout=5).lower()
+            # Only display controllers count: on many AMD and NVIDIA machines the
+            # chipset (bridges, SMBus, USB) is "Intel Corporation", which offered
+            # "Intel Quick Sync" on computers without any Intel graphics.
+            lspci = display_controllers(subprocess.check_output(["lspci"], text=True, timeout=5))
             if "nvidia" in lspci:
                 try:
                     subprocess.check_call(["nvidia-smi"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5)
@@ -440,7 +491,7 @@ class HostView(Gtk.Box):
 
         game_group = Adw.PreferencesGroup()
         self.game_group = game_group
-        game_group.set_title(_("1. Choose what to share"))
+        game_group.set_title(_("What to share"))
         game_group.set_description(_("Sharing the whole screen also shows notifications and other open windows."))
 
         reset_btn = Gtk.Button()
@@ -796,11 +847,7 @@ class HostView(Gtk.Box):
         server_tools_group = Adw.PreferencesGroup()
         server_tools_group.add_css_class("brp-rounded-group")
         server_tools_group.set_title(_("Server tools"))
-        server_tools_group.set_description(_("Use these when you need to inspect or manage Sunshine."))
-        advanced_tools_group = Adw.PreferencesGroup()
-        advanced_tools_group.add_css_class("brp-rounded-group")
-        advanced_tools_group.set_title(_("Advanced administration"))
-        advanced_tools_group.set_description(_("Security and expert settings that are rarely needed."))
+        server_tools_group.set_description(_("For a closer look when the checks above are not enough."))
 
         def _add_management_button(group: Adw.PreferencesGroup, title: str, subtitle: str, icon_name: str, callback: Callable[[Gtk.Widget], None]) -> None:
             # Use a native PreferencesRow instead of placing a Gtk.Button inside
@@ -823,38 +870,10 @@ class HostView(Gtk.Box):
 
         _add_management_button(
             server_tools_group,
-            _("Server control panel"),
-            _("Advanced settings in your browser (Sunshine)"),
-            "brp-host-symbolic",
-            self.open_sunshine_config,
-        )
-        _add_management_button(
-            server_tools_group,
             _("Server log"),
             _("What the server recorded, for troubleshooting"),
             "brp-diagnostics-symbolic",
             self.open_logs_dialog,
-        )
-        _add_management_button(
-            server_tools_group,
-            _("Game Library"),
-            _("Manage games shown on the other computer"),
-            "brp-library-symbolic",
-            self.open_game_library_dialog,
-        )
-        _add_management_button(
-            advanced_tools_group,
-            _("Server password"),
-            _("Used by this app to talk to the server"),
-            "brp-dialog-password-symbolic",
-            self.open_password_dialog,
-        )
-        _add_management_button(
-            advanced_tools_group,
-            _("Advanced server settings"),
-            _("Codecs, network, capture and recovery tools"),
-            "brp-preferences-symbolic",
-            self.open_advanced_settings,
         )
 
         def _create_overview_action_button(label: str, callback: Callable[[Gtk.Widget], None], primary: bool = False) -> Gtk.Button:
@@ -867,8 +886,8 @@ class HostView(Gtk.Box):
             return button
 
         self.overview_start_button = _create_overview_action_button(_("Start sharing"), self.toggle_hosting, primary=True)
-        overview_start_content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6, halign=Gtk.Align.CENTER)
-        self.overview_start_icon = create_icon_widget("media-playback-start-symbolic", size=16)
+        overview_start_content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, halign=Gtk.Align.CENTER)
+        self.overview_start_icon = create_icon_widget("media-playback-start-symbolic", size=20)
         overview_start_content.append(self.overview_start_icon)
         self.overview_start_label = Gtk.Label(label=_("Start sharing"))
         overview_start_content.append(self.overview_start_label)
@@ -879,10 +898,9 @@ class HostView(Gtk.Box):
             [_("Start sharing"), _("Start sharing the game from this PC")],
         )
 
-        # A single premium session surface keeps the role, live state and primary
-        # action together. It becomes vertical through the window breakpoint,
-        # without duplicating controls or changing keyboard order.
-        hero = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=18)
+        # One session surface: who this computer is, its state in words, what
+        # it shares and the one big action, in reading and keyboard order.
+        hero = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
         hero.add_css_class("session-hero")
         hero.set_halign(Gtk.Align.FILL)
         hero.set_hexpand(True)
@@ -919,7 +937,6 @@ class HostView(Gtk.Box):
         self.overview_status_label.set_wrap(True)
         hero_copy.append(self.overview_status_label)
         hero_identity.append(hero_copy)
-        hero.append(hero_identity)
 
         self.overview_hero_actions = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.overview_hero_actions.set_halign(Gtk.Align.END)
@@ -930,32 +947,23 @@ class HostView(Gtk.Box):
         self.overview_state_label.add_css_class("offline")
         self.overview_state_label.set_halign(Gtk.Align.END)
         self.overview_hero_actions.append(self.overview_state_label)
+        hero_identity.append(self.overview_hero_actions)
+        hero.append(hero_identity)
 
         self.overview_start_button.set_halign(Gtk.Align.FILL)
         self.overview_start_button.set_hexpand(True)
-        self.overview_start_button.set_size_request(168, 44)
-        # The primary action follows its input instead of preceding it.
+        # The primary action follows its input instead of preceding it, and is
+        # the largest control of the page.
         self.overview_start_button.add_css_class("brp-primary")
-        hero.append(self.overview_hero_actions)
+        self.overview_start_button.add_css_class("brp-hero-action")
 
-        # Two four-digit codes used to sit side by side pointing in opposite
-        # directions: the one this PC announces for discovery, and the one the
-        # other PC shows to pair. The steps are now numbered and only the code
-        # the person has to type is on the routine path.
+        # Everything that needs the person's attention, and only when it does:
+        # an open stream blocking pairing, a missing password, the firewall,
+        # controllers. Hidden as a whole when nothing applies.
         pin_group = Adw.PreferencesGroup()
         self.guest_access_group = pin_group
-        pin_group.set_title(_("3. Connect the other PC"))
-        pin_group.set_description(_("Open Connect on the other PC, then approve its code here. This is needed only the first time."))
-
-        first_step = Adw.ActionRow(
-            title=_("Open Connect on the other computer"),
-            subtitle=_("Choose this computer from the list."),
-            use_markup=False,
-        )
-        first_step.set_title_lines(0)
-        first_step.set_subtitle_lines(0)
-        set_row_icon(first_step, "brp-client-symbolic")
-        pin_group.add(first_step)
+        self.attention_group = pin_group
+        pin_group.set_title(_("Needs attention"))
 
         # Moonlight refuses to pair while Sunshine has an app open, even after
         # everyone disconnected; say so where pairing happens, with the way out.
@@ -979,16 +987,16 @@ class HostView(Gtk.Box):
         )
         self.end_for_everyone_row.connect("activated", lambda _row: self._confirm_end_for_everyone())
         pin_group.add(self.end_for_everyone_row)
-        self._show_pairing_busy(False)
 
         from .network_common import RowGroup, Worker
 
         self._pair_busy_worker = Worker()
         self._end_stream_worker = Worker()
         self._credentials_worker = Worker()
+        self._pin_worker = Worker()
 
-        # Approving a device needs Sunshine's password. Asking for it while a
-        # device waits delays the approval, so it is asked for up front.
+        # Approving a device needs Sunshine's password. It is normally created
+        # and kept by the app; it is asked for only when that is impossible.
         self.sunshine_password_row = Adw.ActionRow(use_markup=False)
         self.sunshine_password_row.set_title_lines(0)
         self.sunshine_password_row.set_subtitle_lines(0)
@@ -998,7 +1006,10 @@ class HostView(Gtk.Box):
         self.sunshine_password_button.add_css_class("suggested-action")
         self.sunshine_password_button.connect("activated", lambda _row: self.open_sunshine_credentials_dialog())
         pin_group.add(self.sunshine_password_button)
-        self._show_password_needed("")
+        self.keyring_retry_row = Adw.ButtonRow(title=_("Try the keyring again"))
+        self.keyring_retry_row.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Read the saved password again after unlocking the system keyring")])
+        self.keyring_retry_row.connect("activated", lambda _row: self._retry_keyring())
+        pin_group.add(self.keyring_retry_row)
 
         # A firewall that drops Sunshine's ports looks, from the other
         # computer, like sharing that is off; say it here, where it is fixed.
@@ -1016,7 +1027,6 @@ class HostView(Gtk.Box):
         self.firewall_allow_row.connect("activated", lambda _row: self.on_configure_firewall_clicked(None))
         pin_group.add(self.firewall_allow_row)
         self._firewall_worker = Worker()
-        self._show_firewall_report(None)
 
         # Neither problem shows on the other computer: its controller simply
         # does nothing in the game.
@@ -1030,29 +1040,100 @@ class HostView(Gtk.Box):
             set_row_icon(row, "brp-input-keyboard-symbolic")
             pin_group.add(row)
         self._controllers_worker = Worker()
+        self._cursor_worker = Worker()
+        self._cursor_report = None
+        # The mouse pointer the other device does not see (KMS capture).
+        self.cursor_row = Adw.ActionRow(title=_("The other device may not see the mouse pointer"), use_markup=False)
+        self.cursor_row.set_title_lines(0)
+        self.cursor_row.set_subtitle_lines(0)
+        set_row_icon(self.cursor_row, "brp-input-keyboard-symbolic")
+        self.cursor_fix_button = Gtk.Button(valign=Gtk.Align.CENTER)
+        self.cursor_fix_button.connect("clicked", lambda _button: self._apply_cursor_fix())
+        self.cursor_row.add_suffix(self.cursor_fix_button)
+        pin_group.add(self.cursor_row)
+        self.cursor_row.set_visible(False)
+        # Sunshine runs but found no capture or encoder: nobody would get a picture.
+        self.picture_row = Adw.ActionRow(
+            title=_("The picture could not start"),
+            subtitle=_("Sunshine found no way to capture or encode the screen. Restart sharing and answer the desktop's screen-sharing questions right away."),
+            use_markup=False,
+        )
+        self.picture_row.set_title_lines(0)
+        self.picture_row.set_subtitle_lines(0)
+        set_row_icon(self.picture_row, "dialog-warning-symbolic")
+        restart_button = Gtk.Button(label=_("Restart sharing"), valign=Gtk.Align.CENTER)
+        restart_button.connect("clicked", lambda _button: self._restart_sharing())
+        self.picture_row.add_suffix(restart_button)
+        pin_group.add(self.picture_row)
+        self.picture_row.set_visible(False)
+        self._show_pairing_busy(False)
+        self._show_password_needed("")
+        self._show_firewall_report(None)
         self._show_controller_report(None)
 
-        self.pair_entry = Adw.EntryRow(title=_("Pairing code shown on the other PC"))
+        # ── Pair a device: the PIN is the routine path, always in view ──────
+        pair_card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        pair_card.add_css_class("brp-pair-card")
+        self.pair_card = pair_card
+        pair_heading = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        pair_chip = Gtk.Box(valign=Gtk.Align.CENTER)
+        pair_chip.add_css_class("icon-chip")
+        pair_icon = create_icon_widget("brp-dialog-password-symbolic", size=18)
+        for margin in ("top", "bottom", "start", "end"):
+            getattr(pair_icon, f"set_margin_{margin}")(7)
+        pair_chip.append(pair_icon)
+        pair_heading.append(pair_chip)
+        pair_copy = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, hexpand=True)
+        pair_title = Gtk.Label(label=_("Pair a new device"), xalign=0, wrap=True)
+        pair_title.add_css_class("heading")
+        pair_copy.append(pair_title)
+        pair_hint = Gtk.Label(label=_("Type the 4-digit PIN that Moonlight shows on the other device."), xalign=0, wrap=True)
+        pair_hint.add_css_class("dim-label")
+        pair_copy.append(pair_hint)
+        pair_heading.append(pair_copy)
+        pair_card.append(pair_heading)
+
+        pin_line = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        self.pair_entry_line = pin_line
+        # One field drawn as four boxes: native editing, paste, selection and
+        # screen-reader behavior stay those of a normal entry.
+        self.pair_entry = Gtk.Entry()
         self.pair_entry.set_input_purpose(Gtk.InputPurpose.DIGITS)
+        self.pair_entry.set_input_hints(Gtk.InputHints.NO_SPELLCHECK)
+        self.pair_entry.set_placeholder_text("0000")
+        self.pair_entry.set_alignment(0.5)
+        self.pair_entry.set_width_chars(6)
+        self.pair_entry.set_max_width_chars(9)
+        self.pair_entry.set_hexpand(False)
         self.pair_entry.add_css_class("brp-code-entry")
+        self.pair_entry.add_css_class("brp-pin-entry")
         self.pair_entry.update_property(
-            [Gtk.AccessibleProperty.DESCRIPTION],
-            [_("Enter the four digits shown by Moonlight on the other computer.")],
+            [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
+            [_("Pairing PIN"), _("Enter the four digits shown by Moonlight on the other computer.")],
         )
-        self.guest_pair_button = _create_overview_action_button(_("Pair"), lambda _button: self.pair_with_entered_pin())
-        self.guest_pair_button.set_label(_("Pair"))
+        self.pair_entry.connect("activate", lambda _entry: self.pair_with_entered_pin())
+        self.pair_entry.connect("changed", lambda _entry: self._on_pair_entry_changed())
+        pin_line.append(self.pair_entry)
+        self.guest_pair_button = _create_overview_action_button(_("Approve"), lambda _button: self.pair_with_entered_pin(), primary=True)
+        self.guest_pair_button.set_label(_("Approve"))
+        self.guest_pair_button.add_css_class("brp-primary")
         self.guest_pair_button.update_property(
             [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
-            [_("Pair this device"), _("Send the code shown on the other PC to finish pairing")],
+            [_("Approve this device"), _("Send the PIN shown on the other device to finish pairing")],
         )
-        self.pair_entry.add_suffix(self.guest_pair_button)
-        self.pair_entry.connect("entry-activated", lambda _row: self.pair_with_entered_pin())
-        # A request normally appears by itself, with its own PIN field; typing
-        # a code here is the fallback (an older Sunshine, no saved password).
-        self.manual_pairing_row = Adw.ExpanderRow(title=_("Type a pairing code yourself"), subtitle=_("Only if the request does not appear here by itself."), use_markup=False)
-        set_row_icon(self.manual_pairing_row, "brp-dialog-password-symbolic")
-        self.manual_pairing_row.add_row(self.pair_entry)
-        pin_group.add(self.manual_pairing_row)
+        pin_line.append(self.guest_pair_button)
+        self.pair_spinner = Adw.Spinner(visible=False, valign=Gtk.Align.CENTER)
+        pin_line.append(self.pair_spinner)
+        pair_card.append(pin_line)
+        self.pair_status_label = Gtk.Label(xalign=0, wrap=True)
+        self.pair_status_label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        self.pair_status_label.add_css_class("caption")
+        # Polite live region: the waiting state, a result or an error is read out.
+        self.pair_status_label.set_accessible_role(Gtk.AccessibleRole.STATUS)
+        pair_card.append(self.pair_status_label)
+        self._pair_feedback = ""
+        self._pair_feedback_kind = ""
+        self._pairing_busy = False
 
         # The discovery code is the fallback, and says so.
         self.pin_display_label = Gtk.Label(label="—" * BRP_DISCOVERY_CODE_LENGTH)
@@ -1084,7 +1165,7 @@ class HostView(Gtk.Box):
         fallback_row.add_suffix(pin_box)
         fallback = Adw.ExpanderRow(title=_("This PC did not appear in the list?"), use_markup=False)
         fallback.add_row(fallback_row)
-        pin_group.add(fallback)
+        pair_card.append(boxed_rows(fallback))
 
         # Play over the internet is a sidebar destination; Share does not
         # repeat it. When this computer is reachable that way, the group below
@@ -1102,12 +1183,10 @@ class HostView(Gtk.Box):
         overview_body = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
         overview_body.append(hero)
         self.share_controls = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
-        self.share_controls.add_css_class("brp-session-panel")
         self.share_controls.append(game_group)
-        # The picture settings are stated on the page that starts the stream, so
-        # nobody has to open a sheet to learn what they are about to send.
+        # The picture settings are stated on the page, so nobody has to open a
+        # sheet to learn what they are about to send; below pairing, as detail.
         self.quality_card = self._create_quality_card()
-        self.share_controls.append(self.quality_card)
 
         # While sharing, these controls decide nothing: the session is running
         # with the values it started with. The page states what is being sent
@@ -1127,13 +1206,8 @@ class HostView(Gtk.Box):
         self.session_summary_box = boxed_rows(self.session_summary_row, self.session_audio_row)
         self.session_summary_box.set_visible(False)
         self.share_controls.append(self.session_summary_box)
-        self.overview_start_button.set_halign(Gtk.Align.FILL)
-        start_heading = Gtk.Label(label=_("2. Start sharing"), xalign=0)
-        self.start_heading = start_heading
-        start_heading.add_css_class("heading")
-        self.share_controls.append(start_heading)
         self.share_controls.append(self.overview_start_button)
-        overview_body.append(self.share_controls)
+        hero.append(self.share_controls)
         # A device asking to pair comes first: it waits for an answer here.
         from .pairing_prompt import PairingRequestsGroup
         from big_remote_play.host.pairing_requests import RequestTracker
@@ -1143,25 +1217,25 @@ class HostView(Gtk.Box):
         self._pair_answer_worker = Worker()
         self.pair_requests_group = PairingRequestsGroup(on_approve=self._open_pair_request, on_reject=self._reject_pair_request)
         overview_body.append(self.pair_requests_group)
-        # Right under the running session: who is playing now, then where the
-        # other person can reach it. "Connected now" is live sessions only;
-        # pairings are listed separately below.
+        overview_body.append(pair_card)
+        overview_body.append(pin_group)
+        # Right under pairing: who is playing now, then where the other person
+        # can reach it. "Connected now" is live sessions only; pairings are
+        # listed separately below.
         overview_body.append(self._create_connected_devices_group())
         overview_body.append(self.internet_access_group)
-        overview_body.append(pin_group)
+        overview_body.append(self.quality_card)
         overview_body.append(self._create_paired_devices_overview())
         overview_page = Adw.Clamp(maximum_size=820, tightening_threshold=560)
         overview_page.set_child(overview_body)
         self.view_stack.add_titled_with_icon(overview_page, "overview", _("Overview"), "brp-host-symbolic")
+        self._sync_pair_status()
 
-        # Everyday settings first. Detailed controls stay available in searchable
-        # native sheets without inflating the routine sharing page.
+        # Preferences: everyday groups first, each named for what it changes;
+        # technical controls live in searchable sheets opened by intent. Every
+        # setting has one home: what to share and Start stay on Overview.
         config_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
-        config_page.append(intro(_("Sound and access on this computer"), _("Image and capture settings are on Overview, next to Start sharing."), "brp-preferences-symbolic"))
-        audio_group.set_header_suffix(self.settings_reset_button)
-        config_page.append(audio_group)
-        config_page.append(self.input_priority.group)
-        settings_links = Adw.PreferencesGroup(title=_("Additional settings"))
+        config_page.append(intro(_("How this computer shares"), _("Most people can keep the automatic choices."), "brp-preferences-symbolic"))
         self.quality_sheet = preferences_dialog(
             _("Image and capture"),
             [self.streaming_group, self.hardware_group],
@@ -1174,22 +1248,85 @@ class HostView(Gtk.Box):
         self.hardware_group.set_title(_("Screen, graphics card and encoding"))
         self.hardware_group.set_description(_("Automatic options below are chosen by Sunshine when sharing starts, not measurements of an active stream."))
         self.settings_dialogs = {_("Image and capture"): self.quality_sheet}
-        sections = (
-            (self.advanced_group, _("Network and access"), _("Keep router port forwarding off when using a VPN. Changes apply when sharing starts again."), "brp-network-private-symbolic", 600),
+        network_title = _("Network and access")
+        network_description = _("Keep router port forwarding off when using a VPN. Changes apply when sharing starts again.")
+        self.advanced_group.set_title("")
+        self.advanced_group.set_description("")
+        network_sheet = preferences_dialog(network_title, [self.advanced_group], description=network_description, height=600)
+        self.settings_dialogs[network_title] = network_sheet
+
+        # 🖼 Picture and performance
+        picture_group = Adw.PreferencesGroup(title=_("Picture and performance"))
+        picture_group.add(
+            action_row(_("Image and capture"), _("Automatic quality, screen, graphics card, capture method and video limit."), "brp-preferences-symbolic", lambda: self.quality_sheet.present(self))
         )
-        for group, title, description, icon, height in sections:
-            group.set_title("")
-            group.set_description("")
-            sheet = preferences_dialog(title, [group], description=description, height=height)
-            self.settings_dialogs[title] = sheet
-            link = action_row(title, description, icon, lambda d=sheet: d.present(self))
-            settings_links.add(link)
-        config_page.append(settings_links)
+        _add_management_button(picture_group, _("Game Library"), _("Games the other device can start from Moonlight"), "brp-library-symbolic", self.open_game_library_dialog)
+        config_page.append(picture_group)
+
+        # 🔊 Sound
+        audio_group.set_title(_("Sound"))
+        audio_group.set_header_suffix(self.settings_reset_button)
+        config_page.append(audio_group)
+
+        # 🖱 Mouse, keyboard and controllers
+        input_group = self.input_priority.group
+        input_group.set_title(_("Mouse, keyboard and controllers"))
+        self.pointer_capture_row = Adw.ActionRow(title=_("Screen capture for the mouse pointer"), use_markup=False)
+        self.pointer_capture_row.set_subtitle_lines(0)
+        set_row_icon(self.pointer_capture_row, "brp-input-keyboard-symbolic")
+        automatic_button = Gtk.Button(label=_("Use automatic"), valign=Gtk.Align.CENTER)
+        automatic_button.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Let Sunshine choose the screen capture again")])
+        automatic_button.connect("clicked", lambda _button: self._clear_pointer_capture())
+        self.pointer_capture_row.add_suffix(automatic_button)
+        input_group.add(self.pointer_capture_row)
+        self._sync_pointer_capture_row()
+        config_page.append(input_group)
+
+        # 🔐 Security and access
+        security_group = Adw.PreferencesGroup(title=_("Security and access"))
+        self.security_group = security_group
+        self.credentials_state_row = Adw.ActionRow(title=_("Sunshine password"), subtitle=_("Checking…"), use_markup=False)
+        self.credentials_state_row.set_subtitle_lines(0)
+        set_row_icon(self.credentials_state_row, "brp-dialog-password-symbolic")
+        self.credentials_save_button = Gtk.Button(label=_("Save in keyring"), valign=Gtk.Align.CENTER, visible=False)
+        self.credentials_save_button.connect("clicked", lambda _button: self._persist_credentials())
+        self.credentials_state_row.add_suffix(self.credentials_save_button)
+        security_group.add(self.credentials_state_row)
+        _add_management_button(security_group, _("Change Sunshine password"), _("Or reset it if it was forgotten"), "brp-dialog-password-symbolic", self.open_password_dialog)
+        _add_management_button(security_group, _("Paired devices"), _("Allow, pause or remove devices that can connect"), "brp-client-symbolic", self.open_paired_devices_dialog)
+        security_group.add(action_row(network_title, network_description, "brp-network-private-symbolic", lambda: network_sheet.present(self)))
+        config_page.append(security_group)
+
+        # ⚙ Advanced
+        advanced_links = Adw.PreferencesGroup(title=_("Advanced"), description=_("Expert Sunshine settings that are rarely needed."))
+        _add_management_button(advanced_links, _("Advanced server settings"), _("Codecs, network, capture and recovery tools"), "brp-preferences-symbolic", self.open_advanced_settings)
+        _add_management_button(advanced_links, _("Server control panel"), _("Advanced settings in your browser (Sunshine)"), "brp-host-symbolic", self.open_sunshine_config)
+        config_page.append(advanced_links)
         self.view_stack.add_titled_with_icon(config_page, "config", _("Preferences"), "brp-preferences-symbolic")
 
+        # Support: a help center first (checks and common problems), then the
+        # live monitor, history and the technical tools.
         support_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
-        support_page.append(intro(_("Solve sharing problems"), _("Check the connection first. Open server tools only when needed."), "brp-support-symbolic"))
-        # The identical network row already sits on Overview, where sharing starts.
+        support_page.append(intro(_("Help and diagnostics"), _("Check this computer, or choose a problem to see what to try."), "brp-support-symbolic"))
+        from big_remote_play.host import health_checks
+        from .support_center import SupportCenter
+
+        self.support_center = SupportCenter(
+            gather=self._support_facts,
+            actions={
+                health_checks.ACTION_START: lambda: (self.view_stack.set_visible_child_name("overview"), None if self.is_hosting else self.toggle_hosting(self.overview_start_button)),
+                health_checks.ACTION_ALLOW_FIREWALL: lambda: self.on_configure_firewall_clicked(None),
+                health_checks.ACTION_FIX_POINTER: self._fix_pointer_from_support,
+                health_checks.ACTION_SAVE_KEYRING: self._persist_credentials,
+                health_checks.ACTION_RETRY_KEYRING: self._retry_keyring,
+                health_checks.ACTION_ENTER_PASSWORD: lambda: self.open_sunshine_credentials_dialog(),
+                health_checks.ACTION_TEST_AUDIO: lambda: (self.view_stack.set_visible_child_name("config"), self.on_test_audio_clicked(self.audio_test_button)),
+                health_checks.ACTION_OPEN_LOG: lambda: self.open_logs_dialog(None),
+                health_checks.ACTION_PAIR: lambda: (self.view_stack.set_visible_child_name("overview"), self.pair_entry.grab_focus()),
+            },
+        )
+        support_page.append(self.support_center)
+        # The live monitor (shown while sharing), then what happened before.
         support_page.append(self.perf_monitor)
         from .connection_history import ShareHistoryCard
 
@@ -1200,9 +1337,10 @@ class HostView(Gtk.Box):
         support_page.append(self.share_history_card)
         support_page.append(self.summary_box)
         support_page.append(server_tools_group)
-        support_page.append(advanced_tools_group)
         support_page.append(self._create_app_diagnostics_group())
         self.view_stack.add_titled_with_icon(support_page, "support", _("Support"), "brp-support-symbolic")
+        # Checks run only when Support is shown, never in the background.
+        self.view_stack.connect("notify::visible-child-name", lambda stack, _pspec: self._on_tab_changed(stack.get_visible_child_name()))
 
         self.perf_monitor.set_visible(False)
         content.append(self.view_stack)
@@ -1819,7 +1957,10 @@ class HostView(Gtk.Box):
 
     def _explain_none_waiting(self, message: str, blocked: bool) -> None:
         if not blocked:
-            self.show_error_dialog(_("No computer is waiting"), self._none_waiting_message(message))
+            # Said under the PIN field (it stays editable); a dialog only when
+            # someone else's stream blocks pairing and there is a way out.
+            if getattr(self.perf_monitor, "connections", None):
+                self._set_pair_feedback(self._none_waiting_message(message), error=True)
             return
         self._show_pairing_busy(self.is_hosting)
         self._confirm_end_for_everyone(
@@ -1831,24 +1972,123 @@ class HostView(Gtk.Box):
     def _show_pairing_busy(self, visible: bool) -> None:
         self.pair_busy_row.set_visible(visible)
         self.end_for_everyone_row.set_visible(visible)
+        self._sync_attention_group()
+
+    def _sync_attention_group(self) -> None:
+        """Needs attention is shown only while one of its rows applies."""
+        if not hasattr(self, "cursor_row"):
+            return  # still being built
+        rows = (
+            self.pair_busy_row,
+            self.sunshine_password_row,
+            self.firewall_block_row,
+            self.controller_remote_row,
+            self.controller_local_row,
+            self.controller_blocked_row,
+            self.cursor_row,
+            self.picture_row,
+        )
+        self.attention_group.set_visible(self.is_hosting and any(row.get_visible() for row in rows))
+
+    def _on_pair_entry_changed(self) -> None:
+        """Typing again after an error or a result starts over."""
+        self.pair_entry.remove_css_class("error")
+        if self._pair_feedback and not self._pairing_busy:
+            self._pair_feedback = ""
+            self._pair_feedback_kind = ""
+            self._sync_pair_status()
+
+    def _sync_pair_status(self) -> None:
+        """The line under the PIN: what to do now, in words (never only a color)."""
+        if not hasattr(self, "pair_status_label"):
+            return
+        label = self.pair_status_label
+        for css in ("error", "success", "dim-label"):
+            label.remove_css_class(css)
+        waiting = list(self._pair_tracker.requests.values()) if hasattr(self, "_pair_tracker") else []
+        if self._pair_feedback:
+            text, kind = self._pair_feedback, self._pair_feedback_kind
+        elif not self.is_hosting:
+            text, kind = _("Start sharing first. Then choose this computer in Moonlight on the other device."), "dim-label"
+        elif len(waiting) == 1:
+            text, kind = _("{name} is waiting. Type the PIN it shows.").format(name=waiting[0].name), ""
+        elif waiting:
+            text, kind = (
+                ngettext("{count} device is waiting. Approve each one from its request above.", "{count} devices are waiting. Approve each one from its request above.", len(waiting)).format(
+                    count=len(waiting)
+                ),
+                "",
+            )
+        elif getattr(self, "_password_need", ""):
+            # Without a working password Sunshine's waiting devices cannot be
+            # read, so "waiting for a device" would be a guess.
+            text, kind = _("Requests appear here once Sunshine's password works (see Needs attention). You can still type the PIN shown on the other device."), "dim-label"
+        else:
+            text, kind = _("Waiting for a device. On the other device, open Moonlight and choose this computer: it shows a PIN."), "dim-label"
+        label.set_label(text)
+        if kind:
+            label.add_css_class(kind)
+        ready = self.is_hosting and not self._pairing_busy
+        self.guest_pair_button.set_sensitive(ready)
+        self.pair_entry.set_sensitive(self.is_hosting)
+
+    def _retry_keyring(self) -> None:
+        """The person unlocked the keyring: read the saved password again (worker)."""
+        self.credentials.retry()
+        self._auto_create_paused = False
+        self._credentials_need_keyring = False
+        self._show_password_needed("")
+        self._pair_busy_checking = False
+        self._check_pairing_busy()
+
+    def _password_state(self) -> str:
+        """Worker or GTK thread: why no password can be used now (memory only)."""
+        from big_remote_play.utils.sunshine_credentials import KEYRING_UNRESPONSIVE
+
+        status = self.credentials.status()
+        if status.rejected:
+            return "rejected"
+        if getattr(self, "_credentials_need_keyring", False):
+            return "create"
+        if status.keyring == KEYRING_UNRESPONSIVE:
+            return "locked"
+        return "missing"
 
     def _show_password_needed(self, state: str) -> None:
-        """``""`` (nothing to ask), ``missing`` or ``rejected``."""
+        """``""`` (nothing to ask), ``missing``, ``rejected``, ``create`` or ``locked``."""
         texts = {
             "missing": (
                 _("Sunshine's password is needed to approve devices"),
                 _("Enter it now, so a device is approved the moment you type its code. Otherwise Moonlight on the device may give up while you type it."),
+                _("Enter Sunshine password"),
             ),
             "rejected": (
                 _("Sunshine rejected the saved password"),
                 _("Enter the current Sunshine user and password, so devices can be approved."),
+                _("Enter Sunshine password"),
+            ),
+            "create": (
+                _("Choose a password for sharing"),
+                _("The system keyring is not available, so Big Remote Play cannot create one for you. Choose a password once; it works until you close Big Remote Play."),
+                _("Choose password"),
+            ),
+            "locked": (
+                _("The system keyring did not answer"),
+                _("It may be locked. Unlock it and try again, or enter Sunshine's password for this session."),
+                _("Enter Sunshine password"),
             ),
         }
-        title, subtitle = texts.get(state, ("", ""))
+        title, subtitle, action = texts.get(state, ("", "", ""))
+        self._password_need = state
         self.sunshine_password_row.set_title(title)
         self.sunshine_password_row.set_subtitle(subtitle)
         self.sunshine_password_row.set_visible(bool(state))
+        if action:
+            self.sunshine_password_button.set_title(action)
         self.sunshine_password_button.set_visible(bool(state))
+        self.keyring_retry_row.set_visible(state == "locked")
+        self._sync_attention_group()
+        self._sync_pair_status()
 
     @staticmethod
     def _firewall_network_label(kind: str) -> str:
@@ -1865,6 +2105,7 @@ class HostView(Gtk.Box):
             )
         self.firewall_block_row.set_visible(blocked)
         self.firewall_allow_row.set_visible(blocked)
+        self._sync_attention_group()
 
     def _check_firewall(self) -> None:
         """Read-only: whether this computer's firewall lets other computers reach Sunshine."""
@@ -1899,6 +2140,179 @@ class HostView(Gtk.Box):
             )
         self.controller_local_row.set_visible(local)
         self.controller_blocked_row.set_visible(blocked)
+        self._sync_attention_group()
+
+    # ------------------------------------------------------------------
+    # The mouse pointer the other device does not see.
+    # ------------------------------------------------------------------
+    _POINTER_CAPTURES = ("kwin", "portal", "x11")
+
+    def _pointer_capture(self) -> str:
+        value = str(self.config.get("pointer_capture", "") or "")
+        return value if value in self._POINTER_CAPTURES else ""
+
+    def _pointer_capture_name(self, value: str) -> str:
+        return {"kwin": _("KDE screen capture (KWin)"), "portal": _("Desktop screen capture (portal)"), "x11": _("X11 screen capture")}.get(value, _("Automatic"))
+
+    def _check_cursor(self) -> None:
+        """Read-only: does Sunshine's log say the pointer is missing from the picture?"""
+        if not self.is_hosting:
+            self._cursor_worker.cancel()
+            self._show_cursor_report(None)
+            return
+        from big_remote_play.host.cursor_check import cursor_report
+
+        index = self.platform_row.get_selected()
+        configured = (self._capture_values[index] if 0 <= index < len(self._capture_values) else "") or self._pointer_capture()
+        log_path = self.sunshine.config_dir / "sunshine.log"
+        self._cursor_worker.submit(lambda: cursor_report(log_path, configured=configured), self._show_cursor_report, failed=lambda _error: self._show_cursor_report(None))
+
+    def _show_cursor_report(self, report) -> None:
+        self._cursor_report = report
+        lost = bool(report is not None and report.lost and self.is_hosting and self._source() != "game_window")
+        if lost and report is not None:
+            if report.recommended:
+                self.cursor_row.set_subtitle(
+                    _(
+                        "Sunshine reports that it cannot capture the pointer with its automatic screen capture. The mouse still works, but the other device may not see where it is. {capture} draws the pointer into the picture."
+                    ).format(capture=self._pointer_capture_name(report.recommended))
+                )
+                self.cursor_fix_button.set_label(_("Use it"))
+                self.cursor_fix_button.update_property([Gtk.AccessibleProperty.LABEL], [_("Use {capture}").format(capture=self._pointer_capture_name(report.recommended))])
+            else:
+                self.cursor_row.set_subtitle(_("Sunshine reports that it cannot capture the pointer. Support → Common problems explains what to try."))
+        self.cursor_fix_button.set_visible(lost and report is not None and bool(report.recommended))
+        self.cursor_row.set_visible(lost)
+        if report is not None and report.import_failed:
+            self.picture_row.set_subtitle(
+                _(
+                    "This graphics card cannot pass the shared picture to its video encoder, so the other device sees a black screen. In Preferences → Image and capture, turn off automatic settings and choose Software (CPU) as the graphics card, then restart sharing."
+                )
+            )
+        elif report is not None and report.no_picture:
+            self.picture_row.set_subtitle(_("Sunshine found no way to capture or encode the screen. Restart sharing and answer the desktop's screen-sharing questions right away."))
+        self.picture_row.set_visible(bool(report is not None and report.no_picture and self.is_hosting))
+        self._sync_attention_group()
+
+    def _apply_cursor_fix(self) -> None:
+        report = getattr(self, "_cursor_report", None)
+        if report is None or not report.recommended:
+            return
+        capture = report.recommended
+        dialog = Adw.AlertDialog(
+            heading=_("Show the mouse pointer"),
+            body=_(
+                "Sharing restarts with {capture}; devices playing now reconnect by themselves in a few seconds. You can go back to Automatic in Preferences → Mouse, keyboard and controllers."
+            ).format(capture=self._pointer_capture_name(capture)),
+        )
+        if capture == "portal":
+            dialog.set_body(dialog.get_body() + "\n\n" + _("The desktop asks once which screen to share; choose the same screen."))
+        dialog.add_response("cancel", _("Cancel"))
+        dialog.add_response("restart", _("Restart sharing"))
+        dialog.set_response_appearance("restart", Adw.ResponseAppearance.SUGGESTED)
+        dialog.set_default_response("restart")
+        dialog.set_close_response("cancel")
+
+        def on_response(_dialog, response: str) -> None:
+            if response != "restart":
+                return
+            self.config.set("pointer_capture", capture)
+            self._sync_pointer_capture_row()
+            self._show_cursor_report(None)
+            self._restart_after_stop = True
+            if self.is_hosting:
+                self.stop_hosting()
+
+        dialog.connect("response", on_response)
+        dialog.present(self)
+
+    def _restart_sharing(self) -> None:
+        if not self.is_hosting or self.sharing_transition is not None:
+            return
+        self.picture_row.set_visible(False)
+        self._restart_after_stop = True
+        self.stop_hosting()
+
+    def _clear_pointer_capture(self) -> None:
+        self.config.set("pointer_capture", "")
+        self._sync_pointer_capture_row()
+        self.show_toast(_("Automatic screen capture is used the next time sharing starts."))
+
+    def _sync_pointer_capture_row(self) -> None:
+        if not hasattr(self, "pointer_capture_row"):
+            return
+        capture = self._pointer_capture()
+        self.pointer_capture_row.set_visible(bool(capture))
+        if capture:
+            self.pointer_capture_row.set_subtitle(_("{capture}, chosen so the other device sees the mouse pointer.").format(capture=self._pointer_capture_name(capture)))
+
+    # ------------------------------------------------------------------
+    # Security and access, and Support's checks.
+    # ------------------------------------------------------------------
+    def _show_credentials_state(self) -> bool:
+        """GTK thread: where Sunshine's password is, in words (never the password)."""
+        from big_remote_play.utils.sunshine_credentials import KEYRING_UNAVAILABLE, KEYRING_UNRESPONSIVE
+
+        if self._closed or not hasattr(self, "credentials_state_row"):
+            return False
+        status = self.credentials.status()
+        session_only = status.known and not status.persisted
+        if status.rejected:
+            text = _("Sunshine rejected the saved password. Enter the current one to approve devices.")
+        elif session_only:
+            text = _("Kept only until you close Big Remote Play: the system keyring did not save it.")
+        elif status.persisted:
+            # TRANSLATORS: {user} is the Sunshine administrator user name, such as "sunshine".
+            text = _("Saved in the system keyring for the user “{user}”. Devices are approved with their PIN alone.").format(user=status.user)
+        elif status.keyring == KEYRING_UNRESPONSIVE:
+            text = _("The system keyring did not answer. It may be locked.")
+        elif status.keyring == KEYRING_UNAVAILABLE:
+            text = _("No system keyring is available, so the password cannot be remembered.")
+        else:
+            text = _("Created and saved automatically the first time sharing starts.")
+        self.credentials_state_row.set_subtitle(text)
+        self.credentials_save_button.set_visible(session_only)
+        return False
+
+    def _persist_credentials(self) -> None:
+        """Save the password held for this session in the keyring (worker)."""
+        from big_remote_play.utils.secret_store import retry_keyring
+        from big_remote_play.utils.sunshine_credentials import SAVED as saved
+
+        retry_keyring()  # an explicit request: ask the keyring even after a timeout
+        self.credentials_save_button.set_sensitive(False)
+
+        def done(result) -> None:
+            self.credentials_save_button.set_sensitive(True)
+            self._report_credentials_saved(result == saved)
+
+        self._credentials_worker.submit(self.credentials.persist, done, failed=lambda _error: done(""), keep_previous=True)
+
+    def _support_facts(self):
+        """Worker thread: what Support → Check this computer shows."""
+        from big_remote_play.host.health_checks import gather_facts
+
+        index = self.platform_row.get_selected()
+        configured = (self._capture_values[index] if 0 <= index < len(self._capture_values) else "") or self._pointer_capture()
+        encoders = tuple(str(gpu.get("label", "")) for gpu in self.available_gpus if gpu.get("encoder") not in (None, "", "auto", "software"))
+        self.credentials.get()  # bounded; read once per session
+        return gather_facts(sunshine=self.sunshine, credentials_status=self.credentials.status(), configured_capture=configured, encoders=encoders)
+
+    def _fix_pointer_from_support(self) -> None:
+        report = getattr(self, "_cursor_report", None)
+        if report is not None and report.recommended:
+            self._apply_cursor_fix()
+            return
+        self.view_stack.set_visible_child_name("overview")
+        self._check_cursor()
+
+    def _on_tab_changed(self, name: str | None) -> None:
+        if name == "support":
+            self.support_center.refresh()
+        else:
+            self.support_center.cancel()
+        if name == "config":
+            self._show_credentials_state()
 
     def _check_controllers(self) -> None:
         """Read-only: what would keep the other computer's controller out of games here."""
@@ -1918,13 +2332,29 @@ class HostView(Gtk.Box):
         the requests still waiting with a name a person recognizes.
         """
         app_id = self.sunshine.running_app_id()
+        # The process can run without serving yet (a screen picker waiting
+        # for an answer, an encoder probe that hangs): the page must not say
+        # that devices can connect then.
+        self._api_reachable = self.sunshine._api_is_reachable()
         credentials = self._get_sunshine_creds() or self._create_sunshine_credentials()
         # ``None`` means "could not be read": requests on screen stay as
         # they are; only an answer from Sunshine can say nobody waits.
         if not credentials:
-            return app_id, "missing", None, {}
+            return app_id, self._password_state(), None, {}
         pending, status = self.sunshine.pending_pairings(credentials)
+        if status == 307:
+            # Sunshine has no user yet, but the keyring already holds one of
+            # ours (a save that finished after the person completed the
+            # keyring's own prompt): give Sunshine exactly that user. No
+            # existing Sunshine user can be replaced here.
+            ok, _message = self.sunshine.create_user(*credentials)
+            if ok:
+                self._credentials_created = True
+                _log.info("Created the Sunshine user from the password already in the keyring.")
+                pending, status = self.sunshine.pending_pairings(credentials)
         if status == 401:
+            # Not asked again every few seconds: a new password is needed.
+            self.credentials.mark_rejected()
             return app_id, "rejected", None, {}
         if status == 200 and pending:
             if self.sunshine.discard_abandoned_pairings(credentials):
@@ -1942,32 +2372,55 @@ class HostView(Gtk.Box):
         """Worker: give a Sunshine that has no user yet one, kept in the keyring.
 
         Only when Sunshine says no user exists (a first start) and the keyring
-        can keep the password: an existing Sunshine user is never replaced.
-        The person never needs to know this password; Server password in
-        Support shows how to change it.
+        really answers: an existing Sunshine user is never replaced, and a
+        password nobody could recover is never created. The user is
+        ``sunshine`` with a long random password the person never needs to
+        know; Share → Preferences → Security and access changes it.
         """
-        import getpass
         import secrets
 
-        from big_remote_play.utils.secret_store import SecretStore
+        from big_remote_play.utils.secret_store import SecretStore, SecretStoreTimeout, SecretStoreUnavailable
+        from big_remote_play.utils.sunshine_credentials import SUNSHINE_PASSWORD_KEY, save_sunshine_credentials
 
-        if getattr(self, "_credentials_created", False):
+        if getattr(self, "_credentials_created", False) or getattr(self, "_auto_create_paused", False):
             return None
         _pending, status = self.sunshine.pending_pairings(None)
-        if status != 307 or not SecretStore().is_available():
+        if status != 307:
+            return None
+        store = SecretStore()
+        if not store.is_available():
+            self._credentials_need_keyring = True
+            return None
+        user, password = DEFAULT_SUNSHINE_USER, secrets.token_urlsafe(24)
+        # The keyring first, Sunshine second: a lookup can "succeed" after the
+        # person cancelled the keyring's creation prompt, so only a password
+        # the keyring really kept may become Sunshine's. Measured on Big GNOME
+        # and BigLinux KDE live sessions (2026-11-04).
+        try:
+            save_sunshine_credentials(user, password, conf_path=self._get_sunshine_conf_path(), secret_store=store)
+        except SecretStoreTimeout:
+            # Its own prompt may still be open. Not asked again by itself
+            # (that would open a new prompt every minute): "Try the keyring
+            # again" resumes it.
+            from big_remote_play.utils.sunshine_credentials import KEYRING_UNRESPONSIVE
+
+            self._auto_create_paused = True
+            self.credentials.note_keyring(KEYRING_UNRESPONSIVE)
+            return None
+        except (SecretStoreUnavailable, OSError):
+            self._credentials_need_keyring = True
             return None
         self._credentials_created = True
-        user = getpass.getuser() or "big-remote-play"
-        password = secrets.token_urlsafe(24)
         ok, _message = self.sunshine.create_user(user, password)
         if not ok:
+            try:
+                store.clear(SUNSHINE_PASSWORD_KEY)  # never keep a password Sunshine does not use
+            except SecretStoreUnavailable:
+                pass
             return None
-        try:
-            save_sunshine_credentials(user, password, conf_path=self._get_sunshine_conf_path())
-        except Exception as error:
-            _log.warning("Sunshine user created but its password could not be kept: %s", type(error).__name__)
-            return None
-        _log.info("Created the Sunshine user for this computer and kept its password in the keyring.")
+        self._credentials_need_keyring = False
+        self.credentials.adopt_saved(user, password)
+        _log.info("Created the Sunshine user for this computer; its password is in the keyring.")
         return user, password
 
     def _check_pairing_busy(self) -> None:
@@ -1986,6 +2439,7 @@ class HostView(Gtk.Box):
         def apply(result) -> None:
             self._pair_busy_checking = False
             app_id, password, pending, names = result
+            self._show_server_answering(getattr(self, "_api_reachable", True))
             self._show_pairing_busy(self.is_hosting and bool(app_id))
             self._show_password_needed(password if self.is_hosting else "")
             if not self.is_hosting:
@@ -2005,8 +2459,7 @@ class HostView(Gtk.Box):
         events = self._pair_tracker.update(pending, names)
         for request in events.expired:
             # Nobody answered in time: the request is cancelled, never left open.
-            credentials = self._get_sunshine_creds()
-            self._pair_answer_worker.submit(lambda pairing_id=request.pairing_id: self.sunshine.cancel_pairing(pairing_id, credentials), lambda _ok: None, keep_previous=True)
+            self._pair_answer_worker.submit(lambda pairing_id=request.pairing_id: self.sunshine.cancel_pairing(pairing_id, self._get_sunshine_creds()), lambda _ok: None, keep_previous=True)
             self.show_toast(_("The connection request from {name} expired.").format(name=request.name))
         for request in (*events.gone, *events.expired):
             if self._pair_dialog is not None and self._pair_dialog.request.pairing_id == request.pairing_id:
@@ -2015,6 +2468,11 @@ class HostView(Gtk.Box):
                 if request in events.gone:
                     self.show_toast(_("{name} stopped waiting.").format(name=request.name))
         self.pair_requests_group.show_requests(self._pair_tracker.requests.values())
+        if events.new and not self._pairing_busy:
+            # A new device is waiting: an earlier attempt's result no longer applies.
+            self._pair_feedback = ""
+            self._pair_feedback_kind = ""
+        self._sync_pair_status()
         if events.new:
             self._announce_pair_request(events.new[0])
 
@@ -2028,9 +2486,38 @@ class HostView(Gtk.Box):
 
                 notification = Gio.Notification.new(_("A computer wants to connect"))
                 notification.set_body(_("{name} wants to play on this computer. Open Big Remote Play to approve it.").format(name=request.name))
+                # Clicking it brings the request back, even after "Not now".
+                self._install_pairing_action(application)
+                notification.set_default_action("app.show-pairing-request")
+                notification.set_priority(Gio.NotificationPriority.HIGH)
                 application.send_notification("brp-pairing-request", notification)
         if self._pair_dialog is None:
             self._open_pair_request(request)
+
+    def _install_pairing_action(self, application) -> None:
+        from gi.repository import Gio  # type: ignore
+
+        if application.lookup_action("show-pairing-request") is not None:
+            return
+        action = Gio.SimpleAction.new("show-pairing-request", None)
+        action.connect("activate", lambda *_args: self.show_waiting_request())
+        application.add_action(action)
+
+    def show_waiting_request(self) -> None:
+        """Bring the window and the oldest waiting request to the front."""
+        root = self._root_window()
+        if root is None or self._closed:
+            return
+        navigate = getattr(root, "navigate_to", None)
+        if callable(navigate):
+            navigate("host")
+        self.view_stack.set_visible_child_name("overview")
+        root.present()
+        request = self._pair_tracker.oldest()
+        if request is not None and self._pair_dialog is None:
+            self._open_pair_request(request)
+        elif request is None:
+            self.pair_entry.grab_focus()
 
     def _open_pair_request(self, request) -> None:
         from .pairing_prompt import PairingRequestDialog
@@ -2047,29 +2534,45 @@ class HostView(Gtk.Box):
     def _pair_dialog_closed(self, dialog) -> None:
         if self._pair_dialog is dialog:
             self._pair_dialog = None
+            # Answered: the next device that is still waiting is asked at once.
+            # "Not now" leaves the others on the page instead.
+            if getattr(dialog, "_answered", False):
+                GLib.idle_add(self._prompt_next_request)
+
+    def _prompt_next_request(self) -> bool:
+        if self._closed or self._pair_dialog is not None or not self.is_hosting:
+            return False
+        request = self._pair_tracker.oldest()
+        if request is not None:
+            self._open_pair_request(request)
+        return False
 
     def _approve_pair_request(self, request, pin: str) -> None:
+        # Answered here: not announced again while Sunshine checks the PIN.
         self._pair_tracker.forget(request.pairing_id)
         self.pair_requests_group.show_requests(self._pair_tracker.requests.values())
-        credentials = self._get_sunshine_creds()
-        if not credentials:
-            self.open_pin_dialog(None, prefill_pin=pin)
-            return
-        # Sunshine answers once the device has checked the PIN (up to about ten seconds).
-        self.show_toast(_("Checking the PIN with {name}…").format(name=request.name))
-        self._send_pin_async(pin, request.name, credentials, pairing_id=request.pairing_id, success=_("{name} can now play on this computer.").format(name=request.name))
+        success = _("{name} can now play on this computer.").format(name=request.name)
+
+        def checked(credentials) -> None:
+            if not credentials:
+                # Asked once; the same PIN goes to the same request afterwards.
+                self.open_sunshine_credentials_dialog(then=lambda auth: self._send_pin_async(pin, request.name, auth, pairing_id=request.pairing_id, success=success))
+                return
+            self._send_pin_async(pin, request.name, credentials, pairing_id=request.pairing_id, success=success)
+
+        self._credentials_worker.submit(self._get_sunshine_creds, checked, failed=lambda _error: checked(None), keep_previous=True)
 
     def _reject_pair_request(self, request) -> None:
         self._pair_tracker.forget(request.pairing_id)
         self.pair_requests_group.show_requests(self._pair_tracker.requests.values())
+        self._sync_pair_status()
         if self._pair_dialog is not None and self._pair_dialog.request.pairing_id == request.pairing_id:
             self._pair_dialog.force_close()
-        credentials = self._get_sunshine_creds()
 
         def done(ok) -> None:
             self.show_toast(_("Request rejected. {name} was not allowed to connect.").format(name=request.name) if ok else _("Sunshine did not answer. The request ends by itself when it expires."))
 
-        self._pair_answer_worker.submit(lambda: self.sunshine.cancel_pairing(request.pairing_id, credentials), done, failed=lambda _error: done(False), keep_previous=True)
+        self._pair_answer_worker.submit(lambda: self.sunshine.cancel_pairing(request.pairing_id, self._get_sunshine_creds()), done, failed=lambda _error: done(False), keep_previous=True)
 
     def _end_pair_requests(self) -> None:
         """Sharing stopped: nothing is waiting any more."""
@@ -2079,47 +2582,142 @@ class HostView(Gtk.Box):
             self._pair_dialog.force_close()
             self._pair_dialog = None
 
-    def open_sunshine_credentials_dialog(self) -> None:
-        """Ask for Sunshine's user and password once, check them, keep them in the keyring."""
-        saved = self._get_sunshine_creds()
-        dialog = Adw.AlertDialog(
-            heading=_("Sunshine password"),
-            body=_("The user and password of Sunshine on this computer, the ones of its web panel. They are kept in the system keyring."),
+    def open_sunshine_credentials_dialog(self, then: Callable[[tuple[str, str]], object] | None = None, *, create: bool | None = None) -> None:
+        """Ask for Sunshine's user and password once, check them, keep them.
+
+        ``then(credentials)`` runs on the GTK thread once they work, so an
+        approval waiting for them continues by itself. With ``create`` (a
+        Sunshine without any user and no keyring to create one silently) the
+        person chooses the password instead. Checking and saving run on a
+        worker: a slow or locked keyring never freezes the window, and a
+        keyring that cannot save does not undo a working password.
+        """
+        if create is None:
+            create = getattr(self, "_password_need", "") == "create"
+        saved = self.credentials.cached()
+        dialog = Adw.Dialog(title=_("Choose a password for sharing") if create else _("Sunshine password"))
+        dialog.set_content_width(440)
+        dialog.add_css_class("brp-dialog")
+        toolbar = Adw.ToolbarView()
+        toolbar.add_top_bar(Adw.HeaderBar())
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+        for edge in ("top", "bottom", "start", "end"):
+            getattr(box, f"set_margin_{edge}")(20)
+        intro_label = Gtk.Label(
+            label=_("Sunshine, the program that shares this computer, needs an administrator password. You do not need to remember it for normal use.")
+            if create
+            else _("The user and password of Sunshine on this computer, the ones of its web panel. Asked only once."),
+            wrap=True,
+            xalign=0,
         )
+        intro_label.add_css_class("dim-label")
+        box.append(intro_label)
         group = Adw.PreferencesGroup()
-        user_row = Adw.EntryRow(title=_("Sunshine User"))
-        user_row.set_text(saved[0] if saved else "")
-        pass_row = Adw.PasswordEntryRow(title=_("Sunshine password"))
-        group.add(user_row)
-        group.add(pass_row)
-        dialog.set_extra_child(group)
-        dialog.add_response("cancel", _("Cancel"))
-        dialog.add_response("save", _("Save"))
-        dialog.set_response_appearance("save", Adw.ResponseAppearance.SUGGESTED)
-        dialog.set_default_response("save")
-        dialog.set_close_response("cancel")
+        user_row = Adw.EntryRow(title=_("Sunshine User"), use_markup=False)
+        user_row.set_text(saved[0] if saved else self.credentials.status().user or DEFAULT_SUNSHINE_USER)
+        pass_row = Adw.PasswordEntryRow(title=_("Sunshine password"), use_markup=False)
+        confirm_row = Adw.PasswordEntryRow(title=_("Confirm password"), use_markup=False, visible=create)
+        from big_remote_play.utils.sunshine_credentials import KEYRING_UNAVAILABLE
 
-        def checked(result) -> None:
-            status, user, password = result
-            if status == 200:
-                if self._save_sunshine_creds(user, password):
-                    self.show_toast(_("Sunshine password saved. Devices can be approved right away."))
-                    self._show_password_needed("")
-            elif status == 401:
-                self.show_error_dialog(_("Authentication Failed"), _("Invalid username or password."))
-            elif status == 307:
-                self.prompt_create_user(None)
-            else:
-                self.show_error_dialog(_("Sunshine did not answer"), _("Start sharing first, then enter the password again."))
+        # Off when the keyring is known to be missing: nothing promised that cannot happen.
+        keyring_missing = self.credentials.status().keyring == KEYRING_UNAVAILABLE or getattr(self, "_credentials_need_keyring", False)
+        remember_row = Adw.SwitchRow(title=_("Remember on this computer"), subtitle=_("Kept in the system keyring, never in a file."), active=not keyring_missing)
+        remember_row.set_subtitle_lines(0)
+        for row in (user_row, pass_row, confirm_row, remember_row):
+            group.add(row)
+        box.append(group)
+        status = Gtk.Label(xalign=0, wrap=True, visible=False)
+        status.set_accessible_role(Gtk.AccessibleRole.ALERT)
+        box.append(status)
+        actions = Gtk.Box(spacing=12, halign=Gtk.Align.END)
+        cancel = Gtk.Button(label=_("Cancel"))
+        cancel.connect("clicked", lambda _button: dialog.close())
+        save = Gtk.Button(label=_("Create") if create else _("Save"))
+        save.add_css_class("suggested-action")
+        spinner = Adw.Spinner(visible=False)
+        actions.append(spinner)
+        actions.append(cancel)
+        actions.append(save)
+        box.append(actions)
+        toolbar.set_content(box)
+        dialog.set_child(toolbar)
+        dialog.set_default_widget(save)
+        dialog.save_button = save  # for tests and assistive navigation
 
-        def on_response(_dialog, response: str) -> None:
-            user, password = user_row.get_text().strip(), pass_row.get_text()
-            if response != "save" or not user or not password:
+        def say(text: str, error: bool = True) -> None:
+            status.set_label(text)
+            status.set_visible(bool(text))
+            (status.add_css_class if error else status.remove_css_class)("error")
+
+        def busy(value: bool) -> None:
+            save.set_sensitive(not value)
+            spinner.set_visible(value)
+            for row in (user_row, pass_row, confirm_row, remember_row):
+                row.set_sensitive(not value)
+
+        def finished(result) -> None:
+            outcome, user, password, kept, remember = result
+            if getattr(dialog, "_gone", False):
                 return
-            self._credentials_worker.submit(lambda: (self.sunshine.pending_pairings((user, password))[1], user, password), checked)
+            busy(False)
+            if outcome == 200:
+                dialog._gone = True
+                dialog.close()
+                self._credentials_need_keyring = False
+                self._show_password_needed("")
+                self._report_credentials_saved(kept, wanted=remember)
+                if then is not None:
+                    then((user, password))
+            elif outcome == 401:
+                say(_("Sunshine did not accept this user and password. Check them and try again."))
+                pass_row.grab_focus()
+            elif outcome == 307 and not create:
+                dialog._gone = True
+                dialog.close()
+                self.open_sunshine_credentials_dialog(then, create=True)
+            elif outcome == "create-failed":
+                say(_("Sunshine did not accept the new password. Start sharing, then try again."))
+            else:
+                say(_("Sunshine did not answer. Start sharing first, then try again."))
 
-        dialog.connect("response", on_response)
+        def work(user: str, password: str, remember: bool):
+            if create:
+                ok, _message = self.sunshine.create_user(user, password)
+                if not ok:
+                    return "create-failed", user, password, False, remember
+                outcome = 200
+            else:
+                outcome = self.sunshine.pending_pairings((user, password))[1]
+            if outcome != 200:
+                return outcome, user, password, False, remember
+            # In memory first, then (bounded) in the keyring.
+            kept = self._save_sunshine_creds(user, password, persist=remember)
+            return 200, user, password, kept, remember
+
+        def on_save(*_args) -> None:
+            if not save.get_sensitive():
+                return
+            user, password = user_row.get_text().strip(), pass_row.get_text()
+            if not user or not password:
+                say(_("Enter the user and the password."))
+                (pass_row if user else user_row).grab_focus()
+            elif create and password != confirm_row.get_text():
+                say(_("The passwords do not match."))
+                confirm_row.grab_focus()
+            else:
+                say(_("Checking with Sunshine…"), error=False)
+                busy(True)
+                remember = remember_row.get_active()
+                self._credentials_worker.submit(lambda: work(user, password, remember), finished, failed=lambda _error: finished((0, user, password, False, remember)), keep_previous=True)
+
+        save.connect("clicked", on_save)
+        for row in (user_row, pass_row, confirm_row):
+            row.connect("entry-activated", on_save)
+        # A result arriving after the sheet was closed changes nothing on screen.
+        dialog.connect("closed", lambda d: setattr(d, "_gone", True))
+        self._credentials_dialog = dialog
         dialog.present(self)
+        GLib.idle_add(lambda: (pass_row if (saved or create) else user_row).grab_focus() and False)
 
     def _confirm_end_for_everyone(self, body: str | None = None) -> None:
         dialog = Adw.AlertDialog(
@@ -2363,83 +2961,134 @@ class HostView(Gtk.Box):
         return paths.SUNSHINE_CONF
 
     def _get_sunshine_creds(self) -> tuple[str, str] | None:
-        return load_sunshine_credentials(conf_path=self._get_sunshine_conf_path())
+        """Worker thread only: may wait for the keyring (bounded) the first time."""
+        return self.credentials.get()
 
-    def _save_sunshine_creds(self, user: str, password: str) -> bool:
-        try:
-            save_sunshine_credentials(user, password, conf_path=self._get_sunshine_conf_path())
-            return True
-        except SecretStoreUnavailable:
-            self.show_toast(_("System keyring is unavailable. Password was not saved."))
-        except Exception as e:
-            _log.error(f"Error saving Sunshine credentials: {e}")
-        return False
+    def _save_sunshine_creds(self, user: str, password: str, *, persist: bool = True) -> bool:
+        """Worker thread only: use these verified credentials; True when the keyring kept them.
 
-    def _ensure_sunshine_config(self) -> None:
-        """Ensures sunshine.conf has required API settings"""
-        try:
-            ensure_sunshine_api_config(conf_path=self._get_sunshine_conf_path())
-        except Exception as e:
-            _log.error(f"Error ensuring sunshine config: {e}")
-
-    def pair_with_entered_pin(self) -> None:
-        """Finish pairing from the numbered step, without a dialog in the way.
-
-        Only the cases that genuinely need more input — no stored Sunshine
-        credentials, or the server rejecting them — fall back to the full form.
+        Never touches GTK: the caller reports the outcome on the main loop
+        with :meth:`_report_credentials_saved`.
         """
-        pin = self.pair_entry.get_text().strip()
-        if len(pin) != MOONLIGHT_PAIRING_PIN_LENGTH or not pin.isascii() or not pin.isdigit():
-            self.pair_entry.add_css_class("error")
-            self.pair_entry.grab_focus()
-            self.show_toast(_("Enter exactly four digits."))
-            return
-        self.pair_entry.remove_css_class("error")
-
-        if getattr(self, "_pairing_busy", False):
-            return
-        self._pairing_busy = True
-        self.guest_pair_button.set_sensitive(False)
-
-        def finish(credentials, result, error, blocked=False):
-            self._pairing_busy = False
-            if getattr(self, "_closed", False):
-                return False
-            self.guest_pair_button.set_sensitive(self.is_hosting)
-            if error:
-                self.show_error_dialog(_("Pairing failed"), error)
-            elif not credentials:
-                self.open_pin_dialog(None, prefill_pin=pin)
-            elif result.ok:
-                self.pair_entry.set_text("")
-                self.show_toast(_("The other PC is paired."))
-                self._refresh_paired_devices()
-            elif result.status == 401:
-                self.show_toast(_("Sunshine rejected the saved password."))
-                self.open_pin_dialog(None, prefill_pin=pin)
-            elif result.status == 307:
-                self.prompt_create_user(pin)
-            elif result.status == PIN_CHOOSE:
-                self._choose_pending_pairing(pin, credentials, result.pending)
-            elif result.status == PIN_NONE_WAITING:
-                self._explain_none_waiting(result.message, blocked)
-            else:
-                self.show_error_dialog(_("Pairing failed"), result.message)
+        try:
+            return self.credentials.remember(user, password, persist=persist) == SAVED
+        except ValueError:
             return False
 
-        def submit():
-            try:
-                self._ensure_sunshine_config()
-                credentials = self._get_sunshine_creds()
-                if credentials:
-                    # A request the device abandoned would take this PIN.
-                    self.sunshine.discard_abandoned_pairings(credentials)
-                result = self.sunshine.send_pin(pin, name=_("Other computer"), auth=credentials) if credentials else None
-                GLib.idle_add(finish, credentials, result, "", self._pairing_blocked(result))
-            except Exception as exc:
-                GLib.idle_add(finish, None, None, str(exc))
+    def _credentials_saved_late(self) -> bool:
+        if not self._closed:
+            self.show_toast(_("Password saved in the system keyring."))
+            self._show_credentials_state()
+        return False
 
-        threading.Thread(target=submit, daemon=True).start()
+    def _report_credentials_saved(self, kept: bool, *, wanted: bool = True) -> None:
+        """GTK thread: say where the password is, never what it is."""
+        from big_remote_play.utils.sunshine_credentials import KEYRING_UNRESPONSIVE
+
+        if kept:
+            self.show_toast(_("Password saved in the system keyring."))
+        elif wanted and self.credentials.status().keyring == KEYRING_UNRESPONSIVE:
+            # Often KWallet's own "create a wallet" or unlock window is open:
+            # finishing it still saves the password (see _credentials_saved_late).
+            self.show_toast(_("The system keyring did not answer. It may be locked."))
+        elif wanted:
+            self.show_toast(_("The system keyring could not save the password. It works until you close Big Remote Play."))
+        self._show_credentials_state()
+
+    def _ensure_sunshine_config(self) -> None:
+        """Read the saved credentials once, on a worker (also moves legacy plain-text ones)."""
+        self._credentials_worker.submit(self.credentials.get, lambda _credentials: self._show_credentials_state(), failed=lambda _error: None, keep_previous=True)
+
+    def pair_with_entered_pin(self) -> None:
+        """Approve the device whose PIN was typed on the Pair a device card.
+
+        Only the PIN is asked for. The PIN goes to the request Sunshine says
+        is waiting (one request: that one; several: the person picks which;
+        none: nothing is sent and the page says how to start pairing).
+        Sunshine's password is asked for only when none works yet, once.
+        """
+        from big_remote_play.host.pairing_requests import valid_pin
+
+        pin = valid_pin(self.pair_entry.get_text())
+        if not pin:
+            self.pair_entry.add_css_class("error")
+            self.pair_entry.grab_focus()
+            self._set_pair_feedback(_("Type the four digits shown on the other device."), error=True)
+            return
+        self.pair_entry.remove_css_class("error")
+        if not self.is_hosting:
+            self._set_pair_feedback(_("Start sharing first. Then choose this computer in Moonlight on the other device."), error=True)
+            return
+        if getattr(self, "_pairing_busy", False):
+            return
+        self._set_pairing_busy(True)
+        self._set_pair_feedback(_("Checking the PIN with the other device… This can take a few seconds."))
+
+        def finish(result) -> None:
+            credentials, outcome, error, blocked = result
+            self._set_pairing_busy(False)
+            if self._closed:
+                return
+            if error:
+                self._set_pair_feedback(_("Pairing failed. Sunshine did not answer; check that sharing is on and try again."), error=True)
+            elif not credentials:
+                self._set_pair_feedback("")
+                self.open_sunshine_credentials_dialog(then=lambda _auth: self.pair_with_entered_pin())
+            else:
+                self._pin_outcome(pin, credentials, outcome, blocked)
+
+        def submit():
+            credentials = self._get_sunshine_creds()
+            if not credentials:
+                return None, None, "", False
+            # A request the device abandoned would take this PIN.
+            self.sunshine.discard_abandoned_pairings(credentials)
+            outcome = self.sunshine.send_pin(pin, name=_("Other computer"), auth=credentials)
+            return credentials, outcome, "", self._pairing_blocked(outcome)
+
+        self._pin_worker.submit(submit, finish, failed=lambda error: finish((None, None, str(error) or "error", False)))
+
+    def _set_pairing_busy(self, busy: bool) -> None:
+        self._pairing_busy = busy
+        self.guest_pair_button.set_sensitive(self.is_hosting and not busy)
+        self.pair_spinner.set_visible(busy)
+        self.pair_entry.set_editable(not busy)
+
+    def _set_pair_feedback(self, text: str, *, error: bool = False, success: bool = False) -> None:
+        """One line under the PIN field; empty restores the waiting state."""
+        self._pair_feedback = text
+        self._pair_feedback_kind = "error" if error else "success" if success else ""
+        self._sync_pair_status()
+
+    def _pin_outcome(self, pin: str, auth, result, blocked: bool, *, success: str = "") -> None:
+        """GTK thread: tell what Sunshine answered for a PIN, keep the field ready."""
+        if result.ok:
+            self.pair_entry.set_text("")
+            message = success or _("Paired. The other device can play now.")
+            self._set_pair_feedback(message, success=True)
+            self.show_toast(message)
+            self._refresh_paired_devices()
+        elif result.status == 401:
+            self.credentials.mark_rejected()
+            self._show_password_needed("rejected")
+            self.open_sunshine_credentials_dialog(then=lambda new_auth: self._send_pin_async(pin, _("Other computer"), new_auth))
+        elif result.status == 307:
+            self.open_sunshine_credentials_dialog(then=lambda new_auth: self._send_pin_async(pin, _("Other computer"), new_auth), create=True)
+        elif result.status == PIN_CHOOSE:
+            self._set_pair_feedback("")
+            self._choose_pending_pairing(pin, auth, result.pending)
+        elif result.status == PIN_NONE_WAITING:
+            self._set_pair_feedback(
+                _("No device is waiting. On the other device, open Moonlight, choose this computer and use the new PIN it shows."),
+                error=True,
+            )
+            self._explain_none_waiting(result.message, blocked)
+        else:
+            # A wrong PIN: the device shows a new one after it fails. Keep the
+            # field focused with the old digits selected, ready to type over.
+            self._set_pair_feedback(result.message, error=True)
+            self.pair_entry.grab_focus()
+            self.pair_entry.select_region(0, -1)
 
     def _choose_pending_pairing(self, pin: str, credentials, pending) -> None:
         """Several computers are waiting: approve only the one the person picks."""
@@ -2450,6 +3099,8 @@ class HostView(Gtk.Box):
 
         def approve(item) -> None:
             dialog.close()
+            self._pair_tracker.forget(item.pairing_id)
+            self.pair_requests_group.show_requests(self._pair_tracker.requests.values())
             self._send_pin_async(pin, item.name or _("Other computer"), credentials, pairing_id=item.pairing_id)
 
         for item in pending:
@@ -2465,122 +3116,30 @@ class HostView(Gtk.Box):
 
     def _send_pin_async(self, pin: str, name: str, auth, *, pairing_id: str | None = None, success: str = "") -> None:
         """Send a PIN off the GTK thread and report the outcome."""
+        # Sunshine answers once the device has checked the PIN (up to about ten seconds).
+        self._set_pairing_busy(True)
+        self._set_pair_feedback(_("Checking the PIN with {name}…").format(name=name))
 
-        def done(result, blocked) -> bool:
-            if getattr(self, "_closed", False):
-                return False
-            if result.ok:
-                self.pair_entry.set_text("")
-                self.show_toast(success or _("PIN sent successfully"))
-                self._refresh_paired_devices()
-            elif result.status == 401:
-                self.show_error_dialog(_("Authentication Failed"), _("Invalid username or password."))
-            elif result.status == 307:
-                self.prompt_create_user(pin)
-            elif result.status == PIN_CHOOSE:
-                self._choose_pending_pairing(pin, auth, result.pending)
-            elif result.status == PIN_NONE_WAITING:
-                self._explain_none_waiting(result.message, blocked)
-            else:
-                self.show_error_dialog(_("PIN Error"), result.message)
-            return False
+        def done(result) -> None:
+            outcome, blocked = result
+            self._set_pairing_busy(False)
+            if self._closed:
+                return
+            self._pin_outcome(pin, auth, outcome, blocked, success=success)
 
-        def work() -> None:
+        def work():
             if auth and pairing_id is None:
                 self.sunshine.discard_abandoned_pairings(auth)
-            result = self.sunshine.send_pin(pin, name=name, auth=auth, pairing_id=pairing_id)
-            GLib.idle_add(done, result, self._pairing_blocked(result))
+            outcome = self.sunshine.send_pin(pin, name=name, auth=auth, pairing_id=pairing_id)
+            return outcome, self._pairing_blocked(outcome)
 
-        threading.Thread(target=work, daemon=True).start()
+        def failed(_error) -> None:
+            self._set_pairing_busy(False)
+            self._set_pair_feedback(_("Pairing failed. Sunshine did not answer; check that sharing is on and try again."), error=True)
 
-    def open_pin_dialog(self, _widget: Gtk.Widget | None, prefill_pin: str = "") -> None:
-        self._ensure_sunshine_config()  # Ensure config before trying to use API
-
-        # Load saved credentials from the system keyring when available.
-        saved_creds = self._get_sunshine_creds()
-        saved_user = saved_creds[0] if saved_creds else ""
-        saved_pass = saved_creds[1] if saved_creds else ""
-
-        dialog = Adw.AlertDialog(heading=_("Insert PIN"), body=_("Enter the PIN displayed by Moonlight on the other computer."))
-
-        # Preferences group holding the fields
-        grp = Adw.PreferencesGroup()
-
-        # Named for whose PIN it is: the guest page has a field with the same
-        # four digits meaning the opposite direction.
-        pin_row = Adw.EntryRow(title=_("PIN shown by Moonlight"))
-        pin_row.set_text(prefill_pin)
-        pin_row.set_input_purpose(Gtk.InputPurpose.DIGITS)
-        pin_row.update_property(
-            [Gtk.AccessibleProperty.DESCRIPTION],
-            [_("Enter the four digits shown by Moonlight on the other computer.")],
-        )
-
-        name_row = Adw.EntryRow(title=_("Device Name"))
-        name_row.set_text(socket.gethostname())
-
-        user_row = Adw.EntryRow(title=_("Sunshine User"))
-        if saved_user:
-            user_row.set_text(saved_user)
-
-        pass_row = Adw.PasswordEntryRow(title=_("Sunshine password"))
-        if saved_pass:
-            pass_row.set_text(saved_pass)
-
-        save_chk = Adw.SwitchRow(title=_("Save Password"))
-        save_chk.set_subtitle(_("Save credentials to the system keyring"))
-        save_chk.set_active(bool(saved_user and saved_pass))
-
-        grp.add(pin_row)
-        grp.add(name_row)
-        grp.add(user_row)
-        grp.add(pass_row)
-        grp.add(save_chk)
-
-        dialog.set_extra_child(grp)
-
-        dialog.add_response("cancel", _("Cancel"))
-        dialog.add_response("ok", _("Send"))
-        dialog.set_response_appearance("ok", Adw.ResponseAppearance.SUGGESTED)
-        dialog.set_close_response("cancel")
-
-        def on_response(d, r):
-            if r == "ok":
-                pin = pin_row.get_text().strip()
-                device_name = name_row.get_text().strip()
-                u = user_row.get_text().strip()
-                p = pass_row.get_text().strip()
-                save = save_chk.get_active()
-
-                if len(pin) != MOONLIGHT_PAIRING_PIN_LENGTH or not pin.isascii() or not pin.isdigit():
-                    self.show_error_dialog(_("Invalid PIN"), _("Enter exactly four digits."))
-                    pin_row.grab_focus()
-                    return
-
-                # Update saved credentials if requested
-                if save and u and p:
-                    self._save_sunshine_creds(u, p)
-
-                auth = (u, p) if (u and p) else None
-                self._send_pin_async(pin, device_name, auth)
-
-        dialog.connect("response", on_response)
-        dialog.present(self)
-
-    def prompt_create_user(self, _pin_retry):
-        dialog = Adw.AlertDialog(heading=_("User Not Found"), body=_("No Sunshine user exists. Configure one in the browser."))
-        dialog.add_response("cancel", _("Cancel"))
-        dialog.add_response("open", _("Open Configuration"))
-        dialog.set_default_response("cancel")
-        dialog.set_close_response("cancel")
-        dialog.set_response_appearance("open", Adw.ResponseAppearance.SUGGESTED)
-
-        def on_resp(d, r):
-            if r == "open":
-                open_uri(self, self.sunshine.web_ui_url)
-
-        dialog.connect("response", on_resp)
-        dialog.present(self)
+        # Each PIN keeps its own answer: two devices approved one after the
+        # other both get their result.
+        self._pin_worker.submit(work, done, failed=failed, keep_previous=True)
 
     def _create_connected_devices_group(self) -> Adw.PreferencesGroup:
         from big_remote_play.host.connection_notices import ConnectionNotices
@@ -2656,8 +3215,7 @@ class HostView(Gtk.Box):
 
     def _announce_connections(self, infos) -> None:
         """A desktop notification for each device that just started playing."""
-        placeholders = {_("Connected device"), *(_("Device at {address}").format(address=info.address) for info in infos if info.address)}
-        for notice in self._connection_notices.update(infos, known_names=placeholders):
+        for notice in self._connection_notices.update(infos):
             self._notice_count += 1
             title, body = self._connection_notice_text(notice)
             self._deliver_notification(f"brp-device-connected-{self._notice_count}", title, body)
@@ -2697,6 +3255,14 @@ class HostView(Gtk.Box):
         from .connection_cards import DeviceConnectionCard
 
         self._check_pairing_busy()
+        addresses = frozenset(info.address for info in infos)
+        if addresses != getattr(self, "_cursor_checked_for", frozenset()):
+            # Someone joined or left: Sunshine logs the capture it opened,
+            # and a picture its encoder cannot take shows a moment later.
+            self._cursor_checked_for = addresses
+            self._check_cursor()
+            if addresses:
+                GLib.timeout_add_seconds(8, lambda: self._check_cursor() and False)
         self._announce_connections(infos)
         if hasattr(self, "share_history_card") and (infos or self._history_sessions):
             self._record_history(infos)
@@ -2773,7 +3339,7 @@ class HostView(Gtk.Box):
         if not clients:
             row = Adw.ActionRow(
                 title=_("No paired devices yet"),
-                subtitle=_("After step 2, the other PC appears here."),
+                subtitle=_("Paired devices appear here."),
             )
             set_row_icon(row, "brp-client-symbolic")
             self._add_paired_devices_overview_row(row)
@@ -3031,8 +3597,7 @@ class HostView(Gtk.Box):
 
     def sync_ui_state(self) -> None:
         self.perf_monitor.set_visible(self.is_hosting)
-        self.start_heading.set_visible(not self.is_hosting)
-        self.guest_access_group.set_visible(self.is_hosting)
+        self._sync_attention_group()
         self.paired_devices_overview_group.set_visible(self.is_hosting)
         self.connected_devices_group.set_visible(self.is_hosting)
         if not self.is_hosting:
@@ -3061,11 +3626,9 @@ class HostView(Gtk.Box):
                     [_("Stop sharing"), _("Stop sharing the game from this PC")],
                 )
             if hasattr(self, "overview_status_label"):
-                self.overview_status_label.set_label(_("Active - Waiting for Connections"))
+                self.overview_status_label.set_label(_("Sharing. Other devices can connect now."))
             if hasattr(self, "overview_state_label"):
-                self.overview_state_label.set_label(_("Running"))
-                self.overview_state_label.remove_css_class("offline")
-                self.overview_state_label.add_css_class("online")
+                self._set_state_pill(_("Sharing"), "online")
             if hasattr(self, "guest_pair_button"):
                 self.guest_pair_button.set_sensitive(True)
 
@@ -3081,6 +3644,7 @@ class HostView(Gtk.Box):
             self._check_firewall()
         else:
             self._end_pair_requests()
+            self._check_cursor()
             self.perf_monitor.set_connection_status("Sunshine", _("Inactive"), False)
             self.perf_monitor.stop_monitoring()
             self._check_firewall()
@@ -3091,9 +3655,7 @@ class HostView(Gtk.Box):
             if hasattr(self, "overview_status_label"):
                 self.overview_status_label.set_label(_("Choose a source, then start sharing."))
             if hasattr(self, "overview_state_label"):
-                self.overview_state_label.set_label(_("Stopped"))
-                self.overview_state_label.remove_css_class("online")
-                self.overview_state_label.add_css_class("offline")
+                self._set_state_pill(_("Stopped"), "offline")
 
             self._hosting_started_at = None
             uptime_timer_id = self._uptime_timer_id
@@ -3131,6 +3693,8 @@ class HostView(Gtk.Box):
             )
             self._sync_start_availability()
         self._sync_game_window_timer()
+        self._sync_pair_status()
+        self._show_transition()
         self._announce_state()
 
     def _refresh_internet_access(self) -> None:
@@ -3535,7 +4099,9 @@ class HostView(Gtk.Box):
         }
         index = self.platform_row.get_selected()
         platform = self._capture_values[index] if 0 <= index < len(self._capture_values) else ""
-        config["capture"] = platform or None
+        # Automatic, unless the person chose the capture that shows the
+        # mouse pointer (Needs attention → the pointer row).
+        config["capture"] = platform or self._pointer_capture() or None
 
         config["output_name"] = None
         monitor_idx = self.monitor_row.get_selected()
@@ -3730,6 +4296,8 @@ class HostView(Gtk.Box):
         self.sync_ui_state()
         self.show_toast(_("Server started"))
         self._launch_game_direct()
+        # Sunshine opens its screen capture (and logs it) shortly after starting.
+        GLib.timeout_add_seconds(6, lambda: self._check_cursor() and False)
         return False
 
     def _show_capture_starting(self) -> bool:
@@ -3917,6 +4485,11 @@ class HostView(Gtk.Box):
         self.loading_bar.set_visible(False)
         if hasattr(self, "overview_start_button"):
             self.overview_start_button.set_sensitive(True)
+        if getattr(self, "_restart_after_stop", False) and not self._closed:
+            # A restart the person confirmed (a new capture method).
+            self._restart_after_stop = False
+            self.start_hosting()
+            return False
         self.show_toast(_("Sharing stopped"))
         return False
 
@@ -4045,7 +4618,6 @@ class HostView(Gtk.Box):
             return
         import threading
 
-        auth = self._get_sunshine_creds()
         if has_overview:
             self._set_paired_devices_overview_message(
                 _("Loading paired devices…"),
@@ -4053,6 +4625,7 @@ class HostView(Gtk.Box):
             )
 
         def work():
+            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
             clients = self.sunshine.list_clients(auth=auth)
             GLib.idle_add(self._populate_paired_devices_overview, clients)
             GLib.idle_add(self._populate_paired_devices, clients)
@@ -4104,9 +4677,8 @@ class HostView(Gtk.Box):
         enabled = switch.get_active()
         import threading
 
-        auth = self._get_sunshine_creds()
-
         def work():
+            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
             if self.sunshine.set_client_enabled(uuid, enabled, auth=auth):
                 GLib.idle_add(self._after_device_change, True)
             else:
@@ -4129,9 +4701,8 @@ class HostView(Gtk.Box):
             if r == "remove":
                 import threading
 
-                auth = self._get_sunshine_creds()
-
                 def work():
+                    auth = self._get_sunshine_creds()  # worker: may wait for the keyring
                     ok = self.sunshine.unpair_client(uuid, auth=auth)
                     GLib.idle_add(self._after_device_change, ok)
 
@@ -4143,9 +4714,8 @@ class HostView(Gtk.Box):
     def _unpair_all_devices(self) -> None:
         import threading
 
-        auth = self._get_sunshine_creds()
-
         def work():
+            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
             ok = self.sunshine.unpair_all_clients(auth=auth)
             GLib.idle_add(self._after_device_change, ok)
 
@@ -4204,9 +4774,8 @@ class HostView(Gtk.Box):
         tv.get_buffer().set_text(_("Loading…"))
         import threading
 
-        auth = self._get_sunshine_creds()
-
         def work():
+            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
             text = self.sunshine.get_logs(auth=auth)
             GLib.idle_add(self._set_logs_text, text)
 
@@ -4269,9 +4838,8 @@ class HostView(Gtk.Box):
             return
         import threading
 
-        auth = self._get_sunshine_creds()
-
         def work():
+            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
             apps = self.sunshine.get_apps(auth=auth)
             GLib.idle_add(self._populate_game_library, apps)
 
@@ -4318,9 +4886,8 @@ class HostView(Gtk.Box):
     def _on_library_remove(self, _button, index):
         import threading
 
-        auth = self._get_sunshine_creds()
-
         def work():
+            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
             ok = self.sunshine.delete_app(index, auth=auth)
             GLib.idle_add(self._after_library_change, ok)
 
@@ -4329,9 +4896,8 @@ class HostView(Gtk.Box):
     def _add_detected_games(self):
         import threading
 
-        auth = self._get_sunshine_creds()
-
         def work():
+            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
             games = self.game_detector.detect_all()
             existing = {a.get("name") for a in self.sunshine.get_apps(auth=auth)}
             added = 0
@@ -4389,9 +4955,8 @@ class HostView(Gtk.Box):
             return
         import threading
 
-        auth = self._get_sunshine_creds()
-
         def work() -> None:
+            auth = self._get_sunshine_creds()  # worker: may wait for the keyring
             data = self.sunshine.browse(path, "any", auth=auth)
             GLib.idle_add(self._browse_populate, data)
 
@@ -4493,8 +5058,8 @@ class HostView(Gtk.Box):
         )
         description.add_css_class("dim-label")
         content.append(description)
-        creds = self._get_sunshine_creds()
-        default_user = creds[0] if creds else "sunshine"
+        creds = self.credentials.cached()  # memory only: the form opens at once
+        default_user = creds[0] if creds else DEFAULT_SUNSHINE_USER
         grp = Adw.PreferencesGroup()
         forgot_row = Adw.SwitchRow(title=_("I forgot the current password"))
         forgot_row.set_subtitle(_("Reset directly; the server will restart"))
@@ -4569,6 +5134,7 @@ class HostView(Gtk.Box):
             if ok:
                 self._save_sunshine_creds(new_user, new_password)
             GLib.idle_add(self.show_toast, message)
+            GLib.idle_add(self._show_credentials_state)
 
         threading.Thread(target=work, daemon=True).start()
 
@@ -4582,6 +5148,7 @@ class HostView(Gtk.Box):
                 if self.sunshine.is_running():
                     self.sunshine.restart()
             GLib.idle_add(self.show_toast, message)
+            GLib.idle_add(self._show_credentials_state)
 
         threading.Thread(target=work, daemon=True).start()
 
@@ -4935,6 +5502,12 @@ class HostView(Gtk.Box):
         self.input_priority.close()
         if hasattr(self, "_internet_worker"):
             self._internet_worker.close()
+        if hasattr(self, "support_center"):
+            self.support_center.close()
+        for name in ("_pin_worker", "_cursor_worker"):
+            worker = getattr(self, name, None)
+            if worker is not None:
+                worker.close()
         if hasattr(self, "_pair_busy_worker"):
             self._pair_busy_worker.close()
             self._end_stream_worker.close()

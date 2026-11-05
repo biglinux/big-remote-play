@@ -35,6 +35,9 @@ INPUT_DEVICES = Path("/proc/bus/input/devices")
 VIRTUAL_INPUT_DEVICES = (Path("/dev/uinput"), Path("/dev/uhid"))
 
 _JOYSTICK_HANDLER = re.compile(r"\bjs\d+\b")
+# The kernel also gives a js handler to absolute pointers (drawing tablets,
+# QEMU's USB tablet); a device with a mouse handler points, it is not a controller.
+_POINTER_HANDLER = re.compile(r"\bmouse\d+\b")
 # Sunshine 2026: "[2026-10-05 15:54:44.218]: Info: Gamepad 0 will be Sunshine
 # (libvirtualhid) X-Box 360 Controller (manual selection)".
 _ARRIVED = re.compile(r"Gamepad \d+ will be (.+?) \((?:manual selection|auto-selected[^)]*)\)")
@@ -105,7 +108,7 @@ def local_controllers(devices_text: str) -> list[str]:
                 sysfs = value.partition("=")[2].strip()
             elif key == "H":
                 handlers = value.partition("=")[2]
-        if not _JOYSTICK_HANDLER.search(handlers) or not sysfs or sysfs.startswith("/devices/virtual/"):
+        if not _JOYSTICK_HANDLER.search(handlers) or _POINTER_HANDLER.search(handlers) or not sysfs or sysfs.startswith("/devices/virtual/"):
             continue
         found.append(name or "?")
     return found

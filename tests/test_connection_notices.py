@@ -78,8 +78,37 @@ def test_missing_name_address_and_path_do_not_break_anything():
 
 def test_placeholder_names_are_not_shown_as_a_device_name():
     notices = ConnectionNotices()
-    [notice] = notices.update([ConnectionInfo("Connected device", "", started_at=7.0)], known_names=["Connected device"])
+    [notice] = notices.update([ConnectionInfo("Connected device", "", started_at=7.0, name_known=False)])
     assert notice.device_name == ""
+
+
+def test_a_real_name_is_shown_even_if_it_reads_like_a_placeholder():
+    # Whether a name is real is a flag, never a comparison with translated words.
+    notices = ConnectionNotices()
+    [notice] = notices.update([ConnectionInfo("Connected device", "192.0.2.7", started_at=7.0)])
+    assert notice.device_name == "Connected device"
+
+
+def test_the_monitor_marks_a_session_without_a_found_name(ui, monkeypatch):
+    import big_remote_play.ui.performance_monitor as monitor_module
+
+    class Session:
+        preexisting = False
+
+    monitor = ui.host_view.perf_monitor
+    names = {"192.0.2.7": "Living Room TV", "192.0.2.8": ""}
+    monkeypatch.setattr(monitor, "_known_name", lambda address: names.get(address, ""))
+    monkeypatch.setattr(monitor, "_targets", lambda: [(address, monitor._display_name(address), 5.0 + index, Session()) for index, address in enumerate(names)])
+    monkeypatch.setattr(monitor, "_session_details", lambda session, newest: ("", ()))
+    monkeypatch.setattr(monitor, "_transport", lambda address, now: Transport.LOCAL)
+    monkeypatch.setattr(monitor_module, "ping_once", lambda address: None)
+    while not monitor._data_queue.empty():
+        monitor._data_queue.get_nowait()
+    monitor._fetch_and_process_data()
+    named, unnamed = monitor._data_queue.get_nowait()
+    assert named.name_known and named.device_name == "Living Room TV"
+    assert not unnamed.name_known and unnamed.device_name  # still labelled on screen
+    assert [notice.device_name for notice in ConnectionNotices().update([named, unnamed])] == ["Living Room TV", ""]
 
 
 def test_sessions_already_playing_when_watching_began_are_not_announced():
@@ -140,7 +169,7 @@ def test_share_sends_a_notification_for_a_new_device(ui, monkeypatch):
 
 def test_a_device_without_a_known_address_is_announced_without_one(ui, monkeypatch):
     sent = _delivered(ui, monkeypatch)
-    ui.host_view._show_connected_devices([ConnectionInfo("Connected device", "", started_at=9.0)])
+    ui.host_view._show_connected_devices([ConnectionInfo("Connected device", "", started_at=9.0, name_known=False)])
     [(_id, title, body)] = sent
     assert "Connected device" not in title  # a placeholder is not a name
     assert body  # still says what happened
