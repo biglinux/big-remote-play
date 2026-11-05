@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import Any, TextIO
+import logging
+import re
 import shutil
 import subprocess
 import secrets
@@ -11,10 +14,25 @@ import time
 from big_remote_play.guest.moonlight_audio import MoonlightAudioReport
 from big_remote_play.utils.moonlight_config import paired_host_certificate
 
+_log = logging.getLogger(__name__)
+
 
 # Logged by moonlight-common-c (never translated) once the video stream is
 # set up after the RTSP handshake; an error window never prints them.
 STREAM_STARTED_MARKERS = ("Starting video stream", "IDR frame request sent")
+# Also from moonlight-common-c: a stream that ended by itself ("Connection
+# terminated: -1" after the network stopped answering), and the control
+# channel's measured round trip while data piles up on the way.
+STREAM_TERMINATED_MARKER = "Connection terminated:"
+_NET_LATENCY = re.compile(r"net latency: (\d+) ms")
+
+
+@dataclass(frozen=True)
+class StreamEnd:
+    """How a running stream ended: Moonlight's error code and the worst delay."""
+
+    code: int
+    peak_latency_ms: int
 
 
 class MoonlightClient:
@@ -29,6 +47,33 @@ class MoonlightClient:
         self.stream_confirmed = threading.Event()
         # Moonlight's sound messages for the current connection.
         self.audio = MoonlightAudioReport()
+        self._end_lock = threading.Lock()
+        self._stream_end: StreamEnd | None = None
+        self._peak_latency_ms = 0
+
+    def note_line(self, line: str) -> None:
+        """Remember a stream that ended by itself, from one line of output."""
+        latency = _NET_LATENCY.search(line)
+        if latency:
+            with self._end_lock:
+                self._peak_latency_ms = max(self._peak_latency_ms, int(latency.group(1)))
+            return
+        if STREAM_TERMINATED_MARKER not in line:
+            return
+        try:
+            code = int(line.rsplit(":", 1)[1].strip())
+        except (IndexError, ValueError):
+            code = -1
+        with self._end_lock:
+            self._stream_end = StreamEnd(code, self._peak_latency_ms)
+            peak = self._peak_latency_ms
+        _log.warning("Moonlight: the stream ended by itself (code %d, worst network delay %d ms)", code, peak)
+
+    def take_stream_end(self) -> StreamEnd | None:
+        """The stream's end, once: Moonlight then still shows its own message."""
+        with self._end_lock:
+            end, self._stream_end = self._stream_end, None
+            return end
 
     def _prepare_ip(self, ip):
         """Prepares IP for Moonlight CLI."""
@@ -115,6 +160,8 @@ class MoonlightClient:
             # a Moonlight window that only shows an error.
             self.stream_confirmed = threading.Event()
             self.audio = MoonlightAudioReport()
+            with self._end_lock:
+                self._stream_end, self._peak_latency_ms = None, 0
             self.process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace")
             if cancel_event is not None and cancel_event.is_set():
                 self.disconnect()
@@ -124,6 +171,7 @@ class MoonlightClient:
             logger = self.logger
             confirmed = self.stream_confirmed
             audio = self.audio
+            note_line = self.note_line
 
             def read_output(pipe: TextIO) -> None:
                 for line in iter(pipe.readline, ""):
@@ -134,6 +182,7 @@ class MoonlightClient:
                         break
                     if not confirmed.is_set() and any(marker in line for marker in STREAM_STARTED_MARKERS):
                         confirmed.set()
+                    note_line(line)
                     kind, keep = audio.note(line)
                     if logger and line.strip() and keep:
                         logger.info(f"[Moonlight]{' [AUDIO]' if kind else ''} {line.strip()}")

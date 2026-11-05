@@ -50,6 +50,28 @@ def current_web_ui_origin() -> str:
         return "lan"
 
 
+# Sunshine's "channels" (Maximum Connected Clients) is 1 by default: a second
+# player's Moonlight is refused while the first one plays. Four covers the
+# local-multiplayer games people share (two to four players).
+CONNECTED_CLIENTS = 4
+
+
+def connected_clients(current: object) -> str:
+    """How many devices may play at once: several, never fewer than the person chose."""
+    try:
+        chosen = int(str(current).strip())
+    except (TypeError, ValueError):
+        chosen = 0
+    return str(max(chosen, CONNECTED_CLIENTS))
+
+
+def current_connected_clients() -> str:
+    try:
+        return connected_clients(SunshineConfigManager().config.get("channels"))
+    except OSError:
+        return str(CONNECTED_CLIENTS)
+
+
 class SunshineConfigManager:
     def __init__(self):
         self.config_dir = paths.SUNSHINE_CONFIG_DIR
