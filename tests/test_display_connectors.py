@@ -109,3 +109,37 @@ def test_a_screen_saved_under_its_kernel_name_is_still_selected(ui, monkeypatch)
     host.config.set("host", settings)
     host.load_settings()
     assert host._shared_output() == "DisplayPort-1"
+
+
+# ── the mouse pointer on a phone (X11) ──────────────────────────────────
+def test_an_x11_session_uses_the_capture_that_draws_the_pointer(ui, monkeypatch):
+    """Seen on a real X11 desktop: KMS capture streamed no pointer, so a
+    phone (which shows only the pointer in the picture) saw none."""
+    host = ui.host_view
+    monkeypatch.setenv("XDG_SESSION_TYPE", "x11")
+    monkeypatch.setenv("DISPLAY", ":0")
+    monkeypatch.setattr(host, "_kms_connectors", {"DisplayPort-1": "DP-2"})
+    host.platform_row.set_selected(0)
+    _choose(host, "DisplayPort-1")
+    config = host._build_sunshine_config()
+    # X11 capture finds the screen by the X11 name (checked with Sunshine 2026.914).
+    assert (config["capture"], config["output_name"]) == ("x11", "DisplayPort-1")
+    host._sync_pointer_capture_row()
+    assert host.pointer_capture_row.get_visible() and not host._pointer_automatic_button.get_visible()
+
+
+def test_a_chosen_capture_method_still_wins_on_x11(ui, monkeypatch):
+    host = ui.host_view
+    monkeypatch.setenv("XDG_SESSION_TYPE", "x11")
+    monkeypatch.setenv("DISPLAY", ":0")
+    monkeypatch.setattr(host, "_kms_connectors", {"DisplayPort-1": "DP-2"})
+    host.platform_row.set_selected(host._capture_values.index("kms"))
+    _choose(host, "DisplayPort-1")
+    assert (host._build_sunshine_config()["capture"], host._build_sunshine_config()["output_name"]) == ("kms", "DP-2")
+
+
+def test_wayland_keeps_sunshine_s_own_choice(ui, monkeypatch):
+    host = ui.host_view
+    monkeypatch.setenv("XDG_SESSION_TYPE", "wayland")
+    host.platform_row.set_selected(0)
+    assert host._build_sunshine_config()["capture"] is None

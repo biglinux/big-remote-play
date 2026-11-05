@@ -237,6 +237,9 @@ Sunshine runs and accepts connections, but it found no way to capture or encode 
 
 In Moonlight's normal mouse mode the other device hides its own pointer and shows the one this computer draws into the picture. When the pointer moves things but is invisible, the screen capture did not draw it. While sharing, **Needs attention** says **The other device may not see the mouse pointer** when Sunshine's log reports it (for example *No KMS cursor plane found*); **Use it** restarts sharing with the capture of this desktop that draws the pointer (KWin on KDE Plasma Wayland, the desktop portal on GNOME Wayland, X11 capture on X11). **Preferences → Mouse, keyboard and controllers → Use automatic** goes back. In Moonlight, Ctrl+Alt+Shift+N asks Sunshine to draw the pointer again, and in “Optimize mouse for remote desktop” mode Ctrl+Alt+Shift+C shows the other device's own pointer. If the pointer does not move at all, **Support → Check this computer** says whether Sunshine can open `/dev/uinput`. Details and the symptom table: [mouse pointer compatibility](mouse-cursor-compatibility.md).
 
+
+On a phone the only pointer is the one the game PC draws into the picture. In an X11 session the game PC now uses X11 screen capture for that by itself; restart sharing once after updating. If **Capture Method** was set to KMS by hand, set it back to **Automatic**. In Moonlight on a computer, Ctrl+Alt+Shift+N shows or hides the drawn pointer, so pressing it by accident hides it. Details: [mouse pointer compatibility](mouse-cursor-compatibility.md#x11-sessions-x11-capture-by-default).
+
 ## Wrong colors or missing symbols
 
 Install the native hicolor icon theme and keep the supplied relative symbolic links intact. Do not replace its directory index with a stripped custom index. Test the default Adwaita theme before diagnosing a third-party theme override. Reload the application after replacing resource files.

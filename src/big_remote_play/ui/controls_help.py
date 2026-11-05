@@ -52,6 +52,7 @@ def computer_sections() -> tuple[Section, ...]:
                 Control("Ctrl+Alt+Shift+S", _("Show or hide the connection statistics")),
                 Control("Ctrl+Alt+Shift+M", _("Switch the mouse between game mode and desktop mode")),
                 Control("Ctrl+Alt+Shift+V", _("Type the text copied on this computer into the game PC")),
+                Control("Ctrl+Alt+Shift+N", _("Show or hide the game PC's mouse pointer in the picture (handled by the game PC)")),
             ),
         ),
         Section(
@@ -80,9 +81,18 @@ def _touch_section(platform_note: str) -> Section:
     )
 
 
+def _pointer_section() -> Section:
+    return Section(
+        _("Mouse pointer"),
+        _("The pointer you see is drawn by the game PC into the picture. If it is missing, open Share → Support → The mouse pointer is missing on the game PC."),
+        (Control(_("No pointer, but taps still click"), _("The game PC's screen capture leaves it out; Big Remote Play picks one that draws it")),),
+    )
+
+
 def android_sections() -> tuple[Section, ...]:
     return (
         _touch_section(_("With Moonlight's setting “Use the touchscreen as a trackpad”. Without it, a tap clicks where you touch and a long press is a right click.")),
+        _pointer_section(),
         Section(
             _("Keyboard"),
             _("The phone's own keyboard has no Ctrl, Alt, Esc or function keys."),
@@ -106,6 +116,7 @@ def android_sections() -> tuple[Section, ...]:
 def apple_sections() -> tuple[Section, ...]:
     return (
         _touch_section(_("In touchpad mode. In touchscreen mode a tap clicks where you touch, a long press is a right click, and two fingers zoom and move the picture.")),
+        _pointer_section(),
         Section(
             _("Keyboard"),
             _("The keyboard opened with three fingers has a bar of extra keys."),

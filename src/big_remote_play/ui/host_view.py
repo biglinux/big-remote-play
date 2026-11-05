@@ -1304,6 +1304,7 @@ class HostView(Gtk.Box):
         automatic_button.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Let Sunshine choose the screen capture again")])
         automatic_button.connect("clicked", lambda _button: self._clear_pointer_capture())
         self.pointer_capture_row.add_suffix(automatic_button)
+        self._pointer_automatic_button = automatic_button
         input_group.add(self.pointer_capture_row)
         self._sync_pointer_capture_row()
         config_page.append(input_group)
@@ -2177,6 +2178,24 @@ class HostView(Gtk.Box):
         value = str(self.config.get("pointer_capture", "") or "")
         return value if value in self._POINTER_CAPTURES else ""
 
+    @staticmethod
+    def _session_capture() -> str:
+        """The capture used when nothing else was chosen, for this kind of session.
+
+        On X11 Sunshine prefers KMS (it has cap_sys_admin), which on a real
+        X11 desktop (amdgpu, three monitors) streamed no mouse pointer even
+        though its log said "Found cursor plane": a phone, which shows only
+        the pointer drawn into the picture, saw none. X11 capture draws the
+        pointer with XFixes; it costs more CPU (about 25 % of one core at
+        1080p60 against 6 % for KMS there). Wayland keeps Sunshine's choice;
+        Needs attention handles the KMS problems Sunshine reports there.
+        """
+        return "x11" if os.environ.get("XDG_SESSION_TYPE") == "x11" and os.environ.get("DISPLAY") else ""
+
+    def _automatic_capture(self) -> str:
+        """What Automatic means now: the pointer fix chosen before, else the session's."""
+        return self._pointer_capture() or self._session_capture()
+
     def _pointer_capture_name(self, value: str) -> str:
         return {"kwin": _("KDE screen capture (KWin)"), "portal": _("Desktop screen capture (portal)"), "x11": _("X11 screen capture")}.get(value, _("Automatic"))
 
@@ -2189,7 +2208,7 @@ class HostView(Gtk.Box):
         from big_remote_play.host.cursor_check import cursor_report
 
         index = self.platform_row.get_selected()
-        configured = (self._capture_values[index] if 0 <= index < len(self._capture_values) else "") or self._pointer_capture()
+        configured = (self._capture_values[index] if 0 <= index < len(self._capture_values) else "") or self._automatic_capture()
         log_path = self.sunshine.config_dir / "sunshine.log"
         self._cursor_worker.submit(lambda: cursor_report(log_path, configured=configured), self._show_cursor_report, failed=lambda _error: self._show_cursor_report(None))
 
@@ -2197,7 +2216,17 @@ class HostView(Gtk.Box):
         self._cursor_report = report
         lost = bool(report is not None and report.lost and self.is_hosting and self._source() != "game_window")
         if lost and report is not None:
-            if report.recommended:
+            from big_remote_play.host.cursor_check import KMS_ON_X11
+
+            if report.problem == KMS_ON_X11 and report.recommended:
+                self.cursor_row.set_subtitle(
+                    _("In this X11 session Sunshine uses KMS capture, which can leave the mouse pointer out of the picture: a phone then shows no pointer at all. {capture} draws it.").format(
+                        capture=self._pointer_capture_name(report.recommended)
+                    )
+                )
+                self.cursor_fix_button.set_label(_("Use it"))
+                self.cursor_fix_button.update_property([Gtk.AccessibleProperty.LABEL], [_("Use {capture}").format(capture=self._pointer_capture_name(report.recommended))])
+            elif report.recommended:
                 self.cursor_row.set_subtitle(
                     _(
                         "Sunshine reports that it cannot capture the pointer with its automatic screen capture. The mouse still works, but the other device may not see where it is. {capture} draws the pointer into the picture."
@@ -2267,10 +2296,20 @@ class HostView(Gtk.Box):
     def _sync_pointer_capture_row(self) -> None:
         if not hasattr(self, "pointer_capture_row"):
             return
-        capture = self._pointer_capture()
+        chosen = self._pointer_capture()
+        capture = chosen or self._session_capture()
         self.pointer_capture_row.set_visible(bool(capture))
-        if capture:
+        button = getattr(self, "_pointer_automatic_button", None)
+        if button is not None:
+            button.set_visible(bool(chosen))
+        if chosen:
             self.pointer_capture_row.set_subtitle(_("{capture}, chosen so the other device sees the mouse pointer.").format(capture=self._pointer_capture_name(capture)))
+        elif capture:
+            self.pointer_capture_row.set_subtitle(
+                _("{capture}, used automatically in this X11 session so the other device, a phone too, sees the mouse pointer. Capture Method in Image and capture can choose another.").format(
+                    capture=self._pointer_capture_name(capture)
+                )
+            )
 
     # ------------------------------------------------------------------
     # Security and access, and Support's checks.
@@ -2319,7 +2358,7 @@ class HostView(Gtk.Box):
         from big_remote_play.host.health_checks import gather_facts
 
         index = self.platform_row.get_selected()
-        configured = (self._capture_values[index] if 0 <= index < len(self._capture_values) else "") or self._pointer_capture()
+        configured = (self._capture_values[index] if 0 <= index < len(self._capture_values) else "") or self._automatic_capture()
         encoders = tuple(str(gpu.get("label", "")) for gpu in self.available_gpus if gpu.get("encoder") not in (None, "", "auto", "software"))
         self.credentials.get()  # bounded; read once per session
         return gather_facts(sunshine=self.sunshine, credentials_status=self.credentials.status(), configured_capture=configured, encoders=encoders)
@@ -4137,7 +4176,7 @@ class HostView(Gtk.Box):
         platform = self._capture_values[index] if 0 <= index < len(self._capture_values) else ""
         # Automatic, unless the person chose the capture that shows the
         # mouse pointer (Needs attention → the pointer row).
-        config["capture"] = platform or self._pointer_capture() or None
+        config["capture"] = platform or self._automatic_capture() or None
 
         # The screen as this session names it, for the screen settings below;
         # Sunshine gets the name its capture method finds it by.

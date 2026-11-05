@@ -19,6 +19,10 @@ In trackpad mode (Android: Moonlight setting **Use the touchscreen as a trackpad
 
 In touchscreen mode a tap clicks where you touch and a long press is a right click. On iPhone/iPad two fingers also zoom and move the picture.
 
+## The mouse pointer
+
+The pointer on the phone is drawn by the game PC into the picture; Moonlight on a phone has none of its own. If taps click but no pointer is visible, the game PC's screen capture leaves it out: see [the other device does not see the mouse pointer](troubleshooting.md#the-other-device-does-not-see-the-mouse-pointer). In an X11 session Big Remote Play uses a capture that draws it.
+
 ## Keyboard
 
 **iPhone/iPad.** The keyboard opened with three fingers has a bar of extra keys: **Win, Esc, Tab, Shift, Ctrl, Alt, Delete**. Win, Shift, Ctrl and Alt stay pressed until you tap them again. For Ctrl+Alt+Delete, tap Ctrl, then Alt, then Delete.
@@ -62,6 +66,7 @@ Moonlight on a computer handles these keys itself; they are not sent to the game
 | Ctrl+Alt+Shift+V | Type the text copied on this computer into the game PC |
 | Ctrl+Alt+Shift+C | Show this computer's pointer (desktop mouse mode) |
 | Ctrl+Alt+Shift+L | Keep the pointer inside the game window (desktop mouse mode) |
+| Ctrl+Alt+Shift+N | Show or hide the game PC's pointer in the picture (Sunshine handles it) |
 
 ## Sources and limits
 

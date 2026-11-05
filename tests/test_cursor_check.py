@@ -90,3 +90,14 @@ def test_frames_the_gpu_encoder_cannot_import_are_a_black_stream():
     report = read_cursor_report(log, session="wayland", desktop="kde", configured="kwin")
     assert report.no_picture and report.import_failed
     assert not read_cursor_report("Info: Sunshine version: 2026.914\n" + loop, session="wayland", desktop="kde").no_picture  # one is a hiccup
+
+
+def test_kms_in_an_x11_session_loses_the_pointer_even_without_a_log_error():
+    """Seen frame by frame on a real X11 desktop (amdgpu, three monitors):
+    "Found cursor plane" and no error, yet no pointer in the stream; a phone
+    showed none."""
+    report = read_cursor_report(KMS_OK, session="x11", desktop="windowmaker")
+    assert report.lost and report.recommended == "x11"
+    # A capture chosen by the person (or X11 already in use) is not second-guessed.
+    assert not read_cursor_report(KMS_OK, session="x11", desktop="", configured="kms").lost
+    assert not read_cursor_report("Screencasting with X11\n", session="x11", desktop="").lost
