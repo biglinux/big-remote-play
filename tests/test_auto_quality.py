@@ -86,3 +86,25 @@ def test_wireless_probe_reads_the_interface_of_the_default_route(tmp_path, monke
 def test_wireless_probe_is_false_without_a_readable_route_table(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(auto_quality, "_PROC_ROUTE", tmp_path / "missing")
     assert auto_quality.wireless_link() is False
+
+
+def test_a_spare_wifi_route_does_not_make_a_wired_pc_wireless(tmp_path, monkeypatch) -> None:
+    """Real table of a wired PC whose Wi-Fi stayed connected as a spare (metric 600)."""
+    header = "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT\n"
+    route = tmp_path / "route"
+    route.write_text(
+        header
+        + "enp6s0\t00000000\t0101A8C0\t0003\t0\t0\t100\t00000000\t0\t0\t0\n"
+        + "wlp0s20u2\t00000000\t0101A8C0\t0003\t0\t0\t600\t00000000\t0\t0\t0\n"
+        + "ztk4joxvgt\t00001CAC\t00000000\t0001\t0\t0\t0\t0000FFFF\t0\t0\t0\n"
+    )
+    net = tmp_path / "net"
+    (net / "enp6s0").mkdir(parents=True)
+    (net / "wlp0s20u2").mkdir(parents=True)
+    (net / "wlp0s20u2" / "wireless").write_text("")
+    monkeypatch.setattr(auto_quality, "_PROC_ROUTE", route)
+    monkeypatch.setattr(auto_quality, "_SYS_CLASS_NET", net)
+    assert auto_quality.wireless_link() is False
+    # The other way round, Wi-Fi in use and the cable as the spare: wireless.
+    route.write_text(route.read_text().replace("\t100\t", "\t900\t"))
+    assert auto_quality.wireless_link() is True

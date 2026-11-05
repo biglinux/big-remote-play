@@ -62,25 +62,34 @@ def bitrate_mbps(height: int, fps: int, wireless: bool) -> float:
 
 
 def wireless_link() -> bool:
-    """True when the interface carrying the default route is Wi-Fi."""
-    for interface in _default_route_interfaces():
-        if (_SYS_CLASS_NET / interface / "wireless").exists():
-            return True
-    return False
+    """True when the interface carrying the default route is Wi-Fi.
+
+    Only the route in use counts: with cable and Wi-Fi both connected, the
+    kernel sends through the default route with the lowest metric, and the
+    other one is a spare (seen on a wired PC whose Wi-Fi stayed connected at
+    metric 600: "Unstable network mode" was switched on for nothing).
+    """
+    interface = _default_route_interface()
+    return bool(interface) and (_SYS_CLASS_NET / interface / "wireless").exists()
 
 
-def _default_route_interfaces() -> list[str]:
+def _default_route_interface() -> str:
     try:
         lines = _PROC_ROUTE.read_text().splitlines()[1:]
     except OSError:
-        return []
-    interfaces = []
+        return ""
+    best: tuple[int, str] | None = None
     for line in lines:
         fields = line.split()
-        # Destination 00000000 is the default route.
+        # Destination 00000000 is the default route; field 6 is its metric.
         if len(fields) > 1 and fields[1] == "00000000":
-            interfaces.append(fields[0])
-    return interfaces
+            try:
+                metric = int(fields[6]) if len(fields) > 6 else 0
+            except ValueError:
+                continue
+            if best is None or metric < best[0]:
+                best = (metric, fields[0])
+    return best[1] if best else ""
 
 
 def host_defaults(*, gpus: list[dict], refresh_hz: int, height: int, wireless: bool) -> dict:
