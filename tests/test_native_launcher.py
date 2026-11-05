@@ -100,6 +100,25 @@ def test_native_launcher_reports_missing_private_installation(tmp_path: Path) ->
 
     assert completed.returncode == 1
     assert str(private_root / "big_remote_play/__init__.py") in completed.stderr
+    # Says how to fix it: an old PKGBUILD that copied only usr/ did this for real.
+    assert "pkgbuild" in completed.stderr.lower()
+
+
+def test_native_launcher_never_hangs_when_the_display_cannot_be_opened(tmp_path: Path) -> None:
+    """The window that explains a broken installation is optional, never a hang."""
+    launcher, _private_root = _stage_launcher(tmp_path)
+
+    completed = subprocess.run(
+        [str(launcher)],
+        env={"PATH": "/usr/bin:/bin", "DISPLAY": ":987", "WAYLAND_DISPLAY": "brp-no-such-display", "XDG_RUNTIME_DIR": str(tmp_path)},
+        capture_output=True,
+        text=True,
+        timeout=20,
+        check=False,
+    )
+
+    assert completed.returncode == 1
+    assert "pkgbuild" in completed.stderr.lower()
 
 
 def _write_wheel(path: Path, extra_members: dict[str, bytes] | None = None) -> None:

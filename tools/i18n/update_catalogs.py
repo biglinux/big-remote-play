@@ -197,6 +197,9 @@ def main(argv: list[str] | None = None) -> int:
     _required_tools()
     languages = _languages()
     python_files = sorted(str(path.relative_to(ROOT)) for path in (ROOT / "src").rglob("*.py"))
+    # The native launcher is Python without the extension; its messages are
+    # what a person sees when the application files themselves are missing.
+    python_files.append("usr/bin/big-remote-play")
     shell_files = sorted(str(path.relative_to(ROOT)) for path in (ROOT / "usr/share/big-remote-play/scripts").rglob("*.sh"))
 
     with tempfile.TemporaryDirectory(prefix="brp-i18n-") as directory:

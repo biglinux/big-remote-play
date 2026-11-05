@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Big Remote Play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-05 00:09+0000\n"
+"POT-Creation-Date: 2026-11-05 02:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -237,6 +237,13 @@ msgstr ""
 
 #: src/big_remote_play/ui/provider_page.py:941
 msgid "A new private ZeroTier network. Needs a ZeroTier API token."
+msgstr ""
+
+#: usr/bin/big-remote-play:115
+#, python-brace-format
+msgid ""
+"A program it needs is missing: the Python module {module}. Install the "
+"package that provides it, or reinstall Big Remote Play."
 msgstr ""
 
 #: src/big_remote_play/ui/host_view.py:668
@@ -1199,6 +1206,10 @@ msgid ""
 "there; each one can be copied."
 msgstr ""
 
+#: usr/bin/big-remote-play:114
+msgid "Big Remote Play cannot start"
+msgstr ""
+
 #: src/big_remote_play/ui/headscale_wizard.py:994
 msgid "Big Remote Play checks it for you."
 msgstr ""
@@ -1241,6 +1252,10 @@ msgstr ""
 msgid ""
 "Big Remote Play is not allowed to notice when this computer's mouse and "
 "keyboard are used. Installing Big Remote Play from its package fixes this."
+msgstr ""
+
+#: usr/bin/big-remote-play:95
+msgid "Big Remote Play is not installed completely"
 msgstr ""
 
 #: src/big_remote_play/ui/headscale_wizard.py:370
@@ -1739,7 +1754,7 @@ msgstr ""
 #: src/big_remote_play/ui/guest_view.py:2011
 #: src/big_remote_play/ui/guided_setup.py:343
 #: src/big_remote_play/ui/host_view.py:2899
-#: src/big_remote_play/ui/host_view.py:4542
+#: src/big_remote_play/ui/host_view.py:4542 usr/bin/big-remote-play:66
 msgid "Close"
 msgstr ""
 
@@ -8370,6 +8385,15 @@ msgstr ""
 
 #: src/big_remote_play/ui/host_view.py:4145
 msgid "The app command is not valid. Check its quotation marks and try again."
+msgstr ""
+
+#: usr/bin/big-remote-play:97
+#, python-brace-format
+msgid ""
+"The application files are missing ({path}). This happens when the package "
+"was built with an old PKGBUILD that copies only the usr folder. Install the "
+"Big Remote Play package of your distribution, or update the source code (git "
+"pull) and build it again with pkgbuild/PKGBUILD."
 msgstr ""
 
 #: usr/share/big-remote-play/scripts/configure_firewall.sh:26
