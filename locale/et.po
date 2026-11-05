@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-05 00:09+0000\n"
+"POT-Creation-Date: 2026-11-05 02:02+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Estonian\n"
@@ -260,6 +260,15 @@ msgstr "Uus seade ei saa võrku kasutada enne, kui see on kinnitatud."
 #: src/big_remote_play/ui/provider_page.py:941
 msgid "A new private ZeroTier network. Needs a ZeroTier API token."
 msgstr "Uus privaatne ZeroTieri võrk. Vajab ZeroTieri API-tõendit."
+
+#: usr/bin/big-remote-play:115
+#, python-brace-format
+msgid ""
+"A program it needs is missing: the Python module {module}. Install the "
+"package that provides it, or reinstall Big Remote Play."
+msgstr ""
+"Vajalik programm puudub: Pythoni moodul {module}. Paigalda pakett, mis selle "
+"pakub, või paigalda Big Remote Play uuesti."
 
 #: src/big_remote_play/ui/host_view.py:668
 msgid ""
@@ -1405,6 +1414,10 @@ msgstr ""
 "Big Remote Play ei pääse teise arvutisse. Järgi seal neid samme; igaüht saab "
 "kopeerida."
 
+#: usr/bin/big-remote-play:114
+msgid "Big Remote Play cannot start"
+msgstr "Big Remote Play ei saa käivituda"
+
 #: src/big_remote_play/ui/headscale_wizard.py:994
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play kontrollib seda sinu eest."
@@ -1461,6 +1474,10 @@ msgid ""
 msgstr ""
 "Big Remote Play ei tohi märgata, millal selle arvuti hiirt ja klaviatuuri "
 "kasutatakse. Big Remote Play paigaldamine selle paketist lahendab selle."
+
+#: usr/bin/big-remote-play:95
+msgid "Big Remote Play is not installed completely"
+msgstr "Big Remote Play pole täielikult paigaldatud"
 
 #: src/big_remote_play/ui/headscale_wizard.py:370
 msgid ""
@@ -2027,7 +2044,7 @@ msgstr ""
 #: src/big_remote_play/ui/guest_view.py:2011
 #: src/big_remote_play/ui/guided_setup.py:343
 #: src/big_remote_play/ui/host_view.py:2899
-#: src/big_remote_play/ui/host_view.py:4542
+#: src/big_remote_play/ui/host_view.py:4542 usr/bin/big-remote-play:66
 msgid "Close"
 msgstr "Sulge"
 
@@ -9565,6 +9582,19 @@ msgstr ""
 #: src/big_remote_play/ui/host_view.py:4145
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr "Rakenduse käsk on vigane. Kontrolli jutumärke ja proovi uuesti."
+
+#: usr/bin/big-remote-play:97
+#, python-brace-format
+msgid ""
+"The application files are missing ({path}). This happens when the package "
+"was built with an old PKGBUILD that copies only the usr folder. Install the "
+"Big Remote Play package of your distribution, or update the source code (git "
+"pull) and build it again with pkgbuild/PKGBUILD."
+msgstr ""
+"Rakenduse failid puuduvad ({path}). Nii juhtub, kui pakett on ehitatud vana "
+"PKGBUILD-iga, mis kopeerib ainult kausta usr. Paigalda oma distributsiooni "
+"Big Remote Play pakett või uuenda lähtekoodi (git pull) ja ehita uuesti "
+"failiga pkgbuild/PKGBUILD."
 
 #: usr/share/big-remote-play/scripts/configure_firewall.sh:26
 msgid "The base port must be between 6 and 65514."

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-05 00:09+0000\n"
+"POT-Creation-Date: 2026-11-05 02:02+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Chinese (Traditional, Taiwan)\n"
@@ -251,6 +251,15 @@ msgstr "新裝置在獲得核准前無法使用網路。"
 #: src/big_remote_play/ui/provider_page.py:941
 msgid "A new private ZeroTier network. Needs a ZeroTier API token."
 msgstr "新的私人 ZeroTier 網路。需要 ZeroTier API 權杖。"
+
+#: usr/bin/big-remote-play:115
+#, python-brace-format
+msgid ""
+"A program it needs is missing: the Python module {module}. Install the "
+"package that provides it, or reinstall Big Remote Play."
+msgstr ""
+"缺少一個必要的程式：Python 模組 {module}。請安裝提供它的套件，或重新安裝 Big "
+"Remote Play。"
 
 #: src/big_remote_play/ui/host_view.py:668
 msgid ""
@@ -1345,6 +1354,10 @@ msgstr ""
 "Big Remote Play 無法操作另一台電腦。請在那台電腦上依照以下步驟操作；每個步驟"
 "都可以複製。"
 
+#: usr/bin/big-remote-play:114
+msgid "Big Remote Play cannot start"
+msgstr "Big Remote Play 無法啟動"
+
 #: src/big_remote_play/ui/headscale_wizard.py:994
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play 會幫你檢查。"
@@ -1397,6 +1410,10 @@ msgid ""
 msgstr ""
 "Big Remote Play 沒有權限得知這台電腦的滑鼠和鍵盤何時被使用。從套件安裝 Big "
 "Remote Play 即可解決。"
+
+#: usr/bin/big-remote-play:95
+msgid "Big Remote Play is not installed completely"
+msgstr "Big Remote Play 沒有完整安裝"
 
 #: src/big_remote_play/ui/headscale_wizard.py:370
 msgid ""
@@ -1948,7 +1965,7 @@ msgstr "在 Cloudflare 中點選橘色雲朵，讓它變成灰色（DNS only）�
 #: src/big_remote_play/ui/guest_view.py:2011
 #: src/big_remote_play/ui/guided_setup.py:343
 #: src/big_remote_play/ui/host_view.py:2899
-#: src/big_remote_play/ui/host_view.py:4542
+#: src/big_remote_play/ui/host_view.py:4542 usr/bin/big-remote-play:66
 msgid "Close"
 msgstr "關閉"
 
@@ -9257,6 +9274,18 @@ msgstr "管理員必須分享節點，或透過您的電子郵件邀請您加入
 #: src/big_remote_play/ui/host_view.py:4145
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr "應用程式指令無效。請檢查引號並再試一次。"
+
+#: usr/bin/big-remote-play:97
+#, python-brace-format
+msgid ""
+"The application files are missing ({path}). This happens when the package "
+"was built with an old PKGBUILD that copies only the usr folder. Install the "
+"Big Remote Play package of your distribution, or update the source code (git "
+"pull) and build it again with pkgbuild/PKGBUILD."
+msgstr ""
+"缺少應用程式檔案（{path}）。用只複製 usr 資料夾的舊 PKGBUILD 建置套件時會發生"
+"這種情況。請安裝發行版的 Big Remote Play 套件，或更新原始碼（git pull）後用 "
+"pkgbuild/PKGBUILD 重新建置。"
 
 #: usr/share/big-remote-play/scripts/configure_firewall.sh:26
 msgid "The base port must be between 6 and 65514."

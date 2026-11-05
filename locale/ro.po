@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-05 00:09+0000\n"
+"POT-Creation-Date: 2026-11-05 02:02+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Romanian\n"
@@ -264,6 +264,15 @@ msgstr "Un dispozitiv nou nu poate folosi rețeaua până nu este aprobat."
 #: src/big_remote_play/ui/provider_page.py:941
 msgid "A new private ZeroTier network. Needs a ZeroTier API token."
 msgstr "O rețea ZeroTier privată nouă. Are nevoie de un token API ZeroTier."
+
+#: usr/bin/big-remote-play:115
+#, python-brace-format
+msgid ""
+"A program it needs is missing: the Python module {module}. Install the "
+"package that provides it, or reinstall Big Remote Play."
+msgstr ""
+"Lipsește un program necesar: modulul Python {module}. Instalați pachetul "
+"care îl oferă sau reinstalați Big Remote Play."
 
 #: src/big_remote_play/ui/host_view.py:668
 msgid ""
@@ -1422,6 +1431,10 @@ msgstr ""
 "Big Remote Play nu poate acționa pe alt computer. Urmează acești pași acolo; "
 "fiecare poate fi copiat."
 
+#: usr/bin/big-remote-play:114
+msgid "Big Remote Play cannot start"
+msgstr "Big Remote Play nu poate porni"
+
 #: src/big_remote_play/ui/headscale_wizard.py:994
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play verifică asta în locul tău."
@@ -1480,6 +1493,10 @@ msgstr ""
 "Big Remote Play nu are voie să observe când sunt folosite mouse-ul și "
 "tastatura acestui calculator. Instalarea Big Remote Play din pachetul său "
 "rezolvă asta."
+
+#: usr/bin/big-remote-play:95
+msgid "Big Remote Play is not installed completely"
+msgstr "Big Remote Play nu este instalat complet"
 
 #: src/big_remote_play/ui/headscale_wizard.py:370
 msgid ""
@@ -2057,7 +2074,7 @@ msgstr ""
 #: src/big_remote_play/ui/guest_view.py:2011
 #: src/big_remote_play/ui/guided_setup.py:343
 #: src/big_remote_play/ui/host_view.py:2899
-#: src/big_remote_play/ui/host_view.py:4542
+#: src/big_remote_play/ui/host_view.py:4542 usr/bin/big-remote-play:66
 msgid "Close"
 msgstr "Închide"
 
@@ -9733,6 +9750,19 @@ msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr ""
 "Comanda aplicației nu este validă. Verificați ghilimelele și încercați din "
 "nou."
+
+#: usr/bin/big-remote-play:97
+#, python-brace-format
+msgid ""
+"The application files are missing ({path}). This happens when the package "
+"was built with an old PKGBUILD that copies only the usr folder. Install the "
+"Big Remote Play package of your distribution, or update the source code (git "
+"pull) and build it again with pkgbuild/PKGBUILD."
+msgstr ""
+"Lipsesc fișierele aplicației ({path}). Se întâmplă când pachetul a fost "
+"compilat cu un PKGBUILD vechi care copiază doar dosarul usr. Instalați "
+"pachetul Big Remote Play din distribuția dvs. sau actualizați codul sursă "
+"(git pull) și compilați-l din nou cu pkgbuild/PKGBUILD."
 
 #: usr/share/big-remote-play/scripts/configure_firewall.sh:26
 msgid "The base port must be between 6 and 65514."

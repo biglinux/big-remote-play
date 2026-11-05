@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-05 00:09+0000\n"
+"POT-Creation-Date: 2026-11-05 02:02+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Slovak\n"
@@ -259,6 +259,15 @@ msgstr "Nové zariadenie nemôže používať sieť, kým nebude schválené."
 #: src/big_remote_play/ui/provider_page.py:941
 msgid "A new private ZeroTier network. Needs a ZeroTier API token."
 msgstr "Nová súkromná sieť ZeroTier. Vyžaduje token API ZeroTier."
+
+#: usr/bin/big-remote-play:115
+#, python-brace-format
+msgid ""
+"A program it needs is missing: the Python module {module}. Install the "
+"package that provides it, or reinstall Big Remote Play."
+msgstr ""
+"Chýba potrebný program: modul Pythonu {module}. Nainštalujte balík, ktorý ho "
+"poskytuje, alebo Big Remote Play preinštalujte."
 
 #: src/big_remote_play/ui/host_view.py:668
 msgid ""
@@ -1407,6 +1416,10 @@ msgstr ""
 "Big Remote Play nemôže zasahovať do iného počítača. Vykonajte tieto kroky "
 "priamo na ňom; každý z nich sa dá skopírovať."
 
+#: usr/bin/big-remote-play:114
+msgid "Big Remote Play cannot start"
+msgstr "Big Remote Play sa nedá spustiť"
+
 #: src/big_remote_play/ui/headscale_wizard.py:994
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play to skontroluje za vás."
@@ -1460,6 +1473,10 @@ msgid ""
 msgstr ""
 "Big Remote Play nemá povolenie zistiť, kedy sa používa myš a klávesnica "
 "tohto počítača. Inštalácia Big Remote Play z jeho balíka to vyrieši."
+
+#: usr/bin/big-remote-play:95
+msgid "Big Remote Play is not installed completely"
+msgstr "Big Remote Play nie je nainštalovaný celý"
 
 #: src/big_remote_play/ui/headscale_wizard.py:370
 msgid ""
@@ -2033,7 +2050,7 @@ msgstr "Kliknite v Cloudflare na oranžový obláčik, aby zosivel (DNS only)."
 #: src/big_remote_play/ui/guest_view.py:2011
 #: src/big_remote_play/ui/guided_setup.py:343
 #: src/big_remote_play/ui/host_view.py:2899
-#: src/big_remote_play/ui/host_view.py:4542
+#: src/big_remote_play/ui/host_view.py:4542 usr/bin/big-remote-play:66
 msgid "Close"
 msgstr "Zavrieť"
 
@@ -9639,6 +9656,19 @@ msgstr "Správca musí zdieľať uzol alebo pozvať váš e-mail do siete."
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr ""
 "Príkaz aplikácie nie je platný. Skontrolujte úvodzovky a skúste to znova."
+
+#: usr/bin/big-remote-play:97
+#, python-brace-format
+msgid ""
+"The application files are missing ({path}). This happens when the package "
+"was built with an old PKGBUILD that copies only the usr folder. Install the "
+"Big Remote Play package of your distribution, or update the source code (git "
+"pull) and build it again with pkgbuild/PKGBUILD."
+msgstr ""
+"Chýbajú súbory aplikácie ({path}). Stáva sa to, keď bol balík zostavený "
+"starým PKGBUILD, ktorý kopíruje len priečinok usr. Nainštalujte balík Big "
+"Remote Play z vašej distribúcie alebo aktualizujte zdrojový kód (git pull) a "
+"zostavte ho znova pomocou pkgbuild/PKGBUILD."
 
 #: usr/share/big-remote-play/scripts/configure_firewall.sh:26
 msgid "The base port must be between 6 and 65514."

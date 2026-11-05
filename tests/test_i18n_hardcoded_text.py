@@ -74,7 +74,7 @@ def test_the_checked_in_catalogs_match_the_sources(tmp_path):
     copy = tmp_path / "project"
     for part in ("src", "locale", "tools", "build-aux", "usr/share/big-remote-play/scripts"):
         shutil.copytree(ROOT / part, copy / part, ignore=shutil.ignore_patterns("__pycache__"))
-    for part in ("usr/share/applications", "usr/share/metainfo"):
+    for part in ("usr/bin", "usr/share/applications", "usr/share/metainfo"):
         shutil.copytree(ROOT / part, copy / part)
     subprocess.run([sys.executable, "tools/i18n/update_catalogs.py", "--pot-only"], cwd=copy, check=True, capture_output=True, text=True)
 

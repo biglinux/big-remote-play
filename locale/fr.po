@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-05 00:09+0000\n"
+"POT-Creation-Date: 2026-11-05 02:02+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: French\n"
@@ -265,6 +265,15 @@ msgstr ""
 #: src/big_remote_play/ui/provider_page.py:941
 msgid "A new private ZeroTier network. Needs a ZeroTier API token."
 msgstr "Un nouveau réseau ZeroTier privé. Nécessite un jeton d’API ZeroTier."
+
+#: usr/bin/big-remote-play:115
+#, python-brace-format
+msgid ""
+"A program it needs is missing: the Python module {module}. Install the "
+"package that provides it, or reinstall Big Remote Play."
+msgstr ""
+"Un programme nécessaire manque : le module Python {module}. Installez le "
+"paquet qui le fournit ou réinstallez Big Remote Play."
 
 #: src/big_remote_play/ui/host_view.py:668
 msgid ""
@@ -1432,6 +1441,10 @@ msgstr ""
 "Big Remote Play ne peut pas agir sur un autre ordinateur. Suivez ces étapes "
 "sur cet ordinateur-là ; chacune peut être copiée."
 
+#: usr/bin/big-remote-play:114
+msgid "Big Remote Play cannot start"
+msgstr "Big Remote Play ne peut pas démarrer"
+
 #: src/big_remote_play/ui/headscale_wizard.py:994
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play le vérifie pour vous."
@@ -1490,6 +1503,10 @@ msgstr ""
 "Big Remote Play n’a pas l’autorisation de savoir quand la souris et le "
 "clavier de cet ordinateur sont utilisés. Installer Big Remote Play depuis "
 "son paquet corrige cela."
+
+#: usr/bin/big-remote-play:95
+msgid "Big Remote Play is not installed completely"
+msgstr "Big Remote Play n’est pas installé entièrement"
 
 #: src/big_remote_play/ui/headscale_wizard.py:370
 msgid ""
@@ -2068,7 +2085,7 @@ msgstr ""
 #: src/big_remote_play/ui/guest_view.py:2011
 #: src/big_remote_play/ui/guided_setup.py:343
 #: src/big_remote_play/ui/host_view.py:2899
-#: src/big_remote_play/ui/host_view.py:4542
+#: src/big_remote_play/ui/host_view.py:4542 usr/bin/big-remote-play:66
 msgid "Close"
 msgstr "Fermer"
 
@@ -9776,6 +9793,19 @@ msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr ""
 "La commande de l’application n’est pas valide. Vérifiez les guillemets et "
 "réessayez."
+
+#: usr/bin/big-remote-play:97
+#, python-brace-format
+msgid ""
+"The application files are missing ({path}). This happens when the package "
+"was built with an old PKGBUILD that copies only the usr folder. Install the "
+"Big Remote Play package of your distribution, or update the source code (git "
+"pull) and build it again with pkgbuild/PKGBUILD."
+msgstr ""
+"Les fichiers de l’application sont absents ({path}). Cela arrive quand le "
+"paquet a été compilé avec un ancien PKGBUILD qui ne copie que le dossier "
+"usr. Installez le paquet Big Remote Play de votre distribution, ou mettez à "
+"jour le code source (git pull) et recompilez-le avec pkgbuild/PKGBUILD."
 
 #: usr/share/big-remote-play/scripts/configure_firewall.sh:26
 msgid "The base port must be between 6 and 65514."

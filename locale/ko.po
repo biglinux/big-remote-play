@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-05 00:09+0000\n"
+"POT-Creation-Date: 2026-11-05 02:02+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Korean\n"
@@ -258,6 +258,15 @@ msgstr "새 장치는 승인되기 전까지 네트워크를 사용할 수 없�
 #: src/big_remote_play/ui/provider_page.py:941
 msgid "A new private ZeroTier network. Needs a ZeroTier API token."
 msgstr "새 비공개 ZeroTier 네트워크입니다. ZeroTier API 토큰이 필요합니다."
+
+#: usr/bin/big-remote-play:115
+#, python-brace-format
+msgid ""
+"A program it needs is missing: the Python module {module}. Install the "
+"package that provides it, or reinstall Big Remote Play."
+msgstr ""
+"필요한 프로그램이 없습니다: Python 모듈 {module}. 이를 제공하는 패키지를 설치"
+"하거나 Big Remote Play를 다시 설치하세요."
 
 #: src/big_remote_play/ui/host_view.py:668
 msgid ""
@@ -1389,6 +1398,10 @@ msgstr ""
 "Big Remote Play는 다른 컴퓨터를 조작할 수 없습니다. 그 컴퓨터에서 다음 단계"
 "를 따르세요. 각 단계는 복사할 수 있습니다."
 
+#: usr/bin/big-remote-play:114
+msgid "Big Remote Play cannot start"
+msgstr "Big Remote Play를 시작할 수 없습니다"
+
 #: src/big_remote_play/ui/headscale_wizard.py:994
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play가 대신 확인합니다."
@@ -1443,6 +1456,10 @@ msgid ""
 msgstr ""
 "Big Remote Play에는 이 컴퓨터의 마우스와 키보드 사용을 감지할 권한이 없습니"
 "다. 패키지로 Big Remote Play를 설치하면 해결됩니다."
+
+#: usr/bin/big-remote-play:95
+msgid "Big Remote Play is not installed completely"
+msgstr "Big Remote Play가 완전히 설치되지 않았습니다"
 
 #: src/big_remote_play/ui/headscale_wizard.py:370
 msgid ""
@@ -2006,7 +2023,7 @@ msgstr "Cloudflare에서 주황색 구름을 클릭해 회색(DNS only)으로 �
 #: src/big_remote_play/ui/guest_view.py:2011
 #: src/big_remote_play/ui/guided_setup.py:343
 #: src/big_remote_play/ui/host_view.py:2899
-#: src/big_remote_play/ui/host_view.py:4542
+#: src/big_remote_play/ui/host_view.py:4542 usr/bin/big-remote-play:66
 msgid "Close"
 msgstr "닫기"
 
@@ -9525,6 +9542,18 @@ msgstr ""
 #: src/big_remote_play/ui/host_view.py:4145
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr "앱 명령이 올바르지 않습니다. 따옴표를 확인하고 다시 시도하세요."
+
+#: usr/bin/big-remote-play:97
+#, python-brace-format
+msgid ""
+"The application files are missing ({path}). This happens when the package "
+"was built with an old PKGBUILD that copies only the usr folder. Install the "
+"Big Remote Play package of your distribution, or update the source code (git "
+"pull) and build it again with pkgbuild/PKGBUILD."
+msgstr ""
+"애플리케이션 파일이 없습니다({path}). usr 폴더만 복사하는 오래된 PKGBUILD로 "
+"패키지를 만들면 이렇게 됩니다. 배포판의 Big Remote Play 패키지를 설치하거나 "
+"소스 코드를 업데이트(git pull)한 뒤 pkgbuild/PKGBUILD로 다시 빌드하세요."
 
 #: usr/share/big-remote-play/scripts/configure_firewall.sh:26
 msgid "The base port must be between 6 and 65514."

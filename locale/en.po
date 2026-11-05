@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-05 00:09+0000\n"
+"POT-Creation-Date: 2026-11-05 02:02+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: English\n"
@@ -248,6 +248,13 @@ msgstr "A new device cannot use the network until it is approved."
 #: src/big_remote_play/ui/provider_page.py:941
 msgid "A new private ZeroTier network. Needs a ZeroTier API token."
 msgstr "A new private ZeroTier network. Needs a ZeroTier API token."
+
+#: usr/bin/big-remote-play:115
+#, python-brace-format
+msgid ""
+"A program it needs is missing: the Python module {module}. Install the "
+"package that provides it, or reinstall Big Remote Play."
+msgstr "A program it needs is missing: the Python module {module}. Install the package that provides it, or reinstall Big Remote Play."
 
 #: src/big_remote_play/ui/host_view.py:668
 msgid ""
@@ -1317,6 +1324,10 @@ msgid ""
 "there; each one can be copied."
 msgstr "Big Remote Play cannot reach into another computer. Follow these steps there; each one can be copied."
 
+#: usr/bin/big-remote-play:114
+msgid "Big Remote Play cannot start"
+msgstr "Big Remote Play cannot start"
+
 #: src/big_remote_play/ui/headscale_wizard.py:994
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play checks it for you."
@@ -1360,6 +1371,10 @@ msgid ""
 "Big Remote Play is not allowed to notice when this computer's mouse and "
 "keyboard are used. Installing Big Remote Play from its package fixes this."
 msgstr "Big Remote Play is not allowed to notice when this computer's mouse and keyboard are used. Installing Big Remote Play from its package fixes this."
+
+#: usr/bin/big-remote-play:95
+msgid "Big Remote Play is not installed completely"
+msgstr "Big Remote Play is not installed completely"
 
 #: src/big_remote_play/ui/headscale_wizard.py:370
 msgid ""
@@ -1901,7 +1916,7 @@ msgstr "Click the orange cloud in Cloudflare so it turns gray (DNS only)."
 #: src/big_remote_play/ui/guest_view.py:2011
 #: src/big_remote_play/ui/guided_setup.py:343
 #: src/big_remote_play/ui/host_view.py:2899
-#: src/big_remote_play/ui/host_view.py:4542
+#: src/big_remote_play/ui/host_view.py:4542 usr/bin/big-remote-play:66
 msgid "Close"
 msgstr "Close"
 
@@ -9021,6 +9036,15 @@ msgstr "The administrator must share the node or invite your email to the networ
 #: src/big_remote_play/ui/host_view.py:4145
 msgid "The app command is not valid. Check its quotation marks and try again."
 msgstr "The app command is not valid. Check its quotation marks and try again."
+
+#: usr/bin/big-remote-play:97
+#, python-brace-format
+msgid ""
+"The application files are missing ({path}). This happens when the package "
+"was built with an old PKGBUILD that copies only the usr folder. Install the "
+"Big Remote Play package of your distribution, or update the source code (git "
+"pull) and build it again with pkgbuild/PKGBUILD."
+msgstr "The application files are missing ({path}). This happens when the package was built with an old PKGBUILD that copies only the usr folder. Install the Big Remote Play package of your distribution, or update the source code (git pull) and build it again with pkgbuild/PKGBUILD."
 
 #: usr/share/big-remote-play/scripts/configure_firewall.sh:26
 msgid "The base port must be between 6 and 65514."
