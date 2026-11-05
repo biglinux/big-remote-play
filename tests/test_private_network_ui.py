@@ -153,6 +153,9 @@ class FakeService(service_module.OfflinePrivateNetworkService):
     def sunshine_ready(self, address, port=47989):
         return address == "100.64.0.2"
 
+    def sunshine_identity(self, address, port=47989):
+        return self.sunshine_ready(address, port), ""
+
 
 TS_CONNECTED = ProviderStatus(
     ProviderId.TAILSCALE,

@@ -25,6 +25,7 @@ class DeviceCount:
     total: int | None = None
     online: int | None = None
     problem: str = ""  # "" | api_missing (ZeroTier without a token) | api_failed | not_connected
+    found: int = 0  # ZeroTier without a token: computers sharing games that a search found
 
     @property
     def known(self) -> bool:
@@ -66,7 +67,7 @@ def _zerotier_count(listing: DeviceListing | None) -> DeviceCount:
     if listing.problem:
         return DeviceCount(problem="api_failed")
     if not listing.complete:
-        return DeviceCount(problem="api_missing")
+        return DeviceCount(problem="api_missing", found=sum(1 for device in listing.devices if device.found and device.sunshine))
     if not listing.devices:
         return DeviceCount(problem="not_connected")
     return DeviceCount(total=len(listing.devices), online=sum(1 for device in listing.devices if device.online))

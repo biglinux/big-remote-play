@@ -75,6 +75,8 @@ class GuestView(Gtk.Box):
         self._private_hosts: list[dict] = []
         self._private_refreshed_at = 0.0
         self._private_worker = Worker()
+        self._zerotier_worker = Worker()
+        self._zerotier_cancel = threading.Event()
         self._history_worker = Worker()
         self._session_id = ""
 
@@ -1284,6 +1286,40 @@ class GuestView(Gtk.Box):
 
         NetworkDiscovery().discover_hosts(callback=on_hosts_discovered)
         self.refresh_private_hosts()
+        self.search_zerotier()
+
+    def search_zerotier(self) -> None:
+        """A search the person asked for: ZeroTier gives members no list of the others.
+
+        Every ZeroTier network this computer is in now is asked (bounded,
+        see private_network/discovery.py); the computers that answer join
+        the list through ``refresh_private_hosts``.
+        """
+        from big_remote_play.private_network.models import ProviderId
+        from big_remote_play.private_network.service import default_service
+
+        self._zerotier_cancel.set()
+        cancel = threading.Event()
+        self._zerotier_cancel = cancel
+
+        def work() -> int:
+            service = default_service()
+            status = service.status(ProviderId.ZEROTIER)
+            if not status.connected:
+                return 0
+            found = 0
+            for network in status.networks:
+                if cancel.is_set():
+                    break
+                result = service.find_zerotier_computers(network.network_id, cancel=cancel)
+                found += sum(1 for computer in result.found if computer.sharing)
+            return found
+
+        def done(found: int) -> None:
+            if found and not self._closed:
+                self.refresh_private_hosts()
+
+        self._zerotier_worker.submit(work, done)
 
     # ── private-network computers ──────────────────────────────────────────
     def refresh_private_hosts(self) -> None:
@@ -1303,9 +1339,12 @@ class GuestView(Gtk.Box):
             candidates = service.candidate_hosts()
             hosts = []
             with ThreadPoolExecutor(max_workers=4) as pool:
-                ready = list(pool.map(lambda c: service.sunshine_ready(c.address, c.port) if c.online is not False else False, candidates))
-            for candidate, sharing in zip(candidates, ready):
+                identify = getattr(service, "sunshine_identity", None) or (lambda address, port: (service.sunshine_ready(address, port), ""))
+                answers = list(pool.map(lambda c: identify(c.address, c.port) if c.online is not False else (False, ""), candidates))
+            for candidate, (sharing, identity) in zip(candidates, answers):
                 host = candidate.as_host()
+                if identity:
+                    host["uniqueid"] = identity
                 if candidate.online is False:
                     host["readiness"] = "offline"
                 elif sharing:
@@ -1326,11 +1365,25 @@ class GuestView(Gtk.Box):
     def _merge_private(self, hosts: list[dict]) -> list[dict]:
         known = {str(host.get("ip")) for host in hosts}
         merged = list(hosts)
+        by_identity: dict[str, dict] = {}
         # Ready computers first; an offline peer is listed so its state is visible.
         order = {"sharing": 0, "no_sharing": 1, "offline": 2}
         for host in sorted(self._private_hosts, key=lambda item: order.get(item.get("readiness", ""), 1)):
-            if str(host.get("ip")) not in known:
-                merged.append(host)
+            if str(host.get("ip")) in known:
+                continue
+            identity = str(host.get("uniqueid") or "")
+            first = by_identity.get(identity) if identity else None
+            if first is not None:
+                # The same computer (same Sunshine identity) on another network:
+                # one card, with this address as an alternative route.
+                first["addresses"] = [*first.get("addresses", []), host["ip"], *host.get("addresses", [])]
+                first.setdefault("routes", [first.get("provider", "")]).append(host.get("provider", ""))
+                continue
+            host = dict(host)
+            if identity:
+                by_identity[identity] = host
+            known.add(str(host.get("ip")))
+            merged.append(host)
         return merged
 
     def _clear_host_cards(self) -> None:
@@ -1339,7 +1392,7 @@ class GuestView(Gtk.Box):
         self._host_cards = []
 
     def update_hosts_list(self, hosts, keep_selection: bool = False):
-        self._lan_hosts = [host for host in hosts if host.get("source") != "provider"]
+        self._lan_hosts = [host for host in hosts if host.get("source") not in ("provider", "found")]
         hosts = self._merge_private(self._lan_hosts)
         previous = self.selected_host_card_data if keep_selection else None
         if keep_selection and (hosts or self._empty_container.get_visible()) and hosts == self.listed_hosts():
@@ -2172,7 +2225,10 @@ class GuestView(Gtk.Box):
 
     def cleanup(self):
         self._closed = True
-        for worker in (getattr(self, "_private_worker", None), getattr(self, "_history_worker", None)):
+        cancel = getattr(self, "_zerotier_cancel", None)
+        if cancel is not None:
+            cancel.set()
+        for worker in (getattr(self, "_private_worker", None), getattr(self, "_history_worker", None), getattr(self, "_zerotier_worker", None)):
             if worker is not None:
                 worker.close()
         self._attempt_cancel.set()

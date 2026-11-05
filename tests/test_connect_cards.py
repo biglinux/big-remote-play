@@ -79,10 +79,10 @@ def test_three_cards_at_once_each_with_its_own_network_address_and_devices(ui):
     assert not page.cards[P.HEADSCALE].switch.get_active()
 
 
-def test_zerotier_without_a_token_says_unavailable_never_zero(ui):
+def test_zerotier_without_a_token_says_none_found_yet_never_zero(ui):
     page = hub(ui, CardService([ZT_CONNECTED]))
     content = texts(page.cards[P.ZEROTIER])
-    assert "Devices unavailable" in content and "0 devices" not in content
+    assert "No computer found yet" in content and "0 devices" not in content
 
 
 def test_zerotier_counts_come_from_central_for_the_chosen_network(ui):

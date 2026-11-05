@@ -171,6 +171,7 @@ class HostCandidate:
     dns_name: str = ""
     addresses: tuple[str, ...] = ()
     last_connected: float | None = None  # epoch seconds, from the session history
+    identity: str = ""  # Sunshine's uniqueid when known: the same computer on several networks
 
     def as_host(self) -> dict:
         """The dictionary shape GuestView already connects with."""
@@ -182,6 +183,7 @@ class HostCandidate:
             "source": self.source,
             "addresses": [address for address in self.addresses if address != self.address],
             "dns_name": self.dns_name,
+            "uniqueid": self.identity,
         }
 
 

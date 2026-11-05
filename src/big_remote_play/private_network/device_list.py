@@ -34,6 +34,8 @@ class ProviderDevice:
     removable: bool = False
     os: str = ""
     waiting: bool = False  # joined, not approved yet
+    sunshine: bool | None = None  # shared games when last searched (None: never searched)
+    found: bool = False  # known from a search of the network, not from the provider
 
 
 @dataclass(frozen=True)
@@ -133,9 +135,35 @@ def tailnet_listing(status: ProviderStatus, api_devices: Sequence | None = None,
     return DeviceListing(provider, _ordered(devices), can_remove=can_remove, manage_url=TAILSCALE_MACHINES if provider is ProviderId.TAILSCALE else "", problem=api_problem)
 
 
-def zerotier_listing(status: ProviderStatus, network_id: str = "", members: Sequence | None = None, *, api_problem: str = "", now: float | None = None) -> DeviceListing:
+# A computer that answered a search this recently is shown as available.
+FRESH_SECONDS = 180
+
+
+def _found_devices(found: Sequence, skip: set[str], clock: float) -> list[ProviderDevice]:
+    devices = []
+    for computer in found:
+        if computer.address in skip:
+            continue
+        fresh = clock - computer.seen < FRESH_SECONDS
+        devices.append(
+            ProviderDevice(
+                id="",
+                name=computer.name or computer.address,
+                address=computer.address,
+                online=True if fresh else None,
+                last_seen=computer.seen or None,
+                sunshine=computer.sharing,
+                found=True,
+            )
+        )
+    return devices
+
+
+def zerotier_listing(status: ProviderStatus, network_id: str = "", members: Sequence | None = None, *, api_problem: str = "", now: float | None = None, found: Sequence = ()) -> DeviceListing:
     """One ZeroTier network: its members from Central when an API token is
-    configured, otherwise only this computer (the local service knows no members)."""
+    configured, otherwise this computer and the computers a search of the
+    network found (the local service knows no members). ``found`` holds
+    ``discovery.FoundComputer`` of this network only."""
     networks = tuple(NetworkChoice(network.network_id, network.name or network.network_id) for network in status.networks)
     chosen = network_id if any(choice.network_id == network_id for choice in networks) else (networks[0].network_id if networks else "")
     url = ZEROTIER_NETWORK.format(network_id=chosen) if chosen else "https://my.zerotier.com"
@@ -151,9 +179,12 @@ def zerotier_listing(status: ProviderStatus, network_id: str = "", members: Sequ
         is_local=True,
         waiting=membership.state is ConnectionState.NEEDS_AUTHORIZATION,
     )
-    if members is None:
-        return DeviceListing(ProviderId.ZEROTIER, (own,), complete=False, manage_url=url, networks=networks, network_id=chosen, problem=api_problem)
     clock = now if now is not None else time.time()
+    found = [computer for computer in found if computer.network_id == chosen]
+    if members is None:
+        devices = [own, *_found_devices(found, {own.address}, clock)]
+        return DeviceListing(ProviderId.ZEROTIER, _ordered(devices), complete=False, manage_url=url, networks=networks, network_id=chosen, problem=api_problem)
+    sharing = {computer.address: computer.sharing for computer in found}
     devices = [own]
     for member in members:
         if member.node_id == own_node or getattr(member, "rejected", False):
@@ -168,6 +199,7 @@ def zerotier_listing(status: ProviderStatus, network_id: str = "", members: Sequ
                 last_seen=member.last_seen,
                 removable=True,
                 waiting=not member.authorized,
+                sunshine=next((sharing[a] for a in addresses if a in sharing), None),
             )
         )
     return DeviceListing(ProviderId.ZEROTIER, _ordered(devices), can_remove=True, manage_url=url, networks=networks, network_id=chosen, problem=api_problem)
