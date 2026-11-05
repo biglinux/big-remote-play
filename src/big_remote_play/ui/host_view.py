@@ -10,6 +10,7 @@ import logging
 _log = logging.getLogger("big-remoteplay")
 
 import subprocess, random, string, json, socket, os, time
+import re
 import shlex
 from pathlib import Path
 from big_remote_play.utils.game_detector import GameDetector
@@ -47,6 +48,12 @@ _SOURCE_ICONS = {
 }
 # The list follows games opening and closing while it is on screen.
 _GAME_WINDOW_REFRESH_SECONDS = 8
+
+
+def display_controllers(lspci_output: str) -> str:
+    """The graphics lines of ``lspci`` (VGA, 3D and display controllers), lower-cased."""
+    lines = [line for line in lspci_output.splitlines() if re.search(r"\b(vga compatible controller|3d controller|display controller)\b", line, re.IGNORECASE)]
+    return "\n".join(lines).lower()
 
 
 def _parse_xrandr_monitor_names(output: str) -> list[str]:
@@ -425,7 +432,10 @@ class HostView(Gtk.Box):
     def detect_gpus(self):
         gpus = []
         try:
-            lspci = subprocess.check_output(["lspci"], text=True, timeout=5).lower()
+            # Only display controllers count: on many AMD and NVIDIA machines the
+            # chipset (bridges, SMBus, USB) is "Intel Corporation", which offered
+            # "Intel Quick Sync" on computers without any Intel graphics.
+            lspci = display_controllers(subprocess.check_output(["lspci"], text=True, timeout=5))
             if "nvidia" in lspci:
                 try:
                     subprocess.check_call(["nvidia-smi"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5)
@@ -2173,6 +2183,14 @@ class HostView(Gtk.Box):
                 self.cursor_row.set_subtitle(_("Sunshine reports that it cannot capture the pointer. Support → Common problems explains what to try."))
         self.cursor_fix_button.set_visible(lost and report is not None and bool(report.recommended))
         self.cursor_row.set_visible(lost)
+        if report is not None and report.import_failed:
+            self.picture_row.set_subtitle(
+                _(
+                    "This graphics card cannot pass the shared picture to its video encoder, so the other device sees a black screen. In Preferences → Image and capture, turn off automatic settings and choose Software (CPU) as the graphics card, then restart sharing."
+                )
+            )
+        elif report is not None and report.no_picture:
+            self.picture_row.set_subtitle(_("Sunshine found no way to capture or encode the screen. Restart sharing and answer the desktop's screen-sharing questions right away."))
         self.picture_row.set_visible(bool(report is not None and report.no_picture and self.is_hosting))
         self._sync_attention_group()
 
@@ -3239,9 +3257,12 @@ class HostView(Gtk.Box):
         self._check_pairing_busy()
         addresses = frozenset(info.address for info in infos)
         if addresses != getattr(self, "_cursor_checked_for", frozenset()):
-            # Someone joined or left: Sunshine logs the capture it opened.
+            # Someone joined or left: Sunshine logs the capture it opened,
+            # and a picture its encoder cannot take shows a moment later.
             self._cursor_checked_for = addresses
             self._check_cursor()
+            if addresses:
+                GLib.timeout_add_seconds(8, lambda: self._check_cursor() and False)
         self._announce_connections(infos)
         if hasattr(self, "share_history_card") and (infos or self._history_sessions):
             self._record_history(infos)

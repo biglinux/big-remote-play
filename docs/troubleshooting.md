@@ -212,6 +212,10 @@ Unlock or start the desktop's Secret Service keyring (KWallet on KDE, GNOME Keyr
 
 Sunshine runs but does not accept connections yet. With the desktop portal (GNOME, or **Capture method → Portal**), Sunshine waits until the desktop's **Remote desktop** / screen-sharing window is answered: choose the screen and **Share**. Otherwise **Support → Server log** shows why it stopped (often an encoder or capture that could not open). The state returns to **Sharing** by itself as soon as Sunshine answers.
 
+## The other device sees a black screen (Game Window)
+
+On some graphics cards (seen with a Radeon RX 580) the game window's frames reach Sunshine in a form its hardware encoder cannot take: Sunshine's log repeats `Couldn't import RGB Image`, and **Needs attention** says **The picture could not start** with the explanation. In **Preferences → Image and capture**, turn off the automatic settings, choose **Software (CPU)** as the graphics card and restart sharing, or share the **Full Desktop** instead. See [Game Window](game-window.md#older-graphics-cards-a-black-stream).
+
 ## Share says “The picture could not start”
 
 Sunshine runs and accepts connections, but it found no way to capture or encode the screen, so nobody would get a picture. The usual cause is the desktop's screen-sharing questions answered too late: Sunshine gives up the permission its screen capture needs shortly after starting. Choose **Restart sharing** and answer the questions right away. On a notebook with two graphics cards (Intel or AMD plus NVIDIA), a stream may also end at once with nothing on the other device; Sunshine's log then says `Couldn't find monitor`. That is a Sunshine limitation with hybrid graphics: see [mouse pointer compatibility](mouse-cursor-compatibility.md#a-real-hybrid-notebook-intel--nvidia).
