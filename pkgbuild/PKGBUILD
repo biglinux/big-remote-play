@@ -24,6 +24,7 @@ depends=(
 	'polkit'
 	'procps-ng'
 	'systemd'
+	'util-linux'
 	'hicolor-icon-theme'
 )
 makedepends=(
@@ -34,7 +35,8 @@ makedepends=(
 )
 # glib2, gdk-pixbuf2 and pango come with gtk4 but are imported directly; the
 # command-line tools (avahi, curl, iproute2, iputils, jq, polkit, procps-ng,
-# systemd) are run as programs, which namcap cannot see.
+# systemd) are run as programs, which namcap cannot see; util-linux's setsid
+# starts the games added to Sunshine's library.
 # Every dependency above is in Arch's own repositories. Sunshine is not (BigLinux
 # carries it; on Arch it comes from the AUR or its upstream package): a computer
 # that only connects never needs it, and Share says what is missing.
@@ -56,10 +58,13 @@ optdepends=(
 	'gst-plugins-bad-libs: Game Window sharing (private game screen)'
 	'gst-plugins-good: Game Window sharing on X11 and title bar removal'
 	'libkscreen: match the screen mode and HDR to the connecting device'
-	'xorg-xrandr: list monitors on X11'
+	'xorg-xrandr: list monitors and the main screen on X11'
 	'pciutils: graphics adapter detection'
-	'flatpak: use Moonlight and VPN clients installed as Flatpaks'
-	'steam: start Steam games and Big Picture from Share'
+	'flatpak: use Moonlight, VPN clients, Steam, Lutris or Heroic installed as Flatpaks'
+	'steam: Steam games in Share and the Game Library'
+	'lutris: Lutris games in the Game Library'
+	'heroic-games-launcher: Epic, GOG and Amazon games in the Game Library (Manjaro and BigLinux repositories; AUR on Arch)'
+	'xdg-utils: start Heroic games through its link handler'
 	'gettext: translated messages from the administrator helpers'
 )
 
