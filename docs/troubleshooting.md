@@ -103,6 +103,17 @@ The private network can work (both computers listed, pings answered) while the g
 - **On the game PC**, while sharing, **Share → Overview → Needs attention** says **The firewall blocks other computers**, naming the firewall (ufw or firewalld), the blocked ports and the networks affected (the local network, ZeroTier, Tailscale or Headscale). **Allow in firewall** first lists the ports it will open — TCP 47984, 47989, 48010 and UDP 47998–48000 for the default base port; never the administration page — then asks for your password. The check only reads: ufw's own rule files (`/etc/ufw/ufw.conf`, `/etc/default/ufw`, `/etc/ufw/user.rules`) or firewalld's zone queries. The first ufw rule that matches decides, as in ufw; a rule limited to the local network does not cover ZeroTier; an interface rule such as `allow in on tailscale0` covers only that interface. Plain nftables/iptables rules need root to read, so they are never reported as blocking.
 - **On the connecting computer**, a refused connection means the game PC answered but sharing is not running; silence from a game PC that still answers a ping means its firewall filters the ports, and the message and **Diagnose** say so.
 
+## “The connection to the game PC was lost” a few seconds after the game appears
+
+Moonlight ends a running stream by itself (its window says “Connection terminated”, error code -1) when the game PC stops answering for about ten seconds. Big Remote Play then says which of two causes it saw:
+
+- **The delay reached hundreds of milliseconds**: the stream asks for more than the network between the two computers carries. Over ZeroTier, Tailscale or Headscale that is the internet connection of both places, not the Wi-Fi to the router, so the automatic bitrate can be too high. **Lower quality and connect again** halves the bitrate and keeps it as a manual value; repeat until the stream holds. A screen share or video call running at the same time uses the same connection.
+- **The network stopped answering**: both computers lost each other for several seconds. A computer with cable and Wi-Fi both connected to the same router can make ZeroTier switch between the two; when it uses the Wi-Fi one and that adapter pauses, everything stops. Turn off the connection it does not use, or tell ZeroTier to ignore it: add `{"settings": {"interfacePrefixBlacklist": ["wlp"]}}` to `/var/lib/zerotier-one/local.conf` (merge it with what is there) and restart `zerotier-one`.
+
+## Several people cannot play at the same time
+
+Sunshine accepts one stream at a time unless its **Maximum Connected Clients** (`channels`) is raised; the second Moonlight is then refused. Big Remote Play sets it to 4 when sharing starts, and keeps a higher value you chose. Each player's controller becomes its own virtual controller on the game PC; games made for several players give each one the next player.
+
 ## A computer shows “Sign-in expired” or “Sharing not found”
 
 “Sign-in expired” means that device's Tailscale key expired: sign in again on that device. “Sharing not found” means the private network reaches the computer but Sunshine did not answer: start sharing on it, and check its firewall allows the streaming ports on the VPN interface. Use **Diagnose** for details.

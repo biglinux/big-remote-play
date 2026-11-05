@@ -820,6 +820,10 @@ class GuestView(Gtk.Box):
             sound = getattr(self.moonlight, "audio", None)
             if is_running and sound is not None and sound.take_loss_alert():
                 self.show_toast(_("Sound from the game PC is being lost on the way. A wired or less busy connection helps."))
+            take_end = getattr(self.moonlight, "take_stream_end", None)
+            end = take_end() if is_running and callable(take_end) else None
+            if end is not None:
+                self.show_stream_lost(end)
             if is_running:
                 if not self.is_connected:
                     # Update state if it was disconnected
@@ -846,6 +850,51 @@ class GuestView(Gtk.Box):
             self._announce_state()
 
         return True  # Continue polling
+
+    # A delay this long means data piles up on the way: the stream asks for
+    # more than the network between the two computers carries.
+    _CONGESTED_DELAY_MS = 250
+    _LOWEST_RETRY_MBPS = 2.0
+
+    def show_stream_lost(self, end) -> Adw.AlertDialog:
+        """Moonlight ended a running stream by itself: say why, offer the way out.
+
+        Moonlight's own window only shows an error code, and an automatic
+        bitrate follows this computer's link to its router, not the internet
+        path to a game PC reached through a private network.
+        """
+        rate = self.bitrate_scale.get_value()
+        congested = end.peak_latency_ms >= self._CONGESTED_DELAY_MS
+        if congested:
+            # TRANSLATORS: {rate} is a number of megabits per second; {delay} a number of milliseconds.
+            body = _("The network between the two computers could not carry {rate} Mbps: the delay reached {delay} ms, so Moonlight stopped. Lower the image quality and connect again.").format(
+                rate=f"{rate:g}", delay=end.peak_latency_ms
+            )
+        else:
+            body = _(
+                "The network between the two computers stopped answering for several seconds, so Moonlight stopped. On a private network such as ZeroTier or Tailscale, a computer with cable and Wi-Fi both connected can cause this: turn off the connection it does not use."
+            )
+        dialog = Adw.AlertDialog(heading=_("The connection to the game PC was lost"), body=body)
+        dialog.set_body_use_markup(False)
+        dialog.add_response("close", _("Close"))
+        lower = round(max(self._LOWEST_RETRY_MBPS, rate / 2) * 2) / 2
+        if lower < rate:
+            dialog.add_response("lower", _("Lower quality and connect again"))
+            dialog.set_response_appearance("lower", Adw.ResponseAppearance.SUGGESTED)
+            dialog.set_default_response("lower" if congested else "close")
+        dialog.set_close_response("close")
+
+        def respond(_dialog, response: str) -> None:
+            if response != "lower":
+                return
+            # Saved as a manual value (the scale's own handlers): automatic
+            # quality chose the rate that failed.
+            self.bitrate_scale.set_value(lower)
+            self.check_reconnect()
+
+        dialog.connect("response", respond)
+        dialog.present(self)
+        return dialog
 
     def _check_stream_sound(self, attempt: int) -> None:
         """After the stream started: is the game PC's sound playing here? Said only when not."""

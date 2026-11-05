@@ -4082,7 +4082,7 @@ class HostView(Gtk.Box):
 
     def _build_sunshine_config(self) -> dict:
         """Assemble the sunshine.conf mapping from the current widget state."""
-        from big_remote_play.ui.sunshine_preferences import current_web_ui_origin, web_ui_origin
+        from big_remote_play.ui.sunshine_preferences import current_connected_clients, current_web_ui_origin, web_ui_origin
 
         bw_mbps = self.bandwidth_row.get_value()
         index = self.gpu_row.get_selected()
@@ -4096,6 +4096,7 @@ class HostView(Gtk.Box):
             "upnp": "enabled" if self.upnp_row.get_active() else "disabled",
             "address_family": "both" if self.ipv6_row.get_active() else "ipv4",
             "origin_web_ui_allowed": web_ui_origin(self.webui_anyone_row.get_active(), current_web_ui_origin()),
+            "channels": current_connected_clients(),
         }
         index = self.platform_row.get_selected()
         platform = self._capture_values[index] if 0 <= index < len(self._capture_values) else ""
@@ -5255,7 +5256,7 @@ class HostView(Gtk.Box):
 
         # Sync to Sunshine Config — build the full mapping, then write once.
         try:
-            from big_remote_play.ui.sunshine_preferences import SunshineConfigManager, web_ui_origin
+            from big_remote_play.ui.sunshine_preferences import SunshineConfigManager, connected_clients, web_ui_origin
 
             scm = SunshineConfigManager()
 
@@ -5267,6 +5268,7 @@ class HostView(Gtk.Box):
                 "origin_web_ui_allowed": web_ui_origin(self.webui_anyone_row.get_active(), scm.config.get("origin_web_ui_allowed", "lan")),
                 "stream_audio": "enabled",
                 "max_bitrate": str(bw) if bw > 0 else "0",
+                "channels": connected_clients(scm.config.get("channels")),
                 **self._encoding_settings(),
             }
             if not scm.update(sunshine_settings) and scm.load_error:
