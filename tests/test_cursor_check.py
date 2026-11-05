@@ -81,3 +81,12 @@ def test_a_run_without_any_encoder_says_no_picture_can_be_sent():
     assert report.no_picture and not report.lost
     healthy = "Info: Sunshine version: 2026.914\n" + KMS_OK
     assert not read_cursor_report(log + healthy, session="wayland", desktop="gnome").no_picture  # a later run worked
+
+
+def test_frames_the_gpu_encoder_cannot_import_are_a_black_stream():
+    """Seen on a Radeon RX 580 sharing a Game Window: the stream stayed black."""
+    loop = "Error: Couldn't import RGB Image: 0000300C\nError: Could not convert image\nInfo: Creating encoder [hevc_vaapi]\n"
+    log = "Info: Sunshine version: 2026.914\nInfo: Screencasting with KWin ScreenCast\n" + loop * 40
+    report = read_cursor_report(log, session="wayland", desktop="kde", configured="kwin")
+    assert report.no_picture and report.import_failed
+    assert not read_cursor_report("Info: Sunshine version: 2026.914\n" + loop, session="wayland", desktop="kde").no_picture  # one is a hiccup

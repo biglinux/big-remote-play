@@ -243,6 +243,10 @@ the new window, needs a real game and a person
 - With Gamescope the Gamescope window is the one followed; a Gamescope restart
   is a new process tree and is followed only by the game's identity.
 
+## Older graphics cards: a black stream
+
+Seen on 2026-11-04 with a Radeon RX 580 (Polaris, Mesa 26.2, KDE Plasma 6.7.5 Wayland, Sunshine 2026.914): the private screen rendered with OpenGL, but KWin handed its frames to Sunshine as PipeWire **memory buffers** instead of DMA-BUF, and Sunshine's VAAPI path could not import them — `Couldn't import RGB Image: 0000300C`, `Could not convert image`, the encoder re-created every 40 ms — so the other device saw only black while Full Desktop (KMS) worked on the same machine. Encoding in software (**Preferences → Image and capture**, automatic settings off, **Software (CPU)**) sends the picture; a 32-thread Xeon did it without strain. Share now recognises that loop in Sunshine's log and says so under **Needs attention → The picture could not start**. Software encoding costs processor time: on a slow processor prefer Full Desktop.
+
 ## Measured results
 
 AMD RX 9060 XT + Renoir iGPU, KDE Plasma 6.7.4 Wayland, Sunshine

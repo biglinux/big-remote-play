@@ -687,3 +687,18 @@ def test_a_minimized_or_drawing_game_is_not_a_dead_stream(monkeypatch):
     item._awaiting_since = time.monotonic() - wc.FIRST_PICTURE_SECONDS - 1
     monkeypatch.setattr(game_windows, "kwin_window_info", lambda uuid, connection=None: {"minimized": False})
     assert item._check() is True and item._awaiting_since is None
+
+
+def test_an_intel_chipset_is_not_intel_graphics():
+    """Seen on a Xeon + Radeon RX 580 machine: "VAAPI (Intel Quick Sync)" was offered."""
+    from big_remote_play.ui.host_view import display_controllers
+
+    lspci = (
+        "00:1f.3 SMBus: Intel Corporation C610/X99 series chipset SMBus Controller (rev 05)\n"
+        "00:14.0 USB controller: Intel Corporation C610/X99 series chipset USB xHCI Host Controller\n"
+        "03:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Polaris 20 XL [Radeon RX 580 2048SP]\n"
+        "01:00.0 3D controller: NVIDIA Corporation GP107M [GeForce GTX 1050 Ti Mobile]\n"
+    )
+    graphics = display_controllers(lspci)
+    assert "intel" not in graphics
+    assert "radeon" in graphics and "nvidia" in graphics

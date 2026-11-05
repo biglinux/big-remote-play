@@ -59,6 +59,9 @@ LOG_TAIL_BYTES = 256 * 1024
 # usually because no capture could open). Seen on a hybrid Intel/NVIDIA
 # notebook when the desktop's screen-sharing questions were answered after
 # Sunshine had already given up its capture permission (2026-11-04).
+IMPORT_FAILED_MARKER = "Couldn't import RGB Image"
+# One failure can happen while a stream resizes; dozens mean no frame is sent.
+IMPORT_FAILED_REPEATS = 20
 NO_PICTURE_MARKERS = (
     "Unable to find display or encoder during startup",
     "Video failed to find working encoder",
@@ -71,6 +74,10 @@ class CursorReport:
     problem: str = ""  # the log line that says the pointer is lost, or ""
     recommended: str = ""  # a ``capture`` value that draws the pointer, or ""
     no_picture: bool = False  # this run of Sunshine found no capture or encoder
+    # Frames arrive but the GPU encoder cannot import them, again and again
+    # (Game Window on a Radeon RX 580: PipeWire memory buffers into VAAPI,
+    # "Couldn't import RGB Image", a black stream). Encoding in software works.
+    import_failed: bool = False
 
     @property
     def lost(self) -> bool:
@@ -113,6 +120,8 @@ def read_cursor_report(log_text: str, *, session: str, desktop: str, configured:
     no_picture = any(marker in log_text for marker in NO_PICTURE_MARKERS)
     if no_picture:
         return CursorReport(no_picture=True)
+    if log_text.count(IMPORT_FAILED_MARKER) >= IMPORT_FAILED_REPEATS:
+        return CursorReport(no_picture=True, import_failed=True)
     backend, start = "", -1
     for marker, name in _BACKENDS.items():
         position = log_text.rfind(marker)
