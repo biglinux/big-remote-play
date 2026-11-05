@@ -547,7 +547,8 @@ def test_status_polling_checks_only_the_services_the_page_shows(ui, monkeypatch)
     for name in ("sunshine", "moonlight", "tailscale", "zerotier"):
         monkeypatch.setattr(ui.system_check, f"is_{name}_running", lambda n=name: probed.append(n) or True)
     monkeypatch.setattr(ui, "is_active", lambda: True)
-    ui._status_timer_id = ui._status_timer_id or 1
+    if ui._status_timer_id is None:  # a real source: closing the window removes it
+        ui._status_timer_id = GLib.timeout_add_seconds(3600, lambda: True)
     ui._home_role = "guest"
     ui._service_running.update({"sunshine": False, "moonlight": False})  # both read once already
     ui.navigate_to("vpn_selector")

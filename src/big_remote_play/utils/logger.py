@@ -31,21 +31,16 @@ class Logger:
         self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.DEBUG if force_new else logging.INFO)
 
-        # File handler
-        fh = logging.FileHandler(log_file)
-        fh.setLevel(logging.DEBUG)
-
-        # Console handler
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG if force_new else logging.INFO)
-
-        # Formatter
-        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-
-        fh.setFormatter(formatter)
-        ch.setFormatter(formatter)
-
+        # One pair of handlers per logger: every Logger() used to open the log
+        # file again and leak the new handle when handlers already existed.
         if not self.logger.handlers:
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+            fh = logging.FileHandler(log_file)
+            fh.setLevel(logging.DEBUG)
+            fh.setFormatter(formatter)
+            ch = logging.StreamHandler()
+            ch.setLevel(logging.DEBUG if force_new else logging.INFO)
+            ch.setFormatter(formatter)
             self.logger.addHandler(fh)
             self.logger.addHandler(ch)
         # Credentials must never reach a log file or the terminal, whichever

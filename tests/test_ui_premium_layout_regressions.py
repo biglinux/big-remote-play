@@ -148,7 +148,8 @@ def test_host_overview_places_source_before_primary_action_with_state_visible() 
     assert 'self.overview_state_label.add_css_class("state-pill")' in source
     assert 'self.overview_state_label.add_css_class("offline")' in source
     # Sharing and Stopped are words in the pill; its tone only repeats them.
-    assert 'self._set_state_pill(_("Sharing"), "online")' in source
+    # A state, not the noun: "Sharing" alone was translated "Compartilhamento".
+    assert 'self._set_state_pill(pgettext("sharing state", "Sharing"), "online")' in source
     assert 'self._set_state_pill(_("Stopped"), "offline")' in source
     assert "self.overview_hero_actions.append(self.overview_start_button)" not in source
     assert source.index("self.share_controls.append(game_group)") < source.index("self.share_controls.append(self.overview_start_button)")

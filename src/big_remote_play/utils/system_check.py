@@ -57,10 +57,11 @@ class SystemCheck:
         return find_executable(COMPONENTS["sunshine"].executables) is not None
 
     def has_moonlight(self) -> bool:
-        """Moonlight under either of its executable names."""
+        """Moonlight under either of its executable names, or as a Flatpak."""
+        from big_remote_play.guest.moonlight_client import moonlight_command
         from big_remote_play.utils.dependencies import COMPONENTS, find_executable
 
-        return find_executable(COMPONENTS["moonlight"].executables) is not None
+        return find_executable(COMPONENTS["moonlight"].executables) is not None or moonlight_command() is not None
 
     def has_avahi(self) -> bool:
         """Checks if Avahi is installed"""
