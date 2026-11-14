@@ -167,3 +167,18 @@ def test_a_missing_controller_is_offered_through_the_shared_installer(ui, monkey
     component = dependencies.COMPONENTS["big_keyboard"]
     assert component.package == "big-keyboard" and component.executables == ("big-keyboard",)
     widget.close()
+
+
+def test_every_check_icon_exists_in_the_theme(ui) -> None:
+    """A missing icon draws a broken image next to each check."""
+    from gi.repository import Gdk
+
+    if Gdk.Display.get_default() is None:
+        pytest.skip("GTK display required")
+    from big_remote_play.ui import touch_controls
+    from big_remote_play.utils.icons import _ensure_icon_search_paths
+
+    theme = _ensure_icon_search_paths()
+    assert theme is not None
+    for name in {*touch_controls._ICONS.values(), "brp-emblem-ok-symbolic", "dialog-warning-symbolic"}:
+        assert theme.has_icon(name), name

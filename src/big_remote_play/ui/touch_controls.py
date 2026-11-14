@@ -85,7 +85,7 @@ def check_text(check: backend.Check) -> tuple[str, str]:
     return check.key, check.detail
 
 
-_ICONS = {backend.OK: "emblem-ok-symbolic", backend.WARN: "dialog-warning-symbolic", backend.FAIL: "dialog-error-symbolic", backend.INFO: "dialog-information-symbolic"}
+_ICONS = {backend.OK: "brp-emblem-ok-symbolic", backend.WARN: "dialog-warning-symbolic", backend.FAIL: "dialog-error-symbolic", backend.INFO: "brp-dialog-information-symbolic"}
 
 
 class TouchControls:
@@ -225,12 +225,12 @@ class TouchControls:
             title, subtitle = check_text(check)
             row = Adw.ActionRow(title=title, subtitle=subtitle, use_markup=False)
             row.set_subtitle_lines(0)
-            set_row_icon(row, _ICONS.get(check.outcome, "dialog-information-symbolic"))
+            set_row_icon(row, _ICONS.get(check.outcome, "brp-dialog-information-symbolic"))
             self.checks_group.add(row)
             self._check_rows.append(row)
         ready = backend.ready(checks)
         self.summary_row.set_title(_("Ready to play") if ready else _("Not ready yet"))
-        set_row_icon(self.summary_row, "emblem-ok-symbolic" if ready else "dialog-warning-symbolic")
+        set_row_icon(self.summary_row, "brp-emblem-ok-symbolic" if ready else "dialog-warning-symbolic")
         controller = facts.controller
         self.install_button.set_visible(not controller.installed)
         usable = controller.installed and (not controller.running or controller.supports_remote_touch)
