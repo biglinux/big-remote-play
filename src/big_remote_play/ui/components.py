@@ -46,7 +46,9 @@ def name_icon_button(button: Gtk.Button, label: str, description: str = "") -> G
 
 def sidebar_heading(text: str) -> Gtk.Label:
     """A quiet group heading in the sidebar, as in AshyWall (heading + dim)."""
-    label = Gtk.Label(label=text, xalign=0, wrap=True, accessible_role=Gtk.AccessibleRole.HEADING)
+    # Logical margins (start/end) so the heading lines up with the row icons
+    # in right-to-left languages too; CSS margins in GTK are physical.
+    label = Gtk.Label(label=text, xalign=0, wrap=True, accessible_role=Gtk.AccessibleRole.HEADING, margin_start=22, margin_end=12, margin_top=14, margin_bottom=6)
     label.add_css_class("heading")
     label.add_css_class("dim-label")
     label.add_css_class("brp-sidebar-heading")

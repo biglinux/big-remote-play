@@ -59,24 +59,24 @@ There is no proprietary game catalog and no requirement that the game came from 
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/share.png" alt="Share while sharing: the Sharing badge, what is being shared and the sound state, a large Stop sharing button, then Pair a new device with a four-digit PIN field and Approve, and Connected now saying no one is playing yet"><br><sub><b>Share</b>: the state in words, one large button, and the PIN field always in view.</sub></td>
-    <td width="50%"><img src="docs/screenshots/pairing.png" alt="New connection request dialog over Share: Living room PC wants to connect, a PIN field, the time left, and Approve, Reject and Not now"><br><sub><b>New connection request</b>: opens by itself when a device asks to pair.</sub></td>
+    <td width="50%"><img src="docs/screenshots/connect.png" alt="Connect: Choose a computer with six computer cards in two columns, some on the local network and some over Tailscale, each saying Sharing found or Offline; an offline computer has a neutral icon; the sidebar lists Services with Moonlight Ready and Tailscale Connected"><br><sub><b>Connect</b>: each computer is a card that says where it is and whether it is sharing.</sub></td>
+    <td width="50%"><img src="docs/screenshots/share.png" alt="Share before sharing: Share from this PC, Stopped, What to share with the source Full Desktop, a Start sharing button, then Pair a new device with a four-digit PIN field and Approve, and Image and capture"><br><sub><b>Share</b>: the state in words, one main button and the PIN field always in view.</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/connect.png" alt="Connect: four game computers as cards, two on the local network and two over Tailscale, with the Computers and Advanced options tabs"><br><sub><b>Connect</b>: pick the game computer; other ways to connect are on <b>Advanced options</b>.</sub></td>
-    <td><img src="docs/screenshots/private-network.png" alt="Connect your devices: Tailscale, ZeroTier and Headscale as cards with a switch each; Tailscale is connected with its network, this computer's address and 3 online of 3 devices"><br><sub><b>Connect your devices</b>: each method with a real switch, its address and its devices.</sub></td>
+    <td><img src="docs/screenshots/private-network.png" alt="Connect your devices: Tailscale and ZeroTier connected with their networks, this computer's address and devices, Headscale off, and Advanced links below"><br><sub><b>Connect your devices</b>: each method with a real switch, its address and its devices.</sub></td>
+    <td><img src="docs/screenshots/support.png" alt="Support: Check this computer lists sharing, Moonlight, the desktop session, remote input, mouse pointer, keyring, firewall and video encoding, each with OK, Info or Check; Common problems below"><br><sub><b>Support</b>: read-only checks in plain words, then what to try for common problems.</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/support.png" alt="Support: Check this computer lists sharing, Moonlight, the desktop session, remote input, mouse pointer, saved password, firewall and video encoding, each with OK or Info; Common problems below"><br><sub><b>Support</b>: read-only checks in plain words, then what to try for common problems.</sub></td>
+    <td><img src="docs/screenshots/preferences.png" alt="Share Preferences: How this computer shares, Picture and performance with Image and capture and Game Library, then Sound with the output, play sound on this computer, send only the game's sound, Microphone and Voice calls"><br><sub><b>Preferences</b>: grouped by purpose; most people keep the automatic choices.</sub></td>
+    <td><img src="docs/screenshots/connect-pt-BR.png" alt="Connect in Brazilian Portuguese: Escolha um computador, with the sidebar headings Transmissão, Conexão segura and Serviços"><br><sub><b>32 languages</b>: here in Brazilian Portuguese.</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/home-light.png" alt="Home in the Light appearance"><br><sub><b>Light</b>: Automatic follows the system; Light and Dark can be forced.</sub></td>
+    <td><img src="docs/screenshots/home-gamer.png" alt="Home in the Gamer appearance: violet and cyan tones over the same layout, with a highlighted header panel"><br><sub><b>Gamer appearance</b>: a dark, colorful preset over the same layout.</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/pairing.png" alt="New connection request dialog over Share: Living room PC wants to connect, a PIN field, the time left, and Approve, Reject and Not now"><br><sub><b>New connection request</b>: opens by itself when a device asks to pair.</sub></td>
     <td><img src="docs/screenshots/stream-lost.png" alt="The connection to the game PC was lost: the network could not carry 12 Mbps, the delay reached 372 ms; buttons Lower quality and connect again, and Close"><br><sub><b>A dropped stream, explained</b>: and one button to try again at a rate the network carries.</sub></td>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/preferences.png" alt="Share Preferences: Picture and performance with Image and capture and Game Library, then Sound with the output, play sound on this computer, send only the game's sound, Microphone and Voice calls off, and Test audio"><br><sub><b>Preferences</b>: grouped by purpose; most people keep the automatic choices.</sub></td>
-    <td><img src="docs/screenshots/share-pt-BR.png" alt="Share while sharing, in Brazilian Portuguese: Compartilhando, Parar compartilhamento and Parear um novo dispositivo"><br><sub><b>32 languages</b>: here in Brazilian Portuguese.</sub></td>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/home-gamer.png" alt="Home in the Gamer appearance: Start with the guided setup, then Share and Connect cards in purple and cyan tones"><br><sub><b>Gamer appearance</b>: a dark, colorful preset next to Automatic, Light and Dark.</sub></td>
-    <td><img src="docs/screenshots/share-gamer.png" alt="Share while sharing in the Gamer appearance"><br><sub><b>Share</b> in the Gamer appearance.</sub></td>
   </tr>
 </table>
 
@@ -174,6 +174,7 @@ Technical details, the test plan and measured results: [touch controls](docs/tou
 
 This release turns the phone into a controller. It was checked on a real phone (Android, Redmi Note 11 Pro 5G) streaming a Wayland desktop (wlmaker, three monitors) with Shadow of the Tomb Raider through Steam; the full test plan, with what is still pending, is in [touch controls](docs/touch/08-validacao-android.md).
 
+- **A calmer, native look** — the window now follows AshyWall's design: the menu at the top of the sidebar, places grouped under **Streaming** and **Secure connection**, each task's state as quiet text, services as ordinary rows, and plain native cards without gradients. Every page, setting and flow is the same ([design notes](docs/redesign/02-decisoes.md)).
 - **Touch controls** — **Share → Preferences → Mouse, keyboard and controllers → Touch controls** opens the Big WM Virtual Keyboard's on-screen controller when a phone starts playing, releases it when a player leaves and closes it with the last one. Several fingers press several buttons; nothing becomes a mouse click ([details](#your-phone-as-a-controller-multi-touch)).
 - **Big Remote Play Controller for Android** — a Moonlight 12.2 build that sends every finger as its own touch, installs next to the official Moonlight and picks a resolution the phone can decode instead of failing with error -5 ([download](https://github.com/ruscher/big-remote-play/releases/tag/controller-v12.2-brpc2)).
 - **Host has priority keeps the controller working** — the host's mouse and keyboard still pause remote input, but never the touchscreen that drives the on-screen controller ([details](docs/host-input-priority.md)).

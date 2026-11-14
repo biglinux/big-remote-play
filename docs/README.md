@@ -11,6 +11,7 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Cloudflare](cloudflare.md) — what DNS, Tunnel and Access can and cannot do for internet play.
 - [VPS and Headscale](vps-headscale.md) — running your own Headscale server.
 - [Controlling the game PC from a phone](mobile-controls.md) — touch gestures, keyboard and leaving the game in Moonlight for Android, iPhone/iPad and computers.
+- [Redesign](redesign/01-auditoria.md) — the move to AshyWall's visual language: audit, decisions per page, measurements and what was not validated (Portuguese).
 - [Touch controls](touch/09-relatorio-final.md) — multi-touch from the phone to the Big WM Virtual Keyboard's on-screen controller: audit, design, tests and the Android test plan (Portuguese).
 - [Several screens](moonlight-multi-monitor.md) — the screen where Moonlight opens and the game PC's shared screen.
 - [Game library](game-library-detection.md) — where installed games are found and how they are added to Moonlight.

@@ -15,7 +15,7 @@ The game runs on the **sharing computer**. The person playing remotely uses the 
 
 ## Choose the appearance
 
-Open the application menu and use **Appearance**. **Gamer** is the dark
+Open the application menu (the ☰ button at the top of the sidebar, next to the app's name; in a narrow window, press **Back** to reach the sidebar first) and use **Appearance**. **Gamer** is the dark
 violet/cyan preset; **Automatic** follows the desktop; **Light** and **Dark**
 force the corresponding system appearance. The choice takes effect immediately
 and is restored the next time Big Remote Play opens. High contrast temporarily
