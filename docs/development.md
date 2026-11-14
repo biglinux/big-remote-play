@@ -20,7 +20,7 @@ Read [architecture](architecture.md) before moving responsibilities between modu
 Install these through the distribution package manager:
 
 - Python 3.11 or newer;
-- GTK 4.10 or newer;
+- GTK 4.17 or newer (what libadwaita 1.7 needs; the stylesheets use its modern colour syntax);
 - libadwaita 1.7 or newer;
 - PyGObject and Cairo bindings;
 - libsecret and the hicolor icon theme;

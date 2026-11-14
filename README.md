@@ -21,6 +21,7 @@
 <p align="center">
   <a href="#whats-new">What's new</a> ·
   <a href="#install">Install</a> ·
+  <a href="#your-phone-as-a-controller-multi-touch">Phone as a controller</a> ·
   <a href="docs/user-guide.md">User guide</a> ·
   <a href="docs/troubleshooting.md">Troubleshooting</a> ·
   <a href="#technologies">Technologies</a> ·
@@ -28,7 +29,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/home.png" width="860" alt="Home: the logo with Start with the guided setup, then Share and Connect; in the sidebar Share and Connect say Stopped and Connect your devices says Running">
+  <img src="docs/screenshots/home.png" width="860" alt="Home: the sidebar lists Home, then Streaming with Share and Connect marked Stopped and Secure connection with Connect your devices marked Running; the page shows the logo, Your games. Any screen. Anywhere., Start with the guided setup, and two cards, Share and Connect">
 </p>
 
 ## Why Big Remote Play?
@@ -172,7 +173,7 @@ Technical details, the test plan and measured results: [touch controls](docs/tou
 
 ## What's new
 
-This release turns the phone into a controller. It was checked on a real phone (Android, Redmi Note 11 Pro 5G) streaming a Wayland desktop (wlmaker, three monitors) with Shadow of the Tomb Raider through Steam; the full test plan, with what is still pending, is in [touch controls](docs/touch/08-validacao-android.md).
+This release brings a calmer, native look and turns the phone into a controller. The phone part was checked on a real phone (Android, Redmi Note 11 Pro 5G) streaming a Wayland desktop (wlmaker, three monitors) with Shadow of the Tomb Raider through Steam; the full test plan, with what is still pending, is in [touch controls](docs/touch/08-validacao-android.md).
 
 - **A calmer, native look** — the window now follows AshyWall's design: the menu at the top of the sidebar, places grouped under **Streaming** and **Secure connection**, each task's state as quiet text, services as ordinary rows, and plain native cards without gradients. Every page, setting and flow is the same ([design notes](docs/redesign/02-decisoes.md)).
 - **Touch controls** — **Share → Preferences → Mouse, keyboard and controllers → Touch controls** opens the Big WM Virtual Keyboard's on-screen controller when a phone starts playing, releases it when a player leaves and closes it with the last one. Several fingers press several buttons; nothing becomes a mouse click ([details](#your-phone-as-a-controller-multi-touch)).
@@ -257,10 +258,11 @@ The Python wheel alone is not a complete desktop installation: icons, styles, tr
 
 | | Packages (Arch/BigLinux names) |
 |---|---|
-| **Required** | `python` ≥ 3.11, `gtk4`, `libadwaita` ≥ 1.7, `glib2`, `gdk-pixbuf2`, `pango`, `python-gobject`, `python-cairo`, `libsecret`, `avahi`, `curl`, `iproute2`, `iputils`, `jq`, `polkit`, `procps-ng`, `systemd`, `util-linux`, `hicolor-icon-theme` |
+| **Required** | `python` ≥ 3.11, `gtk4` ≥ 4.17, `libadwaita` ≥ 1.7, `glib2`, `gdk-pixbuf2`, `pango`, `python-gobject`, `python-cairo`, `libsecret`, `avahi`, `curl`, `iproute2`, `iputils`, `jq`, `polkit`, `procps-ng`, `systemd`, `util-linux`, `hicolor-icon-theme` |
 | **Share** | `sunshine`; for the Game Library, the launchers whose games you offer: `steam`, `lutris`, Heroic Games Launcher (native or Flatpak) |
 | **Connect** | `moonlight-qt` (or the Moonlight Flatpak with `flatpak`) |
 | **Game Window** | Sunshine ≥ 2026.516; KDE Plasma (`kwin`, `xdg-desktop-portal-kde`) on Wayland or an X11 desktop with compositing; `gst-plugin-pipewire`, `gst-plugins-base`, `gst-plugins-bad-libs`, `gst-plugins-good` |
+| **Touch controls** | `big-keyboard` ≥ 0.1.0-2 (remote touch) and Sunshine ≥ 2026.1113 on the game PC; the Big Remote Play Controller app on the phone ([install](#your-phone-as-a-controller-multi-touch)) |
 | **Connect your devices** | one of `tailscale` or `zerotier-one`; to host your own Headscale server on this computer, `headscale` and `caddy` (`miniupnpc` reads the router's public address) |
 | **Optional** | a Secret Service provider (GNOME Keyring or KWallet) for saved passwords, `libpulse` and `pipewire` for sound, `libkscreen` (screen mode and HDR for the connecting device), `pciutils` (graphics detection), `xorg-xrandr` (monitors and the main screen on X11), `flatpak` (Moonlight, VPN clients, Steam, Lutris or Heroic installed as Flatpaks), `xdg-utils` (start Heroic games when only its link handler exists). Pamac is used to install components when it is present. |
 
@@ -288,11 +290,12 @@ Games are listed by name from their process tree — Steam, Proton, Wine, Lutris
 | Screen and colors | `kscreen-doctor` for HDR-to-SDR and per-session resolution, restored after every session |
 | Audio | PipeWire/PulseAudio through `pactl` and `pw-link`: automatic output capture, voice calls kept out and the microphone left out unless you choose otherwise, PipeWire port links ("bridges") made by the app, which removes only what it created |
 | Networks | mDNS discovery with [Avahi](https://avahi.org/); [Tailscale](https://tailscale.com/), [Headscale](https://headscale.net/) and [ZeroTier](https://www.zerotier.com/) clients and APIs; a bounded, on-demand search of ZeroTier networks for Sunshine |
+| Touch controls | Sunshine's native touch (`native_pen_touch`) and its virtual touchscreen, read by the [Big WM Virtual Keyboard](https://github.com/big-windowmaker/big-keyboard) on-screen controller through evdev and turned into a `uinput` gamepad; the [Big Remote Play Controller](https://github.com/ruscher/moonlight-android-touch/tree/brp/native-touch) Android app (Moonlight 12.2) sends every finger |
 | Games | Steam (`libraryfolders.vdf`, `appmanifest_*.acf`), Lutris (`pga.db`) and Heroic (Legendary, GOG, Nile) libraries, read-only |
 | Security | Secret Service keyring (`libsecret`) for passwords and tokens, narrowly scoped PolicyKit helpers, ufw/firewalld checks, owner-only atomic writes |
 | Internationalization | gettext, 32 translated catalogs (distinct `pt`/`pt_BR` and `zh_CN`/`zh_TW`) |
 | Packaging | PEP 517 build on `uv_build`, private `/usr/lib/big-remote-play` layout that survives Python upgrades, PKGBUILD and Nix flake, reproducible `YY.MM.DD` versions |
-| Quality | pytest (over 1,700 tests, GTK task flows under Xvfb and D-Bus), ruff, pyright, catalog and metadata validators |
+| Quality | pytest (about 1,800 tests, GTK task flows under Xvfb and D-Bus), ruff, pyright, catalog and metadata validators |
 
 How the pieces fit together is described in [architecture](docs/architecture.md) and the [host and network policy](docs/host-network-policy.md).
 
@@ -306,11 +309,12 @@ Version fields in the checkout stay at `0.0.0`. Builds derive `YY.MM.DD` automat
 
 | Audience | Start here |
 |---|---|
-| Players and helpers | [User guide](docs/user-guide.md), [troubleshooting](docs/troubleshooting.md), [Game Window](docs/game-window.md), [game library](docs/game-library-detection.md), [phone controls](docs/mobile-controls.md), [several screens](docs/moonlight-multi-monitor.md) |
+| Players and helpers | [User guide](docs/user-guide.md), [troubleshooting](docs/troubleshooting.md), [Game Window](docs/game-window.md), [game library](docs/game-library-detection.md), [phone controls](docs/mobile-controls.md), [phone as a controller](#your-phone-as-a-controller-multi-touch), [several screens](docs/moonlight-multi-monitor.md) |
 | ZeroTier | [Finding computers on a network](docs/zerotier-discovery.md), [no repeated passwords](docs/zerotier-permissions.md) |
 | Playing over the internet | [Router, NAT and firewall](docs/router.md), [your own Headscale server](docs/vps-headscale.md), [Cloudflare](docs/cloudflare.md) |
 | Contributors | [Contributing](CONTRIBUTING.md), [development](docs/development.md), [documentation index](docs/README.md) |
-| UI contributors | [Visual design](docs/visual-design.md), [UI instructions](src/big_remote_play/ui/AGENTS.md) |
+| UI contributors | [Visual design](docs/visual-design.md), [redesign notes](docs/redesign/01-auditoria.md), [UI instructions](src/big_remote_play/ui/AGENTS.md) |
+| Touch controls (Portuguese) | [Architecture](docs/touch/03-arquitetura.md), [tests](docs/touch/06-testes.md), [Android test plan](docs/touch/08-validacao-android.md), [report](docs/touch/09-relatorio-final.md) |
 | Maintainers | [Architecture](docs/architecture.md), [maintainer guide](docs/maintainer-guide.md), [release testing](docs/release-testing.md) |
 | Repository rules | [AGENTS.md](AGENTS.md) and the nested `AGENTS.md` files |
 
@@ -348,6 +352,7 @@ Big Remote Play stands on the shoulders of excellent free software. Thank you to
 
 - **[LizardByte](https://github.com/LizardByte)** for Sunshine, and the **[Moonlight Game Streaming Project](https://moonlight-stream.org/)** for Moonlight — the streaming heart of this app;
 - **[GNOME](https://www.gnome.org/)** for GTK, libadwaita and PyGObject;
+- **[AshyWall](https://github.com/big-comm/ashywall)** (BigCommunity), whose calm native design the interface follows;
 - **[KDE](https://kde.org/)** for Plasma, KWin and xdg-desktop-portal-kde, which make Game Window possible;
 - **[PipeWire](https://pipewire.org/)**, **[GStreamer](https://gstreamer.freedesktop.org/)**, **[freedesktop.org](https://www.freedesktop.org/)** and **[Avahi](https://avahi.org/)**;
 - **[Tailscale](https://tailscale.com/)**, **[Headscale](https://github.com/juanfont/headscale)** and **[ZeroTier](https://www.zerotier.com/)** for private networking;
