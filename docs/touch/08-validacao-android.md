@@ -1,7 +1,11 @@
 # 08 — Validação com o celular Android
 
-Status: **pendente** — nenhum aparelho apareceu em `adb devices` e o APK
-ainda não foi compilado. Nada abaixo foi executado com um celular.
+Status: APK **compilado** em 2026-11-14
+(`~/Documentos/Git/brp-touch-pacotes/big-remote-play-controller-12.2-brpc1.apk`,
+`io.github.bigremoteplay.controller.debug`, versão `12.2-brpc1`, arm64-v8a,
+armeabi-v7a, x86 e x86_64, assinatura v2 de depuração local, SHA-256 do
+certificado `3dc9f243…02db53ac`). Teste com celular: **pendente**. Nesta
+versão, *Enviar toques ao computador* já vem **ligado**.
 
 ## 1. Gerar o APK (no computador)
 
