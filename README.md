@@ -46,7 +46,7 @@ Remote play on Linux usually means learning several unrelated tools before the f
 | 👥 **Play together** | Up to four devices can play on the same computer at once, each with its own controller: invite friends to a local multiplayer game from wherever they are. |
 | 🖱️ **The pointer you can see** | When the screen capture leaves the mouse pointer out (KMS on KDE and GNOME Wayland), Share notices it in Sunshine's log and offers the capture that draws it. |
 | 🖥️ **Every screen in its place** | Choose which monitor of the game PC is shared and on which screen of this computer the game opens. |
-| 📱 **Play from a phone** | Touch, keyboard and controller instructions for Moonlight on Android and iPhone/iPad, with a QR code to read them on the phone. **Touch controls** puts an on-screen controller on the shared screen that takes several fingers at once ([details](docs/mobile-controls.md#a-controller-drawn-by-the-game-pc-touch-controls)). |
+| 📱 **Play from a phone** | Touch, keyboard and controller instructions for Moonlight on Android and iPhone/iPad, with a QR code to read them on the phone. **Touch controls** puts an on-screen controller on the shared screen that takes several fingers at once, with the **Big Remote Play Controller** app on the phone ([how to install](#your-phone-as-a-controller-multi-touch)). |
 | 🩺 **Help when something fails** | **Support** checks this computer without changing anything and explains common problems. If a stream drops because the network cannot carry it, Connect says so and offers **Lower quality and connect again**. |
 | 🎮 **Controllers too** | Keyboard, mouse and controllers of the other device reach the game through Sunshine. While someone plays, **Share** says which controller arrived, or why none did. |
 | 🔊 **Sound that just works** | Game audio is sent; the microphone and voice calls only when you turn them on. Everything returns to normal when sharing stops. |
@@ -96,9 +96,90 @@ There is no proprietary game catalog and no requirement that the game came from 
 
 The full walkthrough — audio, image quality, Game Window, direct public access and safety limits — is in the [user guide](docs/user-guide.md).
 
+## Your phone as a controller (multi-touch)
+
+**Touch controls** draws an on-screen controller on the shared screen of the game computer. You see it in the picture on your phone and press it with your fingers: a direction and **A** together, both sticks, triggers, up to five fingers at the same time. The game sees an ordinary controller, never a mouse.
+
+<p align="center">
+  <img src="docs/screenshots/touch-controls.png" width="520" alt="Touch controls sheet: What touch does set to On-screen controller, Open when a device starts playing turned on, the buttons Open, Close, Edit layout and Release all buttons, and Compatibility saying Ready to play, Touch from the phone turned on, the phone's touch present on this computer and Big WM Virtual Keyboard found">
+  <br><sub><b>Share → Preferences → Mouse, keyboard and controllers → Touch controls</b>, with simulated checks.</sub>
+</p>
+
+The official Moonlight for Android turns every finger into the mouse, so it cannot press two buttons at once. The phone needs **Big Remote Play Controller**: a build of Moonlight for Android 12.2 that sends every finger to the computer as its own touch. It is unofficial, has its own name and application ID (`io.github.bigremoteplay.controller`) and installs **next to** the official Moonlight without changing it. Its pairing and settings are separate.
+
+### What you need
+
+| Where | What |
+|---|---|
+| Phone or tablet | Android 5.0 or newer, with **Big Remote Play Controller** |
+| Game computer | Big Remote Play, **Big WM Virtual Keyboard** with remote touch (`big-keyboard` 0.1.0-2 or newer) and Sunshine |
+| Sunshine | **2026.1113 or newer**. Sunshine 2026.914 puts the touch above the finger when the picture has black bars, worst at the bottom of the screen; the fix is LizardByte/Sunshine@4062cb7 |
+
+At the time of writing, the `big-keyboard` with remote touch is not yet in a package repository. Big Remote Play says **Update Big WM Virtual Keyboard: this version cannot read touch from the phone** when the installed one is older.
+
+### 1. Download the app
+
+**[Download Big Remote Play Controller 12.2-brpc2 (APK)](https://github.com/ruscher/big-remote-play/releases/download/controller-v12.2-brpc2/big-remote-play-controller-12.2-brpc2.apk)** · [release page](https://github.com/ruscher/big-remote-play/releases/tag/controller-v12.2-brpc2) · [source code](https://github.com/ruscher/moonlight-android-touch/tree/brp/native-touch) (GPL-3.0)
+
+Before installing, you can check the file:
+
+| | |
+|---|---|
+| SHA-256 of the APK | `a6cb6b48b02a5994a631690980cfe9d67665bd9e6905b71c2b0c06a0fdc6bc86` |
+| Signing certificate (SHA-256) | `A2:8A:FA:C5:45:EC:5A:E3:5E:CC:87:F2:8E:BD:0A:69:90:F2:2F:C3:4B:3D:41:80:AD:3D:07:26:6C:71:C9:26` |
+
+```bash
+sha256sum big-remote-play-controller-12.2-brpc2.apk
+apksigner verify --print-certs big-remote-play-controller-12.2-brpc2.apk   # from the Android SDK build-tools
+```
+
+### 2. Install it on the phone
+
+**From the phone**
+
+1. Open the download link above in the phone's browser and download the APK.
+2. Open the downloaded file. Android asks to allow installing apps from this source (the browser or the file manager): allow it **only for that app**.
+3. Tap **Install**, then **Open**.
+4. Back in Android's settings, turn that permission off again.
+
+**From a computer, with a USB cable**
+
+1. On the phone: **Settings → About phone**, tap **Build number** seven times, then turn on **Developer options → USB debugging** (on Xiaomi phones also **Install via USB**).
+2. Connect the cable, accept the computer's key on the phone, then on the computer:
+
+```bash
+sudo pacman -S --needed android-tools
+adb devices
+adb install big-remote-play-controller-12.2-brpc2.apk
+```
+
+To update, install the new APK over the old one (`adb install -r …`): pairing and settings are kept.
+
+### 3. Turn it on
+
+1. **Game computer** — open **Share → Preferences → Mouse, keyboard and controllers → Touch controls** and set **What touch does** to **On-screen controller**. Keep **Open when a device starts playing** on. Then press **Start sharing** (**Full Desktop**; with **Game Window** the phone sees only the game, not this controller).
+2. **Phone** — open **Big Remote Play Controller**, choose the game computer and pair with the PIN, like in Moonlight.
+3. In the app's **Settings**, **Send touch to the computer (multi-touch)** is already on. Leave **Show on-screen controls** off, or the game sees two controllers.
+4. Open **Desktop**. The controller appears on the shared screen when the phone starts playing, and closes when the last device leaves. **Edit layout** moves and resizes the buttons from the phone.
+
+**Compatibility** in the same sheet says what is ready and what is missing, in words. **Release all buttons** lets go of anything still pressed after a network drop.
+
+### Resolution and black bars
+
+The picture fills the phone without bars when the stream has the phone's shape and the shared monitor has a similar one. If the phone cannot decode the chosen resolution (many phones stop at 1920 pixels wide), the app now streams at the largest size with the same shape the phone accepts and says so, instead of failing with **error -5**. A monitor wider than the phone (for example 21:9) still leaves thin bars at the top and bottom, drawn by the computer.
+
+Technical details, the test plan and measured results: [touch controls](docs/touch/03-arquitetura.md) and [phone controls](docs/mobile-controls.md#a-controller-drawn-by-the-game-pc-touch-controls).
+
 ## What's new
 
-This release is about finding things by themselves: your installed games, the computers on a friend's ZeroTier network and the right screen. Each item was checked on a real computer (X11 with three monitors, a ZeroTier /16 network, Steam libraries on two disks and Heroic); what still needs a real phone, Wayland desktop or second player is listed in the linked guides.
+This release turns the phone into a controller. It was checked on a real phone (Android, Redmi Note 11 Pro 5G) streaming a Wayland desktop (wlmaker, three monitors) with Shadow of the Tomb Raider through Steam; the full test plan, with what is still pending, is in [touch controls](docs/touch/08-validacao-android.md).
+
+- **Touch controls** — **Share → Preferences → Mouse, keyboard and controllers → Touch controls** opens the Big WM Virtual Keyboard's on-screen controller when a phone starts playing, releases it when a player leaves and closes it with the last one. Several fingers press several buttons; nothing becomes a mouse click ([details](#your-phone-as-a-controller-multi-touch)).
+- **Big Remote Play Controller for Android** — a Moonlight 12.2 build that sends every finger as its own touch, installs next to the official Moonlight and picks a resolution the phone can decode instead of failing with error -5 ([download](https://github.com/ruscher/big-remote-play/releases/tag/controller-v12.2-brpc2)).
+- **Host has priority keeps the controller working** — the host's mouse and keyboard still pause remote input, but never the touchscreen that drives the on-screen controller ([details](docs/host-input-priority.md)).
+- **Touch where you put your finger** — with Sunshine 2026.914 the touch landed above the finger when the picture had black bars; Sunshine 2026.1113 fixes it, and the [touch notes](docs/touch/06-testes.md) explain how to tell.
+
+Before that, finding things by themselves: your installed games, the computers on a friend's ZeroTier network and the right screen.
 
 - **A game library that finds your games** — Steam (native and Flatpak, every library on every disk), Lutris and Heroic (Epic, GOG, Amazon). Only installed games are listed, Proton and Steam runtimes are left out, and you choose which ones Moonlight offers. It works with sharing off ([details](docs/game-library-detection.md)).
 - **Computers on someone else's ZeroTier network** — **Find computers to play on** asks the network which computers share games, without the owner's ZeroTier account; they appear in **Connect** as **Ready to play** ([how it works](docs/zerotier-discovery.md)).

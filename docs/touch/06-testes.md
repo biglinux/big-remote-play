@@ -88,12 +88,56 @@ aparelho ([roteiro](08-validacao-android.md)).
 | Texto falso no fork ("menu do Voltar") | o Moonlight não tem esse menu | o texto diz que o toque de 3 dedos fica desligado |
 | Overlay no monitor errado (3 monitores) | GTK 3 no Wayland não dá o nome do conector | `xdg-output` (`bk-outputs.c`) |
 
+## Celular real (2026-11-14)
+
+Redmi Note 11 Pro 5G (Android, Adreno 619, tela 2400×1080), Big Remote Play
+Controller 12.2-brpc1/brpc2, Wi-Fi, DP-1 (3440×1440) compartilhado no
+wlmaker, Shadow of the Tomb Raider pela Steam.
+
+| Cenário | Resultado |
+|---|---|
+| Vários botões e analógico ao mesmo tempo no jogo | PASSOU (relato do usuário, depois da correção do Sunshine abaixo) |
+| Jogo da Steam vê o controle | PASSOU com `Identity=xbox360` (a Steam ignora o par genérico 1209:b1c0 como XInput) |
+| Resolução 2310×1080 ou 2400×1080 | FALHOU com erro -5 → **corrigido no app** |
+| Analógico direito para baixo / botões de baixo | FALHOU com Sunshine 2026.914 → **corrigido no Sunshine** |
+
+### Erro -5 ao mudar a resolução
+
+`logcat` do celular: `c2.qti.hevc.decoder.low_latency` recusou
+`MediaCodec.configure` seis vezes (`E/StandardCaps: requested width is not
+supported`), e o app desistiu antes do primeiro ping (no Sunshine:
+`Initial Ping Timeout`). O decodificador deste celular vai até 1920 de
+largura (`Maximum resolution slot: 1920`). 1920×1080 funcionou. Correção no
+Big Remote Play Controller 12.2-brpc2: antes de conectar, o app pergunta a
+cada decodificador oferecido (`VideoCapabilities.isSizeSupported`) e, se o
+tamanho for recusado, usa o maior com o mesmo formato que todos aceitam
+(2400×1080 → 1920×864), avisando.
+
+### Toque acima do dedo (Sunshine 2026.914)
+
+Medido lendo o touchscreen do Sunshine (sem agarrar) enquanto o usuário
+jogava: os controles de cima (LT, LB, RT, RB, Select/Start, em 8–22 % da
+altura) chegavam no lugar; o analógico direito, desenhado em 84 %, chegava
+em ~73 % — por isso "para baixo" só voltava ao centro.
+
+Causa: em `monitor_touch_port()` o Sunshine 2026.914 normaliza pela altura do
+stream **com** as barras pretas (`touch_port.height * scalar_inv`), não pela
+do monitor. Com o DP-1 21:9 num stream mais estreito, o toque encolhe em
+direção ao topo. Corrigido no upstream em LizardByte/Sunshine@4062cb7
+("fix(linux): target absolute input at the captured monitor", 2026-11-11,
+v2026.1113). O pacote oficial 2026.1113 para Arch exige Qt 6.12 e OpenSSL 4
+(ainda não no Manjaro), então nesta máquina foi instalado o 2026.914 com só
+essas duas linhas do upstream (`sunshine 2026.914.233613-4`, ver
+[instalação](07-instalacao.md)). Depois disso: PASSOU.
+
+O Big Keyboard, o libvirtualhid (eixos lineares 19200×10800) e o app não
+tinham erro: o app normaliza pela área do vídeo (`streamView`), como o
+Moonlight.
+
 ## Não executado
 
-- Celular Android real (nenhum aparelho no `adb devices`); APK não
-  compilado (o download do JDK/SDK/NDK e o aceite da licença do SDK foram
-  negados pela política de permissões desta sessão).
-- Jogos reais (Steam/Proton, Lutris, Heroic), controle Bluetooth/USB junto,
-  X11/Window Maker, KDE, Game Window, rotação e mudança de resolução no
-  celular: pendentes ([roteiro](08-validacao-android.md)).
-- Patch do Sunshine não compilado.
+- Roteiro MT-01…MT-25 completo, um a um, com registro
+  ([roteiro](08-validacao-android.md)); latência fim a fim.
+- Lutris/Heroic, controle Bluetooth/USB junto, X11/Window Maker, KDE, Game
+  Window, rotação do celular.
+- Patch do Sunshine que solta os toques ao desconectar (não compilado).

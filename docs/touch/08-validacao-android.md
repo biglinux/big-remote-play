@@ -1,11 +1,13 @@
 # 08 — Validação com o celular Android
 
-Status: APK **compilado** em 2026-11-14
-(`~/Documentos/Git/brp-touch-pacotes/big-remote-play-controller-12.2-brpc1.apk`,
-`io.github.bigremoteplay.controller.debug`, versão `12.2-brpc1`, arm64-v8a,
-armeabi-v7a, x86 e x86_64, assinatura v2 de depuração local, SHA-256 do
-certificado `3dc9f243…02db53ac`). Teste com celular: **pendente**. Nesta
-versão, *Enviar toques ao computador* já vem **ligado**.
+Status (2026-11-14): **release 12.2-brpc2 publicada**
+([download](https://github.com/ruscher/big-remote-play/releases/tag/controller-v12.2-brpc2),
+[código](https://github.com/ruscher/moonlight-android-touch/tree/brp/native-touch)),
+`io.github.bigremoteplay.controller`, arm64-v8a, armeabi-v7a, x86 e x86_64,
+assinaturas v1+v2+v3 com a chave de release do Big Remote Play Controller
+(certificado SHA-256 `A2:8A:FA:C5…71:C9:26`). Testado num celular real
+([resultados](06-testes.md#celular-real-2026-11-14)); o roteiro abaixo,
+item a item, ainda está **pendente**.
 
 ## 1. Gerar o APK (no computador)
 
@@ -22,10 +24,11 @@ export ANDROID_HOME=$HOME/Android/Sdk JAVA_HOME=$HOME/Android/jdk-21
 
 Saída: `app/build/outputs/apk/nonRoot/debug/app-nonRoot-debug.apk`, assinado
 com a chave de depuração gerada **no seu computador** (`~/.android/debug.keystore`),
-não com a chave oficial do Moonlight. O app se chama **Big Remote Play Controller
-(Debug)**, id `io.github.bigremoteplay.controller.debug`, versão
-`12.2-brpc1`, e instala **ao lado** do Moonlight oficial (que não é
-alterado nem substituído).
+não com a chave oficial do Moonlight. O build de depuração tem o id
+`io.github.bigremoteplay.controller.debug` e instala **ao lado** do
+Moonlight oficial e do release (nenhum substitui o outro). Para o release:
+`./gradlew assembleNonRootRelease` e `apksigner sign` (ver `BRP-TOUCH.md` no
+fork).
 
 ## 2. Instalar no celular
 
@@ -74,7 +77,7 @@ só para o gerenciador de arquivos usado, e desligar depois).
 | MT-10 | deslizar o analógico | contínuo |
 | MT-11 | segurar A e desligar o Wi-Fi do celular | A solto quando o Big Remote Play vê a sessão cair (alguns segundos) |
 | MT-12 | girar o celular | o toque continua no botão certo |
-| MT-13 | mudar a resolução no Moonlight | idem |
+| MT-13 | mudar a resolução no app (inclusive para uma que o celular não decodifica) | idem; nunca erro -5 (o app ajusta e avisa) |
 | MT-14 | compartilhar outro monitor | o controle vai junto |
 | MT-15/16 | Wayland (wlmaker/KDE) e X11 (Window Maker) | idem |
 | MT-17 | jogo Steam/Proton | o jogo vê o controle |

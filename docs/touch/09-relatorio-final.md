@@ -18,7 +18,9 @@
   pelo instalador do próprio app (botão **Instalar**).
 - **Big Remote Play Controller** (fork GPL-3.0 do Moonlight Android 12.2, app separado):
   envio de toque nativo corrigido (cancelamentos, 3 dedos, gestos de borda,
-  `CANCEL_ALL` em foco/saída/início). **Código pronto, APK não compilado.**
+  `CANCEL_ALL` em foco/saída/início) e resolução ajustada ao decodificador
+  do celular (sem erro -5). Release 12.2-brpc2 assinada com chave própria e
+  publicada, com o código ([README](../../README.md#your-phone-as-a-controller-multi-touch)).
 - Patch de 8 linhas para o Sunshine soltar toques ao desconectar (**não
   compilado**).
 
@@ -39,10 +41,9 @@ Ver [implementação](04-implementacao.md). Repositórios e branches:
 |---|---|---|
 | `big-windowmaker/big-keyboard` | `feat/remote-touch` | `2f25183`, `28749b0` |
 | `big-remote-play` | `feat/touch-controls` | este branch |
-| `~/Documentos/Git/moonlight-android-touch` | `brp/native-touch` | `c94196a` |
+| [`ruscher/moonlight-android-touch`](https://github.com/ruscher/moonlight-android-touch/tree/brp/native-touch) | `brp/native-touch` | `c94196a`, `c9cec37`, `44b01d1` |
 
-Nada foi enviado a servidores remotos (sem push), nada foi mesclado no
-`main`.
+O branch do `big-keyboard` ainda não foi enviado ao `big-windowmaker`.
 
 ## Testes automatizados
 
@@ -57,8 +58,11 @@ Nada foi enviado a servidores remotos (sem push), nada foi mesclado no
 Sessão wlmaker desta máquina, overlay no DP-1 (3440×1440), touchscreen
 uinput com o perfil exato do libvirtualhid: **17/17 cenários** (MT-01…MT-11,
 MT-19, toque fora dos botões, hotplug) e a integração Big Remote Play ↔ Big
-Keyboard pelo D-Bus. Não usados: celular, jogos reais, controle físico,
-X11/KDE, Game Window ([testes](06-testes.md)).
+Keyboard pelo D-Bus. Depois, com um celular real e um jogo da Steam: vários
+botões ao mesmo tempo funcionando, e dois defeitos achados e corrigidos (erro
+-5 por resolução que o celular não decodifica; toque acima do dedo no
+Sunshine 2026.914). Não usados: controle físico junto, X11/KDE, Game Window
+([testes](06-testes.md)).
 
 ## Desempenho (local, medido)
 
@@ -69,10 +73,9 @@ apertar p99 0,041 ms. CPU 0,0 % parado, 0,8 % movendo. A latência fim a fim
 
 ## Instalação
 
-Pacotes gerados e testados (`big-keyboard 0.1.0-2`, `big-remote-play` do
-branch) em `~/Documentos/Git/brp-touch-pacotes/`; **não instalados** — o
-`sudo` pede senha. Comandos, cópia de segurança e reversão:
-[instalação](07-instalacao.md).
+`big-keyboard 0.1.0-2`, `big-remote-play` do branch e `sunshine
+2026.914.233613-4` (com a correção de toque do upstream) instalados nesta
+máquina; comandos, cópia de segurança e reversão: [instalação](07-instalacao.md).
 
 ## Teste com o Android
 
@@ -83,7 +86,11 @@ lado do Moonlight oficial, ligar **Enviar toques ao computador**, escolher
 ## Limitações
 
 - O Moonlight oficial não envia toque nativo; é preciso o Big Remote Play Controller.
-- APK, celular real e jogos reais: pendentes.
+- O toque só cai no lugar certo com barras pretas a partir do Sunshine
+  2026.1113 (ou com a correção aplicada, como nesta máquina).
+- O `big-keyboard` com toque remoto ainda não está num repositório de
+  pacotes.
+- Roteiro MT-01…MT-25 item a item: pendente.
 - Game Window: o celular não vê o overlay (use o controle do Moonlight).
 - Sunshine 2026.914 retém toques de uma sessão que caiu; o Big Remote Play
   solta os botões quando vê a sessão cair (segundos depois), o Moonlight
@@ -97,7 +104,8 @@ lado do Moonlight oficial, ligar **Enviar toques ao computador**, escolher
 
 ## Próximos passos
 
-1. `sudo pacman -U` dos dois pacotes ([instalação](07-instalacao.md)).
-2. Compilar e instalar o Big Remote Play Controller ([roteiro](08-validacao-android.md)).
-3. Executar MT-01…MT-25 com o celular e registrar os resultados aqui.
-4. Levar o patch do Sunshine ao pacote/upstream.
+1. Enviar `feat/remote-touch` ao `big-windowmaker/big-keyboard` e publicar
+   o pacote.
+2. Executar MT-01…MT-25 com o celular e registrar os resultados aqui.
+3. Atualizar o Sunshine do BigLinux para 2026.1113 (ou aplicar a correção) e
+   levar o patch que solta os toques ao desconectar ao upstream.

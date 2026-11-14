@@ -9,9 +9,14 @@
 | `big-keyboard` | 0.1.0-1 |
 | `wlmaker` | 1:0.8.r80.g7481afe-36 |
 
-`sudo` pede senha nesta máquina, então a instalação dos pacotes não pôde
-ser feita automaticamente nesta sessão. Os pacotes foram **gerados e
-testados**; falta só o comando com a sua senha.
+## Estado depois (2026-11-14, instalado com `pkexec`)
+
+| Pacote | Versão instalada |
+|---|---|
+| `big-keyboard` | 0.1.0-2 (branch `feat/remote-touch`), `Identity=xbox360` no `~/.config/big-keyboard/big-keyboard.conf` |
+| `big-remote-play` | branch `feat/touch-controls` |
+| `sunshine` | 2026.914.233613-**4**: o mesmo 2026.914 com a correção de toque do upstream (abaixo) |
+| celular | Big Remote Play Controller ([validação](08-validacao-android.md)) |
 
 ## Pacotes gerados
 
@@ -71,7 +76,28 @@ cp -a ~/brp-touch-backup/big-keyboard ~/brp-touch-backup/big-remote-play ~/.conf
 
 (Se os pacotes antigos não estiverem no cache, reinstale-os do repositório.)
 
+## Sunshine com a correção do toque
+
+Com o Sunshine 2026.914 o toque cai acima do dedo quando o vídeo tem barras
+pretas ([testes](06-testes.md)). O upstream corrigiu em 2026.1113
+(LizardByte/Sunshine@4062cb7). Use o 2026.1113 ou mais novo quando o seu
+sistema o tiver. O pacote oficial 2026.1113 para Arch **não roda no Manjaro de
+2026-11** (pede Qt 6.12 e OpenSSL 4); por isso, nesta máquina:
+
+1. Cópia de segurança do pacote instalado (refeito a partir dos arquivos do
+   sistema, com o `.INSTALL` original) e da configuração:
+   `~/brp-touch-backup/sunshine-2026.914-3/`.
+2. O mesmo `PKGBUILD` do AUR (commit `63d35f7`), `pkgrel=4`, com um passo no
+   `prepare()` que troca só as duas linhas de `monitor_touch_port()` pelas do
+   upstream e falha se não as encontrar; `appstream-util validate --nonet`
+   (a validação tentava baixar uma imagem da internet).
+3. `pkexec pacman -U sunshine-2026.914.233613-4-x86_64.pkg.tar.zst`.
+4. **Parar o Sunshine que já estava rodando** e compartilhar de novo: o
+   processo antigo continua com o programa velho na memória até sair.
+
+Reverter: `sudo pacman -U ~/brp-touch-backup/sunshine-2026.914-3/sunshine-2026.914.233613-3-x86_64.pkg.tar.zst`.
+
 ## Big Remote Play Controller (celular)
 
-Ver [validação no Android](08-validacao-android.md): compilar o APK exige JDK
-17+, Android SDK 37 e NDK 29.0.14206865, que não estão nesta máquina.
+Download, verificação e instalação: [README](../../README.md#your-phone-as-a-controller-multi-touch).
+Compilar: [validação no Android](08-validacao-android.md).

@@ -61,7 +61,11 @@ sees an ordinary controller. It needs:
 
 - **Big Remote Play Controller** on the phone (a Moonlight build that sends every finger
   as a touch, with its setting **Send touch to the computer** on). The
-  official Moonlight for Android does not send touches yet.
+  official Moonlight for Android does not send touches yet. Download,
+  checksum and installation steps are in the
+  [README](../README.md#your-phone-as-a-controller-multi-touch).
+- Sunshine 2026.1113 or newer on the game PC. With 2026.914 the touch lands
+  above the finger when the picture has black bars.
 - The package `big-keyboard` on the game PC and **What touch does** set to
   **On-screen controller** (or **Controller and touch**).
 
