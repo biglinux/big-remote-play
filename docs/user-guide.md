@@ -15,7 +15,7 @@ The game runs on the **sharing computer**. The person playing remotely uses the 
 
 ## Choose the appearance
 
-Open the application menu and use **Appearance**. **Gamer** is the dark
+Open the application menu (the ☰ button at the top of the sidebar, next to the app's name; in a narrow window, press **Back** to reach the sidebar first) and use **Appearance**. **Gamer** is the dark
 violet/cyan preset; **Automatic** follows the desktop; **Light** and **Dark**
 force the corresponding system appearance. The choice takes effect immediately
 and is restored the next time Big Remote Play opens. High contrast temporarily
@@ -123,6 +123,8 @@ While a stream runs, **Playing now** at the top of Connect shows the computer's 
 **Image → Playback on this computer → Open on** chooses the screen of this computer where the game appears (X11; on Wayland the desktop chooses). The game PC's screen is chosen on that computer under **Share**. Both are explained in [several screens](moonlight-multi-monitor.md).
 
 **Shortcuts & Instructions** has a tab for Moonlight on a computer, on Android, on iPhone/iPad and for controllers, and a QR code that opens the same guide on the phone: [controlling the game PC from a phone](mobile-controls.md).
+
+To play with fingers on a controller drawn on this computer, open **Preferences → Mouse, keyboard and controllers → Touch controls** and choose **On-screen controller**. When a phone starts playing, the controller opens on the shared screen; when the last one leaves, every button is released and it closes. **Compatibility** checks Sunshine, the Big WM Virtual Keyboard, the virtual controller and the phone's touch, in words. The phone needs Big Remote Play Controller ([guide](mobile-controls.md#a-controller-drawn-by-the-game-pc-touch-controls)). **Mouse** makes Sunshine stop offering touch, so every finger works as a mouse.
 
 ### Playing with friends
 

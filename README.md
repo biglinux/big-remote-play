@@ -21,6 +21,7 @@
 <p align="center">
   <a href="#whats-new">What's new</a> ·
   <a href="#install">Install</a> ·
+  <a href="#your-phone-as-a-controller-multi-touch">Phone as a controller</a> ·
   <a href="docs/user-guide.md">User guide</a> ·
   <a href="docs/troubleshooting.md">Troubleshooting</a> ·
   <a href="#technologies">Technologies</a> ·
@@ -28,7 +29,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/home.png" width="860" alt="Home: the logo with Start with the guided setup, then Share and Connect; in the sidebar Share and Connect say Stopped and Connect your devices says Running">
+  <img src="docs/screenshots/home.png" width="860" alt="Home: the sidebar lists Home, then Streaming with Share and Connect marked Stopped and Secure connection with Connect your devices marked Running; the page shows the logo, Your games. Any screen. Anywhere., Start with the guided setup, and two cards, Share and Connect">
 </p>
 
 ## Why Big Remote Play?
@@ -46,7 +47,7 @@ Remote play on Linux usually means learning several unrelated tools before the f
 | 👥 **Play together** | Up to four devices can play on the same computer at once, each with its own controller: invite friends to a local multiplayer game from wherever they are. |
 | 🖱️ **The pointer you can see** | When the screen capture leaves the mouse pointer out (KMS on KDE and GNOME Wayland), Share notices it in Sunshine's log and offers the capture that draws it. |
 | 🖥️ **Every screen in its place** | Choose which monitor of the game PC is shared and on which screen of this computer the game opens. |
-| 📱 **Play from a phone** | Touch, keyboard and controller instructions for Moonlight on Android and iPhone/iPad, with a QR code to read them on the phone. |
+| 📱 **Play from a phone** | Touch, keyboard and controller instructions for Moonlight on Android and iPhone/iPad, with a QR code to read them on the phone. **Touch controls** puts an on-screen controller on the shared screen that takes several fingers at once, with the **Big Remote Play Controller** app on the phone ([how to install](#your-phone-as-a-controller-multi-touch)). |
 | 🩺 **Help when something fails** | **Support** checks this computer without changing anything and explains common problems. If a stream drops because the network cannot carry it, Connect says so and offers **Lower quality and connect again**. |
 | 🎮 **Controllers too** | Keyboard, mouse and controllers of the other device reach the game through Sunshine. While someone plays, **Share** says which controller arrived, or why none did. |
 | 🔊 **Sound that just works** | Game audio is sent; the microphone and voice calls only when you turn them on. Everything returns to normal when sharing stops. |
@@ -59,24 +60,24 @@ There is no proprietary game catalog and no requirement that the game came from 
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/share.png" alt="Share while sharing: the Sharing badge, what is being shared and the sound state, a large Stop sharing button, then Pair a new device with a four-digit PIN field and Approve, and Connected now saying no one is playing yet"><br><sub><b>Share</b>: the state in words, one large button, and the PIN field always in view.</sub></td>
-    <td width="50%"><img src="docs/screenshots/pairing.png" alt="New connection request dialog over Share: Living room PC wants to connect, a PIN field, the time left, and Approve, Reject and Not now"><br><sub><b>New connection request</b>: opens by itself when a device asks to pair.</sub></td>
+    <td width="50%"><img src="docs/screenshots/connect.png" alt="Connect: Choose a computer with six computer cards in two columns, some on the local network and some over Tailscale, each saying Sharing found or Offline; an offline computer has a neutral icon; the sidebar lists Services with Moonlight Ready and Tailscale Connected"><br><sub><b>Connect</b>: each computer is a card that says where it is and whether it is sharing.</sub></td>
+    <td width="50%"><img src="docs/screenshots/share.png" alt="Share before sharing: Share from this PC, Stopped, What to share with the source Full Desktop, a Start sharing button, then Pair a new device with a four-digit PIN field and Approve, and Image and capture"><br><sub><b>Share</b>: the state in words, one main button and the PIN field always in view.</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/connect.png" alt="Connect: four game computers as cards, two on the local network and two over Tailscale, with the Computers and Advanced options tabs"><br><sub><b>Connect</b>: pick the game computer; other ways to connect are on <b>Advanced options</b>.</sub></td>
-    <td><img src="docs/screenshots/private-network.png" alt="Connect your devices: Tailscale, ZeroTier and Headscale as cards with a switch each; Tailscale is connected with its network, this computer's address and 3 online of 3 devices"><br><sub><b>Connect your devices</b>: each method with a real switch, its address and its devices.</sub></td>
+    <td><img src="docs/screenshots/private-network.png" alt="Connect your devices: Tailscale and ZeroTier connected with their networks, this computer's address and devices, Headscale off, and Advanced links below"><br><sub><b>Connect your devices</b>: each method with a real switch, its address and its devices.</sub></td>
+    <td><img src="docs/screenshots/support.png" alt="Support: Check this computer lists sharing, Moonlight, the desktop session, remote input, mouse pointer, keyring, firewall and video encoding, each with OK, Info or Check; Common problems below"><br><sub><b>Support</b>: read-only checks in plain words, then what to try for common problems.</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/support.png" alt="Support: Check this computer lists sharing, Moonlight, the desktop session, remote input, mouse pointer, saved password, firewall and video encoding, each with OK or Info; Common problems below"><br><sub><b>Support</b>: read-only checks in plain words, then what to try for common problems.</sub></td>
+    <td><img src="docs/screenshots/preferences.png" alt="Share Preferences: How this computer shares, Picture and performance with Image and capture and Game Library, then Sound with the output, play sound on this computer, send only the game's sound, Microphone and Voice calls"><br><sub><b>Preferences</b>: grouped by purpose; most people keep the automatic choices.</sub></td>
+    <td><img src="docs/screenshots/connect-pt-BR.png" alt="Connect in Brazilian Portuguese: Escolha um computador, with the sidebar headings Transmissão, Conexão segura and Serviços"><br><sub><b>32 languages</b>: here in Brazilian Portuguese.</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/home-light.png" alt="Home in the Light appearance"><br><sub><b>Light</b>: Automatic follows the system; Light and Dark can be forced.</sub></td>
+    <td><img src="docs/screenshots/home-gamer.png" alt="Home in the Gamer appearance: violet and cyan tones over the same layout, with a highlighted header panel"><br><sub><b>Gamer appearance</b>: a dark, colorful preset over the same layout.</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/pairing.png" alt="New connection request dialog over Share: Living room PC wants to connect, a PIN field, the time left, and Approve, Reject and Not now"><br><sub><b>New connection request</b>: opens by itself when a device asks to pair.</sub></td>
     <td><img src="docs/screenshots/stream-lost.png" alt="The connection to the game PC was lost: the network could not carry 12 Mbps, the delay reached 372 ms; buttons Lower quality and connect again, and Close"><br><sub><b>A dropped stream, explained</b>: and one button to try again at a rate the network carries.</sub></td>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/preferences.png" alt="Share Preferences: Picture and performance with Image and capture and Game Library, then Sound with the output, play sound on this computer, send only the game's sound, Microphone and Voice calls off, and Test audio"><br><sub><b>Preferences</b>: grouped by purpose; most people keep the automatic choices.</sub></td>
-    <td><img src="docs/screenshots/share-pt-BR.png" alt="Share while sharing, in Brazilian Portuguese: Compartilhando, Parar compartilhamento and Parear um novo dispositivo"><br><sub><b>32 languages</b>: here in Brazilian Portuguese.</sub></td>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/home-gamer.png" alt="Home in the Gamer appearance: Start with the guided setup, then Share and Connect cards in purple and cyan tones"><br><sub><b>Gamer appearance</b>: a dark, colorful preset next to Automatic, Light and Dark.</sub></td>
-    <td><img src="docs/screenshots/share-gamer.png" alt="Share while sharing in the Gamer appearance"><br><sub><b>Share</b> in the Gamer appearance.</sub></td>
   </tr>
 </table>
 
@@ -96,9 +97,91 @@ There is no proprietary game catalog and no requirement that the game came from 
 
 The full walkthrough — audio, image quality, Game Window, direct public access and safety limits — is in the [user guide](docs/user-guide.md).
 
+## Your phone as a controller (multi-touch)
+
+**Touch controls** draws an on-screen controller on the shared screen of the game computer. You see it in the picture on your phone and press it with your fingers: a direction and **A** together, both sticks, triggers, up to five fingers at the same time. The game sees an ordinary controller, never a mouse.
+
+<p align="center">
+  <img src="docs/screenshots/touch-controls.png" width="520" alt="Touch controls sheet: What touch does set to On-screen controller, Open when a device starts playing turned on, the buttons Open, Close, Edit layout and Release all buttons, and Compatibility saying Ready to play, Touch from the phone turned on, the phone's touch present on this computer and Big WM Virtual Keyboard found">
+  <br><sub><b>Share → Preferences → Mouse, keyboard and controllers → Touch controls</b>, with simulated checks.</sub>
+</p>
+
+The official Moonlight for Android turns every finger into the mouse, so it cannot press two buttons at once. The phone needs **Big Remote Play Controller**: a build of Moonlight for Android 12.2 that sends every finger to the computer as its own touch. It is unofficial, has its own name and application ID (`io.github.bigremoteplay.controller`) and installs **next to** the official Moonlight without changing it. Its pairing and settings are separate.
+
+### What you need
+
+| Where | What |
+|---|---|
+| Phone or tablet | Android 5.0 or newer, with **Big Remote Play Controller** |
+| Game computer | Big Remote Play, **Big WM Virtual Keyboard** with remote touch (`big-keyboard` 0.1.0-2 or newer) and Sunshine |
+| Sunshine | **2026.1113 or newer**. Sunshine 2026.914 puts the touch above the finger when the picture has black bars, worst at the bottom of the screen; the fix is LizardByte/Sunshine@4062cb7 |
+
+At the time of writing, the `big-keyboard` with remote touch is not yet in a package repository. Big Remote Play says **Update Big WM Virtual Keyboard: this version cannot read touch from the phone** when the installed one is older.
+
+### 1. Download the app
+
+**[Download Big Remote Play Controller 12.2-brpc2 (APK)](https://github.com/ruscher/big-remote-play/releases/download/controller-v12.2-brpc2/big-remote-play-controller-12.2-brpc2.apk)** · [release page](https://github.com/ruscher/big-remote-play/releases/tag/controller-v12.2-brpc2) · [source code](https://github.com/ruscher/moonlight-android-touch/tree/brp/native-touch) (GPL-3.0)
+
+Before installing, you can check the file:
+
+| | |
+|---|---|
+| SHA-256 of the APK | `a6cb6b48b02a5994a631690980cfe9d67665bd9e6905b71c2b0c06a0fdc6bc86` |
+| Signing certificate (SHA-256) | `A2:8A:FA:C5:45:EC:5A:E3:5E:CC:87:F2:8E:BD:0A:69:90:F2:2F:C3:4B:3D:41:80:AD:3D:07:26:6C:71:C9:26` |
+
+```bash
+sha256sum big-remote-play-controller-12.2-brpc2.apk
+apksigner verify --print-certs big-remote-play-controller-12.2-brpc2.apk   # from the Android SDK build-tools
+```
+
+### 2. Install it on the phone
+
+**From the phone**
+
+1. Open the download link above in the phone's browser and download the APK.
+2. Open the downloaded file. Android asks to allow installing apps from this source (the browser or the file manager): allow it **only for that app**.
+3. Tap **Install**, then **Open**.
+4. Back in Android's settings, turn that permission off again.
+
+**From a computer, with a USB cable**
+
+1. On the phone: **Settings → About phone**, tap **Build number** seven times, then turn on **Developer options → USB debugging** (on Xiaomi phones also **Install via USB**).
+2. Connect the cable, accept the computer's key on the phone, then on the computer:
+
+```bash
+sudo pacman -S --needed android-tools
+adb devices
+adb install big-remote-play-controller-12.2-brpc2.apk
+```
+
+To update, install the new APK over the old one (`adb install -r …`): pairing and settings are kept.
+
+### 3. Turn it on
+
+1. **Game computer** — open **Share → Preferences → Mouse, keyboard and controllers → Touch controls** and set **What touch does** to **On-screen controller**. Keep **Open when a device starts playing** on. Then press **Start sharing** (**Full Desktop**; with **Game Window** the phone sees only the game, not this controller).
+2. **Phone** — open **Big Remote Play Controller**, choose the game computer and pair with the PIN, like in Moonlight.
+3. In the app's **Settings**, **Send touch to the computer (multi-touch)** is already on. Leave **Show on-screen controls** off, or the game sees two controllers.
+4. Open **Desktop**. The controller appears on the shared screen when the phone starts playing, and closes when the last device leaves. **Edit layout** moves and resizes the buttons from the phone.
+
+**Compatibility** in the same sheet says what is ready and what is missing, in words. **Release all buttons** lets go of anything still pressed after a network drop.
+
+### Resolution and black bars
+
+The picture fills the phone without bars when the stream has the phone's shape and the shared monitor has a similar one. If the phone cannot decode the chosen resolution (many phones stop at 1920 pixels wide), the app now streams at the largest size with the same shape the phone accepts and says so, instead of failing with **error -5**. A monitor wider than the phone (for example 21:9) still leaves thin bars at the top and bottom, drawn by the computer.
+
+Technical details, the test plan and measured results: [touch controls](docs/touch/03-arquitetura.md) and [phone controls](docs/mobile-controls.md#a-controller-drawn-by-the-game-pc-touch-controls).
+
 ## What's new
 
-This release is about finding things by themselves: your installed games, the computers on a friend's ZeroTier network and the right screen. Each item was checked on a real computer (X11 with three monitors, a ZeroTier /16 network, Steam libraries on two disks and Heroic); what still needs a real phone, Wayland desktop or second player is listed in the linked guides.
+This release brings a calmer, native look and turns the phone into a controller. The phone part was checked on a real phone (Android, Redmi Note 11 Pro 5G) streaming a Wayland desktop (wlmaker, three monitors) with Shadow of the Tomb Raider through Steam; the full test plan, with what is still pending, is in [touch controls](docs/touch/08-validacao-android.md).
+
+- **A calmer, native look** — the window now follows AshyWall's design: the menu at the top of the sidebar, places grouped under **Streaming** and **Secure connection**, each task's state as quiet text, services as ordinary rows, and plain native cards without gradients. Every page, setting and flow is the same ([design notes](docs/redesign/02-decisoes.md)).
+- **Touch controls** — **Share → Preferences → Mouse, keyboard and controllers → Touch controls** opens the Big WM Virtual Keyboard's on-screen controller when a phone starts playing, releases it when a player leaves and closes it with the last one. Several fingers press several buttons; nothing becomes a mouse click ([details](#your-phone-as-a-controller-multi-touch)).
+- **Big Remote Play Controller for Android** — a Moonlight 12.2 build that sends every finger as its own touch, installs next to the official Moonlight and picks a resolution the phone can decode instead of failing with error -5 ([download](https://github.com/ruscher/big-remote-play/releases/tag/controller-v12.2-brpc2)).
+- **Host has priority keeps the controller working** — the host's mouse and keyboard still pause remote input, but never the touchscreen that drives the on-screen controller ([details](docs/host-input-priority.md)).
+- **Touch where you put your finger** — with Sunshine 2026.914 the touch landed above the finger when the picture had black bars; Sunshine 2026.1113 fixes it, and the [touch notes](docs/touch/06-testes.md) explain how to tell.
+
+Before that, finding things by themselves: your installed games, the computers on a friend's ZeroTier network and the right screen.
 
 - **A game library that finds your games** — Steam (native and Flatpak, every library on every disk), Lutris and Heroic (Epic, GOG, Amazon). Only installed games are listed, Proton and Steam runtimes are left out, and you choose which ones Moonlight offers. It works with sharing off ([details](docs/game-library-detection.md)).
 - **Computers on someone else's ZeroTier network** — **Find computers to play on** asks the network which computers share games, without the owner's ZeroTier account; they appear in **Connect** as **Ready to play** ([how it works](docs/zerotier-discovery.md)).
@@ -175,10 +258,11 @@ The Python wheel alone is not a complete desktop installation: icons, styles, tr
 
 | | Packages (Arch/BigLinux names) |
 |---|---|
-| **Required** | `python` ≥ 3.11, `gtk4`, `libadwaita` ≥ 1.7, `glib2`, `gdk-pixbuf2`, `pango`, `python-gobject`, `python-cairo`, `libsecret`, `avahi`, `curl`, `iproute2`, `iputils`, `jq`, `polkit`, `procps-ng`, `systemd`, `util-linux`, `hicolor-icon-theme` |
+| **Required** | `python` ≥ 3.11, `gtk4` ≥ 4.17, `libadwaita` ≥ 1.7, `glib2`, `gdk-pixbuf2`, `pango`, `python-gobject`, `python-cairo`, `libsecret`, `avahi`, `curl`, `iproute2`, `iputils`, `jq`, `polkit`, `procps-ng`, `systemd`, `util-linux`, `hicolor-icon-theme` |
 | **Share** | `sunshine`; for the Game Library, the launchers whose games you offer: `steam`, `lutris`, Heroic Games Launcher (native or Flatpak) |
 | **Connect** | `moonlight-qt` (or the Moonlight Flatpak with `flatpak`) |
 | **Game Window** | Sunshine ≥ 2026.516; KDE Plasma (`kwin`, `xdg-desktop-portal-kde`) on Wayland or an X11 desktop with compositing; `gst-plugin-pipewire`, `gst-plugins-base`, `gst-plugins-bad-libs`, `gst-plugins-good` |
+| **Touch controls** | `big-keyboard` ≥ 0.1.0-2 (remote touch) and Sunshine ≥ 2026.1113 on the game PC; the Big Remote Play Controller app on the phone ([install](#your-phone-as-a-controller-multi-touch)) |
 | **Connect your devices** | one of `tailscale` or `zerotier-one`; to host your own Headscale server on this computer, `headscale` and `caddy` (`miniupnpc` reads the router's public address) |
 | **Optional** | a Secret Service provider (GNOME Keyring or KWallet) for saved passwords, `libpulse` and `pipewire` for sound, `libkscreen` (screen mode and HDR for the connecting device), `pciutils` (graphics detection), `xorg-xrandr` (monitors and the main screen on X11), `flatpak` (Moonlight, VPN clients, Steam, Lutris or Heroic installed as Flatpaks), `xdg-utils` (start Heroic games when only its link handler exists). Pamac is used to install components when it is present. |
 
@@ -206,11 +290,12 @@ Games are listed by name from their process tree — Steam, Proton, Wine, Lutris
 | Screen and colors | `kscreen-doctor` for HDR-to-SDR and per-session resolution, restored after every session |
 | Audio | PipeWire/PulseAudio through `pactl` and `pw-link`: automatic output capture, voice calls kept out and the microphone left out unless you choose otherwise, PipeWire port links ("bridges") made by the app, which removes only what it created |
 | Networks | mDNS discovery with [Avahi](https://avahi.org/); [Tailscale](https://tailscale.com/), [Headscale](https://headscale.net/) and [ZeroTier](https://www.zerotier.com/) clients and APIs; a bounded, on-demand search of ZeroTier networks for Sunshine |
+| Touch controls | Sunshine's native touch (`native_pen_touch`) and its virtual touchscreen, read by the [Big WM Virtual Keyboard](https://github.com/big-windowmaker/big-keyboard) on-screen controller through evdev and turned into a `uinput` gamepad; the [Big Remote Play Controller](https://github.com/ruscher/moonlight-android-touch/tree/brp/native-touch) Android app (Moonlight 12.2) sends every finger |
 | Games | Steam (`libraryfolders.vdf`, `appmanifest_*.acf`), Lutris (`pga.db`) and Heroic (Legendary, GOG, Nile) libraries, read-only |
 | Security | Secret Service keyring (`libsecret`) for passwords and tokens, narrowly scoped PolicyKit helpers, ufw/firewalld checks, owner-only atomic writes |
 | Internationalization | gettext, 32 translated catalogs (distinct `pt`/`pt_BR` and `zh_CN`/`zh_TW`) |
 | Packaging | PEP 517 build on `uv_build`, private `/usr/lib/big-remote-play` layout that survives Python upgrades, PKGBUILD and Nix flake, reproducible `YY.MM.DD` versions |
-| Quality | pytest (over 1,700 tests, GTK task flows under Xvfb and D-Bus), ruff, pyright, catalog and metadata validators |
+| Quality | pytest (about 1,800 tests, GTK task flows under Xvfb and D-Bus), ruff, pyright, catalog and metadata validators |
 
 How the pieces fit together is described in [architecture](docs/architecture.md) and the [host and network policy](docs/host-network-policy.md).
 
@@ -224,11 +309,12 @@ Version fields in the checkout stay at `0.0.0`. Builds derive `YY.MM.DD` automat
 
 | Audience | Start here |
 |---|---|
-| Players and helpers | [User guide](docs/user-guide.md), [troubleshooting](docs/troubleshooting.md), [Game Window](docs/game-window.md), [game library](docs/game-library-detection.md), [phone controls](docs/mobile-controls.md), [several screens](docs/moonlight-multi-monitor.md) |
+| Players and helpers | [User guide](docs/user-guide.md), [troubleshooting](docs/troubleshooting.md), [Game Window](docs/game-window.md), [game library](docs/game-library-detection.md), [phone controls](docs/mobile-controls.md), [phone as a controller](#your-phone-as-a-controller-multi-touch), [several screens](docs/moonlight-multi-monitor.md) |
 | ZeroTier | [Finding computers on a network](docs/zerotier-discovery.md), [no repeated passwords](docs/zerotier-permissions.md) |
 | Playing over the internet | [Router, NAT and firewall](docs/router.md), [your own Headscale server](docs/vps-headscale.md), [Cloudflare](docs/cloudflare.md) |
 | Contributors | [Contributing](CONTRIBUTING.md), [development](docs/development.md), [documentation index](docs/README.md) |
-| UI contributors | [Visual design](docs/visual-design.md), [UI instructions](src/big_remote_play/ui/AGENTS.md) |
+| UI contributors | [Visual design](docs/visual-design.md), [redesign notes](docs/redesign/01-auditoria.md), [UI instructions](src/big_remote_play/ui/AGENTS.md) |
+| Touch controls (Portuguese) | [Architecture](docs/touch/03-arquitetura.md), [tests](docs/touch/06-testes.md), [Android test plan](docs/touch/08-validacao-android.md), [report](docs/touch/09-relatorio-final.md) |
 | Maintainers | [Architecture](docs/architecture.md), [maintainer guide](docs/maintainer-guide.md), [release testing](docs/release-testing.md) |
 | Repository rules | [AGENTS.md](AGENTS.md) and the nested `AGENTS.md` files |
 
@@ -266,6 +352,7 @@ Big Remote Play stands on the shoulders of excellent free software. Thank you to
 
 - **[LizardByte](https://github.com/LizardByte)** for Sunshine, and the **[Moonlight Game Streaming Project](https://moonlight-stream.org/)** for Moonlight — the streaming heart of this app;
 - **[GNOME](https://www.gnome.org/)** for GTK, libadwaita and PyGObject;
+- **[AshyWall](https://github.com/big-comm/ashywall)** (BigCommunity), whose calm native design the interface follows;
 - **[KDE](https://kde.org/)** for Plasma, KWin and xdg-desktop-portal-kde, which make Game Window possible;
 - **[PipeWire](https://pipewire.org/)**, **[GStreamer](https://gstreamer.freedesktop.org/)**, **[freedesktop.org](https://www.freedesktop.org/)** and **[Avahi](https://avahi.org/)**;
 - **[Tailscale](https://tailscale.com/)**, **[Headscale](https://github.com/juanfont/headscale)** and **[ZeroTier](https://www.zerotier.com/)** for private networking;

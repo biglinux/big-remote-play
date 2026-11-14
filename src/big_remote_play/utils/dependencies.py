@@ -54,6 +54,7 @@ def _purpose(component_id: str) -> str:
         "zerotier": _("Joins the private network of a friend or a club."),
         "headscale_server": _("Your own private network server."),
         "caddy": _("Gives the server a secure HTTPS address."),
+        "big_keyboard": _("Draws a controller on the shared screen that takes a phone's fingers."),
     }.get(component_id, "")
 
 
@@ -66,6 +67,7 @@ COMPONENTS: dict[str, Component] = {
     # starts their services, so none is enabled at installation.
     "headscale_server": Component("headscale_server", "Headscale", ("headscale",), "headscale"),
     "caddy": Component("caddy", "Caddy", ("caddy",), "caddy"),
+    "big_keyboard": Component("big_keyboard", "Big WM Virtual Keyboard", ("big-keyboard",), "big-keyboard"),
 }
 
 # What each task cannot work without. The secure connection is added only when

@@ -6,6 +6,38 @@ chooses the appearance in the application menu (**Appearance**: **Gamer**,
 [user guide](user-guide.md#choose-the-appearance). UI rules for contributors
 are in [`src/big_remote_play/ui/AGENTS.md`](../src/big_remote_play/ui/AGENTS.md).
 
+## The base design (Automatic, Light, Dark)
+
+Big Remote Play follows the visual language of
+[AshyWall](https://github.com/big-comm/ashywall): native libadwaita, the
+system font and text scale, one accent colour and no decoration. Its rules:
+
+- **Window.** `Adw.NavigationSplitView`. The sidebar header carries the app
+  name and the application menu; the content header carries only the page's
+  title or its tabs (`Adw.ViewSwitcher`, moved to a bottom bar when narrow).
+- **Sidebar.** A `navigation-sidebar` list: **Home**, then **Streaming**
+  (Share, Connect) and **Secure connection** (Connect your devices), each group
+  under a quiet `heading dim-label` title. A task's state is quiet text at the
+  end of its row, coloured only when something is running or needs attention.
+  Below, **Services** lists Sunshine or Moonlight and the private-network
+  methods as ordinary rows ([service rows](service-status-cards.md)).
+- **Surfaces.** Libadwaita's `card` look for every container the app draws
+  itself (`@card_bg_color`, the Adwaita card shadow, 12px radius). A card is
+  something you act on or a panel of related controls; text sits on the page.
+  Home's brand header has no card; Connect's computers are cards placed
+  straight on the page, never a card holding cards.
+- **Interaction.** Hover `alpha(currentColor, 0.05)`, press `0.09`, keyboard
+  focus a 2px accent ring on `:focus-visible` only. One suggested or
+  destructive button per state; everything else is a flat or standard button.
+- **Icons.** Monochrome symbolic glyphs everywhere; a flat accent chip only for
+  a page heading or a major choice. A computer that does not answer gets a
+  neutral chip next to the word *Offline*.
+
+Tokens are Adwaita's named colours, so light, dark and high contrast follow
+the system. `style.css` defines no fixed colours except the card shadow and
+draws no gradients, glows or animations; high contrast replaces shadows with
+full-contrast borders.
+
 ## The Gamer appearance
 
 **Gamer** is a dark, static preset layered over the normal Big Remote Play
@@ -43,24 +75,24 @@ meet WCAG AA for normal text.
 
 ## Component mapping
 
-- The Home page uses a quiet violet wash. Its hero carries the only large
-  violet-magenta-cyan signature and keeps copy on a solid-enough dark surface.
+- The Home page uses a quiet violet wash. Its header becomes a panel (the base
+  design draws none) with the only large violet-magenta-cyan signature.
 - Share uses violet/blue; Connect uses cyan. Both retain text, icons and status
   words, so colour never carries state alone.
 - Guided setup has a stronger edge and signature highlight, while its choices
   continue to use native buttons and focus behaviour.
 - Navigation rows remain still on hover. Selection adds a three-pixel violet
-  inset indicator, a tinted surface, brighter text and icon.
+  inset indicator, a tinted surface, brighter text and icon. Section headings
+  and task states use the secondary text colour; Running is green.
 - Suggested actions use a violet-to-blue gradient. Destructive actions remain
   red. Cards, lists, dialogs and popovers use one restrained border/elevation
   family with 12–22px radii according to hierarchy.
 - Switches, progress bars and focus use violet/cyan accents with visible knobs,
   tracks and outlines. Status pills retain their semantic success, warning and
   neutral colours plus their existing icon and text.
-- Service status cards repeat the tone rules of the
-  [base design](service-status-cards.md#visual-and-accessibility-contract) in
-  this palette: an active service is lit with a cyan-violet tint, a cyan border
-  and a cyan icon tile; the others stay quiet.
+- Service rows keep the base structure
+  ([service rows](service-status-cards.md#visual-and-accessibility-contract));
+  Gamer only lights the active service's icon in cyan.
 
 ## Motion, accessibility and adaptation
 
@@ -100,6 +132,6 @@ hicolor index. Tests check both the local assets and that
 `adw-expander-arrow-symbolic` still resolves (`tests/test_guided_home_review.py`).
 
 Keep rounded native groups, flat main toolbar styling and a distinct sidebar
-surface. The header title stack must not reserve the width of hidden desktop
+surface. The application menu lives in the sidebar header. The header title stack must not reserve the width of hidden desktop
 tabs when the compact title is active. In small windows the same task tabs use
 the native lower view switcher.

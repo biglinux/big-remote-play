@@ -118,7 +118,8 @@ same information any Wayland client gets from the idle-notification protocol.
   program `/usr/share/big-remote-play/scripts/input-priority-helper.sh`, under the
   action `br.com.biglinux.remoteplay.input-priority` (allowed for the active
   local session without a password; denied for inactive and remote sessions).
-  It accepts only a delay in seconds on stdin and touches no file.
+  It accepts only a delay in seconds and whether Sunshine's touchscreen may
+  be paused (`touch`) on stdin, and touches no file.
 - Running from a source checkout without that program and without access, the
   setting explains that it needs the installed package.
 
@@ -156,6 +157,16 @@ Still needs real hardware and people: a real Moonlight session, Bluetooth and
 hot-plugged USB devices, X11, a user outside the `input` group with the
 package's PolicyKit rule, and the on-screen message seen in a Full Desktop
 stream; see [release acceptance](release-testing.md).
+
+## Touch controls
+
+When **Share → Preferences → Touch controls** sends the phone's fingers to
+the on-screen controller (*On-screen controller* or *Controller and
+touch*), Sunshine's touchscreen and pen are treated as a controller: the
+helper is started with `"touch": false` and never grabs them, so the
+controller cannot freeze or keep a button held while the host user moves
+the mouse. Without that field (older Big Remote Play) they are paused like
+the mouse. See [touch controls](touch/03-arquitetura.md).
 
 ## Limitations
 

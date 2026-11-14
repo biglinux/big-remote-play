@@ -25,6 +25,7 @@ from big_remote_play import paths
 from big_remote_play.host.sunshine_manager import PIN_CHOOSE, PIN_NONE_WAITING
 from big_remote_play.utils.sunshine_credentials import DEFAULT_SUNSHINE_USER, SAVED, SunshineCredentials
 from big_remote_play.utils.uri import open_uri, open_path
+from big_remote_play.host import touch_control
 from .components import physical_size, action_row, boxed_rows, intro, preferences_dialog, set_row_icon, content_dialog, name_icon_button
 
 
@@ -212,6 +213,10 @@ class HostView(Gtk.Box):
 
         # Share → Preferences → Host input priority, and its row in Connected now.
         self.input_priority = HostInputPriority(on_changed=lambda: self._schedule_save_host_settings())
+        from .touch_controls import TouchControls
+
+        # Share → Preferences → Touch controls (the phone's fingers, the on-screen controller).
+        self.touch_controls = TouchControls(on_changed=self._on_touch_controls_changed, context=self._touch_context)
 
         from big_remote_play.host.sunshine_manager import SunshineHost
 
@@ -1306,6 +1311,14 @@ class HostView(Gtk.Box):
         self.pointer_capture_row.add_suffix(automatic_button)
         self._pointer_automatic_button = automatic_button
         input_group.add(self.pointer_capture_row)
+        input_group.add(
+            action_row(
+                _("Touch controls"),
+                _("Mouse, direct touch or an on-screen controller for phones and tablets"),
+                "brp-input-gaming-symbolic",
+                lambda: self.touch_controls.present(self),
+            )
+        )
         self._sync_pointer_capture_row()
         config_page.append(input_group)
 
@@ -2840,6 +2853,20 @@ class HostView(Gtk.Box):
         index = self.share_resolution_row.get_selected()
         return self.share_resolution_values[index] if 0 <= index < len(self.share_resolution_values) else ""
 
+    def _touch_context(self) -> dict[str, object]:
+        """Main-thread facts for Touch controls: sharing, Game Window, the shared screen, Sunshine's settings."""
+        from .sunshine_preferences import SunshineConfigManager
+
+        try:
+            sunshine_config = dict(SunshineConfigManager().config)
+        except OSError:
+            sunshine_config = {}
+        return {"sharing": self.is_hosting, "game_window": self._source() == "game_window", "output": self._shared_output() or "", "sunshine_config": sunshine_config}
+
+    def _on_touch_controls_changed(self) -> None:
+        self.input_priority.set_pause_touch(touch_control.priority_pauses_touch(self.touch_controls.mode))
+        self._schedule_save_host_settings()
+
     def _shared_output(self) -> str | None:
         index = self.monitor_row.get_selected()
         monitors = getattr(self, "available_monitors", [])
@@ -3230,6 +3257,7 @@ class HostView(Gtk.Box):
         group.add(self.input_priority.status_box)
         # The same measurements as Support → monitoring, never a second probe.
         self.perf_monitor.add_listener(self._show_connected_devices)
+        self.perf_monitor.add_listener(lambda infos: self.touch_controls.on_connections(len(infos)))
         self._show_connected_devices([])
         return group
 
@@ -4184,6 +4212,8 @@ class HostView(Gtk.Box):
         config["output_name"] = self._capture_output_name(shared, config["capture"]) if shared else None
 
         config["adapter_name"] = gpu["adapter"] if gpu["encoder"] == "vaapi" and gpu["adapter"] != "auto" else None
+        # Touch controls: whether Sunshine offers native touch (Automatic keeps the person's choice).
+        config.update(touch_control.sunshine_settings(self.touch_controls.mode))
         # Sunshine runs this before capture and after each session; merged
         # with any global_prep_cmd the person has (see host/stream_display.py).
         from big_remote_play.host.stream_display import prep_command
@@ -4503,6 +4533,8 @@ class HostView(Gtk.Box):
         self._game_window_session = None
         # Before Sunshine stops: the other device's keys are released while it can still see them.
         self.input_priority.sync(hosting=False, source=self._source())
+        # No one can be playing now: the on-screen controller lets go of every button.
+        self.touch_controls.on_connections(0)
 
         if hasattr(self, "stop_pin_listener") and self.stop_pin_listener:
             try:
@@ -5202,6 +5234,7 @@ class HostView(Gtk.Box):
                 "optimization_mode": self.optimization_row.get_selected(),
                 "wifi_mode": self.wifi_row.get_active(),
                 **self.input_priority.values(),
+                **self.touch_controls.values(),
             }
         )
 
@@ -5379,6 +5412,8 @@ class HostView(Gtk.Box):
             self.optimization_row.set_selected(h.get("optimization_mode", 1))
             self.wifi_row.set_active(h.get("wifi_mode", False))
             self.input_priority.load(h)
+            self.touch_controls.load(h)
+            self.input_priority.set_pause_touch(touch_control.priority_pauses_touch(self.touch_controls.mode))
         finally:
             self.loading_settings = False
 
@@ -5467,6 +5502,7 @@ class HostView(Gtk.Box):
         self._stop_capture_watch()
         # Sharing goes on without this window, without the priority it gave.
         self.input_priority.close()
+        self.touch_controls.close()
         if hasattr(self, "_internet_worker"):
             self._internet_worker.close()
         if hasattr(self, "support_center"):
