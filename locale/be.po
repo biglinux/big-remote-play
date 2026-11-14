@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-05 19:19+0000\n"
+"POT-Creation-Date: 2026-11-14 12:08+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Belarusian\n"
@@ -1491,7 +1491,7 @@ msgstr ""
 msgid "Big Remote Play: sound sent to the other computer"
 msgstr "Big Remote Play: гук, які перадаецца на іншы камп’ютар"
 
-#: src/big_remote_play/ui/touch_controls.py:253
+#: src/big_remote_play/ui/touch_controls.py:268
 msgid "Big WM Virtual Keyboard did not start"
 msgstr "Big WM Virtual Keyboard не запусціўся"
 
@@ -1689,7 +1689,7 @@ msgstr "Увага"
 #: src/big_remote_play/ui/remote_connection.py:51
 #: src/big_remote_play/ui/remote_connection.py:57
 #: src/big_remote_play/ui/support_center.py:152
-#: src/big_remote_play/ui/touch_controls.py:136
+#: src/big_remote_play/ui/touch_controls.py:141
 #: src/big_remote_play/ui/zerotier_join.py:103
 msgid "Check again"
 msgstr "Праверыць зноў"
@@ -1780,7 +1780,7 @@ msgstr ""
 msgid "Check your internet connection and try again."
 msgstr "Праверце падключэнне да інтэрнэту і паспрабуйце зноў."
 
-#: src/big_remote_play/ui/touch_controls.py:135
+#: src/big_remote_play/ui/touch_controls.py:140
 msgid "Checked on this computer now."
 msgstr "Праверана зараз на гэтым камп’ютары."
 
@@ -1877,8 +1877,8 @@ msgstr "Праверка падключэння да інтэрнэту…"
 #: src/big_remote_play/ui/remote_connection.py:444
 #: src/big_remote_play/ui/service_status_card.py:51
 #: src/big_remote_play/ui/task_activity.py:81
-#: src/big_remote_play/ui/touch_controls.py:139
-#: src/big_remote_play/ui/touch_controls.py:206
+#: src/big_remote_play/ui/touch_controls.py:144
+#: src/big_remote_play/ui/touch_controls.py:209
 msgid "Checking…"
 msgstr "Праверка…"
 
@@ -2142,7 +2142,7 @@ msgstr "Каманда для ўладальніка сервера"
 msgid "Common problems"
 msgstr "Частыя праблемы"
 
-#: src/big_remote_play/ui/touch_controls.py:135
+#: src/big_remote_play/ui/touch_controls.py:140
 msgid "Compatibility"
 msgstr "Сумяшчальнасць"
 
@@ -2725,7 +2725,7 @@ msgstr "Капіяваць {name} у буфер абмену"
 msgid "Correct colors of HDR screens"
 msgstr "Выправіць колеры HDR-экранаў"
 
-#: src/big_remote_play/ui/touch_controls.py:212
+#: src/big_remote_play/ui/touch_controls.py:215
 #, python-brace-format
 msgid "Could not check: {error}"
 msgstr "Не ўдалося праверыць: {error}"
@@ -2801,7 +2801,7 @@ msgstr "Не ўдалося захаваць налады сервера."
 msgid "Could not update the game library. Existing games were preserved."
 msgstr "Не ўдалося абнавіць бібліятэку гульняў. Наяўныя гульні захаваны."
 
-#: src/big_remote_play/ui/touch_controls.py:262
+#: src/big_remote_play/ui/touch_controls.py:277
 #, python-brace-format
 msgid "Could not use the on-screen controller: {error}"
 msgstr "Не ўдалося выкарыстаць экранны геймпад: {error}"
@@ -3248,6 +3248,10 @@ msgstr ""
 #: src/big_remote_play/ui/controls_help.py:78
 msgid "Drag two fingers up or down"
 msgstr "Правядзіце двума пальцамі ўверх або ўніз"
+
+#: src/big_remote_play/utils/dependencies.py:57
+msgid "Draws a controller on the shared screen that takes a phone's fingers."
+msgstr "Малюе на агульным экране геймпад, які прымае пальцы з тэлефона."
 
 #: src/big_remote_play/ui/history_dialog.py:29
 msgid "Duration unknown"
@@ -3820,6 +3824,14 @@ msgstr "Для гульняў, якіх няма ў спісе, напрыкла
 #: src/big_remote_play/ui/zerotier_join.py:214
 msgid "For the network owner: opens ZeroTier Central in the browser."
 msgstr "Для ўладальніка сеткі: адкрывае ZeroTier Central у браўзеры."
+
+#: src/big_remote_play/ui/touch_controls.py:244
+msgid ""
+"For the on-screen controller, Big Remote Play installs one more program "
+"after asking for your password once."
+msgstr ""
+"Для экраннага геймпада Big Remote Play усталюе яшчэ адну праграму, адзін раз "
+"запытаўшы ваш пароль."
 
 #: src/big_remote_play/ui/sunshine_preferences.py:587
 msgid "Force a Specific Capture Method"
@@ -4654,6 +4666,7 @@ msgstr "Увод, сетка і доступ"
 #: src/big_remote_play/ui/network_common.py:198
 #: src/big_remote_play/ui/remote_connection.py:67
 #: src/big_remote_play/ui/remote_connection.py:537
+#: src/big_remote_play/ui/touch_controls.py:135
 msgid "Install"
 msgstr "Усталяваць"
 
@@ -5240,6 +5253,7 @@ msgstr "Створым абароненае падключэнне"
 
 #: src/big_remote_play/ui/guided_setup.py:178
 #: src/big_remote_play/ui/main_window.py:1240
+#: src/big_remote_play/ui/touch_controls.py:243
 msgid "Let's get this computer ready"
 msgstr "Давайце падрыхтуем гэты камп’ютар"
 
@@ -5558,7 +5572,7 @@ msgstr "Moonlight не знойдзены"
 msgid "Moonlight on a computer"
 msgstr "Moonlight на камп’ютары"
 
-#: src/big_remote_play/ui/touch_controls.py:144
+#: src/big_remote_play/ui/touch_controls.py:149
 msgid "Moonlight on the phone"
 msgstr "Moonlight на тэлефоне"
 
@@ -5578,7 +5592,7 @@ msgstr ""
 "Moonlight выконвае спалучэнне, толькі калі ніхто не гуляе. Калі хтосьці "
 "гуляе, спачатку завяршыце трансляцыю для ўсіх."
 
-#: src/big_remote_play/ui/touch_controls.py:147
+#: src/big_remote_play/ui/touch_controls.py:152
 msgid "Moonlight's on-screen controls"
 msgstr "Экранныя кнопкі Moonlight"
 
@@ -5713,7 +5727,7 @@ msgstr ""
 "Патрэбны, толькі каб гуляць тут у гульні іншага камп’ютара. Для трансляцыі "
 "гэтага камп’ютара ён не патрэбны."
 
-#: src/big_remote_play/ui/touch_controls.py:153
+#: src/big_remote_play/ui/touch_controls.py:157
 msgid ""
 "Needs a Moonlight that sends touch; the official Android app does not yet. "
 "Install Moonlight Touch, the Big Remote Play build, and turn on its setting "
@@ -6191,7 +6205,7 @@ msgstr "Не ўсталявана"
 msgid "Not now"
 msgstr "Не зараз"
 
-#: src/big_remote_play/ui/touch_controls.py:227
+#: src/big_remote_play/ui/touch_controls.py:230
 msgid "Not ready yet"
 msgstr "Яшчэ не гатова"
 
@@ -6537,7 +6551,7 @@ msgstr ""
 msgid "One component is needed"
 msgstr "Патрэбны адзін кампанент"
 
-#: src/big_remote_play/ui/touch_controls.py:156
+#: src/big_remote_play/ui/touch_controls.py:159
 msgid "One controller at a time"
 msgstr "Адзін геймпад за раз"
 
@@ -7400,7 +7414,7 @@ msgstr "Гатова да падключэння"
 
 #: src/big_remote_play/ui/provider_page.py:109
 #: src/big_remote_play/ui/provider_page.py:115
-#: src/big_remote_play/ui/touch_controls.py:227
+#: src/big_remote_play/ui/touch_controls.py:230
 msgid "Ready to play"
 msgstr "Гатовы да гульні"
 
@@ -10820,7 +10834,7 @@ msgstr ""
 msgid "This computer's controller comes first"
 msgstr "Кантролер гэтага камп’ютара ідзе першым"
 
-#: src/big_remote_play/ui/touch_controls.py:151
+#: src/big_remote_play/ui/touch_controls.py:156
 msgid "This computer's controller on the phone"
 msgstr "Геймпад гэтага камп’ютара на тэлефоне"
 
@@ -11150,7 +11164,7 @@ msgid "Today at {time}"
 msgstr "Сёння а {time}"
 
 #: src/big_remote_play/ui/host_view.py:1316
-#: src/big_remote_play/ui/touch_controls.py:167
+#: src/big_remote_play/ui/touch_controls.py:170
 msgid "Touch controls"
 msgstr "Сэнсарнае кіраванне"
 
@@ -12051,7 +12065,7 @@ msgstr ""
 "за CGNAT. Брандмаўэр IPv6 маршрутызатара па змаўчанні ўсё роўна блакіруе "
 "ўваходныя злучэнні; Big Remote Play ніколі яго не змяняе."
 
-#: src/big_remote_play/ui/touch_controls.py:156
+#: src/big_remote_play/ui/touch_controls.py:159
 msgid ""
 "With both, the game sees two controllers. Close the one you are not using."
 msgstr ""
@@ -12085,7 +12099,7 @@ msgstr "Без яго ўдзельнікі ўхваляюцца на сайце 
 msgid "Working…"
 msgstr "Выконваецца…"
 
-#: src/big_remote_play/ui/touch_controls.py:148
+#: src/big_remote_play/ui/touch_controls.py:153
 msgid ""
 "Works with the official Moonlight: turn on Show on-screen controls in its "
 "settings. The buttons are drawn on the phone and several work at once."

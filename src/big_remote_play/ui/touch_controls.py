@@ -121,8 +121,8 @@ class TouchControls:
         self.open_row.set_active(True)
         self.open_row.connect("notify::active", lambda *_args: None if self._loading else self._on_changed())
         self.controller_group.add(self.open_row)
-        buttons = Gtk.Box(spacing=8, halign=Gtk.Align.START, margin_top=12)
-        buttons.add_css_class("brp-touch-buttons")
+        # Wraps at compact widths instead of widening the sheet.
+        buttons = Adw.WrapBox(child_spacing=8, line_spacing=8, margin_top=12)
         self.buttons: dict[str, Gtk.Button] = {}
         for key, label in (("open", _("Open")), ("close", _("Close")), ("edit", _("Edit layout")), ("release", _("Release all buttons"))):
             button = Gtk.Button(label=label)
@@ -131,6 +131,11 @@ class TouchControls:
             self.buttons[key] = button
         self.buttons["open"].add_css_class("suggested-action")
         self.controller_group.add(buttons)
+        # Missing program: installed in place by the shared installer, never in a terminal.
+        self.install_button = Gtk.Button(label=_("Install"), valign=Gtk.Align.CENTER, visible=False)
+        self.install_button.add_css_class("suggested-action")
+        self.install_button.connect("clicked", lambda _button: self._install())
+        self.controller_group.set_header_suffix(self.install_button)
 
         self.checks_group = Adw.PreferencesGroup(title=_("Compatibility"), description=_("Checked on this computer now."))
         refresh = Gtk.Button(label=_("Check again"), valign=Gtk.Align.CENTER)
@@ -225,9 +230,21 @@ class TouchControls:
         self.summary_row.set_title(_("Ready to play") if ready else _("Not ready yet"))
         set_row_icon(self.summary_row, "emblem-ok-symbolic" if ready else "dialog-warning-symbolic")
         controller = facts.controller
+        self.install_button.set_visible(not controller.installed)
         usable = controller.installed and (not controller.running or controller.supports_remote_touch)
         for key in ("open", "close", "edit", "release"):
             self.buttons[key].set_sensitive(usable)
+
+    def _install(self) -> None:
+        from .dependency_installer import InstallDialog
+
+        dialog = InstallDialog(
+            ("big_keyboard",),
+            title=_("Let's get this computer ready"),
+            description=_("For the on-screen controller, Big Remote Play installs one more program after asking for your password once."),
+            on_ready=self.refresh,
+        )
+        dialog.present(self.dialog or self.mode_row)
 
     # ── the controller ─────────────────────────────────────────────────────
     def run_action(self, action: str) -> None:

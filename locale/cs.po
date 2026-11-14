@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-05 19:19+0000\n"
+"POT-Creation-Date: 2026-11-14 12:08+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Czech\n"
@@ -1582,7 +1582,7 @@ msgstr ""
 msgid "Big Remote Play: sound sent to the other computer"
 msgstr "Big Remote Play: zvuk odesílaný do druhého počítače"
 
-#: src/big_remote_play/ui/touch_controls.py:253
+#: src/big_remote_play/ui/touch_controls.py:268
 msgid "Big WM Virtual Keyboard did not start"
 msgstr "Big WM Virtual Keyboard se nespustil"
 
@@ -1807,7 +1807,7 @@ msgstr "Pozor"
 #: src/big_remote_play/ui/remote_connection.py:51
 #: src/big_remote_play/ui/remote_connection.py:57
 #: src/big_remote_play/ui/support_center.py:152
-#: src/big_remote_play/ui/touch_controls.py:136
+#: src/big_remote_play/ui/touch_controls.py:141
 #: src/big_remote_play/ui/zerotier_join.py:103
 msgid "Check again"
 msgstr "Zkontrolovat znovu"
@@ -1899,7 +1899,7 @@ msgstr "Zkontrolujte tento počítač nebo vyberte problém a zjistěte, co zkus
 msgid "Check your internet connection and try again."
 msgstr "Zkontrolujte připojení k internetu a zkuste to znovu."
 
-#: src/big_remote_play/ui/touch_controls.py:135
+#: src/big_remote_play/ui/touch_controls.py:140
 msgid "Checked on this computer now."
 msgstr "Zkontrolováno nyní na tomto počítači."
 
@@ -1996,8 +1996,8 @@ msgstr "Kontrola připojení k internetu…"
 #: src/big_remote_play/ui/remote_connection.py:444
 #: src/big_remote_play/ui/service_status_card.py:51
 #: src/big_remote_play/ui/task_activity.py:81
-#: src/big_remote_play/ui/touch_controls.py:139
-#: src/big_remote_play/ui/touch_controls.py:206
+#: src/big_remote_play/ui/touch_controls.py:144
+#: src/big_remote_play/ui/touch_controls.py:209
 msgid "Checking…"
 msgstr "Kontroluje se…"
 
@@ -2267,7 +2267,7 @@ msgstr "Příkaz pro vlastníka serveru"
 msgid "Common problems"
 msgstr "Časté problémy"
 
-#: src/big_remote_play/ui/touch_controls.py:135
+#: src/big_remote_play/ui/touch_controls.py:140
 msgid "Compatibility"
 msgstr "Kompatibilita"
 
@@ -2883,7 +2883,7 @@ msgstr "Kopírovat do schránky: {name}"
 msgid "Correct colors of HDR screens"
 msgstr "Opravit barvy obrazovek s HDR"
 
-#: src/big_remote_play/ui/touch_controls.py:212
+#: src/big_remote_play/ui/touch_controls.py:215
 #, python-brace-format
 msgid "Could not check: {error}"
 msgstr "Nelze zkontrolovat: {error}"
@@ -2961,7 +2961,7 @@ msgstr "Konfiguraci serveru nelze uložit."
 msgid "Could not update the game library. Existing games were preserved."
 msgstr "Knihovnu her nelze aktualizovat. Stávající hry byly zachovány."
 
-#: src/big_remote_play/ui/touch_controls.py:262
+#: src/big_remote_play/ui/touch_controls.py:277
 #, python-brace-format
 msgid "Could not use the on-screen controller: {error}"
 msgstr "Nelze použít ovladač na obrazovce: {error}"
@@ -3463,6 +3463,10 @@ msgstr ""
 #: src/big_remote_play/ui/controls_help.py:78
 msgid "Drag two fingers up or down"
 msgstr "Tažení dvěma prsty nahoru nebo dolů"
+
+#: src/big_remote_play/utils/dependencies.py:57
+msgid "Draws a controller on the shared screen that takes a phone's fingers."
+msgstr "Kreslí na sdílenou obrazovku ovladač, který přijímá prsty z telefonu."
 
 #: src/big_remote_play/ui/history_dialog.py:29
 msgid "Duration unknown"
@@ -4079,6 +4083,14 @@ msgstr "Pro hry, které nejsou v seznamu, například emulátory."
 #: src/big_remote_play/ui/zerotier_join.py:214
 msgid "For the network owner: opens ZeroTier Central in the browser."
 msgstr "Pro vlastníka sítě: otevře ZeroTier Central v prohlížeči."
+
+#: src/big_remote_play/ui/touch_controls.py:244
+msgid ""
+"For the on-screen controller, Big Remote Play installs one more program "
+"after asking for your password once."
+msgstr ""
+"Pro ovladač na obrazovce nainstaluje Big Remote Play ještě jeden program "
+"poté, co se jednou zeptá na vaše heslo."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 333
@@ -4959,6 +4971,7 @@ msgstr "Vstup, Síť a Přístup"
 #: src/big_remote_play/ui/network_common.py:198
 #: src/big_remote_play/ui/remote_connection.py:67
 #: src/big_remote_play/ui/remote_connection.py:537
+#: src/big_remote_play/ui/touch_controls.py:135
 msgid "Install"
 msgstr "Nainstalovat"
 
@@ -5559,6 +5572,7 @@ msgstr "Vytvořme zabezpečené připojení"
 
 #: src/big_remote_play/ui/guided_setup.py:178
 #: src/big_remote_play/ui/main_window.py:1240
+#: src/big_remote_play/ui/touch_controls.py:243
 msgid "Let's get this computer ready"
 msgstr "Pojďme tento počítač připravit"
 
@@ -5907,7 +5921,7 @@ msgstr "Moonlight nebyl nalezen"
 msgid "Moonlight on a computer"
 msgstr "Moonlight na počítači"
 
-#: src/big_remote_play/ui/touch_controls.py:144
+#: src/big_remote_play/ui/touch_controls.py:149
 msgid "Moonlight on the phone"
 msgstr "Moonlight v telefonu"
 
@@ -5927,7 +5941,7 @@ msgstr ""
 "Moonlight páruje jen tehdy, když nikdo nehraje. Pokud někdo hraje, nejprve "
 "ukončete stream pro všechny."
 
-#: src/big_remote_play/ui/touch_controls.py:147
+#: src/big_remote_play/ui/touch_controls.py:152
 msgid "Moonlight's on-screen controls"
 msgstr "Ovládání na obrazovce v Moonlight"
 
@@ -6068,7 +6082,7 @@ msgstr ""
 "Potřeba jen pro hraní her jiného počítače zde. Ke sdílení tohoto počítače "
 "není potřeba."
 
-#: src/big_remote_play/ui/touch_controls.py:153
+#: src/big_remote_play/ui/touch_controls.py:157
 msgid ""
 "Needs a Moonlight that sends touch; the official Android app does not yet. "
 "Install Moonlight Touch, the Big Remote Play build, and turn on its setting "
@@ -6559,7 +6573,7 @@ msgstr "Nenainstalováno"
 msgid "Not now"
 msgstr "Teď ne"
 
-#: src/big_remote_play/ui/touch_controls.py:227
+#: src/big_remote_play/ui/touch_controls.py:230
 msgid "Not ready yet"
 msgstr "Ještě není připraveno"
 
@@ -6906,7 +6920,7 @@ msgstr ""
 msgid "One component is needed"
 msgstr "Je potřeba jedna součást"
 
-#: src/big_remote_play/ui/touch_controls.py:156
+#: src/big_remote_play/ui/touch_controls.py:159
 msgid "One controller at a time"
 msgstr "Jeden ovladač najednou"
 
@@ -7812,7 +7826,7 @@ msgstr "Připraveno k připojení"
 
 #: src/big_remote_play/ui/provider_page.py:109
 #: src/big_remote_play/ui/provider_page.py:115
-#: src/big_remote_play/ui/touch_controls.py:227
+#: src/big_remote_play/ui/touch_controls.py:230
 msgid "Ready to play"
 msgstr "Připraveno ke hraní"
 
@@ -11323,7 +11337,7 @@ msgstr ""
 msgid "This computer's controller comes first"
 msgstr "Ovladač tohoto počítače má přednost"
 
-#: src/big_remote_play/ui/touch_controls.py:151
+#: src/big_remote_play/ui/touch_controls.py:156
 msgid "This computer's controller on the phone"
 msgstr "Ovladač tohoto počítače v telefonu"
 
@@ -11662,7 +11676,7 @@ msgid "Today at {time}"
 msgstr "Dnes v {time}"
 
 #: src/big_remote_play/ui/host_view.py:1316
-#: src/big_remote_play/ui/touch_controls.py:167
+#: src/big_remote_play/ui/touch_controls.py:170
 msgid "Touch controls"
 msgstr "Dotykové ovládání"
 
@@ -12600,7 +12614,7 @@ msgstr ""
 "Firewall IPv6 ve směrovači však ve výchozím stavu blokuje příchozí "
 "připojení; Big Remote Play jej nikdy nemění."
 
-#: src/big_remote_play/ui/touch_controls.py:156
+#: src/big_remote_play/ui/touch_controls.py:159
 msgid ""
 "With both, the game sees two controllers. Close the one you are not using."
 msgstr "S oběma hra vidí dva ovladače. Zavřete ten, který nepoužíváte."
@@ -12633,7 +12647,7 @@ msgstr "Bez něj se členové schvalují na webu ZeroTier."
 msgid "Working…"
 msgstr "Probíhá…"
 
-#: src/big_remote_play/ui/touch_controls.py:148
+#: src/big_remote_play/ui/touch_controls.py:153
 msgid ""
 "Works with the official Moonlight: turn on Show on-screen controls in its "
 "settings. The buttons are drawn on the phone and several work at once."

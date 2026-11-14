@@ -28,7 +28,8 @@ Estados de `remote-touch-status`: `off`, `idle` (controle fechado),
 | `src/big_remote_play/host/input_priority.py` | `classify(..., pause_touch=False)` ignora touchscreen e caneta do Sunshine; a especificação do helper ganhou `"touch"` (ausente = comportamento antigo). |
 | `src/big_remote_play/ui/input_priority.py` | `set_pause_touch()`; reinicia o helper quando a regra muda. |
 | `usr/share/big-remote-play/scripts/input-priority-helper.sh` | Comentário: o helper aceita também a regra do toque. |
-| `locale/*.po`, `usr/share/locale/*/LC_MESSAGES/*.mo` | 51 mensagens novas, traduzidas nos 32 catálogos. |
+| `src/big_remote_play/utils/dependencies.py` | componente `big_keyboard` no instalador compartilhado (botão **Instalar** na folha). |
+| `locale/*.po`, `usr/share/locale/*/LC_MESSAGES/*.mo` | 53 mensagens novas, traduzidas nos 32 catálogos. |
 | `tests/test_touch_control.py`, `tests/test_touch_controls_ui.py` (novos), `tests/test_input_priority*.py` | Comportamento dos modos, verificações, cliente D-Bus (barramento falso), UI e helper. |
 
 ## Moonlight Touch — `~/Documentos/Git/moonlight-android-touch`, branch `brp/native-touch`

@@ -14,7 +14,8 @@
   modo no Sunshine (`native_pen_touch`), abertura automática quando um
   dispositivo começa a jogar, liberação de botões quando ele sai, e *Host has
   priority* que não pausa mais o toque quando ele é um controle. 51 textos
-  traduzidos nos 32 idiomas.
+  traduzidos nos 32 idiomas. O Big WM Virtual Keyboard, se faltar, é instalado
+  pelo instalador do próprio app (botão **Instalar**).
 - **Moonlight Touch** (fork GPL-3.0 do Moonlight Android 12.2, app separado):
   envio de toque nativo corrigido (cancelamentos, 3 dedos, gestos de borda,
   `CANCEL_ALL` em foco/saída/início). **Código pronto, APK não compilado.**
@@ -46,7 +47,7 @@ Nada foi enviado a servidores remotos (sem push), nada foi mesclado no
 ## Testes automatizados
 
 - Big Keyboard: 6/6 suítes (inclui `rtouch`, sensível a mutações).
-- Big Remote Play: suíte completa com Xvfb + D-Bus — **1791 passaram, 0
+- Big Remote Play: suíte completa com Xvfb + D-Bus — **1792 passaram, 0
   falharam** (incluindo os novos testes de toque e o de links da
   documentação); `make lint`, `make typecheck` (0 erros), `make check-i18n`
   (0 achados), `make metadata-check` passam.

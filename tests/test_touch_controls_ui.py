@@ -149,3 +149,21 @@ def test_checks_are_shown_in_words_with_a_summary(touch, monkeypatch) -> None:
     titles = [row.get_title() for row in touch._check_rows]
     assert "Touch from the phone (Sunshine)" in titles and "Virtual controller" in titles
     assert touch.summary_row.get_title() == "Ready to play"
+
+
+def test_a_missing_controller_is_offered_through_the_shared_installer(ui, monkeypatch) -> None:
+    from big_remote_play.utils import dependencies
+
+    class Missing(FakeKeyboard):
+        def status(self):
+            return backend.ControllerStatus(installed=False)
+
+    monkeypatch.setattr(backend, "sunshine_touchscreens", lambda *a, **k: [])
+    widget = TouchControls(on_changed=lambda: None, context=lambda: {"sunshine_config": {}}, keyboard_factory=Missing)
+    widget.load({"touch_mode": "gamepad"})
+    widget.refresh()
+    assert wait(lambda: widget.install_button.get_visible())
+    assert not widget.buttons["open"].get_sensitive()
+    component = dependencies.COMPONENTS["big_keyboard"]
+    assert component.package == "big-keyboard" and component.executables == ("big-keyboard",)
+    widget.close()

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-05 19:19+0000\n"
+"POT-Creation-Date: 2026-11-14 12:08+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Korean\n"
@@ -1569,7 +1569,7 @@ msgstr ""
 msgid "Big Remote Play: sound sent to the other computer"
 msgstr "Big Remote Play: 다른 컴퓨터로 보내는 소리"
 
-#: src/big_remote_play/ui/touch_controls.py:253
+#: src/big_remote_play/ui/touch_controls.py:268
 msgid "Big WM Virtual Keyboard did not start"
 msgstr "Big WM Virtual Keyboard를 시작하지 못했습니다"
 
@@ -1795,7 +1795,7 @@ msgstr "확인 필요"
 #: src/big_remote_play/ui/remote_connection.py:51
 #: src/big_remote_play/ui/remote_connection.py:57
 #: src/big_remote_play/ui/support_center.py:152
-#: src/big_remote_play/ui/touch_controls.py:136
+#: src/big_remote_play/ui/touch_controls.py:141
 #: src/big_remote_play/ui/zerotier_join.py:103
 msgid "Check again"
 msgstr "다시 확인"
@@ -1887,7 +1887,7 @@ msgstr "이 컴퓨터를 확인하거나, 문제를 선택해 시도할 방법�
 msgid "Check your internet connection and try again."
 msgstr "인터넷 연결을 확인하고 다시 시도하세요."
 
-#: src/big_remote_play/ui/touch_controls.py:135
+#: src/big_remote_play/ui/touch_controls.py:140
 msgid "Checked on this computer now."
 msgstr "지금 이 컴퓨터에서 확인했습니다."
 
@@ -1983,8 +1983,8 @@ msgstr "인터넷 연결 확인 중…"
 #: src/big_remote_play/ui/remote_connection.py:444
 #: src/big_remote_play/ui/service_status_card.py:51
 #: src/big_remote_play/ui/task_activity.py:81
-#: src/big_remote_play/ui/touch_controls.py:139
-#: src/big_remote_play/ui/touch_controls.py:206
+#: src/big_remote_play/ui/touch_controls.py:144
+#: src/big_remote_play/ui/touch_controls.py:209
 msgid "Checking…"
 msgstr "확인 중…"
 
@@ -2250,7 +2250,7 @@ msgstr "서버 소유자에게 보낼 명령"
 msgid "Common problems"
 msgstr "자주 발생하는 문제"
 
-#: src/big_remote_play/ui/touch_controls.py:135
+#: src/big_remote_play/ui/touch_controls.py:140
 msgid "Compatibility"
 msgstr "호환성"
 
@@ -2865,7 +2865,7 @@ msgstr "{name}을(를) 클립보드에 복사"
 msgid "Correct colors of HDR screens"
 msgstr "HDR 화면 색상 보정"
 
-#: src/big_remote_play/ui/touch_controls.py:212
+#: src/big_remote_play/ui/touch_controls.py:215
 #, python-brace-format
 msgid "Could not check: {error}"
 msgstr "확인할 수 없습니다: {error}"
@@ -2940,7 +2940,7 @@ msgstr "서버 설정을 저장하지 못했습니다."
 msgid "Could not update the game library. Existing games were preserved."
 msgstr "게임 라이브러리를 업데이트하지 못했습니다. 기존 게임은 보존되었습니다."
 
-#: src/big_remote_play/ui/touch_controls.py:262
+#: src/big_remote_play/ui/touch_controls.py:277
 #, python-brace-format
 msgid "Could not use the on-screen controller: {error}"
 msgstr "화면 컨트롤러를 사용할 수 없습니다: {error}"
@@ -3433,6 +3433,10 @@ msgstr ""
 #: src/big_remote_play/ui/controls_help.py:78
 msgid "Drag two fingers up or down"
 msgstr "두 손가락으로 위아래로 끌기"
+
+#: src/big_remote_play/utils/dependencies.py:57
+msgid "Draws a controller on the shared screen that takes a phone's fingers."
+msgstr "공유 화면에 휴대폰의 손가락을 받는 컨트롤러를 그립니다."
 
 #: src/big_remote_play/ui/history_dialog.py:29
 msgid "Duration unknown"
@@ -4050,6 +4054,14 @@ msgstr "에뮬레이터처럼 목록에 없는 게임용입니다."
 #: src/big_remote_play/ui/zerotier_join.py:214
 msgid "For the network owner: opens ZeroTier Central in the browser."
 msgstr "네트워크 소유자용: 브라우저에서 ZeroTier Central을 엽니다."
+
+#: src/big_remote_play/ui/touch_controls.py:244
+msgid ""
+"For the on-screen controller, Big Remote Play installs one more program "
+"after asking for your password once."
+msgstr ""
+"화면 컨트롤러를 위해 Big Remote Play가 비밀번호를 한 번 물은 뒤 프로그램을 하"
+"나 더 설치합니다."
 
 # File: big-remote-play/usr/share/big-remote-play/ui/sunshine_preferences.py,
 # line: 335
@@ -4917,6 +4929,7 @@ msgstr "입력, 네트워크, 및 접근"
 #: src/big_remote_play/ui/network_common.py:198
 #: src/big_remote_play/ui/remote_connection.py:67
 #: src/big_remote_play/ui/remote_connection.py:537
+#: src/big_remote_play/ui/touch_controls.py:135
 msgid "Install"
 msgstr "설치"
 
@@ -5513,6 +5526,7 @@ msgstr "안전한 연결을 만들어 봅시다"
 
 #: src/big_remote_play/ui/guided_setup.py:178
 #: src/big_remote_play/ui/main_window.py:1240
+#: src/big_remote_play/ui/touch_controls.py:243
 msgid "Let's get this computer ready"
 msgstr "이 컴퓨터를 준비해 볼까요"
 
@@ -5858,7 +5872,7 @@ msgstr "Moonlight를 찾을 수 없습니다."
 msgid "Moonlight on a computer"
 msgstr "컴퓨터용 Moonlight"
 
-#: src/big_remote_play/ui/touch_controls.py:144
+#: src/big_remote_play/ui/touch_controls.py:149
 msgid "Moonlight on the phone"
 msgstr "휴대폰의 Moonlight"
 
@@ -5876,7 +5890,7 @@ msgstr ""
 "Moonlight는 아무도 플레이하지 않을 때만 페어링합니다. 누군가 플레이 중이면 먼"
 "저 모두의 스트림을 끝내세요."
 
-#: src/big_remote_play/ui/touch_controls.py:147
+#: src/big_remote_play/ui/touch_controls.py:152
 msgid "Moonlight's on-screen controls"
 msgstr "Moonlight 화면 컨트롤"
 
@@ -6016,7 +6030,7 @@ msgstr ""
 "다른 컴퓨터의 게임을 여기서 플레이할 때만 필요합니다. 이 컴퓨터를 공유하는 데"
 "는 필요하지 않습니다."
 
-#: src/big_remote_play/ui/touch_controls.py:153
+#: src/big_remote_play/ui/touch_controls.py:157
 msgid ""
 "Needs a Moonlight that sends touch; the official Android app does not yet. "
 "Install Moonlight Touch, the Big Remote Play build, and turn on its setting "
@@ -6507,7 +6521,7 @@ msgstr "설치 안 됨"
 msgid "Not now"
 msgstr "나중에"
 
-#: src/big_remote_play/ui/touch_controls.py:227
+#: src/big_remote_play/ui/touch_controls.py:230
 msgid "Not ready yet"
 msgstr "아직 준비되지 않음"
 
@@ -6849,7 +6863,7 @@ msgstr ""
 msgid "One component is needed"
 msgstr "구성 요소 하나가 필요합니다"
 
-#: src/big_remote_play/ui/touch_controls.py:156
+#: src/big_remote_play/ui/touch_controls.py:159
 msgid "One controller at a time"
 msgstr "한 번에 컨트롤러 하나"
 
@@ -7763,7 +7777,7 @@ msgstr "연결 준비됨"
 
 #: src/big_remote_play/ui/provider_page.py:109
 #: src/big_remote_play/ui/provider_page.py:115
-#: src/big_remote_play/ui/touch_controls.py:227
+#: src/big_remote_play/ui/touch_controls.py:230
 msgid "Ready to play"
 msgstr "플레이 준비됨"
 
@@ -11268,7 +11282,7 @@ msgstr ""
 msgid "This computer's controller comes first"
 msgstr "이 컴퓨터의 컨트롤러가 먼저 인식됩니다"
 
-#: src/big_remote_play/ui/touch_controls.py:151
+#: src/big_remote_play/ui/touch_controls.py:156
 msgid "This computer's controller on the phone"
 msgstr "휴대폰에서 이 컴퓨터의 컨트롤러 사용"
 
@@ -11605,7 +11619,7 @@ msgid "Today at {time}"
 msgstr "오늘 {time}"
 
 #: src/big_remote_play/ui/host_view.py:1316
-#: src/big_remote_play/ui/touch_controls.py:167
+#: src/big_remote_play/ui/touch_controls.py:170
 msgid "Touch controls"
 msgstr "터치 컨트롤"
 
@@ -12529,7 +12543,7 @@ msgstr ""
 "다. 다만 라우터의 IPv6 방화벽은 기본적으로 들어오는 연결을 차단하며, Big "
 "Remote Play는 이를 절대 변경하지 않습니다."
 
-#: src/big_remote_play/ui/touch_controls.py:156
+#: src/big_remote_play/ui/touch_controls.py:159
 msgid ""
 "With both, the game sees two controllers. Close the one you are not using."
 msgstr ""
@@ -12562,7 +12576,7 @@ msgstr "이것이 없으면 멤버 승인은 ZeroTier 웹사이트에서 합니�
 msgid "Working…"
 msgstr "작업 중…"
 
-#: src/big_remote_play/ui/touch_controls.py:148
+#: src/big_remote_play/ui/touch_controls.py:153
 msgid ""
 "Works with the official Moonlight: turn on Show on-screen controls in its "
 "settings. The buttons are drawn on the phone and several work at once."
