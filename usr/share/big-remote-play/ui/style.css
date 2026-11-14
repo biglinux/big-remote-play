@@ -1,314 +1,211 @@
-/* Big Remote Play. Native focus, text scale and controls remain with libadwaita.
- * A small radius/spacing vocabulary, not gradients behind every piece of prose.
+/* Big Remote Play — base stylesheet.
+ *
+ * The visual language follows AshyWall and libadwaita: native surfaces, one
+ * accent, quiet hover, the system font and text scale. Libadwaita owns focus
+ * rings, buttons, rows, switches and colours; this file only gives the app's
+ * own containers the same card vocabulary. No gradients, glows or decorative
+ * shadows.
+ *
+ * Tokens (Adwaita named colours, so light, dark and high contrast follow):
+ *   surface      @card_bg_color       cards, lists, panels
+ *   hover        alpha(currentColor, 0.05)   a clickable surface under the pointer
+ *   pressed      alpha(currentColor, 0.09)
+ *   accent       @accent_color / @accent_bg_color   selection and the primary action
+ *   radius       12px cards and lists · 8px small chips · 9999px pills
+ *   spacing      12 / 18 / 24px (set in code through margins and spacing)
  */
-.welcome-page {
-    background-image: linear-gradient(145deg, alpha(@accent_bg_color, 0.045), transparent 62%);
+
+/* ── Cards: one surface for every container the app draws itself ───────── */
+.role-card, .session-hero, .network-hero, .brp-session-panel,
+.brp-pair-card, .brp-computer-card, .brp-empty, .brp-progress {
+    border-radius: 12px;
+    background-color: @card_bg_color;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 3%), 0 1px 3px 1px rgb(0 0 0 / 7%), 0 2px 6px 2px rgb(0 0 0 / 3%);
 }
-.welcome-hero {
-    padding: 26px 28px;
-    border: 1px solid alpha(@accent_bg_color, 0.18);
-    border-radius: 24px;
-    background-image: linear-gradient(120deg, alpha(#7759d9, 0.16), alpha(@accent_bg_color, 0.055) 70%, transparent);
+/* Home's brand header sits on the page itself, as AshyWall's pages do; the
+ * two choices below it are the only cards, because they are what you click. */
+.welcome-hero { padding: 12px 4px 4px; }
+.role-card { padding: 20px; }
+.session-hero, .network-hero, .brp-session-panel { padding: 20px; }
+.brp-pair-card { padding: 18px 20px; }
+.brp-computer-card { padding: 14px 16px; }
+.brp-empty { padding: 24px 20px; }
+.brp-progress { padding: 14px 16px; }
+.card.padded { padding: 18px 20px; }
+
+/* A note is information, not a surface to act on: a flat tinted block. */
+.brp-note {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background-color: alpha(@accent_bg_color, 0.08);
 }
-/* The logo carries its own colours; it only needs room. The guided start is
- * the one primary action of Home, a little larger than routine buttons. */
-.brp-home-logo { margin: 4px 8px; }
-.brp-hero-cta { padding: 10px 20px; }
-/* Major choices (Home and Guided setup). One 1px boundary in every state;
- * the keyboard focus ring is separate from it and appears only for keyboard
- * focus (:focus-visible). Plain :focus also matches the card a page focuses
- * for you, which drew a permanent accent frame after every mouse click. */
-.role-card {
-    padding: 22px;
-    border-radius: 20px;
-    border: 1px solid alpha(@window_fg_color, 0.1);
-    background: @card_bg_color;
-    box-shadow: 0 1px 3px alpha(#000000, 0.06);
+
+/* ── Clickable cards (Home roles, guided choices, computers) ─────────────── */
+.role-card, .brp-computer-card {
     outline: 0 solid transparent;
-    outline-offset: 3px;
-    transition: background-color 180ms ease-out, border-color 180ms ease-out, box-shadow 180ms ease-out, outline-color 180ms ease-out;
+    outline-offset: 2px;
+    transition: background-color 150ms ease-out;
 }
-.role-card.role-host { border-color: alpha(@accent_bg_color, 0.26); }
-.role-card.role-guest { border-color: alpha(@success_bg_color, 0.26); }
-.role-card:hover {
-    border-color: alpha(@accent_bg_color, 0.42);
-    background: mix(@card_bg_color, @accent_bg_color, 0.05); /* NOSONAR: mix() is a GTK CSS function */
-    box-shadow: 0 2px 8px alpha(#000000, 0.07);
+.role-card:hover, .brp-computer-card:hover {
+    background-image: image(alpha(currentColor, 0.05));
 }
-.role-card:active {
-    background: mix(@card_bg_color, @accent_bg_color, 0.1); /* NOSONAR: mix() is a GTK CSS function */
-    box-shadow: none;
+.role-card:active, .brp-computer-card:active {
+    background-image: image(alpha(currentColor, 0.09));
     transition-duration: 80ms;
 }
-.role-card:focus-visible {
-    outline: 2px solid alpha(@accent_color, 0.6);
-    outline-offset: 3px;
+/* Keyboard focus only (:focus-visible): a page that focuses a card for you
+ * must not leave a permanent frame after a mouse click. */
+.role-card:focus-visible, .brp-computer-card:focus-visible {
+    outline: 2px solid alpha(@accent_color, 0.5);
 }
-.role-card:disabled, .role-card:disabled:hover {
-    background: alpha(@card_bg_color, 0.5);
-    border-color: alpha(@window_fg_color, 0.06);
-    box-shadow: none;
+.role-card:disabled, .role-card:disabled:hover, .brp-computer-card:disabled {
+    background-image: none;
+    opacity: 0.6;
 }
-.role-card .brp-choice-arrow { opacity: 0.55; }
-.role-card:hover .brp-choice-arrow { opacity: 0.9; }
+/* The computer being connected stays readable while the others wait. */
+.brp-computer-card.selected, .brp-computer-card.selected:disabled {
+    opacity: 1;
+    box-shadow: inset 0 0 0 2px @accent_bg_color;
+}
+/* A computer that does not answer: its icon goes neutral (the card also says
+ * Offline), so ready and unavailable read apart at a glance. */
+.brp-computer-card.offline .brp-icon-tile { color: alpha(currentColor, 0.6); background-color: alpha(currentColor, 0.06); }
+.role-card .brp-choice-arrow, .brp-computer-card .brp-choice-arrow { opacity: 0.5; }
+.role-card:hover .brp-choice-arrow, .brp-computer-card:hover .brp-choice-arrow { opacity: 0.9; }
+.role-card label.dim-label { font-weight: 400; }
+
+/* ── Icons ───────────────────────────────────────────────────────────────── */
+/* A flat accent chip marks a major choice or a page heading. Routine rows use
+ * plain monochrome glyphs (.brp-row-icon) that inherit the text colour. */
 .brp-icon-tile, .hero-icon-chip, .icon-chip {
-    border-radius: 14px;
+    border-radius: 12px;
     color: @accent_color;
-    background-image: linear-gradient(135deg, alpha(@accent_bg_color, 0.17), alpha(@accent_bg_color, 0.07));
-    box-shadow: inset 0 0 0 1px alpha(@accent_bg_color, 0.15);
+    background-color: alpha(@accent_bg_color, 0.12);
 }
-.brp-icon-tile.guest { color: @success_color; background: alpha(@success_bg_color, 0.14); box-shadow: inset 0 0 0 1px alpha(@success_bg_color, 0.16); }
+.brp-icon-tile.guest { color: @accent_color; background-color: alpha(@accent_bg_color, 0.12); }
 .hero-icon-chip { min-width: 48px; min-height: 48px; }
 .icon-chip { min-width: 32px; min-height: 32px; }
-.brp-intro { padding: 8px 0; }
-.session-hero, .network-hero {
-    padding: 20px;
-    border-radius: 20px;
-    border: 1px solid alpha(@borders, 0.5);
-    background-image: linear-gradient(110deg, alpha(@accent_bg_color, 0.09), alpha(@card_bg_color, 0.4));
-}
-.brp-session-panel {
-    padding: 20px;
-    border-radius: 20px;
-    border: 1px solid alpha(@borders, 0.6);
-    background: alpha(@card_bg_color, 0.5);
-}
-.brp-primary { min-height: 44px; border-radius: 12px; }
-.brp-empty { padding: 24px 20px; border-radius: 20px; background: alpha(@card_bg_color, 0.55); border: 1px solid alpha(@borders, 0.55); }
-.brp-note { padding: 14px 16px; border-radius: 14px; background: alpha(@accent_bg_color, 0.065); border: 1px solid alpha(@accent_bg_color, 0.14); }
-.brp-progress { padding: 14px 16px; border-radius: 14px; background: @card_bg_color; }
+.brp-row-icon { color: inherit; }
+.brp-home-logo { margin: 0 4px; }
+
+/* ── Actions ─────────────────────────────────────────────────────────────── */
+/* The one action of a state (start/stop sharing, guided setup) is a native
+ * suggested or destructive button, only taller. */
+.brp-primary { min-height: 40px; border-radius: 10px; }
+.brp-hero-action { min-height: 44px; border-radius: 10px; padding: 0 24px; }
+.brp-hero-cta { min-height: 40px; padding: 0 22px; border-radius: 10px; }
+
+/* ── Text blocks and small pieces ────────────────────────────────────────── */
+.brp-intro { padding: 4px 0 8px; }
 .brp-slider-control { padding: 0 12px 12px; }
-.brp-terminal { border-radius: 12px; padding: 8px; background: @view_bg_color; }
+.brp-terminal { border-radius: 12px; padding: 8px; background-color: @view_bg_color; }
 .brp-code-entry text { font-family: monospace; }
-/* Share → Overview. The start/stop action is the largest control of the page;
- * the pair card keeps the routine PIN in view with one accent line. */
-.brp-hero-action { min-height: 52px; border-radius: 14px; font-size: 1.1em; font-weight: 700;
-    transition: background-color 200ms ease-out, color 200ms ease-out; }
-.brp-pair-card {
-    padding: 18px 20px;
-    border-radius: 20px;
-    border: 1px solid alpha(@accent_bg_color, 0.22);
-    background: alpha(@card_bg_color, 0.65);
+.brp-metric { padding: 12px; border-radius: 10px; background-color: alpha(currentColor, 0.04); }
+.brp-capture-card { padding: 16px; border-radius: 12px; }
+.brp-capture-card flowboxchild { padding: 0; }
+.brp-monitor { padding: 12px; border-radius: 12px; }
+.brp-monitor-identifier { background-color: @window_bg_color; color: @window_fg_color; }
+.brp-monitor-identifier-number { font-size: 8em; font-weight: 900; }
+.brp-monitor-identifier-name { font-size: 1.5em; font-weight: 700; }
+.brp-step-number {
+    min-width: 24px; min-height: 24px; border-radius: 9999px; font-weight: 700;
+    color: @accent_color; background-color: alpha(@accent_bg_color, 0.12);
 }
 /* One field drawn as four boxes: wide spacing between the digits. */
-.brp-pin-entry { min-height: 48px; border-radius: 12px; }
+.brp-pin-entry { min-height: 48px; border-radius: 10px; }
 .brp-pin-entry text { font-family: monospace; font-size: 1.6em; font-weight: 700; letter-spacing: 0.45em; }
-.brp-step-number { min-width: 24px; min-height: 24px; border-radius: 9999px; font-weight: 700;
-    color: @accent_color; background: alpha(@accent_bg_color, 0.12); }
-/* Rounded backing AND row corners. Native lists still own focus/hover behavior. */
-.brp-boxed, .brp-window list.boxed-list, .brp-dialog list.boxed-list { border-radius: 16px; }
-.brp-boxed > row:first-child, .brp-window list.boxed-list > row:first-child, .brp-dialog list.boxed-list > row:first-child { border-top-left-radius: 16px; border-top-right-radius: 16px; }
-.brp-boxed > row:last-child, .brp-window list.boxed-list > row:last-child, .brp-dialog list.boxed-list > row:last-child { border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
 .context-bar { padding: 5px 12px 8px; }
-.sidebar-content { padding-bottom: 2px; }
-.navigation-sidebar > row { border-radius: 12px; margin-bottom: 4px; }
-.readiness-pill, .state-pill { padding: 4px 10px; border-radius: 9999px; }
-.readiness-pill { color: @window_fg_color; background: alpha(@window_fg_color, 0.06); }
-.readiness-pill.ready, .state-pill.online { color: @success_color; background: alpha(@success_bg_color, 0.13); }
-.readiness-pill.needs-setup { color: @warning_color; background: alpha(@warning_bg_color, 0.14); }
-/* Stopped is a normal state, not an error or a warning. */
-.state-pill.offline { color: @window_fg_color; background: alpha(@window_fg_color, 0.07); }
-.state-pill.attention { color: @warning_color; background: alpha(@warning_bg_color, 0.14); }
+
+/* ── Lists ───────────────────────────────────────────────────────────────── */
+/* Libadwaita's boxed lists already carry the 12px card radius; these classes
+ * keep it in themes that flatten the backing node. */
+.brp-boxed, .brp-window list.boxed-list, .brp-dialog list.boxed-list,
+.brp-rounded-group list.boxed-list { border-radius: 12px; }
+.brp-boxed > row:first-child, .brp-window list.boxed-list > row:first-child,
+.brp-dialog list.boxed-list > row:first-child, .brp-rounded-group list.boxed-list > row:first-child {
+    border-top-left-radius: 12px; border-top-right-radius: 12px;
+}
+.brp-boxed > row:last-child, .brp-window list.boxed-list > row:last-child,
+.brp-dialog list.boxed-list > row:last-child, .brp-rounded-group list.boxed-list > row:last-child {
+    border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
+}
+/* A device waiting for approval: noticeable without alarming. */
+.brp-request-group list.boxed-list { box-shadow: 0 0 0 2px alpha(@accent_bg_color, 0.55); }
+
+/* ── States in words ─────────────────────────────────────────────────────── */
+/* A pill repeats a state that is also written; colour never carries it alone. */
+.readiness-pill, .state-pill { padding: 3px 10px; border-radius: 9999px; font-weight: 600; }
+.readiness-pill, .state-pill.offline { color: alpha(currentColor, 0.8); background-color: alpha(currentColor, 0.07); }
+.readiness-pill.ready, .state-pill.online { color: @success_color; background-color: alpha(@success_bg_color, 0.12); }
+.readiness-pill.needs-setup, .state-pill.attention { color: @warning_color; background-color: alpha(@warning_bg_color, 0.14); }
 /* Starting, stopping or connecting: in progress, neither success nor a problem. */
-.state-pill.starting { color: @accent_color; background: alpha(@accent_bg_color, 0.12); }
-/* The task states in the sidebar: the same pills, sized for a navigation row. */
-.state-pill.brp-nav-state { padding: 1px 8px; font-weight: 600; }
+.state-pill.starting { color: @accent_color; background-color: alpha(@accent_bg_color, 0.12); }
+.state-pill.online image, .state-pill.attention image { opacity: 1; }
+.brp-quality-badge { padding: 2px 10px; }
 .status-dot { opacity: 0.55; }
 .status-dot.status-online { color: @success_color; opacity: 1; }
 .status-dot.status-offline { color: @warning_color; opacity: 1; }
-.card.padded { padding: 18px 20px; }
-.brp-metric { padding: 12px; border-radius: 12px; background: alpha(@window_fg_color, 0.035); }
-.brp-capture-card { padding: 16px; border-radius: 16px; }
-.brp-capture-card flowboxchild { padding: 0; }
-.brp-monitor { padding: 12px; border-radius: 16px; }
-.brp-monitor-identifier {
-    background: @window_bg_color;
-    color: @window_fg_color;
-}
-.brp-monitor-identifier-number {
-    font-size: 8em;
-    font-weight: 900;
-}
-.brp-monitor-identifier-name {
-    font-size: 1.5em;
-    font-weight: 700;
-}
-/* Do not make users trade accessibility for the custom visual treatment. */
-.high-contrast .role-card, .high-contrast .welcome-hero, .high-contrast .brp-computer-card,
-.high-contrast .session-hero, .high-contrast .brp-pair-card,
-.high-contrast .brp-empty, .high-contrast .brp-session-panel, .high-contrast .brp-note {
-    background-image: none;
-    background-color: @window_bg_color;
-    border: 2px solid @window_fg_color;
-    box-shadow: none;
-}
-.high-contrast .dim-label { opacity: 1; }
-.high-contrast .state-pill.brp-nav-state, .high-contrast .brp-capture-card .brp-metric { box-shadow: inset 0 0 0 1px @window_fg_color; }
-.high-contrast .role-card:focus-visible {
-    outline: 2px solid @window_fg_color;
-    outline-offset: 3px;
-    box-shadow: none;
-}
-.high-contrast .role-card .brp-choice-arrow { opacity: 1; }
+.brp-check-icon.success { color: @success_color; }
+.brp-check-icon.warning { color: @warning_color; }
+.brp-connection-card { min-height: 48px; }
 
-.role-card label.dim-label { font-weight: 400; }
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+/* As in AshyWall: a native navigation list with section headings, the state
+ * of a task as quiet text at the end of its row (like a count), and the
+ * services as ordinary rows, not cards. */
+.brp-sidebar-heading { margin: 14px 12px 6px 22px; }
+.state-pill.brp-nav-state, .state-pill.brp-nav-state.offline {
+    padding: 0; background: none; font-weight: 400; color: alpha(currentColor, 0.55);
+}
+.state-pill.brp-nav-state.online { color: @success_color; }
+.state-pill.brp-nav-state.starting { color: @accent_color; }
+.state-pill.brp-nav-state.attention { color: @warning_color; }
+
+list.brp-service-list { background: none; }
+list.brp-service-list > row.brp-service-card {
+    min-height: 40px;
+    border-radius: 8px;
+    background: none;
+    outline: 0 solid transparent;
+    outline-offset: -2px;
+}
+list.brp-service-list > row.brp-service-card:hover { background-color: alpha(currentColor, 0.05); }
+list.brp-service-list > row.brp-service-card:active { background-color: alpha(currentColor, 0.09); }
+list.brp-service-list > row.brp-service-card:focus-visible { outline: 2px solid alpha(@accent_color, 0.5); }
+/* The service icon is a glyph like every sidebar icon, not a tile. */
+list.brp-service-list > row.brp-service-card .brp-icon-tile { background: none; color: inherit; }
+list.brp-service-list > row.brp-service-card .subtitle { opacity: 0.6; }
+.brp-service-state { color: alpha(currentColor, 0.4); }
+list.brp-service-list > row.brp-service-card.ready .brp-service-state,
+list.brp-service-list > row.brp-service-card.starting .brp-service-state { color: @accent_color; }
+list.brp-service-list > row.brp-service-card.active .brp-service-state { color: @success_color; }
+list.brp-service-list > row.brp-service-card.attention .brp-service-state { color: @warning_color; }
+list.brp-service-list > row.brp-service-card.error .brp-service-state { color: @error_color; }
+
 
 /* Content minimum, separate from the CSD window borders. */
 .brp-window { min-width: 360px; }
 
-/* Support and maintenance groups must keep the same rounded language as every
- * other boxed list, including themes that flatten the native backing node. */
-.brp-rounded-group list.boxed-list {
-    border-radius: 16px;
-}
-.brp-rounded-group list.boxed-list > row:first-child {
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-}
-.brp-rounded-group list.boxed-list > row:last-child {
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-}
-
-/* Icon hierarchy: native list/tab glyphs are monochrome and inherit the
- * foreground. Accent tiles are reserved for heroes and explicit major choices. */
-.brp-row-icon {
-    color: inherit;
-}
-
-/* Sidebar groups: Home · Share and Connect · Play over the internet. */
-.brp-nav-separator { margin: 6px 10px 10px; opacity: 0.6; }
-
-/* Live connection cards (Connect, Share → Connected now, internet page). */
-.brp-connection-card { min-height: 48px; }
-.brp-quality-badge { padding: 2px 10px; }
-.state-pill.online image, .state-pill.attention image { opacity: 1; }
-/* Guided setup: the easiest way to begin, one step above the two tasks. */
-.brp-guided-choice { padding: 18px 20px; }
-.brp-guided-choices { margin-top: 8px; }
-
-/* Installation checklist: the state is a word; the icon only repeats it. */
-.brp-check-icon.success { color: @success_color; }
-.brp-check-icon.warning { color: @warning_color; }
-
-/* Connect: one card per computer, two per line when there is room. */
-.brp-computer-card {
-    padding: 14px 16px;
-    border-radius: 16px;
-    border: 1px solid alpha(@window_fg_color, 0.1);
-    background: @card_bg_color;
-    box-shadow: 0 1px 3px alpha(#000000, 0.06);
-    outline: 0 solid transparent;
-    outline-offset: 2px;
-    transition: background-color 180ms ease-out, border-color 180ms ease-out;
-}
-.brp-computer-card:hover {
-    border-color: alpha(@accent_bg_color, 0.42);
-    background: mix(@card_bg_color, @accent_bg_color, 0.05); /* NOSONAR: mix() is a GTK CSS function */
-}
-.brp-computer-card:active { background: mix(@card_bg_color, @accent_bg_color, 0.1); transition-duration: 80ms; } /* NOSONAR: mix() is a GTK CSS function */
-.brp-computer-card:focus-visible { outline: 2px solid alpha(@accent_color, 0.6); outline-offset: 2px; }
-/* The computer being connected stays readable while the others wait. */
-.brp-computer-card.selected, .brp-computer-card.selected:disabled {
-    border-color: alpha(@accent_bg_color, 0.6);
-    background: mix(@card_bg_color, @accent_bg_color, 0.1); /* NOSONAR: mix() is a GTK CSS function */
-}
-.brp-computer-card:disabled { opacity: 0.75; }
-.brp-computer-card .brp-choice-arrow { opacity: 0.55; }
-.high-contrast .brp-computer-card:focus-visible { outline: 2px solid @window_fg_color; }
-.high-contrast .brp-computer-card.selected { border-width: 3px; }
-
-/* A device waiting for approval: noticeable without alarming. */
-.brp-request-group list.boxed-list {
-    box-shadow: 0 0 0 2px alpha(@accent_bg_color, 0.55);
-}
-.high-contrast .brp-request-group list.boxed-list { box-shadow: 0 0 0 2px @window_fg_color; }
-
-/* Service cards (sidebar of Share and Connect): the streaming component and
- * every secure-connection method. One card per service in every state; the
- * state changes the surface, the icon tile and the words, never the size.
- * Active is recognisable at a glance (accent surface, accent tile, check
- * icon); off is neutral but fully legible, not faded. */
-list.brp-service-list {
-    background: transparent;
-    box-shadow: none;
-}
-.brp-service-heading {
-    margin: 10px 4px 2px;
-    opacity: 0.75;
-}
-list.brp-service-list > row.brp-service-card {
-    margin: 4px 0;
-    border: 1px solid alpha(@window_fg_color, 0.09);
-    border-radius: 14px;
-    background: alpha(@card_bg_color, 0.75);
-    box-shadow: none;
-    outline: 0 solid transparent;
-    outline-offset: 1px;
-    transition: background-color 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out;
-}
-list.brp-service-list > row.brp-service-card.primary .title { font-weight: 700; }
-list.brp-service-list > row.brp-service-card:hover {
-    background: @card_bg_color;
-    border-color: alpha(@window_fg_color, 0.15);
-}
-list.brp-service-list > row.brp-service-card:active {
-    background: mix(@card_bg_color, @window_fg_color, 0.05); /* NOSONAR: mix() is a GTK CSS function */
-    transition-duration: 80ms;
-}
-list.brp-service-list > row.brp-service-card:focus-visible {
-    outline: 2px solid alpha(@accent_color, 0.6);
-    outline-offset: 1px;
-    box-shadow: none;
-}
-list.brp-service-list > row.brp-service-card .brp-icon-tile {
-    border-radius: 11px;
-    transition: background-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out;
-}
-/* Off, missing and still checking: neutral tile, readable icon. */
-list.brp-service-list > row.brp-service-card.inactive .brp-icon-tile,
-list.brp-service-list > row.brp-service-card.missing .brp-icon-tile,
-list.brp-service-list > row.brp-service-card.checking .brp-icon-tile {
-    color: alpha(@window_fg_color, 0.78);
+/* ── High contrast: plain surfaces, real borders, full-strength text ─────── */
+.high-contrast .role-card, .high-contrast .session-hero,
+.high-contrast .network-hero, .high-contrast .brp-session-panel, .high-contrast .brp-pair-card,
+.high-contrast .brp-computer-card, .high-contrast .brp-empty, .high-contrast .brp-note,
+.high-contrast .brp-progress {
     background-image: none;
-    background-color: alpha(@window_fg_color, 0.06);
-    box-shadow: inset 0 0 0 1px alpha(@window_fg_color, 0.07);
+    background-color: @window_bg_color;
+    box-shadow: inset 0 0 0 2px @window_fg_color;
 }
-.brp-service-state { color: alpha(@window_fg_color, 0.4); }
-list.brp-service-list > row.brp-service-card.ready .brp-service-state { color: @accent_color; }
-/* On: an accent surface that stays still after one short acknowledgement. */
-list.brp-service-list > row.brp-service-card.active {
-    background: mix(@card_bg_color, @accent_bg_color, 0.08); /* NOSONAR: mix() is a GTK CSS function */
-    border-color: alpha(@accent_bg_color, 0.45);
-    animation: brp-service-on 420ms ease-out 1;
-}
-list.brp-service-list > row.brp-service-card.active .brp-service-state { color: @success_color; }
-list.brp-service-list > row.brp-service-card.starting { border-color: alpha(@accent_bg_color, 0.28); }
-list.brp-service-list > row.brp-service-card.starting .brp-service-state { color: @accent_color; }
-list.brp-service-list > row.brp-service-card.attention { border-color: alpha(@warning_bg_color, 0.5); }
-list.brp-service-list > row.brp-service-card.attention .brp-service-state { color: @warning_color; }
-list.brp-service-list > row.brp-service-card.error { border-color: alpha(@error_bg_color, 0.5); }
-list.brp-service-list > row.brp-service-card.error .brp-service-state { color: @error_color; }
-@keyframes brp-service-on {
-    from { box-shadow: 0 0 0 0 alpha(@accent_bg_color, 0.35); }
-    to { box-shadow: 0 0 0 4px alpha(@accent_bg_color, 0); }
-}
-.high-contrast list.brp-service-list > row.brp-service-card {
-    background: @window_bg_color;
-    border: 1px solid @window_fg_color;
-}
-.high-contrast list.brp-service-list > row.brp-service-card.active { box-shadow: inset 0 0 0 1px @window_fg_color; }
-.high-contrast list.brp-service-list > row.brp-service-card .brp-icon-tile { color: @window_fg_color; }
-.high-contrast .brp-service-heading, .high-contrast .brp-service-state { opacity: 1; color: @window_fg_color; }
+.high-contrast .dim-label, .high-contrast .brp-service-state,
+.high-contrast list.brp-service-list > row.brp-service-card .subtitle,
+.high-contrast .state-pill.brp-nav-state { opacity: 1; color: @window_fg_color; }
+.high-contrast .role-card:focus-visible, .high-contrast .brp-computer-card:focus-visible,
 .high-contrast list.brp-service-list > row.brp-service-card:focus-visible { outline: 2px solid @window_fg_color; }
+.high-contrast .brp-computer-card.selected { box-shadow: inset 0 0 0 3px @window_fg_color; }
+.high-contrast .role-card .brp-choice-arrow { opacity: 1; }
+.high-contrast .brp-request-group list.boxed-list { box-shadow: 0 0 0 2px @window_fg_color; }
+.high-contrast .brp-capture-card .brp-metric { box-shadow: inset 0 0 0 1px @window_fg_color; }
 
-/* Reduced motion: every state is still in words, surface and icon. GTK also
- * drops these transitions when animations are disabled system-wide. */
+/* ── Reduced motion: every state is already in words and surface. ────────── */
 @media (prefers-reduced-motion: reduce) {
-    .role-card, .role-card .brp-choice-arrow, .brp-computer-card, .brp-hero-action,
-    list.brp-service-list > row.brp-service-card,
-    list.brp-service-list > row.brp-service-card .brp-icon-tile {
-        transition: none;
-        animation: none;
-    }
+    .role-card, .brp-computer-card { transition: none; }
 }

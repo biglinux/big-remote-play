@@ -239,9 +239,9 @@ class GuestView(Gtk.Box):
 
         # One question per page: which computer. Address and PIN are not rival
         # tabs — they are what the page offers next when no computer answers.
+        # The computers are the cards; the list itself sits on the page, as
+        # AshyWall's gallery does, instead of a card holding cards.
         self.connect_card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.connect_card.add_css_class("card")
-        self.connect_card.add_css_class("padded")
         self.connect_card.append(self.create_discover_page())
 
         reset_btn = Gtk.Button(icon_name="brp-edit-undo-symbolic")

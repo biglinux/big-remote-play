@@ -44,6 +44,15 @@ def name_icon_button(button: Gtk.Button, label: str, description: str = "") -> G
     return button
 
 
+def sidebar_heading(text: str) -> Gtk.Label:
+    """A quiet group heading in the sidebar, as in AshyWall (heading + dim)."""
+    label = Gtk.Label(label=text, xalign=0, wrap=True, accessible_role=Gtk.AccessibleRole.HEADING)
+    label.add_css_class("heading")
+    label.add_css_class("dim-label")
+    label.add_css_class("brp-sidebar-heading")
+    return label
+
+
 def icon_tile(name: str, *, large: bool = False, tone: str = "accent") -> Gtk.Widget:
     tile = Gtk.Box(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
     tile.add_css_class("brp-icon-tile")

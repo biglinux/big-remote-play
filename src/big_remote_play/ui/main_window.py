@@ -17,7 +17,7 @@ import json
 import os
 from .host_view import HostView
 from .guest_view import GuestView
-from .components import name_icon_button, icon_tile
+from .components import icon_tile, name_icon_button, sidebar_heading
 from .service_status_card import ServiceStatusCard, provider_presentation, streaming_presentation, unknown_presentation
 from .task_activity import Activity, activity_text, connect_activity, network_activity, pill_class, share_activity
 from big_remote_play.private_network.models import ProviderStatus
@@ -356,6 +356,9 @@ class MainWindow(Adw.ApplicationWindow):
         # shell's job (window list, decoration), so drawing the logo here only
         # duplicated it.
         header.set_title_widget(Adw.WindowTitle(title="Big Remote Play"))
+        # As in AshyWall, the application menu belongs to the sidebar: the
+        # content header keeps only the page's own title or tabs.
+        header.pack_end(self._create_header_menu_button())
         toolbar.add_top_bar(header)
 
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -387,18 +390,29 @@ class MainWindow(Adw.ApplicationWindow):
         toolbar.set_content(scroll)
         self.split_view.set_sidebar(Adw.NavigationPage.new(toolbar, _("Navigation")))
 
-    # Home · Share, Connect · Connect your devices: three kinds of place.
+    # Home · Streaming (Share, Connect) · Secure connection (Connect your
+    # devices): AshyWall's sidebar groups, each with a quiet heading.
     _NAV_SECTION_STARTS = frozenset({"host", "vpn_selector"})
 
+    @staticmethod
+    def _section_title(page_id: str) -> str:
+        if page_id == "host":
+            # TRANSLATORS: sidebar heading above the Sunshine or Moonlight card.
+            return _("Streaming")
+        # TRANSLATORS: sidebar heading above the Tailscale, ZeroTier and Headscale cards.
+        return _("Secure connection")
+
     def _nav_header(self, row: Gtk.ListBoxRow, before: Gtk.ListBoxRow | None) -> None:
-        """A thin separator before each group; no extra words, no tree."""
-        if before is None or self._nav_page_by_row.get(row) not in self._NAV_SECTION_STARTS:
+        """A heading before each group of places, as in AshyWall."""
+        page_id = self._nav_page_by_row.get(row)
+        if before is None or page_id not in self._NAV_SECTION_STARTS:
             row.set_header(None)
             return
-        if row.get_header() is None:
-            separator = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
-            separator.add_css_class("brp-nav-separator")
-            row.set_header(separator)
+        text = self._section_title(page_id)
+        header = row.get_header()
+        if isinstance(header, Gtk.Label) and header.get_label() == text:
+            return
+        row.set_header(sidebar_heading(text))
 
     def _navigation_pages(self) -> dict[str, dict]:
         """Keep Home reachable for beginners and returning users alike."""
@@ -490,10 +504,10 @@ class MainWindow(Adw.ApplicationWindow):
         """Service cards for the task on screen: its streaming component, then
         every private-network method with its real state."""
         footer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        footer.set_margin_start(12)
-        footer.set_margin_end(12)
+        footer.set_margin_start(8)
+        footer.set_margin_end(8)
         footer.set_margin_top(8)
-        footer.set_margin_bottom(12)
+        footer.set_margin_bottom(8)
 
         status_list = Gtk.ListBox()
         status_list.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -524,24 +538,19 @@ class MainWindow(Adw.ApplicationWindow):
         return footer
 
     def _service_header(self, row: Gtk.ListBoxRow, before: Gtk.ListBoxRow | None) -> None:
-        """“Streaming” above Sunshine/Moonlight, “Secure connection” above the VPNs."""
-        service_id = self._service_by_row.get(row)
-        if service_id in self._STREAMING_SERVICES:
-            # TRANSLATORS: sidebar heading above the Sunshine or Moonlight card.
-            text = _("Streaming")
-        elif service_id in self._NETWORK_SERVICES and self._service_by_row.get(before) not in self._NETWORK_SERVICES:
-            # TRANSLATORS: sidebar heading above the Tailscale, ZeroTier and Headscale cards.
-            text = _("Secure connection")
-        else:
+        """One “Services” heading above the first visible service row."""
+        first_visible = next((r for r in self._status_rows.values() if r.get_visible()), None)
+        if row is not first_visible:
             row.set_header(None)
             return
+        # TRANSLATORS: accessible name of the list of streaming and private-network cards.
+        text = _("Services")
         header = row.get_header()
         if isinstance(header, Gtk.Label) and header.get_label() == text:
             return
-        label = Gtk.Label(label=text, xalign=0, accessible_role=Gtk.AccessibleRole.HEADING)
-        label.add_css_class("caption-heading")
-        label.add_css_class("brp-service-heading")
-        row.set_header(label)
+        heading = sidebar_heading(text)
+        heading.add_css_class("brp-service-heading")
+        row.set_header(heading)
 
     def _relevant_service_ids(self) -> list[str]:
         # Every method keeps its card while it is off, so turning one on or off
@@ -673,7 +682,6 @@ class MainWindow(Adw.ApplicationWindow):
 
         header = Adw.HeaderBar()
         header.set_centering_policy(Adw.CenteringPolicy.STRICT)
-        header.pack_end(self._create_header_menu_button())
         self.home_back_button = Gtk.Button(icon_name="go-previous-symbolic", visible=False)
         name_icon_button(self.home_back_button, _("Back"), _("Back to the previous question"))
         self.home_back_button.add_css_class("flat")
