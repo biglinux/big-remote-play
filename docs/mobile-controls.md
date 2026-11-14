@@ -49,7 +49,26 @@ A controller connected to the phone works as a controller on the game PC. Moonli
 | L1 + Start | Select, on controllers without that button |
 | Hold Start | Use the controller as a mouse: a stick moves the pointer, A clicks, B right-clicks |
 
-Moonlight for Android can also draw a controller on the screen: setting **Show on-screen controls**.
+Moonlight for Android can also draw a controller on the screen: setting **Show on-screen controls**. Several of its buttons work at once, and it needs nothing on the game PC.
+
+## A controller drawn by the game PC (Touch controls)
+
+**Share → Preferences → Mouse, keyboard and controllers → Touch controls** puts
+the Big WM Virtual Keyboard's on-screen controller on the shared screen. The
+phone sees it in the picture, and each finger presses its own button: a
+direction and A together, two sticks, triggers, up to five fingers. The game
+sees an ordinary controller. It needs:
+
+- **Moonlight Touch** on the phone (a Moonlight build that sends every finger
+  as a touch, with its setting **Send touch to the computer** on). The
+  official Moonlight for Android does not send touches yet.
+- The package `big-keyboard` on the game PC and **What touch does** set to
+  **On-screen controller** (or **Controller and touch**).
+
+The two controllers are different things: Moonlight's is drawn on the phone,
+this one on the game PC. Use one at a time, or the game sees two
+controllers. In **Game Window** the phone sees only the game, so use
+Moonlight's own controls there. Technical details: [touch controls](touch/03-arquitetura.md).
 
 ## Moonlight on a computer
 
@@ -73,4 +92,5 @@ Moonlight on a computer handles these keys itself; they are not sent to the game
 - Moonlight setup guide (keyboard shortcuts and touch gestures): <https://github.com/moonlight-stream/moonlight-docs/wiki/Setup-Guide>.
 - Moonlight for Android: three-finger tap and Back handling in `Game.java`; the gamepad combinations and settings in its strings.
 - Moonlight for iPhone/iPad: the keyboard's extra-keys bar in `StreamView.m`.
+- Native touch: Moonlight for Android 12.2 keeps sending touches to the computer disabled in `Game.java`; Moonlight Touch is that app with it fixed ([test plan](touch/08-validacao-android.md)).
 - A virtual panel of keys on the phone would have to be part of the Moonlight app there. A separate service on the game PC that types keys sent from a phone would need its own authentication and pairing, and it is not provided.

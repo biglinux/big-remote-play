@@ -46,7 +46,7 @@ Remote play on Linux usually means learning several unrelated tools before the f
 | 👥 **Play together** | Up to four devices can play on the same computer at once, each with its own controller: invite friends to a local multiplayer game from wherever they are. |
 | 🖱️ **The pointer you can see** | When the screen capture leaves the mouse pointer out (KMS on KDE and GNOME Wayland), Share notices it in Sunshine's log and offers the capture that draws it. |
 | 🖥️ **Every screen in its place** | Choose which monitor of the game PC is shared and on which screen of this computer the game opens. |
-| 📱 **Play from a phone** | Touch, keyboard and controller instructions for Moonlight on Android and iPhone/iPad, with a QR code to read them on the phone. |
+| 📱 **Play from a phone** | Touch, keyboard and controller instructions for Moonlight on Android and iPhone/iPad, with a QR code to read them on the phone. **Touch controls** puts an on-screen controller on the shared screen that takes several fingers at once ([details](docs/mobile-controls.md#a-controller-drawn-by-the-game-pc-touch-controls)). |
 | 🩺 **Help when something fails** | **Support** checks this computer without changing anything and explains common problems. If a stream drops because the network cannot carry it, Connect says so and offers **Lower quality and connect again**. |
 | 🎮 **Controllers too** | Keyboard, mouse and controllers of the other device reach the game through Sunshine. While someone plays, **Share** says which controller arrived, or why none did. |
 | 🔊 **Sound that just works** | Game audio is sent; the microphone and voice calls only when you turn them on. Everything returns to normal when sharing stops. |

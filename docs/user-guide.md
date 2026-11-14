@@ -124,6 +124,8 @@ While a stream runs, **Playing now** at the top of Connect shows the computer's 
 
 **Shortcuts & Instructions** has a tab for Moonlight on a computer, on Android, on iPhone/iPad and for controllers, and a QR code that opens the same guide on the phone: [controlling the game PC from a phone](mobile-controls.md).
 
+To play with fingers on a controller drawn on this computer, open **Preferences → Mouse, keyboard and controllers → Touch controls** and choose **On-screen controller**. When a phone starts playing, the controller opens on the shared screen; when the last one leaves, every button is released and it closes. **Compatibility** checks Sunshine, the Big WM Virtual Keyboard, the virtual controller and the phone's touch, in words. The phone needs Moonlight Touch ([guide](mobile-controls.md#a-controller-drawn-by-the-game-pc-touch-controls)). **Mouse** makes Sunshine stop offering touch, so every finger works as a mouse.
+
 ### Playing with friends
 
 Up to four devices can play on the same computer at the same time: each friend connects from their own computer as above, and each controller becomes its own player in games made for several players. Every device receives its own stream, so the game PC's upload and each friend's download must carry it.
