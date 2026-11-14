@@ -71,7 +71,7 @@ cp -a ~/brp-touch-backup/big-keyboard ~/brp-touch-backup/big-remote-play ~/.conf
 
 (Se os pacotes antigos não estiverem no cache, reinstale-os do repositório.)
 
-## Moonlight Touch (celular)
+## Big Remote Play Controller (celular)
 
 Ver [validação no Android](08-validacao-android.md): compilar o APK exige JDK
 17+, Android SDK 37 e NDK 29.0.14206865, que não estão nesta máquina.

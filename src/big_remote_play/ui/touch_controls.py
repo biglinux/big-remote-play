@@ -154,7 +154,9 @@ class TouchControls:
             ),
             (
                 _("This computer's controller on the phone"),
-                _("Needs a Moonlight that sends touch; the official Android app does not yet. Install Moonlight Touch, the Big Remote Play build, and turn on its setting Send touch to the computer."),
+                _(
+                    "Needs a Moonlight that sends touch; the official Android app does not yet. Install Big Remote Play Controller, the Big Remote Play build, and turn on its setting Send touch to the computer."
+                ),
             ),
             (_("One controller at a time"), _("With both, the game sees two controllers. Close the one you are not using.")),
         ):

@@ -22,7 +22,7 @@ para usar um de cada vez.
 ## Como A foi construído (sem depender do compositor)
 
 ```text
-celular: dedos ──► Moonlight Touch (fork, setting "Send touch to the computer")
+celular: dedos ──► Big Remote Play Controller (fork, setting "Send touch to the computer")
                      LiSendTouchEvent(id, x, y) — CANCEL/CANCEL_ALL corretos
                          │  canal de controle criptografado do Moonlight
                          ▼
@@ -65,7 +65,7 @@ em *Controller and touch*) e `off`.
      dispositivo sai, e `release` quando sai um de vários;
   2. depois de um `release`, um dedo que o Sunshine ainda mantém só volta a
      valer se o celular voltar a movê-lo (nunca "escorrega" para um botão);
-  3. o Moonlight Touch manda `CANCEL_ALL` ao perder o foco, ao sair e no
+  3. o Big Remote Play Controller manda `CANCEL_ALL` ao perder o foco, ao sair e no
      início de cada stream; e há um patch de 8 linhas para o Sunshine
      ([integração](05-integracao.md)).
 - *Host has priority*: no modo controle, o helper recebe `"touch": false` e

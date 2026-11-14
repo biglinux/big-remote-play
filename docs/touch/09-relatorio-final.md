@@ -16,7 +16,7 @@
   priority* que não pausa mais o toque quando ele é um controle. 51 textos
   traduzidos nos 32 idiomas. O Big WM Virtual Keyboard, se faltar, é instalado
   pelo instalador do próprio app (botão **Instalar**).
-- **Moonlight Touch** (fork GPL-3.0 do Moonlight Android 12.2, app separado):
+- **Big Remote Play Controller** (fork GPL-3.0 do Moonlight Android 12.2, app separado):
   envio de toque nativo corrigido (cancelamentos, 3 dedos, gestos de borda,
   `CANCEL_ALL` em foco/saída/início). **Código pronto, APK não compilado.**
 - Patch de 8 linhas para o Sunshine soltar toques ao desconectar (**não
@@ -24,7 +24,7 @@
 
 ## Arquitetura
 
-Celular → Moonlight Touch (`LiSendTouchEvent`) → Sunshine → touchscreen
+Celular → Big Remote Play Controller (`LiSendTouchEvent`) → Sunshine → touchscreen
 uinput `libvirtualhid Touchscreen` → Big Keyboard (leitura direta,
 `EVIOCGRAB`) → `bk_ctl_touch` → gamepad uinput → jogo. Detalhes e
 alternativas: [arquitetura](03-arquitetura.md). Com o Moonlight **oficial**,
@@ -82,7 +82,7 @@ lado do Moonlight oficial, ligar **Enviar toques ao computador**, escolher
 
 ## Limitações
 
-- O Moonlight oficial não envia toque nativo; é preciso o Moonlight Touch.
+- O Moonlight oficial não envia toque nativo; é preciso o Big Remote Play Controller.
 - APK, celular real e jogos reais: pendentes.
 - Game Window: o celular não vê o overlay (use o controle do Moonlight).
 - Sunshine 2026.914 retém toques de uma sessão que caiu; o Big Remote Play
@@ -98,6 +98,6 @@ lado do Moonlight oficial, ligar **Enviar toques ao computador**, escolher
 ## Próximos passos
 
 1. `sudo pacman -U` dos dois pacotes ([instalação](07-instalacao.md)).
-2. Compilar e instalar o Moonlight Touch ([roteiro](08-validacao-android.md)).
+2. Compilar e instalar o Big Remote Play Controller ([roteiro](08-validacao-android.md)).
 3. Executar MT-01…MT-25 com o celular e registrar os resultados aqui.
 4. Levar o patch do Sunshine ao pacote/upstream.

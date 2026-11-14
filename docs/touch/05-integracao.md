@@ -4,7 +4,7 @@
 
 | De → para | Contrato | Validação |
 |---|---|---|
-| Moonlight Touch → Sunshine | `LiSendTouchEvent` (protocolo existente, `LI_FF_PEN_TOUCH_EVENTS`) | nenhuma extensão nova |
+| Big Remote Play Controller → Sunshine | `LiSendTouchEvent` (protocolo existente, `LI_FF_PEN_TOUCH_EVENTS`) | nenhuma extensão nova |
 | Sunshine → Big Keyboard | nó evdev `libvirtualhid Touchscreen`, MT protocolo B, eixos 0..19200 × 0..10800 normalizados ao monitor transmitido | nome + `INPUT_PROP_DIRECT` + eixos MT conferidos ao abrir |
 | Big Remote Play → Big Keyboard | D-Bus `io.github.big_windowmaker.BigKeyboard`, `/io/github/big_windowmaker/BigKeyboard`, `org.gtk.Actions`: `SetState remote-touch`, `SetState overlay-output`, `Activate set-gamepad (b)`, `Activate edit-gamepad`, `Activate release`, `DescribeAll` | valores validados nos dois lados; versão antiga detectada pela ausência das ações |
 | Big Remote Play → Sunshine | `native_pen_touch` no `sunshine.conf` ao compartilhar (só nos modos que precisam) | Automático preserva a escolha manual |

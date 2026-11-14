@@ -32,7 +32,7 @@ Estados de `remote-touch-status`: `off`, `idle` (controle fechado),
 | `locale/*.po`, `usr/share/locale/*/LC_MESSAGES/*.mo` | 53 mensagens novas, traduzidas nos 32 catálogos. |
 | `tests/test_touch_control.py`, `tests/test_touch_controls_ui.py` (novos), `tests/test_input_priority*.py` | Comportamento dos modos, verificações, cliente D-Bus (barramento falso), UI e helper. |
 
-## Moonlight Touch — `~/Documentos/Git/moonlight-android-touch`, branch `brp/native-touch`
+## Big Remote Play Controller — `~/Documentos/Git/moonlight-android-touch`, branch `brp/native-touch`
 
 Fork do Moonlight Android 12.2 (GPL-3.0), commit `c94196a`, documentado em
 `BRP-TOUCH.md` no próprio repositório:
@@ -46,7 +46,7 @@ Fork do Moonlight Android 12.2 (GPL-3.0), commit `c94196a`, documentado em
   gestos de borda (Android 10+), MOVE só quando a posição muda,
   `CANCEL_ALL` ao perder o foco, ao sair e no início de cada stream;
 - host sem toque (`LI_ERR_UNSUPPORTED`) → volta à emulação de mouse;
-- `applicationId` `io.github.bigremoteplay.moonlighttouch`, nome
-  *Moonlight Touch*, versão `12.2-brptouch1` — instala ao lado do oficial.
+- `applicationId` `io.github.bigremoteplay.controller`, nome
+  *Big Remote Play Controller*, versão `12.2-brpc1` — instala ao lado do oficial.
 
 Strings em inglês, pt-BR e pt.

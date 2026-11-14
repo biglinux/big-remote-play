@@ -18,9 +18,9 @@ export ANDROID_HOME=$HOME/Android/Sdk JAVA_HOME=$HOME/Android/jdk-21
 
 Saída: `app/build/outputs/apk/nonRoot/debug/app-nonRoot-debug.apk`, assinado
 com a chave de depuração gerada **no seu computador** (`~/.android/debug.keystore`),
-não com a chave oficial do Moonlight. O app se chama **Moonlight Touch
-(Debug)**, id `io.github.bigremoteplay.moonlighttouch.debug`, versão
-`12.2-brptouch1`, e instala **ao lado** do Moonlight oficial (que não é
+não com a chave oficial do Moonlight. O app se chama **Big Remote Play Controller
+(Debug)**, id `io.github.bigremoteplay.controller.debug`, versão
+`12.2-brpc1`, e instala **ao lado** do Moonlight oficial (que não é
 alterado nem substituído).
 
 ## 2. Instalar no celular
@@ -47,7 +47,7 @@ só para o gerenciador de arquivos usado, e desligar depois).
 
 ## 4. No celular
 
-1. Abra o **Moonlight Touch** e pareie com o computador (o pareamento do
+1. Abra o **Big Remote Play Controller** e pareie com o computador (o pareamento do
    Moonlight oficial não é compartilhado).
 2. Configurações → **Enviar toques ao computador (multitoque)**: ligado.
    Deixe **Mostrar controles na tela** desligado (senão o jogo vê dois
@@ -81,7 +81,7 @@ só para o gerenciador de arquivos usado, e desligar depois).
 | MT-22 | Game Window | o celular não vê o controle: usar o do Moonlight (limitação) |
 | MT-23 | escala do monitor | posições corretas |
 | MT-24 | modo Mouse e voltar | alternância funciona (vale no próximo compartilhamento) |
-| MT-25 | Moonlight Touch com Sunshine sem toque (`native_pen_touch = disabled`) | volta ao mouse, sem travar |
+| MT-25 | Big Remote Play Controller com Sunshine sem toque (`native_pen_touch = disabled`) | volta ao mouse, sem travar |
 
 Ferramenta útil no computador: `evtest` (pacote `evtest`) no nó do "Big WM
 Virtual Gamepad"; e `big-keyboard --release` para emergência.

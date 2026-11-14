@@ -59,7 +59,7 @@ phone sees it in the picture, and each finger presses its own button: a
 direction and A together, two sticks, triggers, up to five fingers. The game
 sees an ordinary controller. It needs:
 
-- **Moonlight Touch** on the phone (a Moonlight build that sends every finger
+- **Big Remote Play Controller** on the phone (a Moonlight build that sends every finger
   as a touch, with its setting **Send touch to the computer** on). The
   official Moonlight for Android does not send touches yet.
 - The package `big-keyboard` on the game PC and **What touch does** set to
@@ -92,5 +92,5 @@ Moonlight on a computer handles these keys itself; they are not sent to the game
 - Moonlight setup guide (keyboard shortcuts and touch gestures): <https://github.com/moonlight-stream/moonlight-docs/wiki/Setup-Guide>.
 - Moonlight for Android: three-finger tap and Back handling in `Game.java`; the gamepad combinations and settings in its strings.
 - Moonlight for iPhone/iPad: the keyboard's extra-keys bar in `StreamView.m`.
-- Native touch: Moonlight for Android 12.2 keeps sending touches to the computer disabled in `Game.java`; Moonlight Touch is that app with it fixed ([test plan](touch/08-validacao-android.md)).
+- Native touch: Moonlight for Android 12.2 keeps sending touches to the computer disabled in `Game.java`; Big Remote Play Controller is that app with it fixed ([test plan](touch/08-validacao-android.md)).
 - A virtual panel of keys on the phone would have to be part of the Moonlight app there. A separate service on the game PC that types keys sent from a phone would need its own authentication and pairing, and it is not provided.

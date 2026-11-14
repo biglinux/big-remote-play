@@ -81,7 +81,7 @@ aparelho ([roteiro](08-validacao-android.md)).
 | Defeito | Causa | Correção |
 |---|---|---|
 | Controle ligado ao touchscreen errado | havia dois `libvirtualhid Touchscreen` (o do Sunshine, retido após a sessão, e o do teste); o código pegava o primeiro | o overlay lê **todos** (até 4), cada um com identidades próprias |
-| Botão preso após queda da rede | Sunshine 2026.914 não cancela toques ao desconectar e mantém o dispositivo | `release` pelo Big Remote Play + dedo obsoleto + `CANCEL_ALL` no Moonlight Touch + patch do Sunshine |
+| Botão preso após queda da rede | Sunshine 2026.914 não cancela toques ao desconectar e mantém o dispositivo | `release` pelo Big Remote Play + dedo obsoleto + `CANCEL_ALL` no Big Remote Play Controller + patch do Sunshine |
 | Touchscreen sem permissão fora do grupo `input` | a regra do Sunshine não casa o nome `libvirtualhid Touchscreen` | regra udev estreita no pacote `big-keyboard` |
 | *Host has priority* congelaria o controle | o helper agarrava o touchscreen junto com o mouse | `"touch": false` nos modos de controle |
 | Exclusão de gesto de borda no lugar errado (fork Android) | aplicada à `streamView`, que com barras pretas não encosta na borda | aplicada à `backgroundTouchView` (tela inteira) |
