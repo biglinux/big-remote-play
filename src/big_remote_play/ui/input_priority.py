@@ -57,6 +57,7 @@ class HostInputPriority:
         self.reason = ""
         self._remote_devices = -1
         self._last_osd = 0.0
+        self._pause_touch = True
         self._build()
 
     # ── widgets ────────────────────────────────────────────────────────────
@@ -137,6 +138,17 @@ class HostInputPriority:
             self._process.set_delay(self.delay)
         self._sync_rows()
 
+    def set_pause_touch(self, pause: bool) -> None:
+        """Touch controls: the phone's touchscreen is a controller and is never paused.
+
+        A running helper is restarted so the new rule applies at once."""
+        if pause == self._pause_touch:
+            return
+        self._pause_touch = pause
+        if self._process is not None:
+            self._stop()
+            self._apply()
+
     # ── sharing ────────────────────────────────────────────────────────────
     def sync(self, *, hosting: bool, source: str) -> None:
         """Called when sharing starts, stops or adopts a running server."""
@@ -160,7 +172,7 @@ class HostInputPriority:
         def on_event(message: Mapping[str, object]) -> None:
             GLib.idle_add(self._on_event, generation, dict(message))
 
-        self._process = self._process_factory(self.delay, on_event)
+        self._process = self._process_factory(self.delay, on_event, pause_touch=self._pause_touch)
         _log.info("Host input priority: on (%d s)", self.delay)
         self._process.start()
 

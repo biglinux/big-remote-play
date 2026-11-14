@@ -515,7 +515,7 @@ def test_process_sends_the_spec_and_delay_changes_and_stops_by_closing_input() -
         time.sleep(0.01)
     process.stop()
 
-    assert fake.closed and fake.sent == [{"version": 1, "delay": 5}, {"delay": 30}]
+    assert fake.closed and fake.sent == [{"version": 1, "delay": 5, "touch": True}, {"delay": 30}]
     assert [event["event"] for event in events] == ["ready", "paused", "stopped"]
 
 
@@ -546,3 +546,48 @@ def test_shipped_launcher_and_policy_name_the_same_fixed_program() -> None:
     assert "/usr/lib/big-remote-play/big_remote_play/host/input_priority.py run" in launcher.read_text(encoding="utf-8")
     assert f'"org.freedesktop.policykit.exec.path">{ip.LAUNCHER}<' in policy
     assert "<allow_any>no</allow_any>" in policy and "<allow_inactive>no</allow_inactive>" in policy
+
+
+# ── touch controls: the phone's touchscreen as a controller ───────────────
+
+SUNSHINE_TOUCH = device("/dev/input/event29", "libvirtualhid Touchscreen", virtual=True, ev=EV(ip.EV_KEY, ip.EV_ABS), key=1 << ip.BTN_TOUCH, abs_=0b11)
+
+
+def test_the_touchscreen_is_paused_like_the_mouse_unless_it_drives_the_controller() -> None:
+    assert ip.classify(SUNSHINE_TOUCH) == "remote"
+    assert ip.classify(SUNSHINE_TOUCH, pause_touch=False) == "ignored"
+    assert ip.classify(SUNSHINE_KEYBOARD, pause_touch=False) == "remote"  # keyboard and mouse still pause
+
+    session, kernel, _messages = session_with([keyboard(), SUNSHINE_KEYBOARD, SUNSHINE_TOUCH])
+    assert "/dev/input/event29" in session.remote
+    kept = ip.PrioritySession(5, evdev=FakeEvdev(), scan=lambda: [keyboard(), SUNSHINE_KEYBOARD, SUNSHINE_TOUCH], pause_touch=False)
+    kept.refresh_devices()
+    kept.on_local_activity(10.0)
+    # The controller's touches are never opened, grabbed or written; the keyboard is paused.
+    assert "/dev/input/event29" not in kept.remote and "/dev/input/event25" in kept.remote
+    assert kept.evdev.grabbed == {kept.remote["/dev/input/event25"]}  # type: ignore[attr-defined]
+
+
+def test_the_helper_reads_the_touch_rule_from_its_spec(monkeypatch) -> None:
+    kernel = PipeEvdev()
+    helper = Helper(monkeypatch, [keyboard(), SUNSHINE_KEYBOARD, SUNSHINE_TOUCH], kernel)
+    helper.send({"version": 1, "delay": 5, "touch": False})
+    helper.start()
+    assert helper.wait_for("ready")
+    assert helper.messages()[0]["remote"] == 1  # only the keyboard
+    helper.close()
+
+    older = Helper(monkeypatch, [keyboard(), SUNSHINE_KEYBOARD, SUNSHINE_TOUCH], PipeEvdev())
+    older.send({"version": 1, "delay": 5})  # an older Big Remote Play: touch paused as before
+    older.start()
+    assert older.wait_for("ready")
+    assert older.messages()[0]["remote"] == 2
+    older.close()
+
+
+def test_the_process_tells_the_helper_to_leave_touch_alone() -> None:
+    fake = FakeProcess([])
+    process = ip.PriorityProcess(5, lambda _event: None, argv=["helper"], popen=lambda *_args, **_kwargs: fake, pause_touch=False)
+    assert process.start()
+    process.stop()
+    assert fake.sent[0] == {"version": 1, "delay": 5, "touch": False}
