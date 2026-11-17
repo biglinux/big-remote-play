@@ -23,7 +23,7 @@ from big_remote_play.utils.icons import create_icon_widget, set_icon
 from big_remote_play.integration_contracts import MOONLIGHT_PAIRING_PIN_LENGTH, BRP_DISCOVERY_CODE_LENGTH
 from big_remote_play import paths
 from big_remote_play.host.sunshine_manager import PIN_CHOOSE, PIN_NONE_WAITING
-from big_remote_play.utils.sunshine_credentials import DEFAULT_SUNSHINE_USER, SAVED, SunshineCredentials
+from big_remote_play.utils.sunshine_credentials import DEFAULT_SUNSHINE_USER, SAVED, SAVED_LOCAL, SunshineCredentials
 from big_remote_play.utils.uri import open_uri, open_path
 from big_remote_play.host import touch_control
 from .components import physical_size, action_row, boxed_rows, intro, preferences_dialog, set_row_icon, content_dialog, name_icon_button
@@ -2329,7 +2329,7 @@ class HostView(Gtk.Box):
     # ------------------------------------------------------------------
     def _show_credentials_state(self) -> bool:
         """GTK thread: where Sunshine's password is, in words (never the password)."""
-        from big_remote_play.utils.sunshine_credentials import KEYRING_UNAVAILABLE, KEYRING_UNRESPONSIVE
+        from big_remote_play.utils.sunshine_credentials import KEYRING_UNAVAILABLE, KEYRING_UNRESPONSIVE, LOCATION_FILE
 
         if self._closed or not hasattr(self, "credentials_state_row"):
             return False
@@ -2339,13 +2339,16 @@ class HostView(Gtk.Box):
             text = _("Sunshine rejected the saved password. Enter the current one to approve devices.")
         elif session_only:
             text = _("Kept only until you close Big Remote Play: the system keyring did not save it.")
+        elif status.persisted and status.location == LOCATION_FILE:
+            # TRANSLATORS: {user} is the Sunshine administrator user name, such as "sunshine".
+            text = _("No system keyring is available, so it is saved in a file only your user can read, for the user “{user}”. Devices are approved with their PIN alone.").format(user=status.user)
         elif status.persisted:
             # TRANSLATORS: {user} is the Sunshine administrator user name, such as "sunshine".
             text = _("Saved in the system keyring for the user “{user}”. Devices are approved with their PIN alone.").format(user=status.user)
         elif status.keyring == KEYRING_UNRESPONSIVE:
             text = _("The system keyring did not answer. It may be locked.")
         elif status.keyring == KEYRING_UNAVAILABLE:
-            text = _("No system keyring is available, so the password cannot be remembered.")
+            text = _("No system keyring is available. Enter the password once and it is saved in a file only your user can read.")
         else:
             text = _("Created and saved automatically the first time sharing starts.")
         self.credentials_state_row.set_subtitle(text)
@@ -2362,7 +2365,7 @@ class HostView(Gtk.Box):
 
         def done(result) -> None:
             self.credentials_save_button.set_sensitive(True)
-            self._report_credentials_saved(result == saved)
+            self._report_credentials_saved(result in (saved, SAVED_LOCAL))
 
         self._credentials_worker.submit(self.credentials.persist, done, failed=lambda _error: done(""), keep_previous=True)
 
@@ -2472,10 +2475,9 @@ class HostView(Gtk.Box):
         if status != 307:
             return None
         store = SecretStore()
-        if not store.is_available():
-            self._credentials_need_keyring = True
-            return None
         user, password = DEFAULT_SUNSHINE_USER, secrets.token_urlsafe(24)
+        if not store.is_available():
+            return self._create_sunshine_user_locally(user, password)
         # The keyring first, Sunshine second: a lookup can "succeed" after the
         # person cancelled the keyring's creation prompt, so only a password
         # the keyring really kept may become Sunshine's. Measured on Big GNOME
@@ -2491,7 +2493,18 @@ class HostView(Gtk.Box):
             self._auto_create_paused = True
             self.credentials.note_keyring(KEYRING_UNRESPONSIVE)
             return None
-        except (SecretStoreUnavailable, OSError):
+        except SecretStoreUnavailable:
+            from big_remote_play.utils.sunshine_credentials import keyring_absent
+
+            # No keyring in this session (Window Maker, wlmaker…): a private
+            # file keeps it, so devices are still approved with the PIN alone.
+            # A keyring that is there but refused (its prompt dismissed) is
+            # not replaced by a file: the person chooses a password instead.
+            if keyring_absent(store):
+                return self._create_sunshine_user_locally(user, password)
+            self._credentials_need_keyring = True
+            return None
+        except OSError:
             self._credentials_need_keyring = True
             return None
         self._credentials_created = True
@@ -2505,6 +2518,20 @@ class HostView(Gtk.Box):
         self._credentials_need_keyring = False
         self.credentials.adopt_saved(user, password)
         _log.info("Created the Sunshine user for this computer; its password is in the keyring.")
+        return user, password
+
+    def _create_sunshine_user_locally(self, user: str, password: str) -> tuple[str, str] | None:
+        """Worker: first Sunshine and no keyring at all; the owner-only file first, Sunshine second."""
+        if not self.credentials.save_local(user, password):
+            self._credentials_need_keyring = True
+            return None
+        self._credentials_created = True
+        ok, _message = self.sunshine.create_user(user, password)
+        if not ok:
+            self.credentials.forget_local()  # never keep a password Sunshine does not use
+            return None
+        self._credentials_need_keyring = False
+        _log.info("Created the Sunshine user for this computer; no keyring exists, its password is in a private file.")
         return user, password
 
     def _check_pairing_busy(self) -> None:
@@ -2703,9 +2730,13 @@ class HostView(Gtk.Box):
         confirm_row = Adw.PasswordEntryRow(title=_("Confirm password"), use_markup=False, visible=create)
         from big_remote_play.utils.sunshine_credentials import KEYRING_UNAVAILABLE
 
-        # Off when the keyring is known to be missing: nothing promised that cannot happen.
-        keyring_missing = self.credentials.status().keyring == KEYRING_UNAVAILABLE or getattr(self, "_credentials_need_keyring", False)
-        remember_row = Adw.SwitchRow(title=_("Remember on this computer"), subtitle=_("Kept in the system keyring, never in a file."), active=not keyring_missing)
+        # Without a keyring it is kept in a file only this user can read.
+        keyring_missing = self.credentials.status().keyring == KEYRING_UNAVAILABLE
+        remember_row = Adw.SwitchRow(
+            title=_("Remember on this computer"),
+            subtitle=_("Kept in a file only your user can read, because no system keyring is available.") if keyring_missing else _("Kept in the system keyring."),
+            active=True,
+        )
         remember_row.set_subtitle_lines(0)
         for row in (user_row, pass_row, confirm_row, remember_row):
             group.add(row)
@@ -3069,7 +3100,7 @@ class HostView(Gtk.Box):
         with :meth:`_report_credentials_saved`.
         """
         try:
-            return self.credentials.remember(user, password, persist=persist) == SAVED
+            return self.credentials.remember(user, password, persist=persist) in (SAVED, SAVED_LOCAL)
         except ValueError:
             return False
 
@@ -3083,7 +3114,11 @@ class HostView(Gtk.Box):
         """GTK thread: say where the password is, never what it is."""
         from big_remote_play.utils.sunshine_credentials import KEYRING_UNRESPONSIVE
 
-        if kept:
+        from big_remote_play.utils.sunshine_credentials import LOCATION_FILE
+
+        if kept and self.credentials.status().location == LOCATION_FILE:
+            self.show_toast(_("Password saved in a file only your user can read. Devices are approved with their PIN alone."))
+        elif kept:
             self.show_toast(_("Password saved in the system keyring."))
         elif wanted and self.credentials.status().keyring == KEYRING_UNRESPONSIVE:
             # Often KWallet's own "create a wallet" or unlock window is open:

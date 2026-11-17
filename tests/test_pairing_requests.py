@@ -310,17 +310,40 @@ def test_an_existing_sunshine_user_is_asked_about_once_per_start(ui, monkeypatch
     assert probes == [None, None]
 
 
-def test_a_keyring_that_does_not_answer_never_gets_an_unrecoverable_user(ui, monkeypatch):
+def test_without_any_keyring_the_first_user_is_kept_in_a_private_file(ui, monkeypatch, tmp_path):
+    """Reported 2026-11-17 on wlmaker (no Secret Service): the PIN window stopped
+    opening because the password was never kept; now the PIN alone is enough."""
+    import stat
+
+    from big_remote_play.utils import secret_store
+    from big_remote_play.utils.sunshine_credentials import LOCATION_FILE
+
+    host = ui.host_view
+    created = []
+    secret = tmp_path / "private" / "api-password"
+    monkeypatch.setattr(host.credentials, "_local_path", lambda: secret)
+    monkeypatch.setattr(secret_store, "default_backend_factory", lambda: FailingKeyring())
+    monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: (None, 307))
+    monkeypatch.setattr(host.sunshine, "create_user", lambda user, password: created.append((user, password)) or (True, ""))
+    credentials = host._create_sunshine_credentials()
+    assert credentials is not None and created == [credentials]
+    # Kept before Sunshine got it, readable only by this user.
+    assert stat.S_IMODE(secret.stat().st_mode) == 0o600
+    assert credentials[1] in secret.read_text()
+    assert host.credentials.status().location == LOCATION_FILE
+    assert host._password_state() != "create"
+
+
+def test_a_locked_keyring_never_gets_an_unrecoverable_user(ui, monkeypatch):
     from big_remote_play.utils import secret_store
 
     host = ui.host_view
     created = []
-    monkeypatch.setattr(secret_store, "default_backend_factory", lambda: FailingKeyring())
+    monkeypatch.setattr(secret_store, "default_backend_factory", lambda: FailingKeyring(secret_store.SecretStoreTimeout("locked")))
     monkeypatch.setattr(host.sunshine, "pending_pairings", lambda auth=None: (None, 307))
     monkeypatch.setattr(host.sunshine, "create_user", lambda user, password: created.append(user) or (True, ""))
     assert host._create_sunshine_credentials() is None
     assert created == []
-    assert host._password_state() == "create"  # the person chooses one instead
 
 
 def test_a_keyring_that_refuses_to_save_never_gets_a_sunshine_user(ui, monkeypatch):
@@ -375,7 +398,7 @@ def test_a_keyring_prompt_still_open_is_tried_again_later(ui, monkeypatch):
     assert host._create_sunshine_credentials() is not None and created == ["sunshine"]
 
 
-@pytest.mark.parametrize("status,keyring_works", [(401, True), (200, True), (0, True), (307, False)])
+@pytest.mark.parametrize("status,keyring_works", [(401, True), (200, True), (0, True), (401, False)])
 def test_an_existing_sunshine_user_is_never_replaced(ui, monkeypatch, status, keyring_works):
     from big_remote_play.utils import secret_store
 
