@@ -54,7 +54,7 @@ def primary_connector(run=subprocess.run) -> str:
     return ""
 
 
-def local_screens(display=None, primary: str | None = None) -> list[LocalScreen]:
+def local_screens(display=None, primary: str | None = None, edids: dict[str, bytes] | None = None) -> list[LocalScreen]:
     """Connected screens from GDK (main thread), in GDK's order."""
     if display is None:
         import gi
@@ -66,6 +66,9 @@ def local_screens(display=None, primary: str | None = None) -> list[LocalScreen]
     if display is None:
         return []
     primary = primary_connector() if primary is None else primary
+    from big_remote_play.utils.monitor_names import connector_edids, gdk_monitor_label
+
+    edids = connector_edids() if edids is None else edids
     screens: list[LocalScreen] = []
     monitors = display.get_monitors()
     for index in range(monitors.get_n_items()):
@@ -75,7 +78,7 @@ def local_screens(display=None, primary: str | None = None) -> list[LocalScreen]
             continue
         area = monitor.get_geometry()
         scale = monitor.get_scale_factor() or 1
-        model = " ".join(part for part in (monitor.get_manufacturer() or "", monitor.get_model() or "") if part)
+        model = gdk_monitor_label(monitor, edids)
         screens.append(LocalScreen(connector, model, area.x * scale, area.y * scale, area.width * scale, area.height * scale, connector == primary))
     return screens
 

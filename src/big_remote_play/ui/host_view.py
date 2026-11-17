@@ -384,7 +384,14 @@ class HostView(Gtk.Box):
         monitors = [(_("Automatic"), "auto")]
         is_wayland = os.environ.get("XDG_SESSION_TYPE") == "wayland"
 
+        # Sunshine's KMS capture knows the kernel names, not X11's.
+        self._kms_connectors = {} if is_wayland else self._x11_kms_connectors()
+
         # Method: GDK (Most consistent for labels and Wayland indices)
+        from big_remote_play.utils.monitor_names import connector_edids, gdk_monitor_label, monitor_label
+
+        edids = connector_edids()
+        self._monitor_names = {}
         names = []
         try:
             display = Gdk.Display.get_default()
@@ -396,14 +403,10 @@ class HostView(Gtk.Box):
                         continue
                     conn = monitor.get_connector()
                     if conn:
-                        manufacturer = monitor.get_manufacturer() or ""
-                        model = monitor.get_model() or ""
-                        label_parts = []
-                        if manufacturer:
-                            label_parts.append(manufacturer)
-                        if model:
-                            label_parts.append(model)
-                        label = " ".join(label_parts) if label_parts else _("Unknown")
+                        # GTK may only know "Unknown" or the connector; the
+                        # screen's EDID knows its real name.
+                        label = gdk_monitor_label(monitor, edids, kernel_name=self._kms_connectors.get) or _("Monitor / Display")
+                        self._monitor_names[conn] = label
 
                         # Connector names are stable across reorderings; GDK indices
                         # need not match Sunshine's capture backend indices.
@@ -414,9 +417,6 @@ class HostView(Gtk.Box):
         except Exception as e:
             _log.error(f"Error detecting GDK monitors: {e}")
 
-        # Sunshine's KMS capture knows the kernel names, not X11's.
-        self._kms_connectors = {} if is_wayland else self._x11_kms_connectors()
-
         # Fallback for X11/DRM if GDK didn't find everything
         if not is_wayland:
             # Xrandr (Reinforcement for X11)
@@ -424,7 +424,9 @@ class HostView(Gtk.Box):
                 res = subprocess.check_output(["xrandr", "--listmonitors"], text=True, timeout=5)
                 for n in _parse_xrandr_monitor_names(res):
                     if n and n not in names:
-                        monitors.append((_monitor_choice_label(len(monitors), _("Monitor / Display"), n), n))
+                        label = monitor_label("", "", n, edid=edids.get(self._kms_connectors.get(n, n), b"")) or _("Monitor / Display")
+                        self._monitor_names[n] = label
+                        monitors.append((_monitor_choice_label(len(monitors), label, n), n))
                         names.append(n)
             except Exception:
                 pass
@@ -436,7 +438,9 @@ class HostView(Gtk.Box):
 
                 connected = [p.name.split("-", 1)[1] for p in sorted(Path("/sys/class/drm").glob("card*-*")) if (p / "status").exists() and (p / "status").read_text().strip() == "connected"]
                 for name in _unlisted_connectors(connected, names, self._kms_connectors):
-                    monitors.append((_monitor_choice_label(len(monitors), _("Monitor / Display"), name), name))
+                    label = monitor_label("", "", name, edid=edids.get(name, b"")) or _("Monitor / Display")
+                    self._monitor_names[name] = label
+                    monitors.append((_monitor_choice_label(len(monitors), label, name), name))
                     names.append(name)
             except Exception:
                 pass
@@ -2984,7 +2988,7 @@ class HostView(Gtk.Box):
                     (index for index, (_label, value) in enumerate(self.available_monitors) if value == connector),
                     position + 1,
                 )
-                name = " ".join(part for part in (monitor.get_manufacturer() or "", monitor.get_model() or "") if part) or _("Unknown")
+                name = getattr(self, "_monitor_names", {}).get(connector) or _("Monitor / Display")
                 specs.append((monitor, f"{number:02d}", name, connector))
         except Exception as exc:
             _log.error("Error preparing monitor identifiers: %s", exc)
