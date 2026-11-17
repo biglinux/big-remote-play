@@ -50,9 +50,12 @@ ignora o touchscreen do Sunshine; ninguém recebia os toques.
 Correção:
 
 - big-keyboard 0.2.3: modo de toque remoto `mouse`, o `exclusive` que
-  continua lendo o celular com tudo oculto; então a tela inteira é o mouse
-  em toque direto (o ponteiro vai até o dedo, tocar clica, dois dedos
-  rolam, toque com segundo dedo é o clique direito).
+  continua lendo o celular com tudo oculto; então a tela inteira é o mouse.
+- big-keyboard 0.2.4 (pedido depois do teste no celular): com tudo oculto,
+  o mouse é um **touchpad** — arrastar o dedo move o ponteiro de onde ele
+  está, toque rápido clica, toque com outro dedo é o clique direito, dois
+  dedos rolam. No 0.2.3 era toque direto (o ponteiro pulava para o dedo),
+  que continua em *Sempre toque direto* nas configurações do big-keyboard.
 - Big Remote Play pede `mouse` no wlmaker (Automático → Controle e toque),
   também quando o controle não abre sozinho; volta para `exclusive` quando
   o último celular sai. Um big-keyboard antigo recusa o valor e fica no
