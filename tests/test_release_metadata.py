@@ -116,3 +116,16 @@ def test_pkgbuild_alone_or_forced_builds_current_project_main(tmp_path: Path) ->
     for loaded in (_pkgbuild_source(alone), _pkgbuild_source(ROOT / "pkgbuild" / "PKGBUILD", BIGREMOTEPLAY_FROM_GIT="1")):
         assert loaded["local"] == "0"
         assert loaded["source"] == "git+https://github.com/ruscher/big-remote-play.git#branch=main"
+
+
+def test_the_repository_has_exactly_one_pkgbuild() -> None:
+    """Package builders find the recipe by its name and enter its folder.
+
+    Reported on 2026-11-17: BigLinux's package builder failed with
+    ``cd: too many arguments`` once the Sunshine recipe was also called
+    ``PKGBUILD`` (pkgbuild/sunshine/). Other recipes use another file name
+    (build-aux/sunshine/sunshine.PKGBUILD, built with ``makepkg -p``)."""
+    tracked = subprocess.run(["git", "ls-files", "-z"], cwd=ROOT, capture_output=True, text=True, check=False)
+    assert tracked.returncode == 0, "the release tests run in a git checkout"
+    names = [path for path in tracked.stdout.split("\0") if path and path.rsplit("/", 1)[-1].lower() == "pkgbuild"]
+    assert names == ["pkgbuild/PKGBUILD"]

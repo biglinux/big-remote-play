@@ -18,7 +18,7 @@
 
 ## Entradas no Moonlight
 
-- Patch no Sunshine (`pkgbuild/sunshine/brp-per-app-display-bitrate.patch`):
+- Patch no Sunshine (`build-aux/sunshine/brp-per-app-display-bitrate.patch`):
   `output-name` e `max-bitrate` por entrada do `apps.json`.
 - `host/moonlight_entries.py` decide as entradas; `GameLibrary.sync_entries`
   aplica pela API (compartilhando) ou pelo arquivo; marca `brp-entry` para
