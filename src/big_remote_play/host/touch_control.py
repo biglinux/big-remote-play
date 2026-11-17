@@ -67,11 +67,46 @@ def sunshine_settings(mode: str) -> dict[str, str]:
     return {}
 
 
-def remote_touch_mode(mode: str) -> str:
+# Desktops whose compositor drops touch devices. wlmaker 0.8 ignores
+# WLR_INPUT_DEVICE_TOUCH (src/input/manager.c); measured on 2026-11-17: a
+# phone sending native touch moved nothing at all there, while Sunshine's
+# relative and absolute mice reached it.
+TOUCHLESS_DESKTOPS = frozenset({"wlmaker"})
+
+
+def desktop_ignores_touch(env: Mapping[str, str] | None = None) -> bool:
+    return desktop_name(env)[1] in TOUCHLESS_DESKTOPS
+
+
+def effective_mode(mode: str, *, ignores_touch: bool, controller_installed: bool) -> str:
+    """What Automatic means on this desktop; every other mode is the person's choice.
+
+    Where the desktop drops touch, a phone's fingers must go somewhere that
+    works: with the on-screen controller installed, the controller and the
+    keyboard (touching elsewhere moves the pointer, see keyboard_with_controller);
+    without it, Sunshine stops offering touch and Moonlight sends a mouse.
+    """
+    mode = normalize_mode(mode)
+    if mode != AUTOMATIC or not ignores_touch:
+        return mode
+    return HYBRID if controller_installed else MOUSE
+
+
+def keyboard_with_controller(mode: str, *, ignores_touch: bool) -> bool:
+    """Controller and touch on a desktop without touch: big-keyboard opens its
+    keyboard beside the controller, and touches outside both move the pointer
+    (its RemoteMouse=auto: direct touch with keyboard and controller open)."""
+    return normalize_mode(mode) == HYBRID and ignores_touch
+
+
+def remote_touch_mode(mode: str, *, ignores_touch: bool = False) -> str:
     """``big-keyboard`` remote-touch mode: exclusive keeps every finger on the
     controller (nothing becomes a click); shared lets touches outside it reach
-    the desktop where the desktop accepts touch."""
+    the desktop where the desktop accepts touch. Where it does not, the
+    controller keeps the fingers and turns the others into the pointer."""
     mode = normalize_mode(mode)
+    if mode == HYBRID and ignores_touch:
+        return "exclusive"
     return {GAMEPAD: "exclusive", HYBRID: "shared", TOUCH: "off", MOUSE: "off"}.get(mode, "exclusive")
 
 
@@ -239,6 +274,10 @@ class BigKeyboard:
             self._set_state("remote-touch", GLib.Variant("s", remote_touch))
         if valid_output(output):
             self._set_state("overlay-output", GLib.Variant("s", output))
+
+    def show_keyboard(self, visible: bool) -> None:
+        """The keyboard itself (big-keyboard's show/hide actions)."""
+        self._activate("show" if visible else "hide")
 
     def show(self, visible: bool) -> None:
         from gi.repository import GLib  # type: ignore

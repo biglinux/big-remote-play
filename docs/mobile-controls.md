@@ -74,6 +74,15 @@ this one on the game PC. Use one at a time, or the game sees two
 controllers. In **Game Window** the phone sees only the game, so use
 Moonlight's own controls there. Technical details: [touch controls](touch/03-arquitetura.md).
 
+### Desktops that do not accept touch (wlmaker)
+
+wlmaker drops touch devices (`WLR_INPUT_DEVICE_TOUCH` is ignored in its input manager), while it takes Sunshine's relative and absolute mice. Reported on 2026-11-17: on Big WindowMaker (Wayland) a phone sending native touch moved nothing, and the controller did not open in **Automatic**. There, **Automatic** now means:
+
+- with the Big WM Virtual Keyboard installed: **Controller and touch**, with the keyboard opened beside the controller and every finger taken by it (`remote-touch = exclusive`); fingers on the controller press its buttons, fingers anywhere else move the pointer (big-keyboard's direct-touch mouse);
+- without it: **Mouse** — Sunshine stops offering touch, and Moonlight sends a mouse, which wlmaker accepts.
+
+A mode the person chose is never replaced. The mode row says what Automatic means on this desktop. Tests: `tests/test_touch_controls_ui.py`.
+
 ## Moonlight on a computer
 
 Moonlight on a computer handles these keys itself; they are not sent to the game PC.

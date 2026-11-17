@@ -62,9 +62,17 @@ class FakeKeyboard:
     def release(self):
         FakeKeyboard.log.append(("release",))
 
+    def show_keyboard(self, visible):
+        FakeKeyboard.log.append(("keyboard", visible))
+
+    def path(self):
+        return "/usr/bin/big-keyboard"
+
 
 @pytest.fixture
-def touch(ui):
+def touch(ui, monkeypatch):
+    # Hermetic: the developer's own desktop never decides what a test sees.
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "KDE")
     FakeKeyboard.log = []
     saved: list[bool] = []
     context = {"sharing": True, "game_window": False, "output": "DP-1", "sunshine_config": {}}
@@ -182,3 +190,39 @@ def test_every_check_icon_exists_in_the_theme(ui) -> None:
     assert theme is not None
     for name in {*touch_controls._ICONS.values(), "brp-emblem-ok-symbolic", "dialog-warning-symbolic"}:
         assert theme.has_icon(name), name
+
+
+def test_on_wlmaker_automatic_opens_keyboard_and_controller_so_the_phone_has_a_mouse(touch, monkeypatch) -> None:
+    """Reported 2026-11-17 on wlmaker: the phone's fingers moved nothing and the
+    on-screen controller never opened. wlmaker drops touch devices."""
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "wlmaker")
+    touch.load({})
+    assert touch.mode == "automatic" and touch.effective_mode == "hybrid"
+    assert "does not accept touch" in touch.mode_row.get_subtitle()
+    touch.on_connections(1)
+    assert wait(lambda: ("keyboard", True) in FakeKeyboard.log)
+    # Every finger is big-keyboard's: on the controller it plays, elsewhere it is the pointer.
+    assert ("configure", "exclusive", "DP-1") in FakeKeyboard.log and ("show", True) in FakeKeyboard.log
+    touch.on_connections(0)
+    assert wait(lambda: ("keyboard", False) in FakeKeyboard.log)
+
+
+def test_on_wlmaker_without_the_controller_the_phone_sends_a_mouse(touch, monkeypatch) -> None:
+    class NotInstalled(FakeKeyboard):
+        def path(self):
+            return None
+
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "wlmaker")
+    touch._keyboard_factory = NotInstalled
+    touch.load({})
+    assert touch.effective_mode == "mouse"
+    assert backend.sunshine_settings(touch.effective_mode) == {"native_pen_touch": "disabled"}
+
+
+def test_a_chosen_mode_is_never_replaced(touch, monkeypatch) -> None:
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "wlmaker")
+    touch.load({"touch_mode": "gamepad"})
+    assert touch.effective_mode == "gamepad"
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "KDE")
+    touch.load({})
+    assert touch.effective_mode == "automatic"
