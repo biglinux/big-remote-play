@@ -121,6 +121,8 @@ def fake_api(monkeypatch):
     FakeApi.accept = True
     monkeypatch.setattr(api, "HeadscaleApi", FakeApi)
     monkeypatch.setattr("big_remote_play.ui.headscale_wizard.default_user_name", lambda: "player")
+    # Hermetic: the developer's own /etc/headscale never decides a test.
+    monkeypatch.setattr("big_remote_play.private_network.headscale_server.serves_here", lambda url, **kwargs: "")
 
 
 def report(**values):
@@ -478,7 +480,7 @@ def test_asking_the_owner_shows_the_approval_command(ui, tmp_path):
     wiz.service.manager.connect_tailscale = join
     press(ui, "Ask to join")
     try:
-        assert wait(lambda: "headscale auth register --auth-id hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user friends" in texts(visible(ui)))
+        assert wait(lambda: "sudo headscale auth register --auth-id hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user friends" in texts(visible(ui)))
     finally:
         approved.set()
 
@@ -690,3 +692,33 @@ def test_a_wrong_or_expired_code_is_explained(ui, tmp_path):
     press(ui, "Approve")
     assert wait(lambda: "The code was not accepted." in texts(visible(ui)))
     assert not wiz.progress.is_done("another_device")
+
+
+def test_a_server_running_here_is_added_without_pasting_any_key(ui, tmp_path, monkeypatch):
+    """Reported 2026-11-17: the server set up on this computer was later checked
+    as "Another server" and step 6 asked for an API key the person never had."""
+    monkeypatch.setattr("big_remote_play.private_network.headscale_server.serves_here", lambda url, **kwargs: "127.0.0.1:8080" if url == f"https://{DOMAIN}" else "")
+    local = FakeLocal()
+    wiz = wizard(ui, tmp_path, local=local)
+    wiz.progress = SetupProgress(mode="another_server", domain=DOMAIN, address_kind="domain")
+    wiz._push(wiz._this_computer_page())
+    content = texts(visible(ui))
+    assert "The server runs on this computer" in content and "Use the API key" not in content
+    assert wiz.progress.mode == "this_computer" and wiz.progress.local_api == "http://127.0.0.1:8080"
+    press(ui, "Add this computer")
+    assert wait(lambda: "This computer is connected" in texts(visible(ui)))
+    assert local.calls == [("create-user", "player"), ("create-apikey",)]
+    assert FakeApi.created == [("http://127.0.0.1:8080", "1", 1)]
+    assert wiz.service.manager.joins == [(f"https://{DOMAIN}", "hskey-auth-ONETIME")]
+
+
+def test_the_owner_gets_real_commands_never_a_placeholder_user(ui, tmp_path):
+    wiz = wizard(ui, tmp_path)
+    wiz.progress = SetupProgress(mode="another_server", domain=DOMAIN, address_kind="domain")
+    wiz._push(wiz._this_computer_page())
+    assert "sudo headscale apikeys create --expiration 90d" in texts(visible(ui))
+    wiz._show_approval(f"https://{DOMAIN}/register/hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX")
+    content = texts(visible(ui))
+    assert "sudo headscale users create player" in content
+    assert "sudo headscale auth register --auth-id hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user player" in content
+    assert "USER" not in content.replace("users", "").replace("--user player", "")

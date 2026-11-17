@@ -7,7 +7,16 @@ Headscale pre-auth keys), which are used once and never stored here.
 
 Only non-secret metadata is written to JSON: which kind of credential exists,
 for which server or tailnet, when it was saved and a masked hint such as
-``tskey-api-••••••••3FxQ``. The secret itself lives only in the keyring.
+``tskey-api-••••••••3FxQ``. The secret itself lives in the keyring.
+
+Only when no keyring answers at all (Window Maker/wlmaker sessions on
+BigLinux: libsecret loads, every lookup fails), secrets go to an owner-only
+file, ``private_network/secrets.json`` (0600 in a 0700 folder, atomic). Before,
+nothing could be saved there: Headscale's own setup created an API key it
+then lost, and the wizard asked the person for a key they never had
+(reported 2026-11-17). A locked keyring, or one whose prompt was dismissed,
+never sends a secret to the file. A keyring that appears later takes the
+secrets over and the file is emptied.
 """
 
 from __future__ import annotations
@@ -21,7 +30,7 @@ import time
 from typing import Any
 
 from big_remote_play import paths
-from big_remote_play.utils.secret_store import SecretKey, SecretStore, SecretStoreUnavailable
+from big_remote_play.utils.secret_store import SecretKey, SecretStore, SecretStoreTimeout, SecretStoreUnavailable
 from big_remote_play.utils.secure_io import secure_write_text, set_aside_corrupt
 
 MASK = "••••••••"
@@ -132,17 +141,106 @@ def _label(kind: CredentialKind) -> str:
     }[kind]
 
 
+def _file_id(key: SecretKey) -> str:
+    return f"{key.provider}/{key.kind}/{key.identifier}"
+
+
+class _KeyringOrFile:
+    """The keyring, or an owner-only file when no keyring exists (see the module notes)."""
+
+    def __init__(self, keyring: SecretStore, path: Path) -> None:
+        self.keyring = keyring
+        self.path = path
+
+    def _absent(self) -> bool:
+        from big_remote_play.utils.sunshine_credentials import keyring_absent
+
+        return keyring_absent(self.keyring)
+
+    def _read(self) -> dict[str, str]:
+        try:
+            info = self.path.stat()
+            if info.st_uid != os.getuid():
+                return {}
+            if info.st_mode & 0o077:
+                os.chmod(self.path, 0o600)
+            data = json.loads(self.path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return {}
+        return {str(key): str(value) for key, value in data.items() if isinstance(value, str)} if isinstance(data, dict) else {}
+
+    def _write(self, data: dict[str, str]) -> None:
+        if data:
+            secure_write_text(str(self.path), json.dumps(data, sort_keys=True))
+        else:
+            try:
+                self.path.unlink()
+            except FileNotFoundError:
+                pass
+
+    def store(self, key: SecretKey, value: str, label: str) -> None:
+        try:
+            self.keyring.store(key, value, label)
+        except SecretStoreTimeout:
+            raise
+        except SecretStoreUnavailable:
+            if not self._absent():
+                raise
+            data = self._read()
+            data[_file_id(key)] = value
+            self._write(data)
+            return
+        data = self._read()
+        if data.pop(_file_id(key), None) is not None:
+            self._write(data)
+
+    def lookup(self, key: SecretKey) -> str:
+        try:
+            value = self.keyring.lookup(key)
+        except SecretStoreTimeout:
+            raise
+        except SecretStoreUnavailable:
+            if not self._absent():
+                raise
+            return self._read().get(_file_id(key), "")
+        if value:
+            return value
+        # Saved while there was no keyring: the keyring takes it over now.
+        data = self._read()
+        moved = data.get(_file_id(key), "")
+        if moved:
+            try:
+                self.keyring.store(key, moved, "Big Remote Play")
+                data.pop(_file_id(key))
+                self._write(data)
+            except SecretStoreUnavailable:
+                pass
+        return moved
+
+    def clear(self, key: SecretKey) -> bool:
+        data = self._read()
+        removed = data.pop(_file_id(key), None) is not None
+        if removed:
+            self._write(data)
+        try:
+            return self.keyring.clear(key) or removed
+        except SecretStoreUnavailable:
+            if removed or self._absent():
+                return removed
+            raise
+
+
 class CredentialStore:
     """Save, look up and remove administrative credentials.
 
     All methods may block on D-Bus and must run outside the GTK main thread.
-    ``SecretStoreUnavailable`` propagates: without a keyring nothing is saved,
-    and nothing falls back to a plain file.
+    ``SecretStoreUnavailable`` propagates when a keyring exists but refuses;
+    with no keyring at all, secrets go to the owner-only file.
     """
 
-    def __init__(self, secret_store: SecretStore | None = None, metadata_file: Path | None = None) -> None:
-        self._secrets = secret_store or SecretStore()
+    def __init__(self, secret_store: SecretStore | None = None, metadata_file: Path | None = None, secrets_file: Path | None = None) -> None:
         self._metadata_file = metadata_file
+        self._secrets = _KeyringOrFile(secret_store or SecretStore(), secrets_file or self.metadata_file.with_name("secrets.json"))
 
     @property
     def metadata_file(self) -> Path:

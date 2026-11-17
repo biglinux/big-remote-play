@@ -343,14 +343,29 @@ another computer: no SSH is used.
   creates a **pre-auth key** for the user (single use, 1 hour), and
   `tailscale up --login-server=https://<host> --auth-key=file:…` joins with it.
   The key travels as a file reference, never in argv.
+- **A server that runs here is always recognised.** Reported on 2026-11-17: on
+  a wlmaker session (no keyring) the API key created by **Set up the server**
+  could not be kept; the server was then checked as *Another server* and the
+  step asked for an API key the person never had (the command they found on
+  Headscale's own page used the placeholder `--user USERNAME`: *user not
+  found*). Now the step reads `/etc/headscale/config.yaml` (world-readable) and,
+  when its `server_url` is this server and Headscale listens on loopback, it
+  says *The server runs on this computer* and offers one button, **Add this
+  computer**: without a saved API key the helper creates the user and a new
+  API key (one administrator password, kept a few minutes), and the key is kept
+  in the keyring or, with no keyring at all, in the owner-only file described
+  in [private network security](private-network-security.md#where-secrets-can-and-cannot-be).
 - **Another server**, three choices:
-  - *I manage this server*: paste the **API key**. It is stored in the
-    keyring, tested, and then used like above (creating the user if needed);
+  - *1. I manage this server (recommended)*: the page shows the command to
+    run on the server (`sudo headscale apikeys create --expiration 90d`, with
+    **Copy**); paste the **API key** it prints. It is stored, tested, and then
+    used like above (creating the user if needed);
   - *I have a key from the server owner*: a **pre-auth key**, used once and
     never saved;
   - *Ask the server owner to approve*: this computer asks to join. The page
-    shows the command for the owner
-    (`headscale auth register --auth-id <id> --user <user>`) and continues by
+    shows the owner's two commands with the real user name, never a
+    placeholder: `sudo headscale users create <user>` (once) and
+    `sudo headscale auth register --auth-id <id> --user <user>`, and continues by
     itself once it is approved.
 - If Tailscale is active, the wizard first asks **Switch from Tailscale to
   Headscale?**. Joining adds a new profile; the Tailscale account stays saved.

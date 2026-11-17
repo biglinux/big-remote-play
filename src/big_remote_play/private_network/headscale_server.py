@@ -242,6 +242,43 @@ def _https_get(address: ServerAddress, path: str, connect_host: str) -> tuple[in
 
 # ── a server on this computer ──────────────────────────────────────────────
 
+LOCAL_CONFIG = Path("/etc/headscale/config.yaml")
+
+
+def _config_value(text: str, key: str) -> str:
+    for line in text.splitlines():
+        if line.startswith(f"{key}:"):
+            return line.split(":", 1)[1].strip().strip('"').strip("'")
+    return ""
+
+
+def _headscale_active() -> bool:
+    try:
+        return subprocess.run(["systemctl", "is-active", "--quiet", "headscale"], timeout=3, check=False).returncode == 0
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
+def serves_here(server_url: str, *, config: Path = LOCAL_CONFIG, active: Callable[[], bool] = _headscale_active) -> str:
+    """This computer's loopback API address when ``server_url`` is the Headscale running here, else ``""``.
+
+    Read without root: Headscale's configuration is world-readable. Reported
+    on 2026-11-17: the server set up here was later checked as "Another
+    server", and "Add this computer" asked for an API key the person did not
+    have, although Big Remote Play can create one here itself.
+    """
+    if not server_url:
+        return ""
+    try:
+        text = config.read_text(encoding="utf-8")
+    except OSError:
+        return ""
+    configured = _config_value(text, "server_url").rstrip("/").lower()
+    listen = _config_value(text, "listen_addr")
+    if configured != server_url.rstrip("/").lower() or not listen.startswith("127.0.0.1:"):
+        return ""
+    return listen if active() else ""
+
 
 @dataclass(frozen=True)
 class HelperResult:
