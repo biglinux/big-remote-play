@@ -30,10 +30,65 @@ from .network_common import Worker
 
 # One package transaction at a time, whichever page started it.
 _INSTALLING = threading.Lock()
+# Lines kept for Technical details; a package manager can print thousands.
+_MAX_LOG_LINES = 400
 
 
 def installation_running() -> bool:
     return _INSTALLING.locked()
+
+
+class _InstallSession:
+    """The running (or last) installation, seen by every checklist (GTK thread).
+
+    Reported (2026-11-17): Headscale's install page was rebuilt while Pamac
+    waited for the password; the new page only said "Another installation is
+    running", with no technical details and a button that stayed disabled
+    after the other installation ended. Every checklist now follows the
+    same session: its log, its packages, and its end, which makes each one
+    look at the computer again.
+    """
+
+    def __init__(self) -> None:
+        self.summary = ""
+        self.lines: list[str] = []
+        self.result = ""
+        self._listeners: list[Callable[[str], object]] = []
+
+    def subscribe(self, listener: Callable[[str], object]) -> None:
+        if listener not in self._listeners:
+            self._listeners.append(listener)
+
+    def unsubscribe(self, listener: Callable[[str], object]) -> None:
+        if listener in self._listeners:
+            self._listeners.remove(listener)
+
+    def _emit(self, event: str) -> None:
+        for listener in list(self._listeners):
+            listener(event)
+
+    def begin(self) -> None:
+        self.summary, self.lines, self.result = "", [], ""
+        self._emit("begin")
+
+    def set_summary(self, text: str) -> None:
+        self.summary = text
+        self._emit("update")
+
+    def add_line(self, text: str) -> None:
+        self.lines.append(text)
+        del self.lines[:-_MAX_LOG_LINES]
+        self._emit("update")
+
+    def finish(self, result: str) -> None:
+        self.result = result
+        self._emit("finish")
+
+    def text(self) -> str:
+        return "\n".join(self.lines)
+
+
+_SESSION = _InstallSession()
 
 
 class ComponentChecklist(Gtk.Box):
@@ -131,6 +186,8 @@ class ComponentChecklist(Gtk.Box):
         # Removed from the window (page replaced, window closed): nothing it
         # started may continue a flow afterwards.
         self.connect("unrealize", lambda *_args: self.close())
+        _SESSION.subscribe(self._on_session)
+        self._show_session()
         self.refresh()
 
     # ── checking ───────────────────────────────────────────────────────────
@@ -180,7 +237,7 @@ class ComponentChecklist(Gtk.Box):
         self.button.set_sensitive(not installation_running())
         self.button_label.set_label(self._install_label)
         if installation_running():
-            self._say(_("Another installation is running. Wait until it finishes."))
+            self._say_other_installation()
 
     # ── installing ─────────────────────────────────────────────────────────
     def install(self) -> None:
@@ -188,20 +245,20 @@ class ComponentChecklist(Gtk.Box):
             return
         targets = dependencies.missing(self.states) or list(self.component_ids)
         if not _INSTALLING.acquire(blocking=False):
-            self._say(_("Another installation is running. Wait until it finishes."))
+            self._say_other_installation()
             return
         self._set_busy(True)
         self.button.set_sensitive(False)
         self.spinner.set_visible(True)
         self.button_label.set_label(_("Installing…"))
         self._say(_("Confirm with your password in the window that opens."))
-        self.log.get_buffer().set_text("")
+        self._owns_session = True
+        _SESSION.begin()
         self.details.set_visible(True)
         generation = self._worker.generation
 
         def add_line(text: str) -> bool:
-            buffer = self.log.get_buffer()
-            buffer.insert(buffer.get_end_iter(), text + "\n")
+            _SESSION.add_line(text)
             if not text.lower().startswith(("error", "warning")):
                 self._say(_("Installing…"))
             return False
@@ -217,9 +274,11 @@ class ComponentChecklist(Gtk.Box):
             _INSTALLING.release()
             self._set_busy(False)
             self.spinner.set_visible(False)
-            if generation != self._worker.generation:
-                return False  # the page went away; the next visit looks again
-            self._installed(outcome, targets)
+            alive = generation == self._worker.generation
+            if alive:
+                self._installed(outcome, targets)
+            # Then every other page showing a checklist looks again.
+            _SESSION.finish("ok" if outcome is not None and outcome.ok else "failed")
             return False
 
         def run() -> None:
@@ -240,11 +299,44 @@ class ComponentChecklist(Gtk.Box):
     def _show_plan(self, plan: dependencies.InstallPlan | None) -> bool:
         if plan is None:
             packages = ", ".join(dependencies.COMPONENTS[component_id].package for component_id in self.component_ids)
-            self.details_summary.set_label(_("Packages: {packages}").format(packages=packages))
+            _SESSION.set_summary(_("Packages: {packages}").format(packages=packages))
             return False
         method = "Pamac" if plan.method == "pamac" else "pacman (PolicyKit)"
-        self.details_summary.set_label(_("Packages: {packages}").format(packages=", ".join(plan.packages)) + "\n" + _("Installed with: {method}").format(method=method))
+        _SESSION.set_summary(_("Packages: {packages}").format(packages=", ".join(plan.packages)) + "\n" + _("Installed with: {method}").format(method=method))
         return False
+
+    # ── the shared installation ────────────────────────────────────────────
+    def _show_session(self) -> None:
+        """Technical details of the running or last installation, on every page."""
+        if not (_SESSION.summary or _SESSION.lines):
+            return
+        self.details_summary.set_label(_SESSION.summary)
+        self.details_summary.set_visible(bool(_SESSION.summary))
+        buffer = self.log.get_buffer()
+        buffer.set_text(_SESSION.text())
+        self.log.scroll_to_iter(buffer.get_end_iter(), 0.0, False, 0.0, 0.0)
+        self.details.set_visible(True)
+
+    def _on_session(self, event: str) -> None:
+        if self._worker_closed:
+            return
+        self._show_session()
+        if event == "begin" and not self.busy:
+            self.button.set_sensitive(False)
+            self._say_other_installation()
+        elif event == "finish" and not self.busy:
+            if getattr(self, "_owns_session", False):
+                self._owns_session = False  # this page already said how it went
+                return
+            # Whatever the other page installed may be what this one needs.
+            if _SESSION.result != "ok":
+                self._say(_("The other installation did not finish. Technical details say what happened; you can try again here."))
+            self.refresh()
+
+    def _say_other_installation(self) -> None:
+        self.button.set_sensitive(False)
+        self.details.set_visible(bool(_SESSION.summary or _SESSION.lines))
+        self._say(_("Another installation is running. This page continues by itself when it finishes; Technical details shows its progress."))
 
     def _installed(self, outcome: dependencies.InstallOutcome | None, targets: Sequence[str]) -> None:
         if outcome is None:
@@ -297,6 +389,7 @@ class ComponentChecklist(Gtk.Box):
         return self._worker._closed
 
     def close(self) -> None:
+        _SESSION.unsubscribe(self._on_session)
         self._worker.close()
 
 
