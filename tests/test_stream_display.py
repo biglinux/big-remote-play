@@ -328,3 +328,18 @@ def test_pairing_while_someone_plays_explains_the_moonlight_rule(ui):
     host.perf_monitor.connections = [ConnectionInfo("TV", "192.0.2.5")]
     assert "currently in a game" in host._none_waiting_message("plain")
     host.perf_monitor.connections = []
+
+
+def test_kscreen_doctor_is_used_only_on_plasma() -> None:
+    """Measured on wlmaker (2026-11-17): kscreen-doctor never answers outside
+    Plasma, and each connection waited 20 s for it before the stream began."""
+    from big_remote_play.host import stream_display
+
+    assert stream_display.plasma_session({"XDG_CURRENT_DESKTOP": "KDE"})
+    assert stream_display.plasma_session({"XDG_CURRENT_DESKTOP": "foo:KDE"})
+    assert not stream_display.plasma_session({"XDG_CURRENT_DESKTOP": "wlmaker"})
+    assert not stream_display.plasma_session({})
+    which = lambda name: "/usr/bin/kscreen-doctor"  # noqa: E731
+    assert stream_display.default_tool({"XDG_CURRENT_DESKTOP": "wlmaker"}, which) == ""
+    assert stream_display.default_tool({"XDG_CURRENT_DESKTOP": "KDE"}, which) == "/usr/bin/kscreen-doctor"
+    assert stream_display.TOOL_TIMEOUT_SECONDS <= 5
