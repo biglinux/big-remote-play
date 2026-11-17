@@ -6,6 +6,7 @@ from __future__ import annotations
 import configparser
 import re
 import stat
+import subprocess
 import tomllib
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -81,6 +82,14 @@ if nix.is_file():
     m = re.search(r'^\s*version\s*=\s*"([^"]+)";', text(nix), re.MULTILINE)
     if m:
         version_sources["default.nix"] = m.group(1)
+
+# Package builders (BigLinux's included) find the recipe by its file name and
+# enter its folder: a second PKGBUILD made that "cd: too many arguments".
+_tracked = subprocess.run(["git", "ls-files", "-z"], cwd=ROOT, capture_output=True, text=True, check=False)
+if _tracked.returncode == 0:
+    _recipes = sorted(p for p in _tracked.stdout.split("\0") if p and p.rsplit("/", 1)[-1].lower() == "pkgbuild")
+    if _recipes != ["pkgbuild/PKGBUILD"]:
+        error(f"exactly one file named PKGBUILD is allowed (pkgbuild/PKGBUILD); found: {', '.join(_recipes) or 'none'}")
 
 pkgbuild = ROOT / "pkgbuild" / "PKGBUILD"
 if pkgbuild.is_file():

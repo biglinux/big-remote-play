@@ -36,7 +36,7 @@ An entry called *02 - Monitor* or *Desktop Low* would therefore show the same sc
 
 ## The Sunshine build with per-entry settings
 
-[`pkgbuild/sunshine/`](../pkgbuild/sunshine/) builds Sunshine 2026.914 with two small changes in [`brp-per-app-display-bitrate.patch`](../pkgbuild/sunshine/brp-per-app-display-bitrate.patch) (besides the touch fix backported from upstream):
+[`build-aux/sunshine/`](../build-aux/sunshine/) builds Sunshine 2026.914 with two small changes in [`brp-per-app-display-bitrate.patch`](../build-aux/sunshine/brp-per-app-display-bitrate.patch) (besides the touch fix backported from upstream):
 
 - `output-name` in an `apps.json` entry: while that entry runs, the capture uses this screen instead of the global `output_name` (`video.cpp`, `refresh_displays`). It accepts the same names as `output_name` (KMS and wlroots use the kernel connector, `DP-2`).
 - `max-bitrate` (Kbps): while that entry runs, the bitrate the client asked for is capped (`rtsp.cpp`, after Sunshine's own FEC and audio adjustments), for every encoder.
@@ -46,10 +46,12 @@ The running entry's values are kept behind a mutex (`proc::running_output_name()
 Build and install on BigLinux/Manjaro:
 
 ```bash
-cd pkgbuild/sunshine
-makepkg -s
+cd build-aux/sunshine
+makepkg -s -p sunshine.PKGBUILD
 sudo pacman -U sunshine-2026.914.233613-5-*.pkg.tar*
 ```
+
+The recipe is called `sunshine.PKGBUILD`, not `PKGBUILD`: the repository has exactly one file named `PKGBUILD` (`pkgbuild/PKGBUILD`, Big Remote Play itself), because package builders find it by name. Reported on 2026-11-17: BigLinux's package builder failed with `cd: too many arguments` when this recipe was `pkgbuild/sunshine/PKGBUILD`.
 
 Stop sharing first: a Sunshine that was already running keeps the old binary until it is started again.
 
@@ -67,7 +69,7 @@ Sunshine has no feature query. `host/moonlight_entries.sunshine_supports_app_ove
 
 ## Verified on real hardware (2026-11-17)
 
-Three-monitor PC (LG ULTRAWIDE DP-1, LG HDR WFHD DP-2, LG ULTRAWIDE HDMI-A-1), wlmaker (wlroots) session, Sunshine built from `pkgbuild/sunshine/` running from its build tree on its own port (48989) with a temporary configuration, global `output_name = DP-1`; Moonlight Qt 6.2.0 with its own configuration directories, paired through `POST /api/pin`:
+Three-monitor PC (LG ULTRAWIDE DP-1, LG HDR WFHD DP-2, LG ULTRAWIDE HDMI-A-1), wlmaker (wlroots) session, Sunshine built from `build-aux/sunshine/` running from its build tree on its own port (48989) with a temporary configuration, global `output_name = DP-1`; Moonlight Qt 6.2.0 with its own configuration directories, paired through `POST /api/pin`:
 
 | Entry streamed | Sunshine's log |
 |---|---|
