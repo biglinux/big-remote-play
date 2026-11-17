@@ -1,0 +1,152 @@
+diff --git a/src/process.cpp b/src/process.cpp
+index 8a35cca63..c116132df 100644
+--- a/src/process.cpp
++++ b/src/process.cpp
+@@ -5,7 +5,9 @@
+ #define BOOST_BIND_GLOBAL_PLACEHOLDERS
+ 
+ // standard includes
++#include <algorithm>
+ #include <filesystem>
++#include <mutex>
+ #include <string>
+ #include <thread>
+ #include <vector>
+@@ -149,6 +151,28 @@ namespace proc {
+     return cmd_path.parent_path();
+   }
+ 
++  namespace {
++    std::mutex running_overrides_mutex;
++    std::string running_overrides_output_name;
++    int running_overrides_max_bitrate = 0;
++
++    void set_running_overrides(const std::string &output_name, int max_bitrate) {
++      std::lock_guard lock {running_overrides_mutex};
++      running_overrides_output_name = output_name;
++      running_overrides_max_bitrate = max_bitrate;
++    }
++  }  // namespace
++
++  std::string running_output_name() {
++    std::lock_guard lock {running_overrides_mutex};
++    return running_overrides_output_name;
++  }
++
++  int running_max_bitrate() {
++    std::lock_guard lock {running_overrides_mutex};
++    return running_overrides_max_bitrate;
++  }
++
+   int proc_t::execute(int app_id, std::shared_ptr<rtsp_stream::launch_session_t> launch_session) {
+     // Ensure starting from a clean slate
+     terminate();
+@@ -164,6 +188,7 @@ namespace proc {
+ 
+     _app_id = app_id;
+     _app = *iter;
++    set_running_overrides(_app.output_name, _app.max_bitrate);
+     _app_prep_begin = std::begin(_app.prep_cmds);
+     _app_prep_it = _app_prep_begin;
+ 
+@@ -321,6 +346,7 @@ namespace proc {
+ 
+   void proc_t::terminate() {
+     input::terminate_gamepads();
++    set_running_overrides({}, 0);
+     std::error_code ec;
+     placebo = false;
+     terminate_process_group(_process, _process_group, _app.exit_timeout);
+@@ -697,6 +723,8 @@ namespace proc {
+         auto auto_detach = app_node.get_optional<bool>("auto-detach"s);
+         auto wait_all = app_node.get_optional<bool>("wait-all"s);
+         auto exit_timeout = app_node.get_optional<int>("exit-timeout"s);
++        auto app_output_name = app_node.get_optional<std::string>("output-name"s);
++        auto app_max_bitrate = app_node.get_optional<int>("max-bitrate"s);
+ 
+         std::vector<proc::cmd_t> prep_cmds;
+         if (!exclude_global_prep.value_or(false)) {
+@@ -766,6 +794,8 @@ namespace proc {
+         ctx.auto_detach = auto_detach.value_or(true);
+         ctx.wait_all = wait_all.value_or(true);
+         ctx.exit_timeout = std::chrono::seconds {exit_timeout.value_or(5)};
++        ctx.output_name = parse_env_val(this_env, app_output_name.value_or(""));
++        ctx.max_bitrate = std::max(0, app_max_bitrate.value_or(0));
+ 
+         auto possible_ids = calculate_app_id(name, ctx.image_path, i++);
+         if (ids.count(std::get<0>(possible_ids)) == 0) {
+diff --git a/src/process.h b/src/process.h
+index 75a9de09e..7f119ae39 100644
+--- a/src/process.h
++++ b/src/process.h
+@@ -81,8 +81,22 @@ namespace proc {
+     bool auto_detach;  ///< Whether the process should detach automatically.
+     bool wait_all;  ///< Whether Sunshine waits for all child processes.
+     std::chrono::seconds exit_timeout;  ///< Exit timeout.
++    std::string output_name;  ///< Display to capture while this app runs (empty: the global `output_name`).
++    int max_bitrate {0};  ///< Highest video bitrate in Kbps while this app runs (0: no per-app limit).
+   };
+ 
++  /**
++   * @brief The display the running app asks for, or an empty string.
++   * @details Safe to call from any thread.
++   */
++  std::string running_output_name();
++
++  /**
++   * @brief The per-app video bitrate limit of the running app in Kbps, or 0.
++   * @details Safe to call from any thread.
++   */
++  int running_max_bitrate();
++
+   /**
+    * @brief Tracks launched child processes and terminates them during shutdown.
+    */
+diff --git a/src/rtsp.cpp b/src/rtsp.cpp
+index c7135ddf0..fe18994c1 100644
+--- a/src/rtsp.cpp
++++ b/src/rtsp.cpp
+@@ -27,6 +27,7 @@ extern "C" {
+ #include "input.h"
+ #include "logging.h"
+ #include "network.h"
++#include "process.h"
+ #include "rtsp.h"
+ #include "stream.h"
+ #include "sync.h"
+@@ -1276,6 +1277,12 @@ namespace rtsp_stream {
+       config.monitor.bitrate = (int) configuredBitrateKbps;
+     }
+ 
++    // The running app may limit the bitrate ("max-bitrate" in apps.json), e.g. a low-bandwidth desktop.
++    if (const auto app_max_bitrate = proc::running_max_bitrate(); app_max_bitrate > 0 && config.monitor.bitrate > app_max_bitrate) {
++      BOOST_LOG(info) << "App limits the video bitrate to "sv << app_max_bitrate << " Kbps"sv;
++      config.monitor.bitrate = app_max_bitrate;
++    }
++
+     if (config.monitor.videoFormat == 1 && video::active_hevc_mode == 1) {
+       BOOST_LOG(warning) << "HEVC is disabled, yet the client requested HEVC"sv;
+ 
+diff --git a/src/video.cpp b/src/video.cpp
+index 843a19a0a..e7095f7a6 100644
+--- a/src/video.cpp
++++ b/src/video.cpp
+@@ -33,6 +33,7 @@ extern "C" {
+ #include "logging.h"
+ #include "nvenc/nvenc_encoder.h"
+ #include "platform/common.h"
++#include "process.h"
+ #include "sync.h"
+ #include "video.h"
+ 
+@@ -1504,7 +1505,9 @@ namespace video {
+    */
+   void refresh_displays(platf::mem_type_e dev_type, std::vector<std::string> &display_names, int &current_display_index) {
+     // It is possible that the output name may be empty even if it wasn't before (device disconnected) or vice-versa
+-    const auto output_name {display_device::map_output_name(config::video.output_name)};
++    // The running app may ask for its own display ("output-name" in apps.json).
++    const auto app_output_name {proc::running_output_name()};
++    const auto output_name {display_device::map_output_name(app_output_name.empty() ? config::video.output_name : app_output_name)};
+     std::string current_display_name;
+ 
+     // If we have a current display index, let's start with that

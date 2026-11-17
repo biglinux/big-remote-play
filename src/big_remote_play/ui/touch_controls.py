@@ -189,6 +189,17 @@ class TouchControls:
             self._loading = False
         self._sync_mode_widgets()
 
+    @property
+    def ignores_touch(self) -> bool:
+        return backend.desktop_ignores_touch()
+
+    @property
+    def effective_mode(self) -> str:
+        """The mode in force on this desktop (Automatic resolved; see touch_control)."""
+        path = getattr(self._keyboard_factory(), "path", None)
+        installed = bool(path()) if callable(path) else False
+        return backend.effective_mode(self.mode, ignores_touch=self.ignores_touch, controller_installed=installed)
+
     def values(self) -> dict[str, object]:
         return {"touch_mode": self.mode, "touch_open_on_connect": self.open_row.get_active()}
 
@@ -199,13 +210,20 @@ class TouchControls:
             self.refresh()
 
     def _sync_mode_widgets(self) -> None:
-        self.mode_row.set_subtitle(mode_description(self.mode))
-        self.open_row.set_visible(backend.uses_controller(self.mode))
+        text = mode_description(self.mode)
+        effective = self.effective_mode
+        if effective != self.mode:
+            # TRANSLATORS: {mode} is a touch mode name such as "Controller and touch".
+            text += " " + _("On this desktop, which does not accept touch: {mode}.").format(mode=mode_label(effective))
+        if backend.keyboard_with_controller(effective, ignores_touch=self.ignores_touch):
+            text += " " + _("The keyboard opens beside the controller; touching anywhere else moves the pointer.")
+        self.mode_row.set_subtitle(text)
+        self.open_row.set_visible(backend.uses_controller(effective))
 
     # ── checks ─────────────────────────────────────────────────────────────
     def refresh(self) -> None:
         context = dict(self._context())
-        mode = self.mode
+        mode = self.effective_mode
         raw = context.get("sunshine_config")
         sunshine_config = {str(key): str(value) for key, value in raw.items()} if isinstance(raw, Mapping) else {}
         self.summary_row.set_title(_("Checking…"))
@@ -252,7 +270,9 @@ class TouchControls:
     def run_action(self, action: str) -> None:
         """A button or the sharing lifecycle: open, close, edit or release."""
         context = dict(self._context())
-        mode = self.mode
+        mode = self.effective_mode
+        ignores_touch = self.ignores_touch
+        with_keyboard = backend.keyboard_with_controller(mode, ignores_touch=ignores_touch)
         output = str(context.get("output") or "")
         keyboard = self._keyboard_factory()
 
@@ -265,14 +285,18 @@ class TouchControls:
                 if keyboard.running():
                     keyboard.release()
                     keyboard.show(False)
+                    if with_keyboard:
+                        keyboard.show_keyboard(False)
                 return None
             if not keyboard.start():
                 raise RuntimeError(_("Big WM Virtual Keyboard did not start"))
-            keyboard.configure(remote_touch=backend.remote_touch_mode(mode), output=output)
+            keyboard.configure(remote_touch=backend.remote_touch_mode(mode, ignores_touch=ignores_touch), output=output)
             if action == "edit":
                 keyboard.edit()
             else:
                 keyboard.show(True)
+                if with_keyboard:
+                    keyboard.show_keyboard(True)
             return None
 
         def failed(error: BaseException) -> None:
@@ -288,9 +312,10 @@ class TouchControls:
         touches held after a dropped connection, so the controller must let go.
         """
         before, self._connected = self._connected, count
-        if count and not before and backend.uses_controller(self.mode) and self.open_row.get_active():
+        mode = self.effective_mode
+        if count and not before and backend.uses_controller(mode) and self.open_row.get_active():
             self.run_action("open")
-        elif before and not count and backend.uses_controller(self.mode):
+        elif before and not count and backend.uses_controller(mode):
             self.run_action("close")
         elif count < before:
             self.run_action("release")

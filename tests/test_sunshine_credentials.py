@@ -79,7 +79,10 @@ from big_remote_play.utils.sunshine_credentials import (  # noqa: E402
     KEYRING_AVAILABLE,
     KEYRING_UNAVAILABLE,
     KEYRING_UNRESPONSIVE,
+    LOCATION_FILE,
+    LOCATION_KEYRING,
     SAVED,
+    SAVED_LOCAL,
     SESSION_ONLY,
     SunshineCredentials,
     ensure_sunshine_api_config,
@@ -105,7 +108,7 @@ class BrokenBackend(InMemorySecretBackend):
 
 
 def service(tmp_path, backend):
-    return SunshineCredentials(lambda: tmp_path / "sunshine.conf", store_factory=lambda: SecretStore(backend))
+    return SunshineCredentials(lambda: tmp_path / "sunshine.conf", store_factory=lambda: SecretStore(backend), local_path=lambda: tmp_path / "private" / "api-password")
 
 
 def test_the_keyring_is_read_once_per_session(tmp_path: Path) -> None:
@@ -121,15 +124,71 @@ def test_the_keyring_is_read_once_per_session(tmp_path: Path) -> None:
     assert "pw" not in repr(status)
 
 
-def test_without_a_keyring_a_verified_password_works_for_the_session_only(tmp_path: Path) -> None:
+def test_without_any_keyring_the_password_is_kept_in_an_owner_only_file(tmp_path: Path) -> None:
+    """Reported 2026-11-17 (wlmaker, no Secret Service): every new session forgot
+    Sunshine's password, so waiting devices were never seen and the PIN window
+    never opened."""
     conf = tmp_path / "sunshine.conf"
     conf.write_text("port = 47989\n")
-    before = conf.read_bytes()
     creds = service(tmp_path, BrokenBackend())
     assert creds.get() is None and creds.status().keyring == KEYRING_UNAVAILABLE
+    assert creds.remember("sunshine", "pw") == SAVED_LOCAL
+    secret = tmp_path / "private" / "api-password"
+    assert stat.S_IMODE(secret.stat().st_mode) == 0o600
+    assert stat.S_IMODE(secret.parent.stat().st_mode) == 0o700
+    assert "pw" not in conf.read_text() and "sunshine_user = sunshine" in conf.read_text()
+    status = creds.status()
+    assert status.persisted and status.location == LOCATION_FILE
+    # The next session (a new process) approves with the PIN alone.
+    again = service(tmp_path, BrokenBackend())
+    assert again.get() == ("sunshine", "pw") and again.status().location == LOCATION_FILE
+
+
+def test_not_remembering_writes_nothing(tmp_path: Path) -> None:
+    creds = service(tmp_path, BrokenBackend())
+    assert creds.remember("sunshine", "pw", persist=False) == SESSION_ONLY
+    assert not (tmp_path / "private" / "api-password").exists()
+
+
+def test_a_locked_keyring_never_falls_back_to_the_file(tmp_path: Path, monkeypatch) -> None:
+    from big_remote_play.utils import secret_store
+
+    class Slow(InMemorySecretBackend):
+        def store(self, key, value, label):
+            raise secret_store.SecretStoreTimeout("locked")
+
+    creds = service(tmp_path, Slow())
     assert creds.remember("sunshine", "pw") == SESSION_ONLY
+    assert not (tmp_path / "private" / "api-password").exists()
+
+
+def test_a_keyring_that_appears_later_takes_the_password_and_the_file_goes(tmp_path: Path) -> None:
+    assert service(tmp_path, BrokenBackend()).save_local("sunshine", "pw")
+    backend = InMemorySecretBackend()
+    creds = service(tmp_path, backend)
     assert creds.get() == ("sunshine", "pw")
-    assert conf.read_bytes() == before  # nothing written anywhere, no plain-text fallback
+    assert backend.lookup(SUNSHINE_PASSWORD_KEY) == "pw"
+    assert not (tmp_path / "private" / "api-password").exists()
+    assert creds.status().location == LOCATION_KEYRING
+
+
+def test_a_damaged_or_foreign_file_is_ignored_and_left_as_it_is(tmp_path: Path) -> None:
+    secret = tmp_path / "private" / "api-password"
+    secret.parent.mkdir()
+    secret.write_text("{not json")
+    assert service(tmp_path, BrokenBackend()).get() is None
+    assert secret.read_text() == "{not json"
+    secret.write_text('{"user": "sunshine", "password": "pw"}')
+    secret.chmod(0o644)
+    assert service(tmp_path, BrokenBackend()).get() == ("sunshine", "pw")
+    assert stat.S_IMODE(secret.stat().st_mode) == 0o600
+
+
+def test_forget_local_removes_a_password_sunshine_refused(tmp_path: Path) -> None:
+    creds = service(tmp_path, BrokenBackend())
+    assert creds.save_local("sunshine", "pw")
+    creds.forget_local()
+    assert not (tmp_path / "private" / "api-password").exists() and not creds.status().persisted
 
 
 def test_a_rejected_password_is_not_used_or_reread_until_a_new_one(tmp_path: Path) -> None:

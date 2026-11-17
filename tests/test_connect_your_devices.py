@@ -742,3 +742,13 @@ def test_the_vpn_helper_and_its_policy_allow_only_two_services_for_the_local_ses
     # Refusals happen before systemctl could ever run.
     for argv in (["start"], ["restart", "zerotier-one"], ["stop", "sshd"], ["stop", "zerotier-one;reboot"], ["start", "tailscaled", "extra"]):
         assert subprocess.run(["sh", str(helper), *argv], capture_output=True, timeout=5).returncode == 2
+
+
+def test_a_connected_headscale_page_always_offers_approving_a_device(ui):
+    """Reported 2026-11-17: without an API key the box was hidden and the only
+    way was a terminal command with Headscale's "--user USERNAME" placeholder."""
+    page = open_page(ui, Service([ProviderStatus(P.HEADSCALE, S.CONNECTED)]), "headscale")
+    assert wait(lambda: page.approval is not None and page.approval.get_visible())
+    assert "Approve a device" in texts(page.approval)
+    off = open_page(ui, Service([HS_OFF]), "headscale")
+    assert not off.approval.get_visible()

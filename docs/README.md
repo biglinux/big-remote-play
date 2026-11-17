@@ -13,7 +13,9 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Controlling the game PC from a phone](mobile-controls.md) — touch gestures, keyboard and leaving the game in Moonlight for Android, iPhone/iPad and computers.
 - [Redesign](redesign/01-auditoria.md) — the move to AshyWall's visual language: audit, decisions per page, measurements and what was not validated (Portuguese).
 - [Touch controls](touch/09-relatorio-final.md) — multi-touch from the phone to the Big WM Virtual Keyboard's on-screen controller: audit, design, tests and the Android test plan (Portuguese).
+- [PIN, telas e entradas no Moonlight](pin-telas-entradas/01-diagnostico.md) — a janela do PIN sem chaveiro, “Unknown Unknown”, Desktop Low / Steam / uma entrada por tela e a instalação do Headscale: diagnóstico, solução e validação (Portuguese). Celular no wlmaker e imagens: [04](pin-telas-entradas/04-celular-wlmaker.md). Headscale passo 6: [05](pin-telas-entradas/05-headscale-passo-6.md). Celular pelo Headscale: [06](pin-telas-entradas/06-celular-headscale.md). Sem VPN: [07](pin-telas-entradas/07-sem-vpn-upnp.md). Aprovar dispositivo sem terminal: [08](pin-telas-entradas/08-aprovar-dispositivo.md).
 - [Several screens](moonlight-multi-monitor.md) — the screen where Moonlight opens and the game PC's shared screen.
+- [Moonlight entries](moonlight-entries.md) — Desktop Low, Steam Big Picture and one entry per screen, and the Sunshine build they need.
 - [Game library](game-library-detection.md) — where installed games are found and how they are added to Moonlight.
 - [Finding computers on a ZeroTier network](zerotier-discovery.md) — the search, its limits and what is remembered.
 - [ZeroTier and Tailscale without repeated passwords](zerotier-permissions.md) — the narrow helper and its PolicyKit action.

@@ -38,7 +38,7 @@ Remote play on Linux usually means learning several unrelated tools before the f
 
 | | |
 |---|---|
-| 🎮 **Share a game** | Share the whole desktop with [Sunshine](https://github.com/LizardByte/Sunshine), start a Steam, Lutris or custom game, or send **only one game window**. The **Game Library** finds your installed Steam, Lutris and Heroic games and offers the ones you choose in Moonlight. |
+| 🎮 **Share a game** | Share the whole desktop with [Sunshine](https://github.com/LizardByte/Sunshine), start a Steam, Lutris or custom game, or send **only one game window**. The **Game Library** finds your installed Steam, Lutris and Heroic games and offers the ones you choose in Moonlight, plus ready-made entries: **Desktop Low**, **Steam Big Picture** and **one entry per screen** ([details](docs/moonlight-entries.md)). |
 | 🖥️ **Connect from anywhere** | Find the game computer and play it with [Moonlight](https://moonlight-stream.org/) on another PC, a TV or a laptop. |
 | 🔒 **Play across the internet** | Put both computers on the same private network with Tailscale, Headscale or ZeroTier. No open router ports needed. On a friend's ZeroTier network, **Find computers to play on** finds the game PC without the owner's account. |
 | 🕵️ **Keep your desktop private** | **Game Window** streams one game through a private screen: notifications, chats and other windows never reach the other device. |
@@ -259,7 +259,7 @@ The Python wheel alone is not a complete desktop installation: icons, styles, tr
 | | Packages (Arch/BigLinux names) |
 |---|---|
 | **Required** | `python` ≥ 3.11, `gtk4` ≥ 4.17, `libadwaita` ≥ 1.7, `glib2`, `gdk-pixbuf2`, `pango`, `python-gobject`, `python-cairo`, `libsecret`, `avahi`, `curl`, `iproute2`, `iputils`, `jq`, `polkit`, `procps-ng`, `systemd`, `util-linux`, `hicolor-icon-theme` |
-| **Share** | `sunshine`; for the Game Library, the launchers whose games you offer: `steam`, `lutris`, Heroic Games Launcher (native or Flatpak) |
+| **Share** | `sunshine`; for the Game Library, the launchers whose games you offer: `steam`, `lutris`, Heroic Games Launcher (native or Flatpak); `miniupnpc` to open the game ports on the router (play over the internet without a VPN) |
 | **Connect** | `moonlight-qt` (or the Moonlight Flatpak with `flatpak`) |
 | **Game Window** | Sunshine ≥ 2026.516; KDE Plasma (`kwin`, `xdg-desktop-portal-kde`) on Wayland or an X11 desktop with compositing; `gst-plugin-pipewire`, `gst-plugins-base`, `gst-plugins-bad-libs`, `gst-plugins-good` |
 | **Touch controls** | `big-keyboard` ≥ 0.1.0-2 (remote touch) and Sunshine ≥ 2026.1113 on the game PC; the Big Remote Play Controller app on the phone ([install](#your-phone-as-a-controller-multi-touch)) |

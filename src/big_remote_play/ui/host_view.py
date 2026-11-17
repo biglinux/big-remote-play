@@ -23,7 +23,7 @@ from big_remote_play.utils.icons import create_icon_widget, set_icon
 from big_remote_play.integration_contracts import MOONLIGHT_PAIRING_PIN_LENGTH, BRP_DISCOVERY_CODE_LENGTH
 from big_remote_play import paths
 from big_remote_play.host.sunshine_manager import PIN_CHOOSE, PIN_NONE_WAITING
-from big_remote_play.utils.sunshine_credentials import DEFAULT_SUNSHINE_USER, SAVED, SunshineCredentials
+from big_remote_play.utils.sunshine_credentials import DEFAULT_SUNSHINE_USER, SAVED, SAVED_LOCAL, SunshineCredentials
 from big_remote_play.utils.uri import open_uri, open_path
 from big_remote_play.host import touch_control
 from .components import physical_size, action_row, boxed_rows, intro, preferences_dialog, set_row_icon, content_dialog, name_icon_button
@@ -79,6 +79,14 @@ def _split_launch_command(command: str) -> list[str]:
         return []
 
 
+def _low_bandwidth_label(kbps: int) -> str:
+    """The badge drawn on Desktop Low's picture in Moonlight."""
+    from big_remote_play.ui.game_library_dialog import bitrate_text
+
+    # TRANSLATORS: drawn on Desktop Low's picture; {rate} is like "3 Mbit/s".
+    return _("Low bandwidth · {rate}").format(rate=bitrate_text(kbps)) if kbps else _("Low bandwidth")
+
+
 def _monitor_choice_label(number: int, name: str, connector: str) -> str:
     """Give identical displays a visible identity shared with the overlay."""
     return f"{number:02d} · {name} · {connector}"
@@ -112,6 +120,17 @@ def internet_access_rows(endpoints, *, toast=None) -> list[Gtk.Widget]:
         row.set_subtitle_lines(0)
         set_row_icon(row, icon)
         rows.append(row)
+    # The address typed in Moonlight, in sight: reported 2026-11-17, a phone
+    # added the Headscale server's internet name and Moonlight could not
+    # connect. The private address works only from the same private network.
+    if device.best_address:
+        moonlight = copy_row(_("Address for Moonlight"), device.best_address, icon="brp-network-private-symbolic", toast=toast)
+        moonlight.set_subtitle(
+            # TRANSLATORS: {address} is this computer's private address (100.64.0.1); {provider} is Tailscale, Headscale or ZeroTier.
+            _("{address} — on devices connected to {provider}. A server's internet address does not work in Moonlight.").format(address=device.best_address, provider=provider.display_name)
+        )
+        moonlight.set_subtitle_lines(0)
+        rows.append(moonlight)
     text = connection_information(endpoints)
     copy = Adw.ButtonRow(title=_("Copy connection information"))
     copy.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Copies this computer's name and private address, to send to the other person")])
@@ -384,7 +403,14 @@ class HostView(Gtk.Box):
         monitors = [(_("Automatic"), "auto")]
         is_wayland = os.environ.get("XDG_SESSION_TYPE") == "wayland"
 
+        # Sunshine's KMS capture knows the kernel names, not X11's.
+        self._kms_connectors = {} if is_wayland else self._x11_kms_connectors()
+
         # Method: GDK (Most consistent for labels and Wayland indices)
+        from big_remote_play.utils.monitor_names import connector_edids, gdk_monitor_label, monitor_label
+
+        edids = connector_edids()
+        self._monitor_names = {}
         names = []
         try:
             display = Gdk.Display.get_default()
@@ -396,14 +422,10 @@ class HostView(Gtk.Box):
                         continue
                     conn = monitor.get_connector()
                     if conn:
-                        manufacturer = monitor.get_manufacturer() or ""
-                        model = monitor.get_model() or ""
-                        label_parts = []
-                        if manufacturer:
-                            label_parts.append(manufacturer)
-                        if model:
-                            label_parts.append(model)
-                        label = " ".join(label_parts) if label_parts else _("Unknown")
+                        # GTK may only know "Unknown" or the connector; the
+                        # screen's EDID knows its real name.
+                        label = gdk_monitor_label(monitor, edids, kernel_name=self._kms_connectors.get) or _("Monitor / Display")
+                        self._monitor_names[conn] = label
 
                         # Connector names are stable across reorderings; GDK indices
                         # need not match Sunshine's capture backend indices.
@@ -414,9 +436,6 @@ class HostView(Gtk.Box):
         except Exception as e:
             _log.error(f"Error detecting GDK monitors: {e}")
 
-        # Sunshine's KMS capture knows the kernel names, not X11's.
-        self._kms_connectors = {} if is_wayland else self._x11_kms_connectors()
-
         # Fallback for X11/DRM if GDK didn't find everything
         if not is_wayland:
             # Xrandr (Reinforcement for X11)
@@ -424,7 +443,9 @@ class HostView(Gtk.Box):
                 res = subprocess.check_output(["xrandr", "--listmonitors"], text=True, timeout=5)
                 for n in _parse_xrandr_monitor_names(res):
                     if n and n not in names:
-                        monitors.append((_monitor_choice_label(len(monitors), _("Monitor / Display"), n), n))
+                        label = monitor_label("", "", n, edid=edids.get(self._kms_connectors.get(n, n), b"")) or _("Monitor / Display")
+                        self._monitor_names[n] = label
+                        monitors.append((_monitor_choice_label(len(monitors), label, n), n))
                         names.append(n)
             except Exception:
                 pass
@@ -436,7 +457,9 @@ class HostView(Gtk.Box):
 
                 connected = [p.name.split("-", 1)[1] for p in sorted(Path("/sys/class/drm").glob("card*-*")) if (p / "status").exists() and (p / "status").read_text().strip() == "connected"]
                 for name in _unlisted_connectors(connected, names, self._kms_connectors):
-                    monitors.append((_monitor_choice_label(len(monitors), _("Monitor / Display"), name), name))
+                    label = monitor_label("", "", name, edid=edids.get(name, b"")) or _("Monitor / Display")
+                    self._monitor_names[name] = label
+                    monitors.append((_monitor_choice_label(len(monitors), label, name), name))
                     names.append(name)
             except Exception:
                 pass
@@ -830,14 +853,16 @@ class HostView(Gtk.Box):
         self.advanced_group = Adw.PreferencesGroup(title=_("Advanced Settings"), description=_("Input, Network, and Access"))
 
         self.upnp_row = Adw.SwitchRow()
-        self.upnp_row.set_title(_("Try automatic port forwarding (UPnP)"))
-        self.upnp_row.set_subtitle(_("Sunshine asks a compatible router when it starts. Enabling this does not confirm that the ports opened."))
+        self.upnp_row.set_title(_("Open the game ports on the router (without a VPN)"))
+        self.upnp_row.set_subtitle(_("While sharing, Big Remote Play asks the router (UPnP) to forward Sunshine's six game ports to this computer, checks them, and removes them when sharing stops."))
+        self.upnp_row.set_subtitle_lines(0)
         self.upnp_row.set_active(False)
+        self.upnp_row.connect("notify::active", lambda *_args: self._sync_router_ports())
         self.advanced_group.add(self.upnp_row)
         upnp_help = Adw.ActionRow(
             title=_("For direct internet access only"),
             subtitle=_(
-                "Keep off for local play or a VPN. UPnP must be enabled on the router; it does not bypass CGNAT, double NAT or the computer’s firewall. Restart sharing and test from another network."
+                "Sunshine's administration panel is never opened, and every new device still needs your PIN. It does not work behind CGNAT or a second router; the result says so. A private network (VPN) needs no open ports."
             ),
             use_markup=False,
         )
@@ -880,7 +905,7 @@ class HostView(Gtk.Box):
         server_tools_group.set_title(_("Server tools"))
         server_tools_group.set_description(_("For a closer look when the checks above are not enough."))
 
-        def _add_management_button(group: Adw.PreferencesGroup, title: str, subtitle: str, icon_name: str, callback: Callable[[Gtk.Widget], None]) -> None:
+        def _add_management_button(group: Adw.PreferencesGroup, title: str, subtitle: str, icon_name: str, callback: Callable[[Gtk.Widget], object]) -> None:
             # Use a native PreferencesRow instead of placing a Gtk.Button inside
             # the group.  This lets libadwaita own the grouped-list shape, hover,
             # focus and keyboard activation, and gives assistive technologies one
@@ -1207,6 +1232,12 @@ class HostView(Gtk.Box):
         self.internet_access_group.set_description(_("The other person picks this computer under Connect. If it is not listed, send them the connection information."))
         self.internet_access_group.set_visible(False)
         self._internet_worker = Worker()
+        # Without a VPN: the game ports this computer asked the router for, checked.
+        self.direct_access_group = RowGroup(title=_("Over the internet without a VPN"))
+        self.direct_access_group.set_visible(False)
+        self._router_worker = Worker()
+        self._router_ports_open = False
+        self._router_renew = 0
 
         # Register PIN for updates.
         self.field_widgets["pin"] = {"label": self.pin_display_label, "real_value": "", "revealed": True}
@@ -1255,6 +1286,7 @@ class HostView(Gtk.Box):
         # listed separately below.
         overview_body.append(self._create_connected_devices_group())
         overview_body.append(self.internet_access_group)
+        overview_body.append(self.direct_access_group)
         overview_body.append(self.quality_card)
         overview_body.append(self._create_paired_devices_overview())
         overview_page = Adw.Clamp(maximum_size=820, tightening_threshold=560)
@@ -2329,7 +2361,7 @@ class HostView(Gtk.Box):
     # ------------------------------------------------------------------
     def _show_credentials_state(self) -> bool:
         """GTK thread: where Sunshine's password is, in words (never the password)."""
-        from big_remote_play.utils.sunshine_credentials import KEYRING_UNAVAILABLE, KEYRING_UNRESPONSIVE
+        from big_remote_play.utils.sunshine_credentials import KEYRING_UNAVAILABLE, KEYRING_UNRESPONSIVE, LOCATION_FILE
 
         if self._closed or not hasattr(self, "credentials_state_row"):
             return False
@@ -2339,13 +2371,16 @@ class HostView(Gtk.Box):
             text = _("Sunshine rejected the saved password. Enter the current one to approve devices.")
         elif session_only:
             text = _("Kept only until you close Big Remote Play: the system keyring did not save it.")
+        elif status.persisted and status.location == LOCATION_FILE:
+            # TRANSLATORS: {user} is the Sunshine administrator user name, such as "sunshine".
+            text = _("No system keyring is available, so it is saved in a file only your user can read, for the user “{user}”. Devices are approved with their PIN alone.").format(user=status.user)
         elif status.persisted:
             # TRANSLATORS: {user} is the Sunshine administrator user name, such as "sunshine".
             text = _("Saved in the system keyring for the user “{user}”. Devices are approved with their PIN alone.").format(user=status.user)
         elif status.keyring == KEYRING_UNRESPONSIVE:
             text = _("The system keyring did not answer. It may be locked.")
         elif status.keyring == KEYRING_UNAVAILABLE:
-            text = _("No system keyring is available, so the password cannot be remembered.")
+            text = _("No system keyring is available. Enter the password once and it is saved in a file only your user can read.")
         else:
             text = _("Created and saved automatically the first time sharing starts.")
         self.credentials_state_row.set_subtitle(text)
@@ -2362,7 +2397,7 @@ class HostView(Gtk.Box):
 
         def done(result) -> None:
             self.credentials_save_button.set_sensitive(True)
-            self._report_credentials_saved(result == saved)
+            self._report_credentials_saved(result in (saved, SAVED_LOCAL))
 
         self._credentials_worker.submit(self.credentials.persist, done, failed=lambda _error: done(""), keep_previous=True)
 
@@ -2472,10 +2507,9 @@ class HostView(Gtk.Box):
         if status != 307:
             return None
         store = SecretStore()
-        if not store.is_available():
-            self._credentials_need_keyring = True
-            return None
         user, password = DEFAULT_SUNSHINE_USER, secrets.token_urlsafe(24)
+        if not store.is_available():
+            return self._create_sunshine_user_locally(user, password)
         # The keyring first, Sunshine second: a lookup can "succeed" after the
         # person cancelled the keyring's creation prompt, so only a password
         # the keyring really kept may become Sunshine's. Measured on Big GNOME
@@ -2491,7 +2525,18 @@ class HostView(Gtk.Box):
             self._auto_create_paused = True
             self.credentials.note_keyring(KEYRING_UNRESPONSIVE)
             return None
-        except (SecretStoreUnavailable, OSError):
+        except SecretStoreUnavailable:
+            from big_remote_play.utils.sunshine_credentials import keyring_absent
+
+            # No keyring in this session (Window Maker, wlmaker…): a private
+            # file keeps it, so devices are still approved with the PIN alone.
+            # A keyring that is there but refused (its prompt dismissed) is
+            # not replaced by a file: the person chooses a password instead.
+            if keyring_absent(store):
+                return self._create_sunshine_user_locally(user, password)
+            self._credentials_need_keyring = True
+            return None
+        except OSError:
             self._credentials_need_keyring = True
             return None
         self._credentials_created = True
@@ -2505,6 +2550,20 @@ class HostView(Gtk.Box):
         self._credentials_need_keyring = False
         self.credentials.adopt_saved(user, password)
         _log.info("Created the Sunshine user for this computer; its password is in the keyring.")
+        return user, password
+
+    def _create_sunshine_user_locally(self, user: str, password: str) -> tuple[str, str] | None:
+        """Worker: first Sunshine and no keyring at all; the owner-only file first, Sunshine second."""
+        if not self.credentials.save_local(user, password):
+            self._credentials_need_keyring = True
+            return None
+        self._credentials_created = True
+        ok, _message = self.sunshine.create_user(user, password)
+        if not ok:
+            self.credentials.forget_local()  # never keep a password Sunshine does not use
+            return None
+        self._credentials_need_keyring = False
+        _log.info("Created the Sunshine user for this computer; no keyring exists, its password is in a private file.")
         return user, password
 
     def _check_pairing_busy(self) -> None:
@@ -2703,9 +2762,13 @@ class HostView(Gtk.Box):
         confirm_row = Adw.PasswordEntryRow(title=_("Confirm password"), use_markup=False, visible=create)
         from big_remote_play.utils.sunshine_credentials import KEYRING_UNAVAILABLE
 
-        # Off when the keyring is known to be missing: nothing promised that cannot happen.
-        keyring_missing = self.credentials.status().keyring == KEYRING_UNAVAILABLE or getattr(self, "_credentials_need_keyring", False)
-        remember_row = Adw.SwitchRow(title=_("Remember on this computer"), subtitle=_("Kept in the system keyring, never in a file."), active=not keyring_missing)
+        # Without a keyring it is kept in a file only this user can read.
+        keyring_missing = self.credentials.status().keyring == KEYRING_UNAVAILABLE
+        remember_row = Adw.SwitchRow(
+            title=_("Remember on this computer"),
+            subtitle=_("Kept in a file only your user can read, because no system keyring is available.") if keyring_missing else _("Kept in the system keyring."),
+            active=True,
+        )
         remember_row.set_subtitle_lines(0)
         for row in (user_row, pass_row, confirm_row, remember_row):
             group.add(row)
@@ -2861,10 +2924,29 @@ class HostView(Gtk.Box):
             sunshine_config = dict(SunshineConfigManager().config)
         except OSError:
             sunshine_config = {}
-        return {"sharing": self.is_hosting, "game_window": self._source() == "game_window", "output": self._shared_output() or "", "sunshine_config": sunshine_config}
+        return {"sharing": self.is_hosting, "game_window": self._source() == "game_window", "output": self._streamed_output() or "", "sunshine_config": sunshine_config}
+
+    def _streamed_output(self) -> str | None:
+        """The screen the current session really captures, by this session's name for it.
+
+        A Moonlight entry such as "02 - Monitor" streams its own screen, not
+        the one chosen in Share (reported 2026-11-17: the on-screen keyboard,
+        controller and phone pointer stayed on the main screen). Sunshine runs
+        the screen helper before every session, which records the screen in
+        its report; the report of an earlier sharing session is ignored.
+        """
+        from big_remote_play.host.stream_display import read_client_report
+
+        report = read_client_report()
+        started = getattr(self, "_hosting_started_at", 0.0)
+        if report is not None and report.screen and started and report.started_at >= started:
+            # Sunshine names screens the kernel's way (DP-2); X11 may call it DisplayPort-1.
+            session_names = {kernel: name for name, kernel in (getattr(self, "_kms_connectors", None) or {}).items()}
+            return session_names.get(report.screen, report.screen)
+        return self._shared_output()
 
     def _on_touch_controls_changed(self) -> None:
-        self.input_priority.set_pause_touch(touch_control.priority_pauses_touch(self.touch_controls.mode))
+        self.input_priority.set_pause_touch(touch_control.priority_pauses_touch(self.touch_controls.effective_mode))
         self._schedule_save_host_settings()
 
     def _shared_output(self) -> str | None:
@@ -2953,7 +3035,7 @@ class HostView(Gtk.Box):
                     (index for index, (_label, value) in enumerate(self.available_monitors) if value == connector),
                     position + 1,
                 )
-                name = " ".join(part for part in (monitor.get_manufacturer() or "", monitor.get_model() or "") if part) or _("Unknown")
+                name = getattr(self, "_monitor_names", {}).get(connector) or _("Monitor / Display")
                 specs.append((monitor, f"{number:02d}", name, connector))
         except Exception as exc:
             _log.error("Error preparing monitor identifiers: %s", exc)
@@ -3069,7 +3151,7 @@ class HostView(Gtk.Box):
         with :meth:`_report_credentials_saved`.
         """
         try:
-            return self.credentials.remember(user, password, persist=persist) == SAVED
+            return self.credentials.remember(user, password, persist=persist) in (SAVED, SAVED_LOCAL)
         except ValueError:
             return False
 
@@ -3083,7 +3165,11 @@ class HostView(Gtk.Box):
         """GTK thread: say where the password is, never what it is."""
         from big_remote_play.utils.sunshine_credentials import KEYRING_UNRESPONSIVE
 
-        if kept:
+        from big_remote_play.utils.sunshine_credentials import LOCATION_FILE
+
+        if kept and self.credentials.status().location == LOCATION_FILE:
+            self.show_toast(_("Password saved in a file only your user can read. Devices are approved with their PIN alone."))
+        elif kept:
             self.show_toast(_("Password saved in the system keyring."))
         elif wanted and self.credentials.status().keyring == KEYRING_UNRESPONSIVE:
             # Often KWallet's own "create a wallet" or unlock window is open:
@@ -3741,6 +3827,7 @@ class HostView(Gtk.Box):
             self._refresh_paired_devices()
             self._refresh_internet_access()
             self._check_firewall()
+            self._sync_router_ports()
         else:
             self._end_pair_requests()
             self._check_cursor()
@@ -3750,6 +3837,9 @@ class HostView(Gtk.Box):
             if hasattr(self, "internet_access_group"):
                 self._internet_worker.cancel()
                 self.internet_access_group.set_visible(False)
+            if hasattr(self, "direct_access_group"):
+                self._stop_router_renewal()
+                self.direct_access_group.set_visible(False)
             self.pin_code = None
             if hasattr(self, "overview_status_label"):
                 self.overview_status_label.set_label(_("Choose a source, then start sharing."))
@@ -3795,6 +3885,167 @@ class HostView(Gtk.Box):
         self._sync_pair_status()
         self._show_transition()
         self._announce_state()
+
+    # ── without a VPN: the router's game ports ───────────────────────────
+    def _sunshine_base_port(self) -> int:
+        try:
+            return int(self.sunshine._config_value("port", "47989"))
+        except ValueError:
+            return 47989
+
+    def _sync_router_ports(self) -> None:
+        """GTK thread: open (and keep renewing) or close the router's game ports."""
+        from .network_common import loading_row
+
+        if not hasattr(self, "direct_access_group"):
+            return
+        wanted = self.is_hosting and self.upnp_row.get_active() and self._game_window_session is None
+        if not wanted:
+            self._stop_router_renewal()
+            self.direct_access_group.set_visible(False)
+            if self._router_ports_open:
+                self._router_worker.submit(self._close_router_ports, lambda _result: None)
+            return
+        self.direct_access_group.replace([loading_row(_("Asking the router to open the game ports…"))])
+        self.direct_access_group.set_visible(True)
+        self._router_worker.submit(self._open_router_ports, self._show_router_ports, failed=lambda _error: self._show_router_ports(None))
+        if not self._router_renew:
+            from big_remote_play.host.router_ports import RENEW_SECONDS
+
+            self._router_renew = GLib.timeout_add_seconds(RENEW_SECONDS, self._renew_router_ports)
+
+    def _renew_router_ports(self) -> bool:
+        if self._closed or not self.is_hosting or not self.upnp_row.get_active():
+            self._router_renew = 0
+            return False
+        self._router_worker.submit(self._open_router_ports, self._show_router_ports, failed=lambda _error: None)
+        return True
+
+    def _stop_router_renewal(self) -> None:
+        if self._router_renew:
+            GLib.source_remove(self._router_renew)
+            self._router_renew = 0
+
+    def _open_router_ports(self):
+        """Worker: forward the game ports, read them back, and gather what decides if it works."""
+        from big_remote_play.host import router_ports
+        from big_remote_play.host.firewall_check import check_firewall
+        from big_remote_play.private_network.public_address import cached_public_addresses
+
+        outcome = router_ports.open_ports(router_ports.wanted_ports(self._sunshine_base_port()))
+        self._router_ports_open = bool(outcome.opened)
+        public = ""
+        try:
+            public = cached_public_addresses().ipv4
+        except Exception:
+            public = ""
+        blocked: tuple[str, ...] = ()
+        try:
+            report = check_firewall()
+            blocked = tuple(report.blocked.get("local", ())) if report.blocked else ()
+        except Exception:
+            blocked = ()
+        return outcome, public, blocked, self._domain_for(outcome.state.external_ip)
+
+    @staticmethod
+    def _domain_for(address: str) -> str:
+        """A domain set up in Big Remote Play that leads to this address, for Moonlight by name."""
+        import socket
+
+        from big_remote_play.private_network.headscale_server import SetupStore
+
+        if not address:
+            return ""
+        try:
+            domain = SetupStore().load().domain
+            return domain if domain and address in {item[4][0] for item in socket.getaddrinfo(domain, None, socket.AF_INET)} else ""
+        except (OSError, ValueError):
+            return ""
+
+    def _close_router_ports(self) -> None:
+        """Worker: remove only the forwards Big Remote Play made for this computer."""
+        if not getattr(self, "_router_ports_open", False):
+            return
+        from big_remote_play.host import router_ports
+
+        try:
+            router_ports.close_ports(router_ports.wanted_ports(self._sunshine_base_port()))
+        except Exception as exc:
+            _log.warning("Router ports not removed: %s", exc)
+        self._router_ports_open = False
+
+    def _show_router_ports(self, result) -> None:
+        if self._closed or not self.is_hosting:
+            return
+        from .network_common import copy_row, message_row
+
+        rows: list[Gtk.Widget] = []
+        if result is None:
+            rows.append(message_row(_("The router could not be asked"), _("Try again later, or forward the ports by hand (Connect without a VPN)."), "dialog-warning-symbolic"))
+            self.direct_access_group.replace(rows)
+            return
+        outcome, public, blocked, domain = result
+        state = outcome.state
+        problems = {
+            "no_upnpc": (_("A program is missing"), _("Install the miniupnpc package, then start sharing again.")),
+            "no_gateway": (_("No router found"), _("This computer is not connected to a router.")),
+            "no_router": (
+                _("The router did not answer"),
+                _("Turn on UPnP in the router's settings (often under Network or NAT), then start sharing again. Or forward the ports by hand: Connect without a VPN."),
+            ),
+            "not_connected": (_("The router is not connected to the internet"), ""),
+            "refused": (_("The router did not answer"), _("Try again later.")),
+        }
+        if state.problem in problems:
+            title, text = problems[state.problem]
+            rows.append(message_row(title, text, "dialog-warning-symbolic"))
+        elif outcome.failed:
+            # TRANSLATORS: {ports} lists ports such as "TCP 47984, UDP 47998".
+            ports = ", ".join(f"{proto} {port}" for port, proto in outcome.failed)
+            rows.append(
+                message_row(
+                    _("The router did not open every game port"),
+                    _("Still closed: {ports}. Another device may use them, or the router refuses UPnP for them.").format(ports=ports),
+                    "dialog-warning-symbolic",
+                )
+            )
+        else:
+            # TRANSLATORS: {router} is the router's maker and model, such as "ZTE F6645P".
+            rows.append(
+                message_row(
+                    _("Game ports open on the router"),
+                    _("{router}: forwarded to this computer, renewed while sharing and removed when it stops.").format(router=state.model or _("Router")),
+                    "brp-emblem-ok-symbolic",
+                )
+            )
+        reachable_address = state.external_ip if outcome.ok else ""
+        if state.cgnat or (public and state.external_ip and public != state.external_ip):
+            rows.append(
+                message_row(
+                    _("Another network sits in front of the router"),
+                    _("The router's internet address is not the one the internet sees (CGNAT or a second router), so open ports cannot be reached. Use a private network (VPN) instead."),
+                    "dialog-warning-symbolic",
+                )
+            )
+            reachable_address = ""
+        if blocked:
+            rows.append(message_row(_("This computer's firewall blocks some game ports"), _("Allow them in Share → Advanced, or the router's forward stops here."), "dialog-warning-symbolic"))
+        if reachable_address:
+            moonlight = copy_row(_("Address for Moonlight"), reachable_address, icon="brp-address-symbolic", toast=self.show_toast)
+            # TRANSLATORS: {address} is this computer's internet address.
+            moonlight.set_subtitle(_("{address} — from any network. Test it with the phone on mobile data, not on this Wi-Fi.").format(address=reachable_address))
+            moonlight.set_subtitle_lines(0)
+            rows.append(moonlight)
+            if domain:
+                rows.append(copy_row(_("Or by name"), domain, icon="brp-address-symbolic", toast=self.show_toast))
+            rows.append(
+                message_row(
+                    _("What is open"),
+                    _("Only Sunshine's six game ports. The administration panel stays closed, and every new device still needs your PIN."),
+                    "brp-dialog-password-symbolic",
+                )
+            )
+        self.direct_access_group.replace(rows)
 
     def _refresh_internet_access(self) -> None:
         """How the other person reaches this PC over a private network, in plain words."""
@@ -4195,7 +4446,8 @@ class HostView(Gtk.Box):
             # selection.  An empty string is an explicit, invalid encoder name.
             "encoder": None if gpu["encoder"] == "auto" else gpu["encoder"],
             "max_bitrate": int(bw_mbps * 1000),
-            "upnp": "enabled" if self.upnp_row.get_active() else "disabled",
+            # Big Remote Play forwards the ports itself and checks them (router_ports).
+            "upnp": "disabled",
             "address_family": "both" if self.ipv6_row.get_active() else "ipv4",
             "origin_web_ui_allowed": web_ui_origin(self.webui_anyone_row.get_active(), current_web_ui_origin()),
             "channels": current_connected_clients(),
@@ -4213,7 +4465,7 @@ class HostView(Gtk.Box):
 
         config["adapter_name"] = gpu["adapter"] if gpu["encoder"] == "vaapi" and gpu["adapter"] != "auto" else None
         # Touch controls: whether Sunshine offers native touch (Automatic keeps the person's choice).
-        config.update(touch_control.sunshine_settings(self.touch_controls.mode))
+        config.update(touch_control.sunshine_settings(self.touch_controls.effective_mode))
         # Sunshine runs this before capture and after each session; merged
         # with any global_prep_cmd the person has (see host/stream_display.py).
         from big_remote_play.host.stream_display import prep_command
@@ -4261,6 +4513,7 @@ class HostView(Gtk.Box):
             sunshine_config["brp_stream_display"] = prep_command(target=None, sdr_for_sdr_clients=False)
         return {
             "sunshine_config": sunshine_config,
+            "moonlight_entries": None if game_window is not None else (self._moonlight_entry_settings(), self._moonlight_entry_screens()),
             "pin_code": self.pin_code,
             "audio_output_name": self._selected_audio_sink(),
             "audio_play_on_host": self.audio_play_here_row.get_active(),
@@ -4341,6 +4594,12 @@ class HostView(Gtk.Box):
                 return
             if not self.sunshine.configure(sunshine_config):
                 raise OSError(_("Could not save the server configuration."))
+            # Desktop Low, Steam Big Picture and one entry per screen, as
+            # chosen in Preferences → Game library (none for a Game Window).
+            try:
+                self._sync_moonlight_entries(cfg.get("moonlight_entries"))
+            except Exception as exc:  # the entries are a convenience; sharing still starts
+                _log.warning("Moonlight entries not updated: %s", exc)
             success, msg = self.sunshine.start(wayland_display=wayland_display) if wayland_display else self.sunshine.start()
             if self._closed:
                 if success:
@@ -4389,6 +4648,7 @@ class HostView(Gtk.Box):
             return False
 
         self.is_hosting = True
+        self._hosting_started_at = time.time()
         name = result.get("game_window")
         self._game_window_session = {"name": name, "spec": result.get("game_window_spec")} if name is not None else None
         if self._game_window_session is not None:
@@ -4546,6 +4806,7 @@ class HostView(Gtk.Box):
         threading.Thread(target=self._run_stop_hosting, daemon=True).start()
 
     def _run_stop_hosting(self) -> None:
+        self._close_router_ports()
         session, self.audio_session = self.audio_session, None
         if session is not None:
             try:
@@ -4908,13 +5169,89 @@ class HostView(Gtk.Box):
 
     # --- Game library (Sunshine apps API) --------------------------------
 
+    def _moonlight_entry_settings(self) -> dict:
+        """GTK thread: the choices saved in Preferences → Game library."""
+        from big_remote_play.host.moonlight_entries import SETTINGS_KEY, settings_from
+
+        return settings_from(self.config.get(SETTINGS_KEY))
+
+    def _save_moonlight_entry_settings(self, settings: dict) -> None:
+        from big_remote_play.host.moonlight_entries import SETTINGS_KEY, settings_from
+
+        self.config.set(SETTINGS_KEY, settings_from(settings))
+
+    def _moonlight_entry_screens(self) -> list:
+        """GTK thread: the connected screens, numbered as Identify screens numbers them.
+
+        Each one by the name Sunshine captures it by: on X11 the kernel's
+        connector name, which can differ from X11's own (see display_connectors).
+        """
+        from big_remote_play.host.moonlight_entries import Screen
+
+        kms = getattr(self, "_kms_connectors", None) or {}
+        names = getattr(self, "_monitor_names", None) or {}
+        return [Screen(kms.get(value, value), names.get(value) or value) for _label, value in getattr(self, "available_monitors", []) if value and value != "auto"]
+
+    def _moonlight_entry_probe(self) -> tuple[bool, bool]:
+        """Worker: (this Sunshine reads per-entry screen and bitrate, Steam is installed)."""
+        from big_remote_play.host.moonlight_entries import sunshine_supports_app_overrides
+        from big_remote_play.host.sunshine_manager import sunshine_executable
+        from big_remote_play.utils.game_detector import STEAM_FLATPAK
+
+        return sunshine_supports_app_overrides(sunshine_executable()), self.game_detector._launcher("steam", STEAM_FLATPAK) is not None
+
+    def _sync_moonlight_entries(self, inputs) -> tuple:
+        """Worker: offer exactly the chosen ready-made entries; ``inputs`` is (settings, screens) or None."""
+        from big_remote_play.host.game_library import GameLibrary
+        from big_remote_play.host.moonlight_entries import sunshine_supports_app_overrides, wanted_entries
+        from big_remote_play.host.sunshine_manager import sunshine_executable
+        from big_remote_play.utils.game_detector import STEAM_FLATPAK
+
+        wanted: list[dict] = []
+        if inputs is not None:
+            settings, screens = inputs
+            wanted = wanted_entries(
+                settings,
+                supported=sunshine_supports_app_overrides(sunshine_executable()),
+                steam_launcher=self.game_detector._launcher("steam", STEAM_FLATPAK),
+                screens=screens,
+                global_prep_cmd=self.sunshine._config_value("global_prep_cmd", ""),
+            )
+        from big_remote_play.host import box_art
+
+        screens_by_connector = {screen.connector: screen.label for screen in (inputs[1] if inputs is not None else [])}
+        art = {"screens": screens_by_connector, "low_label": _low_bandwidth_label}
+        for entry in wanted:
+            picture = box_art.picture_for(entry, **art)
+            if picture:
+                entry["image-path"] = picture
+        change, skipped = GameLibrary(self.sunshine, self._get_sunshine_creds).sync_entries(wanted)
+        # Desktop and games without a picture of their own get theirs (Moonlight
+        # showed every desktop entry as Sunshine's generic "DESKTOP" picture).
+        if not self.sunshine.is_running():
+            self.sunshine.edit_apps_file(lambda apps: box_art.decorate(apps, **art))
+        if skipped:
+            _log.info("Moonlight entries kept as the person made them: %s", ", ".join(skipped))
+        return change, skipped
+
+    def _moonlight_entries_backend(self):
+        from .game_library_dialog import EntriesBackend
+
+        return EntriesBackend(
+            settings=self._moonlight_entry_settings,
+            save_settings=self._save_moonlight_entry_settings,
+            screens=self._moonlight_entry_screens,
+            probe=self._moonlight_entry_probe,
+            sync=lambda settings, screens: self._sync_moonlight_entries((settings, screens)),
+        )
+
     def open_game_library_dialog(self, _widget=None):
         """Installed games offered in Moonlight; works with sharing on or off."""
         from big_remote_play.host.game_library import GameLibrary
 
         from .game_library_dialog import GameLibraryDialog
 
-        dialog = GameLibraryDialog(GameLibrary(self.sunshine, self._get_sunshine_creds), self.game_detector)
+        dialog = GameLibraryDialog(GameLibrary(self.sunshine, self._get_sunshine_creds), self.game_detector, entries=self._moonlight_entries_backend())
         self._game_library_dialog = dialog
         dialog.present(self)
         return dialog
@@ -5255,7 +5592,8 @@ class HostView(Gtk.Box):
             bw = int(self.bandwidth_row.get_value() * 1000)  # Mbps -> Kbps
 
             sunshine_settings = {
-                "upnp": "enabled" if self.upnp_row.get_active() else "disabled",
+                # Big Remote Play forwards the ports itself and checks them (router_ports).
+                "upnp": "disabled",
                 "address_family": "both" if self.ipv6_row.get_active() else "ipv4",
                 "origin_web_ui_allowed": web_ui_origin(self.webui_anyone_row.get_active(), scm.config.get("origin_web_ui_allowed", "lan")),
                 "stream_audio": "enabled",
@@ -5413,7 +5751,7 @@ class HostView(Gtk.Box):
             self.wifi_row.set_active(h.get("wifi_mode", False))
             self.input_priority.load(h)
             self.touch_controls.load(h)
-            self.input_priority.set_pause_touch(touch_control.priority_pauses_touch(self.touch_controls.mode))
+            self.input_priority.set_pause_touch(touch_control.priority_pauses_touch(self.touch_controls.effective_mode))
         finally:
             self.loading_settings = False
 

@@ -242,6 +242,43 @@ def _https_get(address: ServerAddress, path: str, connect_host: str) -> tuple[in
 
 # ── a server on this computer ──────────────────────────────────────────────
 
+LOCAL_CONFIG = Path("/etc/headscale/config.yaml")
+
+
+def _config_value(text: str, key: str) -> str:
+    for line in text.splitlines():
+        if line.startswith(f"{key}:"):
+            return line.split(":", 1)[1].strip().strip('"').strip("'")
+    return ""
+
+
+def _headscale_active() -> bool:
+    try:
+        return subprocess.run(["systemctl", "is-active", "--quiet", "headscale"], timeout=3, check=False).returncode == 0
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
+def serves_here(server_url: str, *, config: Path = LOCAL_CONFIG, active: Callable[[], bool] = _headscale_active) -> str:
+    """This computer's loopback API address when ``server_url`` is the Headscale running here, else ``""``.
+
+    Read without root: Headscale's configuration is world-readable. Reported
+    on 2026-11-17: the server set up here was later checked as "Another
+    server", and "Add this computer" asked for an API key the person did not
+    have, although Big Remote Play can create one here itself.
+    """
+    if not server_url:
+        return ""
+    try:
+        text = config.read_text(encoding="utf-8")
+    except OSError:
+        return ""
+    configured = _config_value(text, "server_url").rstrip("/").lower()
+    listen = _config_value(text, "listen_addr")
+    if configured != server_url.rstrip("/").lower() or not listen.startswith("127.0.0.1:"):
+        return ""
+    return listen if active() else ""
+
 
 @dataclass(frozen=True)
 class HelperResult:
@@ -255,7 +292,7 @@ class HelperResult:
 class LocalServer:
     """Headscale + Caddy on this computer, through the PolicyKit helper."""
 
-    COMMANDS = ("configure", "firewall", "create-user", "create-apikey", "status", "unconfigure", "hosts-pin", "hosts-unpin")
+    COMMANDS = ("configure", "firewall", "create-user", "create-apikey", "register", "status", "unconfigure", "hosts-pin", "hosts-unpin")
 
     def __init__(self, *, helper: str = HELPER, popen: Callable[..., subprocess.Popen] = subprocess.Popen, exists: Callable[[str], bool] = os.path.exists) -> None:
         self.helper = helper
@@ -302,6 +339,21 @@ class LocalServer:
         if code in (126, 127):  # pkexec: not authorized, or the dialog was dismissed
             return HelperResult(False, "not_authorized", data, lines=tuple(lines))
         return HelperResult(code == 0 and result == "ok", result or ("ok" if code == 0 else "failed"), data, secret, tuple(lines))
+
+
+def approve_here(server_url: str, user: str, code: str, *, local: LocalServer | None = None, here: Callable[[str], str] | None = None) -> HelperResult | None:
+    """Approve a waiting device on the Headscale running on this computer, through the PolicyKit helper.
+
+    ``None`` when the server is not here or the helper is not installed: the
+    caller then shows the command for the server's owner. Reported
+    2026-11-17: without an API key the only way was a terminal, and the
+    command Headscale suggests says ``--user USERNAME``, a user that does not exist.
+    """
+    local = local or LocalServer()
+    here = here or serves_here
+    if not local.available or not here(server_url):
+        return None
+    return local.run("register", user, code)
 
 
 # ── progress of the setup wizard ───────────────────────────────────────────
@@ -478,6 +530,7 @@ __all__ = [
     "LOCAL_API",
     "HelperResult",
     "LocalServer",
+    "approve_here",
     "STEPS",
     "ServerAddress",
     "ServerCheck",

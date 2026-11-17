@@ -24,6 +24,7 @@ from __future__ import annotations
 from collections.abc import Callable, Sequence
 from dataclasses import replace
 import getpass
+import logging
 import re
 import time
 from types import SimpleNamespace
@@ -54,6 +55,8 @@ from big_remote_play.utils.uri import open_uri
 
 from .components import note
 from .network_common import Worker, copy_row, in_stack, loading_row, message_row, push_page
+
+_log = logging.getLogger("big-remoteplay")
 
 if TYPE_CHECKING:
     from big_remote_play.private_network.service import PrivateNetworkService
@@ -1237,26 +1240,59 @@ class HeadscaleWizard:
             return ""
 
     def _this_computer_page(self) -> Adw.NavigationPage:
+        from big_remote_play.private_network.headscale_server import serves_here
+
         self.this_status = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         widgets: list[Gtk.Widget] = [_group("", "", _value_row(_("Server"), self.progress.server_url, self.toast))]
         self.api_entry = Adw.PasswordEntryRow(title=_("API key"))
         self.key_entry = Adw.PasswordEntryRow(title=_("Key for this computer"))
+        # A server checked as "another server" may be the one running here
+        # (reported 2026-11-17): then nothing needs to be pasted.
+        listen = serves_here(self.progress.server_url, active=lambda: True)
+        if listen and self.progress.mode != "this_computer":
+            self._save(replace(self.progress, mode="this_computer", local_listen=listen))
         local = self.progress.mode == "this_computer"
+        name = self.progress.user or default_user_name()
         if local:
+            widgets.append(
+                _group(
+                    "",
+                    "",
+                    message_row(
+                        _("The server runs on this computer"),
+                        # TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+                        _("Big Remote Play creates your network user “{user}” and a key for this computer by itself. Your password is asked once.").format(user=name),
+                        "brp-network-server-symbolic",
+                    ),
+                )
+            )
             widgets.append(_actions(_button(_("Add this computer"), lambda: self.add_this_computer(), suggested=True)))
         else:
             widgets.append(_label(_("How do you want to add this computer?"), "title-3"))
             widgets.append(
                 _group(
-                    _("I manage this server"),
-                    _("Paste the server's API key. Big Remote Play then does the rest. It is kept in the system keyring."),
+                    _("1. I manage this server (recommended)"),
+                    _("On the server, run this command and paste the key it prints. Big Remote Play then does the rest and remembers the key."),
+                    copy_row(_("Command for the server"), "sudo headscale apikeys create --expiration 90d", icon="brp-text-x-generic-symbolic", toast=self.toast),
                     self.api_entry,
                 )
             )
             widgets.append(_actions(_button(_("Use the API key"), self._use_api_key, suggested=True)))
-            widgets.append(_group(_("I have a key from the server owner"), _("A key that adds one computer. It is used once and not saved."), self.key_entry))
+            widgets.append(
+                _group(
+                    _("2. I have a key from the server owner"),
+                    _("A key that adds one computer, starting with hskey-auth-. It is used once and not saved."),
+                    self.key_entry,
+                )
+            )
             widgets.append(_actions(_button(_("Use this key"), self._use_preauth_key)))
-            widgets.append(_group(_("Ask the server owner to approve"), _("This computer asks to join; the owner approves it on the server.")))
+            widgets.append(
+                _group(
+                    _("3. Ask the server owner to approve"),
+                    # TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+                    _("This computer asks to join; Big Remote Play shows the exact commands for the owner, with your user “{user}”.").format(user=name),
+                )
+            )
             widgets.append(_actions(_button(_("Ask to join"), self._ask_owner)))
         widgets.append(self.this_status)
         return self._page("hs-this-computer", _("This computer"), _("Add this computer"), _("This computer joins your Headscale network."), *widgets, step="this_computer")
@@ -1310,18 +1346,36 @@ class HeadscaleWizard:
         self._connect(auth_key="", ask=True)
 
     def add_this_computer(self) -> None:
-        """Create a one-time key with the API key, then join with it."""
-        key = self._api_key()
-        if not key:
-            self._replace(self.this_status, _group("", "", message_row(_("No API key for this server yet."), _("Choose one of the options above."), "dialog-warning-symbolic")))
-            return
+        """Create a one-time key with the API key, then join with it.
+
+        On a server running here without a saved API key (the keyring could
+        not keep it, or it was never made), the PolicyKit helper creates the
+        user and the key first: one password, nothing to paste.
+        """
         local = self.progress.mode == "this_computer"
         origin = self.progress.local_api if local else self.progress.server_url
         name = self.progress.user or default_user_name()
+        scope = self.progress.server_url
 
         def work():
+            from big_remote_play.private_network.credentials import CredentialKind
             from big_remote_play.private_network.headscale_api import HeadscaleApi
 
+            key = self._api_key()
+            if not key and local:
+                user = self.local.run("create-user", name)
+                if not user.ok:
+                    return "", user
+                made = self.local.run("create-apikey")
+                if not made.ok or not made.secret:
+                    return "", made
+                key = made.secret
+                try:
+                    self.service_factory().credentials.save(CredentialKind.HEADSCALE_API_KEY, key, scope=scope)
+                except Exception as error:  # still used now; Advanced offers saving it again
+                    _log.warning("Headscale API key not kept: %s", type(error).__name__)
+            if not key:
+                return "no-key", None
             api = HeadscaleApi(origin, key)
             users, result = api.users()
             if not result.ok:
@@ -1335,9 +1389,19 @@ class HeadscaleWizard:
             return preauth, result
 
         def done(result) -> None:
-            preauth, _api = result
+            preauth, outcome = result
+            if preauth == "no-key":
+                self._replace(self.this_status, _group("", "", message_row(_("No API key for this server yet."), _("Choose one of the options above."), "dialog-warning-symbolic")))
+                return
             if not preauth:
-                self._replace(self.this_status, _group("", "", message_row(_("The server did not give a key for this computer."), _("Check the API key in Advanced."), "dialog-warning-symbolic")))
+                from big_remote_play.private_network.headscale_server import HelperResult
+
+                problem = (
+                    self._helper_problem(outcome)
+                    if isinstance(outcome, HelperResult)
+                    else message_row(_("The server did not give a key for this computer."), _("Check the API key in Advanced."), "dialog-warning-symbolic")
+                )
+                self._replace(self.this_status, _group("", "", problem))
                 return
             self._save(replace(self.progress, user=name))
             self._connect(auth_key=preauth)
@@ -1429,10 +1493,15 @@ class HeadscaleWizard:
         from big_remote_play.private_network.headscale_api import registration_key
 
         key = registration_key(url)
-        user = self.progress.user or "USER"
-        rows: list[Gtk.Widget] = [message_row(_("Waiting for the server owner"), _("Send them this command. This page continues by itself once they run it."), "brp-network-idle-symbolic")]
+        # A real user name, never a placeholder: "--user USERNAME" from
+        # Headscale's own page failed with "user not found" (2026-11-17).
+        user = self.progress.user or default_user_name()
+        rows: list[Gtk.Widget] = [
+            message_row(_("Waiting for the server owner"), _("Send them these commands; the first is needed only once. This page continues by itself once they run them."), "brp-network-idle-symbolic")
+        ]
         if key:
-            rows.append(copy_row(_("Command for the server owner"), f"headscale auth register --auth-id {key} --user {user}", icon="brp-text-x-generic-symbolic", toast=self.toast))
+            rows.append(copy_row(_("1. Create the user (once)"), f"sudo headscale users create {user}", icon="brp-text-x-generic-symbolic", toast=self.toast))
+            rows.append(copy_row(_("2. Approve this computer"), f"sudo headscale auth register --auth-id {key} --user {user}", icon="brp-text-x-generic-symbolic", toast=self.toast))
         rows.append(copy_row(_("Sign-in link"), url, toast=self.toast))
         self._replace(self.this_status, _group("", "", *rows))
 
@@ -1450,7 +1519,7 @@ class HeadscaleWizard:
         copy = _button(_("Copy address"), lambda: self._copy(server), suggested=True)
         self.key_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.device_status = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        widgets: list[Gtk.Widget] = [steps, _actions(copy)]
+        widgets: list[Gtk.Widget] = [steps, _actions(copy), *self._phone_steps(server)]
         if self._api_key():
             widgets.append(
                 _group(
@@ -1460,25 +1529,73 @@ class HeadscaleWizard:
             )
             widgets.append(_actions(_button(_("Create a one-time key"), self._create_device_key)))
             widgets.append(self.key_box)
-        if self._api_key():
-            from .network_devices import ApprovalGroup
+        from .network_devices import ApprovalGroup
 
-            origin = self.progress.local_api if self.progress.mode == "this_computer" else self.progress.server_url
-            key = self._api_key()
+        origin = self.progress.local_api if self.progress.mode == "this_computer" else self.progress.server_url
+        key = self._api_key()
 
-            def api():
-                from big_remote_play.private_network.headscale_api import HeadscaleApi
+        def api():
+            if not key:
+                return None
+            from big_remote_play.private_network.headscale_api import HeadscaleApi
 
-                return HeadscaleApi(origin, key)
+            return HeadscaleApi(origin, key)
 
-            def approved(name: str) -> None:
-                self._mark("another_device")
+        def approved(name: str) -> None:
+            self._mark("another_device")
 
-            self.approval = ApprovalGroup(api, preferred_user=self.progress.user, on_done=approved)
-            widgets.append(self.approval)
+        self.approval = ApprovalGroup(api, preferred_user=self.progress.user, on_done=approved, server_url=lambda: self.progress.server_url, toast=self.toast)
+        widgets.append(self.approval)
         widgets.append(self.device_status)
         widgets.append(_actions(_button(_("Check for the other device"), self._check_devices), _button(_("Finish"), self.finish, suggested=True)))
         return self._page("hs-another-device", _("Add another device"), _("Add another device"), "", *widgets, step="another_device")
+
+    def _phone_steps(self, server: str) -> list[Gtk.Widget]:
+        """A phone joins with the Tailscale app; Moonlight then uses this computer's private address.
+
+        Reported 2026-11-17: a phone added the server's internet name in
+        Moonlight ("could not connect"): that name is the Headscale server,
+        not the game PC, and it is not on the private network.
+        """
+        from .network_common import qr_code
+
+        self.phone_address = message_row(_("4. In Moonlight, add this computer"), _("Checking this computer's private address…"), "brp-computer-symbolic")
+        group = _group(
+            _("On a phone or tablet"),
+            _("The phone joins the same private network with the Tailscale app, then Moonlight uses this computer's private address."),
+            message_row(_("1. Install the Tailscale app"), _("From Google Play or the App Store."), "brp-network-private-symbolic"),
+            message_row(
+                _("2. Use this server"),
+                # TRANSLATORS: Tailscale app menu names; they can vary with the app version.
+                _("Before signing in, open the app's menu (⋮ or Settings → Accounts), choose “Use an alternate server” and scan or type: {server}").format(server=server),
+                "brp-network-server-symbolic",
+            ),
+            message_row(_("3. Sign in"), _("Approve the phone below when it asks to join, or give it a one-time key."), "brp-emblem-ok-symbolic"),
+            self.phone_address,
+        )
+        widgets: list[Gtk.Widget] = [group]
+        if server:
+            try:
+                widgets.append(qr_code(server, size=180, description=_("QR code of the server address for the Tailscale app")))
+            except ValueError:
+                pass
+
+        def address():
+            status = self.service_factory().status(ProviderId.HEADSCALE)
+            device = getattr(status, "self_device", None)
+            return getattr(device, "best_address", "") or ""
+
+        def show(value: str) -> None:
+            if value:
+                self.phone_address.set_subtitle(
+                    # TRANSLATORS: {address} is this computer's private address, such as 100.64.0.1.
+                    _("Type {address}, not the server's address. It works while the phone is connected to this network.").format(address=value)
+                )
+            else:
+                self.phone_address.set_subtitle(_("Use this computer's private address shown in Share, not the server's address."))
+
+        self.worker.submit(address, show, failed=lambda _error: show(""))
+        return widgets
 
     def _copy(self, text: str) -> None:
         from .network_common import copy_to_clipboard

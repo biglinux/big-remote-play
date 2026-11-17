@@ -208,6 +208,13 @@ def router_external_address(runner: Callable[..., subprocess.CompletedProcess] =
     except (OSError, subprocess.SubprocessError):
         return ""
     match = _UPNP_EXTERNAL_RE.search(result.stdout or "")
+    if not match and runner is subprocess.run:
+        # SSDP answers are often dropped by this computer's firewall (ufw):
+        # ask the router at its description address instead (router_ports).
+        from big_remote_play.host import router_ports
+
+        state, _local = router_ports.locate()
+        return state.external_ip if state.found and address_kind(state.external_ip) else ""
     if not match:
         return ""
     try:

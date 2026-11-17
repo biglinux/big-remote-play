@@ -39,6 +39,10 @@ The password belongs to one owner, `SunshineCredentials` ([architecture](archite
 
 The keyring is written **before** Sunshine gets the password. Seen in Big GNOME and BigLinux KDE live sessions (2026-11-04): the first keyring call opens the desktop's own "create a keyring" window, and if the person cancels it, lookups still answer while saving fails; a password that only Sunshine knew would then be lost for good. So a refused save creates no Sunshine user (**Choose a password for sharing** is offered instead), and a save that answers only after the 10-second timeout — the person still typing in that window — is not retried by itself, which would open a new window every minute: **The system keyring did not answer** offers **Try the keyring again**. If the keyring finishes the save later, Sunshine gets that same user on the next upkeep.
 
+### Without any system keyring
+
+Some sessions have no Secret Service at all: Window Maker and wlmaker on BigLinux (measured 2026-11-17: libsecret loads, every lookup fails). Before, the password then lived only in memory; each new session forgot it, the upkeep could not read `GET /api/pin`, and **the New connection request window never opened** — the report that led to this section. Now, only when no keyring answers at all, the password is kept in `~/.config/big-remote-play/sunshine/api-password`: owner-only (0600) in a 0700 directory, written atomically, never logged. A first Sunshine gets its `sunshine` user this way too, written to the file before Sunshine gets it. A keyring that is there but locked, or whose own prompt was dismissed, never sends the password to the file. When a keyring appears later, the password moves into it and the file is removed. **Security and access** says which of the two keeps it. If Sunshine already has a user whose password Big Remote Play never knew, it is asked once (or reset with **Change Sunshine password**) and remembered from then on.
+
 When a password is really needed, one sheet asks for it — **Sunshine password**, or **Choose a password for sharing** on a first Sunshine when no keyring works — checks it with Sunshine first (a wrong one keeps the sheet open with what was typed), holds it in memory, then saves it in the keyring when **Remember on this computer** is on. If the keyring cannot keep it, it works until the app closes and **Preferences → Security and access** offers **Save in keyring**. The approval that was waiting for it continues by itself. A password Sunshine rejects (401) is not tried or re-read again until a new one is given. **Preferences → Security and access** says where the password is kept and offers **Change Sunshine password**, which also resets a forgotten one.
 
 ## Safety rules
@@ -47,6 +51,7 @@ When a password is really needed, one sheet asks for it — **Sunshine password*
 - The PIN is sent only to this computer's Sunshine, for one `pairing_id`; it is never logged, stored, broadcast or put in a notification.
 - Requests expire after two minutes and are cancelled, never left waiting.
 - Sunshine's authentication is never disabled.
+- Without a keyring, the password is in an owner-only file, never in settings JSON or `sunshine.conf`.
 
 ## Checked again with Big Remote Play's new screens (2026-11-04)
 

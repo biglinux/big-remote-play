@@ -527,6 +527,9 @@ class SunshineSettings:
     def get_monitors(self):
         monitors = []
         is_wayland = os.environ.get("XDG_SESSION_TYPE") == "wayland"
+        from big_remote_play.utils.monitor_names import connector_edids, gdk_monitor_label
+
+        edids = connector_edids()
         try:
             display = Gdk.Display.get_default()
             if display:
@@ -537,14 +540,7 @@ class SunshineSettings:
                         continue
                     name = monitor.get_connector()
                     if name:
-                        manufacturer = monitor.get_manufacturer() or ""
-                        model = monitor.get_model() or ""
-                        label_parts = []
-                        if manufacturer:
-                            label_parts.append(manufacturer)
-                        if model:
-                            label_parts.append(model)
-                        label = " ".join(label_parts) if label_parts else "Monitor"
+                        label = gdk_monitor_label(monitor, edids) or _("Monitor / Display")
 
                         # Value logic: Wayland uses 0, 1, 2... | X11 uses HDMI-A-1, etc.
                         val = str(i) if is_wayland else name

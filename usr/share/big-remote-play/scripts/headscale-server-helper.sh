@@ -7,6 +7,8 @@
 #   firewall              allow HTTP and HTTPS in firewalld or ufw, when one is active
 #   create-user NAME      create the Headscale user NAME unless it exists
 #   create-apikey         create an API key that expires in 90 days
+#   register NAME CODE    approve the device waiting with CODE (hskey-authreq-…)
+#                         for the user NAME, creating NAME first when missing
 #   status                report the services and the configured address
 #   unconfigure           undo "configure" (restores the saved configuration)
 #   hosts-pin HOST        make HOST reach this computer directly (127.0.0.1 in
@@ -332,6 +334,40 @@ cmd_create_apikey() {
 	finish ok
 }
 
+cmd_register() {
+	local name="$1" code="$2" id output node
+	[[ "$name" =~ ^[a-z0-9][a-z0-9._-]{0,62}$ ]] || {
+		say "$(gettext 'This name is not valid.')"
+		finish invalid 2
+	}
+	# The code a device shows: hskey-authreq-… (0.27+) or an older node key.
+	[[ "$code" =~ ^[A-Za-z0-9][A-Za-z0-9_-]{7,127}$ ]] || {
+		say "$(gettext 'This is not a code from the other device.')"
+		finish invalid 2
+	}
+	command -v headscale >/dev/null 2>&1 || finish not_installed 3
+	id="$(headscale users list -o json 2>/dev/null | jq -r --arg n "$name" '.[]? | select(.name == $n) | .id' | head -n 1)"
+	if [ -z "$id" ]; then
+		headscale users create "$name" >/dev/null 2>&1 || finish error 1
+	fi
+	if output="$(headscale auth register --auth-id="$code" --user="$name" -o json 2>&1)"; then
+		:
+	elif printf '%s' "$output" | grep -qi 'unknown command\|unknown flag'; then
+		# Headscale before 0.27 registered with "nodes register --key".
+		output="$(headscale nodes register --key="$code" --user="$name" -o json 2>&1)" || {
+			printf '%s\n' "$output" | tail -n 3
+			finish rejected 5
+		}
+	else
+		printf '%s\n' "$output" | tail -n 3
+		finish rejected 5
+	fi
+	node="$(printf '%s' "$output" | jq -r '(.given_name // .givenName // .name // "")' 2>/dev/null | head -n 1)"
+	[[ "$node" =~ ^[A-Za-z0-9._-]{1,63}$ ]] && echo "BRP_DATA NODE_NAME=${node}"
+	echo "BRP_DATA USER_NAME=${name}"
+	finish ok
+}
+
 cmd_status() {
 	local value
 	for unit in headscale caddy; do
@@ -432,6 +468,7 @@ configure) [ $# -eq 2 ] || finish invalid 2; cmd_configure "$2" ;;
 firewall) [ $# -eq 1 ] || finish invalid 2; cmd_firewall ;;
 create-user) [ $# -eq 2 ] || finish invalid 2; cmd_create_user "$2" ;;
 create-apikey) [ $# -eq 1 ] || finish invalid 2; cmd_create_apikey ;;
+register) [ $# -eq 3 ] || finish invalid 2; cmd_register "$2" "$3" ;;
 status) [ $# -eq 1 ] || finish invalid 2; cmd_status ;;
 unconfigure) [ $# -eq 1 ] || finish invalid 2; cmd_unconfigure ;;
 hosts-pin) [ $# -eq 2 ] || finish invalid 2; cmd_hosts_pin "$2" ;;

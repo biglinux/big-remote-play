@@ -62,9 +62,17 @@ class FakeKeyboard:
     def release(self):
         FakeKeyboard.log.append(("release",))
 
+    def show_keyboard(self, visible):
+        FakeKeyboard.log.append(("keyboard", visible))
+
+    def path(self):
+        return "/usr/bin/big-keyboard"
+
 
 @pytest.fixture
-def touch(ui):
+def touch(ui, monkeypatch):
+    # Hermetic: the developer's own desktop never decides what a test sees.
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "KDE")
     FakeKeyboard.log = []
     saved: list[bool] = []
     context = {"sharing": True, "game_window": False, "output": "DP-1", "sunshine_config": {}}
@@ -182,3 +190,58 @@ def test_every_check_icon_exists_in_the_theme(ui) -> None:
     assert theme is not None
     for name in {*touch_controls._ICONS.values(), "brp-emblem-ok-symbolic", "dialog-warning-symbolic"}:
         assert theme.has_icon(name), name
+
+
+def test_on_wlmaker_automatic_opens_keyboard_and_controller_so_the_phone_has_a_mouse(touch, monkeypatch) -> None:
+    """Reported 2026-11-17 on wlmaker: the phone's fingers moved nothing and the
+    on-screen controller never opened. wlmaker drops touch devices."""
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "wlmaker")
+    touch.load({})
+    assert touch.mode == "automatic" and touch.effective_mode == "hybrid"
+    assert "does not accept touch" in touch.mode_row.get_subtitle()
+    touch.on_connections(1)
+    assert wait(lambda: ("keyboard", True) in FakeKeyboard.log)
+    # Every finger is big-keyboard's: on the controller it plays, elsewhere it is the pointer.
+    assert ("configure", "exclusive", "DP-1") in FakeKeyboard.log and ("show", True) in FakeKeyboard.log
+    touch.on_connections(0)
+    assert wait(lambda: ("keyboard", False) in FakeKeyboard.log)
+
+
+def test_on_wlmaker_without_the_controller_the_phone_sends_a_mouse(touch, monkeypatch) -> None:
+    class NotInstalled(FakeKeyboard):
+        def path(self):
+            return None
+
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "wlmaker")
+    touch._keyboard_factory = NotInstalled
+    touch.load({})
+    assert touch.effective_mode == "mouse"
+    assert backend.sunshine_settings(touch.effective_mode) == {"native_pen_touch": "disabled"}
+
+
+def test_a_chosen_mode_is_never_replaced(touch, monkeypatch) -> None:
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "wlmaker")
+    touch.load({"touch_mode": "gamepad"})
+    assert touch.effective_mode == "gamepad"
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "KDE")
+    touch.load({})
+    assert touch.effective_mode == "automatic"
+
+
+def test_the_controller_goes_to_the_screen_the_session_streams(ui, monkeypatch) -> None:
+    """A "02 - Monitor" entry streams DP-2: the keyboard, controller and phone
+    pointer belong there, not on the screen chosen in Share."""
+    import time as _time
+
+    from big_remote_play.host import stream_display
+
+    host = ui.host_view
+    monkeypatch.setattr(host, "_shared_output", lambda: "DisplayPort-0")
+    monkeypatch.setattr(host, "_kms_connectors", {"DisplayPort-0": "DP-1", "DisplayPort-1": "DP-2"}, raising=False)
+    host._hosting_started_at = _time.time() - 5
+    report = stream_display.ClientReport(2400, 1080, 60, False, "DP-2", 0, 0, None, _time.time())
+    monkeypatch.setattr(stream_display, "read_client_report", lambda path=None: report)
+    assert host._touch_context()["output"] == "DisplayPort-1"  # X11's name for the kernel's DP-2
+    # A report from an earlier sharing session is not this session's screen.
+    host._hosting_started_at = _time.time() + 60
+    assert host._touch_context()["output"] == "DisplayPort-0"

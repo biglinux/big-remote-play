@@ -21,14 +21,12 @@ Verified on an X11 desktop with three monitors (3440×1440, 3440×1440, 2560×10
 
 The chosen screen is Sunshine's `output_name`. Sunshine's KMS capture, which it uses even in X11 sessions when it can, finds the screen by its kernel connector name (`DP-2`); X11 drivers name the same output differently (`DisplayPort-1`). Big Remote Play pairs the two names by the screen's EDID and writes the kernel name, so the chosen screen is the one shared. Each screen is listed once.
 
-## One entry per screen in Moonlight: not possible with one Sunshine
+## One entry per screen in Moonlight
 
-It would be convenient to see *Desktop — Screen 1*, *Desktop — Screen 2* in Moonlight. Sunshine (checked on 2026.914) does not support it:
+Moonlight can show *01 - Monitor*, *02 - Monitor*, … next to *Desktop*, numbered as **Identify screens** numbers them. Stock Sunshine (checked on 2026.914) cannot do it: `output_name` is one setting for the whole server, read when Sunshine starts, and an app's `output` field is a log file, not a screen. Big Remote Play therefore offers these entries only with a Sunshine that reads a screen per entry (`output-name`), such as the build in `pkgbuild/sunshine/`. Verified on a three-monitor PC: the *02 - Monitor* entry streamed DP-2 while the shared screen was DP-1. Details, the patch and its checks: [Moonlight entries](moonlight-entries.md).
 
-- `output_name` is one setting for the whole server, read when Sunshine starts;
-- an app's `output` field is the file where its command output is written, not a screen;
-- an app's `prep-cmd` runs before the stream but cannot change which screen Sunshine captures.
+With a stock Sunshine, choose the screen in Share; if sharing is on, stop and start sharing to apply it.
 
-Several *Desktop* entries would all show the same screen, so Big Remote Play does not create them.
+## Screen names
 
-The way that would work is one Sunshine per screen, each with its own port, name and pairing, shown in Moonlight as separate computers (*Game PC — Screen 2*). That needs pairing each screen, more firewall ports and a decision on which one carries the sound. It is a future design, not part of the app today. Until then, choose the screen in Share; if sharing is on, stop and start sharing to apply it.
+The lists show the screen's real name (*LG ULTRAWIDE*), read from the EDID the screen sends (`/sys/class/drm/*/edid`, its display-name descriptor and vendor code) when GTK does not know it. Measured on 2026-11-17: in a wlroots session (wlmaker) GTK reported `Unknown` as both manufacturer and model, which showed *Unknown Unknown*; on X11 it repeats the connector as the model. A notebook's own panel without a name is *Built-in screen*. Code: `utils/monitor_names.py`, tests: `tests/test_monitor_names.py`.
