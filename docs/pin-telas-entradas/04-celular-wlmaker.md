@@ -39,3 +39,22 @@ mouse do dedo ficavam no monitor principal: o app passava ao big-keyboard a
 tela escolhida em Compartilhar, e o registro da sessão só sabia a tela quando
 o kscreen-doctor (KDE) respondia. Agora o registro guarda sempre a tela
 capturada e o controle de toque usa a tela da sessão atual.
+
+## Mouse com o teclado e o controle ocultos (2026-11-17)
+
+Relato: ao ocultar o controle na tela e o teclado virtual, o mouse do
+celular parava. Causa: o big-keyboard só lia os dedos do celular com o
+teclado ou o controle aberto (`on_sync` em `bk-remote.c`), e o wlmaker
+ignora o touchscreen do Sunshine; ninguém recebia os toques.
+
+Correção:
+
+- big-keyboard 0.2.3: modo de toque remoto `mouse`, o `exclusive` que
+  continua lendo o celular com tudo oculto; então a tela inteira é o mouse
+  em toque direto (o ponteiro vai até o dedo, tocar clica, dois dedos
+  rolam, toque com segundo dedo é o clique direito).
+- Big Remote Play pede `mouse` no wlmaker (Automático → Controle e toque),
+  também quando o controle não abre sozinho; volta para `exclusive` quando
+  o último celular sai. Um big-keyboard antigo recusa o valor e fica no
+  `exclusive`, como antes.
+- No KDE e no GNOME nada muda: o desktop recebe o toque do Sunshine.
