@@ -2345,7 +2345,8 @@ class GuestView(Gtk.Box):
         from big_remote_play.guest.local_screens import local_screens, placement_supported
 
         row = self.local_screen_row
-        settings = self.config.get("guest", {}) if isinstance(self.config.get("guest", {}), dict) else {}
+        stored = self.config.get("guest", {})
+        settings: dict = stored if isinstance(stored, dict) else {}
         self._saved_local_screen = str(settings.get("local_screen", "") or "")
         supported = placement_supported()
         try:

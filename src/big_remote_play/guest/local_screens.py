@@ -73,7 +73,9 @@ def local_screens(display=None, primary: str | None = None, edids: dict[str, byt
     monitors = display.get_monitors()
     for index in range(monitors.get_n_items()):
         monitor = monitors.get_item(index)
-        connector = (monitor.get_connector() if monitor is not None else "") or ""
+        if monitor is None:
+            continue
+        connector = monitor.get_connector() or ""
         if not _CONNECTOR.fullmatch(connector):
             continue
         area = monitor.get_geometry()

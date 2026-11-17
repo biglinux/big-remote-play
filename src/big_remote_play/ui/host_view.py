@@ -905,7 +905,7 @@ class HostView(Gtk.Box):
         server_tools_group.set_title(_("Server tools"))
         server_tools_group.set_description(_("For a closer look when the checks above are not enough."))
 
-        def _add_management_button(group: Adw.PreferencesGroup, title: str, subtitle: str, icon_name: str, callback: Callable[[Gtk.Widget], None]) -> None:
+        def _add_management_button(group: Adw.PreferencesGroup, title: str, subtitle: str, icon_name: str, callback: Callable[[Gtk.Widget], object]) -> None:
             # Use a native PreferencesRow instead of placing a Gtk.Button inside
             # the group.  This lets libadwaita own the grouped-list shape, hover,
             # focus and keyboard activation, and gives assistive technologies one

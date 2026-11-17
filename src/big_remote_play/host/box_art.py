@@ -188,12 +188,16 @@ def _pixbuf(path: Path, width: int, height: int):
 
 
 def _paint_pixbuf(context, pixbuf, x: float, y: float) -> None:
-    import gi
+    """Paint a pixbuf through PNG (Gdk.cairo_set_source_pixbuf is deprecated in GTK 4)."""
+    import io
 
-    gi.require_version("Gdk", "4.0")
-    from gi.repository import Gdk  # type: ignore
+    import cairo
 
-    Gdk.cairo_set_source_pixbuf(context, pixbuf, x, y)
+    ok, data = pixbuf.save_to_bufferv("png", [], [])
+    if not ok:
+        return
+    surface = cairo.ImageSurface.create_from_png(io.BytesIO(data))
+    context.set_source_surface(surface, x, y)
     context.paint()
 
 
