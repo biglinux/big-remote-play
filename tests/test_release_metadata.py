@@ -69,8 +69,9 @@ def test_pkgbuild_derives_version_from_build_date() -> None:
     pkgrel = re.search(r"(?m)^pkgrel=(.+)$", pkgbuild)
     assert pkgver is not None and pkgrel is not None
     assert not re.fullmatch(r"[\d.]+", pkgver.group(1).strip()), "pkgver must not be hand-pinned"
-    assert "+%y.%m.%d" in pkgver.group(1)
-    assert "+%H%M" in pkgrel.group(1)
+    # date(1), or bash's own printf (namcap reads the file without coreutils).
+    assert "+%y.%m.%d" in pkgver.group(1) or "%(%y.%m.%d)T" in pkgver.group(1)
+    assert "+%H%M" in pkgrel.group(1) or "%(%H%M)T" in pkgrel.group(1)
     # The wheel takes its version from tools/release/build_version.py; the
     # package must answer to the same two inputs or one build ships two dates.
     assert "BRP_BUILD_VERSION" in pkgbuild

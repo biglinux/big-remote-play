@@ -201,10 +201,53 @@ def test_on_wlmaker_automatic_opens_keyboard_and_controller_so_the_phone_has_a_m
     assert "does not accept touch" in touch.mode_row.get_subtitle()
     touch.on_connections(1)
     assert wait(lambda: ("keyboard", True) in FakeKeyboard.log)
-    # Every finger is big-keyboard's: on the controller it plays, elsewhere it is the pointer.
-    assert ("configure", "exclusive", "DP-1") in FakeKeyboard.log and ("show", True) in FakeKeyboard.log
+    # Every finger is big-keyboard's: on the controller it plays, elsewhere it
+    # is the pointer, also once both are hidden ("mouse").
+    assert ("configure", "mouse", "DP-1") in FakeKeyboard.log and ("show", True) in FakeKeyboard.log
     touch.on_connections(0)
     assert wait(lambda: ("keyboard", False) in FakeKeyboard.log)
+    # Nobody plays: big-keyboard stops reading Sunshine's touchscreen.
+    assert wait(lambda: ("configure", "exclusive", "") in FakeKeyboard.log)
+
+
+def test_on_wlmaker_the_phone_has_a_mouse_without_opening_anything(touch, monkeypatch) -> None:
+    """Reported 2026-11-17: with the keyboard and the controller hidden, the
+    phone's mouse stopped. Also when the controller is not opened by itself."""
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "wlmaker")
+    touch.load({"touch_open_on_connect": False})
+    touch.on_connections(1)
+    assert wait(lambda: ("configure", "mouse", "DP-1") in FakeKeyboard.log)
+    assert ("show", True) not in FakeKeyboard.log and ("keyboard", True) not in FakeKeyboard.log
+
+
+def test_close_while_a_phone_plays_keeps_its_mouse(touch, monkeypatch) -> None:
+    """Close hides the windows; only the last device leaving ends the phone mouse."""
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "wlmaker")
+    touch.load({})
+    touch.on_connections(1)
+    assert wait(lambda: ("configure", "mouse", "DP-1") in FakeKeyboard.log)
+    touch.run_action("close")
+    assert wait(lambda: ("show", False) in FakeKeyboard.log)
+    assert ("configure", "exclusive", "") not in FakeKeyboard.log
+    touch.on_connections(0)
+    assert wait(lambda: ("configure", "exclusive", "") in FakeKeyboard.log)
+
+
+def test_the_reset_follows_the_mode_applied_not_the_mode_chosen_since(touch, monkeypatch) -> None:
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "wlmaker")
+    touch.load({})
+    touch.on_connections(1)
+    assert wait(lambda: ("configure", "mouse", "DP-1") in FakeKeyboard.log)
+    touch.load({"touch_mode": "gamepad"})  # changed during the session
+    touch.on_connections(0)
+    assert wait(lambda: ("configure", "exclusive", "") in FakeKeyboard.log)
+
+
+def test_elsewhere_the_desktop_keeps_the_touches_with_everything_hidden(touch, monkeypatch) -> None:
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "KDE")
+    touch.load({"touch_mode": "hybrid", "touch_open_on_connect": False})
+    touch.on_connections(1)
+    assert not wait(lambda: any(item[0] == "configure" for item in FakeKeyboard.log), timeout=0.5)
 
 
 def test_on_wlmaker_without_the_controller_the_phone_sends_a_mouse(touch, monkeypatch) -> None:

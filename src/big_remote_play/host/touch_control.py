@@ -103,10 +103,15 @@ def remote_touch_mode(mode: str, *, ignores_touch: bool = False) -> str:
     """``big-keyboard`` remote-touch mode: exclusive keeps every finger on the
     controller (nothing becomes a click); shared lets touches outside it reach
     the desktop where the desktop accepts touch. Where it does not, the
-    controller keeps the fingers and turns the others into the pointer."""
+    controller keeps the fingers and turns the others into the pointer, also
+    with everything hidden ("mouse", big-keyboard 0.2.3+; older ones keep
+    "exclusive", see :meth:`BigKeyboard.configure`)."""
     mode = normalize_mode(mode)
     if mode == HYBRID and ignores_touch:
-        return "exclusive"
+        # "mouse": exclusive that keeps reading the phone with the keyboard and
+        # the controller hidden, every finger then being the pointer. Reported
+        # 2026-11-17: hiding both on wlmaker stopped the phone's mouse.
+        return "mouse"
     return {GAMEPAD: "exclusive", HYBRID: "shared", TOUCH: "off", MOUSE: "off"}.get(mode, "exclusive")
 
 
@@ -267,13 +272,35 @@ class BigKeyboard:
             time.sleep(0.1)
         return False
 
-    def configure(self, *, remote_touch: str, output: str) -> None:
+    def _state(self, name: str):
+        """The current state of one action, or None."""
         from gi.repository import GLib  # type: ignore
 
-        if remote_touch in ("off", "exclusive", "shared"):
+        try:
+            _enabled, _type, state = self._call("Describe", GLib.Variant("(s)", (name,)), "((bgav))").unpack()[0]
+        except Exception as error:
+            _log.debug("big-keyboard: %s", error)
+            return None
+        return state[0] if state else None
+
+    def configure(self, *, remote_touch: str, output: str) -> str:
+        """Set the remote-touch mode and the screen; returns the mode in use.
+
+        An older big-keyboard ignores "mouse" (its state does not change):
+        then "exclusive", the closest mode it has, is set instead.
+        """
+        from gi.repository import GLib  # type: ignore
+
+        used = ""
+        if remote_touch in ("off", "exclusive", "shared", "mouse"):
             self._set_state("remote-touch", GLib.Variant("s", remote_touch))
+            used = remote_touch
+            if remote_touch == "mouse" and self._state("remote-touch") != "mouse":
+                self._set_state("remote-touch", GLib.Variant("s", "exclusive"))
+                used = "exclusive"
         if valid_output(output):
             self._set_state("overlay-output", GLib.Variant("s", output))
+        return used
 
     def show_keyboard(self, visible: bool) -> None:
         """The keyboard itself (big-keyboard's show/hide actions)."""

@@ -103,6 +103,9 @@ class TouchControls:
         self._actions = Worker()
         self._loading = False
         self._connected = 0
+        # The remote-touch mode big-keyboard last received (worker thread):
+        # the reset follows what was applied, not the mode chosen since.
+        self._applied_remote = ""
         self.dialog: Adw.PreferencesDialog | None = None
         self._build()
 
@@ -268,13 +271,22 @@ class TouchControls:
 
     # ── the controller ─────────────────────────────────────────────────────
     def run_action(self, action: str) -> None:
-        """A button or the sharing lifecycle: open, close, edit or release."""
+        """A button or the sharing lifecycle: open, close, edit, release or pointer.
+
+        ``pointer`` only lets the phone move the mouse (a desktop that ignores
+        touch, with the controller not opened by itself). ``close`` hides the
+        windows; while a device still plays, its mouse keeps working. Once
+        nobody plays, ``mouse`` goes back to ``exclusive`` so nothing keeps
+        reading Sunshine's touchscreen.
+        """
         context = dict(self._context())
         mode = self.effective_mode
         ignores_touch = self.ignores_touch
         with_keyboard = backend.keyboard_with_controller(mode, ignores_touch=ignores_touch)
         output = str(context.get("output") or "")
         keyboard = self._keyboard_factory()
+        remote = backend.remote_touch_mode(mode, ignores_touch=ignores_touch)
+        nobody_plays = self._connected == 0
 
         def work():
             if action == "release":
@@ -287,10 +299,15 @@ class TouchControls:
                     keyboard.show(False)
                     if with_keyboard:
                         keyboard.show_keyboard(False)
+                    if nobody_plays and self._applied_remote == "mouse":
+                        keyboard.configure(remote_touch="exclusive", output="")
+                        self._applied_remote = "exclusive"
                 return None
             if not keyboard.start():
                 raise RuntimeError(_("Big WM Virtual Keyboard did not start"))
-            keyboard.configure(remote_touch=backend.remote_touch_mode(mode, ignores_touch=ignores_touch), output=output)
+            self._applied_remote = keyboard.configure(remote_touch=remote, output=output) or remote
+            if action == "pointer":
+                return None
             if action == "edit":
                 keyboard.edit()
             else:
@@ -315,6 +332,8 @@ class TouchControls:
         mode = self.effective_mode
         if count and not before and backend.uses_controller(mode) and self.open_row.get_active():
             self.run_action("open")
+        elif count and not before and backend.remote_touch_mode(mode, ignores_touch=self.ignores_touch) == "mouse":
+            self.run_action("pointer")
         elif before and not count and backend.uses_controller(mode):
             self.run_action("close")
         elif count < before:

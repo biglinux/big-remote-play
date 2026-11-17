@@ -87,8 +87,9 @@ def test_output_names_are_validated_before_big_keyboard_sees_them(name, valid) -
 class FakeBus:
     """Records org.gtk.Actions calls and answers like a running big-keyboard."""
 
-    def __init__(self, *, running=True, actions=None):
+    def __init__(self, *, running=True, actions=None, remote_modes=("off", "exclusive", "shared", "mouse")):
         self.running = running
+        self.remote_modes = remote_modes
         self.calls: list[tuple[str, object]] = []
         self.actions = (
             actions
@@ -109,6 +110,15 @@ class FakeBus:
         if method == "NameHasOwner":
             return GLib.Variant("(b)", (self.running,))
         self.calls.append((method, args.unpack() if args is not None else None))
+        if method == "SetState":
+            name, value, _platform = args.unpack()
+            enabled, sig, _states = self.actions.get(name, (True, "s", []))
+            if name != "remote-touch" or value in self.remote_modes:
+                self.actions[name] = (enabled, sig, [value])
+            return None
+        if method == "Describe":
+            enabled, sig, states = self.actions[args.unpack()[0]]
+            return GLib.Variant("((bgav))", ((enabled, sig, [GLib.Variant("s" if isinstance(v, str) else "b", v) for v in states]),))
         if method == "DescribeAll":
             return GLib.Variant("(a{s(bgav)})", ({key: (enabled, sig, [GLib.Variant("s" if isinstance(v, str) else "b", v) for v in states]) for key, (enabled, sig, states) in self.actions.items()},))
         return None
@@ -126,6 +136,25 @@ def test_status_reports_facts_not_settings() -> None:
     assert keyboard(FakeBus(running=False)).status() == tc.ControllerStatus(installed=True)
     status = keyboard(FakeBus()).status()
     assert status == tc.ControllerStatus(installed=True, running=True, supports_remote_touch=True, visible=True, remote_touch="exclusive", remote_state="active", output="DP-1")
+
+
+def test_on_a_desktop_without_touch_hybrid_keeps_the_phone_mouse_with_everything_hidden() -> None:
+    assert tc.remote_touch_mode(tc.HYBRID, ignores_touch=True) == "mouse"
+    assert tc.remote_touch_mode(tc.GAMEPAD, ignores_touch=True) == "exclusive"
+    assert tc.remote_touch_mode(tc.HYBRID, ignores_touch=False) == "shared"
+
+
+def test_the_mouse_mode_falls_back_on_an_older_big_keyboard() -> None:
+    bus = FakeBus()
+    assert keyboard(bus).configure(remote_touch="mouse", output="DP-2") == "mouse"
+    assert ("SetState", ("remote-touch", "exclusive", {})) not in bus.calls
+    older = FakeBus(remote_modes=("off", "exclusive", "shared"))
+    assert keyboard(older).configure(remote_touch="mouse", output="DP-2") == "exclusive"
+    assert [call for call in older.calls if call[0] == "SetState"] == [
+        ("SetState", ("remote-touch", "mouse", {})),
+        ("SetState", ("remote-touch", "exclusive", {})),
+        ("SetState", ("overlay-output", "DP-2", {})),
+    ]
 
 
 def test_an_older_big_keyboard_is_recognised() -> None:
