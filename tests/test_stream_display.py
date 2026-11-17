@@ -343,3 +343,16 @@ def test_kscreen_doctor_is_used_only_on_plasma() -> None:
     assert stream_display.default_tool({"XDG_CURRENT_DESKTOP": "wlmaker"}, which) == ""
     assert stream_display.default_tool({"XDG_CURRENT_DESKTOP": "KDE"}, which) == "/usr/bin/kscreen-doctor"
     assert stream_display.TOOL_TIMEOUT_SECONDS <= 5
+
+
+def test_the_report_names_the_streamed_screen_without_kscreen_doctor(tmp_path) -> None:
+    """wlmaker: no kscreen-doctor, yet Touch controls must know a "02 - Monitor"
+    session streams DP-2 (reported 2026-11-17)."""
+    from big_remote_play.host import stream_display
+
+    display = stream_display.StreamDisplay(tool="", state=tmp_path / "state.json")
+    report_path = tmp_path / "client.json"
+    request = stream_display.Request.from_environment({"SUNSHINE_CLIENT_WIDTH": "2400", "SUNSHINE_CLIENT_HEIGHT": "1080", "SUNSHINE_CLIENT_FPS": "60"})
+    display.prepare(request, target="DP-2", sdr_for_sdr_clients=True, report=report_path)
+    report = stream_display.read_client_report(report_path)
+    assert report is not None and report.screen == "DP-2" and report.width == 2400

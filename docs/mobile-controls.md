@@ -83,6 +83,10 @@ wlmaker drops touch devices (`WLR_INPUT_DEVICE_TOUCH` is ignored in its input ma
 
 A mode the person chose is never replaced. The mode row says what Automatic means on this desktop. Tests: `tests/test_touch_controls_ui.py`.
 
+### The screen the session streams
+
+The on-screen keyboard, the controller and the phone's pointer go to the screen the current session captures, not always the one chosen in Share. Reported on 2026-11-17: with a *02 - Monitor* entry (DP-2) they stayed on the main screen and the finger moved the pointer there. Sunshine runs the screen helper before every session; it now records the captured screen even where kscreen-doctor is not used (wlmaker), and Touch controls read it (only a report written during the current sharing session counts), translating the kernel's name (`DP-2`) to the session's (`DisplayPort-1` on X11). Tests: `tests/test_touch_controls_ui.py`, `tests/test_stream_display.py`.
+
 ## Moonlight on a computer
 
 Moonlight on a computer handles these keys itself; they are not sent to the game PC.

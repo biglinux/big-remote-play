@@ -2924,7 +2924,26 @@ class HostView(Gtk.Box):
             sunshine_config = dict(SunshineConfigManager().config)
         except OSError:
             sunshine_config = {}
-        return {"sharing": self.is_hosting, "game_window": self._source() == "game_window", "output": self._shared_output() or "", "sunshine_config": sunshine_config}
+        return {"sharing": self.is_hosting, "game_window": self._source() == "game_window", "output": self._streamed_output() or "", "sunshine_config": sunshine_config}
+
+    def _streamed_output(self) -> str | None:
+        """The screen the current session really captures, by this session's name for it.
+
+        A Moonlight entry such as "02 - Monitor" streams its own screen, not
+        the one chosen in Share (reported 2026-11-17: the on-screen keyboard,
+        controller and phone pointer stayed on the main screen). Sunshine runs
+        the screen helper before every session, which records the screen in
+        its report; the report of an earlier sharing session is ignored.
+        """
+        from big_remote_play.host.stream_display import read_client_report
+
+        report = read_client_report()
+        started = getattr(self, "_hosting_started_at", 0.0)
+        if report is not None and report.screen and started and report.started_at >= started:
+            # Sunshine names screens the kernel's way (DP-2); X11 may call it DisplayPort-1.
+            session_names = {kernel: name for name, kernel in (getattr(self, "_kms_connectors", None) or {}).items()}
+            return session_names.get(report.screen, report.screen)
+        return self._shared_output()
 
     def _on_touch_controls_changed(self) -> None:
         self.input_priority.set_pause_touch(touch_control.priority_pauses_touch(self.touch_controls.effective_mode))
@@ -4629,6 +4648,7 @@ class HostView(Gtk.Box):
             return False
 
         self.is_hosting = True
+        self._hosting_started_at = time.time()
         name = result.get("game_window")
         self._game_window_session = {"name": name, "spec": result.get("game_window_spec")} if name is not None else None
         if self._game_window_session is not None:

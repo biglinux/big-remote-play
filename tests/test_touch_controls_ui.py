@@ -226,3 +226,22 @@ def test_a_chosen_mode_is_never_replaced(touch, monkeypatch) -> None:
     monkeypatch.setenv("XDG_CURRENT_DESKTOP", "KDE")
     touch.load({})
     assert touch.effective_mode == "automatic"
+
+
+def test_the_controller_goes_to_the_screen_the_session_streams(ui, monkeypatch) -> None:
+    """A "02 - Monitor" entry streams DP-2: the keyboard, controller and phone
+    pointer belong there, not on the screen chosen in Share."""
+    import time as _time
+
+    from big_remote_play.host import stream_display
+
+    host = ui.host_view
+    monkeypatch.setattr(host, "_shared_output", lambda: "DisplayPort-0")
+    monkeypatch.setattr(host, "_kms_connectors", {"DisplayPort-0": "DP-1", "DisplayPort-1": "DP-2"}, raising=False)
+    host._hosting_started_at = _time.time() - 5
+    report = stream_display.ClientReport(2400, 1080, 60, False, "DP-2", 0, 0, None, _time.time())
+    monkeypatch.setattr(stream_display, "read_client_report", lambda path=None: report)
+    assert host._touch_context()["output"] == "DisplayPort-1"  # X11's name for the kernel's DP-2
+    # A report from an earlier sharing session is not this session's screen.
+    host._hosting_started_at = _time.time() + 60
+    assert host._touch_context()["output"] == "DisplayPort-0"

@@ -322,7 +322,12 @@ class StreamDisplay:
             mode = next((item for item in screen.modes if item.mode_id == mode_id), None)
             width, height = (mode.width, mode.height) if mode else (0, 0)
             hdr = False if f"output.{screen.name}.hdr.disable" in plan.apply else screen.hdr
-        report = ClientReport(request.width, request.height, request.fps, request.hdr, screen.name if screen else "", width, height, hdr, time.time())
+        # The screen this session captures, also where kscreen-doctor is not
+        # used (wlmaker): Touch controls put the on-screen keyboard and
+        # controller there (a "02 - Monitor" entry streams DP-2, not the
+        # screen chosen in Share).
+        name = screen.name if screen else (target or "")
+        report = ClientReport(request.width, request.height, request.fps, request.hdr, name, width, height, hdr, time.time())
         target_path = path or client_file()
         target_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
         secure_write_text(str(target_path), json.dumps(report.__dict__))

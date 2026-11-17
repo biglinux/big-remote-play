@@ -31,3 +31,11 @@ Moonlight sem dizer qual monitor ou se era baixa conexão; jogos sem imagem.
 
 Celular real com o pacote novo (toque → mouse e controle no wlmaker); capas
 aparecendo no Moonlight do celular.
+
+## Depois: o controle na tela certa (2026-11-17)
+
+Com uma entrada “02 - Monitor”, o teclado virtual, o controle na tela e o
+mouse do dedo ficavam no monitor principal: o app passava ao big-keyboard a
+tela escolhida em Compartilhar, e o registro da sessão só sabia a tela quando
+o kscreen-doctor (KDE) respondia. Agora o registro guarda sempre a tela
+capturada e o controle de toque usa a tela da sessão atual.
