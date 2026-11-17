@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import ssl
 import struct
 import subprocess
@@ -415,12 +416,76 @@ def test_helper_refusals_and_a_missing_install():
         ["hosts-pin", "203.0.113.10"],
         ["hosts-pin"],
         ["hosts-unpin", "Bad Name"],
+        ["register", "Bad Name", "hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX"],
+        ["register", "ruscher", "--force"],
+        ["register", "ruscher", "hskey-authreq-ABC;rm -rf /"],
+        ["register", "ruscher"],
+        ["register", "USERNAME", "hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX"],
     ],
 )
 def test_the_helper_refuses_anything_but_its_validated_commands(argv):
     result = subprocess.run(["bash", str(HELPER), *argv], capture_output=True, text=True, timeout=10, env={"PATH": "/usr/bin:/bin", "LANG": "C"})
     assert result.returncode == 2
     assert "BRP_DATA RESULT=invalid" in result.stdout
+
+
+FAKE_HEADSCALE = """#!/bin/bash
+echo "$*" >> "$LOG"
+case "$1 $2" in
+"users list") if [ -e "$USERS" ]; then echo '[{"id":"1","name":"ruscher"}]'; else echo '[]'; fi ;;
+"users create") touch "$USERS" ;;
+"auth register") case "$*" in *hskey-authreq-EXPIREDEXPIREDEXPIREDEXPI*) echo "Error: registering node: not found" >&2; exit 1 ;; esac
+    [ -e "$USERS" ] || { echo "Error: looking up user: user not found" >&2; exit 1; }
+    echo '{"id":"7","name":"pixel","given_name":"pixel-8"}' ;;
+esac
+"""
+
+
+def _register(tmp_path, *argv):
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir(exist_ok=True)
+    fake = bin_dir / "headscale"
+    fake.write_text(FAKE_HEADSCALE)
+    fake.chmod(0o755)
+    env = {"PATH": f"{bin_dir}:/usr/bin:/bin", "LANG": "C", "LOG": str(tmp_path / "log"), "USERS": str(tmp_path / "users")}
+    result = subprocess.run(["bash", str(HELPER), "register", *argv], capture_output=True, text=True, timeout=10, env=env)
+    return result, (tmp_path / "log").read_text().splitlines()
+
+
+@pytest.mark.skipif(shutil.which("jq") is None, reason="the helper needs jq")
+def test_the_helper_approves_a_waiting_device_and_creates_the_missing_user(tmp_path):
+    """Reported 2026-11-17: "--user USERNAME" gave "user not found"; the helper
+    creates the network's user first, then approves the code."""
+    result, calls = _register(tmp_path, "ruscher", "hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX")
+    assert result.returncode == 0, result.stdout
+    assert "BRP_DATA RESULT=ok" in result.stdout and "BRP_DATA NODE_NAME=pixel-8" in result.stdout
+    assert "users create ruscher" in calls
+    assert "auth register --auth-id=hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user=ruscher -o json" in calls
+
+
+@pytest.mark.skipif(shutil.which("jq") is None, reason="the helper needs jq")
+def test_an_expired_code_is_reported_as_rejected(tmp_path):
+    (tmp_path / "users").touch()
+    result, calls = _register(tmp_path, "ruscher", "hskey-authreq-EXPIREDEXPIREDEXPIREDEXPI")
+    assert result.returncode == 5 and "BRP_DATA RESULT=rejected" in result.stdout
+    assert not any(call.startswith("users create") for call in calls)
+
+
+def test_approving_here_only_when_the_server_runs_on_this_computer():
+    from big_remote_play.private_network.headscale_server import approve_here
+
+    argv = []
+
+    def popen(command, **kwargs):
+        argv.append(command)
+        return Process(["BRP_DATA NODE_NAME=pixel-8", "BRP_DATA RESULT=ok"])
+
+    local = LocalServer(popen=popen, exists=lambda path: True)
+    assert approve_here("https://vpn.example.com", "ruscher", "hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX", local=local, here=lambda url: "") is None and argv == []
+    result = approve_here("https://vpn.example.com", "ruscher", "hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX", local=local, here=lambda url: "127.0.0.1:8080")
+    assert result is not None and result.ok and result.data["NODE_NAME"] == "pixel-8"
+    assert argv == [["pkexec", "/usr/share/big-remote-play/scripts/headscale-server-helper.sh", "register", "ruscher", "hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX"]]
+    assert approve_here("https://vpn.example.com", "ruscher", "x", local=LocalServer(exists=lambda path: False), here=lambda url: "127.0.0.1:8080") is None
 
 
 # ── the cards ──────────────────────────────────────────────────────────────

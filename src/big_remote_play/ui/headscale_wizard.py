@@ -1529,22 +1529,23 @@ class HeadscaleWizard:
             )
             widgets.append(_actions(_button(_("Create a one-time key"), self._create_device_key)))
             widgets.append(self.key_box)
-        if self._api_key():
-            from .network_devices import ApprovalGroup
+        from .network_devices import ApprovalGroup
 
-            origin = self.progress.local_api if self.progress.mode == "this_computer" else self.progress.server_url
-            key = self._api_key()
+        origin = self.progress.local_api if self.progress.mode == "this_computer" else self.progress.server_url
+        key = self._api_key()
 
-            def api():
-                from big_remote_play.private_network.headscale_api import HeadscaleApi
+        def api():
+            if not key:
+                return None
+            from big_remote_play.private_network.headscale_api import HeadscaleApi
 
-                return HeadscaleApi(origin, key)
+            return HeadscaleApi(origin, key)
 
-            def approved(name: str) -> None:
-                self._mark("another_device")
+        def approved(name: str) -> None:
+            self._mark("another_device")
 
-            self.approval = ApprovalGroup(api, preferred_user=self.progress.user, on_done=approved)
-            widgets.append(self.approval)
+        self.approval = ApprovalGroup(api, preferred_user=self.progress.user, on_done=approved, server_url=lambda: self.progress.server_url, toast=self.toast)
+        widgets.append(self.approval)
         widgets.append(self.device_status)
         widgets.append(_actions(_button(_("Check for the other device"), self._check_devices), _button(_("Finish"), self.finish, suggested=True)))
         return self._page("hs-another-device", _("Add another device"), _("Add another device"), "", *widgets, step="another_device")

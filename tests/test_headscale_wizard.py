@@ -694,6 +694,47 @@ def test_a_wrong_or_expired_code_is_explained(ui, tmp_path):
     assert not wiz.progress.is_done("another_device")
 
 
+def test_without_an_api_key_a_device_is_approved_on_the_server_here(ui, tmp_path, monkeypatch):
+    asked = []
+
+    def approve_here(url, user, code):
+        asked.append((url, user, code))
+        return HelperResult(True, "ok", {"NODE_NAME": "pixel-8"})
+
+    monkeypatch.setattr("big_remote_play.private_network.headscale_server.approve_here", approve_here)
+    wiz = wizard(ui, tmp_path)
+    wiz.progress = SetupProgress(mode="this_computer", domain=DOMAIN, address_kind="domain", user="ruscher")
+    wiz._push(wiz._another_device_page())
+    assert "Approve a device" in texts(visible(ui))
+    wiz.approval.entry.set_text("headscale auth register --auth-id hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user USERNAME")
+    press(ui, "Approve")
+    assert wait(lambda: "pixel-8 was added to your network." in texts(visible(ui)))
+    assert asked == [(f"https://{DOMAIN}", "ruscher", "hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX")]  # the network's user, never USERNAME
+    assert wiz.progress.is_done("another_device") and FakeApi.registered == []
+
+
+def test_a_dismissed_password_dialog_says_how_to_try_again(ui, tmp_path, monkeypatch):
+    monkeypatch.setattr("big_remote_play.private_network.headscale_server.approve_here", lambda url, user, code: HelperResult(False, "not_authorized"))
+    wiz = wizard(ui, tmp_path)
+    wiz.progress = SetupProgress(mode="this_computer", domain=DOMAIN, address_kind="domain", user="ruscher")
+    wiz._push(wiz._another_device_page())
+    wiz.approval.entry.set_text("hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX")
+    press(ui, "Approve")
+    assert wait(lambda: "Not approved" in texts(visible(ui)))
+    assert not wiz.progress.is_done("another_device")
+
+
+def test_a_server_elsewhere_without_a_key_shows_the_real_command(ui, tmp_path, monkeypatch):
+    monkeypatch.setattr("big_remote_play.private_network.headscale_server.approve_here", lambda url, user, code: None)
+    wiz = wizard(ui, tmp_path)
+    wiz.progress = SetupProgress(mode="another_server", domain=DOMAIN, address_kind="domain", user="ruscher")
+    wiz._push(wiz._another_device_page())
+    wiz.approval.entry.set_text("ABCDEFGHIJKLMNOPQRSTUVWX")
+    press(ui, "Approve")
+    assert wait(lambda: "sudo headscale auth register --auth-id hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user ruscher" in texts(visible(ui)))
+    assert "USERNAME" not in texts(visible(ui))
+
+
 def test_a_server_running_here_is_added_without_pasting_any_key(ui, tmp_path, monkeypatch):
     """Reported 2026-11-17: the server set up on this computer was later checked
     as "Another server" and step 6 asked for an API key the person never had."""

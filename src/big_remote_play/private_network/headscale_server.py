@@ -292,7 +292,7 @@ class HelperResult:
 class LocalServer:
     """Headscale + Caddy on this computer, through the PolicyKit helper."""
 
-    COMMANDS = ("configure", "firewall", "create-user", "create-apikey", "status", "unconfigure", "hosts-pin", "hosts-unpin")
+    COMMANDS = ("configure", "firewall", "create-user", "create-apikey", "register", "status", "unconfigure", "hosts-pin", "hosts-unpin")
 
     def __init__(self, *, helper: str = HELPER, popen: Callable[..., subprocess.Popen] = subprocess.Popen, exists: Callable[[str], bool] = os.path.exists) -> None:
         self.helper = helper
@@ -339,6 +339,21 @@ class LocalServer:
         if code in (126, 127):  # pkexec: not authorized, or the dialog was dismissed
             return HelperResult(False, "not_authorized", data, lines=tuple(lines))
         return HelperResult(code == 0 and result == "ok", result or ("ok" if code == 0 else "failed"), data, secret, tuple(lines))
+
+
+def approve_here(server_url: str, user: str, code: str, *, local: LocalServer | None = None, here: Callable[[str], str] | None = None) -> HelperResult | None:
+    """Approve a waiting device on the Headscale running on this computer, through the PolicyKit helper.
+
+    ``None`` when the server is not here or the helper is not installed: the
+    caller then shows the command for the server's owner. Reported
+    2026-11-17: without an API key the only way was a terminal, and the
+    command Headscale suggests says ``--user USERNAME``, a user that does not exist.
+    """
+    local = local or LocalServer()
+    here = here or serves_here
+    if not local.available or not here(server_url):
+        return None
+    return local.run("register", user, code)
 
 
 # ── progress of the setup wizard ───────────────────────────────────────────
@@ -515,6 +530,7 @@ __all__ = [
     "LOCAL_API",
     "HelperResult",
     "LocalServer",
+    "approve_here",
     "STEPS",
     "ServerAddress",
     "ServerCheck",

@@ -391,11 +391,25 @@ command `headscale auth register --auth-id hskey-authreq-… --user USERNAME`.
 Headscale has no API or command that lists waiting devices (checked against
 0.29.3's `/api/v1`: only `auth/register`, `auth/approve` and `auth/reject`, by
 code), so the code has to come from that screen. **Approve a device** (on this
-step, and on the Headscale page's Devices tab when the API key works) accepts
-the whole line, the link, the code, or only its 24 characters. It registers
-the device through `POST /api/v1/auth/register` for the network's user
-(never the `USERNAME` placeholder) and says *pixel-8 was added to your
-network.* An expired code says to start the sign-in again on that device.
+step, on the Headscale page's Devices tab whenever Headscale is connected, and
+in **Add device**) accepts the whole line, the link, the code, or only its 24
+characters, and approves it for the network's user (never the `USERNAME`
+placeholder) in the first way that works:
+
+1. with a working API key, through `POST /api/v1/auth/register`;
+2. without one, when the server runs on this computer (`serves_here`), through
+   the PolicyKit helper's `register NAME CODE`: the system asks for the
+   administrator password, the user is created when missing, then
+   `headscale auth register --auth-id=CODE --user=NAME` runs (Headscale before
+   0.27: `nodes register --key`);
+3. otherwise it shows *Approve it on the server* with the exact command, real
+   code and user filled in, to copy to the server's owner.
+
+It then says *pixel-8 was added to your network.* An expired code says to
+start the sign-in again on that device; a dismissed password dialog says *Not
+approved* and how to try again. Reported 2026-11-17: the command Headscale's
+page suggests failed with *permission denied* without `sudo` and *user not
+found* with it, because `USERNAME` is a placeholder.
 
 On the other computer: 1. install Big Remote Play (or the Tailscale app on a
 phone), 2. open Connect your devices, 3. choose Headscale → Set up → Another

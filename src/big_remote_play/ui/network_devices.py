@@ -17,6 +17,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw, GLib, Gtk  # type: ignore
 
 from big_remote_play.private_network.headscale_api import HeadscaleApi, registered_name, registration_key
+from big_remote_play.private_network.headscale_server import HelperResult
 from big_remote_play.private_network.http import ApiErrorKind, ApiResult
 from big_remote_play.private_network.models import ConnectionState, PeerDevice, ProviderCapabilities, ProviderId, ProviderStatus
 from big_remote_play.private_network.service import PrivateNetworkService
@@ -387,22 +388,54 @@ class ManageNetworkFlow(_Flow):
         self.on_changed()
 
 
+def _setup_user() -> str:
+    """The Headscale user the setup wizard created for this network, or ""."""
+    try:
+        from big_remote_play.private_network.headscale_server import SetupStore
+
+        return SetupStore().load().user
+    except Exception:  # noqa: BLE001 - a damaged setup file only loses the preference
+        return ""
+
+
 class ApprovalGroup(RowGroup):
     """**Approve a device**: the code a device shows at the Headscale sign-in.
 
     Headscale cannot list devices that are waiting, so the person types or
     pastes what the other device shows — the whole line, the link or only the
-    code — and Big Remote Play approves it for the network's user through the
-    API. Nothing is typed in a terminal.
+    code — and Big Remote Play approves it for the network's user. Nothing is
+    typed in a terminal:
+
+    - with a working API key, through the API;
+    - without one, when the server runs on this computer, through the
+      PolicyKit helper (the system asks for the administrator password), which
+      also creates the user when it is missing;
+    - otherwise the exact command for the server's owner, with the real user
+      name and code, never Headscale's ``--user USERNAME`` placeholder.
+
+    Reported 2026-11-17: ``headscale auth register … --user USERNAME`` failed
+    with "permission denied" and, with sudo, "user not found".
     """
 
     __gtype_name__ = "BrpApprovalGroup"
 
-    def __init__(self, api_factory: Callable[[], HeadscaleApi | None], *, preferred_user: str = "", on_done: Callable[[str], object] | None = None) -> None:
+    def __init__(
+        self,
+        api_factory: Callable[[], HeadscaleApi | None],
+        *,
+        preferred_user: str = "",
+        on_done: Callable[[str], object] | None = None,
+        server_url: Callable[[], str] | None = None,
+        approve_here: "Callable[[str, str, str], HelperResult | None] | None" = None,
+        toast: Callable[[str], None] | None = None,
+    ) -> None:
         super().__init__(title=_("Approve a device"), description=_("On the other device, Tailscale shows a code that starts with hskey-authreq-. Type or paste it here."))
         self.api_factory = api_factory
         self.preferred_user = preferred_user
         self.on_done = on_done or (lambda _name: None)
+        self.server_url = server_url or (lambda: "")
+        self.approve_here = approve_here
+        self.toast = toast
         self.worker = Worker()
         self.entry = Adw.EntryRow(title=_("Code shown on the other device"), use_markup=False)
         self.entry.connect("entry-activated", lambda _row: self.approve())
@@ -412,6 +445,15 @@ class ApprovalGroup(RowGroup):
         self.entry.add_suffix(self.button)
         self.add(self.entry)
         self.connect("unrealize", lambda *_args: self.worker.close())
+
+    def _user(self) -> str:
+        from big_remote_play.private_network.headscale_server import valid_user_name
+
+        if valid_user_name(self.preferred_user):
+            return self.preferred_user
+        from .headscale_wizard import default_user_name
+
+        return default_user_name()
 
     def approve(self) -> None:
         key = registration_key(self.entry.get_text())
@@ -423,40 +465,71 @@ class ApprovalGroup(RowGroup):
         self.button.set_sensitive(False)
         self.replace([loading_row(_("Approving…"))])
         preferred = self.preferred_user
+        fallback_user = self._user()
 
-        def work():
+        def by_api():
             api = self.api_factory()
             if api is None:
-                return "", None
+                return None
             users, result = api.users()
             if not result.ok:
-                return "", result
+                return None
             user = next((item for item in users if item.name == preferred), users[0] if users else None)
             if user is None:
-                return "", ApiResult.failure(ApiErrorKind.NOT_FOUND, "no user")
+                return None
             result = api.register_node(user.name, key)
-            return registered_name(result), result
+            return ("ok", registered_name(result), user.name) if result.ok else ("rejected", "", user.name)
+
+        def work():
+            try:
+                outcome = by_api()
+            except Exception:  # noqa: BLE001 - an unusable API falls back to this computer's server
+                outcome = None
+            if outcome is not None:
+                return outcome
+            approve_here = self.approve_here
+            if approve_here is None:
+                from big_remote_play.private_network.headscale_server import approve_here
+            result = approve_here(self.server_url(), fallback_user, key)
+            if result is None:
+                return ("elsewhere", "", fallback_user)
+            if result.ok:
+                return ("ok", result.data.get("NODE_NAME", ""), fallback_user)
+            return ("cancelled" if result.result == "not_authorized" else "rejected", "", fallback_user)
 
         def done(value) -> None:
-            name, result = value
+            state, name, user = value
             self.button.set_sensitive(True)
-            if result is not None and result.ok:
+            if state == "ok":
                 self.entry.set_text("")
                 shown = name or _("The device")
                 self.replace([message_row(_("{name} was added to your network.").format(name=shown), "", "brp-emblem-ok-symbolic")])
                 self.on_done(shown)
-                return
-            self.replace(
-                [
-                    message_row(
-                        _("The code was not accepted."),
-                        _("It may have expired: start the sign-in again on the other device and use the new code."),
-                        "dialog-warning-symbolic",
-                    )
-                ]
-            )
+            elif state == "cancelled":
+                self.replace([message_row(_("Not approved"), _("Approving on this computer needs the administrator password. Press Approve to try again."), "dialog-warning-symbolic")])
+            elif state == "elsewhere":
+                self.replace(
+                    [
+                        message_row(
+                            _("Approve it on the server"),
+                            _("Big Remote Play has no administrator key for this server. Send this command to the server's owner, or add a Headscale API key under API access."),
+                            "brp-network-server-symbolic",
+                        ),
+                        copy_row(_("Command for the server"), f"sudo headscale auth register --auth-id {key} --user {user or fallback_user}", icon="brp-text-x-generic-symbolic", toast=self.toast),
+                    ]
+                )
+            else:
+                self.replace(
+                    [
+                        message_row(
+                            _("The code was not accepted."),
+                            _("It may have expired: start the sign-in again on the other device and use the new code."),
+                            "dialog-warning-symbolic",
+                        )
+                    ]
+                )
 
-        self.worker.submit(work, done, failed=lambda _error: done(("", None)))
+        self.worker.submit(work, done, failed=lambda _error: done(("rejected", "", "")))
 
 
 class AddDeviceFlow(_Flow):
@@ -800,10 +873,15 @@ class AddDeviceFlow(_Flow):
             if self.advanced:
                 widgets.append(self._auth_key_group(lambda: self._headscale_key(users), f"sudo tailscale up --login-server={server} --auth-key=file:$HOME/headscale-key"))
         else:
+            # No usable API key: the code is still approved here when the
+            # server runs on this computer, otherwise the exact command is shown.
             widgets.append(
-                note(
-                    _("On the server, approve with “headscale auth register --auth-id ID --user USER”, or add a Headscale API key under API access to approve here."),
-                    "brp-dialog-password-symbolic",
+                ApprovalGroup(
+                    lambda: None,
+                    preferred_user=_setup_user(),
+                    on_done=lambda _name: self.on_changed(),
+                    server_url=lambda: server,
+                    toast=self.show_toast,
                 )
             )
         self._set_root(*widgets)

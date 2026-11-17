@@ -353,12 +353,19 @@ class ProviderPage(Adw.NavigationPage):
         box.append(self.devices)
 
         # Headscale: a phone or computer waiting at the sign-in is approved
-        # here with the code it shows (only when the API key works).
+        # here with the code it shows: through the API key, or through the
+        # administrator password when the server runs on this computer.
         self.approval = None
         if self.provider is ProviderId.HEADSCALE:
             from .network_devices import ApprovalGroup
 
-            self.approval = ApprovalGroup(self._headscale_api, preferred_user=self._headscale_user(), on_done=lambda _name: self.refresh_devices())
+            self.approval = ApprovalGroup(
+                self._headscale_api,
+                preferred_user=self._headscale_user(),
+                on_done=lambda _name: self.refresh_devices(),
+                server_url=lambda: self.service_factory().headscale_server(),
+                toast=self.main_window.show_toast,
+            )
             self.approval.set_visible(False)
             box.append(self.approval)
 
@@ -839,7 +846,7 @@ class ProviderPage(Adw.NavigationPage):
         joined = status is not None and (status.connected or (self.provider is ProviderId.ZEROTIER and bool(status.networks)))
         self.add_button.set_visible(joined)
         if self.approval is not None:
-            self.approval.set_visible(joined and self.listing is not None and self.listing.can_remove)
+            self.approval.set_visible(joined)
 
     def _headscale_api(self):
         """The Headscale API with the saved key (called on a worker)."""
