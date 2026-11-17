@@ -276,7 +276,7 @@ Changes to the output and to **Also play sound on this computer** apply the next
 - A domain is optional; a reachable public IP can be used directly.
 - Cloudflare must be **DNS only**. Its HTTP proxy does not carry the game stream.
 - DNS does not solve CGNAT, double NAT, blocked ports or firewall rules.
-- UPnP is only an attempt to create router mappings and is not proof that remote access works.
+- **Open the game ports on the router (without a VPN)**, in Share → Advanced, asks the router (UPnP) for the six game ports while sharing, checks them, shows the **Address for Moonlight** in Overview and removes them when sharing stops. It says when the router does not answer (turn on UPnP there) or when CGNAT makes it impossible. Details: [router](router.md#upnp-big-remote-play-opens-the-ports-and-checks-them).
 - Do not expose the Sunshine administration panel publicly.
 - A Headscale control server is still part of a VPN workflow; it is not the direct-domain alternative.
 

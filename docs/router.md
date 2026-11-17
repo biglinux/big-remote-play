@@ -53,9 +53,18 @@ This exposes Sunshine's streaming ports to the whole internet. Keep Sunshine upd
 5. **Test from a different network**, for example a phone on mobile data. A local test does not prove outside access.
 6. **Remove the forwards** when you no longer need them.
 
-### UPnP
+### UPnP: Big Remote Play opens the ports and checks them
 
-Share → Advanced → **Try automatic port forwarding (UPnP)** tells Sunshine to ask the router for the forwards when sharing starts. It is off by default. The router may refuse, and a successful request does not prove access from outside. If you also allow the web UI from anywhere, Sunshine may map that port too — the app warns about that combination.
+Share → Advanced → **Open the game ports on the router (without a VPN)**. It is off by default. While sharing, Big Remote Play (`host/router_ports.py`, with `upnpc` from miniupnpc):
+
+1. finds the router: SSDP first, then the description addresses common routers publish, on the default gateway only. Measured on 2026-11-17 with a ZTE F6645P: the router supported UPnP, yet `upnpc` and Sunshine's own UPnP found "no IGD" because this computer's firewall (ufw) dropped the router's SSDP answers; the description address (`http://192.168.0.1:52869/gatedesc.xml`) worked without changing the firewall;
+2. asks for the six game ports only (never 47990, the administration panel), each pointing at this computer, with the description *Big Remote Play* and a two-hour lease, renewed every 30 minutes while sharing;
+3. **reads them back** from the router: *Game ports open on the router* is said only for forwards the router lists; a port another device already uses is left alone and reported;
+4. compares the router's internet address with the public address seen from outside: CGNAT or a second router is said plainly, and then no address is offered;
+5. shows **Address for Moonlight** (the public IPv4, and a domain set up in Big Remote Play that leads to it), to test from another network such as mobile data;
+6. removes its own forwards when sharing stops (any other forward on the router is never touched); a forward left behind by a crash ends with its lease.
+
+Sunshine's own `upnp` option stays off, so the ports are not requested twice. On that ZTE router all six ports opened, were listed pointing at this computer and were removed again, and the existing ZeroTier forward was kept. A real connection from mobile data still has to be tested by a person.
 
 ## Firewall on this computer
 

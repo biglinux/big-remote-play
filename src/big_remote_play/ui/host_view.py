@@ -853,14 +853,16 @@ class HostView(Gtk.Box):
         self.advanced_group = Adw.PreferencesGroup(title=_("Advanced Settings"), description=_("Input, Network, and Access"))
 
         self.upnp_row = Adw.SwitchRow()
-        self.upnp_row.set_title(_("Try automatic port forwarding (UPnP)"))
-        self.upnp_row.set_subtitle(_("Sunshine asks a compatible router when it starts. Enabling this does not confirm that the ports opened."))
+        self.upnp_row.set_title(_("Open the game ports on the router (without a VPN)"))
+        self.upnp_row.set_subtitle(_("While sharing, Big Remote Play asks the router (UPnP) to forward Sunshine's six game ports to this computer, checks them, and removes them when sharing stops."))
+        self.upnp_row.set_subtitle_lines(0)
         self.upnp_row.set_active(False)
+        self.upnp_row.connect("notify::active", lambda *_args: self._sync_router_ports())
         self.advanced_group.add(self.upnp_row)
         upnp_help = Adw.ActionRow(
             title=_("For direct internet access only"),
             subtitle=_(
-                "Keep off for local play or a VPN. UPnP must be enabled on the router; it does not bypass CGNAT, double NAT or the computer’s firewall. Restart sharing and test from another network."
+                "Sunshine's administration panel is never opened, and every new device still needs your PIN. It does not work behind CGNAT or a second router; the result says so. A private network (VPN) needs no open ports."
             ),
             use_markup=False,
         )
@@ -1230,6 +1232,12 @@ class HostView(Gtk.Box):
         self.internet_access_group.set_description(_("The other person picks this computer under Connect. If it is not listed, send them the connection information."))
         self.internet_access_group.set_visible(False)
         self._internet_worker = Worker()
+        # Without a VPN: the game ports this computer asked the router for, checked.
+        self.direct_access_group = RowGroup(title=_("Over the internet without a VPN"))
+        self.direct_access_group.set_visible(False)
+        self._router_worker = Worker()
+        self._router_ports_open = False
+        self._router_renew = 0
 
         # Register PIN for updates.
         self.field_widgets["pin"] = {"label": self.pin_display_label, "real_value": "", "revealed": True}
@@ -1278,6 +1286,7 @@ class HostView(Gtk.Box):
         # listed separately below.
         overview_body.append(self._create_connected_devices_group())
         overview_body.append(self.internet_access_group)
+        overview_body.append(self.direct_access_group)
         overview_body.append(self.quality_card)
         overview_body.append(self._create_paired_devices_overview())
         overview_page = Adw.Clamp(maximum_size=820, tightening_threshold=560)
@@ -3799,6 +3808,7 @@ class HostView(Gtk.Box):
             self._refresh_paired_devices()
             self._refresh_internet_access()
             self._check_firewall()
+            self._sync_router_ports()
         else:
             self._end_pair_requests()
             self._check_cursor()
@@ -3808,6 +3818,9 @@ class HostView(Gtk.Box):
             if hasattr(self, "internet_access_group"):
                 self._internet_worker.cancel()
                 self.internet_access_group.set_visible(False)
+            if hasattr(self, "direct_access_group"):
+                self._stop_router_renewal()
+                self.direct_access_group.set_visible(False)
             self.pin_code = None
             if hasattr(self, "overview_status_label"):
                 self.overview_status_label.set_label(_("Choose a source, then start sharing."))
@@ -3853,6 +3866,167 @@ class HostView(Gtk.Box):
         self._sync_pair_status()
         self._show_transition()
         self._announce_state()
+
+    # ── without a VPN: the router's game ports ───────────────────────────
+    def _sunshine_base_port(self) -> int:
+        try:
+            return int(self.sunshine._config_value("port", "47989"))
+        except ValueError:
+            return 47989
+
+    def _sync_router_ports(self) -> None:
+        """GTK thread: open (and keep renewing) or close the router's game ports."""
+        from .network_common import loading_row
+
+        if not hasattr(self, "direct_access_group"):
+            return
+        wanted = self.is_hosting and self.upnp_row.get_active() and self._game_window_session is None
+        if not wanted:
+            self._stop_router_renewal()
+            self.direct_access_group.set_visible(False)
+            if self._router_ports_open:
+                self._router_worker.submit(self._close_router_ports, lambda _result: None)
+            return
+        self.direct_access_group.replace([loading_row(_("Asking the router to open the game ports…"))])
+        self.direct_access_group.set_visible(True)
+        self._router_worker.submit(self._open_router_ports, self._show_router_ports, failed=lambda _error: self._show_router_ports(None))
+        if not self._router_renew:
+            from big_remote_play.host.router_ports import RENEW_SECONDS
+
+            self._router_renew = GLib.timeout_add_seconds(RENEW_SECONDS, self._renew_router_ports)
+
+    def _renew_router_ports(self) -> bool:
+        if self._closed or not self.is_hosting or not self.upnp_row.get_active():
+            self._router_renew = 0
+            return False
+        self._router_worker.submit(self._open_router_ports, self._show_router_ports, failed=lambda _error: None)
+        return True
+
+    def _stop_router_renewal(self) -> None:
+        if self._router_renew:
+            GLib.source_remove(self._router_renew)
+            self._router_renew = 0
+
+    def _open_router_ports(self):
+        """Worker: forward the game ports, read them back, and gather what decides if it works."""
+        from big_remote_play.host import router_ports
+        from big_remote_play.host.firewall_check import check_firewall
+        from big_remote_play.private_network.public_address import cached_public_addresses
+
+        outcome = router_ports.open_ports(router_ports.wanted_ports(self._sunshine_base_port()))
+        self._router_ports_open = bool(outcome.opened)
+        public = ""
+        try:
+            public = cached_public_addresses().ipv4
+        except Exception:
+            public = ""
+        blocked: tuple[str, ...] = ()
+        try:
+            report = check_firewall()
+            blocked = tuple(report.blocked.get("local", ())) if report.blocked else ()
+        except Exception:
+            blocked = ()
+        return outcome, public, blocked, self._domain_for(outcome.state.external_ip)
+
+    @staticmethod
+    def _domain_for(address: str) -> str:
+        """A domain set up in Big Remote Play that leads to this address, for Moonlight by name."""
+        import socket
+
+        from big_remote_play.private_network.headscale_server import SetupStore
+
+        if not address:
+            return ""
+        try:
+            domain = SetupStore().load().domain
+            return domain if domain and address in {item[4][0] for item in socket.getaddrinfo(domain, None, socket.AF_INET)} else ""
+        except (OSError, ValueError):
+            return ""
+
+    def _close_router_ports(self) -> None:
+        """Worker: remove only the forwards Big Remote Play made for this computer."""
+        if not getattr(self, "_router_ports_open", False):
+            return
+        from big_remote_play.host import router_ports
+
+        try:
+            router_ports.close_ports(router_ports.wanted_ports(self._sunshine_base_port()))
+        except Exception as exc:
+            _log.warning("Router ports not removed: %s", exc)
+        self._router_ports_open = False
+
+    def _show_router_ports(self, result) -> None:
+        if self._closed or not self.is_hosting:
+            return
+        from .network_common import copy_row, message_row
+
+        rows: list[Gtk.Widget] = []
+        if result is None:
+            rows.append(message_row(_("The router could not be asked"), _("Try again later, or forward the ports by hand (Connect without a VPN)."), "dialog-warning-symbolic"))
+            self.direct_access_group.replace(rows)
+            return
+        outcome, public, blocked, domain = result
+        state = outcome.state
+        problems = {
+            "no_upnpc": (_("A program is missing"), _("Install the miniupnpc package, then start sharing again.")),
+            "no_gateway": (_("No router found"), _("This computer is not connected to a router.")),
+            "no_router": (
+                _("The router did not answer"),
+                _("Turn on UPnP in the router's settings (often under Network or NAT), then start sharing again. Or forward the ports by hand: Connect without a VPN."),
+            ),
+            "not_connected": (_("The router is not connected to the internet"), ""),
+            "refused": (_("The router did not answer"), _("Try again later.")),
+        }
+        if state.problem in problems:
+            title, text = problems[state.problem]
+            rows.append(message_row(title, text, "dialog-warning-symbolic"))
+        elif outcome.failed:
+            # TRANSLATORS: {ports} lists ports such as "TCP 47984, UDP 47998".
+            ports = ", ".join(f"{proto} {port}" for port, proto in outcome.failed)
+            rows.append(
+                message_row(
+                    _("The router did not open every game port"),
+                    _("Still closed: {ports}. Another device may use them, or the router refuses UPnP for them.").format(ports=ports),
+                    "dialog-warning-symbolic",
+                )
+            )
+        else:
+            # TRANSLATORS: {router} is the router's maker and model, such as "ZTE F6645P".
+            rows.append(
+                message_row(
+                    _("Game ports open on the router"),
+                    _("{router}: forwarded to this computer, renewed while sharing and removed when it stops.").format(router=state.model or _("Router")),
+                    "brp-emblem-ok-symbolic",
+                )
+            )
+        reachable_address = state.external_ip if outcome.ok else ""
+        if state.cgnat or (public and state.external_ip and public != state.external_ip):
+            rows.append(
+                message_row(
+                    _("Another network sits in front of the router"),
+                    _("The router's internet address is not the one the internet sees (CGNAT or a second router), so open ports cannot be reached. Use a private network (VPN) instead."),
+                    "dialog-warning-symbolic",
+                )
+            )
+            reachable_address = ""
+        if blocked:
+            rows.append(message_row(_("This computer's firewall blocks some game ports"), _("Allow them in Share → Advanced, or the router's forward stops here."), "dialog-warning-symbolic"))
+        if reachable_address:
+            moonlight = copy_row(_("Address for Moonlight"), reachable_address, icon="brp-address-symbolic", toast=self.show_toast)
+            # TRANSLATORS: {address} is this computer's internet address.
+            moonlight.set_subtitle(_("{address} — from any network. Test it with the phone on mobile data, not on this Wi-Fi.").format(address=reachable_address))
+            moonlight.set_subtitle_lines(0)
+            rows.append(moonlight)
+            if domain:
+                rows.append(copy_row(_("Or by name"), domain, icon="brp-address-symbolic", toast=self.show_toast))
+            rows.append(
+                message_row(
+                    _("What is open"),
+                    _("Only Sunshine's six game ports. The administration panel stays closed, and every new device still needs your PIN."),
+                    "brp-dialog-password-symbolic",
+                )
+            )
+        self.direct_access_group.replace(rows)
 
     def _refresh_internet_access(self) -> None:
         """How the other person reaches this PC over a private network, in plain words."""
@@ -4253,7 +4427,8 @@ class HostView(Gtk.Box):
             # selection.  An empty string is an explicit, invalid encoder name.
             "encoder": None if gpu["encoder"] == "auto" else gpu["encoder"],
             "max_bitrate": int(bw_mbps * 1000),
-            "upnp": "enabled" if self.upnp_row.get_active() else "disabled",
+            # Big Remote Play forwards the ports itself and checks them (router_ports).
+            "upnp": "disabled",
             "address_family": "both" if self.ipv6_row.get_active() else "ipv4",
             "origin_web_ui_allowed": web_ui_origin(self.webui_anyone_row.get_active(), current_web_ui_origin()),
             "channels": current_connected_clients(),
@@ -4611,6 +4786,7 @@ class HostView(Gtk.Box):
         threading.Thread(target=self._run_stop_hosting, daemon=True).start()
 
     def _run_stop_hosting(self) -> None:
+        self._close_router_ports()
         session, self.audio_session = self.audio_session, None
         if session is not None:
             try:
@@ -5396,7 +5572,8 @@ class HostView(Gtk.Box):
             bw = int(self.bandwidth_row.get_value() * 1000)  # Mbps -> Kbps
 
             sunshine_settings = {
-                "upnp": "enabled" if self.upnp_row.get_active() else "disabled",
+                # Big Remote Play forwards the ports itself and checks them (router_ports).
+                "upnp": "disabled",
                 "address_family": "both" if self.ipv6_row.get_active() else "ipv4",
                 "origin_web_ui_allowed": web_ui_origin(self.webui_anyone_row.get_active(), scm.config.get("origin_web_ui_allowed", "lan")),
                 "stream_audio": "enabled",
