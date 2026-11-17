@@ -71,10 +71,15 @@ class GameLibrary:
         known_keys = {app_game_key(app) for app in current}
         known_names = {str(app.get("name", "")).casefold() for app in current}
         entries = []
+        from big_remote_play.host.box_art import game_cover
+
         for game in games:
             if game.key in known_keys or game.name.casefold() in known_names:
                 continue
-            entries.append(sunshine_entry(game))
+            entry = sunshine_entry(game)
+            # The launcher's own cover, so Moonlight shows the game, not its name.
+            entry["image-path"] = game_cover(game.key)
+            entries.append(entry)
             known_keys.add(game.key)
             known_names.add(game.name.casefold())
         if not entries:

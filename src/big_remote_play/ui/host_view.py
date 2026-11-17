@@ -79,6 +79,14 @@ def _split_launch_command(command: str) -> list[str]:
         return []
 
 
+def _low_bandwidth_label(kbps: int) -> str:
+    """The badge drawn on Desktop Low's picture in Moonlight."""
+    from big_remote_play.ui.game_library_dialog import bitrate_text
+
+    # TRANSLATORS: drawn on Desktop Low's picture; {rate} is like "3 Mbit/s".
+    return _("Low bandwidth · {rate}").format(rate=bitrate_text(kbps)) if kbps else _("Low bandwidth")
+
+
 def _monitor_choice_label(number: int, name: str, connector: str) -> str:
     """Give identical displays a visible identity shared with the overlay."""
     return f"{number:02d} · {name} · {connector}"
@@ -2899,7 +2907,7 @@ class HostView(Gtk.Box):
         return {"sharing": self.is_hosting, "game_window": self._source() == "game_window", "output": self._shared_output() or "", "sunshine_config": sunshine_config}
 
     def _on_touch_controls_changed(self) -> None:
-        self.input_priority.set_pause_touch(touch_control.priority_pauses_touch(self.touch_controls.mode))
+        self.input_priority.set_pause_touch(touch_control.priority_pauses_touch(self.touch_controls.effective_mode))
         self._schedule_save_host_settings()
 
     def _shared_output(self) -> str | None:
@@ -4252,7 +4260,7 @@ class HostView(Gtk.Box):
 
         config["adapter_name"] = gpu["adapter"] if gpu["encoder"] == "vaapi" and gpu["adapter"] != "auto" else None
         # Touch controls: whether Sunshine offers native touch (Automatic keeps the person's choice).
-        config.update(touch_control.sunshine_settings(self.touch_controls.mode))
+        config.update(touch_control.sunshine_settings(self.touch_controls.effective_mode))
         # Sunshine runs this before capture and after each session; merged
         # with any global_prep_cmd the person has (see host/stream_display.py).
         from big_remote_play.host.stream_display import prep_command
@@ -5002,7 +5010,19 @@ class HostView(Gtk.Box):
                 screens=screens,
                 global_prep_cmd=self.sunshine._config_value("global_prep_cmd", ""),
             )
+        from big_remote_play.host import box_art
+
+        screens_by_connector = {screen.connector: screen.label for screen in (inputs[1] if inputs is not None else [])}
+        art = {"screens": screens_by_connector, "low_label": _low_bandwidth_label}
+        for entry in wanted:
+            picture = box_art.picture_for(entry, **art)
+            if picture:
+                entry["image-path"] = picture
         change, skipped = GameLibrary(self.sunshine, self._get_sunshine_creds).sync_entries(wanted)
+        # Desktop and games without a picture of their own get theirs (Moonlight
+        # showed every desktop entry as Sunshine's generic "DESKTOP" picture).
+        if not self.sunshine.is_running():
+            self.sunshine.edit_apps_file(lambda apps: box_art.decorate(apps, **art))
         if skipped:
             _log.info("Moonlight entries kept as the person made them: %s", ", ".join(skipped))
         return change, skipped
@@ -5523,7 +5543,7 @@ class HostView(Gtk.Box):
             self.wifi_row.set_active(h.get("wifi_mode", False))
             self.input_priority.load(h)
             self.touch_controls.load(h)
-            self.input_priority.set_pause_touch(touch_control.priority_pauses_touch(self.touch_controls.mode))
+            self.input_priority.set_pause_touch(touch_control.priority_pauses_touch(self.touch_controls.effective_mode))
         finally:
             self.loading_settings = False
 

@@ -13,6 +13,17 @@ What the other device can choose in Moonlight besides the games, how each entry 
 
 They are chosen in **Share → Preferences → Game Library → Moonlight Entries**. All are on by default; each switch says in words why it cannot be used (Steam not installed, one screen only, a Sunshine without per-entry settings). The **One entry per screen** row lists every entry with the screen's real name and connector, for example *01 - Monitor: LG ULTRAWIDE (DP-1)*.
 
+## Pictures in Moonlight
+
+Every entry has its own picture (`host/box_art.py`), 600×830 PNG in `~/.config/big-remote-play/sunshine/covers`:
+
+- **Desktop** and **Desktop Low**: the desktop's logo (`LOGO=` in `/etc/os-release`, e.g. Big WindowMaker's `big-wm`) and its name; Desktop Low adds a *Low bandwidth · 3 Mbit/s* badge.
+- **01 - Monitor**…: the number, the screen's real name and its connector.
+- **Games**: the cover the launcher already keeps — Steam's library cache (old `library_600x900.jpg` and the 2024 `<hash>/library_capsule.jpg`), Heroic's `images-cache` (SHA-256 of the art URL) and Lutris' cover art. Nothing is downloaded.
+- **Steam Big Picture** keeps Sunshine's Steam picture.
+
+Only apps without a picture of their own get one (empty, Sunshine's generic `desktop.png`/`box.png`, or one drawn here); a picture the person chose is kept. File names come from the content, so a changed picture gets a new path, Sunshine a new app id and Moonlight the new picture. Pictures no entry uses are removed. They are applied when sharing starts. Tests: `tests/test_box_art.py`.
+
 ## Why stock Sunshine cannot do two of them
 
 Checked in the Sunshine 2026.914 source:
