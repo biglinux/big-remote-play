@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-17 09:34+0000\n"
+"POT-Creation-Date: 2026-11-17 09:44+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Norwegian Bokmål\n"
@@ -47,13 +47,21 @@ msgstr "1. Kontroller Internett-tilgang"
 msgid "1. Create Account"
 msgstr "1. Opprett konto"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1503
+msgid "1. Create the user (once)"
+msgstr "1. Opprett brukeren (én gang)"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1274
+msgid "1. I manage this server (recommended)"
+msgstr "1. Jeg administrerer denne serveren (anbefalt)"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1995
 #: src/big_remote_play/ui/private_network_view.py:1114
 msgid "1. Identification"
 msgstr "1. Identifisering"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "1. Install Big Remote Play"
 msgstr "1. Installer Big Remote Play"
 
@@ -77,6 +85,10 @@ msgstr "1440p · 60 FPS · 40 Mbps"
 msgid "1920 × 1080 — best for TVs"
 msgstr "1920 × 1080 — best for TV-er"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1504
+msgid "2. Approve this computer"
+msgstr "2. Godkjenn denne datamaskinen"
+
 #: src/big_remote_play/ui/connection_guides.py:61
 msgid "2. Choose a domain you control"
 msgstr "2. Velg et domene du kontrollerer"
@@ -84,6 +96,10 @@ msgstr "2. Velg et domene du kontrollerer"
 #: src/big_remote_play/ui/connection_guides.py:119
 msgid "2. Domain and HTTPS"
 msgstr "2. Domene og HTTPS"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1283
+msgid "2. I have a key from the server owner"
+msgstr "2. Jeg har en nøkkel fra servereieren"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1989
@@ -99,9 +115,13 @@ msgstr "2. Bli med"
 msgid "2. Network"
 msgstr "2. Nettverk"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1446
+#: src/big_remote_play/ui/headscale_wizard.py:1515
 msgid "2. Open Connect your devices"
 msgstr "2. Åpne «Koble til enhetene dine»"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1291
+msgid "3. Ask the server owner to approve"
+msgstr "3. Be servereieren om å godkjenne"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1997
@@ -109,7 +129,7 @@ msgstr "2. Åpne «Koble til enhetene dine»"
 msgid "3. Authorization"
 msgstr "3. Godkjenning"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "3. Choose Headscale"
 msgstr "3. Velg Headscale"
 
@@ -147,7 +167,7 @@ msgstr "4. Godkjenn"
 msgid "4. Connect Big Remote Play"
 msgstr "4. Koble til Big Remote Play"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1448
+#: src/big_remote_play/ui/headscale_wizard.py:1517
 msgid "4. Use this server"
 msgstr "4. Bruk denne serveren"
 
@@ -182,7 +202,7 @@ msgstr ""
 "Det finnes allerede en Caddy-nettstedsfil med samme navn. Ingenting ble "
 "endret."
 
-#: src/big_remote_play/ui/headscale_wizard.py:865
+#: src/big_remote_play/ui/headscale_wizard.py:868
 msgid "A Headscale server already answers at this address."
 msgstr "En Headscale-server svarer allerede på denne adressen."
 
@@ -241,7 +261,7 @@ msgstr "En enhet spiller av lyd, men Sunshine tar ikke opp lyd ennå."
 msgid "A device started playing on this computer."
 msgstr "En enhet har begynt å spille på denne datamaskinen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:468
+#: src/big_remote_play/ui/headscale_wizard.py:471
 msgid ""
 "A domain is a name like example.com. Your server gets a name inside it, like "
 "headscale.example.com."
@@ -249,14 +269,17 @@ msgstr ""
 "Et domene er et navn som example.com. Serveren din får et navn inni det, som "
 "headscale.example.com."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1457
+#: src/big_remote_play/ui/headscale_wizard.py:1526
 msgid "A key for the other computer"
 msgstr "En nøkkel for den andre datamaskinen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "A key that adds one computer. It is used once and not saved."
+#: src/big_remote_play/ui/headscale_wizard.py:1284
+msgid ""
+"A key that adds one computer, starting with hskey-auth-. It is used once and "
+"not saved."
 msgstr ""
-"En nøkkel som legger til én datamaskin. Den brukes én gang og lagres ikke."
+"En nøkkel som legger til én datamaskin og begynner med hskey-auth-. Den "
+"brukes én gang og lagres ikke."
 
 #: src/big_remote_play/ui/controls_help.py:102
 msgid "A keyboard app with Ctrl and Alt"
@@ -295,11 +318,11 @@ msgstr ""
 "skarpest. Den valgte skjermen går tilbake til normalt etterpå. Velg først en "
 "skjerm ovenfor."
 
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "A secure connection could not be made."
 msgstr "Det kunne ikke opprettes en sikker tilkobling."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "A small VPS is enough. Debian, Ubuntu and Arch are fine."
 msgstr "En liten VPS er nok. Debian, Ubuntu og Arch går fint."
 
@@ -379,7 +402,7 @@ msgid "API error: {status}"
 msgstr "API-feil: {status}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:1242
+#: src/big_remote_play/ui/headscale_wizard.py:1247
 msgid "API key"
 msgstr "API-nøkkel"
 
@@ -540,8 +563,8 @@ msgstr "Legg til en konto eller et nettverk"
 msgid "Add another computer of mine"
 msgstr "Legg til en annen av mine datamaskiner"
 
-#: src/big_remote_play/ui/headscale_wizard.py:75
-#: src/big_remote_play/ui/headscale_wizard.py:1481
+#: src/big_remote_play/ui/headscale_wizard.py:78
+#: src/big_remote_play/ui/headscale_wizard.py:1550
 #: src/big_remote_play/ui/network_devices.py:488
 msgid "Add another device"
 msgstr "Legg til en annen enhet"
@@ -555,16 +578,16 @@ msgstr "Legg til med adresse"
 msgid "Add device"
 msgstr "Legg til enhet"
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "Add it where you manage your domain's DNS."
 msgstr "Legg den til der du administrerer DNS for domenet ditt."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1246
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "Add this computer"
 msgstr "Legg til denne datamaskinen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:713
+#: src/big_remote_play/ui/headscale_wizard.py:716
 msgid ""
 "Add this only if your router lets connections in over IPv6. A wrong IPv6 "
 "record can break the connection."
@@ -572,15 +595,15 @@ msgstr ""
 "Legg bare til denne hvis ruteren din slipper inn tilkoblinger over IPv6. En "
 "feil IPv6-post kan ødelegge tilkoblingen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this record."
 msgstr "Legg til denne posten."
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this to Cloudflare."
 msgstr "Legg til dette i Cloudflare."
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 msgid "Add two rules"
 msgstr "Legg til to regler"
 
@@ -598,7 +621,7 @@ msgstr ""
 "(grå sky), ikke den oransje HTTP-proxyen. Oppdater posten når adressen "
 "endres. Dette er verken Cloudflare Tunnel eller en VPN."
 
-#: src/big_remote_play/ui/headscale_wizard.py:613
+#: src/big_remote_play/ui/headscale_wizard.py:616
 msgid "Add your domain to Cloudflare."
 msgstr "Legg domenet ditt til i Cloudflare."
 
@@ -609,8 +632,8 @@ msgid_plural "Add {count} Games"
 msgstr[0] "Legg til {count} spill"
 msgstr[1] "Legg til {count} spill"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1345
-#: src/big_remote_play/ui/headscale_wizard.py:1375
+#: src/big_remote_play/ui/headscale_wizard.py:1409
+#: src/big_remote_play/ui/headscale_wizard.py:1439
 msgid "Adding this computer…"
 msgstr "Legger til denne datamaskinen…"
 
@@ -627,7 +650,7 @@ msgstr "Adresse, variasjon og tapte svar"
 msgid "Address: {address}"
 msgstr "Adresse: {address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "Addresses like 192.168.x.x only work inside a home network."
 msgstr "Adresser som 192.168.x.x fungerer bare innenfor et hjemmenettverk."
 
@@ -708,7 +731,7 @@ msgstr "Avanserte serverinnstillinger"
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "Avanserte innstillinger i nettleseren (Sunshine)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid ""
 "Advanced. HTTPS certificates can be harder to configure with an IP address."
 msgstr ""
@@ -847,7 +870,7 @@ msgstr ""
 "Tillat det én gang. Passordet ditt blir spurt om; etterpå fungerer Tailscale "
 "uten."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1195
+#: src/big_remote_play/ui/headscale_wizard.py:1198
 msgid ""
 "Allow ports 80 and 443 (TCP) in the server's firewall and in your VPS "
 "provider's panel."
@@ -855,7 +878,7 @@ msgstr ""
 "Tillat port 80 og 443 (TCP) i serverens brannmur og i kontrollpanelet til "
 "VPS-leverandøren din."
 
-#: src/big_remote_play/ui/headscale_wizard.py:793
+#: src/big_remote_play/ui/headscale_wizard.py:796
 msgid "Allow web connections in the firewall"
 msgstr "Tillat nettilkoblinger i brannmuren"
 
@@ -986,16 +1009,16 @@ msgstr ""
 "En annen installasjon pågår. Siden fortsetter av seg selv når den er ferdig; "
 "Tekniske detaljer viser fremdriften."
 
-#: src/big_remote_play/ui/headscale_wizard.py:873
-#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:876
+#: src/big_remote_play/ui/headscale_wizard.py:957
 msgid ""
 "Another program already uses the web ports (80 and 443) on this computer."
 msgstr ""
 "Et annet program bruker allerede nettportene (80 og 443) på denne "
 "datamaskinen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:1046
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:1049
 msgid "Another server"
 msgstr "Annen server"
 
@@ -1188,15 +1211,11 @@ msgstr ""
 "nettverk ennå, oppretter en av dere det gratis i ZeroTier Central, eller "
 "dere bruker Tailscale, den enkleste måten å komme i gang på."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "Ask the server owner to approve"
-msgstr "Be servereieren om å godkjenne"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1260
+#: src/big_remote_play/ui/headscale_wizard.py:1296
 msgid "Ask to join"
 msgstr "Be om å bli med"
 
-#: src/big_remote_play/ui/headscale_wizard.py:987
+#: src/big_remote_play/ui/headscale_wizard.py:990
 msgid "Ask your router to send web connections to this computer:"
 msgstr "Be ruteren din om å sende webtilkoblinger til denne datamaskinen:"
 
@@ -1398,7 +1417,7 @@ msgstr "Gjennomsnittlig varighet"
 msgid "BW (target)"
 msgstr "Båndbredde (mål)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1558
+#: src/big_remote_play/ui/headscale_wizard.py:1627
 #: src/big_remote_play/ui/main_window.py:686
 #: src/big_remote_play/ui/main_window.py:692
 msgid "Back"
@@ -1478,8 +1497,8 @@ msgid "Big Remote Play can start it for you. Your password may be requested."
 msgstr ""
 "Big Remote Play kan starte den for deg. Du kan bli bedt om passordet ditt."
 
-#: src/big_remote_play/ui/headscale_wizard.py:874
-#: src/big_remote_play/ui/headscale_wizard.py:955
+#: src/big_remote_play/ui/headscale_wizard.py:877
+#: src/big_remote_play/ui/headscale_wizard.py:958
 msgid ""
 "Big Remote Play cannot add a secure address next to it. Use another server, "
 "or stop that program first."
@@ -1496,7 +1515,7 @@ msgstr ""
 "Big Remote Play kan ikke installere programmer på dette systemet. Installer "
 "disse pakkene med programvaresenteret ditt: {packages}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1216
+#: src/big_remote_play/ui/headscale_wizard.py:1219
 msgid ""
 "Big Remote Play cannot reach into another computer. Follow these steps "
 "there; each one can be copied."
@@ -1508,7 +1527,7 @@ msgstr ""
 msgid "Big Remote Play cannot start"
 msgstr "Big Remote Play kan ikke starte"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play kontrollerer det for deg."
 
@@ -1520,7 +1539,7 @@ msgstr ""
 "Big Remote Play sjekker hva denne datamaskinen trenger, og installerer det "
 "som mangler. Du kan bli bedt om passordet ditt én gang."
 
-#: src/big_remote_play/ui/headscale_wizard.py:618
+#: src/big_remote_play/ui/headscale_wizard.py:621
 msgid "Big Remote Play checks your domain."
 msgstr "Big Remote Play kontrollerer domenet ditt."
 
@@ -1531,6 +1550,16 @@ msgid ""
 msgstr ""
 "Big Remote Play lager og lagrer Sunshine-passordet første gang delingen "
 "starter."
+
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1264
+#, python-brace-format
+msgid ""
+"Big Remote Play creates your network user “{user}” and a key for this "
+"computer by itself. Your password is asked once."
+msgstr ""
+"Big Remote Play oppretter selv nettverksbrukeren din «{user}» og en nøkkel "
+"for denne datamaskinen. Du blir bedt om passordet ditt én gang."
 
 #: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:9
 msgid ""
@@ -1549,7 +1578,7 @@ msgid "Big Remote Play installs it for you. Your password may be requested."
 msgstr ""
 "Big Remote Play installerer den for deg. Du kan bli bedt om passordet ditt."
 
-#: src/big_remote_play/ui/headscale_wizard.py:824
+#: src/big_remote_play/ui/headscale_wizard.py:827
 msgid ""
 "Big Remote Play installs the server, gives it a secure address and starts "
 "it. Your password will be requested."
@@ -1569,7 +1598,7 @@ msgstr ""
 msgid "Big Remote Play is not installed completely"
 msgstr "Big Remote Play er ikke fullstendig installert"
 
-#: src/big_remote_play/ui/headscale_wizard.py:370
+#: src/big_remote_play/ui/headscale_wizard.py:373
 msgid ""
 "Big Remote Play looks for the address the internet sees for this computer."
 msgstr ""
@@ -1581,7 +1610,7 @@ msgstr ""
 msgid "Big Remote Play needs your permission"
 msgstr "Big Remote Play trenger tillatelsen din"
 
-#: src/big_remote_play/ui/headscale_wizard.py:808
+#: src/big_remote_play/ui/headscale_wizard.py:811
 msgid "Big Remote Play will configure HTTPS for you."
 msgstr "Big Remote Play konfigurerer HTTPS for deg."
 
@@ -1707,7 +1736,7 @@ msgstr "CGNAT, IPv6, UPnP og når et privat nettverk er det beste valget."
 msgid "CPU Encoding"
 msgstr "CPU-koding"
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
+#: src/big_remote_play/ui/headscale_wizard.py:954
 msgid "Caddy already has a site with the same file name."
 msgstr "Caddy har allerede et nettsted med samme filnavn."
 
@@ -1739,7 +1768,7 @@ msgstr "Kan koble til uten ny PIN-kode"
 #: src/big_remote_play/ui/guest_view.py:1853
 #: src/big_remote_play/ui/guest_view.py:2219
 #: src/big_remote_play/ui/guest_view.py:2506
-#: src/big_remote_play/ui/headscale_wizard.py:1367
+#: src/big_remote_play/ui/headscale_wizard.py:1431
 #: src/big_remote_play/ui/host_view.py:2290
 #: src/big_remote_play/ui/host_view.py:2760
 #: src/big_remote_play/ui/host_view.py:3242
@@ -1810,7 +1839,7 @@ msgstr ""
 "Endringer her påvirker bare neste tilkobling. De endrer ikke skjermen på "
 "spill-PC-en."
 
-#: src/big_remote_play/ui/headscale_wizard.py:977
+#: src/big_remote_play/ui/headscale_wizard.py:980
 msgid "Changing the router will probably not help. A VPS is the reliable way."
 msgstr ""
 "Å endre ruteren hjelper sannsynligvis ikke. En VPS er den pålitelige "
@@ -1821,13 +1850,13 @@ msgctxt "check state"
 msgid "Check"
 msgstr "Merk"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:618
-#: src/big_remote_play/ui/headscale_wizard.py:761
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:981
-#: src/big_remote_play/ui/headscale_wizard.py:997
-#: src/big_remote_play/ui/headscale_wizard.py:1138
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:621
+#: src/big_remote_play/ui/headscale_wizard.py:764
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:984
+#: src/big_remote_play/ui/headscale_wizard.py:1000
+#: src/big_remote_play/ui/headscale_wizard.py:1141
 #: src/big_remote_play/ui/remote_connection.py:51
 #: src/big_remote_play/ui/remote_connection.py:57
 #: src/big_remote_play/ui/support_center.py:152
@@ -1846,7 +1875,7 @@ msgstr "Sjekk tilkoblingen"
 msgid "Check for blocked connections automatically"
 msgstr "Sjekk automatisk for blokkerte tilkoblinger"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Check for the other device"
 msgstr "Se etter den andre enheten"
 
@@ -1855,12 +1884,12 @@ msgstr "Se etter den andre enheten"
 msgid "Check logs for details."
 msgstr "Sjekk logger for detaljer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1051
-#: src/big_remote_play/ui/headscale_wizard.py:1211
+#: src/big_remote_play/ui/headscale_wizard.py:1054
+#: src/big_remote_play/ui/headscale_wizard.py:1214
 msgid "Check server"
 msgstr "Kontroller serveren"
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Check that Headscale runs behind this address."
 msgstr "Kontroller at Headscale kjører bak denne adressen."
 
@@ -1873,16 +1902,16 @@ msgstr ""
 "Kontroller at deling kjører på spill-PC-en, og at datamaskinene kan nå "
 "hverandre."
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "Check that this computer is connected to the internet."
 msgstr "Kontroller at denne datamaskinen er koblet til Internett."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "Check that you copied all of it."
 msgstr "Kontroller at du kopierte alt."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1402
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "Check the API key in Advanced."
 msgstr "Kontroller API-nøkkelen under Avansert."
 
@@ -1898,15 +1927,15 @@ msgstr ""
 msgid "Check the internet connection of this computer."
 msgstr "Sjekk internettilkoblingen til denne datamaskinen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "Check the name you registered."
 msgstr "Kontroller navnet du registrerte."
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
+#: src/big_remote_play/ui/headscale_wizard.py:524
 msgid "Check the name, or register it first."
 msgstr "Kontroller navnet, eller registrer det først."
 
-#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:797
 msgid "Check the secure connection (HTTPS)"
 msgstr "Kontroller den sikre tilkoblingen (HTTPS)"
 
@@ -1919,9 +1948,9 @@ msgid "Check this computer, or choose a problem to see what to try."
 msgstr ""
 "Sjekk denne datamaskinen, eller velg et problem for å se hva du kan prøve."
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "Check your internet connection and try again."
 msgstr "Kontroller Internett-tilkoblingen din og prøv igjen."
 
@@ -1945,7 +1974,7 @@ msgstr ""
 msgid "Checking ZeroTier…"
 msgstr "Sjekker ZeroTier…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:648
+#: src/big_remote_play/ui/headscale_wizard.py:651
 msgid "Checking nameservers…"
 msgstr "Kontrollerer navnetjenere…"
 
@@ -1970,12 +1999,12 @@ msgstr "Sjekker nettverket, datamaskinen og Sunshine…"
 msgid "Checking the path…"
 msgstr "Sjekker veien…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1069
+#: src/big_remote_play/ui/headscale_wizard.py:1072
 msgid "Checking the server…"
 msgstr "Kontrollerer serveren…"
 
 #: src/big_remote_play/ui/dependency_installer.py:198
-#: src/big_remote_play/ui/headscale_wizard.py:852
+#: src/big_remote_play/ui/headscale_wizard.py:855
 #: src/big_remote_play/ui/provider_page.py:543
 #: src/big_remote_play/ui/remote_connection.py:49
 msgid "Checking this computer…"
@@ -1993,16 +2022,16 @@ msgstr "Sjekker hvilke enheter som allerede er tillatt."
 msgid "Checking with Sunshine…"
 msgstr "Sjekker med Sunshine…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:511
-#: src/big_remote_play/ui/headscale_wizard.py:741
+#: src/big_remote_play/ui/headscale_wizard.py:514
+#: src/big_remote_play/ui/headscale_wizard.py:744
 msgid "Checking your domain…"
 msgstr "Kontrollerer domenet ditt…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:369
+#: src/big_remote_play/ui/headscale_wizard.py:372
 msgid "Checking your internet connection"
 msgstr "Kontrollerer Internett-tilkoblingen din"
 
-#: src/big_remote_play/ui/headscale_wizard.py:378
+#: src/big_remote_play/ui/headscale_wizard.py:381
 msgid "Checking your internet connection…"
 msgstr "Kontrollerer Internett-tilkoblingen din…"
 
@@ -2030,7 +2059,7 @@ msgstr "Sjekker…"
 msgid "Checks the name, the port, HTTPS and Headscale itself."
 msgstr "Kontrollerer navnet, porten, HTTPS og selve Headscale."
 
-#: src/big_remote_play/ui/headscale_wizard.py:543
+#: src/big_remote_play/ui/headscale_wizard.py:546
 msgid ""
 "Choose Register, check the domain name you want, and read the current "
 "availability and rules shown by DigitalPlat."
@@ -2081,7 +2110,7 @@ msgstr "Velg maskinvare for videoenkoding"
 msgid "Choose installed games below."
 msgstr "Velg installerte spill nedenfor."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "Choose one of the options above."
 msgstr "Velg ett av alternativene ovenfor."
 
@@ -2172,7 +2201,7 @@ msgstr "Tømme tilkoblingshistorikken?"
 msgid "Click and drag, for example to move a window"
 msgstr "Klikk og dra, for eksempel for å flytte et vindu"
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Click the orange cloud in Cloudflare so it turns gray (DNS only)."
 msgstr ""
 "Klikk på den oransje skyen i Cloudflare slik at den blir grå (DNS only)."
@@ -2201,8 +2230,8 @@ msgstr "Lukk spillet på spill-PC-en når strømmingen avsluttes"
 msgid "Close the stream on every device so a new device can pair"
 msgstr "Lukk strømmen på alle enheter slik at en ny enhet kan pares"
 
-#: src/big_remote_play/ui/headscale_wizard.py:479
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare"
 msgstr "Cloudflare"
 
@@ -2211,20 +2240,20 @@ msgstr "Cloudflare"
 msgid "Cloudflare DNS-only documentation"
 msgstr "Dokumentasjon for Cloudflare Bare DNS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:655
+#: src/big_remote_play/ui/headscale_wizard.py:658
 msgid "Cloudflare is now managing your domain"
 msgstr "Cloudflare administrerer nå domenet ditt"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare will manage your domain's records. Its free plan is enough."
 msgstr ""
 "Cloudflare skal administrere postene til domenet ditt. Gratisplanen er nok."
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Cloudflare will show two nameservers."
 msgstr "Cloudflare viser to navnetjenere."
 
-#: src/big_remote_play/ui/headscale_wizard.py:703
+#: src/big_remote_play/ui/headscale_wizard.py:706
 msgid ""
 "Cloudflare's proxy (the orange cloud) only passes ordinary web requests. "
 "Tailscale clients keep a long-lived, upgraded HTTP connection to Headscale, "
@@ -2236,7 +2265,7 @@ msgstr ""
 "tilkobling til Headscale, som proxyen og Cloudflare Tunnel ikke formidler "
 "pålitelig. Med DNS only peker navnet ganske enkelt på serveren din."
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Cloudflare's proxy is on for this record."
 msgstr "Proxyen til Cloudflare er på for denne posten."
 
@@ -2256,7 +2285,7 @@ msgstr "Kodek, HDR, datagrense og tilkoblingsvarsler"
 msgid "Codecs, network, capture and recovery tools"
 msgstr "Kodeker, nettverk, opptak og gjenopprettingsverktøy"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Come back and check again"
 msgstr "Kom tilbake og kontroller på nytt"
 
@@ -2272,12 +2301,12 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 159
 #: src/big_remote_play/ui/game_library_dialog.py:386
-#: src/big_remote_play/ui/headscale_wizard.py:1180
-#: src/big_remote_play/ui/headscale_wizard.py:1185
-#: src/big_remote_play/ui/headscale_wizard.py:1187
-#: src/big_remote_play/ui/headscale_wizard.py:1191
-#: src/big_remote_play/ui/headscale_wizard.py:1196
-#: src/big_remote_play/ui/headscale_wizard.py:1201
+#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1188
+#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1204
 #: src/big_remote_play/ui/host_view.py:586
 #: src/big_remote_play/ui/network_devices.py:733
 #: src/big_remote_play/ui/network_devices.py:764
@@ -2285,9 +2314,9 @@ msgstr ""
 msgid "Command"
 msgstr "Kommando"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1435
-msgid "Command for the server owner"
-msgstr "Kommando til servereieren"
+#: src/big_remote_play/ui/headscale_wizard.py:1276
+msgid "Command for the server"
+msgstr "Kommando til serveren"
 
 #: src/big_remote_play/ui/support_center.py:168
 msgid "Common problems"
@@ -2389,7 +2418,7 @@ msgstr "Sett opp"
 msgid "Configure Firewall (IPv6)"
 msgstr "Sett opp brannmuren (IPv6)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:792
+#: src/big_remote_play/ui/headscale_wizard.py:795
 msgid "Configure and start the server"
 msgstr "Konfigurer og start serveren"
 
@@ -2699,7 +2728,7 @@ msgstr "Tilkoblingens kvalitet"
 msgid "Connection quality: {quality}"
 msgstr "Tilkoblingskvalitet: {quality}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
+#: src/big_remote_play/ui/headscale_wizard.py:88
 #, python-brace-format
 msgid "Connection refused on port {port}."
 msgstr "Tilkoblingen ble avvist på port {port}."
@@ -2747,15 +2776,15 @@ msgstr "Kontakter tjenesten…"
 #: src/big_remote_play/ui/guided_setup.py:169
 #: src/big_remote_play/ui/guided_setup.py:257
 #: src/big_remote_play/ui/guided_setup.py:309
-#: src/big_remote_play/ui/headscale_wizard.py:497
+#: src/big_remote_play/ui/headscale_wizard.py:500
 msgid "Continue"
 msgstr "Fortsett"
 
-#: src/big_remote_play/ui/headscale_wizard.py:402
+#: src/big_remote_play/ui/headscale_wizard.py:405
 msgid "Continue anyway"
 msgstr "Fortsett likevel"
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
+#: src/big_remote_play/ui/headscale_wizard.py:304
 #: src/big_remote_play/ui/provider_page.py:1151
 #: src/big_remote_play/ui/remote_connection.py:534
 msgid "Continue setup"
@@ -2851,7 +2880,7 @@ msgstr "Kopier IP"
 msgid "Copy Path"
 msgstr "Kopier stien"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1450
+#: src/big_remote_play/ui/headscale_wizard.py:1519
 #: src/big_remote_play/ui/network_devices.py:269
 msgid "Copy address"
 msgstr "Kopier adresse"
@@ -2892,11 +2921,11 @@ msgstr "Kopier den private adressen til {name}"
 msgid "Copy the {field} value to the clipboard"
 msgstr "Kopier verdien {field} til utklippstavlen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid "Copy these two Cloudflare nameservers to DigitalPlat."
 msgstr "Kopier disse to Cloudflare-navnetjenerne til DigitalPlat."
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid ""
 "Copy these two Cloudflare nameservers to the company where you registered "
 "your domain."
@@ -3047,7 +3076,7 @@ msgstr ""
 msgid "Create a network"
 msgstr "Opprett et nettverk"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1461
+#: src/big_remote_play/ui/headscale_wizard.py:1530
 msgid "Create a one-time key"
 msgstr "Opprett en engangsnøkkel"
 
@@ -3067,7 +3096,7 @@ msgstr "Opprett nettverk"
 msgid "Create one-time key"
 msgstr "Opprett engangsnøkkel"
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
+#: src/big_remote_play/ui/headscale_wizard.py:544
 msgid "Create or sign in to your DigitalPlat account."
 msgstr "Opprett en DigitalPlat-konto, eller logg inn."
 
@@ -3075,11 +3104,11 @@ msgstr "Opprett en DigitalPlat-konto, eller logg inn."
 msgid "Create the API key on the server"
 msgstr "Opprett API-nøkkelen på serveren"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1202
 msgid "Create your network and an API key"
 msgstr "Opprett nettverket ditt og en API-nøkkel"
 
-#: src/big_remote_play/ui/headscale_wizard.py:795
+#: src/big_remote_play/ui/headscale_wizard.py:798
 msgid "Create your private network"
 msgstr "Opprett ditt private nettverk"
 
@@ -3180,16 +3209,16 @@ msgstr "Egendefinert oppløsning"
 msgid "Custom image settings"
 msgstr "Egendefinerte bildeinnstillinger"
 
-#: src/big_remote_play/ui/headscale_wizard.py:71
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:74
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "DNS"
 msgstr "DNS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "DNS is where your domain's records live."
 msgstr "DNS er der postene til domenet ditt ligger."
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "DNS only — the cloud must be gray."
 msgstr "DNS only – skyen må være grå."
 
@@ -3267,8 +3296,8 @@ msgstr "Detaljer"
 msgid "Details and a sound test are in Preferences."
 msgstr "Detaljer og en lydtest finner du under Innstillinger."
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:398
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Detected automatically"
 msgstr "Oppdaget automatisk"
 
@@ -3353,7 +3382,7 @@ msgstr "Diagnostiser"
 msgid "Diagnosis"
 msgstr "Diagnose"
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Did not work"
 msgstr "Virket ikke"
 
@@ -3361,12 +3390,12 @@ msgstr "Virket ikke"
 msgid "Did you receive a network code?"
 msgstr "Har du fått en nettverkskode?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:553
+#: src/big_remote_play/ui/headscale_wizard.py:556
 msgid ""
 "DigitalPlat can provide domains that can be delegated to a DNS provider."
 msgstr "DigitalPlat kan tilby domener som kan delegeres til en DNS-leverandør."
 
-#: src/big_remote_play/ui/headscale_wizard.py:547
+#: src/big_remote_play/ui/headscale_wizard.py:550
 msgid ""
 "DigitalPlat needs the nameservers from your DNS provider. Cloudflare is "
 "free; Big Remote Play guides you."
@@ -3457,7 +3486,7 @@ msgstr "Visningsmodus"
 msgid "Displays latency, frame rate, and decoding information over the stream."
 msgstr "Viser ventetid, bildefrekvens og dekodingsinformasjon over strømmen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:467
+#: src/big_remote_play/ui/headscale_wizard.py:470
 msgid "Do you already have a domain?"
 msgstr "Har du allerede et domene?"
 
@@ -3468,20 +3497,20 @@ msgstr "Vil du gjenopprette standardinnstillinger?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1137
-#: src/big_remote_play/ui/headscale_wizard.py:70
-#: src/big_remote_play/ui/headscale_wizard.py:466
-#: src/big_remote_play/ui/headscale_wizard.py:490
-#: src/big_remote_play/ui/headscale_wizard.py:682
+#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:493
+#: src/big_remote_play/ui/headscale_wizard.py:685
 #: src/big_remote_play/ui/private_network_view.py:972
 #: src/big_remote_play/ui/private_network_view.py:1007
 msgid "Domain"
 msgstr "Domene"
 
-#: src/big_remote_play/ui/headscale_wizard.py:757
+#: src/big_remote_play/ui/headscale_wizard.py:760
 msgid "Domain is ready"
 msgstr "Domenet er klart"
 
-#: src/big_remote_play/ui/headscale_wizard.py:475
+#: src/big_remote_play/ui/headscale_wizard.py:478
 msgid "Domain or subdomain"
 msgstr "Domene eller underdomene"
 
@@ -3489,8 +3518,8 @@ msgstr "Domene eller underdomene"
 msgid "Domain, router ports and security precautions."
 msgstr "Domene, ruterporter og sikkerhetstiltak."
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:898
 #: src/big_remote_play/ui/network_devices.py:727
 msgid "Done"
 msgstr "Ferdig"
@@ -3503,7 +3532,7 @@ msgstr ""
 "Last det ned fra det offisielle nettstedet, eller bruk Big Remote Play på "
 "den datamaskinen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1184
+#: src/big_remote_play/ui/headscale_wizard.py:1187
 msgid ""
 "Download the .deb for your server from Headscale's releases page, then "
 "install it and Caddy."
@@ -3535,7 +3564,7 @@ msgstr ""
 "Hver finger berører skjermen på denne datamaskinen, der skrivebordet godtar "
 "berøring."
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Easier and safer. Example: headscale.example.com"
 msgstr "Enklere og tryggere. Eksempel: headscale.example.com"
 
@@ -3915,17 +3944,17 @@ msgstr "Alt er klart"
 msgid "Evict IP"
 msgstr "Kast ut IP"
 
-#: src/big_remote_play/ui/headscale_wizard.py:478
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:481
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "Example: headscale.example.com"
 msgstr "Eksempel: headscale.example.com"
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
-#: src/big_remote_play/ui/headscale_wizard.py:1050
+#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:1053
 msgid "Example: headscale.example.com or 203.0.113.10"
 msgstr "Eksempel: headscale.example.com eller 203.0.113.10"
 
-#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:547
 msgid "Example: mydomain.dpdns.org"
 msgstr "Eksempel: mydomain.dpdns.org"
 
@@ -4052,7 +4081,7 @@ msgstr ""
 "Fingrene trykker på skjermkontrollerens knapper, flere samtidig. Ingenting "
 "blir et museklikk."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Finish"
 msgstr "Fullfør"
 
@@ -4089,7 +4118,7 @@ msgstr "Reparer"
 msgid "Fix Dependencies"
 msgstr "Fiks avhengigheter"
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 #, python-brace-format
 msgid "Fix it or delete it: {found}"
 msgstr "Rett den eller slett den: {found}"
@@ -4313,8 +4342,8 @@ msgstr "Generelt"
 msgid "Get Network ID"
 msgstr "Hent Network ID"
 
-#: src/big_remote_play/ui/headscale_wizard.py:557
-#: src/big_remote_play/ui/headscale_wizard.py:558
+#: src/big_remote_play/ui/headscale_wizard.py:560
+#: src/big_remote_play/ui/headscale_wizard.py:561
 msgid "Get a domain"
 msgstr "Skaff et domene"
 
@@ -4387,7 +4416,7 @@ msgstr[1] ""
 "Gjester får musen og tastaturet tilbake {count} sekunder etter at du slutter "
 "å bruke dem."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1137
+#: src/big_remote_play/ui/headscale_wizard.py:1140
 msgid "Guided server setup"
 msgstr "Veiledet serveroppsett"
 
@@ -4424,8 +4453,8 @@ msgstr "HEVC eller AV1 når det støttes"
 msgid "HTTPS (Caddy)"
 msgstr "HTTPS (Caddy)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "HTTPS is not set up correctly for this address."
 msgstr "HTTPS er ikke riktig satt opp for denne adressen."
 
@@ -4434,7 +4463,7 @@ msgstr "HTTPS er ikke riktig satt opp for denne adressen."
 msgid "Hardware and Capture"
 msgstr "Maskinvare og Fangst"
 
-#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:76
 msgid "Headscale"
 msgstr "Headscale"
 
@@ -4446,11 +4475,11 @@ msgstr "Headscale-API-nøkkel"
 msgid "Headscale and Caddy must be installed first."
 msgstr "Headscale og Caddy må installeres først."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1101
+#: src/big_remote_play/ui/headscale_wizard.py:1104
 msgid "Headscale answers"
 msgstr "Headscale svarer"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "Headscale did not start."
 msgstr "Headscale startet ikke."
 
@@ -4462,7 +4491,7 @@ msgstr "Headscale startet ikke. Se loggen under Avansert."
 msgid "Headscale documentation"
 msgstr "Headscale-dokumentasjon"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 msgid "Headscale gives you your own private network server."
 msgstr "Med Headscale får du din egen private nettverksserver."
 
@@ -4478,11 +4507,11 @@ msgstr ""
 "separate veiledningen på siden Koble til enhetene dine for direkte "
 "spilltilgang uten VPN."
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Headscale may work better on a VPS."
 msgstr "Headscale kan fungere bedre på en VPS."
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid ""
 "Headscale needs a direct connection to your server. Do not use Cloudflare "
 "Tunnel for it either."
@@ -4490,7 +4519,7 @@ msgstr ""
 "Headscale trenger en direkte tilkobling til serveren din. Ikke bruk "
 "Cloudflare Tunnel til det heller."
 
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Headscale on this computer has its own settings."
 msgstr "Headscale på denne datamaskinen har egne innstillinger."
 
@@ -4503,7 +4532,7 @@ msgstr ""
 "Headscale på denne datamaskinen er allerede satt opp for ${current}. "
 "Ingenting ble endret."
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
+#: src/big_remote_play/ui/headscale_wizard.py:952
 msgid "Headscale on this computer is already set up for another address."
 msgstr ""
 "Headscale på denne datamaskinen er allerede satt opp for en annen adresse."
@@ -4515,7 +4544,7 @@ msgstr ""
 "Headscale på denne datamaskinen bruker en egendefinert lytteadresse. "
 "Ingenting ble endret."
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Headscale or Caddy is not installed."
 msgstr "Headscale eller Caddy er ikke installert."
 
@@ -4523,7 +4552,7 @@ msgstr "Headscale eller Caddy er ikke installert."
 msgid "Headscale server"
 msgstr "Headscale-server"
 
-#: src/big_remote_play/ui/headscale_wizard.py:276
+#: src/big_remote_play/ui/headscale_wizard.py:279
 msgid "Headscale setup"
 msgstr "Headscale-oppsett"
 
@@ -4531,7 +4560,7 @@ msgstr "Headscale-oppsett"
 msgid "Headscale uses the regular Tailscale client."
 msgstr "Headscale bruker den vanlige Tailscale-klienten."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1118
+#: src/big_remote_play/ui/headscale_wizard.py:1121
 #: src/big_remote_play/ui/provider_page.py:1197
 #, python-brace-format
 msgid "Headscale {version}"
@@ -4553,11 +4582,11 @@ msgstr "Hjelp"
 msgid "Help and diagnostics"
 msgstr "Hjelp og diagnostikk"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
+#: src/big_remote_play/ui/headscale_wizard.py:473
 msgid "Help me get one"
 msgstr "Hjelp meg å skaffe et"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "Hidden. Use Copy."
 msgstr "Skjult. Bruk Kopier."
@@ -4677,7 +4706,7 @@ msgstr "Forrang for verten"
 msgid "Host input priority is not working"
 msgstr "Forrang for verten virker ikke"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1248
+#: src/big_remote_play/ui/headscale_wizard.py:1271
 msgid "How do you want to add this computer?"
 msgstr "Hvordan vil du legge til denne datamaskinen?"
 
@@ -4703,7 +4732,7 @@ msgstr ""
 "Hvor lenge det skal ventes i millisekunder på data fra Moonlight før "
 "strømmen stenges"
 
-#: src/big_remote_play/ui/headscale_wizard.py:446
+#: src/big_remote_play/ui/headscale_wizard.py:449
 msgid "How should your Headscale server be reached?"
 msgstr "Hvordan skal Headscale-serveren din nås?"
 
@@ -4727,11 +4756,11 @@ msgstr "Slik kjører du Headscale på din egen server, trinn for trinn."
 msgid "How to use the selected private network service."
 msgstr "Slik bruker du den valgte private nettverkstjenesten."
 
-#: src/big_remote_play/ui/headscale_wizard.py:721
+#: src/big_remote_play/ui/headscale_wizard.py:724
 msgid "I added the record"
 msgstr "Jeg har lagt til posten"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:472
 msgid "I already own a domain"
 msgstr "Jeg har allerede et domene"
 
@@ -4756,10 +4785,6 @@ msgstr "Jeg har ikke en server ennå"
 msgid "I forgot the current password"
 msgstr "Jeg har glemt det nåværende passordet"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "I have a key from the server owner"
-msgstr "Jeg har en nøkkel fra servereieren"
-
 #: src/big_remote_play/ui/guest_view.py:617
 msgid "I have a search code"
 msgstr "Jeg har en søkekode"
@@ -4767,10 +4792,6 @@ msgstr "Jeg har en søkekode"
 #: src/big_remote_play/ui/guest_view.py:611
 msgid "I know the IP address"
 msgstr "Jeg vet IP-adressen"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1251
-msgid "I manage this server"
-msgstr "Jeg administrerer denne serveren"
 
 #: src/big_remote_play/ui/guided_setup.py:125
 msgid "I will play using another computer."
@@ -4792,7 +4813,7 @@ msgstr "IP-adresse for å binde tjenesten til"
 msgid "IP address: {address}"
 msgstr "IP-adresse: {address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:689
+#: src/big_remote_play/ui/headscale_wizard.py:692
 msgid "IPv4 address"
 msgstr "IPv4-adresse"
 
@@ -4808,7 +4829,7 @@ msgstr "Bare IPv4"
 msgid "IPv6"
 msgstr "IPv6"
 
-#: src/big_remote_play/ui/headscale_wizard.py:716
+#: src/big_remote_play/ui/headscale_wizard.py:719
 msgid "IPv6 address"
 msgstr "IPv6-adresse"
 
@@ -4859,7 +4880,7 @@ msgstr ""
 "Hvis pekeren flytter ting, men ikke er synlig, tegnet ikke skjermopptaket "
 "den. «Sjekk denne datamaskinen» viser om en annen fangstmetode tegner den."
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "If you just set up the domain, wait a little and check again."
 msgstr "Hvis du nettopp satte opp domenet, vent litt og kontroller på nytt."
 
@@ -4923,7 +4944,7 @@ msgstr ""
 "Åpne Koble til enhetene dine → ZeroTier i Big Remote Play, og skriv inn "
 "denne koden."
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "In Cloudflare: DNS → Records → Add record."
 msgstr "I Cloudflare: DNS → Records → Add record."
 
@@ -5053,13 +5074,13 @@ msgstr "Installer"
 msgid "Install Big WM Virtual Keyboard (package {package})"
 msgstr "Installer Big WM Virtual Keyboard (pakken {package})"
 
-#: src/big_remote_play/ui/headscale_wizard.py:822
-#: src/big_remote_play/ui/headscale_wizard.py:823
+#: src/big_remote_play/ui/headscale_wizard.py:825
+#: src/big_remote_play/ui/headscale_wizard.py:826
 msgid "Install Headscale"
 msgstr "Installer Headscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:791
-#: src/big_remote_play/ui/headscale_wizard.py:1178
+#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:1181
 msgid "Install Headscale and Caddy"
 msgstr "Installer Headscale og Caddy"
 
@@ -5072,7 +5093,7 @@ msgstr "Installer Tailscale"
 msgid "Install ZeroTier"
 msgstr "Installer ZeroTier"
 
-#: src/big_remote_play/ui/headscale_wizard.py:801
+#: src/big_remote_play/ui/headscale_wizard.py:804
 #: src/big_remote_play/ui/private_network_view.py:475
 #: src/big_remote_play/ui/provider_page.py:582
 msgid "Install and continue"
@@ -5082,7 +5103,7 @@ msgstr "Installer og fortsett"
 msgid "Install it first, then join the network."
 msgstr "Installer det først, og bli deretter med i nettverket."
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Install them above first."
 msgstr "Installer dem ovenfor først."
 
@@ -5216,7 +5237,7 @@ msgstr "Invitasjonen ble opprettet"
 msgid "Invitation link"
 msgstr "Invitasjonslenke"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1458
+#: src/big_remote_play/ui/headscale_wizard.py:1527
 msgid ""
 "It adds one computer and stops working after one hour. It is not an "
 "administrator key."
@@ -5224,7 +5245,7 @@ msgstr ""
 "Den legger til én datamaskin og slutter å virke etter én time. Det er ikke "
 "en administratornøkkel."
 
-#: src/big_remote_play/ui/headscale_wizard.py:809
+#: src/big_remote_play/ui/headscale_wizard.py:812
 msgid ""
 "It also allows ports 80 and 443 in this computer's firewall, when a firewall "
 "is active."
@@ -5240,7 +5261,7 @@ msgstr ""
 "Den svarer på nettverket, men ikke på Sunshine-porten. Åpne Del på spill-PC-"
 "en og velg Tillat i brannmuren."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 msgid "It appears here once it joins."
 msgstr "Den vises her når den har blitt med."
 
@@ -5256,7 +5277,7 @@ msgstr ""
 msgid "It could not start. Stop and start sharing again."
 msgstr "Den kunne ikke starte. Stopp delingen og start den igjen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 msgid "It is shown only now and is not stored."
 msgstr "Den vises bare nå og lagres ikke."
 
@@ -5306,7 +5327,7 @@ msgstr ""
 "Krever Sunshine {version} eller nyere, som kan fange den private "
 "spillskjermen. Oppdater Sunshine, og åpne deretter Big Remote Play på nytt."
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 #, python-brace-format
 msgid "It points to {found}, not {expected}."
 msgstr "Den peker til {found}, ikke til {expected}."
@@ -5419,7 +5440,7 @@ msgstr "KDE-skjermopptak (KWin)"
 msgid "KMS (Direct)"
 msgstr "KMS (direkte)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid "Keep Proxy status = DNS only"
 msgstr "Behold Proxy status = DNS only"
 
@@ -5457,7 +5478,7 @@ msgstr ""
 "Hold videresending av ruterporter av når du bruker VPN. Endringene gjelder "
 "når delingen starter på nytt."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1200
+#: src/big_remote_play/ui/headscale_wizard.py:1203
 msgid ""
 "Keep the API key: Big Remote Play asks for it in the next step. It manages "
 "the server; never give it to a guest."
@@ -5501,12 +5522,12 @@ msgstr ""
 "Beholdes bare til du lukker Big Remote Play: systemets nøkkelring lagret det "
 "ikke."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 #: src/big_remote_play/ui/network_devices.py:761
 msgid "Key created"
 msgstr "Nøkkelen ble opprettet"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1243
+#: src/big_remote_play/ui/headscale_wizard.py:1248
 msgid "Key for this computer"
 msgstr "Nøkkel for denne datamaskinen"
 
@@ -6158,13 +6179,13 @@ msgid "NVIDIA NVENC"
 msgstr "NVIDIA NVENC"
 
 #: src/big_remote_play/ui/game_library_dialog.py:385
-#: src/big_remote_play/ui/headscale_wizard.py:688
-#: src/big_remote_play/ui/headscale_wizard.py:715
+#: src/big_remote_play/ui/headscale_wizard.py:691
+#: src/big_remote_play/ui/headscale_wizard.py:718
 #: src/big_remote_play/ui/provider_page.py:814
 msgid "Name"
 msgstr "Navn"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1098
+#: src/big_remote_play/ui/headscale_wizard.py:1101
 msgid "Name found"
 msgstr "Navnet ble funnet"
 
@@ -6176,7 +6197,7 @@ msgstr "Navn i nettverket"
 msgid "Name shown in Big Remote Play"
 msgstr "Navn som vises i Big Remote Play"
 
-#: src/big_remote_play/ui/headscale_wizard.py:630
+#: src/big_remote_play/ui/headscale_wizard.py:633
 msgid "Nameserver"
 msgstr "Navnetjener"
 
@@ -6334,24 +6355,24 @@ msgstr ""
 msgid "New passwords do not match."
 msgstr "De nye passordene er ikke like."
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:404
-#: src/big_remote_play/ui/headscale_wizard.py:656
-#: src/big_remote_play/ui/headscale_wizard.py:758
-#: src/big_remote_play/ui/headscale_wizard.py:1033
-#: src/big_remote_play/ui/headscale_wizard.py:1130
-#: src/big_remote_play/ui/headscale_wizard.py:1405
-#: src/big_remote_play/ui/headscale_wizard.py:1560
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:407
+#: src/big_remote_play/ui/headscale_wizard.py:659
+#: src/big_remote_play/ui/headscale_wizard.py:761
+#: src/big_remote_play/ui/headscale_wizard.py:1036
+#: src/big_remote_play/ui/headscale_wizard.py:1133
+#: src/big_remote_play/ui/headscale_wizard.py:1469
+#: src/big_remote_play/ui/headscale_wizard.py:1629
 msgid "Next"
 msgstr "Neste"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:473
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/host_view.py:4055
 msgid "No"
 msgstr "Nei"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "No API key for this server yet."
 msgstr "Ingen API-nøkkel for denne serveren ennå."
 
@@ -6375,11 +6396,11 @@ msgstr "Ingen konto funnet"
 msgid "No active connection found"
 msgstr "Fant ingen aktiv tilkobling"
 
-#: src/big_remote_play/ui/headscale_wizard.py:411
+#: src/big_remote_play/ui/headscale_wizard.py:414
 msgid "No answer from the address services."
 msgstr "Ingen svar fra adressetjenestene."
 
-#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:89
 #, python-brace-format
 msgid "No answer on port {port}. A firewall or the router may block it."
 msgstr "Ingen svar på port {port}. En brannmur eller ruteren kan blokkere den."
@@ -6438,7 +6459,7 @@ msgid "No controller has arrived from the other computer"
 msgstr "Ingen kontroller har kommet fra den andre datamaskinen"
 
 #: src/big_remote_play/ui/guest_view.py:2088
-#: src/big_remote_play/ui/headscale_wizard.py:425
+#: src/big_remote_play/ui/headscale_wizard.py:428
 #: src/big_remote_play/ui/provider_page.py:1057
 #: src/big_remote_play/ui/provider_page.py:1203
 msgid "No details reported."
@@ -6541,7 +6562,7 @@ msgstr "Ingen spiller ennå"
 msgid "No other device online to measure"
 msgstr "Ingen annen enhet på nett å måle"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 #: src/big_remote_play/ui/network_devices.py:223
 #: src/big_remote_play/ui/provider_page.py:651
 #: src/big_remote_play/ui/provider_page.py:669
@@ -6658,7 +6679,7 @@ msgid "Not available"
 msgstr "Ikke tilgjengelig"
 
 #: src/big_remote_play/ui/guest_view.py:2066
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 msgid "Not checked"
 msgstr "Ikke sjekket"
 
@@ -6769,9 +6790,9 @@ msgstr ""
 msgid "Not signed in"
 msgstr "Ikke logget inn"
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:797
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:800
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Not yet"
 msgstr "Ikke ennå"
 
@@ -6779,21 +6800,21 @@ msgstr "Ikke ennå"
 msgid "Nothing to install."
 msgstr "Ingenting å installere."
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "Nothing was changed."
 msgstr "Ingenting ble endret."
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "Nothing was changed. Choose Set up the server to try again."
 msgstr "Ingenting ble endret. Velg Sett opp serveren for å prøve igjen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Nothing was changed. See Advanced on the Headscale page."
 msgstr "Ingenting ble endret. Se Avansert på Headscale-siden."
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "Nothing was enabled. See the technical details."
 msgstr "Ingenting ble slått på. Se de tekniske detaljene."
 
@@ -6860,7 +6881,7 @@ msgstr "Ikke på nett"
 msgid "Old log files have been removed."
 msgstr "De gamle loggfilene er fjernet."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1179
+#: src/big_remote_play/ui/headscale_wizard.py:1182
 msgid "On Arch Linux:"
 msgstr "På Arch Linux:"
 
@@ -6876,7 +6897,7 @@ msgstr ""
 msgid "On a computer, a phone or a controller"
 msgstr "På en datamaskin, en telefon eller med en kontroller"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1193
 msgid "On a new server this replaces Caddy's example page."
 msgstr "På en ny server erstatter dette eksempelsiden til Caddy."
 
@@ -6910,7 +6931,7 @@ msgstr ""
 "\n"
 "La vinduet stå åpent. Tilkoblingen fortsetter etter godkjenning."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1443
+#: src/big_remote_play/ui/headscale_wizard.py:1512
 #: src/big_remote_play/ui/network_devices.py:536
 #: src/big_remote_play/ui/network_devices.py:723
 #: src/big_remote_play/ui/network_devices.py:780
@@ -6969,6 +6990,14 @@ msgstr ""
 "expiration 90d»). I Big Remote Play legger du til serveradressen og nøkkelen "
 "under API-tilgang. API-nøkkelen administrerer serveren; en "
 "forhåndsautentiseringsnøkkel registrerer bare én datamaskin."
+
+#: src/big_remote_play/ui/headscale_wizard.py:1275
+msgid ""
+"On the server, run this command and paste the key it prints. Big Remote Play "
+"then does the rest and remembers the key."
+msgstr ""
+"Kjør denne kommandoen på serveren, og lim inn nøkkelen den skriver ut. Big "
+"Remote Play gjør så resten og husker nøkkelen."
 
 #: src/big_remote_play/ui/guest_view.py:633
 msgid "On this computer"
@@ -7056,7 +7085,7 @@ msgstr "Én kontroller om gangen"
 msgid "One entry per screen"
 msgstr "Én oppføring per skjerm"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "One-time key"
 msgstr "Engangsnøkkel"
@@ -7097,7 +7126,7 @@ msgstr ""
 "Bare på denne datamaskinen. Ingenting sendes noe sted, og ingen passord, "
 "nøkler eller koder lagres."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1364
+#: src/big_remote_play/ui/headscale_wizard.py:1428
 msgid ""
 "Only one Tailscale-based network can be active on this computer at a time. "
 "Tailscale stays saved and can be turned on again later. ZeroTier is not "
@@ -7184,8 +7213,8 @@ msgid "Open Check this computer first to see the current state here."
 msgstr ""
 "Åpne «Sjekk denne datamaskinen» først for å se den nåværende tilstanden her."
 
-#: src/big_remote_play/ui/headscale_wizard.py:614
-#: src/big_remote_play/ui/headscale_wizard.py:723
+#: src/big_remote_play/ui/headscale_wizard.py:617
+#: src/big_remote_play/ui/headscale_wizard.py:726
 msgid "Open Cloudflare"
 msgstr "Åpne Cloudflare"
 
@@ -7201,12 +7230,12 @@ msgstr ""
 "datamaskinene når hverandre privat, deler du på spill-PC-en og kobler til "
 "med dens private adresse."
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
-#: src/big_remote_play/ui/headscale_wizard.py:610
+#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:613
 msgid "Open DigitalPlat"
 msgstr "Åpne DigitalPlat"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1210
+#: src/big_remote_play/ui/headscale_wizard.py:1213
 msgid "Open Headscale releases"
 msgstr "Åpne Headscale-utgivelser"
 
@@ -7301,7 +7330,7 @@ msgstr "Åpne denne siden for å sjekke"
 msgid "Open when a device starts playing"
 msgstr "Åpne når en enhet begynner å spille"
 
-#: src/big_remote_play/ui/headscale_wizard.py:989
+#: src/big_remote_play/ui/headscale_wizard.py:992
 msgid "Open your router's settings page"
 msgstr "Åpne innstillingssiden til ruteren din"
 
@@ -7340,7 +7369,7 @@ msgstr "Operasjonen mislyktes: {error}"
 msgid "Optimize the mouse for remote desktop"
 msgstr "Optimaliser musen for eksternt skrivebord"
 
-#: src/big_remote_play/ui/headscale_wizard.py:712
+#: src/big_remote_play/ui/headscale_wizard.py:715
 msgid "Optional: IPv6"
 msgstr "Valgfritt: IPv6"
 
@@ -7348,7 +7377,7 @@ msgstr "Valgfritt: IPv6"
 msgid "Or choose what you want to do"
 msgstr "Eller velg hva du vil gjøre"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1186
 msgid "Or on Debian and Ubuntu"
 msgstr "Eller på Debian og Ubuntu"
 
@@ -7356,11 +7385,11 @@ msgstr "Eller på Debian og Ubuntu"
 msgid "Or reset it if it was forgotten"
 msgstr "Eller tilbakestill det hvis det er glemt"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "Or the Tailscale app on a phone."
 msgstr "Eller Tailscale-appen på en telefon."
 
-#: src/big_remote_play/ui/headscale_wizard.py:480
+#: src/big_remote_play/ui/headscale_wizard.py:483
 msgid "Other"
 msgstr "Annet"
 
@@ -7542,15 +7571,7 @@ msgstr "Lim inn legitimasjonen først."
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Lim inn serveradressen og nøkkelen i feltene på denne siden."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1252
-msgid ""
-"Paste the server's API key. Big Remote Play then does the rest. It is kept "
-"in the system keyring."
-msgstr ""
-"Lim inn API-nøkkelen til serveren. Big Remote Play gjør så resten. Den "
-"lagres i systemets nøkkelring."
-
-#: src/big_remote_play/ui/headscale_wizard.py:603
+#: src/big_remote_play/ui/headscale_wizard.py:606
 msgid "Paste the two nameservers (optional)"
 msgstr "Lim inn de to navnetjenerne (valgfritt)"
 
@@ -7558,7 +7579,7 @@ msgstr "Lim inn de to navnetjenerne (valgfritt)"
 msgid "Paste the whole sign-in link shown on the other computer."
 msgstr "Lim inn hele påloggingslenken som vises på den andre datamaskinen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Pasting them lets Big Remote Play follow your progress."
 msgstr ""
 "Når du limer dem inn, kan Big Remote Play følge med på fremdriften din."
@@ -7694,7 +7715,7 @@ msgstr "Spiller på {name}"
 msgid "Plays a short tone and checks that it reaches the shared sound."
 msgstr "Spiller av en kort tone og sjekker at den når den delte lyden."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Point a domain to it"
 msgstr "Pek et domene til den"
 
@@ -7718,11 +7739,11 @@ msgstr ""
 "Rett telefonens kamera mot koden for å åpne denne veiledningen der mens du "
 "spiller."
 
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "Point your domain to the server"
 msgstr "Pek domenet ditt til serveren"
 
-#: src/big_remote_play/ui/headscale_wizard.py:683
+#: src/big_remote_play/ui/headscale_wizard.py:686
 msgid "Points to"
 msgstr "Peker til"
 
@@ -7747,7 +7768,7 @@ msgstr "Portvideresending (avansert)"
 msgid "Portal (screen picker)"
 msgstr "Portal (skjermvelger)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 #, python-brace-format
 msgid "Ports 80 and 443 (TCP) → {address}"
 msgstr "Port 80 og 443 (TCP) → {address}"
@@ -7870,11 +7891,11 @@ msgstr "Prosjektets historie"
 msgid "Project story on YouTube"
 msgstr "Prosjektets historie på YouTube"
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "Proxy status"
 msgstr "Proxy status"
 
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Public IPv6"
 msgstr "Offentlig IPv6"
 
@@ -8056,8 +8077,8 @@ msgstr "Tar imot spillet fra den andre datamaskinen."
 
 #. TRANSLATORS: shown next to Tailscale: the method suggested for most people.
 #: src/big_remote_play/ui/guided_setup.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:451
 #: src/big_remote_play/ui/provider_page.py:60
 msgid "Recommended"
 msgstr "Anbefalt"
@@ -8082,7 +8103,7 @@ msgstr ""
 "Anbefalt for å spille med en venn. Vennen din får bare tilgang til denne "
 "datamaskinen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Recommended. Big Remote Play can guide you."
 msgstr "Anbefalt. Big Remote Play kan veilede deg."
 
@@ -8673,8 +8694,8 @@ msgstr[1] "Søker… {asked} av {total} adresser sjekket"
 msgid "Secure connection"
 msgstr "Sikker tilkobling"
 
-#: src/big_remote_play/ui/headscale_wizard.py:72
-#: src/big_remote_play/ui/headscale_wizard.py:1100
+#: src/big_remote_play/ui/headscale_wizard.py:75
+#: src/big_remote_play/ui/headscale_wizard.py:1103
 msgid "Secure connection (HTTPS)"
 msgstr "Sikker tilkobling (HTTPS)"
 
@@ -8686,11 +8707,11 @@ msgstr "Sikkerhet og tilgang"
 msgid "See details"
 msgstr "Se detaljer"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "See its log in Advanced on the Headscale page."
 msgstr "Se loggen under Avansert på Headscale-siden."
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "See the technical details."
 msgstr "Se de tekniske detaljene."
 
@@ -8761,10 +8782,13 @@ msgstr "Send systemsnarveier til den eksterne datamaskinen"
 msgid "Send the PIN shown on the other device to finish pairing"
 msgstr "Send PIN-koden som vises på den andre enheten, for å fullføre paringen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
-msgid "Send them this command. This page continues by itself once they run it."
+#: src/big_remote_play/ui/headscale_wizard.py:1500
+msgid ""
+"Send them these commands; the first is needed only once. This page continues "
+"by itself once they run them."
 msgstr ""
-"Send dem denne kommandoen. Siden fortsetter av seg selv når de har kjørt den."
+"Send dem disse kommandoene; den første trengs bare én gang. Siden fortsetter "
+"av seg selv når de har kjørt dem."
 
 #: src/big_remote_play/ui/network_devices.py:665
 msgid ""
@@ -8825,8 +8849,8 @@ msgstr ""
 "andre samtaleapper. Den som også er med i samtalen, hører sin egen stemme "
 "komme tilbake."
 
-#: src/big_remote_play/ui/headscale_wizard.py:69
-#: src/big_remote_play/ui/headscale_wizard.py:1241
+#: src/big_remote_play/ui/headscale_wizard.py:72
+#: src/big_remote_play/ui/headscale_wizard.py:1246
 msgid "Server"
 msgstr "Server"
 
@@ -8839,13 +8863,13 @@ msgstr "Serverdomene (f.eks. vpn.example.com)"
 msgid "Server Failed to Start"
 msgstr "Server klarte ikke å starte"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1040
+#: src/big_remote_play/ui/headscale_wizard.py:1043
 msgid "Server IP or domain"
 msgstr "Serverens IP eller domene"
 
 #: src/big_remote_play/ui/api_access_dialog.py:187
-#: src/big_remote_play/ui/headscale_wizard.py:445
-#: src/big_remote_play/ui/headscale_wizard.py:810
+#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:813
 #: src/big_remote_play/ui/network_devices.py:788
 #: src/big_remote_play/ui/network_devices.py:789
 #: src/big_remote_play/ui/private_network_view.py:699
@@ -8854,7 +8878,7 @@ msgstr "Serverens IP eller domene"
 msgid "Server address"
 msgstr "Serveradresse"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1099
+#: src/big_remote_play/ui/headscale_wizard.py:1102
 msgid "Server answers"
 msgstr "Serveren svarer"
 
@@ -8862,7 +8886,7 @@ msgstr "Serveren svarer"
 msgid "Server control panel"
 msgstr "Serverpanel"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1119
+#: src/big_remote_play/ui/headscale_wizard.py:1122
 msgid "Server found"
 msgstr "Serveren ble funnet"
 
@@ -8908,7 +8932,7 @@ msgstr "Tjenester"
 msgid "Sessions"
 msgstr "Økter"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1187
+#: src/big_remote_play/ui/headscale_wizard.py:1190
 msgid "Set the server address"
 msgstr "Angi serveradressen"
 
@@ -8928,25 +8952,25 @@ msgstr ""
 msgid "Set up"
 msgstr "Sett opp"
 
-#: src/big_remote_play/ui/headscale_wizard.py:548
+#: src/big_remote_play/ui/headscale_wizard.py:551
 msgid "Set up Cloudflare"
 msgstr "Sett opp Cloudflare"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Set up DNS with Cloudflare"
 msgstr "Sett opp DNS med Cloudflare"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 #: src/big_remote_play/ui/provider_page.py:1091
 #: src/big_remote_play/ui/provider_page.py:1170
 msgid "Set up Headscale"
 msgstr "Sett opp Headscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1209
+#: src/big_remote_play/ui/headscale_wizard.py:1212
 msgid "Set up a domain"
 msgstr "Sett opp et domene"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1136
+#: src/big_remote_play/ui/headscale_wizard.py:1139
 msgid "Set up a domain for it"
 msgstr "Sett opp et domene for den"
 
@@ -8954,9 +8978,9 @@ msgstr "Sett opp et domene for den"
 msgid "Set up a secure connection"
 msgstr "Sett opp en sikker tilkobling"
 
-#: src/big_remote_play/ui/headscale_wizard.py:802
-#: src/big_remote_play/ui/headscale_wizard.py:1214
-#: src/big_remote_play/ui/headscale_wizard.py:1215
+#: src/big_remote_play/ui/headscale_wizard.py:805
+#: src/big_remote_play/ui/headscale_wizard.py:1217
+#: src/big_remote_play/ui/headscale_wizard.py:1218
 msgid "Set up the server"
 msgstr "Sett opp serveren"
 
@@ -9258,7 +9282,7 @@ msgstr "Logg inn med nettleseren. Bruk samme konto på alle enhetene dine."
 msgid "Sign-in expired"
 msgstr "Påloggingen er utløpt"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1436
+#: src/big_remote_play/ui/headscale_wizard.py:1505
 msgid "Sign-in link"
 msgstr "Påloggingslenke"
 
@@ -9344,7 +9368,7 @@ msgstr ""
 "er forskjellig fra den offentlige adressen nettsteder ser. Bruk et privat "
 "nettverk, eller be leverandøren om en offentlig IPv4-adresse."
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Something answers there, but it is not a Headscale server."
 msgstr "Noe svarer der, men det er ikke en Headscale-server."
 
@@ -9397,7 +9421,7 @@ msgstr "Start + Select"
 msgid "Start ZeroTier"
 msgstr "Start ZeroTier"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1197
 msgid "Start both and open the ports"
 msgstr "Start begge og åpne portene"
 
@@ -9405,13 +9429,13 @@ msgstr "Start begge og åpne portene"
 msgid "Start it to play with your other devices."
 msgstr "Slå den på for å spille med de andre enhetene dine."
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
-#: src/big_remote_play/ui/headscale_wizard.py:353
-#: src/big_remote_play/ui/headscale_wizard.py:1140
+#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:356
+#: src/big_remote_play/ui/headscale_wizard.py:1143
 msgid "Start over"
 msgstr "Start på nytt"
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "Start over?"
 msgstr "Starte på nytt?"
 
@@ -9568,12 +9592,12 @@ msgid ""
 msgstr ""
 "Trinn for trinn: hvor serveren kjører, adressen, HTTPS og denne datamaskinen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1577
+#: src/big_remote_play/ui/headscale_wizard.py:1646
 #, python-brace-format
 msgid "Step {number} of {total}"
 msgstr "Trinn {number} av {total}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:264
+#: src/big_remote_play/ui/headscale_wizard.py:267
 #, python-brace-format
 msgid "Step {number} of {total} · {name}"
 msgstr "Trinn {number} av {total} · {name}"
@@ -10065,7 +10089,7 @@ msgstr "Bytt venstre og høyre museknapp"
 msgid "Swipe from the left edge of the screen"
 msgstr "Sveip fra venstre kant av skjermen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1368
+#: src/big_remote_play/ui/headscale_wizard.py:1432
 #: src/big_remote_play/ui/remote_connection.py:250
 #: src/big_remote_play/ui/tailscale_accounts.py:107
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:208
@@ -10076,7 +10100,7 @@ msgstr "Bytt"
 msgid "Switch between full screen and a window"
 msgstr "Bytt mellom fullskjerm og vindu"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1363
+#: src/big_remote_play/ui/headscale_wizard.py:1427
 msgid "Switch from Tailscale to Headscale?"
 msgstr "Bytte fra Tailscale til Headscale?"
 
@@ -10215,7 +10239,7 @@ msgstr "Tekniske lyddetaljer"
 
 #: src/big_remote_play/ui/dependency_installer.py:171
 #: src/big_remote_play/ui/guest_view.py:2087
-#: src/big_remote_play/ui/headscale_wizard.py:424
+#: src/big_remote_play/ui/headscale_wizard.py:427
 #: src/big_remote_play/ui/provider_page.py:1202
 #: src/big_remote_play/ui/zerotier_join.py:225
 msgid "Technical details"
@@ -10260,11 +10284,11 @@ msgstr ""
 "Den datamaskinen viser en påloggingslenke. Lim den inn her for å godkjenne "
 "datamaskinen, eller godkjenn den på serveren."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "The API key could not be saved."
 msgstr "API-nøkkelen kunne ikke lagres."
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "The HTTPS configuration was not accepted."
 msgstr "HTTPS-konfigurasjonen ble ikke godtatt."
 
@@ -10276,13 +10300,13 @@ msgstr "HTTPS-konfigurasjonen ble ikke godtatt. Ingenting ble slått på."
 msgid "The Headscale configuration file is missing."
 msgstr "Konfigurasjonsfilen til Headscale mangler."
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
-#: src/big_remote_play/ui/headscale_wizard.py:86
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:90
 msgid "The Headscale server is not reachable."
 msgstr "Headscale-serveren kan ikke nås."
 
-#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:307
 msgid ""
 "The Headscale server needs to stay available so your devices can find each "
 "other."
@@ -10298,7 +10322,7 @@ msgstr "Headscale-serveren virker."
 msgid "The Headscale setup is not finished."
 msgstr "Headscale-oppsettet er ikke ferdig."
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 msgid "The IPv6 record points somewhere else."
 msgstr "IPv6-posten peker et annet sted."
 
@@ -10426,7 +10450,7 @@ msgstr ""
 "Den aktive VPN-tilkoblingen stoppes. Lagrede kontoer beholdes slik at du kan "
 "koble til igjen senere."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1048
+#: src/big_remote_play/ui/headscale_wizard.py:1051
 msgid "The address of the computer or VPS that runs Headscale."
 msgstr "Adressen til datamaskinen eller VPS-en som kjører Headscale."
 
@@ -10563,13 +10587,13 @@ msgstr "Enheten"
 msgid "The device list could not be read."
 msgstr "Enhetslisten kunne ikke leses."
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "The domain could not be checked."
 msgstr "Domenet kunne ikke kontrolleres."
 
-#: src/big_remote_play/ui/headscale_wizard.py:537
+#: src/big_remote_play/ui/headscale_wizard.py:540
 msgid "The domain you registered"
 msgstr "Domenet du registrerte"
 
@@ -10599,7 +10623,7 @@ msgstr "Filen der de nåværende loggene til Sunshine er lagret."
 msgid "The file that stores Sunshine's current state."
 msgstr "Filen der Sunshines nåværende tilstand er lagret."
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "The finished steps are forgotten. Nothing on the server is removed."
 msgstr "De fullførte trinnene glemmes. Ingenting på serveren fjernes."
 
@@ -10775,7 +10799,7 @@ msgstr ""
 msgid "The installation was cancelled. Nothing was changed."
 msgstr "Installasjonen ble avbrutt. Ingenting ble endret."
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The internet could not reach this computer."
 msgstr "Internett kunne ikke nå denne datamaskinen."
 
@@ -10843,7 +10867,7 @@ msgstr ""
 "datamaskin med både kabel og Wi-Fi tilkoblet forårsake dette: slå av "
 "tilkoblingen den ikke bruker."
 
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:90
 #, python-brace-format
 msgid "The network cannot reach it on port {port}."
 msgstr "Nettverket kan ikke nå den på port {port}."
@@ -10966,7 +10990,7 @@ msgstr "Eieren av nettverket må fortsatt godkjenne denne datamaskinen."
 msgid "The pacman package manager is not available on this system."
 msgstr "Pakkebehandleren pacman er ikke tilgjengelig på dette systemet."
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "The password was not given."
 msgstr "Passordet ble ikke oppgitt."
 
@@ -11088,7 +11112,7 @@ msgstr "Søket stoppet før alle adresser var sjekket."
 msgid "The search was cancelled."
 msgstr "Søket ble avbrutt."
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The secure certificate could not be obtained."
 msgstr "Det sikre sertifikatet kunne ikke skaffes."
 
@@ -11110,11 +11134,11 @@ msgstr ""
 msgid "The server administrator then approves this computer."
 msgstr "Serveradministratoren godkjenner deretter denne datamaskinen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:94
 msgid "The server could not be checked."
 msgstr "Serveren kunne ikke kontrolleres."
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "The server could not be set up."
 msgstr "Serveren kunne ikke settes opp."
 
@@ -11122,7 +11146,7 @@ msgstr "Serveren kunne ikke settes opp."
 msgid "The server details could not be read."
 msgstr "Serverdetaljene kunne ikke leses."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "The server did not accept this API key."
 msgstr "Serveren godtok ikke denne API-nøkkelen."
 
@@ -11130,11 +11154,11 @@ msgstr "Serveren godtok ikke denne API-nøkkelen."
 msgid "The server did not find what was requested."
 msgstr "Serveren fant ikke det som ble forespurt."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
+#: src/big_remote_play/ui/headscale_wizard.py:1402
 msgid "The server did not give a key for this computer."
 msgstr "Serveren ga ingen nøkkel for denne datamaskinen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "The server did not give a key."
 msgstr "Serveren ga ingen nøkkel."
 
@@ -11142,11 +11166,15 @@ msgstr "Serveren ga ingen nøkkel."
 msgid "The server log says why a capture could not open."
 msgstr "Serverloggen forteller hvorfor et opptak ikke kunne åpnes."
 
+#: src/big_remote_play/ui/headscale_wizard.py:1262
+msgid "The server runs on this computer"
+msgstr "Serveren kjører på denne datamaskinen"
+
 #: src/big_remote_play/ui/provider_page.py:1249
 msgid "The server setup could not be removed."
 msgstr "Serveroppsettet kunne ikke fjernes."
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid ""
 "The server setup is not available when Big Remote Play runs from its source "
 "folder."
@@ -11164,11 +11192,11 @@ msgstr ""
 "Serveren prøvde å omdirigere forespørselen, noe som avvises av "
 "sikkerhetshensyn."
 
-#: src/big_remote_play/ui/headscale_wizard.py:677
+#: src/big_remote_play/ui/headscale_wizard.py:680
 msgid "The server's public IP address"
 msgstr "Serverens offentlige IP-adresse"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:91
 msgid "The server's secure certificate is not valid."
 msgstr "Serverens sikre sertifikat er ikke gyldig."
 
@@ -11195,7 +11223,7 @@ msgstr ""
 msgid "The service did not accept the request."
 msgstr "Tjenesten godtok ikke forespørselen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:224
+#: src/big_remote_play/ui/headscale_wizard.py:227
 msgid "The setup progress could not be saved."
 msgstr "Fremdriften i oppsettet kunne ikke lagres."
 
@@ -11341,7 +11369,7 @@ msgstr ""
 msgid "The {name} service is not running on this computer."
 msgstr "Tjenesten {name} kjører ikke på denne datamaskinen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "Then Set up → Another server."
 msgstr "Deretter Sett opp → Annen server."
 
@@ -11357,7 +11385,7 @@ msgstr "Det er ikke noe bilde"
 msgid "There is no sound"
 msgstr "Det er ingen lyd"
 
-#: src/big_remote_play/ui/headscale_wizard.py:638
+#: src/big_remote_play/ui/headscale_wizard.py:641
 msgid "These are not Cloudflare nameservers. They end in .ns.cloudflare.com."
 msgstr ""
 "Dette er ikke Cloudflare-navnetjenere. De slutter på .ns.cloudflare.com."
@@ -11416,8 +11444,8 @@ msgstr ""
 "Dette kan aktivere HEVC-koding på eldre Intel GPU-er, på bekostning av "
 "høyere GPU-bruk og dårligere ytelse."
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:667
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "This can take a little while."
 msgstr "Dette kan ta litt tid."
 
@@ -11429,9 +11457,9 @@ msgstr "Dette endrer bare navnet som Big Remote Play viser."
 msgid "This code is not complete"
 msgstr "Denne koden er ikke fullstendig"
 
-#: src/big_remote_play/ui/headscale_wizard.py:74
-#: src/big_remote_play/ui/headscale_wizard.py:306
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:77
+#: src/big_remote_play/ui/headscale_wizard.py:309
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 #: src/big_remote_play/ui/host_view.py:115
 #: src/big_remote_play/ui/network_devices.py:173
 #: src/big_remote_play/ui/remote_connection.py:356
@@ -11439,10 +11467,15 @@ msgstr "Denne koden er ikke fullstendig"
 msgid "This computer"
 msgstr "Denne datamaskinen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "This computer asks to join; the owner approves it on the server."
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1293
+#, python-brace-format
+msgid ""
+"This computer asks to join; Big Remote Play shows the exact commands for the "
+"owner, with your user “{user}”."
 msgstr ""
-"Denne datamaskinen ber om å bli med; eieren godkjenner den på serveren."
+"Denne datamaskinen ber om å bli med; Big Remote Play viser de nøyaktige "
+"kommandoene for eieren, med brukeren din «{user}»."
 
 #: src/big_remote_play/ui/provider_page.py:1068
 msgid "This computer can be in several ZeroTier networks."
@@ -11461,7 +11494,7 @@ msgstr ""
 "HDR avhenger også av begge datamaskinene. Endringene gjelder når delingen "
 "starter på nytt."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "This computer could not join."
 msgstr "Denne datamaskinen kunne ikke bli med."
 
@@ -11491,7 +11524,7 @@ msgstr ""
 "Denne datamaskinen er autorisert, men nettverket har ikke gitt den en "
 "adresse ennå. Eieren av nettverket kan tildele en."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1404
+#: src/big_remote_play/ui/headscale_wizard.py:1468
 msgid "This computer is connected"
 msgstr "Denne datamaskinen er tilkoblet"
 
@@ -11534,7 +11567,7 @@ msgstr "Denne datamaskinen er i nettverket {name}."
 msgid "This computer is on your {name} network."
 msgstr "Denne datamaskinen er i {name}-nettverket ditt."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "This computer joins your Headscale network."
 msgstr "Denne datamaskinen blir med i Headscale-nettverket ditt."
 
@@ -11668,12 +11701,12 @@ msgstr ""
 msgid "This device · {state}"
 msgstr "Denne enheten · {state}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1304
+#: src/big_remote_play/ui/headscale_wizard.py:1340
 msgid "This does not look like a key that adds a computer."
 msgstr "Dette ser ikke ut som en nøkkel som legger til en datamaskin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:524
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "This domain does not exist yet."
 msgstr "Dette domenet finnes ikke ennå."
 
@@ -11704,7 +11737,7 @@ msgid "This is a request. It only works when the game PC supports it."
 msgstr ""
 "Dette er en forespørsel. Den fungerer bare hvis spill-PC-en støtter den."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "This is an administrator key."
 msgstr "Dette er en administratornøkkel."
 
@@ -11721,19 +11754,19 @@ msgstr ""
 msgid "This is not a code from the other device."
 msgstr "Dette er ikke en kode fra den andre enheten."
 
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "This is not a domain."
 msgstr "Dette er ikke et domene."
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "This is not a public IP address."
 msgstr "Dette er ikke en offentlig IP-adresse."
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
+#: src/big_remote_play/ui/headscale_wizard.py:86
 msgid "This is not a server address."
 msgstr "Dette er ikke en serveradresse."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "This is not an API key."
 msgstr "Dette er ikke en API-nøkkel."
 
@@ -11749,15 +11782,15 @@ msgstr ""
 msgid "This is the computer that will run the game."
 msgstr "Dette er datamaskinen som skal kjøre spillet."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "This key adds one computer; it is not an API key."
 msgstr "Denne nøkkelen legger til én datamaskin; det er ikke en API-nøkkel."
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "This name does not lead to a server yet."
 msgstr "Dette navnet fører ikke til noen server ennå."
 
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "This name is already set in /etc/hosts."
 msgstr "Dette navnet er allerede satt i /etc/hosts."
 
@@ -11769,7 +11802,7 @@ msgstr "Dette navnet er allerede satt i /etc/hosts. Ingenting ble endret."
 msgid "This name is not valid."
 msgstr "Dette navnet er ikke gyldig."
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid "This needs the installed Big Remote Play package."
 msgstr "Dette krever den installerte Big Remote Play-pakken."
 
@@ -11842,7 +11875,7 @@ msgstr "Oppløsningen til denne skjermen"
 msgid "This server address is not valid."
 msgstr "Denne serveradressen er ikke gyldig."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1124
+#: src/big_remote_play/ui/headscale_wizard.py:1127
 msgid ""
 "This server runs on this computer. Your router does not send this computer's "
 "own traffic back to it, so Big Remote Play checked it directly and will "
@@ -11974,7 +12007,7 @@ msgstr "Betrodde opphav for nettgrensesnittet"
 msgid "Try again"
 msgstr "Prøv igjen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "Try again, or choose another option."
 msgstr "Prøv igjen, eller velg et annet alternativ."
 
@@ -12015,7 +12048,7 @@ msgstr "Slå av ZeroTier?"
 msgid "Turn on"
 msgstr "Slå på"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1189
+#: src/big_remote_play/ui/headscale_wizard.py:1192
 msgid "Turn on HTTPS with Caddy"
 msgstr "Slå på HTTPS med Caddy"
 
@@ -12029,8 +12062,8 @@ msgid "Turned on"
 msgstr "Slått på"
 
 #: src/big_remote_play/ui/api_access_dialog.py:150
-#: src/big_remote_play/ui/headscale_wizard.py:687
-#: src/big_remote_play/ui/headscale_wizard.py:714
+#: src/big_remote_play/ui/headscale_wizard.py:690
+#: src/big_remote_play/ui/headscale_wizard.py:717
 msgid "Type"
 msgstr "Type"
 
@@ -12056,8 +12089,8 @@ msgstr ""
 "Skriv inn adressen til serveren din. Administratoren av den godkjenner denne "
 "datamaskinen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:577
-#: src/big_remote_play/ui/headscale_wizard.py:586
+#: src/big_remote_play/ui/headscale_wizard.py:580
+#: src/big_remote_play/ui/headscale_wizard.py:589
 msgid "Type the domain you registered, for example mydomain.dpdns.org."
 msgstr "Skriv inn domenet du registrerte, for eksempel mydomain.dpdns.org."
 
@@ -12239,15 +12272,15 @@ msgstr ""
 msgid "Use Tailscale"
 msgstr "Bruk Tailscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "Use a Linux server that stays on"
 msgstr "Bruk en Linux-server som alltid er på"
 
-#: src/big_remote_play/ui/headscale_wizard.py:981
+#: src/big_remote_play/ui/headscale_wizard.py:984
 msgid "Use a VPS instead"
 msgstr "Bruk en VPS i stedet"
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
+#: src/big_remote_play/ui/headscale_wizard.py:308
 msgid "Use a VPS or another computer that stays online."
 msgstr "Bruk en VPS eller en annen datamaskin som alltid er på nett."
 
@@ -12255,11 +12288,11 @@ msgstr "Bruk en VPS eller en annen datamaskin som alltid er på nett."
 msgid "Use a cable or 5 GHz Wi-Fi on both computers when possible."
 msgstr "Bruk kabel eller 5 GHz Wi-Fi på begge datamaskinene når det er mulig."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1139
+#: src/big_remote_play/ui/headscale_wizard.py:1142
 msgid "Use a different address"
 msgstr "Bruk en annen adresse"
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Use a domain"
 msgstr "Bruk et domene"
 
@@ -12282,10 +12315,10 @@ msgstr ""
 msgid "Use another account"
 msgstr "Bruk en annen konto"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:402
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:997
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:405
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:1000
 msgid "Use another server"
 msgstr "Bruk en annen server"
 
@@ -12306,13 +12339,13 @@ msgstr "Bruk maskinvaredekoding når det er tilgjengelig"
 msgid "Use it"
 msgstr "Bruk den"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "Use it in the first option, or ask for a key that adds one computer."
 msgstr ""
 "Bruk den i det første alternativet, eller be om en nøkkel som legger til én "
 "datamaskin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "Use it in the second option instead."
 msgstr "Bruk den i det andre alternativet i stedet."
 
@@ -12324,7 +12357,7 @@ msgstr "Bruk flere kontrollere"
 msgid "Use only when both computers and the screen support HDR."
 msgstr "Bruk bare når begge datamaskinene og skjermen støtter HDR."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1256
+#: src/big_remote_play/ui/headscale_wizard.py:1280
 msgid "Use the API key"
 msgstr "Bruk API-nøkkelen"
 
@@ -12340,7 +12373,7 @@ msgstr ""
 msgid "Use the controller to move the mouse"
 msgstr "Bruk kontrolleren til å flytte musen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid "Use the detected address"
 msgstr "Bruk den oppdagede adressen"
 
@@ -12356,7 +12389,7 @@ msgstr "Bruk søkekoden fra Big Remote Play på spill-PC-en."
 msgid "Use the touchscreen as a virtual trackpad"
 msgstr "Bruk berøringsskjermen som en virtuell styreflate"
 
-#: src/big_remote_play/ui/headscale_wizard.py:306
+#: src/big_remote_play/ui/headscale_wizard.py:309
 msgid "Use this PC as the Headscale server."
 msgstr "Bruk denne PC-en som Headscale-server."
 
@@ -12364,7 +12397,7 @@ msgstr "Bruk denne PC-en som Headscale-server."
 msgid "Use this connection"
 msgstr "Bruk denne tilkoblingen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1258
+#: src/big_remote_play/ui/headscale_wizard.py:1288
 msgid "Use this key"
 msgstr "Bruk denne nøkkelen"
 
@@ -12376,7 +12409,7 @@ msgstr "Bruk dette bare når automatisk søk ikke finner PC-en."
 msgid "Use this screen's resolution"
 msgstr "Bruk oppløsningen til denne skjermen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:866
+#: src/big_remote_play/ui/headscale_wizard.py:869
 msgid "Use this server"
 msgstr "Bruk denne serveren"
 
@@ -12433,7 +12466,7 @@ msgstr ""
 msgid "Using this screen's resolution"
 msgstr "Bruker oppløsningen til denne skjermen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:990
+#: src/big_remote_play/ui/headscale_wizard.py:993
 msgid ""
 "Usually its address is written under the router. Look for “Port forwarding”, "
 "“Virtual server” or “NAT”."
@@ -12620,7 +12653,7 @@ msgstr "Venter på autorisasjon"
 msgid "Waiting for data…"
 msgstr "Venter på data…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
+#: src/big_remote_play/ui/headscale_wizard.py:1500
 msgid "Waiting for the server owner"
 msgstr "Venter på servereieren"
 
@@ -12636,11 +12669,11 @@ msgstr "Varsler når brannmur- eller nettverksregler kan hindre en tilkobling."
 msgid "Washed out on devices without HDR"
 msgstr "Ser blekt ut på enheter uten HDR"
 
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "We are still waiting for DNS"
 msgstr "Vi venter fortsatt på DNS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "We could not find your public address"
 msgstr "Vi fant ikke den offentlige adressen din"
 
@@ -12676,7 +12709,7 @@ msgstr "Hva ZeroTier svarte, til å dele med noen som hjelper deg."
 msgid "What do you want to do?"
 msgstr "Hva vil du gjøre?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:789
+#: src/big_remote_play/ui/headscale_wizard.py:792
 msgid "What happens"
 msgstr "Hva som skjer"
 
@@ -12684,7 +12717,7 @@ msgstr "Hva som skjer"
 msgid "What is the network code?"
 msgstr "Hva er nettverkskoden?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1047
+#: src/big_remote_play/ui/headscale_wizard.py:1050
 msgid "What is the server address?"
 msgstr "Hva er serveradressen?"
 
@@ -12770,7 +12803,7 @@ msgstr ""
 "Når du bruker musen eller tastaturet på denne datamaskinen, slutter gjester "
 "midlertidig å styre dem."
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "Where do you manage DNS?"
 msgstr "Hvor administrerer du DNS?"
 
@@ -12778,7 +12811,7 @@ msgstr "Hvor administrerer du DNS?"
 msgid "Where is the other device?"
 msgstr "Hvor er den andre enheten?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Where is the server?"
 msgstr "Hvor er serveren?"
 
@@ -12790,7 +12823,7 @@ msgstr "Hvor du oppretter et token"
 msgid "Where to create it"
 msgstr "Hvor du oppretter den"
 
-#: src/big_remote_play/ui/headscale_wizard.py:303
+#: src/big_remote_play/ui/headscale_wizard.py:306
 msgid "Where will your Headscale server run?"
 msgstr "Hvor skal Headscale-serveren din kjøre?"
 
@@ -12820,7 +12853,7 @@ msgstr ""
 "Hvorfor en tilkobling over internett kan mislykkes, og den tryggeste måten "
 "rundt hvert problem."
 
-#: src/big_remote_play/ui/headscale_wizard.py:706
+#: src/big_remote_play/ui/headscale_wizard.py:709
 msgid "Why?"
 msgstr "Hvorfor?"
 
@@ -12904,7 +12937,7 @@ msgstr "Uten autentiseringsnøkkel åpnes en påloggingslenke"
 msgid "Without it, members are approved on the ZeroTier website."
 msgstr "Uten det godkjennes medlemmer på ZeroTier-nettstedet."
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Working…"
 msgstr "Arbeider…"
 
@@ -12920,8 +12953,8 @@ msgstr ""
 msgid "X11 screen capture"
 msgstr "X11-skjermopptak"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:472
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/touch_controls.py:81
 msgid "Yes"
 msgstr "Ja"
@@ -12955,7 +12988,7 @@ msgstr "I går kl. {time}"
 msgid "You can control the mouse and keyboard again"
 msgstr "Du kan styre musen og tastaturet igjen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:559
+#: src/big_remote_play/ui/headscale_wizard.py:562
 msgid ""
 "You can use a domain you already own or register one with a domain provider."
 msgstr ""
@@ -12982,7 +13015,7 @@ msgstr "Du styrer denne PC-en"
 msgid "Your Headscale server"
 msgstr "Headscale-serveren din"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1032
+#: src/big_remote_play/ui/headscale_wizard.py:1035
 msgid "Your Headscale server is ready"
 msgstr "Headscale-serveren din er klar"
 
@@ -12990,7 +13023,7 @@ msgstr "Headscale-serveren din er klar"
 msgid "Your Tailscale network (tailnet)"
 msgstr "Tailscale-nettverket ditt (tailnet)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Your VPS provider shows it in its control panel."
 msgstr "VPS-leverandøren din viser den i kontrollpanelet sitt."
 
@@ -13013,16 +13046,16 @@ msgstr "Din enhet"
 msgid "Your devices can now find each other in Big Remote Play."
 msgstr "Enhetene dine kan nå finne hverandre i Big Remote Play."
 
-#: src/big_remote_play/ui/headscale_wizard.py:491
-#: src/big_remote_play/ui/headscale_wizard.py:614
+#: src/big_remote_play/ui/headscale_wizard.py:494
+#: src/big_remote_play/ui/headscale_wizard.py:617
 msgid "Your domain"
 msgstr "Domenet ditt"
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 msgid "Your domain is not pointing to this server yet."
 msgstr "Domenet ditt peker ikke til denne serveren ennå."
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
+#: src/big_remote_play/ui/headscale_wizard.py:667
 msgid "Your domain still uses other nameservers."
 msgstr "Domenet ditt bruker fortsatt andre navnetjenere."
 
@@ -13038,19 +13071,19 @@ msgstr ""
 msgid "Your games. Any screen. Anywhere."
 msgstr "Dine spill. Hvilken som helst skjerm. Hvor som helst."
 
-#: src/big_remote_play/ui/headscale_wizard.py:368
+#: src/big_remote_play/ui/headscale_wizard.py:371
 msgid "Your internet connection"
 msgstr "Internett-tilkoblingen din"
 
-#: src/big_remote_play/ui/headscale_wizard.py:976
+#: src/big_remote_play/ui/headscale_wizard.py:979
 msgid "Your internet provider blocks incoming connections."
 msgstr "Internett-leverandøren din blokkerer innkommende tilkoblinger."
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Your internet provider may block incoming connections."
 msgstr "Internett-leverandøren din kan blokkere innkommende tilkoblinger."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1520
+#: src/big_remote_play/ui/headscale_wizard.py:1589
 msgid "Your other device is connected"
 msgstr "Den andre enheten din er tilkoblet"
 
@@ -13076,7 +13109,7 @@ msgstr "Din egen versjon av {names} ble beholdt uendret."
 msgid "Your password may be requested."
 msgstr "Du kan bli bedt om passordet ditt."
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
+#: src/big_remote_play/ui/headscale_wizard.py:398
 msgid "Your public IP"
 msgstr "Din offentlige IP"
 
@@ -13084,7 +13117,7 @@ msgstr "Din offentlige IP"
 msgid "Your recent sessions will appear here."
 msgstr "De siste øktene dine vises her."
 
-#: src/big_remote_play/ui/headscale_wizard.py:986
+#: src/big_remote_play/ui/headscale_wizard.py:989
 msgid "Your router needs one more step"
 msgstr "Ruteren din trenger ett trinn til"
 
@@ -13204,7 +13237,7 @@ msgstr "ikke identifisert"
 msgid "the local network"
 msgstr "det lokale nettverket"
 
-#: src/big_remote_play/ui/headscale_wizard.py:983
+#: src/big_remote_play/ui/headscale_wizard.py:986
 msgid "this computer"
 msgstr "denne datamaskinen"
 

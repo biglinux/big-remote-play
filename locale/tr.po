@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-17 09:34+0000\n"
+"POT-Creation-Date: 2026-11-17 09:44+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Turkish\n"
@@ -46,13 +46,21 @@ msgstr "1. İnternet erişimini denetleyin"
 msgid "1. Create Account"
 msgstr "1. Hesap Oluştur"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1503
+msgid "1. Create the user (once)"
+msgstr "1. Kullanıcıyı oluştur (bir kez)"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1274
+msgid "1. I manage this server (recommended)"
+msgstr "1. Bu sunucuyu ben yönetiyorum (tavsiye edilir)"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1995
 #: src/big_remote_play/ui/private_network_view.py:1114
 msgid "1. Identification"
 msgstr "1. Kimlik"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "1. Install Big Remote Play"
 msgstr "1. Big Remote Play'i kurun"
 
@@ -76,6 +84,10 @@ msgstr "1440p · 60 FPS · 40 Mbps"
 msgid "1920 × 1080 — best for TVs"
 msgstr "1920 × 1080 — televizyonlar için en iyisi"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1504
+msgid "2. Approve this computer"
+msgstr "2. Bu bilgisayarı onayla"
+
 #: src/big_remote_play/ui/connection_guides.py:61
 msgid "2. Choose a domain you control"
 msgstr "2. Denetiminizde olan bir alan adı seçin"
@@ -83,6 +95,10 @@ msgstr "2. Denetiminizde olan bir alan adı seçin"
 #: src/big_remote_play/ui/connection_guides.py:119
 msgid "2. Domain and HTTPS"
 msgstr "2. Alan adı ve HTTPS"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1283
+msgid "2. I have a key from the server owner"
+msgstr "2. Sunucu sahibinden aldığım bir anahtar var"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1989
@@ -98,9 +114,13 @@ msgstr "2. Katıl"
 msgid "2. Network"
 msgstr "2. Ağ"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1446
+#: src/big_remote_play/ui/headscale_wizard.py:1515
 msgid "2. Open Connect your devices"
 msgstr "2. “Cihazlarınızı bağlayın” sayfasını açın"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1291
+msgid "3. Ask the server owner to approve"
+msgstr "3. Sunucu sahibinden onaylamasını isteyin"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1997
@@ -108,7 +128,7 @@ msgstr "2. “Cihazlarınızı bağlayın” sayfasını açın"
 msgid "3. Authorization"
 msgstr "3. Yetkilendirme"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "3. Choose Headscale"
 msgstr "3. Headscale'i seçin"
 
@@ -146,7 +166,7 @@ msgstr "4. Onay"
 msgid "4. Connect Big Remote Play"
 msgstr "4. Big Remote Play'i bağlayın"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1448
+#: src/big_remote_play/ui/headscale_wizard.py:1517
 msgid "4. Use this server"
 msgstr "4. Bu sunucuyu kullanın"
 
@@ -180,7 +200,7 @@ msgid ""
 msgstr ""
 "Aynı ada sahip bir Caddy site dosyası zaten var. Hiçbir şey değiştirilmedi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:865
+#: src/big_remote_play/ui/headscale_wizard.py:868
 msgid "A Headscale server already answers at this address."
 msgstr "Bu adreste zaten bir Headscale sunucusu yanıt veriyor."
 
@@ -239,7 +259,7 @@ msgstr "Bir cihaz ses çalıyor, ancak Sunshine henüz sesi kaydetmiyor."
 msgid "A device started playing on this computer."
 msgstr "Bir cihaz bu bilgisayarda oynamaya başladı."
 
-#: src/big_remote_play/ui/headscale_wizard.py:468
+#: src/big_remote_play/ui/headscale_wizard.py:471
 msgid ""
 "A domain is a name like example.com. Your server gets a name inside it, like "
 "headscale.example.com."
@@ -247,13 +267,17 @@ msgstr ""
 "Alan adı, example.com gibi bir addır. Sunucunuz bunun içinde "
 "headscale.example.com gibi bir ad alır."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1457
+#: src/big_remote_play/ui/headscale_wizard.py:1526
 msgid "A key for the other computer"
 msgstr "Diğer bilgisayar için bir anahtar"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "A key that adds one computer. It is used once and not saved."
-msgstr "Bir bilgisayar ekleyen bir anahtar. Bir kez kullanılır ve kaydedilmez."
+#: src/big_remote_play/ui/headscale_wizard.py:1284
+msgid ""
+"A key that adds one computer, starting with hskey-auth-. It is used once and "
+"not saved."
+msgstr ""
+"Bir bilgisayar ekleyen ve hskey-auth- ile başlayan bir anahtar. Bir kez "
+"kullanılır ve kaydedilmez."
 
 #: src/big_remote_play/ui/controls_help.py:102
 msgid "A keyboard app with Ctrl and Alt"
@@ -292,11 +316,11 @@ msgstr ""
 "1080'dir. Seçilen ekran daha sonra normale döner. Önce yukarıdan bir ekran "
 "seçin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "A secure connection could not be made."
 msgstr "Güvenli bağlantı kurulamadı."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "A small VPS is enough. Debian, Ubuntu and Arch are fine."
 msgstr "Küçük bir VPS yeterlidir. Debian, Ubuntu ve Arch uygundur."
 
@@ -376,7 +400,7 @@ msgid "API error: {status}"
 msgstr "API Hatası: {status}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:1242
+#: src/big_remote_play/ui/headscale_wizard.py:1247
 msgid "API key"
 msgstr "API anahtarı"
 
@@ -537,8 +561,8 @@ msgstr "Hesap veya ağ ekle"
 msgid "Add another computer of mine"
 msgstr "Kendi başka bir bilgisayarımı ekle"
 
-#: src/big_remote_play/ui/headscale_wizard.py:75
-#: src/big_remote_play/ui/headscale_wizard.py:1481
+#: src/big_remote_play/ui/headscale_wizard.py:78
+#: src/big_remote_play/ui/headscale_wizard.py:1550
 #: src/big_remote_play/ui/network_devices.py:488
 msgid "Add another device"
 msgstr "Başka bir cihaz ekle"
@@ -552,16 +576,16 @@ msgstr "Adresle Ekle"
 msgid "Add device"
 msgstr "Cihaz ekle"
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "Add it where you manage your domain's DNS."
 msgstr "Bunu, alan adınızın DNS'ini yönettiğiniz yere ekleyin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1246
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "Add this computer"
 msgstr "Bu bilgisayarı ekle"
 
-#: src/big_remote_play/ui/headscale_wizard.py:713
+#: src/big_remote_play/ui/headscale_wizard.py:716
 msgid ""
 "Add this only if your router lets connections in over IPv6. A wrong IPv6 "
 "record can break the connection."
@@ -569,15 +593,15 @@ msgstr ""
 "Bunu yalnızca yönlendiriciniz IPv6 üzerinden gelen bağlantılara izin "
 "veriyorsa ekleyin. Yanlış bir IPv6 kaydı bağlantıyı bozabilir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this record."
 msgstr "Bu kaydı ekleyin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this to Cloudflare."
 msgstr "Bunu Cloudflare'e ekleyin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 msgid "Add two rules"
 msgstr "İki kural ekle"
 
@@ -595,7 +619,7 @@ msgstr ""
 "vekili yerine yalnızca DNS'i (gri bulut) seçin. Adres değiştiğinde kaydı "
 "güncelleyin. Bu, Cloudflare Tunnel veya VPN değildir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:613
+#: src/big_remote_play/ui/headscale_wizard.py:616
 msgid "Add your domain to Cloudflare."
 msgstr "Alan adınızı Cloudflare'e ekleyin."
 
@@ -605,8 +629,8 @@ msgid "Add {count} Game"
 msgid_plural "Add {count} Games"
 msgstr[0] "{count} Oyun Ekle"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1345
-#: src/big_remote_play/ui/headscale_wizard.py:1375
+#: src/big_remote_play/ui/headscale_wizard.py:1409
+#: src/big_remote_play/ui/headscale_wizard.py:1439
 msgid "Adding this computer…"
 msgstr "Bu bilgisayar ekleniyor…"
 
@@ -623,7 +647,7 @@ msgstr "Adres, değişkenlik ve kayıp yanıtlar"
 msgid "Address: {address}"
 msgstr "Adres: {address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "Addresses like 192.168.x.x only work inside a home network."
 msgstr "192.168.x.x gibi adresler yalnızca bir ev ağının içinde çalışır."
 
@@ -704,7 +728,7 @@ msgstr "Gelişmiş sunucu ayarları"
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "Tarayıcıda gelişmiş ayarlar (Sunshine)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid ""
 "Advanced. HTTPS certificates can be harder to configure with an IP address."
 msgstr ""
@@ -840,7 +864,7 @@ msgid ""
 msgstr ""
 "Bir kez izin verin. Parolanız istenir; sonra Tailscale parolasız çalışır."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1195
+#: src/big_remote_play/ui/headscale_wizard.py:1198
 msgid ""
 "Allow ports 80 and 443 (TCP) in the server's firewall and in your VPS "
 "provider's panel."
@@ -848,7 +872,7 @@ msgstr ""
 "Sunucunun güvenlik duvarında ve VPS sağlayıcınızın panelinde 80 ve 443 (TCP) "
 "bağlantı noktalarına izin verin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:793
+#: src/big_remote_play/ui/headscale_wizard.py:796
 msgid "Allow web connections in the firewall"
 msgstr "Güvenlik duvarında web bağlantılarına izin ver"
 
@@ -984,16 +1008,16 @@ msgstr ""
 "Başka bir kurulum sürüyor. Bu sayfa kurulum bitince kendiliğinden devam "
 "eder; ilerlemesini Teknik ayrıntılar gösterir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:873
-#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:876
+#: src/big_remote_play/ui/headscale_wizard.py:957
 msgid ""
 "Another program already uses the web ports (80 and 443) on this computer."
 msgstr ""
 "Bu bilgisayardaki web bağlantı noktalarını (80 ve 443) zaten başka bir "
 "program kullanıyor."
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:1046
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:1049
 msgid "Another server"
 msgstr "Başka bir sunucu"
 
@@ -1186,15 +1210,11 @@ msgstr ""
 "biriniz ZeroTier Central'da ücretsiz olarak oluşturur ya da başlamanın en "
 "kolay yolu olan Tailscale'i kullanırsınız."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "Ask the server owner to approve"
-msgstr "Sunucu sahibinden onaylamasını isteyin"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1260
+#: src/big_remote_play/ui/headscale_wizard.py:1296
 msgid "Ask to join"
 msgstr "Katılma isteği gönder"
 
-#: src/big_remote_play/ui/headscale_wizard.py:987
+#: src/big_remote_play/ui/headscale_wizard.py:990
 msgid "Ask your router to send web connections to this computer:"
 msgstr ""
 "Yönlendiricinizi web bağlantılarını bu bilgisayara gönderecek şekilde "
@@ -1399,7 +1419,7 @@ msgstr "Ortalama süre"
 msgid "BW (target)"
 msgstr "BW (hedef)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1558
+#: src/big_remote_play/ui/headscale_wizard.py:1627
 #: src/big_remote_play/ui/main_window.py:686
 #: src/big_remote_play/ui/main_window.py:692
 msgid "Back"
@@ -1478,8 +1498,8 @@ msgstr "En iyi performans."
 msgid "Big Remote Play can start it for you. Your password may be requested."
 msgstr "Big Remote Play bunu sizin için başlatabilir. Parolanız istenebilir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:874
-#: src/big_remote_play/ui/headscale_wizard.py:955
+#: src/big_remote_play/ui/headscale_wizard.py:877
+#: src/big_remote_play/ui/headscale_wizard.py:958
 msgid ""
 "Big Remote Play cannot add a secure address next to it. Use another server, "
 "or stop that program first."
@@ -1496,7 +1516,7 @@ msgstr ""
 "Big Remote Play bu sisteme program kuramıyor. Şu paketleri yazılım "
 "merkeziniz ile kurun: {packages}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1216
+#: src/big_remote_play/ui/headscale_wizard.py:1219
 msgid ""
 "Big Remote Play cannot reach into another computer. Follow these steps "
 "there; each one can be copied."
@@ -1508,7 +1528,7 @@ msgstr ""
 msgid "Big Remote Play cannot start"
 msgstr "Big Remote Play başlatılamıyor"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play bunu sizin için kontrol eder."
 
@@ -1520,7 +1540,7 @@ msgstr ""
 "Big Remote Play bu bilgisayarın neye ihtiyacı olduğunu kontrol eder ve "
 "eksikleri kurar. Parolanız bir kez sorulabilir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:618
+#: src/big_remote_play/ui/headscale_wizard.py:621
 msgid "Big Remote Play checks your domain."
 msgstr "Big Remote Play alan adınızı kontrol eder."
 
@@ -1531,6 +1551,16 @@ msgid ""
 msgstr ""
 "Big Remote Play, Sunshine şifresini paylaşım ilk kez başladığında oluşturur "
 "ve kaydeder."
+
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1264
+#, python-brace-format
+msgid ""
+"Big Remote Play creates your network user “{user}” and a key for this "
+"computer by itself. Your password is asked once."
+msgstr ""
+"Big Remote Play “{user}” ağ kullanıcınızı ve bu bilgisayar için bir anahtarı "
+"kendisi oluşturur. Parolanız bir kez istenir."
 
 #: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:9
 msgid ""
@@ -1548,7 +1578,7 @@ msgstr ""
 msgid "Big Remote Play installs it for you. Your password may be requested."
 msgstr "Big Remote Play bunu sizin için kurar. Parolanız istenebilir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:824
+#: src/big_remote_play/ui/headscale_wizard.py:827
 msgid ""
 "Big Remote Play installs the server, gives it a secure address and starts "
 "it. Your password will be requested."
@@ -1569,7 +1599,7 @@ msgstr ""
 msgid "Big Remote Play is not installed completely"
 msgstr "Big Remote Play tam olarak kurulmamış"
 
-#: src/big_remote_play/ui/headscale_wizard.py:370
+#: src/big_remote_play/ui/headscale_wizard.py:373
 msgid ""
 "Big Remote Play looks for the address the internet sees for this computer."
 msgstr "Big Remote Play, internetin bu bilgisayar için gördüğü adresi arar."
@@ -1580,7 +1610,7 @@ msgstr "Big Remote Play, internetin bu bilgisayar için gördüğü adresi arar.
 msgid "Big Remote Play needs your permission"
 msgstr "Big Remote Play'in izninize ihtiyacı var"
 
-#: src/big_remote_play/ui/headscale_wizard.py:808
+#: src/big_remote_play/ui/headscale_wizard.py:811
 msgid "Big Remote Play will configure HTTPS for you."
 msgstr "Big Remote Play HTTPS'yi sizin için yapılandıracak."
 
@@ -1706,7 +1736,7 @@ msgstr "CGNAT, IPv6, UPnP ve özel ağın ne zaman daha iyi bir seçim olduğu."
 msgid "CPU Encoding"
 msgstr "CPU Kodlama"
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
+#: src/big_remote_play/ui/headscale_wizard.py:954
 msgid "Caddy already has a site with the same file name."
 msgstr "Caddy'de aynı dosya adına sahip bir site zaten var."
 
@@ -1738,7 +1768,7 @@ msgstr "Yeni PIN olmadan bağlanabilir"
 #: src/big_remote_play/ui/guest_view.py:1853
 #: src/big_remote_play/ui/guest_view.py:2219
 #: src/big_remote_play/ui/guest_view.py:2506
-#: src/big_remote_play/ui/headscale_wizard.py:1367
+#: src/big_remote_play/ui/headscale_wizard.py:1431
 #: src/big_remote_play/ui/host_view.py:2290
 #: src/big_remote_play/ui/host_view.py:2760
 #: src/big_remote_play/ui/host_view.py:3242
@@ -1809,7 +1839,7 @@ msgstr ""
 "Buradaki değişiklikler yalnızca sonraki bağlantıyı etkiler. Oyun "
 "bilgisayarının ekranını değiştirmez."
 
-#: src/big_remote_play/ui/headscale_wizard.py:977
+#: src/big_remote_play/ui/headscale_wizard.py:980
 msgid "Changing the router will probably not help. A VPS is the reliable way."
 msgstr ""
 "Yönlendiricide değişiklik yapmak büyük olasılıkla işe yaramaz. Güvenilir yol "
@@ -1820,13 +1850,13 @@ msgctxt "check state"
 msgid "Check"
 msgstr "Dikkat"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:618
-#: src/big_remote_play/ui/headscale_wizard.py:761
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:981
-#: src/big_remote_play/ui/headscale_wizard.py:997
-#: src/big_remote_play/ui/headscale_wizard.py:1138
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:621
+#: src/big_remote_play/ui/headscale_wizard.py:764
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:984
+#: src/big_remote_play/ui/headscale_wizard.py:1000
+#: src/big_remote_play/ui/headscale_wizard.py:1141
 #: src/big_remote_play/ui/remote_connection.py:51
 #: src/big_remote_play/ui/remote_connection.py:57
 #: src/big_remote_play/ui/support_center.py:152
@@ -1845,7 +1875,7 @@ msgstr "Bağlantıyı kontrol et"
 msgid "Check for blocked connections automatically"
 msgstr "Engellenen bağlantıları otomatik olarak denetle"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Check for the other device"
 msgstr "Diğer cihazı kontrol et"
 
@@ -1854,12 +1884,12 @@ msgstr "Diğer cihazı kontrol et"
 msgid "Check logs for details."
 msgstr "Ayrıntılar için günlükleri denetleyin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1051
-#: src/big_remote_play/ui/headscale_wizard.py:1211
+#: src/big_remote_play/ui/headscale_wizard.py:1054
+#: src/big_remote_play/ui/headscale_wizard.py:1214
 msgid "Check server"
 msgstr "Sunucuyu kontrol et"
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Check that Headscale runs behind this address."
 msgstr "Bu adresin arkasında Headscale'in çalıştığını kontrol edin."
 
@@ -1872,16 +1902,16 @@ msgstr ""
 "Oyun bilgisayarında paylaşımın çalıştığını ve iki bilgisayarın birbirine "
 "ulaşabildiğini kontrol edin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "Check that this computer is connected to the internet."
 msgstr "Bu bilgisayarın internete bağlı olduğunu kontrol edin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "Check that you copied all of it."
 msgstr "Tamamını kopyaladığınızı kontrol edin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1402
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "Check the API key in Advanced."
 msgstr "Gelişmiş bölümünde API anahtarını kontrol edin."
 
@@ -1895,15 +1925,15 @@ msgstr "Kodu kontrol edip yeniden deneyin. Kod doğruysa ağ silinmiş olabilir.
 msgid "Check the internet connection of this computer."
 msgstr "Bu bilgisayarın internet bağlantısını kontrol edin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "Check the name you registered."
 msgstr "Kaydettiğiniz adı kontrol edin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
+#: src/big_remote_play/ui/headscale_wizard.py:524
 msgid "Check the name, or register it first."
 msgstr "Adı kontrol edin veya önce kaydedin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:797
 msgid "Check the secure connection (HTTPS)"
 msgstr "Güvenli bağlantıyı (HTTPS) kontrol et"
 
@@ -1917,9 +1947,9 @@ msgstr ""
 "Bu bilgisayarı denetleyin veya ne deneyebileceğinizi görmek için bir sorun "
 "seçin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "Check your internet connection and try again."
 msgstr "İnternet bağlantınızı kontrol edip yeniden deneyin."
 
@@ -1944,7 +1974,7 @@ msgstr ""
 msgid "Checking ZeroTier…"
 msgstr "ZeroTier kontrol ediliyor…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:648
+#: src/big_remote_play/ui/headscale_wizard.py:651
 msgid "Checking nameservers…"
 msgstr "Ad sunucuları kontrol ediliyor…"
 
@@ -1969,12 +1999,12 @@ msgstr "Ağ, bilgisayar ve Sunshine denetleniyor…"
 msgid "Checking the path…"
 msgstr "Yol kontrol ediliyor…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1069
+#: src/big_remote_play/ui/headscale_wizard.py:1072
 msgid "Checking the server…"
 msgstr "Sunucu kontrol ediliyor…"
 
 #: src/big_remote_play/ui/dependency_installer.py:198
-#: src/big_remote_play/ui/headscale_wizard.py:852
+#: src/big_remote_play/ui/headscale_wizard.py:855
 #: src/big_remote_play/ui/provider_page.py:543
 #: src/big_remote_play/ui/remote_connection.py:49
 msgid "Checking this computer…"
@@ -1992,16 +2022,16 @@ msgstr "Hangi cihazlara zaten izin verildiği kontrol ediliyor."
 msgid "Checking with Sunshine…"
 msgstr "Sunshine ile denetleniyor…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:511
-#: src/big_remote_play/ui/headscale_wizard.py:741
+#: src/big_remote_play/ui/headscale_wizard.py:514
+#: src/big_remote_play/ui/headscale_wizard.py:744
 msgid "Checking your domain…"
 msgstr "Alan adınız kontrol ediliyor…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:369
+#: src/big_remote_play/ui/headscale_wizard.py:372
 msgid "Checking your internet connection"
 msgstr "İnternet bağlantınız kontrol ediliyor"
 
-#: src/big_remote_play/ui/headscale_wizard.py:378
+#: src/big_remote_play/ui/headscale_wizard.py:381
 msgid "Checking your internet connection…"
 msgstr "İnternet bağlantınız kontrol ediliyor…"
 
@@ -2030,7 +2060,7 @@ msgid "Checks the name, the port, HTTPS and Headscale itself."
 msgstr ""
 "Adı, bağlantı noktasını, HTTPS'yi ve Headscale'in kendisini kontrol eder."
 
-#: src/big_remote_play/ui/headscale_wizard.py:543
+#: src/big_remote_play/ui/headscale_wizard.py:546
 msgid ""
 "Choose Register, check the domain name you want, and read the current "
 "availability and rules shown by DigitalPlat."
@@ -2081,7 +2111,7 @@ msgstr "Video kodlama için donanım seçin"
 msgid "Choose installed games below."
 msgstr "Aşağıdan yüklü oyunları seçin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "Choose one of the options above."
 msgstr "Yukarıdaki seçeneklerden birini seçin."
 
@@ -2172,7 +2202,7 @@ msgstr "Bağlantı geçmişi temizlensin mi?"
 msgid "Click and drag, for example to move a window"
 msgstr "Tıklayıp sürükleyin, örneğin bir pencereyi taşımak için"
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Click the orange cloud in Cloudflare so it turns gray (DNS only)."
 msgstr ""
 "Cloudflare'de turuncu buluta tıklayarak gri olmasını sağlayın (DNS only)."
@@ -2201,8 +2231,8 @@ msgstr "Yayın sona erdiğinde oyunu oyun bilgisayarında kapat"
 msgid "Close the stream on every device so a new device can pair"
 msgstr "Yeni bir cihazın eşleşebilmesi için yayını tüm cihazlarda kapat"
 
-#: src/big_remote_play/ui/headscale_wizard.py:479
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare"
 msgstr "Cloudflare"
 
@@ -2211,20 +2241,20 @@ msgstr "Cloudflare"
 msgid "Cloudflare DNS-only documentation"
 msgstr "Cloudflare yalnızca DNS belgeleri"
 
-#: src/big_remote_play/ui/headscale_wizard.py:655
+#: src/big_remote_play/ui/headscale_wizard.py:658
 msgid "Cloudflare is now managing your domain"
 msgstr "Alan adınızı artık Cloudflare yönetiyor"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare will manage your domain's records. Its free plan is enough."
 msgstr ""
 "Alan adınızın kayıtlarını Cloudflare yönetecek. Ücretsiz planı yeterlidir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Cloudflare will show two nameservers."
 msgstr "Cloudflare iki ad sunucusu gösterecek."
 
-#: src/big_remote_play/ui/headscale_wizard.py:703
+#: src/big_remote_play/ui/headscale_wizard.py:706
 msgid ""
 "Cloudflare's proxy (the orange cloud) only passes ordinary web requests. "
 "Tailscale clients keep a long-lived, upgraded HTTP connection to Headscale, "
@@ -2236,7 +2266,7 @@ msgstr ""
 "yükseltilmiş bir HTTP bağlantısı sürdürür; vekil sunucu ve Cloudflare Tunnel "
 "bunu güvenilir şekilde taşımaz. DNS only ile ad doğrudan sunucunuzu gösterir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Cloudflare's proxy is on for this record."
 msgstr "Bu kayıt için Cloudflare'in vekil sunucusu açık."
 
@@ -2256,7 +2286,7 @@ msgstr "Kodek, HDR, veri sınırı ve bağlantı uyarıları"
 msgid "Codecs, network, capture and recovery tools"
 msgstr "Kodekler, ağ, yakalama ve kurtarma araçları"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Come back and check again"
 msgstr "Geri dönüp yeniden kontrol edin"
 
@@ -2272,12 +2302,12 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 159
 #: src/big_remote_play/ui/game_library_dialog.py:386
-#: src/big_remote_play/ui/headscale_wizard.py:1180
-#: src/big_remote_play/ui/headscale_wizard.py:1185
-#: src/big_remote_play/ui/headscale_wizard.py:1187
-#: src/big_remote_play/ui/headscale_wizard.py:1191
-#: src/big_remote_play/ui/headscale_wizard.py:1196
-#: src/big_remote_play/ui/headscale_wizard.py:1201
+#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1188
+#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1204
 #: src/big_remote_play/ui/host_view.py:586
 #: src/big_remote_play/ui/network_devices.py:733
 #: src/big_remote_play/ui/network_devices.py:764
@@ -2285,9 +2315,9 @@ msgstr ""
 msgid "Command"
 msgstr "Komut"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1435
-msgid "Command for the server owner"
-msgstr "Sunucu sahibi için komut"
+#: src/big_remote_play/ui/headscale_wizard.py:1276
+msgid "Command for the server"
+msgstr "Sunucu için komut"
 
 #: src/big_remote_play/ui/support_center.py:168
 msgid "Common problems"
@@ -2389,7 +2419,7 @@ msgstr "Yapılandır"
 msgid "Configure Firewall (IPv6)"
 msgstr "Güvenlik Duvarını Yapılandır (IPv6)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:792
+#: src/big_remote_play/ui/headscale_wizard.py:795
 msgid "Configure and start the server"
 msgstr "Sunucuyu yapılandır ve başlat"
 
@@ -2698,7 +2728,7 @@ msgstr "Bağlantı kalitesi"
 msgid "Connection quality: {quality}"
 msgstr "Bağlantı kalitesi: {quality}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
+#: src/big_remote_play/ui/headscale_wizard.py:88
 #, python-brace-format
 msgid "Connection refused on port {port}."
 msgstr "{port} bağlantı noktasında bağlantı reddedildi."
@@ -2746,15 +2776,15 @@ msgstr "Hizmete bağlanılıyor…"
 #: src/big_remote_play/ui/guided_setup.py:169
 #: src/big_remote_play/ui/guided_setup.py:257
 #: src/big_remote_play/ui/guided_setup.py:309
-#: src/big_remote_play/ui/headscale_wizard.py:497
+#: src/big_remote_play/ui/headscale_wizard.py:500
 msgid "Continue"
 msgstr "Devam et"
 
-#: src/big_remote_play/ui/headscale_wizard.py:402
+#: src/big_remote_play/ui/headscale_wizard.py:405
 msgid "Continue anyway"
 msgstr "Yine de devam et"
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
+#: src/big_remote_play/ui/headscale_wizard.py:304
 #: src/big_remote_play/ui/provider_page.py:1151
 #: src/big_remote_play/ui/remote_connection.py:534
 msgid "Continue setup"
@@ -2848,7 +2878,7 @@ msgstr "IP'yi kopyala"
 msgid "Copy Path"
 msgstr "Yolu Kopyala"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1450
+#: src/big_remote_play/ui/headscale_wizard.py:1519
 #: src/big_remote_play/ui/network_devices.py:269
 msgid "Copy address"
 msgstr "Adresi kopyala"
@@ -2889,11 +2919,11 @@ msgstr "{name} cihazının özel adresini kopyala"
 msgid "Copy the {field} value to the clipboard"
 msgstr "{field} değerini panoya kopyala"
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid "Copy these two Cloudflare nameservers to DigitalPlat."
 msgstr "Bu iki Cloudflare ad sunucusunu DigitalPlat'a kopyalayın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid ""
 "Copy these two Cloudflare nameservers to the company where you registered "
 "your domain."
@@ -3042,7 +3072,7 @@ msgstr ""
 msgid "Create a network"
 msgstr "Ağ oluştur"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1461
+#: src/big_remote_play/ui/headscale_wizard.py:1530
 msgid "Create a one-time key"
 msgstr "Tek kullanımlık anahtar oluştur"
 
@@ -3064,7 +3094,7 @@ msgstr "Ağı oluştur"
 msgid "Create one-time key"
 msgstr "Tek kullanımlık anahtar oluştur"
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
+#: src/big_remote_play/ui/headscale_wizard.py:544
 msgid "Create or sign in to your DigitalPlat account."
 msgstr "Bir DigitalPlat hesabı oluşturun veya hesabınızda oturum açın."
 
@@ -3072,11 +3102,11 @@ msgstr "Bir DigitalPlat hesabı oluşturun veya hesabınızda oturum açın."
 msgid "Create the API key on the server"
 msgstr "API anahtarını sunucuda oluşturun"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1202
 msgid "Create your network and an API key"
 msgstr "Ağınızı ve bir API anahtarı oluşturun"
 
-#: src/big_remote_play/ui/headscale_wizard.py:795
+#: src/big_remote_play/ui/headscale_wizard.py:798
 msgid "Create your private network"
 msgstr "Özel ağınızı oluşturun"
 
@@ -3180,16 +3210,16 @@ msgstr "Özel Çözünürlük"
 msgid "Custom image settings"
 msgstr "Özel görüntü ayarları"
 
-#: src/big_remote_play/ui/headscale_wizard.py:71
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:74
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "DNS"
 msgstr "DNS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "DNS is where your domain's records live."
 msgstr "DNS, alan adınızın kayıtlarının bulunduğu yerdir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "DNS only — the cloud must be gray."
 msgstr "DNS only — bulut gri olmalı."
 
@@ -3267,8 +3297,8 @@ msgstr "Ayrıntılar"
 msgid "Details and a sound test are in Preferences."
 msgstr "Ayrıntılar ve ses sınaması Tercihler bölümündedir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:398
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Detected automatically"
 msgstr "Otomatik algılandı"
 
@@ -3353,7 +3383,7 @@ msgstr "Tanıla"
 msgid "Diagnosis"
 msgstr "Tanılama"
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Did not work"
 msgstr "Çalışmadı"
 
@@ -3361,13 +3391,13 @@ msgstr "Çalışmadı"
 msgid "Did you receive a network code?"
 msgstr "Bir ağ kodu aldınız mı?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:553
+#: src/big_remote_play/ui/headscale_wizard.py:556
 msgid ""
 "DigitalPlat can provide domains that can be delegated to a DNS provider."
 msgstr ""
 "DigitalPlat, bir DNS sağlayıcısına devredilebilen alan adları sağlayabilir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:547
+#: src/big_remote_play/ui/headscale_wizard.py:550
 msgid ""
 "DigitalPlat needs the nameservers from your DNS provider. Cloudflare is "
 "free; Big Remote Play guides you."
@@ -3458,7 +3488,7 @@ msgstr "Görüntüleme modu"
 msgid "Displays latency, frame rate, and decoding information over the stream."
 msgstr "Yayın üzerinde gecikme, kare hızı ve kod çözme bilgilerini gösterir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:467
+#: src/big_remote_play/ui/headscale_wizard.py:470
 msgid "Do you already have a domain?"
 msgstr "Zaten bir alan adınız var mı?"
 
@@ -3469,20 +3499,20 @@ msgstr "Varsayılan ayarları geri yüklemek istiyor musunuz?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1137
-#: src/big_remote_play/ui/headscale_wizard.py:70
-#: src/big_remote_play/ui/headscale_wizard.py:466
-#: src/big_remote_play/ui/headscale_wizard.py:490
-#: src/big_remote_play/ui/headscale_wizard.py:682
+#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:493
+#: src/big_remote_play/ui/headscale_wizard.py:685
 #: src/big_remote_play/ui/private_network_view.py:972
 #: src/big_remote_play/ui/private_network_view.py:1007
 msgid "Domain"
 msgstr "Alan adı"
 
-#: src/big_remote_play/ui/headscale_wizard.py:757
+#: src/big_remote_play/ui/headscale_wizard.py:760
 msgid "Domain is ready"
 msgstr "Alan adı hazır"
 
-#: src/big_remote_play/ui/headscale_wizard.py:475
+#: src/big_remote_play/ui/headscale_wizard.py:478
 msgid "Domain or subdomain"
 msgstr "Alan adı veya alt alan adı"
 
@@ -3490,8 +3520,8 @@ msgstr "Alan adı veya alt alan adı"
 msgid "Domain, router ports and security precautions."
 msgstr "Alan adı, yönlendirici bağlantı noktaları ve güvenlik önlemleri."
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:898
 #: src/big_remote_play/ui/network_devices.py:727
 msgid "Done"
 msgstr "Bitti"
@@ -3503,7 +3533,7 @@ msgid ""
 msgstr ""
 "Resmî web sitesinden indirin veya o bilgisayarda Big Remote Play'i kullanın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1184
+#: src/big_remote_play/ui/headscale_wizard.py:1187
 msgid ""
 "Download the .deb for your server from Headscale's releases page, then "
 "install it and Caddy."
@@ -3534,7 +3564,7 @@ msgstr ""
 "Her parmak, masaüstünün dokunmayı kabul ettiği yerde bu bilgisayarın "
 "ekranına dokunur."
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Easier and safer. Example: headscale.example.com"
 msgstr "Daha kolay ve daha güvenli. Örnek: headscale.example.com"
 
@@ -3909,17 +3939,17 @@ msgstr "Her şey hazır"
 msgid "Evict IP"
 msgstr "IP'yi Çıkar"
 
-#: src/big_remote_play/ui/headscale_wizard.py:478
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:481
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "Example: headscale.example.com"
 msgstr "Örnek: headscale.example.com"
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
-#: src/big_remote_play/ui/headscale_wizard.py:1050
+#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:1053
 msgid "Example: headscale.example.com or 203.0.113.10"
 msgstr "Örnek: headscale.example.com veya 203.0.113.10"
 
-#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:547
 msgid "Example: mydomain.dpdns.org"
 msgstr "Örnek: mydomain.dpdns.org"
 
@@ -4044,7 +4074,7 @@ msgstr ""
 "Parmaklar ekran kumandasının düğmelerine aynı anda birkaç tane basar. Hiçbir "
 "şey fare tıklamasına dönüşmez."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Finish"
 msgstr "Bitir"
 
@@ -4081,7 +4111,7 @@ msgstr "Düzelt"
 msgid "Fix Dependencies"
 msgstr "Bağımlılıkları Düzelt"
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 #, python-brace-format
 msgid "Fix it or delete it: {found}"
 msgstr "Düzeltin veya silin: {found}"
@@ -4306,8 +4336,8 @@ msgstr "Genel"
 msgid "Get Network ID"
 msgstr "Ağ Kimliğini Al"
 
-#: src/big_remote_play/ui/headscale_wizard.py:557
-#: src/big_remote_play/ui/headscale_wizard.py:558
+#: src/big_remote_play/ui/headscale_wizard.py:560
+#: src/big_remote_play/ui/headscale_wizard.py:561
 msgid "Get a domain"
 msgstr "Alan adı edinin"
 
@@ -4377,7 +4407,7 @@ msgstr[0] ""
 "Konuklar, siz kullanmayı bıraktıktan {count} saniye sonra fareyi ve klavyeyi "
 "geri alır."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1137
+#: src/big_remote_play/ui/headscale_wizard.py:1140
 msgid "Guided server setup"
 msgstr "Rehberli sunucu kurulumu"
 
@@ -4414,8 +4444,8 @@ msgstr "Desteklendiğinde HEVC veya AV1"
 msgid "HTTPS (Caddy)"
 msgstr "HTTPS (Caddy)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "HTTPS is not set up correctly for this address."
 msgstr "HTTPS bu adres için doğru şekilde ayarlanmamış."
 
@@ -4424,7 +4454,7 @@ msgstr "HTTPS bu adres için doğru şekilde ayarlanmamış."
 msgid "Hardware and Capture"
 msgstr "Donanım ve Yakalama"
 
-#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:76
 msgid "Headscale"
 msgstr "Headscale"
 
@@ -4436,11 +4466,11 @@ msgstr "Headscale API anahtarı"
 msgid "Headscale and Caddy must be installed first."
 msgstr "Önce Headscale ve Caddy kurulmalıdır."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1101
+#: src/big_remote_play/ui/headscale_wizard.py:1104
 msgid "Headscale answers"
 msgstr "Headscale yanıt veriyor"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "Headscale did not start."
 msgstr "Headscale başlamadı."
 
@@ -4452,7 +4482,7 @@ msgstr "Headscale başlamadı. Gelişmiş bölümündeki günlüğüne bakın."
 msgid "Headscale documentation"
 msgstr "Headscale belgeleri"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 msgid "Headscale gives you your own private network server."
 msgstr "Headscale size kendi özel ağ sunucunuzu sağlar."
 
@@ -4468,11 +4498,11 @@ msgstr ""
 "doğrudan oyun erişimi için Cihazlarınızı bağlayın sayfasındaki ayrı kılavuzu "
 "kullanın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Headscale may work better on a VPS."
 msgstr "Headscale bir VPS'te daha iyi çalışabilir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid ""
 "Headscale needs a direct connection to your server. Do not use Cloudflare "
 "Tunnel for it either."
@@ -4480,7 +4510,7 @@ msgstr ""
 "Headscale'in sunucunuza doğrudan bağlantıya ihtiyacı var. Bunun için "
 "Cloudflare Tunnel'ı da kullanmayın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Headscale on this computer has its own settings."
 msgstr "Bu bilgisayardaki Headscale'in kendi ayarları var."
 
@@ -4493,7 +4523,7 @@ msgstr ""
 "Bu bilgisayardaki Headscale zaten ${current} için ayarlanmış. Hiçbir şey "
 "değiştirilmedi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
+#: src/big_remote_play/ui/headscale_wizard.py:952
 msgid "Headscale on this computer is already set up for another address."
 msgstr "Bu bilgisayardaki Headscale zaten başka bir adres için ayarlanmış."
 
@@ -4504,7 +4534,7 @@ msgstr ""
 "Bu bilgisayardaki Headscale özel bir dinleme adresi kullanıyor. Hiçbir şey "
 "değiştirilmedi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Headscale or Caddy is not installed."
 msgstr "Headscale veya Caddy kurulu değil."
 
@@ -4512,7 +4542,7 @@ msgstr "Headscale veya Caddy kurulu değil."
 msgid "Headscale server"
 msgstr "Headscale sunucusu"
 
-#: src/big_remote_play/ui/headscale_wizard.py:276
+#: src/big_remote_play/ui/headscale_wizard.py:279
 msgid "Headscale setup"
 msgstr "Headscale kurulumu"
 
@@ -4520,7 +4550,7 @@ msgstr "Headscale kurulumu"
 msgid "Headscale uses the regular Tailscale client."
 msgstr "Headscale normal Tailscale istemcisini kullanır."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1118
+#: src/big_remote_play/ui/headscale_wizard.py:1121
 #: src/big_remote_play/ui/provider_page.py:1197
 #, python-brace-format
 msgid "Headscale {version}"
@@ -4542,11 +4572,11 @@ msgstr "Yardım"
 msgid "Help and diagnostics"
 msgstr "Yardım ve tanılama"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
+#: src/big_remote_play/ui/headscale_wizard.py:473
 msgid "Help me get one"
 msgstr "Edinmeme yardım et"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "Hidden. Use Copy."
 msgstr "Gizli. Kopyala'yı kullanın."
@@ -4667,7 +4697,7 @@ msgstr "Ana bilgisayar önceliği"
 msgid "Host input priority is not working"
 msgstr "Ana bilgisayar önceliği çalışmıyor"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1248
+#: src/big_remote_play/ui/headscale_wizard.py:1271
 msgid "How do you want to add this computer?"
 msgstr "Bu bilgisayarı nasıl eklemek istiyorsunuz?"
 
@@ -4693,7 +4723,7 @@ msgstr ""
 "Yayını kapatmadan önce Moonlight'tan veri için milisaniye cinsinden ne kadar "
 "bekleneceği"
 
-#: src/big_remote_play/ui/headscale_wizard.py:446
+#: src/big_remote_play/ui/headscale_wizard.py:449
 msgid "How should your Headscale server be reached?"
 msgstr "Headscale sunucunuza nasıl erişilmeli?"
 
@@ -4717,11 +4747,11 @@ msgstr "Headscale'i kendi sunucunuzda adım adım nasıl çalıştıracağınız
 msgid "How to use the selected private network service."
 msgstr "Seçilen özel ağ hizmetinin nasıl kullanılacağı."
 
-#: src/big_remote_play/ui/headscale_wizard.py:721
+#: src/big_remote_play/ui/headscale_wizard.py:724
 msgid "I added the record"
 msgstr "Kaydı ekledim"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:472
 msgid "I already own a domain"
 msgstr "Zaten bir alan adım var"
 
@@ -4746,10 +4776,6 @@ msgstr "Henüz bir sunucum yok"
 msgid "I forgot the current password"
 msgstr "Mevcut parolayı unuttum"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "I have a key from the server owner"
-msgstr "Sunucu sahibinden aldığım bir anahtar var"
-
 #: src/big_remote_play/ui/guest_view.py:617
 msgid "I have a search code"
 msgstr "Arama kodum var"
@@ -4757,10 +4783,6 @@ msgstr "Arama kodum var"
 #: src/big_remote_play/ui/guest_view.py:611
 msgid "I know the IP address"
 msgstr "IP adresini biliyorum"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1251
-msgid "I manage this server"
-msgstr "Bu sunucuyu ben yönetiyorum"
 
 #: src/big_remote_play/ui/guided_setup.py:125
 msgid "I will play using another computer."
@@ -4782,7 +4804,7 @@ msgstr "Hizmeti bağlamak için IP adresi"
 msgid "IP address: {address}"
 msgstr "IP adresi: {address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:689
+#: src/big_remote_play/ui/headscale_wizard.py:692
 msgid "IPv4 address"
 msgstr "IPv4 adresi"
 
@@ -4798,7 +4820,7 @@ msgstr "Yalnızca IPv4"
 msgid "IPv6"
 msgstr "IPv6"
 
-#: src/big_remote_play/ui/headscale_wizard.py:716
+#: src/big_remote_play/ui/headscale_wizard.py:719
 msgid "IPv6 address"
 msgstr "IPv6 adresi"
 
@@ -4849,7 +4871,7 @@ msgstr ""
 "çizmemiştir. “Bu bilgisayarı denetle”, başka bir yakalama yönteminin onu "
 "çizip çizmediğini gösterir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "If you just set up the domain, wait a little and check again."
 msgstr "Alan adını yeni ayarladıysanız biraz bekleyip yeniden kontrol edin."
 
@@ -4911,7 +4933,7 @@ msgid ""
 msgstr ""
 "Big Remote Play'de Cihazlarınızı bağlayın → ZeroTier'i açın ve bu kodu yazın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "In Cloudflare: DNS → Records → Add record."
 msgstr "Cloudflare'de: DNS → Records → Add record."
 
@@ -5044,13 +5066,13 @@ msgstr "Kur"
 msgid "Install Big WM Virtual Keyboard (package {package})"
 msgstr "Big WM Virtual Keyboard kurun ({package} paketi)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:822
-#: src/big_remote_play/ui/headscale_wizard.py:823
+#: src/big_remote_play/ui/headscale_wizard.py:825
+#: src/big_remote_play/ui/headscale_wizard.py:826
 msgid "Install Headscale"
 msgstr "Headscale'i kur"
 
-#: src/big_remote_play/ui/headscale_wizard.py:791
-#: src/big_remote_play/ui/headscale_wizard.py:1178
+#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:1181
 msgid "Install Headscale and Caddy"
 msgstr "Headscale ve Caddy'yi kur"
 
@@ -5063,7 +5085,7 @@ msgstr "Tailscale'i kur"
 msgid "Install ZeroTier"
 msgstr "ZeroTier'ı kur"
 
-#: src/big_remote_play/ui/headscale_wizard.py:801
+#: src/big_remote_play/ui/headscale_wizard.py:804
 #: src/big_remote_play/ui/private_network_view.py:475
 #: src/big_remote_play/ui/provider_page.py:582
 msgid "Install and continue"
@@ -5073,7 +5095,7 @@ msgstr "Kur ve devam et"
 msgid "Install it first, then join the network."
 msgstr "Önce onu kurun, sonra ağa katılın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Install them above first."
 msgstr "Önce bunları yukarıdan kurun."
 
@@ -5207,7 +5229,7 @@ msgstr "Davet oluşturuldu"
 msgid "Invitation link"
 msgstr "Davet bağlantısı"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1458
+#: src/big_remote_play/ui/headscale_wizard.py:1527
 msgid ""
 "It adds one computer and stops working after one hour. It is not an "
 "administrator key."
@@ -5215,7 +5237,7 @@ msgstr ""
 "Bir bilgisayar ekler ve bir saat sonra çalışmayı bırakır. Yönetici anahtarı "
 "değildir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:809
+#: src/big_remote_play/ui/headscale_wizard.py:812
 msgid ""
 "It also allows ports 80 and 443 in this computer's firewall, when a firewall "
 "is active."
@@ -5232,7 +5254,7 @@ msgstr ""
 "bilgisayarında Paylaş bölümünü açıp Güvenlik duvarında izin ver seçeneğini "
 "seçin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 msgid "It appears here once it joins."
 msgstr "Katıldığında burada görünür."
 
@@ -5248,7 +5270,7 @@ msgstr ""
 msgid "It could not start. Stop and start sharing again."
 msgstr "Başlatılamadı. Paylaşımı durdurup yeniden başlatın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 msgid "It is shown only now and is not stored."
 msgstr "Yalnızca şimdi gösterilir ve saklanmaz."
 
@@ -5300,7 +5322,7 @@ msgstr ""
 "sürüm gerekir. Sunshine'ı güncelleyin, ardından Big Remote Play'i yeniden "
 "açın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 #, python-brace-format
 msgid "It points to {found}, not {expected}."
 msgstr "{expected} yerine {found} adresini gösteriyor."
@@ -5413,7 +5435,7 @@ msgstr "KDE ekran yakalama (KWin)"
 msgid "KMS (Direct)"
 msgstr "KMS (Doğrudan)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid "Keep Proxy status = DNS only"
 msgstr "Proxy status = DNS only olarak bırakın"
 
@@ -5451,7 +5473,7 @@ msgstr ""
 "VPN kullanırken yönlendirici bağlantı noktası yönlendirmesini kapalı tutun. "
 "Değişiklikler paylaşım yeniden başladığında uygulanır."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1200
+#: src/big_remote_play/ui/headscale_wizard.py:1203
 msgid ""
 "Keep the API key: Big Remote Play asks for it in the next step. It manages "
 "the server; never give it to a guest."
@@ -5495,12 +5517,12 @@ msgstr ""
 "Yalnızca Big Remote Play'i kapatana kadar tutulur: sistem anahtarlığı onu "
 "kaydetmedi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 #: src/big_remote_play/ui/network_devices.py:761
 msgid "Key created"
 msgstr "Anahtar oluşturuldu"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1243
+#: src/big_remote_play/ui/headscale_wizard.py:1248
 msgid "Key for this computer"
 msgstr "Bu bilgisayarın anahtarı"
 
@@ -6150,13 +6172,13 @@ msgid "NVIDIA NVENC"
 msgstr "NVIDIA NVENC"
 
 #: src/big_remote_play/ui/game_library_dialog.py:385
-#: src/big_remote_play/ui/headscale_wizard.py:688
-#: src/big_remote_play/ui/headscale_wizard.py:715
+#: src/big_remote_play/ui/headscale_wizard.py:691
+#: src/big_remote_play/ui/headscale_wizard.py:718
 #: src/big_remote_play/ui/provider_page.py:814
 msgid "Name"
 msgstr "Ad"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1098
+#: src/big_remote_play/ui/headscale_wizard.py:1101
 msgid "Name found"
 msgstr "Ad bulundu"
 
@@ -6168,7 +6190,7 @@ msgstr "Ağdaki ad"
 msgid "Name shown in Big Remote Play"
 msgstr "Big Remote Play'de gösterilen ad"
 
-#: src/big_remote_play/ui/headscale_wizard.py:630
+#: src/big_remote_play/ui/headscale_wizard.py:633
 msgid "Nameserver"
 msgstr "Ad sunucusu"
 
@@ -6326,24 +6348,24 @@ msgstr ""
 msgid "New passwords do not match."
 msgstr "Yeni parolalar eşleşmiyor."
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:404
-#: src/big_remote_play/ui/headscale_wizard.py:656
-#: src/big_remote_play/ui/headscale_wizard.py:758
-#: src/big_remote_play/ui/headscale_wizard.py:1033
-#: src/big_remote_play/ui/headscale_wizard.py:1130
-#: src/big_remote_play/ui/headscale_wizard.py:1405
-#: src/big_remote_play/ui/headscale_wizard.py:1560
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:407
+#: src/big_remote_play/ui/headscale_wizard.py:659
+#: src/big_remote_play/ui/headscale_wizard.py:761
+#: src/big_remote_play/ui/headscale_wizard.py:1036
+#: src/big_remote_play/ui/headscale_wizard.py:1133
+#: src/big_remote_play/ui/headscale_wizard.py:1469
+#: src/big_remote_play/ui/headscale_wizard.py:1629
 msgid "Next"
 msgstr "İleri"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:473
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/host_view.py:4055
 msgid "No"
 msgstr "Hayır"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "No API key for this server yet."
 msgstr "Bu sunucu için henüz API anahtarı yok."
 
@@ -6367,11 +6389,11 @@ msgstr "Hesap bulunamadı"
 msgid "No active connection found"
 msgstr "Etkin bağlantı bulunamadı"
 
-#: src/big_remote_play/ui/headscale_wizard.py:411
+#: src/big_remote_play/ui/headscale_wizard.py:414
 msgid "No answer from the address services."
 msgstr "Adres hizmetlerinden yanıt yok."
 
-#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:89
 #, python-brace-format
 msgid "No answer on port {port}. A firewall or the router may block it."
 msgstr ""
@@ -6432,7 +6454,7 @@ msgid "No controller has arrived from the other computer"
 msgstr "Diğer bilgisayardan hiçbir denetleyici gelmedi"
 
 #: src/big_remote_play/ui/guest_view.py:2088
-#: src/big_remote_play/ui/headscale_wizard.py:425
+#: src/big_remote_play/ui/headscale_wizard.py:428
 #: src/big_remote_play/ui/provider_page.py:1057
 #: src/big_remote_play/ui/provider_page.py:1203
 msgid "No details reported."
@@ -6536,7 +6558,7 @@ msgstr "Henüz kimse oynamıyor"
 msgid "No other device online to measure"
 msgstr "Ölçülecek başka çevrim içi cihaz yok"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 #: src/big_remote_play/ui/network_devices.py:223
 #: src/big_remote_play/ui/provider_page.py:651
 #: src/big_remote_play/ui/provider_page.py:669
@@ -6651,7 +6673,7 @@ msgid "Not available"
 msgstr "Kullanılamıyor"
 
 #: src/big_remote_play/ui/guest_view.py:2066
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 msgid "Not checked"
 msgstr "Denetlenmedi"
 
@@ -6764,9 +6786,9 @@ msgstr ""
 msgid "Not signed in"
 msgstr "Oturum açılmadı"
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:797
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:800
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Not yet"
 msgstr "Henüz değil"
 
@@ -6774,24 +6796,24 @@ msgstr "Henüz değil"
 msgid "Nothing to install."
 msgstr "Kurulacak bir şey yok."
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "Nothing was changed."
 msgstr "Hiçbir şey değiştirilmedi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "Nothing was changed. Choose Set up the server to try again."
 msgstr ""
 "Hiçbir şey değiştirilmedi. Yeniden denemek için “Sunucuyu kur” seçeneğini "
 "seçin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Nothing was changed. See Advanced on the Headscale page."
 msgstr ""
 "Hiçbir şey değiştirilmedi. Headscale sayfasındaki Gelişmiş bölümüne bakın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "Nothing was enabled. See the technical details."
 msgstr "Hiçbir şey etkinleştirilmedi. Teknik ayrıntılara bakın."
 
@@ -6858,7 +6880,7 @@ msgstr "Çevrimdışı"
 msgid "Old log files have been removed."
 msgstr "Eski günlük dosyaları kaldırıldı."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1179
+#: src/big_remote_play/ui/headscale_wizard.py:1182
 msgid "On Arch Linux:"
 msgstr "Arch Linux'ta:"
 
@@ -6874,7 +6896,7 @@ msgstr ""
 msgid "On a computer, a phone or a controller"
 msgstr "Bilgisayarda, telefonda veya denetleyicide"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1193
 msgid "On a new server this replaces Caddy's example page."
 msgstr "Yeni bir sunucuda bu, Caddy'nin örnek sayfasının yerini alır."
 
@@ -6908,7 +6930,7 @@ msgstr ""
 "\n"
 "Bu pencereyi açık bırakın. Onaydan sonra bağlantı sürdürülür."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1443
+#: src/big_remote_play/ui/headscale_wizard.py:1512
 #: src/big_remote_play/ui/network_devices.py:536
 #: src/big_remote_play/ui/network_devices.py:723
 #: src/big_remote_play/ui/network_devices.py:780
@@ -6968,6 +6990,14 @@ msgstr ""
 "create --expiration 90d”). Big Remote Play'de sunucu adresini ve anahtarı "
 "API erişimi altında ekleyin. API anahtarı sunucuyu yönetir; ön yetki "
 "anahtarı ise yalnızca bir bilgisayarı kaydeder."
+
+#: src/big_remote_play/ui/headscale_wizard.py:1275
+msgid ""
+"On the server, run this command and paste the key it prints. Big Remote Play "
+"then does the rest and remembers the key."
+msgstr ""
+"Sunucuda bu komutu çalıştırın ve yazdırdığı anahtarı yapıştırın. Gerisini "
+"Big Remote Play yapar ve anahtarı hatırlar."
 
 #: src/big_remote_play/ui/guest_view.py:633
 msgid "On this computer"
@@ -7055,7 +7085,7 @@ msgstr "Aynı anda tek kumanda"
 msgid "One entry per screen"
 msgstr "Ekran başına bir giriş"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "One-time key"
 msgstr "Tek kullanımlık anahtar"
@@ -7097,7 +7127,7 @@ msgstr ""
 "Yalnızca bu bilgisayarda. Hiçbir yere bir şey gönderilmez; hiçbir parola, "
 "anahtar veya kod saklanmaz."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1364
+#: src/big_remote_play/ui/headscale_wizard.py:1428
 msgid ""
 "Only one Tailscale-based network can be active on this computer at a time. "
 "Tailscale stays saved and can be turned on again later. ZeroTier is not "
@@ -7185,8 +7215,8 @@ msgid "Open Check this computer first to see the current state here."
 msgstr ""
 "Buradaki mevcut durumu görmek için önce “Bu bilgisayarı denetle”yi açın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:614
-#: src/big_remote_play/ui/headscale_wizard.py:723
+#: src/big_remote_play/ui/headscale_wizard.py:617
+#: src/big_remote_play/ui/headscale_wizard.py:726
 msgid "Open Cloudflare"
 msgstr "Cloudflare'i aç"
 
@@ -7202,12 +7232,12 @@ msgstr ""
 "olarak ulaşabildiğinde oyun bilgisayarında paylaşımı başlatın ve onun özel "
 "adresini kullanarak bağlanın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
-#: src/big_remote_play/ui/headscale_wizard.py:610
+#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:613
 msgid "Open DigitalPlat"
 msgstr "DigitalPlat'ı aç"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1210
+#: src/big_remote_play/ui/headscale_wizard.py:1213
 msgid "Open Headscale releases"
 msgstr "Headscale sürümlerini aç"
 
@@ -7300,7 +7330,7 @@ msgstr "Denetlemek için bu sayfayı açın"
 msgid "Open when a device starts playing"
 msgstr "Bir cihaz oynamaya başladığında aç"
 
-#: src/big_remote_play/ui/headscale_wizard.py:989
+#: src/big_remote_play/ui/headscale_wizard.py:992
 msgid "Open your router's settings page"
 msgstr "Yönlendiricinizin ayarlar sayfasını açın"
 
@@ -7339,7 +7369,7 @@ msgstr "İşlem başarısız oldu: {error}"
 msgid "Optimize the mouse for remote desktop"
 msgstr "Fareyi uzak masaüstü için iyileştir"
 
-#: src/big_remote_play/ui/headscale_wizard.py:712
+#: src/big_remote_play/ui/headscale_wizard.py:715
 msgid "Optional: IPv6"
 msgstr "İsteğe bağlı: IPv6"
 
@@ -7347,7 +7377,7 @@ msgstr "İsteğe bağlı: IPv6"
 msgid "Or choose what you want to do"
 msgstr "Ya da ne yapmak istediğinizi seçin"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1186
 msgid "Or on Debian and Ubuntu"
 msgstr "Ya da Debian ve Ubuntu'da"
 
@@ -7355,11 +7385,11 @@ msgstr "Ya da Debian ve Ubuntu'da"
 msgid "Or reset it if it was forgotten"
 msgstr "Veya unutulduysa sıfırlayın"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "Or the Tailscale app on a phone."
 msgstr "Ya da bir telefonda Tailscale uygulaması."
 
-#: src/big_remote_play/ui/headscale_wizard.py:480
+#: src/big_remote_play/ui/headscale_wizard.py:483
 msgid "Other"
 msgstr "Diğer"
 
@@ -7541,15 +7571,7 @@ msgstr "Önce kimlik bilgisini yapıştırın."
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Sunucu adresini ve anahtarı bu sayfadaki alanlara yapıştırın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1252
-msgid ""
-"Paste the server's API key. Big Remote Play then does the rest. It is kept "
-"in the system keyring."
-msgstr ""
-"Sunucunun API anahtarını yapıştırın. Gerisini Big Remote Play yapar. Anahtar "
-"sistem anahtarlığında saklanır."
-
-#: src/big_remote_play/ui/headscale_wizard.py:603
+#: src/big_remote_play/ui/headscale_wizard.py:606
 msgid "Paste the two nameservers (optional)"
 msgstr "İki ad sunucusunu yapıştırın (isteğe bağlı)"
 
@@ -7558,7 +7580,7 @@ msgid "Paste the whole sign-in link shown on the other computer."
 msgstr ""
 "Diğer bilgisayarda gösterilen oturum açma bağlantısının tamamını yapıştırın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Pasting them lets Big Remote Play follow your progress."
 msgstr "Bunları yapıştırırsanız Big Remote Play ilerlemenizi takip edebilir."
 
@@ -7693,7 +7715,7 @@ msgstr "Oynanan bilgisayar: {name}"
 msgid "Plays a short tone and checks that it reaches the shared sound."
 msgstr "Kısa bir ton çalar ve paylaşılan sese ulaşıp ulaşmadığını denetler."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Point a domain to it"
 msgstr "Bir alan adını ona yönlendir"
 
@@ -7718,11 +7740,11 @@ msgstr ""
 "Oynarken bu kılavuzu telefonunuzda açmak için telefonun kamerasını koda "
 "tutun."
 
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "Point your domain to the server"
 msgstr "Alan adınızı sunucuya yönlendirin"
 
-#: src/big_remote_play/ui/headscale_wizard.py:683
+#: src/big_remote_play/ui/headscale_wizard.py:686
 msgid "Points to"
 msgstr "Yönlendirildiği yer"
 
@@ -7747,7 +7769,7 @@ msgstr "Bağlantı noktası yönlendirme (gelişmiş)"
 msgid "Portal (screen picker)"
 msgstr "Portal (ekran seçici)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 #, python-brace-format
 msgid "Ports 80 and 443 (TCP) → {address}"
 msgstr "80 ve 443 (TCP) bağlantı noktaları → {address}"
@@ -7872,11 +7894,11 @@ msgstr "Projenin öyküsü"
 msgid "Project story on YouTube"
 msgstr "YouTube'da projenin hikâyesi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "Proxy status"
 msgstr "Proxy status"
 
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Public IPv6"
 msgstr "Genel IPv6"
 
@@ -8055,8 +8077,8 @@ msgstr "Oyunu diğer bilgisayardan alır."
 
 #. TRANSLATORS: shown next to Tailscale: the method suggested for most people.
 #: src/big_remote_play/ui/guided_setup.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:451
 #: src/big_remote_play/ui/provider_page.py:60
 msgid "Recommended"
 msgstr "Tavsiye edilen"
@@ -8081,7 +8103,7 @@ msgstr ""
 "Bir arkadaşla oynamak için önerilir. Arkadaşınız yalnızca bu bilgisayara "
 "erişim alır."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Recommended. Big Remote Play can guide you."
 msgstr "Tavsiye edilen. Big Remote Play size yol gösterebilir."
 
@@ -8673,8 +8695,8 @@ msgstr[0] "Aranıyor… {total} adresten {asked} tanesi kontrol edildi"
 msgid "Secure connection"
 msgstr "Güvenli bağlantı"
 
-#: src/big_remote_play/ui/headscale_wizard.py:72
-#: src/big_remote_play/ui/headscale_wizard.py:1100
+#: src/big_remote_play/ui/headscale_wizard.py:75
+#: src/big_remote_play/ui/headscale_wizard.py:1103
 msgid "Secure connection (HTTPS)"
 msgstr "Güvenli bağlantı (HTTPS)"
 
@@ -8686,11 +8708,11 @@ msgstr "Güvenlik ve erişim"
 msgid "See details"
 msgstr "Ayrıntıları gör"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "See its log in Advanced on the Headscale page."
 msgstr "Headscale sayfasındaki Gelişmiş bölümünde günlüğüne bakın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "See the technical details."
 msgstr "Teknik ayrıntılara bakın."
 
@@ -8761,11 +8783,13 @@ msgstr "Sistem kısayollarını uzak bilgisayara gönder"
 msgid "Send the PIN shown on the other device to finish pairing"
 msgstr "Eşleştirmeyi tamamlamak için diğer cihazda gösterilen PIN'i gönderin"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
-msgid "Send them this command. This page continues by itself once they run it."
+#: src/big_remote_play/ui/headscale_wizard.py:1500
+msgid ""
+"Send them these commands; the first is needed only once. This page continues "
+"by itself once they run them."
 msgstr ""
-"Onlara bu komutu gönderin. Komutu çalıştırdıklarında bu sayfa kendiliğinden "
-"devam eder."
+"Onlara bu komutları gönderin; ilki yalnızca bir kez gerekir. Komutları "
+"çalıştırdıklarında bu sayfa kendiliğinden devam eder."
 
 #: src/big_remote_play/ui/network_devices.py:665
 msgid ""
@@ -8824,8 +8848,8 @@ msgstr ""
 "uygulamalarındaki aramaları duyar. Aynı aramada olan biri kendi sesinin geri "
 "geldiğini duyar."
 
-#: src/big_remote_play/ui/headscale_wizard.py:69
-#: src/big_remote_play/ui/headscale_wizard.py:1241
+#: src/big_remote_play/ui/headscale_wizard.py:72
+#: src/big_remote_play/ui/headscale_wizard.py:1246
 msgid "Server"
 msgstr "Sunucu"
 
@@ -8838,13 +8862,13 @@ msgstr "Sunucu Alan Adı (ör. vpn.example.com)"
 msgid "Server Failed to Start"
 msgstr "Sunucu Başlatılamadı"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1040
+#: src/big_remote_play/ui/headscale_wizard.py:1043
 msgid "Server IP or domain"
 msgstr "Sunucu IP'si veya alan adı"
 
 #: src/big_remote_play/ui/api_access_dialog.py:187
-#: src/big_remote_play/ui/headscale_wizard.py:445
-#: src/big_remote_play/ui/headscale_wizard.py:810
+#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:813
 #: src/big_remote_play/ui/network_devices.py:788
 #: src/big_remote_play/ui/network_devices.py:789
 #: src/big_remote_play/ui/private_network_view.py:699
@@ -8853,7 +8877,7 @@ msgstr "Sunucu IP'si veya alan adı"
 msgid "Server address"
 msgstr "Sunucu adresi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1099
+#: src/big_remote_play/ui/headscale_wizard.py:1102
 msgid "Server answers"
 msgstr "Sunucu yanıt veriyor"
 
@@ -8861,7 +8885,7 @@ msgstr "Sunucu yanıt veriyor"
 msgid "Server control panel"
 msgstr "Sunucu paneli"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1119
+#: src/big_remote_play/ui/headscale_wizard.py:1122
 msgid "Server found"
 msgstr "Sunucu bulundu"
 
@@ -8907,7 +8931,7 @@ msgstr "Hizmetler"
 msgid "Sessions"
 msgstr "Oturumlar"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1187
+#: src/big_remote_play/ui/headscale_wizard.py:1190
 msgid "Set the server address"
 msgstr "Sunucu adresini ayarla"
 
@@ -8927,25 +8951,25 @@ msgstr ""
 msgid "Set up"
 msgstr "Kur"
 
-#: src/big_remote_play/ui/headscale_wizard.py:548
+#: src/big_remote_play/ui/headscale_wizard.py:551
 msgid "Set up Cloudflare"
 msgstr "Cloudflare'i ayarla"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Set up DNS with Cloudflare"
 msgstr "DNS'i Cloudflare ile ayarla"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 #: src/big_remote_play/ui/provider_page.py:1091
 #: src/big_remote_play/ui/provider_page.py:1170
 msgid "Set up Headscale"
 msgstr "Headscale'i kur"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1209
+#: src/big_remote_play/ui/headscale_wizard.py:1212
 msgid "Set up a domain"
 msgstr "Alan adı ayarla"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1136
+#: src/big_remote_play/ui/headscale_wizard.py:1139
 msgid "Set up a domain for it"
 msgstr "Onun için bir alan adı ayarla"
 
@@ -8953,9 +8977,9 @@ msgstr "Onun için bir alan adı ayarla"
 msgid "Set up a secure connection"
 msgstr "Güvenli bir bağlantı kurun"
 
-#: src/big_remote_play/ui/headscale_wizard.py:802
-#: src/big_remote_play/ui/headscale_wizard.py:1214
-#: src/big_remote_play/ui/headscale_wizard.py:1215
+#: src/big_remote_play/ui/headscale_wizard.py:805
+#: src/big_remote_play/ui/headscale_wizard.py:1217
+#: src/big_remote_play/ui/headscale_wizard.py:1218
 msgid "Set up the server"
 msgstr "Sunucuyu kur"
 
@@ -9263,7 +9287,7 @@ msgstr "Tarayıcınızla oturum açın. Tüm cihazlarınızda aynı hesabı kull
 msgid "Sign-in expired"
 msgstr "Oturum açma süresi doldu"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1436
+#: src/big_remote_play/ui/headscale_wizard.py:1505
 msgid "Sign-in link"
 msgstr "Oturum açma bağlantısı"
 
@@ -9352,7 +9376,7 @@ msgstr ""
 "bir WAN adresi. Özel ağ kullanın veya sağlayıcıdan genel bir IPv4 adresi "
 "isteyin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Something answers there, but it is not a Headscale server."
 msgstr "Orada bir şey yanıt veriyor, ama bu bir Headscale sunucusu değil."
 
@@ -9405,7 +9429,7 @@ msgstr "Start + Select"
 msgid "Start ZeroTier"
 msgstr "ZeroTier'ı başlat"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1197
 msgid "Start both and open the ports"
 msgstr "İkisini de başlat ve bağlantı noktalarını aç"
 
@@ -9413,13 +9437,13 @@ msgstr "İkisini de başlat ve bağlantı noktalarını aç"
 msgid "Start it to play with your other devices."
 msgstr "Diğer cihazlarınızla oynamak için açın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
-#: src/big_remote_play/ui/headscale_wizard.py:353
-#: src/big_remote_play/ui/headscale_wizard.py:1140
+#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:356
+#: src/big_remote_play/ui/headscale_wizard.py:1143
 msgid "Start over"
 msgstr "Baştan başla"
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "Start over?"
 msgstr "Baştan başlansın mı?"
 
@@ -9575,12 +9599,12 @@ msgid ""
 "Step by step: where the server runs, its address, HTTPS and this computer."
 msgstr "Adım adım: sunucunun nerede çalıştığı, adresi, HTTPS ve bu bilgisayar."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1577
+#: src/big_remote_play/ui/headscale_wizard.py:1646
 #, python-brace-format
 msgid "Step {number} of {total}"
 msgstr "Adım {number}/{total}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:264
+#: src/big_remote_play/ui/headscale_wizard.py:267
 #, python-brace-format
 msgid "Step {number} of {total} · {name}"
 msgstr "Adım {number}/{total} · {name}"
@@ -10076,7 +10100,7 @@ msgstr "Sol ve sağ fare düğmelerini değiştir"
 msgid "Swipe from the left edge of the screen"
 msgstr "Ekranın sol kenarından kaydırın"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1368
+#: src/big_remote_play/ui/headscale_wizard.py:1432
 #: src/big_remote_play/ui/remote_connection.py:250
 #: src/big_remote_play/ui/tailscale_accounts.py:107
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:208
@@ -10087,7 +10111,7 @@ msgstr "Değiştir"
 msgid "Switch between full screen and a window"
 msgstr "Tam ekran ile pencere arasında geçiş yap"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1363
+#: src/big_remote_play/ui/headscale_wizard.py:1427
 msgid "Switch from Tailscale to Headscale?"
 msgstr "Tailscale'den Headscale'e geçilsin mi?"
 
@@ -10229,7 +10253,7 @@ msgstr "Teknik ses ayrıntıları"
 
 #: src/big_remote_play/ui/dependency_installer.py:171
 #: src/big_remote_play/ui/guest_view.py:2087
-#: src/big_remote_play/ui/headscale_wizard.py:424
+#: src/big_remote_play/ui/headscale_wizard.py:427
 #: src/big_remote_play/ui/provider_page.py:1202
 #: src/big_remote_play/ui/zerotier_join.py:225
 msgid "Technical details"
@@ -10274,11 +10298,11 @@ msgstr ""
 "O bilgisayar bir oturum açma bağlantısı gösterir. Onaylamak için buraya "
 "yapıştırın veya sunucuda onaylayın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "The API key could not be saved."
 msgstr "API anahtarı kaydedilemedi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "The HTTPS configuration was not accepted."
 msgstr "HTTPS yapılandırması kabul edilmedi."
 
@@ -10290,13 +10314,13 @@ msgstr "HTTPS yapılandırması kabul edilmedi. Hiçbir şey etkinleştirilmedi.
 msgid "The Headscale configuration file is missing."
 msgstr "Headscale yapılandırma dosyası eksik."
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
-#: src/big_remote_play/ui/headscale_wizard.py:86
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:90
 msgid "The Headscale server is not reachable."
 msgstr "Headscale sunucusuna ulaşılamıyor."
 
-#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:307
 msgid ""
 "The Headscale server needs to stay available so your devices can find each "
 "other."
@@ -10312,7 +10336,7 @@ msgstr "Headscale sunucusu çalışıyor."
 msgid "The Headscale setup is not finished."
 msgstr "Headscale kurulumu tamamlanmadı."
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 msgid "The IPv6 record points somewhere else."
 msgstr "IPv6 kaydı başka bir yeri gösteriyor."
 
@@ -10439,7 +10463,7 @@ msgstr ""
 "Etkin VPN bağlantısı duracak. Daha sonra yeniden bağlanabilmeniz için "
 "kayıtlı hesaplar korunur."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1048
+#: src/big_remote_play/ui/headscale_wizard.py:1051
 msgid "The address of the computer or VPS that runs Headscale."
 msgstr "Headscale'i çalıştıran bilgisayarın veya VPS'in adresi."
 
@@ -10573,13 +10597,13 @@ msgstr "Cihaz"
 msgid "The device list could not be read."
 msgstr "Cihaz listesi okunamadı."
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "The domain could not be checked."
 msgstr "Alan adı kontrol edilemedi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:537
+#: src/big_remote_play/ui/headscale_wizard.py:540
 msgid "The domain you registered"
 msgstr "Kaydettiğiniz alan adı"
 
@@ -10610,7 +10634,7 @@ msgstr "Sunshine'ın mevcut günlüklerinin saklandığı dosya."
 msgid "The file that stores Sunshine's current state."
 msgstr "Sunshine'ın mevcut durumunun saklandığı dosya"
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "The finished steps are forgotten. Nothing on the server is removed."
 msgstr "Tamamlanan adımlar unutulur. Sunucudan hiçbir şey kaldırılmaz."
 
@@ -10788,7 +10812,7 @@ msgstr ""
 msgid "The installation was cancelled. Nothing was changed."
 msgstr "Kurulum iptal edildi. Hiçbir şey değiştirilmedi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The internet could not reach this computer."
 msgstr "İnternet bu bilgisayara ulaşamadı."
 
@@ -10855,7 +10879,7 @@ msgstr ""
 "kabloyla hem Wi-Fi ile bağlı bir bilgisayar buna yol açabilir: kullanmadığı "
 "bağlantıyı kapatın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:90
 #, python-brace-format
 msgid "The network cannot reach it on port {port}."
 msgstr "Ağ, {port} bağlantı noktasından ona ulaşamıyor."
@@ -10974,7 +10998,7 @@ msgstr "Ağın sahibinin bu bilgisayarı hâlâ onaylaması gerekiyor."
 msgid "The pacman package manager is not available on this system."
 msgstr "pacman paket yöneticisi bu sistemde kullanılamıyor."
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "The password was not given."
 msgstr "Parola girilmedi."
 
@@ -11090,7 +11114,7 @@ msgstr "Arama, tüm adresler kontrol edilmeden durdu."
 msgid "The search was cancelled."
 msgstr "Arama iptal edildi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The secure certificate could not be obtained."
 msgstr "Güvenlik sertifikası alınamadı."
 
@@ -11110,11 +11134,11 @@ msgstr "Seçilen çıkış bağlı değil. Yeniden bağlayın veya Otomatik'i se
 msgid "The server administrator then approves this computer."
 msgstr "Ardından sunucu yöneticisi bu bilgisayarı onaylar."
 
-#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:94
 msgid "The server could not be checked."
 msgstr "Sunucu kontrol edilemedi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "The server could not be set up."
 msgstr "Sunucu kurulamadı."
 
@@ -11122,7 +11146,7 @@ msgstr "Sunucu kurulamadı."
 msgid "The server details could not be read."
 msgstr "Sunucu bilgileri okunamadı."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "The server did not accept this API key."
 msgstr "Sunucu bu API anahtarını kabul etmedi."
 
@@ -11130,11 +11154,11 @@ msgstr "Sunucu bu API anahtarını kabul etmedi."
 msgid "The server did not find what was requested."
 msgstr "Sunucu istenen şeyi bulamadı."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
+#: src/big_remote_play/ui/headscale_wizard.py:1402
 msgid "The server did not give a key for this computer."
 msgstr "Sunucu bu bilgisayar için bir anahtar vermedi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "The server did not give a key."
 msgstr "Sunucu bir anahtar vermedi."
 
@@ -11142,11 +11166,15 @@ msgstr "Sunucu bir anahtar vermedi."
 msgid "The server log says why a capture could not open."
 msgstr "Sunucu günlüğü, bir yakalamanın neden açılamadığını gösterir."
 
+#: src/big_remote_play/ui/headscale_wizard.py:1262
+msgid "The server runs on this computer"
+msgstr "Sunucu bu bilgisayarda çalışıyor"
+
 #: src/big_remote_play/ui/provider_page.py:1249
 msgid "The server setup could not be removed."
 msgstr "Sunucu kurulumu kaldırılamadı."
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid ""
 "The server setup is not available when Big Remote Play runs from its source "
 "folder."
@@ -11163,11 +11191,11 @@ msgid "The server tried to redirect the request, which is refused for safety."
 msgstr ""
 "Sunucu isteği yönlendirmeye çalıştı; bu, güvenlik nedeniyle reddedildi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:677
+#: src/big_remote_play/ui/headscale_wizard.py:680
 msgid "The server's public IP address"
 msgstr "Sunucunun genel IP adresi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:91
 msgid "The server's secure certificate is not valid."
 msgstr "Sunucunun güvenlik sertifikası geçerli değil."
 
@@ -11194,7 +11222,7 @@ msgstr ""
 msgid "The service did not accept the request."
 msgstr "Hizmet isteği kabul etmedi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:224
+#: src/big_remote_play/ui/headscale_wizard.py:227
 msgid "The setup progress could not be saved."
 msgstr "Kurulum ilerlemesi kaydedilemedi."
 
@@ -11340,7 +11368,7 @@ msgstr ""
 msgid "The {name} service is not running on this computer."
 msgstr "{name} hizmeti bu bilgisayarda çalışmıyor."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "Then Set up → Another server."
 msgstr "Ardından Kur → Başka bir sunucu."
 
@@ -11356,7 +11384,7 @@ msgstr "Görüntü yok"
 msgid "There is no sound"
 msgstr "Ses yok"
 
-#: src/big_remote_play/ui/headscale_wizard.py:638
+#: src/big_remote_play/ui/headscale_wizard.py:641
 msgid "These are not Cloudflare nameservers. They end in .ns.cloudflare.com."
 msgstr ""
 "Bunlar Cloudflare ad sunucuları değil. Cloudflare ad "
@@ -11414,8 +11442,8 @@ msgstr ""
 "Bu, daha yüksek GPU kullanımı ve daha kötü performans pahasına eski Intel "
 "GPU'larda HEVC kodlamayı etkinleştirebilir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:667
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "This can take a little while."
 msgstr "Bu biraz zaman alabilir."
 
@@ -11427,9 +11455,9 @@ msgstr "Bu yalnızca Big Remote Play'de gösterilen adı değiştirir."
 msgid "This code is not complete"
 msgstr "Bu kod eksik"
 
-#: src/big_remote_play/ui/headscale_wizard.py:74
-#: src/big_remote_play/ui/headscale_wizard.py:306
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:77
+#: src/big_remote_play/ui/headscale_wizard.py:309
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 #: src/big_remote_play/ui/host_view.py:115
 #: src/big_remote_play/ui/network_devices.py:173
 #: src/big_remote_play/ui/remote_connection.py:356
@@ -11437,9 +11465,15 @@ msgstr "Bu kod eksik"
 msgid "This computer"
 msgstr "Bu bilgisayar"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "This computer asks to join; the owner approves it on the server."
-msgstr "Bu bilgisayar katılmak ister; sahibi bunu sunucuda onaylar."
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1293
+#, python-brace-format
+msgid ""
+"This computer asks to join; Big Remote Play shows the exact commands for the "
+"owner, with your user “{user}”."
+msgstr ""
+"Bu bilgisayar katılmak ister; Big Remote Play, sahibi için “{user}” "
+"kullanıcınızla tam komutları gösterir."
 
 #: src/big_remote_play/ui/provider_page.py:1068
 msgid "This computer can be in several ZeroTier networks."
@@ -11457,7 +11491,7 @@ msgstr ""
 "daha yüksek isteği sınırlar; 0 sınır eklemez. Kodek ve HDR de her iki "
 "bilgisayara bağlıdır. Değişiklikler paylaşım yeniden başladığında uygulanır."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "This computer could not join."
 msgstr "Bu bilgisayar katılamadı."
 
@@ -11486,7 +11520,7 @@ msgstr ""
 "Bu bilgisayar yetkilendirildi, ancak ağ henüz ona bir adres vermedi. Ağ "
 "sahibi bir adres atayabilir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1404
+#: src/big_remote_play/ui/headscale_wizard.py:1468
 msgid "This computer is connected"
 msgstr "Bu bilgisayar bağlı"
 
@@ -11529,7 +11563,7 @@ msgstr "Bu bilgisayar {name} ağında."
 msgid "This computer is on your {name} network."
 msgstr "Bu bilgisayar {name} ağınızda."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "This computer joins your Headscale network."
 msgstr "Bu bilgisayar Headscale ağınıza katılır."
 
@@ -11658,12 +11692,12 @@ msgstr ""
 msgid "This device · {state}"
 msgstr "Bu cihaz · {state}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1304
+#: src/big_remote_play/ui/headscale_wizard.py:1340
 msgid "This does not look like a key that adds a computer."
 msgstr "Bu, bilgisayar ekleyen bir anahtara benzemiyor."
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:524
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "This domain does not exist yet."
 msgstr "Bu alan adı henüz mevcut değil."
 
@@ -11693,7 +11727,7 @@ msgstr ""
 msgid "This is a request. It only works when the game PC supports it."
 msgstr "Bu bir istektir. Yalnızca oyun bilgisayarı desteklediğinde çalışır."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "This is an administrator key."
 msgstr "Bu bir yönetici anahtarı."
 
@@ -11709,19 +11743,19 @@ msgstr ""
 msgid "This is not a code from the other device."
 msgstr "Bu, diğer cihazdan gelen bir kod değil."
 
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "This is not a domain."
 msgstr "Bu bir alan adı değil."
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "This is not a public IP address."
 msgstr "Bu bir genel IP adresi değil."
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
+#: src/big_remote_play/ui/headscale_wizard.py:86
 msgid "This is not a server address."
 msgstr "Bu bir sunucu adresi değil."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "This is not an API key."
 msgstr "Bu bir API anahtarı değil."
 
@@ -11737,15 +11771,15 @@ msgstr ""
 msgid "This is the computer that will run the game."
 msgstr "Bu, oyunu çalıştıracak bilgisayar."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "This key adds one computer; it is not an API key."
 msgstr "Bu anahtar bir bilgisayar ekler; API anahtarı değildir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "This name does not lead to a server yet."
 msgstr "Bu ad henüz bir sunucuya yönlenmiyor."
 
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "This name is already set in /etc/hosts."
 msgstr "Bu ad /etc/hosts içinde zaten ayarlı."
 
@@ -11757,7 +11791,7 @@ msgstr "Bu ad /etc/hosts içinde zaten ayarlı. Hiçbir şey değiştirilmedi."
 msgid "This name is not valid."
 msgstr "Bu ad geçerli değil."
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid "This needs the installed Big Remote Play package."
 msgstr "Bunun için kurulu Big Remote Play paketi gerekir."
 
@@ -11830,7 +11864,7 @@ msgstr "Bu ekranın çözünürlüğü"
 msgid "This server address is not valid."
 msgstr "Bu sunucu adresi geçerli değil."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1124
+#: src/big_remote_play/ui/headscale_wizard.py:1127
 msgid ""
 "This server runs on this computer. Your router does not send this computer's "
 "own traffic back to it, so Big Remote Play checked it directly and will "
@@ -11962,7 +11996,7 @@ msgstr "Güvenilir Web Arayüzü Kökenleri"
 msgid "Try again"
 msgstr "Yeniden dene"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "Try again, or choose another option."
 msgstr "Yeniden deneyin veya başka bir seçenek seçin."
 
@@ -12004,7 +12038,7 @@ msgstr "ZeroTier kapatılsın mı?"
 msgid "Turn on"
 msgstr "Aç"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1189
+#: src/big_remote_play/ui/headscale_wizard.py:1192
 msgid "Turn on HTTPS with Caddy"
 msgstr "Caddy ile HTTPS'yi aç"
 
@@ -12018,8 +12052,8 @@ msgid "Turned on"
 msgstr "Açıldı"
 
 #: src/big_remote_play/ui/api_access_dialog.py:150
-#: src/big_remote_play/ui/headscale_wizard.py:687
-#: src/big_remote_play/ui/headscale_wizard.py:714
+#: src/big_remote_play/ui/headscale_wizard.py:690
+#: src/big_remote_play/ui/headscale_wizard.py:717
 msgid "Type"
 msgstr "Tür"
 
@@ -12043,8 +12077,8 @@ msgid ""
 msgstr ""
 "Sunucunuzun adresini yazın. Bu bilgisayarı sunucunun yöneticisi onaylar."
 
-#: src/big_remote_play/ui/headscale_wizard.py:577
-#: src/big_remote_play/ui/headscale_wizard.py:586
+#: src/big_remote_play/ui/headscale_wizard.py:580
+#: src/big_remote_play/ui/headscale_wizard.py:589
 msgid "Type the domain you registered, for example mydomain.dpdns.org."
 msgstr "Kaydettiğiniz alan adını yazın, örneğin mydomain.dpdns.org."
 
@@ -12225,15 +12259,15 @@ msgstr ""
 msgid "Use Tailscale"
 msgstr "Tailscale kullan"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "Use a Linux server that stays on"
 msgstr "Sürekli açık kalan bir Linux sunucusu kullanın"
 
-#: src/big_remote_play/ui/headscale_wizard.py:981
+#: src/big_remote_play/ui/headscale_wizard.py:984
 msgid "Use a VPS instead"
 msgstr "Bunun yerine bir VPS kullanın"
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
+#: src/big_remote_play/ui/headscale_wizard.py:308
 msgid "Use a VPS or another computer that stays online."
 msgstr "Bir VPS veya sürekli çevrimiçi kalan başka bir bilgisayar kullanın."
 
@@ -12241,11 +12275,11 @@ msgstr "Bir VPS veya sürekli çevrimiçi kalan başka bir bilgisayar kullanın.
 msgid "Use a cable or 5 GHz Wi-Fi on both computers when possible."
 msgstr "Mümkünse her iki bilgisayarda da kablo veya 5 GHz Wi-Fi kullanın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1139
+#: src/big_remote_play/ui/headscale_wizard.py:1142
 msgid "Use a different address"
 msgstr "Başka bir adres kullan"
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Use a domain"
 msgstr "Alan adı kullan"
 
@@ -12268,10 +12302,10 @@ msgstr ""
 msgid "Use another account"
 msgstr "Başka bir hesap kullan"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:402
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:997
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:405
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:1000
 msgid "Use another server"
 msgstr "Başka bir sunucu kullan"
 
@@ -12292,12 +12326,12 @@ msgstr "Kullanılabildiğinde donanım kod çözmeyi kullan"
 msgid "Use it"
 msgstr "Kullan"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "Use it in the first option, or ask for a key that adds one computer."
 msgstr ""
 "Bunu ilk seçenekte kullanın veya bir bilgisayar ekleyen bir anahtar isteyin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "Use it in the second option instead."
 msgstr "Bunun yerine bunu ikinci seçenekte kullanın."
 
@@ -12309,7 +12343,7 @@ msgstr "Birden fazla oyun kumandası kullan"
 msgid "Use only when both computers and the screen support HDR."
 msgstr "Yalnızca her iki bilgisayar ve ekran HDR'yi destekliyorsa kullanın."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1256
+#: src/big_remote_play/ui/headscale_wizard.py:1280
 msgid "Use the API key"
 msgstr "API anahtarını kullan"
 
@@ -12325,7 +12359,7 @@ msgstr ""
 msgid "Use the controller to move the mouse"
 msgstr "Fareyi hareket ettirmek için denetleyiciyi kullan"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid "Use the detected address"
 msgstr "Algılanan adresi kullan"
 
@@ -12341,7 +12375,7 @@ msgstr "Oyun bilgisayarındaki Big Remote Play arama kodunu kullanın."
 msgid "Use the touchscreen as a virtual trackpad"
 msgstr "Dokunmatik ekranı sanal dokunmatik yüzey olarak kullan"
 
-#: src/big_remote_play/ui/headscale_wizard.py:306
+#: src/big_remote_play/ui/headscale_wizard.py:309
 msgid "Use this PC as the Headscale server."
 msgstr "Bu PC'yi Headscale sunucusu olarak kullan."
 
@@ -12349,7 +12383,7 @@ msgstr "Bu PC'yi Headscale sunucusu olarak kullan."
 msgid "Use this connection"
 msgstr "Bu bağlantıyı kullan"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1258
+#: src/big_remote_play/ui/headscale_wizard.py:1288
 msgid "Use this key"
 msgstr "Bu anahtarı kullan"
 
@@ -12361,7 +12395,7 @@ msgstr "Bunu yalnızca otomatik bulma bilgisayarı bulamadığında kullanın."
 msgid "Use this screen's resolution"
 msgstr "Bu ekranın çözünürlüğünü kullan"
 
-#: src/big_remote_play/ui/headscale_wizard.py:866
+#: src/big_remote_play/ui/headscale_wizard.py:869
 msgid "Use this server"
 msgstr "Bu sunucuyu kullan"
 
@@ -12418,7 +12452,7 @@ msgstr ""
 msgid "Using this screen's resolution"
 msgstr "Bu ekranın çözünürlüğü kullanılıyor"
 
-#: src/big_remote_play/ui/headscale_wizard.py:990
+#: src/big_remote_play/ui/headscale_wizard.py:993
 msgid ""
 "Usually its address is written under the router. Look for “Port forwarding”, "
 "“Virtual server” or “NAT”."
@@ -12605,7 +12639,7 @@ msgstr "Yetkilendirme bekleniyor"
 msgid "Waiting for data…"
 msgstr "Veri bekleniyor…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
+#: src/big_remote_play/ui/headscale_wizard.py:1500
 msgid "Waiting for the server owner"
 msgstr "Sunucu sahibi bekleniyor"
 
@@ -12623,11 +12657,11 @@ msgstr ""
 msgid "Washed out on devices without HDR"
 msgstr "HDR olmayan cihazlarda soluk görünür"
 
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "We are still waiting for DNS"
 msgstr "DNS'i hâlâ bekliyoruz"
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "We could not find your public address"
 msgstr "Genel adresinizi bulamadık"
 
@@ -12663,7 +12697,7 @@ msgstr "ZeroTier'ın verdiği yanıt; size yardım eden kişiyle paylaşmak içi
 msgid "What do you want to do?"
 msgstr "Ne yapmak istiyorsunuz?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:789
+#: src/big_remote_play/ui/headscale_wizard.py:792
 msgid "What happens"
 msgstr "Ne olacak"
 
@@ -12671,7 +12705,7 @@ msgstr "Ne olacak"
 msgid "What is the network code?"
 msgstr "Ağ kodu nedir?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1047
+#: src/big_remote_play/ui/headscale_wizard.py:1050
 msgid "What is the server address?"
 msgstr "Sunucu adresi nedir?"
 
@@ -12757,7 +12791,7 @@ msgstr ""
 "Bu bilgisayarın faresini veya klavyesini kullandığınızda konuklar bir "
 "süreliğine onları denetleyemez."
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "Where do you manage DNS?"
 msgstr "DNS'i nerede yönetiyorsunuz?"
 
@@ -12765,7 +12799,7 @@ msgstr "DNS'i nerede yönetiyorsunuz?"
 msgid "Where is the other device?"
 msgstr "Diğer cihaz nerede?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Where is the server?"
 msgstr "Sunucu nerede?"
 
@@ -12777,7 +12811,7 @@ msgstr "Belirteç nerede oluşturulur"
 msgid "Where to create it"
 msgstr "Nerede oluşturulur"
 
-#: src/big_remote_play/ui/headscale_wizard.py:303
+#: src/big_remote_play/ui/headscale_wizard.py:306
 msgid "Where will your Headscale server run?"
 msgstr "Headscale sunucunuz nerede çalışacak?"
 
@@ -12807,7 +12841,7 @@ msgstr ""
 "İnternet üzerinden bağlantının neden başarısız olabileceği ve her soruna "
 "karşı en güvenli çözüm."
 
-#: src/big_remote_play/ui/headscale_wizard.py:706
+#: src/big_remote_play/ui/headscale_wizard.py:709
 msgid "Why?"
 msgstr "Neden?"
 
@@ -12893,7 +12927,7 @@ msgstr "Yetki anahtarı olmadan bir oturum açma bağlantısı açılır"
 msgid "Without it, members are approved on the ZeroTier website."
 msgstr "Bu olmadan üyeler ZeroTier web sitesinde onaylanır."
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Working…"
 msgstr "Çalışıyor…"
 
@@ -12909,8 +12943,8 @@ msgstr ""
 msgid "X11 screen capture"
 msgstr "X11 ekran yakalama"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:472
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/touch_controls.py:81
 msgid "Yes"
 msgstr "Evet"
@@ -12944,7 +12978,7 @@ msgstr "Dün {time}"
 msgid "You can control the mouse and keyboard again"
 msgstr "Fareyi ve klavyeyi yeniden denetleyebilirsiniz"
 
-#: src/big_remote_play/ui/headscale_wizard.py:559
+#: src/big_remote_play/ui/headscale_wizard.py:562
 msgid ""
 "You can use a domain you already own or register one with a domain provider."
 msgstr ""
@@ -12971,7 +13005,7 @@ msgstr "Bu bilgisayarı siz denetliyorsunuz"
 msgid "Your Headscale server"
 msgstr "Headscale sunucunuz"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1032
+#: src/big_remote_play/ui/headscale_wizard.py:1035
 msgid "Your Headscale server is ready"
 msgstr "Headscale sunucunuz hazır"
 
@@ -12979,7 +13013,7 @@ msgstr "Headscale sunucunuz hazır"
 msgid "Your Tailscale network (tailnet)"
 msgstr "Tailscale ağınız (tailnet)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Your VPS provider shows it in its control panel."
 msgstr "VPS sağlayıcınız bunu kontrol panelinde gösterir."
 
@@ -13002,16 +13036,16 @@ msgstr "Cihazınız"
 msgid "Your devices can now find each other in Big Remote Play."
 msgstr "Cihazlarınız artık Big Remote Play'de birbirini bulabilir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:491
-#: src/big_remote_play/ui/headscale_wizard.py:614
+#: src/big_remote_play/ui/headscale_wizard.py:494
+#: src/big_remote_play/ui/headscale_wizard.py:617
 msgid "Your domain"
 msgstr "Alan adınız"
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 msgid "Your domain is not pointing to this server yet."
 msgstr "Alan adınız henüz bu sunucuyu göstermiyor."
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
+#: src/big_remote_play/ui/headscale_wizard.py:667
 msgid "Your domain still uses other nameservers."
 msgstr "Alan adınız hâlâ başka ad sunucuları kullanıyor."
 
@@ -13027,19 +13061,19 @@ msgstr ""
 msgid "Your games. Any screen. Anywhere."
 msgstr "Oyunlarınız. Her ekran. Her yer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:368
+#: src/big_remote_play/ui/headscale_wizard.py:371
 msgid "Your internet connection"
 msgstr "İnternet bağlantınız"
 
-#: src/big_remote_play/ui/headscale_wizard.py:976
+#: src/big_remote_play/ui/headscale_wizard.py:979
 msgid "Your internet provider blocks incoming connections."
 msgstr "İnternet sağlayıcınız gelen bağlantıları engelliyor."
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Your internet provider may block incoming connections."
 msgstr "İnternet sağlayıcınız gelen bağlantıları engelliyor olabilir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1520
+#: src/big_remote_play/ui/headscale_wizard.py:1589
 msgid "Your other device is connected"
 msgstr "Diğer cihazınız bağlandı"
 
@@ -13065,7 +13099,7 @@ msgstr "Kendi {names} girişiniz olduğu gibi korundu."
 msgid "Your password may be requested."
 msgstr "Parolanız istenebilir."
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
+#: src/big_remote_play/ui/headscale_wizard.py:398
 msgid "Your public IP"
 msgstr "Genel IP adresiniz"
 
@@ -13073,7 +13107,7 @@ msgstr "Genel IP adresiniz"
 msgid "Your recent sessions will appear here."
 msgstr "Son oturumlarınız burada görünecek."
 
-#: src/big_remote_play/ui/headscale_wizard.py:986
+#: src/big_remote_play/ui/headscale_wizard.py:989
 msgid "Your router needs one more step"
 msgstr "Yönlendiriciniz için bir adım daha gerekiyor"
 
@@ -13193,7 +13227,7 @@ msgstr "tanımlanmadı"
 msgid "the local network"
 msgstr "yerel ağ"
 
-#: src/big_remote_play/ui/headscale_wizard.py:983
+#: src/big_remote_play/ui/headscale_wizard.py:986
 msgid "this computer"
 msgstr "bu bilgisayar"
 

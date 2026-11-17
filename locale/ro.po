@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-17 09:34+0000\n"
+"POT-Creation-Date: 2026-11-17 09:44+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Romanian\n"
@@ -49,13 +49,21 @@ msgstr "1. Verifică accesul la internet"
 msgid "1. Create Account"
 msgstr "1. Creare cont"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1503
+msgid "1. Create the user (once)"
+msgstr "1. Creează utilizatorul (o singură dată)"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1274
+msgid "1. I manage this server (recommended)"
+msgstr "1. Eu administrez acest server (recomandat)"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1995
 #: src/big_remote_play/ui/private_network_view.py:1114
 msgid "1. Identification"
 msgstr "1. Identificare"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "1. Install Big Remote Play"
 msgstr "1. Instalează Big Remote Play"
 
@@ -79,6 +87,10 @@ msgstr "1440p · 60 FPS · 40 Mbps"
 msgid "1920 × 1080 — best for TVs"
 msgstr "1920 × 1080 — ideal pentru televizoare"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1504
+msgid "2. Approve this computer"
+msgstr "2. Aprobă acest computer"
+
 #: src/big_remote_play/ui/connection_guides.py:61
 msgid "2. Choose a domain you control"
 msgstr "2. Alege un domeniu pe care îl controlezi"
@@ -86,6 +98,10 @@ msgstr "2. Alege un domeniu pe care îl controlezi"
 #: src/big_remote_play/ui/connection_guides.py:119
 msgid "2. Domain and HTTPS"
 msgstr "2. Domeniu și HTTPS"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1283
+msgid "2. I have a key from the server owner"
+msgstr "2. Am o cheie de la proprietarul serverului"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1989
@@ -101,9 +117,13 @@ msgstr "2. Alăturare"
 msgid "2. Network"
 msgstr "2. Rețea"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1446
+#: src/big_remote_play/ui/headscale_wizard.py:1515
 msgid "2. Open Connect your devices"
 msgstr "2. Deschide „Conectează-ți dispozitivele”"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1291
+msgid "3. Ask the server owner to approve"
+msgstr "3. Cere aprobarea proprietarului serverului"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1997
@@ -111,7 +131,7 @@ msgstr "2. Deschide „Conectează-ți dispozitivele”"
 msgid "3. Authorization"
 msgstr "3. Autorizare"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "3. Choose Headscale"
 msgstr "3. Alege Headscale"
 
@@ -149,7 +169,7 @@ msgstr "4. Aprobare"
 msgid "4. Connect Big Remote Play"
 msgstr "4. Conectați Big Remote Play"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1448
+#: src/big_remote_play/ui/headscale_wizard.py:1517
 msgid "4. Use this server"
 msgstr "4. Folosește acest server"
 
@@ -183,7 +203,7 @@ msgid ""
 msgstr ""
 "Există deja un fișier de site Caddy cu același nume. Nu s-a modificat nimic."
 
-#: src/big_remote_play/ui/headscale_wizard.py:865
+#: src/big_remote_play/ui/headscale_wizard.py:868
 msgid "A Headscale server already answers at this address."
 msgstr "La această adresă răspunde deja un server Headscale."
 
@@ -242,7 +262,7 @@ msgstr "Un dispozitiv redă sunet, dar Sunshine încă nu îl înregistrează."
 msgid "A device started playing on this computer."
 msgstr "Un dispozitiv a început să joace pe acest computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:468
+#: src/big_remote_play/ui/headscale_wizard.py:471
 msgid ""
 "A domain is a name like example.com. Your server gets a name inside it, like "
 "headscale.example.com."
@@ -250,15 +270,17 @@ msgstr ""
 "Un domeniu este un nume precum example.com. Serverul tău primește un nume în "
 "cadrul lui, de exemplu headscale.example.com."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1457
+#: src/big_remote_play/ui/headscale_wizard.py:1526
 msgid "A key for the other computer"
 msgstr "O cheie pentru celălalt computer"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "A key that adds one computer. It is used once and not saved."
+#: src/big_remote_play/ui/headscale_wizard.py:1284
+msgid ""
+"A key that adds one computer, starting with hskey-auth-. It is used once and "
+"not saved."
 msgstr ""
-"O cheie care adaugă un singur computer. Se folosește o dată și nu se "
-"salvează."
+"O cheie care adaugă un singur computer și începe cu hskey-auth-. Se "
+"folosește o dată și nu se salvează."
 
 #: src/big_remote_play/ui/controls_help.py:102
 msgid "A keyboard app with Ctrl and Alt"
@@ -297,11 +319,11 @@ msgstr ""
 "1080 este cea mai clară. Apoi ecranul ales revine la normal. Alegeți mai "
 "întâi un ecran mai sus."
 
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "A secure connection could not be made."
 msgstr "Nu s-a putut stabili o conexiune securizată."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "A small VPS is enough. Debian, Ubuntu and Arch are fine."
 msgstr "Un VPS mic este suficient. Debian, Ubuntu și Arch sunt potrivite."
 
@@ -381,7 +403,7 @@ msgid "API error: {status}"
 msgstr "Eroare API: {status}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:1242
+#: src/big_remote_play/ui/headscale_wizard.py:1247
 msgid "API key"
 msgstr "Cheie API"
 
@@ -542,8 +564,8 @@ msgstr "Adaugă un cont sau o rețea"
 msgid "Add another computer of mine"
 msgstr "Adaugă încă un computer de-al meu"
 
-#: src/big_remote_play/ui/headscale_wizard.py:75
-#: src/big_remote_play/ui/headscale_wizard.py:1481
+#: src/big_remote_play/ui/headscale_wizard.py:78
+#: src/big_remote_play/ui/headscale_wizard.py:1550
 #: src/big_remote_play/ui/network_devices.py:488
 msgid "Add another device"
 msgstr "Adaugă alt dispozitiv"
@@ -557,16 +579,16 @@ msgstr "Adaugă prin adresă"
 msgid "Add device"
 msgstr "Adaugă dispozitiv"
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "Add it where you manage your domain's DNS."
 msgstr "Adaug-o acolo unde gestionezi DNS-ul domeniului tău."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1246
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "Add this computer"
 msgstr "Adaugă acest computer"
 
-#: src/big_remote_play/ui/headscale_wizard.py:713
+#: src/big_remote_play/ui/headscale_wizard.py:716
 msgid ""
 "Add this only if your router lets connections in over IPv6. A wrong IPv6 "
 "record can break the connection."
@@ -574,15 +596,15 @@ msgstr ""
 "Adaug-o doar dacă routerul tău permite conexiuni de intrare prin IPv6. O "
 "înregistrare IPv6 greșită poate strica conexiunea."
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this record."
 msgstr "Adaugă această înregistrare."
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this to Cloudflare."
 msgstr "Adaugă asta în Cloudflare."
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 msgid "Add two rules"
 msgstr "Adaugă două reguli"
 
@@ -601,7 +623,7 @@ msgstr ""
 "Actualizează înregistrarea când se schimbă adresa. Acesta nu este Cloudflare "
 "Tunnel și nici un VPN."
 
-#: src/big_remote_play/ui/headscale_wizard.py:613
+#: src/big_remote_play/ui/headscale_wizard.py:616
 msgid "Add your domain to Cloudflare."
 msgstr "Adaugă domeniul tău în Cloudflare."
 
@@ -613,8 +635,8 @@ msgstr[0] "Adaugă {count} joc"
 msgstr[1] "Adaugă {count} jocuri"
 msgstr[2] "Adaugă {count} de jocuri"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1345
-#: src/big_remote_play/ui/headscale_wizard.py:1375
+#: src/big_remote_play/ui/headscale_wizard.py:1409
+#: src/big_remote_play/ui/headscale_wizard.py:1439
 msgid "Adding this computer…"
 msgstr "Se adaugă acest computer…"
 
@@ -631,7 +653,7 @@ msgstr "Adresă, variație și răspunsuri pierdute"
 msgid "Address: {address}"
 msgstr "Adresă: {address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "Addresses like 192.168.x.x only work inside a home network."
 msgstr ""
 "Adresele precum 192.168.x.x funcționează doar în interiorul unei rețele de "
@@ -713,7 +735,7 @@ msgstr "Setări avansate ale serverului"
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "Setări avansate în browser (Sunshine)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid ""
 "Advanced. HTTPS certificates can be harder to configure with an IP address."
 msgstr ""
@@ -852,7 +874,7 @@ msgstr ""
 "Permite o singură dată. Ți se cere parola; apoi Tailscale funcționează fără "
 "ea."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1195
+#: src/big_remote_play/ui/headscale_wizard.py:1198
 msgid ""
 "Allow ports 80 and 443 (TCP) in the server's firewall and in your VPS "
 "provider's panel."
@@ -860,7 +882,7 @@ msgstr ""
 "Permite porturile 80 și 443 (TCP) în firewallul serverului și în panoul "
 "furnizorului tău de VPS."
 
-#: src/big_remote_play/ui/headscale_wizard.py:793
+#: src/big_remote_play/ui/headscale_wizard.py:796
 msgid "Allow web connections in the firewall"
 msgstr "Permite conexiunile web în firewall"
 
@@ -993,15 +1015,15 @@ msgstr ""
 "O altă instalare este în curs. Această pagină continuă singură când se "
 "termină; Detalii tehnice arată progresul."
 
-#: src/big_remote_play/ui/headscale_wizard.py:873
-#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:876
+#: src/big_remote_play/ui/headscale_wizard.py:957
 msgid ""
 "Another program already uses the web ports (80 and 443) on this computer."
 msgstr ""
 "Un alt program folosește deja porturile web (80 și 443) pe acest computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:1046
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:1049
 msgid "Another server"
 msgstr "Alt server"
 
@@ -1195,15 +1217,11 @@ msgstr ""
 "încă o rețea, unul dintre voi o creează gratuit în ZeroTier Central – sau "
 "folosiți Tailscale, cel mai simplu mod de a începe."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "Ask the server owner to approve"
-msgstr "Cere aprobarea proprietarului serverului"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1260
+#: src/big_remote_play/ui/headscale_wizard.py:1296
 msgid "Ask to join"
 msgstr "Cere să te alături"
 
-#: src/big_remote_play/ui/headscale_wizard.py:987
+#: src/big_remote_play/ui/headscale_wizard.py:990
 msgid "Ask your router to send web connections to this computer:"
 msgstr "Configurează routerul să trimită conexiunile web către acest computer:"
 
@@ -1408,7 +1426,7 @@ msgstr "Durată medie"
 msgid "BW (target)"
 msgstr "Lățime de bandă (țintă)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1558
+#: src/big_remote_play/ui/headscale_wizard.py:1627
 #: src/big_remote_play/ui/main_window.py:686
 #: src/big_remote_play/ui/main_window.py:692
 msgid "Back"
@@ -1490,8 +1508,8 @@ msgstr ""
 "Big Remote Play îl poate porni în locul tău. Este posibil să ți se ceară "
 "parola."
 
-#: src/big_remote_play/ui/headscale_wizard.py:874
-#: src/big_remote_play/ui/headscale_wizard.py:955
+#: src/big_remote_play/ui/headscale_wizard.py:877
+#: src/big_remote_play/ui/headscale_wizard.py:958
 msgid ""
 "Big Remote Play cannot add a secure address next to it. Use another server, "
 "or stop that program first."
@@ -1508,7 +1526,7 @@ msgstr ""
 "Big Remote Play nu poate instala programe pe acest sistem. Instalează aceste "
 "pachete din centrul de programe: {packages}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1216
+#: src/big_remote_play/ui/headscale_wizard.py:1219
 msgid ""
 "Big Remote Play cannot reach into another computer. Follow these steps "
 "there; each one can be copied."
@@ -1520,7 +1538,7 @@ msgstr ""
 msgid "Big Remote Play cannot start"
 msgstr "Big Remote Play nu poate porni"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play verifică asta în locul tău."
 
@@ -1532,7 +1550,7 @@ msgstr ""
 "Big Remote Play verifică de ce are nevoie acest computer și instalează ce "
 "lipsește. Este posibil să ți se ceară parola o singură dată."
 
-#: src/big_remote_play/ui/headscale_wizard.py:618
+#: src/big_remote_play/ui/headscale_wizard.py:621
 msgid "Big Remote Play checks your domain."
 msgstr "Big Remote Play îți verifică domeniul."
 
@@ -1543,6 +1561,16 @@ msgid ""
 msgstr ""
 "Big Remote Play creează și salvează parola Sunshine prima dată când pornește "
 "partajarea."
+
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1264
+#, python-brace-format
+msgid ""
+"Big Remote Play creates your network user “{user}” and a key for this "
+"computer by itself. Your password is asked once."
+msgstr ""
+"Big Remote Play creează singur utilizatorul tău de rețea „{user}” și o cheie "
+"pentru acest computer. Parola ți se cere o singură dată."
 
 #: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:9
 msgid ""
@@ -1562,7 +1590,7 @@ msgstr ""
 "Big Remote Play o instalează în locul tău. Este posibil să ți se ceară "
 "parola."
 
-#: src/big_remote_play/ui/headscale_wizard.py:824
+#: src/big_remote_play/ui/headscale_wizard.py:827
 msgid ""
 "Big Remote Play installs the server, gives it a secure address and starts "
 "it. Your password will be requested."
@@ -1583,7 +1611,7 @@ msgstr ""
 msgid "Big Remote Play is not installed completely"
 msgstr "Big Remote Play nu este instalat complet"
 
-#: src/big_remote_play/ui/headscale_wizard.py:370
+#: src/big_remote_play/ui/headscale_wizard.py:373
 msgid ""
 "Big Remote Play looks for the address the internet sees for this computer."
 msgstr ""
@@ -1595,7 +1623,7 @@ msgstr ""
 msgid "Big Remote Play needs your permission"
 msgstr "Big Remote Play are nevoie de permisiunea ta"
 
-#: src/big_remote_play/ui/headscale_wizard.py:808
+#: src/big_remote_play/ui/headscale_wizard.py:811
 msgid "Big Remote Play will configure HTTPS for you."
 msgstr "Big Remote Play va configura HTTPS în locul tău."
 
@@ -1722,7 +1750,7 @@ msgstr "CGNAT, IPv6, UPnP și când o rețea privată este alegerea mai bună."
 msgid "CPU Encoding"
 msgstr "Codare CPU"
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
+#: src/big_remote_play/ui/headscale_wizard.py:954
 msgid "Caddy already has a site with the same file name."
 msgstr "Caddy are deja un site cu același nume de fișier."
 
@@ -1754,7 +1782,7 @@ msgstr "Se poate conecta fără un cod PIN nou"
 #: src/big_remote_play/ui/guest_view.py:1853
 #: src/big_remote_play/ui/guest_view.py:2219
 #: src/big_remote_play/ui/guest_view.py:2506
-#: src/big_remote_play/ui/headscale_wizard.py:1367
+#: src/big_remote_play/ui/headscale_wizard.py:1431
 #: src/big_remote_play/ui/host_view.py:2290
 #: src/big_remote_play/ui/host_view.py:2760
 #: src/big_remote_play/ui/host_view.py:3242
@@ -1825,7 +1853,7 @@ msgstr ""
 "Modificările de aici afectează doar următoarea conexiune. Nu schimbă ecranul "
 "computerului de jocuri."
 
-#: src/big_remote_play/ui/headscale_wizard.py:977
+#: src/big_remote_play/ui/headscale_wizard.py:980
 msgid "Changing the router will probably not help. A VPS is the reliable way."
 msgstr ""
 "Modificarea setărilor routerului probabil nu va ajuta. Un VPS este varianta "
@@ -1836,13 +1864,13 @@ msgctxt "check state"
 msgid "Check"
 msgstr "De verificat"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:618
-#: src/big_remote_play/ui/headscale_wizard.py:761
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:981
-#: src/big_remote_play/ui/headscale_wizard.py:997
-#: src/big_remote_play/ui/headscale_wizard.py:1138
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:621
+#: src/big_remote_play/ui/headscale_wizard.py:764
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:984
+#: src/big_remote_play/ui/headscale_wizard.py:1000
+#: src/big_remote_play/ui/headscale_wizard.py:1141
 #: src/big_remote_play/ui/remote_connection.py:51
 #: src/big_remote_play/ui/remote_connection.py:57
 #: src/big_remote_play/ui/support_center.py:152
@@ -1861,7 +1889,7 @@ msgstr "Verifică conexiunea"
 msgid "Check for blocked connections automatically"
 msgstr "Verifică automat conexiunile blocate."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Check for the other device"
 msgstr "Verifică celălalt dispozitiv"
 
@@ -1870,12 +1898,12 @@ msgstr "Verifică celălalt dispozitiv"
 msgid "Check logs for details."
 msgstr "Verificați jurnalele pentru detalii."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1051
-#: src/big_remote_play/ui/headscale_wizard.py:1211
+#: src/big_remote_play/ui/headscale_wizard.py:1054
+#: src/big_remote_play/ui/headscale_wizard.py:1214
 msgid "Check server"
 msgstr "Verifică serverul"
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Check that Headscale runs behind this address."
 msgstr "Verifică dacă Headscale rulează la această adresă."
 
@@ -1888,16 +1916,16 @@ msgstr ""
 "Verificați că partajarea rulează pe calculatorul cu jocul și că cele două "
 "calculatoare pot comunica."
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "Check that this computer is connected to the internet."
 msgstr "Verifică dacă acest computer este conectat la internet."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "Check that you copied all of it."
 msgstr "Verifică dacă ai copiat tot."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1402
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "Check the API key in Advanced."
 msgstr "Verifică cheia API în Avansat."
 
@@ -1913,15 +1941,15 @@ msgstr ""
 msgid "Check the internet connection of this computer."
 msgstr "Verifică conexiunea la internet a acestui computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "Check the name you registered."
 msgstr "Verifică numele pe care l-ai înregistrat."
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
+#: src/big_remote_play/ui/headscale_wizard.py:524
 msgid "Check the name, or register it first."
 msgstr "Verifică numele sau înregistrează-l mai întâi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:797
 msgid "Check the secure connection (HTTPS)"
 msgstr "Verifică conexiunea securizată (HTTPS)"
 
@@ -1935,9 +1963,9 @@ msgstr ""
 "Verificați acest computer sau alegeți o problemă pentru a vedea ce puteți "
 "încerca."
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "Check your internet connection and try again."
 msgstr "Verifică conexiunea la internet și încearcă din nou."
 
@@ -1962,7 +1990,7 @@ msgstr ""
 msgid "Checking ZeroTier…"
 msgstr "Se verifică ZeroTier…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:648
+#: src/big_remote_play/ui/headscale_wizard.py:651
 msgid "Checking nameservers…"
 msgstr "Se verifică serverele de nume…"
 
@@ -1987,12 +2015,12 @@ msgstr "Se verifică rețeaua, computerul și Sunshine…"
 msgid "Checking the path…"
 msgstr "Se verifică ruta…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1069
+#: src/big_remote_play/ui/headscale_wizard.py:1072
 msgid "Checking the server…"
 msgstr "Se verifică serverul…"
 
 #: src/big_remote_play/ui/dependency_installer.py:198
-#: src/big_remote_play/ui/headscale_wizard.py:852
+#: src/big_remote_play/ui/headscale_wizard.py:855
 #: src/big_remote_play/ui/provider_page.py:543
 #: src/big_remote_play/ui/remote_connection.py:49
 msgid "Checking this computer…"
@@ -2010,16 +2038,16 @@ msgstr "Se verifică ce dispozitive sunt deja permise."
 msgid "Checking with Sunshine…"
 msgstr "Se verifică cu Sunshine…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:511
-#: src/big_remote_play/ui/headscale_wizard.py:741
+#: src/big_remote_play/ui/headscale_wizard.py:514
+#: src/big_remote_play/ui/headscale_wizard.py:744
 msgid "Checking your domain…"
 msgstr "Se verifică domeniul tău…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:369
+#: src/big_remote_play/ui/headscale_wizard.py:372
 msgid "Checking your internet connection"
 msgstr "Se verifică conexiunea la internet"
 
-#: src/big_remote_play/ui/headscale_wizard.py:378
+#: src/big_remote_play/ui/headscale_wizard.py:381
 msgid "Checking your internet connection…"
 msgstr "Se verifică conexiunea la internet…"
 
@@ -2047,7 +2075,7 @@ msgstr "Se verifică…"
 msgid "Checks the name, the port, HTTPS and Headscale itself."
 msgstr "Verifică numele, portul, HTTPS și Headscale însuși."
 
-#: src/big_remote_play/ui/headscale_wizard.py:543
+#: src/big_remote_play/ui/headscale_wizard.py:546
 msgid ""
 "Choose Register, check the domain name you want, and read the current "
 "availability and rules shown by DigitalPlat."
@@ -2098,7 +2126,7 @@ msgstr "Alege hardware pentru codificarea video"
 msgid "Choose installed games below."
 msgstr "Alegeți mai jos jocurile instalate."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "Choose one of the options above."
 msgstr "Alege una dintre opțiunile de mai sus."
 
@@ -2189,7 +2217,7 @@ msgstr "Ștergeți istoricul conexiunilor?"
 msgid "Click and drag, for example to move a window"
 msgstr "Clic și tragere, de exemplu pentru a muta o fereastră"
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Click the orange cloud in Cloudflare so it turns gray (DNS only)."
 msgstr ""
 "Dă clic pe norul portocaliu din Cloudflare ca să devină gri (DNS only)."
@@ -2220,8 +2248,8 @@ msgstr ""
 "Închide streamul pe toate dispozitivele, ca un dispozitiv nou să se poată "
 "asocia"
 
-#: src/big_remote_play/ui/headscale_wizard.py:479
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare"
 msgstr "Cloudflare"
 
@@ -2230,21 +2258,21 @@ msgstr "Cloudflare"
 msgid "Cloudflare DNS-only documentation"
 msgstr "Documentație Cloudflare pentru modul exclusiv DNS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:655
+#: src/big_remote_play/ui/headscale_wizard.py:658
 msgid "Cloudflare is now managing your domain"
 msgstr "Cloudflare îți gestionează acum domeniul"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare will manage your domain's records. Its free plan is enough."
 msgstr ""
 "Cloudflare va gestiona înregistrările domeniului tău. Planul gratuit este "
 "suficient."
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Cloudflare will show two nameservers."
 msgstr "Cloudflare va afișa două servere de nume."
 
-#: src/big_remote_play/ui/headscale_wizard.py:703
+#: src/big_remote_play/ui/headscale_wizard.py:706
 msgid ""
 "Cloudflare's proxy (the orange cloud) only passes ordinary web requests. "
 "Tailscale clients keep a long-lived, upgraded HTTP connection to Headscale, "
@@ -2256,7 +2284,7 @@ msgstr ""
 "tip upgrade, pe care nici proxy-ul, nici Cloudflare Tunnel nu o transmit în "
 "mod fiabil. Cu DNS only, numele indică pur și simplu spre serverul tău."
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Cloudflare's proxy is on for this record."
 msgstr "Proxy-ul Cloudflare este activ pentru această înregistrare."
 
@@ -2276,7 +2304,7 @@ msgstr "Codec, HDR, limită de date și avertismente de conexiune"
 msgid "Codecs, network, capture and recovery tools"
 msgstr "Codecuri, rețea, captură și instrumente de recuperare"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Come back and check again"
 msgstr "Revino și verifică din nou"
 
@@ -2292,12 +2320,12 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 159
 #: src/big_remote_play/ui/game_library_dialog.py:386
-#: src/big_remote_play/ui/headscale_wizard.py:1180
-#: src/big_remote_play/ui/headscale_wizard.py:1185
-#: src/big_remote_play/ui/headscale_wizard.py:1187
-#: src/big_remote_play/ui/headscale_wizard.py:1191
-#: src/big_remote_play/ui/headscale_wizard.py:1196
-#: src/big_remote_play/ui/headscale_wizard.py:1201
+#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1188
+#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1204
 #: src/big_remote_play/ui/host_view.py:586
 #: src/big_remote_play/ui/network_devices.py:733
 #: src/big_remote_play/ui/network_devices.py:764
@@ -2305,9 +2333,9 @@ msgstr ""
 msgid "Command"
 msgstr "Comandă"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1435
-msgid "Command for the server owner"
-msgstr "Comandă pentru proprietarul serverului"
+#: src/big_remote_play/ui/headscale_wizard.py:1276
+msgid "Command for the server"
+msgstr "Comandă pentru server"
 
 #: src/big_remote_play/ui/support_center.py:168
 msgid "Common problems"
@@ -2410,7 +2438,7 @@ msgstr "Configurați"
 msgid "Configure Firewall (IPv6)"
 msgstr "Configurați firewallul (IPv6)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:792
+#: src/big_remote_play/ui/headscale_wizard.py:795
 msgid "Configure and start the server"
 msgstr "Configurează și pornește serverul"
 
@@ -2722,7 +2750,7 @@ msgstr "Calitatea conexiunii"
 msgid "Connection quality: {quality}"
 msgstr "Calitatea conexiunii: {quality}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
+#: src/big_remote_play/ui/headscale_wizard.py:88
 #, python-brace-format
 msgid "Connection refused on port {port}."
 msgstr "Conexiune refuzată pe portul {port}."
@@ -2770,15 +2798,15 @@ msgstr "Se contactează serviciul…"
 #: src/big_remote_play/ui/guided_setup.py:169
 #: src/big_remote_play/ui/guided_setup.py:257
 #: src/big_remote_play/ui/guided_setup.py:309
-#: src/big_remote_play/ui/headscale_wizard.py:497
+#: src/big_remote_play/ui/headscale_wizard.py:500
 msgid "Continue"
 msgstr "Continuă"
 
-#: src/big_remote_play/ui/headscale_wizard.py:402
+#: src/big_remote_play/ui/headscale_wizard.py:405
 msgid "Continue anyway"
 msgstr "Continuă oricum"
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
+#: src/big_remote_play/ui/headscale_wizard.py:304
 #: src/big_remote_play/ui/provider_page.py:1151
 #: src/big_remote_play/ui/remote_connection.py:534
 msgid "Continue setup"
@@ -2873,7 +2901,7 @@ msgstr "Copiază IP-ul"
 msgid "Copy Path"
 msgstr "Copiază calea"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1450
+#: src/big_remote_play/ui/headscale_wizard.py:1519
 #: src/big_remote_play/ui/network_devices.py:269
 msgid "Copy address"
 msgstr "Copiază adresa"
@@ -2914,11 +2942,11 @@ msgstr "Copiază adresa privată a lui {name}"
 msgid "Copy the {field} value to the clipboard"
 msgstr "Copiază valoarea {field} în clipboard"
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid "Copy these two Cloudflare nameservers to DigitalPlat."
 msgstr "Copiază aceste două servere de nume Cloudflare în DigitalPlat."
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid ""
 "Copy these two Cloudflare nameservers to the company where you registered "
 "your domain."
@@ -3072,7 +3100,7 @@ msgstr ""
 msgid "Create a network"
 msgstr "Creează o rețea"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1461
+#: src/big_remote_play/ui/headscale_wizard.py:1530
 msgid "Create a one-time key"
 msgstr "Creează o cheie de unică folosință"
 
@@ -3093,7 +3121,7 @@ msgstr "Creează rețeaua"
 msgid "Create one-time key"
 msgstr "Creează cheie de unică folosință"
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
+#: src/big_remote_play/ui/headscale_wizard.py:544
 msgid "Create or sign in to your DigitalPlat account."
 msgstr "Creează un cont DigitalPlat sau autentifică-te."
 
@@ -3101,11 +3129,11 @@ msgstr "Creează un cont DigitalPlat sau autentifică-te."
 msgid "Create the API key on the server"
 msgstr "Creați cheia API pe server"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1202
 msgid "Create your network and an API key"
 msgstr "Creează rețeaua și o cheie API"
 
-#: src/big_remote_play/ui/headscale_wizard.py:795
+#: src/big_remote_play/ui/headscale_wizard.py:798
 msgid "Create your private network"
 msgstr "Creează-ți rețeaua privată"
 
@@ -3208,16 +3236,16 @@ msgstr "Rezoluție personalizată"
 msgid "Custom image settings"
 msgstr "Setări de imagine personalizate"
 
-#: src/big_remote_play/ui/headscale_wizard.py:71
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:74
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "DNS"
 msgstr "DNS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "DNS is where your domain's records live."
 msgstr "În DNS se află înregistrările domeniului tău."
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "DNS only — the cloud must be gray."
 msgstr "DNS only — norul trebuie să fie gri."
 
@@ -3296,8 +3324,8 @@ msgstr "Detalii"
 msgid "Details and a sound test are in Preferences."
 msgstr "Detaliile și un test de sunet se află în Preferințe."
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:398
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Detected automatically"
 msgstr "Detectat automat"
 
@@ -3382,7 +3410,7 @@ msgstr "Diagnostichează"
 msgid "Diagnosis"
 msgstr "Diagnostic"
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Did not work"
 msgstr "Nu a reușit"
 
@@ -3390,13 +3418,13 @@ msgstr "Nu a reușit"
 msgid "Did you receive a network code?"
 msgstr "Ai primit un cod de rețea?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:553
+#: src/big_remote_play/ui/headscale_wizard.py:556
 msgid ""
 "DigitalPlat can provide domains that can be delegated to a DNS provider."
 msgstr ""
 "DigitalPlat poate oferi domenii care pot fi delegate unui furnizor DNS."
 
-#: src/big_remote_play/ui/headscale_wizard.py:547
+#: src/big_remote_play/ui/headscale_wizard.py:550
 msgid ""
 "DigitalPlat needs the nameservers from your DNS provider. Cloudflare is "
 "free; Big Remote Play guides you."
@@ -3490,7 +3518,7 @@ msgstr ""
 "Afișează peste flux informații despre latență, frecvența cadrelor și "
 "decodare."
 
-#: src/big_remote_play/ui/headscale_wizard.py:467
+#: src/big_remote_play/ui/headscale_wizard.py:470
 msgid "Do you already have a domain?"
 msgstr "Ai deja un domeniu?"
 
@@ -3501,20 +3529,20 @@ msgstr "Doriți să restaurați setările implicite?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1137
-#: src/big_remote_play/ui/headscale_wizard.py:70
-#: src/big_remote_play/ui/headscale_wizard.py:466
-#: src/big_remote_play/ui/headscale_wizard.py:490
-#: src/big_remote_play/ui/headscale_wizard.py:682
+#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:493
+#: src/big_remote_play/ui/headscale_wizard.py:685
 #: src/big_remote_play/ui/private_network_view.py:972
 #: src/big_remote_play/ui/private_network_view.py:1007
 msgid "Domain"
 msgstr "Domeniu"
 
-#: src/big_remote_play/ui/headscale_wizard.py:757
+#: src/big_remote_play/ui/headscale_wizard.py:760
 msgid "Domain is ready"
 msgstr "Domeniul este gata"
 
-#: src/big_remote_play/ui/headscale_wizard.py:475
+#: src/big_remote_play/ui/headscale_wizard.py:478
 msgid "Domain or subdomain"
 msgstr "Domeniu sau subdomeniu"
 
@@ -3522,8 +3550,8 @@ msgstr "Domeniu sau subdomeniu"
 msgid "Domain, router ports and security precautions."
 msgstr "Domeniu, porturi de router și măsuri de securitate."
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:898
 #: src/big_remote_play/ui/network_devices.py:727
 msgid "Done"
 msgstr "Gata"
@@ -3536,7 +3564,7 @@ msgstr ""
 "Descărcați-l de pe site-ul oficial sau folosiți Big Remote Play pe acel "
 "computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1184
+#: src/big_remote_play/ui/headscale_wizard.py:1187
 msgid ""
 "Download the .deb for your server from Headscale's releases page, then "
 "install it and Caddy."
@@ -3569,7 +3597,7 @@ msgstr ""
 "Fiecare deget atinge ecranul acestui computer, acolo unde desktopul acceptă "
 "atingerea."
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Easier and safer. Example: headscale.example.com"
 msgstr "Mai simplu și mai sigur. Exemplu: headscale.example.com"
 
@@ -3953,17 +3981,17 @@ msgstr "Totul este pregătit"
 msgid "Evict IP"
 msgstr "Elimină IP-ul"
 
-#: src/big_remote_play/ui/headscale_wizard.py:478
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:481
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "Example: headscale.example.com"
 msgstr "Exemplu: headscale.example.com"
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
-#: src/big_remote_play/ui/headscale_wizard.py:1050
+#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:1053
 msgid "Example: headscale.example.com or 203.0.113.10"
 msgstr "Exemplu: headscale.example.com sau 203.0.113.10"
 
-#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:547
 msgid "Example: mydomain.dpdns.org"
 msgstr "Exemplu: mydomain.dpdns.org"
 
@@ -4087,7 +4115,7 @@ msgstr ""
 "Degetele apasă butoanele controlerului de pe ecran, mai multe deodată. Nimic "
 "nu devine clic de mouse."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Finish"
 msgstr "Finalizează"
 
@@ -4124,7 +4152,7 @@ msgstr "Repară"
 msgid "Fix Dependencies"
 msgstr "Repară dependențele"
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 #, python-brace-format
 msgid "Fix it or delete it: {found}"
 msgstr "Corectează-l sau șterge-l: {found}"
@@ -4350,8 +4378,8 @@ msgstr "General"
 msgid "Get Network ID"
 msgstr "Obțineți Network ID-ul"
 
-#: src/big_remote_play/ui/headscale_wizard.py:557
-#: src/big_remote_play/ui/headscale_wizard.py:558
+#: src/big_remote_play/ui/headscale_wizard.py:560
+#: src/big_remote_play/ui/headscale_wizard.py:561
 msgid "Get a domain"
 msgstr "Obține un domeniu"
 
@@ -4428,7 +4456,7 @@ msgstr[2] ""
 "Invitații primesc înapoi mouse-ul și tastatura la {count} de secunde după ce "
 "nu le mai folosești."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1137
+#: src/big_remote_play/ui/headscale_wizard.py:1140
 msgid "Guided server setup"
 msgstr "Configurare ghidată a serverului"
 
@@ -4465,8 +4493,8 @@ msgstr "HEVC sau AV1 când sunt acceptate"
 msgid "HTTPS (Caddy)"
 msgstr "HTTPS (Caddy)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "HTTPS is not set up correctly for this address."
 msgstr "HTTPS nu este configurat corect pentru această adresă."
 
@@ -4475,7 +4503,7 @@ msgstr "HTTPS nu este configurat corect pentru această adresă."
 msgid "Hardware and Capture"
 msgstr "Hardware și Captură"
 
-#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:76
 msgid "Headscale"
 msgstr "Headscale"
 
@@ -4487,11 +4515,11 @@ msgstr "Cheie API Headscale"
 msgid "Headscale and Caddy must be installed first."
 msgstr "Headscale și Caddy trebuie instalate mai întâi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1101
+#: src/big_remote_play/ui/headscale_wizard.py:1104
 msgid "Headscale answers"
 msgstr "Headscale răspunde"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "Headscale did not start."
 msgstr "Headscale nu a pornit."
 
@@ -4503,7 +4531,7 @@ msgstr "Headscale nu a pornit. Vezi jurnalul său în Avansat."
 msgid "Headscale documentation"
 msgstr "Documentație Headscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 msgid "Headscale gives you your own private network server."
 msgstr "Headscale îți oferă propriul server de rețea privată."
 
@@ -4519,11 +4547,11 @@ msgstr ""
 "acces direct la joc fără VPN, folosește ghidul separat de pe pagina "
 "Conectează-ți dispozitivele."
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Headscale may work better on a VPS."
 msgstr "Headscale ar putea funcționa mai bine pe un VPS."
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid ""
 "Headscale needs a direct connection to your server. Do not use Cloudflare "
 "Tunnel for it either."
@@ -4531,7 +4559,7 @@ msgstr ""
 "Headscale are nevoie de o conexiune directă la serverul tău. Nu folosi nici "
 "Cloudflare Tunnel pentru el."
 
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Headscale on this computer has its own settings."
 msgstr "Headscale de pe acest computer are propriile setări."
 
@@ -4544,7 +4572,7 @@ msgstr ""
 "Headscale de pe acest computer este deja configurat pentru ${current}. Nu s-"
 "a modificat nimic."
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
+#: src/big_remote_play/ui/headscale_wizard.py:952
 msgid "Headscale on this computer is already set up for another address."
 msgstr ""
 "Headscale de pe acest computer este deja configurat pentru altă adresă."
@@ -4556,7 +4584,7 @@ msgstr ""
 "Headscale de pe acest computer folosește o adresă de ascultare "
 "personalizată. Nu s-a modificat nimic."
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Headscale or Caddy is not installed."
 msgstr "Headscale sau Caddy nu este instalat."
 
@@ -4564,7 +4592,7 @@ msgstr "Headscale sau Caddy nu este instalat."
 msgid "Headscale server"
 msgstr "Server Headscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:276
+#: src/big_remote_play/ui/headscale_wizard.py:279
 msgid "Headscale setup"
 msgstr "Configurare Headscale"
 
@@ -4572,7 +4600,7 @@ msgstr "Configurare Headscale"
 msgid "Headscale uses the regular Tailscale client."
 msgstr "Headscale folosește clientul Tailscale obișnuit."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1118
+#: src/big_remote_play/ui/headscale_wizard.py:1121
 #: src/big_remote_play/ui/provider_page.py:1197
 #, python-brace-format
 msgid "Headscale {version}"
@@ -4594,11 +4622,11 @@ msgstr "Ajutor"
 msgid "Help and diagnostics"
 msgstr "Ajutor și diagnosticare"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
+#: src/big_remote_play/ui/headscale_wizard.py:473
 msgid "Help me get one"
 msgstr "Ajută-mă să obțin unul"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "Hidden. Use Copy."
 msgstr "Ascunsă. Folosiți Copiază."
@@ -4719,7 +4747,7 @@ msgstr "Prioritatea gazdei"
 msgid "Host input priority is not working"
 msgstr "Prioritatea gazdei nu funcționează"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1248
+#: src/big_remote_play/ui/headscale_wizard.py:1271
 msgid "How do you want to add this computer?"
 msgstr "Cum vrei să adaugi acest computer?"
 
@@ -4745,7 +4773,7 @@ msgstr ""
 "Cât timp să se aștepte, în milisecunde, date de la Moonlight înainte de "
 "oprirea fluxului"
 
-#: src/big_remote_play/ui/headscale_wizard.py:446
+#: src/big_remote_play/ui/headscale_wizard.py:449
 msgid "How should your Headscale server be reached?"
 msgstr "Cum ar trebui accesat serverul tău Headscale?"
 
@@ -4769,11 +4797,11 @@ msgstr "Cum rulezi Headscale pe propriul server, pas cu pas."
 msgid "How to use the selected private network service."
 msgstr "Cum se folosește serviciul de rețea privată selectat."
 
-#: src/big_remote_play/ui/headscale_wizard.py:721
+#: src/big_remote_play/ui/headscale_wizard.py:724
 msgid "I added the record"
 msgstr "Am adăugat înregistrarea"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:472
 msgid "I already own a domain"
 msgstr "Am deja un domeniu"
 
@@ -4798,10 +4826,6 @@ msgstr "Nu am încă un server"
 msgid "I forgot the current password"
 msgstr "Am uitat parola actuală"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "I have a key from the server owner"
-msgstr "Am o cheie de la proprietarul serverului"
-
 #: src/big_remote_play/ui/guest_view.py:617
 msgid "I have a search code"
 msgstr "Am un cod de căutare"
@@ -4809,10 +4833,6 @@ msgstr "Am un cod de căutare"
 #: src/big_remote_play/ui/guest_view.py:611
 msgid "I know the IP address"
 msgstr "Cunosc adresa IP"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1251
-msgid "I manage this server"
-msgstr "Eu administrez acest server"
 
 #: src/big_remote_play/ui/guided_setup.py:125
 msgid "I will play using another computer."
@@ -4834,7 +4854,7 @@ msgstr "Adresă IP pentru a lega serviciul"
 msgid "IP address: {address}"
 msgstr "Adresă IP: {address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:689
+#: src/big_remote_play/ui/headscale_wizard.py:692
 msgid "IPv4 address"
 msgstr "Adresă IPv4"
 
@@ -4850,7 +4870,7 @@ msgstr "Doar IPv4"
 msgid "IPv6"
 msgstr "Protocolul IPv6"
 
-#: src/big_remote_play/ui/headscale_wizard.py:716
+#: src/big_remote_play/ui/headscale_wizard.py:719
 msgid "IPv6 address"
 msgstr "Adresă IPv6"
 
@@ -4902,7 +4922,7 @@ msgstr ""
 "desenat. „Verifică acest computer” arată dacă altă metodă de captură îl "
 "desenează."
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "If you just set up the domain, wait a little and check again."
 msgstr "Dacă abia ai configurat domeniul, așteaptă puțin și verifică din nou."
 
@@ -4966,7 +4986,7 @@ msgstr ""
 "În Big Remote Play, deschide Conectează-ți dispozitivele → ZeroTier și scrie "
 "acest cod."
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "In Cloudflare: DNS → Records → Add record."
 msgstr "În Cloudflare: DNS → Records → Add record."
 
@@ -5099,13 +5119,13 @@ msgstr "Instalare"
 msgid "Install Big WM Virtual Keyboard (package {package})"
 msgstr "Instalați Big WM Virtual Keyboard (pachetul {package})"
 
-#: src/big_remote_play/ui/headscale_wizard.py:822
-#: src/big_remote_play/ui/headscale_wizard.py:823
+#: src/big_remote_play/ui/headscale_wizard.py:825
+#: src/big_remote_play/ui/headscale_wizard.py:826
 msgid "Install Headscale"
 msgstr "Instalează Headscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:791
-#: src/big_remote_play/ui/headscale_wizard.py:1178
+#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:1181
 msgid "Install Headscale and Caddy"
 msgstr "Instalează Headscale și Caddy"
 
@@ -5118,7 +5138,7 @@ msgstr "Instalează Tailscale"
 msgid "Install ZeroTier"
 msgstr "Instalează ZeroTier"
 
-#: src/big_remote_play/ui/headscale_wizard.py:801
+#: src/big_remote_play/ui/headscale_wizard.py:804
 #: src/big_remote_play/ui/private_network_view.py:475
 #: src/big_remote_play/ui/provider_page.py:582
 msgid "Install and continue"
@@ -5128,7 +5148,7 @@ msgstr "Instalează și continuă"
 msgid "Install it first, then join the network."
 msgstr "Instalează-l mai întâi, apoi intră în rețea."
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Install them above first."
 msgstr "Instalează-le mai întâi, mai sus."
 
@@ -5262,7 +5282,7 @@ msgstr "Invitație creată"
 msgid "Invitation link"
 msgstr "Link de invitație"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1458
+#: src/big_remote_play/ui/headscale_wizard.py:1527
 msgid ""
 "It adds one computer and stops working after one hour. It is not an "
 "administrator key."
@@ -5270,7 +5290,7 @@ msgstr ""
 "Adaugă un singur computer și nu mai funcționează după o oră. Nu este o cheie "
 "de administrator."
 
-#: src/big_remote_play/ui/headscale_wizard.py:809
+#: src/big_remote_play/ui/headscale_wizard.py:812
 msgid ""
 "It also allows ports 80 and 443 in this computer's firewall, when a firewall "
 "is active."
@@ -5286,7 +5306,7 @@ msgstr ""
 "Răspunde în rețea, dar nu pe portul Sunshine. Pe PC-ul de joc, deschideți "
 "Partajare și alegeți Permite în firewall."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 msgid "It appears here once it joins."
 msgstr "Apare aici după ce se alătură."
 
@@ -5302,7 +5322,7 @@ msgstr ""
 msgid "It could not start. Stop and start sharing again."
 msgstr "Nu a putut porni. Oprește partajarea și pornește-o din nou."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 msgid "It is shown only now and is not stored."
 msgstr "Este afișată doar acum și nu este stocată."
 
@@ -5353,7 +5373,7 @@ msgstr ""
 "Necesită Sunshine {version} sau mai nou, care poate captura ecranul privat "
 "al jocului. Actualizează Sunshine, apoi deschide din nou Big Remote Play."
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 #, python-brace-format
 msgid "It points to {found}, not {expected}."
 msgstr "Indică spre {found}, nu spre {expected}."
@@ -5466,7 +5486,7 @@ msgstr "Captură de ecran KDE (KWin)"
 msgid "KMS (Direct)"
 msgstr "KMS (direct)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid "Keep Proxy status = DNS only"
 msgstr "Păstrează Proxy status = DNS only"
 
@@ -5504,7 +5524,7 @@ msgstr ""
 "Lasă redirecționarea porturilor routerului dezactivată când folosești un "
 "VPN. Modificările se aplică după repornirea partajării."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1200
+#: src/big_remote_play/ui/headscale_wizard.py:1203
 msgid ""
 "Keep the API key: Big Remote Play asks for it in the next step. It manages "
 "the server; never give it to a guest."
@@ -5548,12 +5568,12 @@ msgstr ""
 "Păstrată doar până închideți Big Remote Play: inelul de chei al sistemului "
 "nu a salvat-o."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 #: src/big_remote_play/ui/network_devices.py:761
 msgid "Key created"
 msgstr "Cheie creată"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1243
+#: src/big_remote_play/ui/headscale_wizard.py:1248
 msgid "Key for this computer"
 msgstr "Cheie pentru acest computer"
 
@@ -6211,13 +6231,13 @@ msgid "NVIDIA NVENC"
 msgstr "NVIDIA NVENC"
 
 #: src/big_remote_play/ui/game_library_dialog.py:385
-#: src/big_remote_play/ui/headscale_wizard.py:688
-#: src/big_remote_play/ui/headscale_wizard.py:715
+#: src/big_remote_play/ui/headscale_wizard.py:691
+#: src/big_remote_play/ui/headscale_wizard.py:718
 #: src/big_remote_play/ui/provider_page.py:814
 msgid "Name"
 msgstr "Nume"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1098
+#: src/big_remote_play/ui/headscale_wizard.py:1101
 msgid "Name found"
 msgstr "Nume găsit"
 
@@ -6229,7 +6249,7 @@ msgstr "Numele în rețea"
 msgid "Name shown in Big Remote Play"
 msgstr "Nume afișat în Big Remote Play"
 
-#: src/big_remote_play/ui/headscale_wizard.py:630
+#: src/big_remote_play/ui/headscale_wizard.py:633
 msgid "Nameserver"
 msgstr "Server de nume"
 
@@ -6387,24 +6407,24 @@ msgstr ""
 msgid "New passwords do not match."
 msgstr "Parolele noi nu coincid."
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:404
-#: src/big_remote_play/ui/headscale_wizard.py:656
-#: src/big_remote_play/ui/headscale_wizard.py:758
-#: src/big_remote_play/ui/headscale_wizard.py:1033
-#: src/big_remote_play/ui/headscale_wizard.py:1130
-#: src/big_remote_play/ui/headscale_wizard.py:1405
-#: src/big_remote_play/ui/headscale_wizard.py:1560
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:407
+#: src/big_remote_play/ui/headscale_wizard.py:659
+#: src/big_remote_play/ui/headscale_wizard.py:761
+#: src/big_remote_play/ui/headscale_wizard.py:1036
+#: src/big_remote_play/ui/headscale_wizard.py:1133
+#: src/big_remote_play/ui/headscale_wizard.py:1469
+#: src/big_remote_play/ui/headscale_wizard.py:1629
 msgid "Next"
 msgstr "Următorul"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:473
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/host_view.py:4055
 msgid "No"
 msgstr "Nu"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "No API key for this server yet."
 msgstr "Încă nu există o cheie API pentru acest server."
 
@@ -6428,11 +6448,11 @@ msgstr "Nu s-a găsit niciun cont"
 msgid "No active connection found"
 msgstr "Nu s-a găsit nicio conexiune activă"
 
-#: src/big_remote_play/ui/headscale_wizard.py:411
+#: src/big_remote_play/ui/headscale_wizard.py:414
 msgid "No answer from the address services."
 msgstr "Niciun răspuns de la serviciile de adresă."
 
-#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:89
 #, python-brace-format
 msgid "No answer on port {port}. A firewall or the router may block it."
 msgstr ""
@@ -6493,7 +6513,7 @@ msgid "No controller has arrived from the other computer"
 msgstr "Niciun controler nu a sosit de la celălalt computer"
 
 #: src/big_remote_play/ui/guest_view.py:2088
-#: src/big_remote_play/ui/headscale_wizard.py:425
+#: src/big_remote_play/ui/headscale_wizard.py:428
 #: src/big_remote_play/ui/provider_page.py:1057
 #: src/big_remote_play/ui/provider_page.py:1203
 msgid "No details reported."
@@ -6597,7 +6617,7 @@ msgstr "Nimeni nu joacă încă"
 msgid "No other device online to measure"
 msgstr "Niciun alt dispozitiv online de măsurat"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 #: src/big_remote_play/ui/network_devices.py:223
 #: src/big_remote_play/ui/provider_page.py:651
 #: src/big_remote_play/ui/provider_page.py:669
@@ -6717,7 +6737,7 @@ msgid "Not available"
 msgstr "Indisponibil"
 
 #: src/big_remote_play/ui/guest_view.py:2066
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 msgid "Not checked"
 msgstr "Neverificat"
 
@@ -6830,9 +6850,9 @@ msgstr ""
 msgid "Not signed in"
 msgstr "Neconectat"
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:797
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:800
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Not yet"
 msgstr "Încă nu"
 
@@ -6840,23 +6860,23 @@ msgstr "Încă nu"
 msgid "Nothing to install."
 msgstr "Nimic de instalat."
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "Nothing was changed."
 msgstr "Nu s-a modificat nimic."
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "Nothing was changed. Choose Set up the server to try again."
 msgstr ""
 "Nu s-a modificat nimic. Alege „Configurează serverul” pentru a încerca din "
 "nou."
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Nothing was changed. See Advanced on the Headscale page."
 msgstr "Nu s-a modificat nimic. Vezi Avansat pe pagina Headscale."
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "Nothing was enabled. See the technical details."
 msgstr "Nu s-a activat nimic. Vezi detaliile tehnice."
 
@@ -6924,7 +6944,7 @@ msgstr "Offline"
 msgid "Old log files have been removed."
 msgstr "Fișierele vechi de jurnal au fost eliminate."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1179
+#: src/big_remote_play/ui/headscale_wizard.py:1182
 msgid "On Arch Linux:"
 msgstr "Pe Arch Linux:"
 
@@ -6940,7 +6960,7 @@ msgstr ""
 msgid "On a computer, a phone or a controller"
 msgstr "Pe un computer, un telefon sau un controler"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1193
 msgid "On a new server this replaces Caddy's example page."
 msgstr "Pe un server nou, aceasta înlocuiește pagina de exemplu a Caddy."
 
@@ -6974,7 +6994,7 @@ msgstr ""
 "\n"
 "Lăsați fereastra deschisă. Conectarea continuă după aprobare."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1443
+#: src/big_remote_play/ui/headscale_wizard.py:1512
 #: src/big_remote_play/ui/network_devices.py:536
 #: src/big_remote_play/ui/network_devices.py:723
 #: src/big_remote_play/ui/network_devices.py:780
@@ -7035,6 +7055,14 @@ msgstr ""
 "expiration 90d”). În Big Remote Play adăugați adresa serverului și cheia la "
 "Acces API. Cheia API gestionează serverul; o cheie de preautentificare doar "
 "înregistrează un computer."
+
+#: src/big_remote_play/ui/headscale_wizard.py:1275
+msgid ""
+"On the server, run this command and paste the key it prints. Big Remote Play "
+"then does the rest and remembers the key."
+msgstr ""
+"Pe server, rulează această comandă și lipește cheia pe care o afișează. Big "
+"Remote Play se ocupă apoi de rest și reține cheia."
 
 #: src/big_remote_play/ui/guest_view.py:633
 msgid "On this computer"
@@ -7124,7 +7152,7 @@ msgstr "Un singur controler odată"
 msgid "One entry per screen"
 msgstr "O intrare pentru fiecare ecran"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "One-time key"
 msgstr "Cheie de unică folosință"
@@ -7165,7 +7193,7 @@ msgstr ""
 "Doar pe acest computer. Nu se trimite nimic nicăieri și nu se stochează "
 "nicio parolă, cheie sau cod."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1364
+#: src/big_remote_play/ui/headscale_wizard.py:1428
 msgid ""
 "Only one Tailscale-based network can be active on this computer at a time. "
 "Tailscale stays saved and can be turned on again later. ZeroTier is not "
@@ -7253,8 +7281,8 @@ msgstr ""
 "Deschideți mai întâi „Verifică acest computer” pentru a vedea starea actuală "
 "de aici."
 
-#: src/big_remote_play/ui/headscale_wizard.py:614
-#: src/big_remote_play/ui/headscale_wizard.py:723
+#: src/big_remote_play/ui/headscale_wizard.py:617
+#: src/big_remote_play/ui/headscale_wizard.py:726
 msgid "Open Cloudflare"
 msgstr "Deschide Cloudflare"
 
@@ -7271,12 +7299,12 @@ msgstr ""
 "porniți partajarea pe computerul de jocuri și conectați-vă folosind adresa "
 "lui privată."
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
-#: src/big_remote_play/ui/headscale_wizard.py:610
+#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:613
 msgid "Open DigitalPlat"
 msgstr "Deschide DigitalPlat"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1210
+#: src/big_remote_play/ui/headscale_wizard.py:1213
 msgid "Open Headscale releases"
 msgstr "Deschide versiunile Headscale"
 
@@ -7372,7 +7400,7 @@ msgstr "Deschideți această pagină pentru verificare"
 msgid "Open when a device starts playing"
 msgstr "Deschide când un dispozitiv începe să joace"
 
-#: src/big_remote_play/ui/headscale_wizard.py:989
+#: src/big_remote_play/ui/headscale_wizard.py:992
 msgid "Open your router's settings page"
 msgstr "Deschide pagina de setări a routerului"
 
@@ -7412,7 +7440,7 @@ msgstr "Operația a eșuat: {error}"
 msgid "Optimize the mouse for remote desktop"
 msgstr "Optimizează mouse-ul pentru desktop la distanță"
 
-#: src/big_remote_play/ui/headscale_wizard.py:712
+#: src/big_remote_play/ui/headscale_wizard.py:715
 msgid "Optional: IPv6"
 msgstr "Opțional: IPv6"
 
@@ -7420,7 +7448,7 @@ msgstr "Opțional: IPv6"
 msgid "Or choose what you want to do"
 msgstr "Sau alege ce vrei să faci"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1186
 msgid "Or on Debian and Ubuntu"
 msgstr "Sau pe Debian și Ubuntu"
 
@@ -7428,11 +7456,11 @@ msgstr "Sau pe Debian și Ubuntu"
 msgid "Or reset it if it was forgotten"
 msgstr "Sau resetați-o dacă ați uitat-o"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "Or the Tailscale app on a phone."
 msgstr "Sau aplicația Tailscale pe un telefon."
 
-#: src/big_remote_play/ui/headscale_wizard.py:480
+#: src/big_remote_play/ui/headscale_wizard.py:483
 msgid "Other"
 msgstr "Altul"
 
@@ -7615,15 +7643,7 @@ msgstr "Mai întâi lipiți datele de acces."
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Lipiți adresa serverului și cheia în câmpurile de pe această pagină."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1252
-msgid ""
-"Paste the server's API key. Big Remote Play then does the rest. It is kept "
-"in the system keyring."
-msgstr ""
-"Lipește cheia API a serverului. Big Remote Play se ocupă apoi de rest. Este "
-"păstrată în inelul de chei al sistemului."
-
-#: src/big_remote_play/ui/headscale_wizard.py:603
+#: src/big_remote_play/ui/headscale_wizard.py:606
 msgid "Paste the two nameservers (optional)"
 msgstr "Lipește cele două servere de nume (opțional)"
 
@@ -7631,7 +7651,7 @@ msgstr "Lipește cele două servere de nume (opțional)"
 msgid "Paste the whole sign-in link shown on the other computer."
 msgstr "Lipiți întregul link de autentificare afișat pe celălalt computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Pasting them lets Big Remote Play follow your progress."
 msgstr "Dacă le lipești, Big Remote Play îți poate urmări progresul."
 
@@ -7767,7 +7787,7 @@ msgstr "Joci pe {name}"
 msgid "Plays a short tone and checks that it reaches the shared sound."
 msgstr "Redă un ton scurt și verifică dacă ajunge în sunetul partajat."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Point a domain to it"
 msgstr "Îndreaptă un domeniu spre el"
 
@@ -7792,11 +7812,11 @@ msgstr ""
 "Îndreptați camera telefonului spre cod pentru a deschide acolo acest ghid în "
 "timp ce jucați."
 
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "Point your domain to the server"
 msgstr "Îndreaptă domeniul spre server"
 
-#: src/big_remote_play/ui/headscale_wizard.py:683
+#: src/big_remote_play/ui/headscale_wizard.py:686
 msgid "Points to"
 msgstr "Indică spre"
 
@@ -7821,7 +7841,7 @@ msgstr "Redirecționarea porturilor (avansat)"
 msgid "Portal (screen picker)"
 msgstr "Portal (selector de ecran)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 #, python-brace-format
 msgid "Ports 80 and 443 (TCP) → {address}"
 msgstr "Porturile 80 și 443 (TCP) → {address}"
@@ -7945,11 +7965,11 @@ msgstr "Povestea proiectului"
 msgid "Project story on YouTube"
 msgstr "Povestea proiectului pe YouTube"
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "Proxy status"
 msgstr "Proxy status"
 
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Public IPv6"
 msgstr "IPv6 public"
 
@@ -8128,8 +8148,8 @@ msgstr "Primește jocul de la celălalt computer."
 
 #. TRANSLATORS: shown next to Tailscale: the method suggested for most people.
 #: src/big_remote_play/ui/guided_setup.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:451
 #: src/big_remote_play/ui/provider_page.py:60
 msgid "Recommended"
 msgstr "Recomandat"
@@ -8155,7 +8175,7 @@ msgstr ""
 "Recomandat pentru a juca cu un prieten. Prietenul dvs. primește acces doar "
 "la acest computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Recommended. Big Remote Play can guide you."
 msgstr "Recomandat. Big Remote Play te poate ghida."
 
@@ -8749,8 +8769,8 @@ msgstr[2] "Se caută… {asked} din {total} de adrese verificate"
 msgid "Secure connection"
 msgstr "Conexiune securizată"
 
-#: src/big_remote_play/ui/headscale_wizard.py:72
-#: src/big_remote_play/ui/headscale_wizard.py:1100
+#: src/big_remote_play/ui/headscale_wizard.py:75
+#: src/big_remote_play/ui/headscale_wizard.py:1103
 msgid "Secure connection (HTTPS)"
 msgstr "Conexiune securizată (HTTPS)"
 
@@ -8762,11 +8782,11 @@ msgstr "Securitate și acces"
 msgid "See details"
 msgstr "Vezi detaliile"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "See its log in Advanced on the Headscale page."
 msgstr "Vezi jurnalul său în Avansat, pe pagina Headscale."
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "See the technical details."
 msgstr "Vezi detaliile tehnice."
 
@@ -8838,9 +8858,13 @@ msgid "Send the PIN shown on the other device to finish pairing"
 msgstr ""
 "Trimiteți PIN-ul afișat pe celălalt dispozitiv pentru a finaliza asocierea"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
-msgid "Send them this command. This page continues by itself once they run it."
-msgstr "Trimite-i această comandă. Pagina continuă singură după ce o rulează."
+#: src/big_remote_play/ui/headscale_wizard.py:1500
+msgid ""
+"Send them these commands; the first is needed only once. This page continues "
+"by itself once they run them."
+msgstr ""
+"Trimite-i aceste comenzi; prima este necesară o singură dată. Pagina "
+"continuă singură după ce le rulează."
 
 #: src/big_remote_play/ui/network_devices.py:665
 msgid ""
@@ -8901,8 +8925,8 @@ msgstr ""
 "aplicații de apeluri. Cine participă și el la apel își aude propria voce "
 "înapoi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:69
-#: src/big_remote_play/ui/headscale_wizard.py:1241
+#: src/big_remote_play/ui/headscale_wizard.py:72
+#: src/big_remote_play/ui/headscale_wizard.py:1246
 msgid "Server"
 msgstr "Server"
 
@@ -8915,13 +8939,13 @@ msgstr "Domeniul serverului (de ex. vpn.example.com)"
 msgid "Server Failed to Start"
 msgstr "Serverul nu a reușit să pornească."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1040
+#: src/big_remote_play/ui/headscale_wizard.py:1043
 msgid "Server IP or domain"
 msgstr "IP-ul sau domeniul serverului"
 
 #: src/big_remote_play/ui/api_access_dialog.py:187
-#: src/big_remote_play/ui/headscale_wizard.py:445
-#: src/big_remote_play/ui/headscale_wizard.py:810
+#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:813
 #: src/big_remote_play/ui/network_devices.py:788
 #: src/big_remote_play/ui/network_devices.py:789
 #: src/big_remote_play/ui/private_network_view.py:699
@@ -8930,7 +8954,7 @@ msgstr "IP-ul sau domeniul serverului"
 msgid "Server address"
 msgstr "Adresa serverului"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1099
+#: src/big_remote_play/ui/headscale_wizard.py:1102
 msgid "Server answers"
 msgstr "Serverul răspunde"
 
@@ -8938,7 +8962,7 @@ msgstr "Serverul răspunde"
 msgid "Server control panel"
 msgstr "Panoul serverului"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1119
+#: src/big_remote_play/ui/headscale_wizard.py:1122
 msgid "Server found"
 msgstr "Server găsit"
 
@@ -8984,7 +9008,7 @@ msgstr "Servicii"
 msgid "Sessions"
 msgstr "Sesiuni"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1187
+#: src/big_remote_play/ui/headscale_wizard.py:1190
 msgid "Set the server address"
 msgstr "Setează adresa serverului"
 
@@ -9004,25 +9028,25 @@ msgstr ""
 msgid "Set up"
 msgstr "Configurează"
 
-#: src/big_remote_play/ui/headscale_wizard.py:548
+#: src/big_remote_play/ui/headscale_wizard.py:551
 msgid "Set up Cloudflare"
 msgstr "Configurează Cloudflare"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Set up DNS with Cloudflare"
 msgstr "Configurează DNS-ul cu Cloudflare"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 #: src/big_remote_play/ui/provider_page.py:1091
 #: src/big_remote_play/ui/provider_page.py:1170
 msgid "Set up Headscale"
 msgstr "Configurează Headscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1209
+#: src/big_remote_play/ui/headscale_wizard.py:1212
 msgid "Set up a domain"
 msgstr "Configurează un domeniu"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1136
+#: src/big_remote_play/ui/headscale_wizard.py:1139
 msgid "Set up a domain for it"
 msgstr "Configurează un domeniu pentru el"
 
@@ -9030,9 +9054,9 @@ msgstr "Configurează un domeniu pentru el"
 msgid "Set up a secure connection"
 msgstr "Configurează o conexiune securizată"
 
-#: src/big_remote_play/ui/headscale_wizard.py:802
-#: src/big_remote_play/ui/headscale_wizard.py:1214
-#: src/big_remote_play/ui/headscale_wizard.py:1215
+#: src/big_remote_play/ui/headscale_wizard.py:805
+#: src/big_remote_play/ui/headscale_wizard.py:1217
+#: src/big_remote_play/ui/headscale_wizard.py:1218
 msgid "Set up the server"
 msgstr "Configurează serverul"
 
@@ -9342,7 +9366,7 @@ msgstr ""
 msgid "Sign-in expired"
 msgstr "Autentificarea a expirat"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1436
+#: src/big_remote_play/ui/headscale_wizard.py:1505
 msgid "Sign-in link"
 msgstr "Link de autentificare"
 
@@ -9431,7 +9455,7 @@ msgstr ""
 "site-urile. Folosiți o rețea privată sau cereți furnizorului o adresă IPv4 "
 "publică."
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Something answers there, but it is not a Headscale server."
 msgstr "Ceva răspunde acolo, dar nu este un server Headscale."
 
@@ -9484,7 +9508,7 @@ msgstr "Start + Select"
 msgid "Start ZeroTier"
 msgstr "Pornește ZeroTier"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1197
 msgid "Start both and open the ports"
 msgstr "Pornește-le pe amândouă și deschide porturile"
 
@@ -9492,13 +9516,13 @@ msgstr "Pornește-le pe amândouă și deschide porturile"
 msgid "Start it to play with your other devices."
 msgstr "Pornește-l ca să te joci cu celelalte dispozitive."
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
-#: src/big_remote_play/ui/headscale_wizard.py:353
-#: src/big_remote_play/ui/headscale_wizard.py:1140
+#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:356
+#: src/big_remote_play/ui/headscale_wizard.py:1143
 msgid "Start over"
 msgstr "Ia-o de la capăt"
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "Start over?"
 msgstr "O iei de la capăt?"
 
@@ -9655,12 +9679,12 @@ msgid ""
 msgstr ""
 "Pas cu pas: unde rulează serverul, adresa lui, HTTPS și acest computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1577
+#: src/big_remote_play/ui/headscale_wizard.py:1646
 #, python-brace-format
 msgid "Step {number} of {total}"
 msgstr "Pasul {number} din {total}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:264
+#: src/big_remote_play/ui/headscale_wizard.py:267
 #, python-brace-format
 msgid "Step {number} of {total} · {name}"
 msgstr "Pasul {number} din {total} · {name}"
@@ -10159,7 +10183,7 @@ msgstr "Inversează butoanele stâng și drept ale mouse-ului"
 msgid "Swipe from the left edge of the screen"
 msgstr "Glisați de la marginea din stânga a ecranului"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1368
+#: src/big_remote_play/ui/headscale_wizard.py:1432
 #: src/big_remote_play/ui/remote_connection.py:250
 #: src/big_remote_play/ui/tailscale_accounts.py:107
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:208
@@ -10170,7 +10194,7 @@ msgstr "Schimbă"
 msgid "Switch between full screen and a window"
 msgstr "Comută între ecran complet și fereastră"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1363
+#: src/big_remote_play/ui/headscale_wizard.py:1427
 msgid "Switch from Tailscale to Headscale?"
 msgstr "Treci de la Tailscale la Headscale?"
 
@@ -10314,7 +10338,7 @@ msgstr "Detalii audio tehnice"
 
 #: src/big_remote_play/ui/dependency_installer.py:171
 #: src/big_remote_play/ui/guest_view.py:2087
-#: src/big_remote_play/ui/headscale_wizard.py:424
+#: src/big_remote_play/ui/headscale_wizard.py:427
 #: src/big_remote_play/ui/provider_page.py:1202
 #: src/big_remote_play/ui/zerotier_join.py:225
 msgid "Technical details"
@@ -10359,11 +10383,11 @@ msgstr ""
 "Acel computer afișează un link de autentificare. Lipiți-l aici pentru a-l "
 "aproba sau aprobați-l pe server."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "The API key could not be saved."
 msgstr "Cheia API nu a putut fi salvată."
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "The HTTPS configuration was not accepted."
 msgstr "Configurația HTTPS nu a fost acceptată."
 
@@ -10375,13 +10399,13 @@ msgstr "Configurația HTTPS nu a fost acceptată. Nu s-a activat nimic."
 msgid "The Headscale configuration file is missing."
 msgstr "Lipsește fișierul de configurare Headscale."
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
-#: src/big_remote_play/ui/headscale_wizard.py:86
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:90
 msgid "The Headscale server is not reachable."
 msgstr "Serverul Headscale nu poate fi accesat."
 
-#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:307
 msgid ""
 "The Headscale server needs to stay available so your devices can find each "
 "other."
@@ -10397,7 +10421,7 @@ msgstr "Serverul Headscale funcționează."
 msgid "The Headscale setup is not finished."
 msgstr "Configurarea Headscale nu este terminată."
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 msgid "The IPv6 record points somewhere else."
 msgstr "Înregistrarea IPv6 indică în altă parte."
 
@@ -10527,7 +10551,7 @@ msgstr ""
 "Conexiunea VPN activă se va opri. Conturile salvate sunt păstrate pentru a "
 "te putea reconecta ulterior."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1048
+#: src/big_remote_play/ui/headscale_wizard.py:1051
 msgid "The address of the computer or VPS that runs Headscale."
 msgstr "Adresa computerului sau a VPS-ului pe care rulează Headscale."
 
@@ -10665,13 +10689,13 @@ msgstr "Dispozitivul"
 msgid "The device list could not be read."
 msgstr "Lista de dispozitive nu a putut fi citită."
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "The domain could not be checked."
 msgstr "Domeniul nu a putut fi verificat."
 
-#: src/big_remote_play/ui/headscale_wizard.py:537
+#: src/big_remote_play/ui/headscale_wizard.py:540
 msgid "The domain you registered"
 msgstr "Domeniul pe care l-ai înregistrat"
 
@@ -10701,7 +10725,7 @@ msgstr "Fișierul în care sunt stocate jurnalele curente ale Sunshine."
 msgid "The file that stores Sunshine's current state."
 msgstr "Fișierul în care este stocat starea curentă a Sunshine."
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "The finished steps are forgotten. Nothing on the server is removed."
 msgstr "Pașii terminați sunt uitați. Nu se elimină nimic de pe server."
 
@@ -10878,7 +10902,7 @@ msgstr ""
 msgid "The installation was cancelled. Nothing was changed."
 msgstr "Instalarea a fost anulată. Nu s-a schimbat nimic."
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The internet could not reach this computer."
 msgstr "Internetul nu a putut ajunge la acest computer."
 
@@ -10946,7 +10970,7 @@ msgstr ""
 "un calculator conectat simultan prin cablu și Wi-Fi poate provoca asta: "
 "opriți conexiunea pe care nu o folosește."
 
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:90
 #, python-brace-format
 msgid "The network cannot reach it on port {port}."
 msgstr "Rețeaua nu poate ajunge la el pe portul {port}."
@@ -11066,7 +11090,7 @@ msgstr "Proprietarul rețelei trebuie încă să aprobe acest calculator."
 msgid "The pacman package manager is not available on this system."
 msgstr "Managerul de pachete pacman nu este disponibil pe acest sistem."
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "The password was not given."
 msgstr "Parola nu a fost introdusă."
 
@@ -11189,7 +11213,7 @@ msgstr "Căutarea s-a oprit înainte de a verifica toate adresele."
 msgid "The search was cancelled."
 msgstr "Căutarea a fost anulată."
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The secure certificate could not be obtained."
 msgstr "Certificatul securizat nu a putut fi obținut."
 
@@ -11209,11 +11233,11 @@ msgstr "Ieșirea selectată nu este conectată. Reconecteaz-o sau alege Automat.
 msgid "The server administrator then approves this computer."
 msgstr "Apoi administratorul serverului aprobă acest computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:94
 msgid "The server could not be checked."
 msgstr "Serverul nu a putut fi verificat."
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "The server could not be set up."
 msgstr "Serverul nu a putut fi configurat."
 
@@ -11221,7 +11245,7 @@ msgstr "Serverul nu a putut fi configurat."
 msgid "The server details could not be read."
 msgstr "Detaliile serverului nu au putut fi citite."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "The server did not accept this API key."
 msgstr "Serverul nu a acceptat această cheie API."
 
@@ -11229,11 +11253,11 @@ msgstr "Serverul nu a acceptat această cheie API."
 msgid "The server did not find what was requested."
 msgstr "Serverul nu a găsit ce s-a solicitat."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
+#: src/big_remote_play/ui/headscale_wizard.py:1402
 msgid "The server did not give a key for this computer."
 msgstr "Serverul nu a oferit o cheie pentru acest computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "The server did not give a key."
 msgstr "Serverul nu a oferit o cheie."
 
@@ -11241,11 +11265,15 @@ msgstr "Serverul nu a oferit o cheie."
 msgid "The server log says why a capture could not open."
 msgstr "Jurnalul serverului spune de ce o captură nu s-a putut deschide."
 
+#: src/big_remote_play/ui/headscale_wizard.py:1262
+msgid "The server runs on this computer"
+msgstr "Serverul rulează pe acest computer"
+
 #: src/big_remote_play/ui/provider_page.py:1249
 msgid "The server setup could not be removed."
 msgstr "Configurarea serverului nu a putut fi eliminată."
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid ""
 "The server setup is not available when Big Remote Play runs from its source "
 "folder."
@@ -11263,11 +11291,11 @@ msgstr ""
 "Serverul a încercat să redirecționeze cererea, lucru refuzat din motive de "
 "siguranță."
 
-#: src/big_remote_play/ui/headscale_wizard.py:677
+#: src/big_remote_play/ui/headscale_wizard.py:680
 msgid "The server's public IP address"
 msgstr "Adresa IP publică a serverului"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:91
 msgid "The server's secure certificate is not valid."
 msgstr "Certificatul securizat al serverului nu este valid."
 
@@ -11295,7 +11323,7 @@ msgstr ""
 msgid "The service did not accept the request."
 msgstr "Serviciul nu a acceptat cererea."
 
-#: src/big_remote_play/ui/headscale_wizard.py:224
+#: src/big_remote_play/ui/headscale_wizard.py:227
 msgid "The setup progress could not be saved."
 msgstr "Progresul configurării nu a putut fi salvat."
 
@@ -11443,7 +11471,7 @@ msgstr ""
 msgid "The {name} service is not running on this computer."
 msgstr "Serviciul {name} nu rulează pe acest computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "Then Set up → Another server."
 msgstr "Apoi Configurează → Alt server."
 
@@ -11459,7 +11487,7 @@ msgstr "Nu există imagine"
 msgid "There is no sound"
 msgstr "Nu există sunet"
 
-#: src/big_remote_play/ui/headscale_wizard.py:638
+#: src/big_remote_play/ui/headscale_wizard.py:641
 msgid "These are not Cloudflare nameservers. They end in .ns.cloudflare.com."
 msgstr ""
 "Acestea nu sunt servere de nume Cloudflare. Ele se termină "
@@ -11524,8 +11552,8 @@ msgstr ""
 "detrimentul unei utilizări mai mari a GPU-ului și a unei performanțe mai "
 "slabe."
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:667
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "This can take a little while."
 msgstr "Poate dura puțin."
 
@@ -11537,9 +11565,9 @@ msgstr "Aceasta schimbă numai numele afișat de Big Remote Play."
 msgid "This code is not complete"
 msgstr "Acest cod nu este complet"
 
-#: src/big_remote_play/ui/headscale_wizard.py:74
-#: src/big_remote_play/ui/headscale_wizard.py:306
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:77
+#: src/big_remote_play/ui/headscale_wizard.py:309
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 #: src/big_remote_play/ui/host_view.py:115
 #: src/big_remote_play/ui/network_devices.py:173
 #: src/big_remote_play/ui/remote_connection.py:356
@@ -11547,9 +11575,15 @@ msgstr "Acest cod nu este complet"
 msgid "This computer"
 msgstr "Acest computer"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "This computer asks to join; the owner approves it on the server."
-msgstr "Acest computer cere să se alăture; proprietarul îl aprobă pe server."
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1293
+#, python-brace-format
+msgid ""
+"This computer asks to join; Big Remote Play shows the exact commands for the "
+"owner, with your user “{user}”."
+msgstr ""
+"Acest computer cere să se alăture; Big Remote Play afișează comenzile exacte "
+"pentru proprietar, cu utilizatorul tău „{user}”."
 
 #: src/big_remote_play/ui/provider_page.py:1068
 msgid "This computer can be in several ZeroTier networks."
@@ -11568,7 +11602,7 @@ msgstr ""
 "Codecul și HDR depind, de asemenea, de ambele computere. Modificările se "
 "aplică după repornirea partajării."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "This computer could not join."
 msgstr "Acest computer nu s-a putut alătura."
 
@@ -11598,7 +11632,7 @@ msgstr ""
 "Acest computer este autorizat, dar rețeaua nu i-a dat încă o adresă. "
 "Proprietarul rețelei îi poate atribui una."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1404
+#: src/big_remote_play/ui/headscale_wizard.py:1468
 msgid "This computer is connected"
 msgstr "Acest computer este conectat"
 
@@ -11641,7 +11675,7 @@ msgstr "Acest computer este în rețeaua {name}."
 msgid "This computer is on your {name} network."
 msgstr "Acest computer este în rețeaua dvs. {name}."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "This computer joins your Headscale network."
 msgstr "Acest computer se alătură rețelei tale Headscale."
 
@@ -11776,12 +11810,12 @@ msgstr ""
 msgid "This device · {state}"
 msgstr "Acest dispozitiv · {state}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1304
+#: src/big_remote_play/ui/headscale_wizard.py:1340
 msgid "This does not look like a key that adds a computer."
 msgstr "Aceasta nu pare o cheie care adaugă un computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:524
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "This domain does not exist yet."
 msgstr "Acest domeniu nu există încă."
 
@@ -11813,7 +11847,7 @@ msgstr ""
 "Aceasta este o solicitare. Funcționează numai dacă este acceptată de "
 "computerul de jocuri."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "This is an administrator key."
 msgstr "Aceasta este o cheie de administrator."
 
@@ -11830,19 +11864,19 @@ msgstr ""
 msgid "This is not a code from the other device."
 msgstr "Acesta nu este un cod de pe celălalt dispozitiv."
 
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "This is not a domain."
 msgstr "Acesta nu este un domeniu."
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "This is not a public IP address."
 msgstr "Aceasta nu este o adresă IP publică."
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
+#: src/big_remote_play/ui/headscale_wizard.py:86
 msgid "This is not a server address."
 msgstr "Aceasta nu este o adresă de server."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "This is not an API key."
 msgstr "Aceasta nu este o cheie API."
 
@@ -11858,15 +11892,15 @@ msgstr ""
 msgid "This is the computer that will run the game."
 msgstr "Acesta este computerul pe care va rula jocul."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "This key adds one computer; it is not an API key."
 msgstr "Această cheie adaugă un computer; nu este o cheie API."
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "This name does not lead to a server yet."
 msgstr "Acest nume nu duce încă la un server."
 
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "This name is already set in /etc/hosts."
 msgstr "Acest nume este deja setat în /etc/hosts."
 
@@ -11878,7 +11912,7 @@ msgstr "Acest nume este deja setat în /etc/hosts. Nu s-a modificat nimic."
 msgid "This name is not valid."
 msgstr "Acest nume nu este valid."
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid "This needs the installed Big Remote Play package."
 msgstr "Este necesar pachetul Big Remote Play instalat."
 
@@ -11951,7 +11985,7 @@ msgstr "Rezoluția acestui ecran"
 msgid "This server address is not valid."
 msgstr "Această adresă de server nu este validă."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1124
+#: src/big_remote_play/ui/headscale_wizard.py:1127
 msgid ""
 "This server runs on this computer. Your router does not send this computer's "
 "own traffic back to it, so Big Remote Play checked it directly and will "
@@ -12083,7 +12117,7 @@ msgstr "Origini web de încredere"
 msgid "Try again"
 msgstr "Încearcă din nou"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "Try again, or choose another option."
 msgstr "Încearcă din nou sau alege altă opțiune."
 
@@ -12124,7 +12158,7 @@ msgstr "Oprești ZeroTier?"
 msgid "Turn on"
 msgstr "Pornește"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1189
+#: src/big_remote_play/ui/headscale_wizard.py:1192
 msgid "Turn on HTTPS with Caddy"
 msgstr "Activează HTTPS cu Caddy"
 
@@ -12138,8 +12172,8 @@ msgid "Turned on"
 msgstr "Activat"
 
 #: src/big_remote_play/ui/api_access_dialog.py:150
-#: src/big_remote_play/ui/headscale_wizard.py:687
-#: src/big_remote_play/ui/headscale_wizard.py:714
+#: src/big_remote_play/ui/headscale_wizard.py:690
+#: src/big_remote_play/ui/headscale_wizard.py:717
 msgid "Type"
 msgstr "Tip"
 
@@ -12165,8 +12199,8 @@ msgid ""
 msgstr ""
 "Introdu adresa serverului tău. Administratorul lui aprobă acest computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:577
-#: src/big_remote_play/ui/headscale_wizard.py:586
+#: src/big_remote_play/ui/headscale_wizard.py:580
+#: src/big_remote_play/ui/headscale_wizard.py:589
 msgid "Type the domain you registered, for example mydomain.dpdns.org."
 msgstr ""
 "Scrie domeniul pe care l-ai înregistrat, de exemplu mydomain.dpdns.org."
@@ -12347,15 +12381,15 @@ msgstr ""
 msgid "Use Tailscale"
 msgstr "Folosește Tailscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "Use a Linux server that stays on"
 msgstr "Folosește un server Linux care rămâne pornit"
 
-#: src/big_remote_play/ui/headscale_wizard.py:981
+#: src/big_remote_play/ui/headscale_wizard.py:984
 msgid "Use a VPS instead"
 msgstr "Folosește mai bine un VPS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
+#: src/big_remote_play/ui/headscale_wizard.py:308
 msgid "Use a VPS or another computer that stays online."
 msgstr "Folosește un VPS sau alt computer care rămâne online."
 
@@ -12364,11 +12398,11 @@ msgid "Use a cable or 5 GHz Wi-Fi on both computers when possible."
 msgstr ""
 "Folosiți un cablu sau Wi-Fi de 5 GHz pe ambele computere când este posibil."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1139
+#: src/big_remote_play/ui/headscale_wizard.py:1142
 msgid "Use a different address"
 msgstr "Folosește altă adresă"
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Use a domain"
 msgstr "Folosește un domeniu"
 
@@ -12391,10 +12425,10 @@ msgstr ""
 msgid "Use another account"
 msgstr "Folosește alt cont"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:402
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:997
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:405
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:1000
 msgid "Use another server"
 msgstr "Folosește alt server"
 
@@ -12415,11 +12449,11 @@ msgstr "Folosește decodarea hardware când este disponibilă"
 msgid "Use it"
 msgstr "Folosește"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "Use it in the first option, or ask for a key that adds one computer."
 msgstr "Folosește-o la prima opțiune sau cere o cheie care adaugă un computer."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "Use it in the second option instead."
 msgstr "Folosește-o mai bine la a doua opțiune."
 
@@ -12431,7 +12465,7 @@ msgstr "Folosiți mai multe controlere"
 msgid "Use only when both computers and the screen support HDR."
 msgstr "Folosește numai dacă ambele computere și ecranul acceptă HDR."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1256
+#: src/big_remote_play/ui/headscale_wizard.py:1280
 msgid "Use the API key"
 msgstr "Folosește cheia API"
 
@@ -12447,7 +12481,7 @@ msgstr ""
 msgid "Use the controller to move the mouse"
 msgstr "Folosește controlerul pentru a deplasa mouse-ul"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid "Use the detected address"
 msgstr "Folosește adresa detectată"
 
@@ -12464,7 +12498,7 @@ msgstr ""
 msgid "Use the touchscreen as a virtual trackpad"
 msgstr "Folosește ecranul tactil ca touchpad virtual"
 
-#: src/big_remote_play/ui/headscale_wizard.py:306
+#: src/big_remote_play/ui/headscale_wizard.py:309
 msgid "Use this PC as the Headscale server."
 msgstr "Folosește acest PC ca server Headscale."
 
@@ -12472,7 +12506,7 @@ msgstr "Folosește acest PC ca server Headscale."
 msgid "Use this connection"
 msgstr "Folosește această conexiune"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1258
+#: src/big_remote_play/ui/headscale_wizard.py:1288
 msgid "Use this key"
 msgstr "Folosește această cheie"
 
@@ -12485,7 +12519,7 @@ msgstr ""
 msgid "Use this screen's resolution"
 msgstr "Folosește rezoluția acestui ecran"
 
-#: src/big_remote_play/ui/headscale_wizard.py:866
+#: src/big_remote_play/ui/headscale_wizard.py:869
 msgid "Use this server"
 msgstr "Folosește acest server"
 
@@ -12544,7 +12578,7 @@ msgstr ""
 msgid "Using this screen's resolution"
 msgstr "Se folosește rezoluția acestui ecran"
 
-#: src/big_remote_play/ui/headscale_wizard.py:990
+#: src/big_remote_play/ui/headscale_wizard.py:993
 msgid ""
 "Usually its address is written under the router. Look for “Port forwarding”, "
 "“Virtual server” or “NAT”."
@@ -12732,7 +12766,7 @@ msgstr "Se așteaptă autorizarea"
 msgid "Waiting for data…"
 msgstr "Se așteaptă date…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
+#: src/big_remote_play/ui/headscale_wizard.py:1500
 msgid "Waiting for the server owner"
 msgstr "Se așteaptă proprietarul serverului"
 
@@ -12750,11 +12784,11 @@ msgstr ""
 msgid "Washed out on devices without HDR"
 msgstr "Culori spălăcite pe dispozitivele fără HDR"
 
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "We are still waiting for DNS"
 msgstr "Încă așteptăm DNS-ul"
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "We could not find your public address"
 msgstr "Nu am putut găsi adresa ta publică"
 
@@ -12790,7 +12824,7 @@ msgstr "Ce a răspuns ZeroTier, ca să poți trimite cuiva care te ajută."
 msgid "What do you want to do?"
 msgstr "Ce vrei să faci?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:789
+#: src/big_remote_play/ui/headscale_wizard.py:792
 msgid "What happens"
 msgstr "Ce se întâmplă"
 
@@ -12798,7 +12832,7 @@ msgstr "Ce se întâmplă"
 msgid "What is the network code?"
 msgstr "Care este codul de rețea?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1047
+#: src/big_remote_play/ui/headscale_wizard.py:1050
 msgid "What is the server address?"
 msgstr "Care este adresa serverului?"
 
@@ -12884,7 +12918,7 @@ msgstr ""
 "Când folosești mouse-ul sau tastatura acestui calculator, invitații nu le "
 "mai controlează pentru o vreme."
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "Where do you manage DNS?"
 msgstr "Unde gestionezi DNS-ul?"
 
@@ -12892,7 +12926,7 @@ msgstr "Unde gestionezi DNS-ul?"
 msgid "Where is the other device?"
 msgstr "Unde este celălalt dispozitiv?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Where is the server?"
 msgstr "Unde este serverul?"
 
@@ -12904,7 +12938,7 @@ msgstr "Unde se creează un token"
 msgid "Where to create it"
 msgstr "Unde se creează"
 
-#: src/big_remote_play/ui/headscale_wizard.py:303
+#: src/big_remote_play/ui/headscale_wizard.py:306
 msgid "Where will your Headscale server run?"
 msgstr "Unde va rula serverul tău Headscale?"
 
@@ -12935,7 +12969,7 @@ msgstr ""
 "De ce poate eșua o conexiune prin internet și cea mai sigură soluție pentru "
 "fiecare problemă."
 
-#: src/big_remote_play/ui/headscale_wizard.py:706
+#: src/big_remote_play/ui/headscale_wizard.py:709
 msgid "Why?"
 msgstr "De ce?"
 
@@ -13021,7 +13055,7 @@ msgstr "Fără cheie de autentificare, se deschide un link de autentificare"
 msgid "Without it, members are approved on the ZeroTier website."
 msgstr "Fără el, membrii sunt aprobați pe site-ul ZeroTier."
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Working…"
 msgstr "În curs…"
 
@@ -13038,8 +13072,8 @@ msgstr ""
 msgid "X11 screen capture"
 msgstr "Captură de ecran X11"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:472
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/touch_controls.py:81
 msgid "Yes"
 msgstr "Da"
@@ -13073,7 +13107,7 @@ msgstr "Ieri la {time}"
 msgid "You can control the mouse and keyboard again"
 msgstr "Poți controla din nou mouse-ul și tastatura"
 
-#: src/big_remote_play/ui/headscale_wizard.py:559
+#: src/big_remote_play/ui/headscale_wizard.py:562
 msgid ""
 "You can use a domain you already own or register one with a domain provider."
 msgstr ""
@@ -13100,7 +13134,7 @@ msgstr "Tu controlezi acest calculator"
 msgid "Your Headscale server"
 msgstr "Serverul tău Headscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1032
+#: src/big_remote_play/ui/headscale_wizard.py:1035
 msgid "Your Headscale server is ready"
 msgstr "Serverul tău Headscale este gata"
 
@@ -13108,7 +13142,7 @@ msgstr "Serverul tău Headscale este gata"
 msgid "Your Tailscale network (tailnet)"
 msgstr "Rețeaua ta Tailscale (tailnet)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Your VPS provider shows it in its control panel."
 msgstr "Furnizorul tău de VPS o afișează în panoul de control."
 
@@ -13132,16 +13166,16 @@ msgstr "Dispozitivul tău"
 msgid "Your devices can now find each other in Big Remote Play."
 msgstr "Dispozitivele tale se pot găsi acum unul pe altul în Big Remote Play."
 
-#: src/big_remote_play/ui/headscale_wizard.py:491
-#: src/big_remote_play/ui/headscale_wizard.py:614
+#: src/big_remote_play/ui/headscale_wizard.py:494
+#: src/big_remote_play/ui/headscale_wizard.py:617
 msgid "Your domain"
 msgstr "Domeniul tău"
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 msgid "Your domain is not pointing to this server yet."
 msgstr "Domeniul tău nu indică încă spre acest server."
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
+#: src/big_remote_play/ui/headscale_wizard.py:667
 msgid "Your domain still uses other nameservers."
 msgstr "Domeniul tău folosește încă alte servere de nume."
 
@@ -13157,19 +13191,19 @@ msgstr ""
 msgid "Your games. Any screen. Anywhere."
 msgstr "Jocurile tale. Orice ecran. Oriunde."
 
-#: src/big_remote_play/ui/headscale_wizard.py:368
+#: src/big_remote_play/ui/headscale_wizard.py:371
 msgid "Your internet connection"
 msgstr "Conexiunea ta la internet"
 
-#: src/big_remote_play/ui/headscale_wizard.py:976
+#: src/big_remote_play/ui/headscale_wizard.py:979
 msgid "Your internet provider blocks incoming connections."
 msgstr "Furnizorul tău de internet blochează conexiunile de intrare."
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Your internet provider may block incoming connections."
 msgstr "Furnizorul tău de internet ar putea bloca conexiunile de intrare."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1520
+#: src/big_remote_play/ui/headscale_wizard.py:1589
 msgid "Your other device is connected"
 msgstr "Celălalt dispozitiv este conectat"
 
@@ -13197,7 +13231,7 @@ msgstr ""
 msgid "Your password may be requested."
 msgstr "Este posibil să ți se ceară parola."
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
+#: src/big_remote_play/ui/headscale_wizard.py:398
 msgid "Your public IP"
 msgstr "IP-ul tău public"
 
@@ -13205,7 +13239,7 @@ msgstr "IP-ul tău public"
 msgid "Your recent sessions will appear here."
 msgstr "Sesiunile tale recente vor apărea aici."
 
-#: src/big_remote_play/ui/headscale_wizard.py:986
+#: src/big_remote_play/ui/headscale_wizard.py:989
 msgid "Your router needs one more step"
 msgstr "Routerul tău mai are nevoie de un pas"
 
@@ -13326,7 +13360,7 @@ msgstr "neidentificat"
 msgid "the local network"
 msgstr "rețeaua locală"
 
-#: src/big_remote_play/ui/headscale_wizard.py:983
+#: src/big_remote_play/ui/headscale_wizard.py:986
 msgid "this computer"
 msgstr "acest computer"
 

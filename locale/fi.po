@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-17 09:34+0000\n"
+"POT-Creation-Date: 2026-11-17 09:44+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Finnish\n"
@@ -47,13 +47,21 @@ msgstr "1. Tarkista internetyhteyden toimivuus"
 msgid "1. Create Account"
 msgstr "1. Luo tili"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1503
+msgid "1. Create the user (once)"
+msgstr "1. Luo käyttäjä (kerran)"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1274
+msgid "1. I manage this server (recommended)"
+msgstr "1. Hallitsen tätä palvelinta (suositeltu)"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1801
 #: src/big_remote_play/ui/private_network_view.py:1114
 msgid "1. Identification"
 msgstr "1. Tunnistus"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "1. Install Big Remote Play"
 msgstr "1. Asenna Big Remote Play"
 
@@ -77,6 +85,10 @@ msgstr "1440p · 60 FPS · 40 Mbps"
 msgid "1920 × 1080 — best for TVs"
 msgstr "1920 × 1080 — paras televisioille"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1504
+msgid "2. Approve this computer"
+msgstr "2. Hyväksy tämä tietokone"
+
 #: src/big_remote_play/ui/connection_guides.py:61
 msgid "2. Choose a domain you control"
 msgstr "2. Valitse hallitsemasi verkkotunnus"
@@ -84,6 +96,10 @@ msgstr "2. Valitse hallitsemasi verkkotunnus"
 #: src/big_remote_play/ui/connection_guides.py:119
 msgid "2. Domain and HTTPS"
 msgstr "2. Verkkotunnus ja HTTPS"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1283
+msgid "2. I have a key from the server owner"
+msgstr "2. Minulla on avain palvelimen omistajalta"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1795
@@ -99,9 +115,13 @@ msgstr "2. Liity"
 msgid "2. Network"
 msgstr "2. Verkko"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1446
+#: src/big_remote_play/ui/headscale_wizard.py:1515
 msgid "2. Open Connect your devices"
 msgstr "2. Avaa Yhdistä laitteesi"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1291
+msgid "3. Ask the server owner to approve"
+msgstr "3. Pyydä palvelimen omistajaa hyväksymään"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1803
@@ -109,7 +129,7 @@ msgstr "2. Avaa Yhdistä laitteesi"
 msgid "3. Authorization"
 msgstr "3. Valtuutus"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "3. Choose Headscale"
 msgstr "3. Valitse Headscale"
 
@@ -147,7 +167,7 @@ msgstr "4. Hyväksyntä"
 msgid "4. Connect Big Remote Play"
 msgstr "4. Yhdistä Big Remote Play"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1448
+#: src/big_remote_play/ui/headscale_wizard.py:1517
 msgid "4. Use this server"
 msgstr "4. Käytä tätä palvelinta"
 
@@ -180,7 +200,7 @@ msgid ""
 "A Caddy site file with the same name already exists. Nothing was changed."
 msgstr "Samanniminen Caddy-sivustotiedosto on jo olemassa. Mitään ei muutettu."
 
-#: src/big_remote_play/ui/headscale_wizard.py:865
+#: src/big_remote_play/ui/headscale_wizard.py:868
 msgid "A Headscale server already answers at this address."
 msgstr "Tässä osoitteessa vastaa jo Headscale-palvelin."
 
@@ -239,7 +259,7 @@ msgstr "Laite toistaa ääntä, mutta Sunshine ei vielä tallenna sitä."
 msgid "A device started playing on this computer."
 msgstr "Laite aloitti pelaamisen tällä tietokoneella."
 
-#: src/big_remote_play/ui/headscale_wizard.py:468
+#: src/big_remote_play/ui/headscale_wizard.py:471
 msgid ""
 "A domain is a name like example.com. Your server gets a name inside it, like "
 "headscale.example.com."
@@ -247,15 +267,17 @@ msgstr ""
 "Verkkotunnus on nimi, kuten example.com. Palvelimesi saa sen sisältä nimen, "
 "kuten headscale.example.com."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1457
+#: src/big_remote_play/ui/headscale_wizard.py:1526
 msgid "A key for the other computer"
 msgstr "Avain toiselle tietokoneelle"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "A key that adds one computer. It is used once and not saved."
+#: src/big_remote_play/ui/headscale_wizard.py:1284
+msgid ""
+"A key that adds one computer, starting with hskey-auth-. It is used once and "
+"not saved."
 msgstr ""
-"Avain, joka lisää yhden tietokoneen. Sitä käytetään kerran, eikä sitä "
-"tallenneta."
+"Avain, joka lisää yhden tietokoneen ja alkaa merkkijonolla hskey-auth-. Sitä "
+"käytetään kerran, eikä sitä tallenneta."
 
 #: src/big_remote_play/ui/controls_help.py:102
 msgid "A keyboard app with Ctrl and Alt"
@@ -294,11 +316,11 @@ msgstr ""
 "terävin. Valittu näyttö palautuu jälkeenpäin normaaliksi. Valitse ensin "
 "näyttö yläpuolelta."
 
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "A secure connection could not be made."
 msgstr "Suojattua yhteyttä ei voitu muodostaa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "A small VPS is enough. Debian, Ubuntu and Arch are fine."
 msgstr "Pieni VPS riittää. Debian, Ubuntu ja Arch käyvät hyvin."
 
@@ -378,7 +400,7 @@ msgid "API error: {status}"
 msgstr "API-virhe: {status}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:1242
+#: src/big_remote_play/ui/headscale_wizard.py:1247
 msgid "API key"
 msgstr "API-avain"
 
@@ -539,8 +561,8 @@ msgstr "Lisää tili tai verkko"
 msgid "Add another computer of mine"
 msgstr "Lisää toinen oma tietokone"
 
-#: src/big_remote_play/ui/headscale_wizard.py:75
-#: src/big_remote_play/ui/headscale_wizard.py:1481
+#: src/big_remote_play/ui/headscale_wizard.py:78
+#: src/big_remote_play/ui/headscale_wizard.py:1550
 #: src/big_remote_play/ui/network_devices.py:488
 msgid "Add another device"
 msgstr "Lisää toinen laite"
@@ -554,16 +576,16 @@ msgstr "Lisää osoitteella"
 msgid "Add device"
 msgstr "Lisää laite"
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "Add it where you manage your domain's DNS."
 msgstr "Lisää se siellä, missä hallitset verkkotunnuksesi DNS:ää."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1246
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "Add this computer"
 msgstr "Lisää tämä tietokone"
 
-#: src/big_remote_play/ui/headscale_wizard.py:713
+#: src/big_remote_play/ui/headscale_wizard.py:716
 msgid ""
 "Add this only if your router lets connections in over IPv6. A wrong IPv6 "
 "record can break the connection."
@@ -571,15 +593,15 @@ msgstr ""
 "Lisää tämä vain, jos reitittimesi päästää yhteyksiä sisään IPv6:n kautta. "
 "Väärä IPv6-tietue voi katkaista yhteyden."
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this record."
 msgstr "Lisää tämä tietue."
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this to Cloudflare."
 msgstr "Lisää tämä Cloudflareen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 msgid "Add two rules"
 msgstr "Lisää kaksi sääntöä"
 
@@ -597,7 +619,7 @@ msgstr ""
 "DNS (harmaa pilvi), ei oranssia HTTP-välityspalvelinta. Päivitä tietue "
 "osoitteen muuttuessa. Tämä ei ole Cloudflare Tunnel eikä VPN."
 
-#: src/big_remote_play/ui/headscale_wizard.py:613
+#: src/big_remote_play/ui/headscale_wizard.py:616
 msgid "Add your domain to Cloudflare."
 msgstr "Lisää verkkotunnuksesi Cloudflareen."
 
@@ -608,8 +630,8 @@ msgid_plural "Add {count} Games"
 msgstr[0] "Lisää {count} peli"
 msgstr[1] "Lisää {count} peliä"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1345
-#: src/big_remote_play/ui/headscale_wizard.py:1375
+#: src/big_remote_play/ui/headscale_wizard.py:1409
+#: src/big_remote_play/ui/headscale_wizard.py:1439
 msgid "Adding this computer…"
 msgstr "Lisätään tätä tietokonetta…"
 
@@ -626,7 +648,7 @@ msgstr "Osoite, vaihtelu ja kadonneet vastaukset"
 msgid "Address: {address}"
 msgstr "Osoite: {address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "Addresses like 192.168.x.x only work inside a home network."
 msgstr "Osoitteet kuten 192.168.x.x toimivat vain kotiverkon sisällä."
 
@@ -707,7 +729,7 @@ msgstr "Palvelimen lisäasetukset"
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "Lisäasetukset selaimessa (Sunshine)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid ""
 "Advanced. HTTPS certificates can be harder to configure with an IP address."
 msgstr ""
@@ -846,7 +868,7 @@ msgid ""
 msgstr ""
 "Salli kerran. Salasanaasi kysytään; sen jälkeen Tailscale toimii ilman sitä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1195
+#: src/big_remote_play/ui/headscale_wizard.py:1198
 msgid ""
 "Allow ports 80 and 443 (TCP) in the server's firewall and in your VPS "
 "provider's panel."
@@ -854,7 +876,7 @@ msgstr ""
 "Salli portit 80 ja 443 (TCP) palvelimen palomuurissa ja VPS-"
 "palveluntarjoajasi hallintapaneelissa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:793
+#: src/big_remote_play/ui/headscale_wizard.py:796
 msgid "Allow web connections in the firewall"
 msgstr "Salli verkkoyhteydet palomuurissa"
 
@@ -988,15 +1010,15 @@ msgstr ""
 "Toinen asennus on käynnissä. Tämä sivu jatkaa itsestään, kun se valmistuu; "
 "Tekniset tiedot näyttää sen edistymisen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:873
-#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:876
+#: src/big_remote_play/ui/headscale_wizard.py:957
 msgid ""
 "Another program already uses the web ports (80 and 443) on this computer."
 msgstr ""
 "Toinen ohjelma käyttää jo tämän tietokoneen verkkoportteja (80 ja 443)."
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:1046
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:1049
 msgid "Another server"
 msgstr "Toinen palvelin"
 
@@ -1189,15 +1211,11 @@ msgstr ""
 "ole verkkoa, yksi teistä luo sen maksutta ZeroTier Centralissa – tai "
 "käyttäkää Tailscalea, joka on helpoin tapa aloittaa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "Ask the server owner to approve"
-msgstr "Pyydä palvelimen omistajaa hyväksymään"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1260
+#: src/big_remote_play/ui/headscale_wizard.py:1296
 msgid "Ask to join"
 msgstr "Pyydä liittymistä"
 
-#: src/big_remote_play/ui/headscale_wizard.py:987
+#: src/big_remote_play/ui/headscale_wizard.py:990
 msgid "Ask your router to send web connections to this computer:"
 msgstr "Pyydä reititintäsi ohjaamaan web-yhteydet tähän tietokoneeseen:"
 
@@ -1402,7 +1420,7 @@ msgstr "Keskimääräinen kesto"
 msgid "BW (target)"
 msgstr "Kaista (tavoite)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1558
+#: src/big_remote_play/ui/headscale_wizard.py:1627
 #: src/big_remote_play/ui/main_window.py:686
 #: src/big_remote_play/ui/main_window.py:692
 msgid "Back"
@@ -1483,8 +1501,8 @@ msgid "Big Remote Play can start it for you. Your password may be requested."
 msgstr ""
 "Big Remote Play voi käynnistää sen puolestasi. Salasanaasi voidaan kysyä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:874
-#: src/big_remote_play/ui/headscale_wizard.py:955
+#: src/big_remote_play/ui/headscale_wizard.py:877
+#: src/big_remote_play/ui/headscale_wizard.py:958
 msgid ""
 "Big Remote Play cannot add a secure address next to it. Use another server, "
 "or stop that program first."
@@ -1501,7 +1519,7 @@ msgstr ""
 "Big Remote Play ei voi asentaa ohjelmia tähän järjestelmään. Asenna nämä "
 "paketit ohjelmistokeskuksen avulla: {packages}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1216
+#: src/big_remote_play/ui/headscale_wizard.py:1219
 msgid ""
 "Big Remote Play cannot reach into another computer. Follow these steps "
 "there; each one can be copied."
@@ -1513,7 +1531,7 @@ msgstr ""
 msgid "Big Remote Play cannot start"
 msgstr "Big Remote Play ei voi käynnistyä"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play tarkistaa sen puolestasi."
 
@@ -1525,7 +1543,7 @@ msgstr ""
 "Big Remote Play tarkistaa, mitä tämä tietokone tarvitsee, ja asentaa "
 "puuttuvat osat. Salasanaasi saatetaan kysyä kerran."
 
-#: src/big_remote_play/ui/headscale_wizard.py:618
+#: src/big_remote_play/ui/headscale_wizard.py:621
 msgid "Big Remote Play checks your domain."
 msgstr "Big Remote Play tarkistaa verkkotunnuksesi."
 
@@ -1536,6 +1554,16 @@ msgid ""
 msgstr ""
 "Big Remote Play luo ja tallentaa Sunshinen salasanan, kun jakaminen alkaa "
 "ensimmäisen kerran."
+
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1264
+#, python-brace-format
+msgid ""
+"Big Remote Play creates your network user “{user}” and a key for this "
+"computer by itself. Your password is asked once."
+msgstr ""
+"Big Remote Play luo itse verkkokäyttäjäsi ”{user}” ja avaimen tälle "
+"tietokoneelle. Salasanaasi kysytään kerran."
 
 #: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:9
 msgid ""
@@ -1553,7 +1581,7 @@ msgstr ""
 msgid "Big Remote Play installs it for you. Your password may be requested."
 msgstr "Big Remote Play asentaa sen puolestasi. Salasanaasi voidaan kysyä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:824
+#: src/big_remote_play/ui/headscale_wizard.py:827
 msgid ""
 "Big Remote Play installs the server, gives it a secure address and starts "
 "it. Your password will be requested."
@@ -1574,7 +1602,7 @@ msgstr ""
 msgid "Big Remote Play is not installed completely"
 msgstr "Big Remote Play ei ole asennettu kokonaan"
 
-#: src/big_remote_play/ui/headscale_wizard.py:370
+#: src/big_remote_play/ui/headscale_wizard.py:373
 msgid ""
 "Big Remote Play looks for the address the internet sees for this computer."
 msgstr ""
@@ -1586,7 +1614,7 @@ msgstr ""
 msgid "Big Remote Play needs your permission"
 msgstr "Big Remote Play tarvitsee lupasi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:808
+#: src/big_remote_play/ui/headscale_wizard.py:811
 msgid "Big Remote Play will configure HTTPS for you."
 msgstr "Big Remote Play määrittää HTTPS:n puolestasi."
 
@@ -1711,7 +1739,7 @@ msgstr "CGNAT, IPv6, UPnP ja milloin yksityisverkko on parempi valinta."
 msgid "CPU Encoding"
 msgstr "CPU-koodaus"
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
+#: src/big_remote_play/ui/headscale_wizard.py:954
 msgid "Caddy already has a site with the same file name."
 msgstr "Caddyssa on jo sivusto, jolla on sama tiedostonimi."
 
@@ -1741,7 +1769,7 @@ msgstr "Voi yhdistää ilman uutta PIN-koodia"
 #: src/big_remote_play/ui/guest_view.py:1853
 #: src/big_remote_play/ui/guest_view.py:2219
 #: src/big_remote_play/ui/guest_view.py:2506
-#: src/big_remote_play/ui/headscale_wizard.py:1367
+#: src/big_remote_play/ui/headscale_wizard.py:1431
 #: src/big_remote_play/ui/host_view.py:2290
 #: src/big_remote_play/ui/host_view.py:2760
 #: src/big_remote_play/ui/host_view.py:3242
@@ -1812,7 +1840,7 @@ msgstr ""
 "Tässä tehdyt muutokset vaikuttavat vain seuraavaan yhteyteen. Ne eivät muuta "
 "pelitietokoneen näyttöä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:977
+#: src/big_remote_play/ui/headscale_wizard.py:980
 msgid "Changing the router will probably not help. A VPS is the reliable way."
 msgstr ""
 "Reitittimen asetusten muuttaminen ei todennäköisesti auta. VPS on luotettava "
@@ -1823,13 +1851,13 @@ msgctxt "check state"
 msgid "Check"
 msgstr "Huomio"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:618
-#: src/big_remote_play/ui/headscale_wizard.py:761
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:981
-#: src/big_remote_play/ui/headscale_wizard.py:997
-#: src/big_remote_play/ui/headscale_wizard.py:1138
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:621
+#: src/big_remote_play/ui/headscale_wizard.py:764
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:984
+#: src/big_remote_play/ui/headscale_wizard.py:1000
+#: src/big_remote_play/ui/headscale_wizard.py:1141
 #: src/big_remote_play/ui/remote_connection.py:51
 #: src/big_remote_play/ui/remote_connection.py:57
 #: src/big_remote_play/ui/support_center.py:152
@@ -1848,7 +1876,7 @@ msgstr "Tarkista yhteys"
 msgid "Check for blocked connections automatically"
 msgstr "Tarkista estettyjä yhteyksiä automaattisesti"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Check for the other device"
 msgstr "Tarkista toinen laite"
 
@@ -1857,12 +1885,12 @@ msgstr "Tarkista toinen laite"
 msgid "Check logs for details."
 msgstr "Tarkista lokit saadaksesi lisätietoja."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1051
-#: src/big_remote_play/ui/headscale_wizard.py:1211
+#: src/big_remote_play/ui/headscale_wizard.py:1054
+#: src/big_remote_play/ui/headscale_wizard.py:1214
 msgid "Check server"
 msgstr "Tarkista palvelin"
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Check that Headscale runs behind this address."
 msgstr "Tarkista, että Headscale toimii tämän osoitteen takana."
 
@@ -1875,16 +1903,16 @@ msgstr ""
 "Varmista, että jakaminen on käynnissä pelikoneella ja koneet saavat yhteyden "
 "toisiinsa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "Check that this computer is connected to the internet."
 msgstr "Tarkista, että tämä tietokone on yhteydessä internetiin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "Check that you copied all of it."
 msgstr "Tarkista, että kopioit sen kokonaan."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1402
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "Check the API key in Advanced."
 msgstr "Tarkista API-avain kohdassa Lisäasetukset."
 
@@ -1900,15 +1928,15 @@ msgstr ""
 msgid "Check the internet connection of this computer."
 msgstr "Tarkista tämän tietokoneen internetyhteys."
 
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "Check the name you registered."
 msgstr "Tarkista rekisteröimäsi nimi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
+#: src/big_remote_play/ui/headscale_wizard.py:524
 msgid "Check the name, or register it first."
 msgstr "Tarkista nimi tai rekisteröi se ensin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:797
 msgid "Check the secure connection (HTTPS)"
 msgstr "Tarkista suojattu yhteys (HTTPS)"
 
@@ -1921,9 +1949,9 @@ msgid "Check this computer, or choose a problem to see what to try."
 msgstr ""
 "Tarkista tämä tietokone tai valitse ongelma nähdäksesi, mitä voit kokeilla."
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "Check your internet connection and try again."
 msgstr "Tarkista internetyhteytesi ja yritä uudelleen."
 
@@ -1948,7 +1976,7 @@ msgstr ""
 msgid "Checking ZeroTier…"
 msgstr "Tarkistetaan ZeroTieriä…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:648
+#: src/big_remote_play/ui/headscale_wizard.py:651
 msgid "Checking nameservers…"
 msgstr "Tarkistetaan nimipalvelimia…"
 
@@ -1975,12 +2003,12 @@ msgstr "Tarkistetaan verkkoa, tietokonetta ja Sunshinea…"
 msgid "Checking the path…"
 msgstr "Tarkistetaan reittiä…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1069
+#: src/big_remote_play/ui/headscale_wizard.py:1072
 msgid "Checking the server…"
 msgstr "Tarkistetaan palvelinta…"
 
 #: src/big_remote_play/ui/dependency_installer.py:198
-#: src/big_remote_play/ui/headscale_wizard.py:852
+#: src/big_remote_play/ui/headscale_wizard.py:855
 #: src/big_remote_play/ui/provider_page.py:543
 #: src/big_remote_play/ui/remote_connection.py:49
 msgid "Checking this computer…"
@@ -1998,16 +2026,16 @@ msgstr "Tarkistetaan, mitkä laitteet on jo sallittu."
 msgid "Checking with Sunshine…"
 msgstr "Tarkistetaan Sunshinelta…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:511
-#: src/big_remote_play/ui/headscale_wizard.py:741
+#: src/big_remote_play/ui/headscale_wizard.py:514
+#: src/big_remote_play/ui/headscale_wizard.py:744
 msgid "Checking your domain…"
 msgstr "Tarkistetaan verkkotunnustasi…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:369
+#: src/big_remote_play/ui/headscale_wizard.py:372
 msgid "Checking your internet connection"
 msgstr "Tarkistetaan internetyhteyttäsi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:378
+#: src/big_remote_play/ui/headscale_wizard.py:381
 msgid "Checking your internet connection…"
 msgstr "Tarkistetaan internetyhteyttäsi…"
 
@@ -2035,7 +2063,7 @@ msgstr "Tarkistetaan…"
 msgid "Checks the name, the port, HTTPS and Headscale itself."
 msgstr "Tarkistaa nimen, portin, HTTPS:n ja itse Headscalen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:543
+#: src/big_remote_play/ui/headscale_wizard.py:546
 msgid ""
 "Choose Register, check the domain name you want, and read the current "
 "availability and rules shown by DigitalPlat."
@@ -2086,7 +2114,7 @@ msgstr "Valitse laitteisto videokoodaukseen"
 msgid "Choose installed games below."
 msgstr "Valitse asennettuja pelejä alta."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "Choose one of the options above."
 msgstr "Valitse jokin yllä olevista vaihtoehdoista."
 
@@ -2176,7 +2204,7 @@ msgstr "Tyhjennetäänkö yhteyshistoria?"
 msgid "Click and drag, for example to move a window"
 msgstr "Napsauta ja vedä, esimerkiksi ikkunan siirtämiseksi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Click the orange cloud in Cloudflare so it turns gray (DNS only)."
 msgstr ""
 "Napsauta Cloudflaressa oranssia pilveä, jotta se muuttuu harmaaksi (DNS "
@@ -2208,8 +2236,8 @@ msgstr ""
 "Sulje suoratoisto kaikilla laitteilla, jotta uusi laite voi muodostaa "
 "laiteparin"
 
-#: src/big_remote_play/ui/headscale_wizard.py:479
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare"
 msgstr "Cloudflare"
 
@@ -2218,21 +2246,21 @@ msgstr "Cloudflare"
 msgid "Cloudflare DNS-only documentation"
 msgstr "Cloudflaren vain DNS -tilan ohje"
 
-#: src/big_remote_play/ui/headscale_wizard.py:655
+#: src/big_remote_play/ui/headscale_wizard.py:658
 msgid "Cloudflare is now managing your domain"
 msgstr "Cloudflare hallitsee nyt verkkotunnustasi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare will manage your domain's records. Its free plan is enough."
 msgstr ""
 "Cloudflare hallitsee verkkotunnuksesi tietueita. Sen ilmainen paketti "
 "riittää."
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Cloudflare will show two nameservers."
 msgstr "Cloudflare näyttää kaksi nimipalvelinta."
 
-#: src/big_remote_play/ui/headscale_wizard.py:703
+#: src/big_remote_play/ui/headscale_wizard.py:706
 msgid ""
 "Cloudflare's proxy (the orange cloud) only passes ordinary web requests. "
 "Tailscale clients keep a long-lived, upgraded HTTP connection to Headscale, "
@@ -2245,7 +2273,7 @@ msgstr ""
 "välitä luotettavasti. DNS only -asetuksella nimi yksinkertaisesti osoittaa "
 "palvelimeesi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Cloudflare's proxy is on for this record."
 msgstr "Cloudflaren välityspalvelin on käytössä tälle tietueelle."
 
@@ -2265,7 +2293,7 @@ msgstr "Koodekki, HDR, datarajoitus ja yhteysvaroitukset"
 msgid "Codecs, network, capture and recovery tools"
 msgstr "Koodekit, verkko, kaappaus ja palautustyökalut"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Come back and check again"
 msgstr "Palaa ja tarkista uudelleen"
 
@@ -2281,12 +2309,12 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 154
 #: src/big_remote_play/ui/game_library_dialog.py:386
-#: src/big_remote_play/ui/headscale_wizard.py:1180
-#: src/big_remote_play/ui/headscale_wizard.py:1185
-#: src/big_remote_play/ui/headscale_wizard.py:1187
-#: src/big_remote_play/ui/headscale_wizard.py:1191
-#: src/big_remote_play/ui/headscale_wizard.py:1196
-#: src/big_remote_play/ui/headscale_wizard.py:1201
+#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1188
+#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1204
 #: src/big_remote_play/ui/host_view.py:586
 #: src/big_remote_play/ui/network_devices.py:733
 #: src/big_remote_play/ui/network_devices.py:764
@@ -2294,9 +2322,9 @@ msgstr ""
 msgid "Command"
 msgstr "Komento"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1435
-msgid "Command for the server owner"
-msgstr "Komento palvelimen omistajalle"
+#: src/big_remote_play/ui/headscale_wizard.py:1276
+msgid "Command for the server"
+msgstr "Komento palvelimelle"
 
 #: src/big_remote_play/ui/support_center.py:168
 msgid "Common problems"
@@ -2399,7 +2427,7 @@ msgstr "Määritä"
 msgid "Configure Firewall (IPv6)"
 msgstr "Määritä palomuuri (IPv6)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:792
+#: src/big_remote_play/ui/headscale_wizard.py:795
 msgid "Configure and start the server"
 msgstr "Määritä ja käynnistä palvelin"
 
@@ -2709,7 +2737,7 @@ msgstr "Yhteyden laatu"
 msgid "Connection quality: {quality}"
 msgstr "Yhteyden laatu: {quality}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
+#: src/big_remote_play/ui/headscale_wizard.py:88
 #, python-brace-format
 msgid "Connection refused on port {port}."
 msgstr "Yhteys hylättiin portissa {port}."
@@ -2758,15 +2786,15 @@ msgstr "Otetaan yhteyttä palveluun…"
 #: src/big_remote_play/ui/guided_setup.py:169
 #: src/big_remote_play/ui/guided_setup.py:257
 #: src/big_remote_play/ui/guided_setup.py:309
-#: src/big_remote_play/ui/headscale_wizard.py:497
+#: src/big_remote_play/ui/headscale_wizard.py:500
 msgid "Continue"
 msgstr "Jatka"
 
-#: src/big_remote_play/ui/headscale_wizard.py:402
+#: src/big_remote_play/ui/headscale_wizard.py:405
 msgid "Continue anyway"
 msgstr "Jatka silti"
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
+#: src/big_remote_play/ui/headscale_wizard.py:304
 #: src/big_remote_play/ui/provider_page.py:1151
 #: src/big_remote_play/ui/remote_connection.py:534
 msgid "Continue setup"
@@ -2856,7 +2884,7 @@ msgstr "Kopioi IP"
 msgid "Copy Path"
 msgstr "Kopioi polku"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1450
+#: src/big_remote_play/ui/headscale_wizard.py:1519
 #: src/big_remote_play/ui/network_devices.py:269
 msgid "Copy address"
 msgstr "Kopioi osoite"
@@ -2894,11 +2922,11 @@ msgstr "Kopioi laitteen {name} yksityinen osoite"
 msgid "Copy the {field} value to the clipboard"
 msgstr "Kopioi arvo {field} leikepöydälle"
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid "Copy these two Cloudflare nameservers to DigitalPlat."
 msgstr "Kopioi nämä kaksi Cloudflaren nimipalvelinta DigitalPlatiin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid ""
 "Copy these two Cloudflare nameservers to the company where you registered "
 "your domain."
@@ -3048,7 +3076,7 @@ msgstr ""
 msgid "Create a network"
 msgstr "Luo verkko"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1461
+#: src/big_remote_play/ui/headscale_wizard.py:1530
 msgid "Create a one-time key"
 msgstr "Luo kertakäyttöinen avain"
 
@@ -3068,7 +3096,7 @@ msgstr "Luo verkko"
 msgid "Create one-time key"
 msgstr "Luo kertakäyttöinen avain"
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
+#: src/big_remote_play/ui/headscale_wizard.py:544
 msgid "Create or sign in to your DigitalPlat account."
 msgstr "Luo DigitalPlat-tili tai kirjaudu sisään."
 
@@ -3076,11 +3104,11 @@ msgstr "Luo DigitalPlat-tili tai kirjaudu sisään."
 msgid "Create the API key on the server"
 msgstr "Luo API-avain palvelimella"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1202
 msgid "Create your network and an API key"
 msgstr "Luo verkkosi ja API-avain"
 
-#: src/big_remote_play/ui/headscale_wizard.py:795
+#: src/big_remote_play/ui/headscale_wizard.py:798
 msgid "Create your private network"
 msgstr "Luo yksityisverkkosi"
 
@@ -3184,16 +3212,16 @@ msgstr "Mukautettu resoluutio"
 msgid "Custom image settings"
 msgstr "Mukautetut kuva-asetukset"
 
-#: src/big_remote_play/ui/headscale_wizard.py:71
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:74
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "DNS"
 msgstr "DNS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "DNS is where your domain's records live."
 msgstr "DNS on paikka, jossa verkkotunnuksesi tietueet ovat."
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "DNS only — the cloud must be gray."
 msgstr "DNS only — pilven on oltava harmaa."
 
@@ -3271,8 +3299,8 @@ msgstr "Tiedot"
 msgid "Details and a sound test are in Preferences."
 msgstr "Lisätiedot ja äänitesti ovat kohdassa Asetukset."
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:398
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Detected automatically"
 msgstr "Tunnistettu automaattisesti"
 
@@ -3359,7 +3387,7 @@ msgstr "Diagnosoi"
 msgid "Diagnosis"
 msgstr "Diagnoosi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Did not work"
 msgstr "Ei onnistunut"
 
@@ -3367,14 +3395,14 @@ msgstr "Ei onnistunut"
 msgid "Did you receive a network code?"
 msgstr "Saitko verkon koodin?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:553
+#: src/big_remote_play/ui/headscale_wizard.py:556
 msgid ""
 "DigitalPlat can provide domains that can be delegated to a DNS provider."
 msgstr ""
 "DigitalPlat voi tarjota verkkotunnuksia, jotka voidaan delegoida DNS-"
 "palveluntarjoajalle."
 
-#: src/big_remote_play/ui/headscale_wizard.py:547
+#: src/big_remote_play/ui/headscale_wizard.py:550
 msgid ""
 "DigitalPlat needs the nameservers from your DNS provider. Cloudflare is "
 "free; Big Remote Play guides you."
@@ -3468,7 +3496,7 @@ msgid "Displays latency, frame rate, and decoding information over the stream."
 msgstr ""
 "Näyttää suoratoiston päällä viiveen, kuvataajuuden ja dekoodauksen tiedot."
 
-#: src/big_remote_play/ui/headscale_wizard.py:467
+#: src/big_remote_play/ui/headscale_wizard.py:470
 msgid "Do you already have a domain?"
 msgstr "Onko sinulla jo verkkotunnus?"
 
@@ -3479,20 +3507,20 @@ msgstr "Haluatko palauttaa oletusasetukset?"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 714
-#: src/big_remote_play/ui/headscale_wizard.py:70
-#: src/big_remote_play/ui/headscale_wizard.py:466
-#: src/big_remote_play/ui/headscale_wizard.py:490
-#: src/big_remote_play/ui/headscale_wizard.py:682
+#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:493
+#: src/big_remote_play/ui/headscale_wizard.py:685
 #: src/big_remote_play/ui/private_network_view.py:972
 #: src/big_remote_play/ui/private_network_view.py:1007
 msgid "Domain"
 msgstr "Verkkotunnus"
 
-#: src/big_remote_play/ui/headscale_wizard.py:757
+#: src/big_remote_play/ui/headscale_wizard.py:760
 msgid "Domain is ready"
 msgstr "Verkkotunnus on valmis"
 
-#: src/big_remote_play/ui/headscale_wizard.py:475
+#: src/big_remote_play/ui/headscale_wizard.py:478
 msgid "Domain or subdomain"
 msgstr "Verkkotunnus tai aliverkkotunnus"
 
@@ -3500,8 +3528,8 @@ msgstr "Verkkotunnus tai aliverkkotunnus"
 msgid "Domain, router ports and security precautions."
 msgstr "Verkkotunnus, reitittimen portit ja suojaustoimet."
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:898
 #: src/big_remote_play/ui/network_devices.py:727
 msgid "Done"
 msgstr "Valmis"
@@ -3514,7 +3542,7 @@ msgstr ""
 "Lataa se viralliselta verkkosivustolta tai käytä Big Remote Playta "
 "kyseisellä tietokoneella."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1184
+#: src/big_remote_play/ui/headscale_wizard.py:1187
 msgid ""
 "Download the .deb for your server from Headscale's releases page, then "
 "install it and Caddy."
@@ -3546,7 +3574,7 @@ msgstr ""
 "Jokainen sormi koskettaa tämän tietokoneen näyttöä, jos työpöytä hyväksyy "
 "kosketuksen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Easier and safer. Example: headscale.example.com"
 msgstr "Helpompi ja turvallisempi. Esimerkki: headscale.example.com"
 
@@ -3923,17 +3951,17 @@ msgstr "Kaikki on valmista"
 msgid "Evict IP"
 msgstr "Häädä IP"
 
-#: src/big_remote_play/ui/headscale_wizard.py:478
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:481
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "Example: headscale.example.com"
 msgstr "Esimerkki: headscale.example.com"
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
-#: src/big_remote_play/ui/headscale_wizard.py:1050
+#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:1053
 msgid "Example: headscale.example.com or 203.0.113.10"
 msgstr "Esimerkki: headscale.example.com tai 203.0.113.10"
 
-#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:547
 msgid "Example: mydomain.dpdns.org"
 msgstr "Esimerkki: mydomain.dpdns.org"
 
@@ -4062,7 +4090,7 @@ msgstr ""
 "Sormet painavat näyttöohjaimen painikkeita, useita kerralla. Mikään ei muutu "
 "hiiren napsautukseksi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Finish"
 msgstr "Valmis"
 
@@ -4099,7 +4127,7 @@ msgstr "Korjaa"
 msgid "Fix Dependencies"
 msgstr "Korjaa riippuvuudet"
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 #, python-brace-format
 msgid "Fix it or delete it: {found}"
 msgstr "Korjaa tai poista se: {found}"
@@ -4323,8 +4351,8 @@ msgstr "Yleiset"
 msgid "Get Network ID"
 msgstr "Hae Network ID"
 
-#: src/big_remote_play/ui/headscale_wizard.py:557
-#: src/big_remote_play/ui/headscale_wizard.py:558
+#: src/big_remote_play/ui/headscale_wizard.py:560
+#: src/big_remote_play/ui/headscale_wizard.py:561
 msgid "Get a domain"
 msgstr "Hanki verkkotunnus"
 
@@ -4396,7 +4424,7 @@ msgstr[1] ""
 "Vieraat saavat hiiren ja näppäimistön takaisin {count} sekuntia sen jälkeen, "
 "kun lopetat niiden käytön."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1137
+#: src/big_remote_play/ui/headscale_wizard.py:1140
 msgid "Guided server setup"
 msgstr "Ohjattu palvelimen määritys"
 
@@ -4433,8 +4461,8 @@ msgstr "HEVC tai AV1, kun tuettu"
 msgid "HTTPS (Caddy)"
 msgstr "HTTPS (Caddy)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "HTTPS is not set up correctly for this address."
 msgstr "HTTPS:ää ei ole määritetty oikein tälle osoitteelle."
 
@@ -4443,7 +4471,7 @@ msgstr "HTTPS:ää ei ole määritetty oikein tälle osoitteelle."
 msgid "Hardware and Capture"
 msgstr "Laitteisto ja kaappaus"
 
-#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:76
 msgid "Headscale"
 msgstr "Headscale"
 
@@ -4455,11 +4483,11 @@ msgstr "Headscalen API-avain"
 msgid "Headscale and Caddy must be installed first."
 msgstr "Headscale ja Caddy on asennettava ensin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1101
+#: src/big_remote_play/ui/headscale_wizard.py:1104
 msgid "Headscale answers"
 msgstr "Headscale vastaa"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "Headscale did not start."
 msgstr "Headscale ei käynnistynyt."
 
@@ -4471,7 +4499,7 @@ msgstr "Headscale ei käynnistynyt. Katso sen loki kohdassa Lisäasetukset."
 msgid "Headscale documentation"
 msgstr "Headscale-ohje"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 msgid "Headscale gives you your own private network server."
 msgstr "Headscalen avulla saat oman yksityisverkkopalvelimen."
 
@@ -4487,11 +4515,11 @@ msgstr ""
 "Käytä VPN:töntä suoraa peliyhteyttä varten Yhdistä laitteesi -sivun "
 "erillistä opasta."
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Headscale may work better on a VPS."
 msgstr "Headscale voi toimia paremmin VPS:llä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid ""
 "Headscale needs a direct connection to your server. Do not use Cloudflare "
 "Tunnel for it either."
@@ -4499,7 +4527,7 @@ msgstr ""
 "Headscale tarvitsee suoran yhteyden palvelimeesi. Älä käytä sille myöskään "
 "Cloudflare Tunnelia."
 
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Headscale on this computer has its own settings."
 msgstr "Tämän tietokoneen Headscalella on omat asetuksensa."
 
@@ -4512,7 +4540,7 @@ msgstr ""
 "Tämän tietokoneen Headscale on jo määritetty osoitteelle ${current}. Mitään "
 "ei muutettu."
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
+#: src/big_remote_play/ui/headscale_wizard.py:952
 msgid "Headscale on this computer is already set up for another address."
 msgstr "Tämän tietokoneen Headscale on jo määritetty toiselle osoitteelle."
 
@@ -4523,7 +4551,7 @@ msgstr ""
 "Tämän tietokoneen Headscale käyttää mukautettua kuunteluosoitetta. Mitään ei "
 "muutettu."
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Headscale or Caddy is not installed."
 msgstr "Headscalea tai Caddya ei ole asennettu."
 
@@ -4531,7 +4559,7 @@ msgstr "Headscalea tai Caddya ei ole asennettu."
 msgid "Headscale server"
 msgstr "Headscale-palvelin"
 
-#: src/big_remote_play/ui/headscale_wizard.py:276
+#: src/big_remote_play/ui/headscale_wizard.py:279
 msgid "Headscale setup"
 msgstr "Headscalen määritys"
 
@@ -4539,7 +4567,7 @@ msgstr "Headscalen määritys"
 msgid "Headscale uses the regular Tailscale client."
 msgstr "Headscale käyttää tavallista Tailscale-asiakasohjelmaa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1118
+#: src/big_remote_play/ui/headscale_wizard.py:1121
 #: src/big_remote_play/ui/provider_page.py:1197
 #, python-brace-format
 msgid "Headscale {version}"
@@ -4561,11 +4589,11 @@ msgstr "Ohje"
 msgid "Help and diagnostics"
 msgstr "Ohje ja vianmääritys"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
+#: src/big_remote_play/ui/headscale_wizard.py:473
 msgid "Help me get one"
 msgstr "Auta minua hankkimaan sellainen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "Hidden. Use Copy."
 msgstr "Piilotettu. Käytä Kopioi-painiketta."
@@ -4686,7 +4714,7 @@ msgstr "Isännän etusija"
 msgid "Host input priority is not working"
 msgstr "Isännän etusija ei toimi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1248
+#: src/big_remote_play/ui/headscale_wizard.py:1271
 msgid "How do you want to add this computer?"
 msgstr "Miten haluat lisätä tämän tietokoneen?"
 
@@ -4712,7 +4740,7 @@ msgstr ""
 "Kuinka kauan (millisekunteina) Moonlightin tietoja odotetaan ennen "
 "suoratoiston sulkemista"
 
-#: src/big_remote_play/ui/headscale_wizard.py:446
+#: src/big_remote_play/ui/headscale_wizard.py:449
 msgid "How should your Headscale server be reached?"
 msgstr "Miten Headscale-palvelimeesi otetaan yhteys?"
 
@@ -4736,11 +4764,11 @@ msgstr "Näin käytät Headscalea omalla palvelimellasi, vaihe vaiheelta."
 msgid "How to use the selected private network service."
 msgstr "Valitun yksityisverkkopalvelun käyttäminen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:721
+#: src/big_remote_play/ui/headscale_wizard.py:724
 msgid "I added the record"
 msgstr "Lisäsin tietueen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:472
 msgid "I already own a domain"
 msgstr "Minulla on jo verkkotunnus"
 
@@ -4765,10 +4793,6 @@ msgstr "Minulla ei ole vielä palvelinta"
 msgid "I forgot the current password"
 msgstr "Unohdin nykyisen salasanan"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "I have a key from the server owner"
-msgstr "Minulla on avain palvelimen omistajalta"
-
 #: src/big_remote_play/ui/guest_view.py:617
 msgid "I have a search code"
 msgstr "Minulla on hakukoodi"
@@ -4776,10 +4800,6 @@ msgstr "Minulla on hakukoodi"
 #: src/big_remote_play/ui/guest_view.py:611
 msgid "I know the IP address"
 msgstr "Tiedän IP-osoitteen"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1251
-msgid "I manage this server"
-msgstr "Hallitsen tätä palvelinta"
 
 #: src/big_remote_play/ui/guided_setup.py:125
 msgid "I will play using another computer."
@@ -4801,7 +4821,7 @@ msgstr "IP-osoite, johon palvelu sidotaan"
 msgid "IP address: {address}"
 msgstr "IP-osoite: {address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:689
+#: src/big_remote_play/ui/headscale_wizard.py:692
 msgid "IPv4 address"
 msgstr "IPv4-osoite"
 
@@ -4817,7 +4837,7 @@ msgstr "Vain IPv4"
 msgid "IPv6"
 msgstr "IPv6-yhteys"
 
-#: src/big_remote_play/ui/headscale_wizard.py:716
+#: src/big_remote_play/ui/headscale_wizard.py:719
 msgid "IPv6 address"
 msgstr "IPv6-osoite"
 
@@ -4868,7 +4888,7 @@ msgstr ""
 "sitä. ”Tarkista tämä tietokone” näyttää, piirtääkö jokin toinen kaappaustapa "
 "sen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "If you just set up the domain, wait a little and check again."
 msgstr "Jos määritit verkkotunnuksen juuri, odota hetki ja tarkista uudelleen."
 
@@ -4931,7 +4951,7 @@ msgid ""
 msgstr ""
 "Avaa Big Remote Playssa Yhdistä laitteesi → ZeroTier ja kirjoita tämä koodi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "In Cloudflare: DNS → Records → Add record."
 msgstr "Cloudflaressa: DNS → Records → Add record."
 
@@ -5064,13 +5084,13 @@ msgstr "Asenna"
 msgid "Install Big WM Virtual Keyboard (package {package})"
 msgstr "Asenna Big WM Virtual Keyboard (paketti {package})"
 
-#: src/big_remote_play/ui/headscale_wizard.py:822
-#: src/big_remote_play/ui/headscale_wizard.py:823
+#: src/big_remote_play/ui/headscale_wizard.py:825
+#: src/big_remote_play/ui/headscale_wizard.py:826
 msgid "Install Headscale"
 msgstr "Asenna Headscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:791
-#: src/big_remote_play/ui/headscale_wizard.py:1178
+#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:1181
 msgid "Install Headscale and Caddy"
 msgstr "Asenna Headscale ja Caddy"
 
@@ -5083,7 +5103,7 @@ msgstr "Asenna Tailscale"
 msgid "Install ZeroTier"
 msgstr "Asenna ZeroTier"
 
-#: src/big_remote_play/ui/headscale_wizard.py:801
+#: src/big_remote_play/ui/headscale_wizard.py:804
 #: src/big_remote_play/ui/private_network_view.py:475
 #: src/big_remote_play/ui/provider_page.py:582
 msgid "Install and continue"
@@ -5093,7 +5113,7 @@ msgstr "Asenna ja jatka"
 msgid "Install it first, then join the network."
 msgstr "Asenna se ensin ja liity sitten verkkoon."
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Install them above first."
 msgstr "Asenna ne ensin yllä."
 
@@ -5227,7 +5247,7 @@ msgstr "Kutsu luotiin"
 msgid "Invitation link"
 msgstr "Kutsulinkki"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1458
+#: src/big_remote_play/ui/headscale_wizard.py:1527
 msgid ""
 "It adds one computer and stops working after one hour. It is not an "
 "administrator key."
@@ -5235,7 +5255,7 @@ msgstr ""
 "Se lisää yhden tietokoneen ja lakkaa toimimasta tunnin kuluttua. Se ei ole "
 "ylläpitäjän avain."
 
-#: src/big_remote_play/ui/headscale_wizard.py:809
+#: src/big_remote_play/ui/headscale_wizard.py:812
 msgid ""
 "It also allows ports 80 and 443 in this computer's firewall, when a firewall "
 "is active."
@@ -5251,7 +5271,7 @@ msgstr ""
 "Se vastaa verkossa, mutta ei Sunshinen porttiin. Avaa pelikoneella Jaa ja "
 "valitse Salli palomuurissa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 msgid "It appears here once it joins."
 msgstr "Se näkyy täällä, kun se liittyy."
 
@@ -5267,7 +5287,7 @@ msgstr ""
 msgid "It could not start. Stop and start sharing again."
 msgstr "Käynnistys ei onnistunut. Lopeta jakaminen ja aloita se uudelleen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 msgid "It is shown only now and is not stored."
 msgstr "Se näytetään vain nyt, eikä sitä tallenneta."
 
@@ -5319,7 +5339,7 @@ msgstr ""
 "pelin yksityisen näytön. Päivitä Sunshine ja avaa sitten Big Remote Play "
 "uudelleen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 #, python-brace-format
 msgid "It points to {found}, not {expected}."
 msgstr "Se osoittaa kohteeseen {found}, ei kohteeseen {expected}."
@@ -5429,7 +5449,7 @@ msgstr "KDE:n näytönkaappaus (KWin)"
 msgid "KMS (Direct)"
 msgstr "KMS (suora)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid "Keep Proxy status = DNS only"
 msgstr "Pidä Proxy status = DNS only"
 
@@ -5468,7 +5488,7 @@ msgstr ""
 "Pidä reitittimen porttiohjaus poissa käytöstä VPN:ää käytettäessä. Muutokset "
 "tulevat voimaan, kun jakaminen käynnistetään uudelleen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1200
+#: src/big_remote_play/ui/headscale_wizard.py:1203
 msgid ""
 "Keep the API key: Big Remote Play asks for it in the next step. It manages "
 "the server; never give it to a guest."
@@ -5512,12 +5532,12 @@ msgstr ""
 "Säilytetään vain, kunnes suljet Big Remote Playn: järjestelmän avainnippu ei "
 "tallentanut sitä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 #: src/big_remote_play/ui/network_devices.py:761
 msgid "Key created"
 msgstr "Avain luotiin"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1243
+#: src/big_remote_play/ui/headscale_wizard.py:1248
 msgid "Key for this computer"
 msgstr "Avain tälle tietokoneelle"
 
@@ -6168,13 +6188,13 @@ msgid "NVIDIA NVENC"
 msgstr "NVIDIA NVENC"
 
 #: src/big_remote_play/ui/game_library_dialog.py:385
-#: src/big_remote_play/ui/headscale_wizard.py:688
-#: src/big_remote_play/ui/headscale_wizard.py:715
+#: src/big_remote_play/ui/headscale_wizard.py:691
+#: src/big_remote_play/ui/headscale_wizard.py:718
 #: src/big_remote_play/ui/provider_page.py:814
 msgid "Name"
 msgstr "Nimi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1098
+#: src/big_remote_play/ui/headscale_wizard.py:1101
 msgid "Name found"
 msgstr "Nimi löytyi"
 
@@ -6186,7 +6206,7 @@ msgstr "Nimi verkossa"
 msgid "Name shown in Big Remote Play"
 msgstr "Big Remote Playssa näytettävä nimi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:630
+#: src/big_remote_play/ui/headscale_wizard.py:633
 msgid "Nameserver"
 msgstr "Nimipalvelin"
 
@@ -6344,24 +6364,24 @@ msgstr ""
 msgid "New passwords do not match."
 msgstr "Uudet salasanat eivät täsmää."
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:404
-#: src/big_remote_play/ui/headscale_wizard.py:656
-#: src/big_remote_play/ui/headscale_wizard.py:758
-#: src/big_remote_play/ui/headscale_wizard.py:1033
-#: src/big_remote_play/ui/headscale_wizard.py:1130
-#: src/big_remote_play/ui/headscale_wizard.py:1405
-#: src/big_remote_play/ui/headscale_wizard.py:1560
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:407
+#: src/big_remote_play/ui/headscale_wizard.py:659
+#: src/big_remote_play/ui/headscale_wizard.py:761
+#: src/big_remote_play/ui/headscale_wizard.py:1036
+#: src/big_remote_play/ui/headscale_wizard.py:1133
+#: src/big_remote_play/ui/headscale_wizard.py:1469
+#: src/big_remote_play/ui/headscale_wizard.py:1629
 msgid "Next"
 msgstr "Seuraava"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:473
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/host_view.py:4055
 msgid "No"
 msgstr "Ei"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "No API key for this server yet."
 msgstr "Tälle palvelimelle ei ole vielä API-avainta."
 
@@ -6385,11 +6405,11 @@ msgstr "Tiliä ei löytynyt"
 msgid "No active connection found"
 msgstr "Aktiivista yhteyttä ei löytynyt"
 
-#: src/big_remote_play/ui/headscale_wizard.py:411
+#: src/big_remote_play/ui/headscale_wizard.py:414
 msgid "No answer from the address services."
 msgstr "Osoitepalvelut eivät vastanneet."
 
-#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:89
 #, python-brace-format
 msgid "No answer on port {port}. A firewall or the router may block it."
 msgstr ""
@@ -6449,7 +6469,7 @@ msgid "No controller has arrived from the other computer"
 msgstr "Toisesta tietokoneesta ei ole saapunut peliohjainta"
 
 #: src/big_remote_play/ui/guest_view.py:2088
-#: src/big_remote_play/ui/headscale_wizard.py:425
+#: src/big_remote_play/ui/headscale_wizard.py:428
 #: src/big_remote_play/ui/provider_page.py:1057
 #: src/big_remote_play/ui/provider_page.py:1203
 msgid "No details reported."
@@ -6553,7 +6573,7 @@ msgstr "Kukaan ei vielä pelaa"
 msgid "No other device online to measure"
 msgstr "Ei muita verkossa olevia laitteita mitattavaksi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 #: src/big_remote_play/ui/network_devices.py:223
 #: src/big_remote_play/ui/provider_page.py:651
 #: src/big_remote_play/ui/provider_page.py:669
@@ -6671,7 +6691,7 @@ msgid "Not available"
 msgstr "Ei käytettävissä"
 
 #: src/big_remote_play/ui/guest_view.py:2066
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 msgid "Not checked"
 msgstr "Ei tarkistettu"
 
@@ -6783,9 +6803,9 @@ msgstr ""
 msgid "Not signed in"
 msgstr "Ei kirjautunut"
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:797
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:800
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Not yet"
 msgstr "Ei vielä"
 
@@ -6793,21 +6813,21 @@ msgstr "Ei vielä"
 msgid "Nothing to install."
 msgstr "Ei mitään asennettavaa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "Nothing was changed."
 msgstr "Mitään ei muutettu."
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "Nothing was changed. Choose Set up the server to try again."
 msgstr "Mitään ei muutettu. Yritä uudelleen valitsemalla Määritä palvelin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Nothing was changed. See Advanced on the Headscale page."
 msgstr "Mitään ei muutettu. Katso Headscale-sivun kohta Lisäasetukset."
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "Nothing was enabled. See the technical details."
 msgstr "Mitään ei otettu käyttöön. Katso tekniset tiedot."
 
@@ -6874,7 +6894,7 @@ msgstr "Ei verkossa"
 msgid "Old log files have been removed."
 msgstr "Vanhat lokitiedostot on poistettu."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1179
+#: src/big_remote_play/ui/headscale_wizard.py:1182
 msgid "On Arch Linux:"
 msgstr "Arch Linuxissa:"
 
@@ -6888,7 +6908,7 @@ msgstr "Jaa KDE Plasmassa vain peli-ikkuna ja pidä muu työpöytä yksityisenä
 msgid "On a computer, a phone or a controller"
 msgstr "Tietokoneella, puhelimella tai peliohjaimella"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1193
 msgid "On a new server this replaces Caddy's example page."
 msgstr "Uudella palvelimella tämä korvaa Caddyn esimerkkisivun."
 
@@ -6922,7 +6942,7 @@ msgstr ""
 "\n"
 "Jätä ikkuna auki. Yhteys jatkuu hyväksynnän jälkeen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1443
+#: src/big_remote_play/ui/headscale_wizard.py:1512
 #: src/big_remote_play/ui/network_devices.py:536
 #: src/big_remote_play/ui/network_devices.py:723
 #: src/big_remote_play/ui/network_devices.py:780
@@ -6984,6 +7004,14 @@ msgstr ""
 "expiration 90d”). Lisää Big Remote Playssa palvelimen osoite ja avain "
 "kohdassa API-käyttöoikeus. API-avain hallitsee palvelinta; "
 "ennakkotodennusavain vain rekisteröi yhden tietokoneen."
+
+#: src/big_remote_play/ui/headscale_wizard.py:1275
+msgid ""
+"On the server, run this command and paste the key it prints. Big Remote Play "
+"then does the rest and remembers the key."
+msgstr ""
+"Suorita tämä komento palvelimella ja liitä sen tulostama avain. Big Remote "
+"Play hoitaa sitten loput ja muistaa avaimen."
 
 #: src/big_remote_play/ui/guest_view.py:633
 msgid "On this computer"
@@ -7071,7 +7099,7 @@ msgstr "Yksi ohjain kerrallaan"
 msgid "One entry per screen"
 msgstr "Yksi kohde näyttöä kohden"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "One-time key"
 msgstr "Kertakäyttöinen avain"
@@ -7112,7 +7140,7 @@ msgstr ""
 "Vain tällä tietokoneella. Mitään ei lähetetä minnekään, eikä salasanoja, "
 "avaimia tai koodeja tallenneta."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1364
+#: src/big_remote_play/ui/headscale_wizard.py:1428
 msgid ""
 "Only one Tailscale-based network can be active on this computer at a time. "
 "Tailscale stays saved and can be turned on again later. ZeroTier is not "
@@ -7199,8 +7227,8 @@ msgstr "Avaa"
 msgid "Open Check this computer first to see the current state here."
 msgstr "Avaa ensin ”Tarkista tämä tietokone” nähdäksesi nykyisen tilan täällä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:614
-#: src/big_remote_play/ui/headscale_wizard.py:723
+#: src/big_remote_play/ui/headscale_wizard.py:617
+#: src/big_remote_play/ui/headscale_wizard.py:726
 msgid "Open Cloudflare"
 msgstr "Avaa Cloudflare"
 
@@ -7216,12 +7244,12 @@ msgstr ""
 "toisensa yksityisesti, jaa pelitietokoneella ja yhdistä sen yksityisellä "
 "osoitteella."
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
-#: src/big_remote_play/ui/headscale_wizard.py:610
+#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:613
 msgid "Open DigitalPlat"
 msgstr "Avaa DigitalPlat"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1210
+#: src/big_remote_play/ui/headscale_wizard.py:1213
 msgid "Open Headscale releases"
 msgstr "Avaa Headscalen julkaisut"
 
@@ -7316,7 +7344,7 @@ msgstr "Avaa tämä sivu tarkistaaksesi"
 msgid "Open when a device starts playing"
 msgstr "Avaa, kun laite alkaa pelata"
 
-#: src/big_remote_play/ui/headscale_wizard.py:989
+#: src/big_remote_play/ui/headscale_wizard.py:992
 msgid "Open your router's settings page"
 msgstr "Avaa reitittimesi asetussivu"
 
@@ -7356,7 +7384,7 @@ msgstr "Toiminto epäonnistui: {error}"
 msgid "Optimize the mouse for remote desktop"
 msgstr "Optimoi hiiri etätyöpöytäkäyttöön"
 
-#: src/big_remote_play/ui/headscale_wizard.py:712
+#: src/big_remote_play/ui/headscale_wizard.py:715
 msgid "Optional: IPv6"
 msgstr "Valinnainen: IPv6"
 
@@ -7364,7 +7392,7 @@ msgstr "Valinnainen: IPv6"
 msgid "Or choose what you want to do"
 msgstr "Tai valitse, mitä haluat tehdä"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1186
 msgid "Or on Debian and Ubuntu"
 msgstr "Tai Debianissa ja Ubuntussa"
 
@@ -7372,11 +7400,11 @@ msgstr "Tai Debianissa ja Ubuntussa"
 msgid "Or reset it if it was forgotten"
 msgstr "Tai nollaa se, jos se on unohtunut"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "Or the Tailscale app on a phone."
 msgstr "Tai Tailscale-sovellus puhelimessa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:480
+#: src/big_remote_play/ui/headscale_wizard.py:483
 msgid "Other"
 msgstr "Muu"
 
@@ -7558,15 +7586,7 @@ msgstr "Liitä ensin tunnistetieto."
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "Liitä palvelimen osoite ja avain tämän sivun kenttiin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1252
-msgid ""
-"Paste the server's API key. Big Remote Play then does the rest. It is kept "
-"in the system keyring."
-msgstr ""
-"Liitä palvelimen API-avain. Big Remote Play hoitaa sitten loput. Avain "
-"säilytetään järjestelmän avainnipussa."
-
-#: src/big_remote_play/ui/headscale_wizard.py:603
+#: src/big_remote_play/ui/headscale_wizard.py:606
 msgid "Paste the two nameservers (optional)"
 msgstr "Liitä kaksi nimipalvelinta (valinnainen)"
 
@@ -7574,7 +7594,7 @@ msgstr "Liitä kaksi nimipalvelinta (valinnainen)"
 msgid "Paste the whole sign-in link shown on the other computer."
 msgstr "Liitä koko kirjautumislinkki, joka näkyy toisella tietokoneella."
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Pasting them lets Big Remote Play follow your progress."
 msgstr "Kun liität ne, Big Remote Play voi seurata edistymistäsi."
 
@@ -7715,7 +7735,7 @@ msgid "Plays a short tone and checks that it reaches the shared sound."
 msgstr ""
 "Toistaa lyhyen merkkiäänen ja tarkistaa, että se päätyy jaettuun ääneen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Point a domain to it"
 msgstr "Osoita verkkotunnus siihen"
 
@@ -7740,11 +7760,11 @@ msgstr ""
 "Osoita puhelimen kameralla koodia, niin voit avata tämän oppaan puhelimessa "
 "pelatessasi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "Point your domain to the server"
 msgstr "Osoita verkkotunnuksesi palvelimeen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:683
+#: src/big_remote_play/ui/headscale_wizard.py:686
 msgid "Points to"
 msgstr "Osoittaa kohteeseen"
 
@@ -7769,7 +7789,7 @@ msgstr "Porttiohjaus (edistynyt)"
 msgid "Portal (screen picker)"
 msgstr "Portaali (näytön valitsin)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 #, python-brace-format
 msgid "Ports 80 and 443 (TCP) → {address}"
 msgstr "Portit 80 ja 443 (TCP) → {address}"
@@ -7892,11 +7912,11 @@ msgstr "Projektin tarina"
 msgid "Project story on YouTube"
 msgstr "Projektin tarina YouTubessa"
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "Proxy status"
 msgstr "Proxy status"
 
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Public IPv6"
 msgstr "Julkinen IPv6"
 
@@ -8077,8 +8097,8 @@ msgstr "Vastaanottaa pelin toiselta tietokoneelta."
 
 #. TRANSLATORS: shown next to Tailscale: the method suggested for most people.
 #: src/big_remote_play/ui/guided_setup.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:451
 #: src/big_remote_play/ui/provider_page.py:60
 msgid "Recommended"
 msgstr "Suositeltu"
@@ -8103,7 +8123,7 @@ msgstr ""
 "Suositellaan ystävän kanssa pelaamiseen. Ystäväsi saa pääsyn vain tähän "
 "tietokoneeseen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Recommended. Big Remote Play can guide you."
 msgstr "Suositeltu. Big Remote Play voi opastaa sinua."
 
@@ -8692,8 +8712,8 @@ msgstr[1] "Etsitään… tarkistettu {asked}/{total} osoitteesta"
 msgid "Secure connection"
 msgstr "Suojattu yhteys"
 
-#: src/big_remote_play/ui/headscale_wizard.py:72
-#: src/big_remote_play/ui/headscale_wizard.py:1100
+#: src/big_remote_play/ui/headscale_wizard.py:75
+#: src/big_remote_play/ui/headscale_wizard.py:1103
 msgid "Secure connection (HTTPS)"
 msgstr "Suojattu yhteys (HTTPS)"
 
@@ -8705,11 +8725,11 @@ msgstr "Suojaus ja käyttöoikeudet"
 msgid "See details"
 msgstr "Näytä tiedot"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "See its log in Advanced on the Headscale page."
 msgstr "Katso sen loki Headscale-sivun kohdasta Lisäasetukset."
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "See the technical details."
 msgstr "Katso tekniset tiedot."
 
@@ -8782,11 +8802,13 @@ msgstr ""
 "Lähetä toisella laitteella näkyvä PIN-koodi viimeistelläksesi laiteparin "
 "muodostuksen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
-msgid "Send them this command. This page continues by itself once they run it."
+#: src/big_remote_play/ui/headscale_wizard.py:1500
+msgid ""
+"Send them these commands; the first is needed only once. This page continues "
+"by itself once they run them."
 msgstr ""
-"Lähetä heille tämä komento. Tämä sivu jatkuu itsestään, kun he suorittavat "
-"sen."
+"Lähetä heille nämä komennot; ensimmäistä tarvitaan vain kerran. Tämä sivu "
+"jatkuu itsestään, kun he suorittavat ne."
 
 #: src/big_remote_play/ui/network_devices.py:665
 msgid ""
@@ -8846,8 +8868,8 @@ msgstr ""
 "puhelusovellusten puhelut. Myös puheluun osallistuva kuulee oman äänensä "
 "takaisin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:69
-#: src/big_remote_play/ui/headscale_wizard.py:1241
+#: src/big_remote_play/ui/headscale_wizard.py:72
+#: src/big_remote_play/ui/headscale_wizard.py:1246
 msgid "Server"
 msgstr "Palvelin"
 
@@ -8860,13 +8882,13 @@ msgstr "Palvelimen verkkotunnus (esim. vpn.example.com)"
 msgid "Server Failed to Start"
 msgstr "Palvelin ei onnistunut käynnistymään"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1040
+#: src/big_remote_play/ui/headscale_wizard.py:1043
 msgid "Server IP or domain"
 msgstr "Palvelimen IP tai verkkotunnus"
 
 #: src/big_remote_play/ui/api_access_dialog.py:187
-#: src/big_remote_play/ui/headscale_wizard.py:445
-#: src/big_remote_play/ui/headscale_wizard.py:810
+#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:813
 #: src/big_remote_play/ui/network_devices.py:788
 #: src/big_remote_play/ui/network_devices.py:789
 #: src/big_remote_play/ui/private_network_view.py:699
@@ -8875,7 +8897,7 @@ msgstr "Palvelimen IP tai verkkotunnus"
 msgid "Server address"
 msgstr "Palvelimen osoite"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1099
+#: src/big_remote_play/ui/headscale_wizard.py:1102
 msgid "Server answers"
 msgstr "Palvelin vastaa"
 
@@ -8883,7 +8905,7 @@ msgstr "Palvelin vastaa"
 msgid "Server control panel"
 msgstr "Palvelimen hallintapaneeli"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1119
+#: src/big_remote_play/ui/headscale_wizard.py:1122
 msgid "Server found"
 msgstr "Palvelin löytyi"
 
@@ -8929,7 +8951,7 @@ msgstr "Palvelut"
 msgid "Sessions"
 msgstr "Istunnot"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1187
+#: src/big_remote_play/ui/headscale_wizard.py:1190
 msgid "Set the server address"
 msgstr "Aseta palvelimen osoite"
 
@@ -8949,25 +8971,25 @@ msgstr ""
 msgid "Set up"
 msgstr "Ota käyttöön"
 
-#: src/big_remote_play/ui/headscale_wizard.py:548
+#: src/big_remote_play/ui/headscale_wizard.py:551
 msgid "Set up Cloudflare"
 msgstr "Määritä Cloudflare"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Set up DNS with Cloudflare"
 msgstr "Määritä DNS Cloudflarella"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 #: src/big_remote_play/ui/provider_page.py:1091
 #: src/big_remote_play/ui/provider_page.py:1170
 msgid "Set up Headscale"
 msgstr "Määritä Headscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1209
+#: src/big_remote_play/ui/headscale_wizard.py:1212
 msgid "Set up a domain"
 msgstr "Määritä verkkotunnus"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1136
+#: src/big_remote_play/ui/headscale_wizard.py:1139
 msgid "Set up a domain for it"
 msgstr "Määritä sille verkkotunnus"
 
@@ -8975,9 +8997,9 @@ msgstr "Määritä sille verkkotunnus"
 msgid "Set up a secure connection"
 msgstr "Ota suojattu yhteys käyttöön"
 
-#: src/big_remote_play/ui/headscale_wizard.py:802
-#: src/big_remote_play/ui/headscale_wizard.py:1214
-#: src/big_remote_play/ui/headscale_wizard.py:1215
+#: src/big_remote_play/ui/headscale_wizard.py:805
+#: src/big_remote_play/ui/headscale_wizard.py:1217
+#: src/big_remote_play/ui/headscale_wizard.py:1218
 msgid "Set up the server"
 msgstr "Määritä palvelin"
 
@@ -9285,7 +9307,7 @@ msgstr "Kirjaudu sisään selaimella. Käytä samaa tiliä kaikilla laitteillasi
 msgid "Sign-in expired"
 msgstr "Kirjautuminen vanheni"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1436
+#: src/big_remote_play/ui/headscale_wizard.py:1505
 msgid "Sign-in link"
 msgstr "Kirjautumislinkki"
 
@@ -9374,7 +9396,7 @@ msgstr ""
 "näkevät. Käytä yksityisverkkoa tai pyydä palveluntarjoajalta julkinen IPv4-"
 "osoite."
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Something answers there, but it is not a Headscale server."
 msgstr "Siellä vastaa jokin, mutta se ei ole Headscale-palvelin."
 
@@ -9427,7 +9449,7 @@ msgstr "Start + Select"
 msgid "Start ZeroTier"
 msgstr "Käynnistä ZeroTier"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1197
 msgid "Start both and open the ports"
 msgstr "Käynnistä molemmat ja avaa portit"
 
@@ -9435,13 +9457,13 @@ msgstr "Käynnistä molemmat ja avaa portit"
 msgid "Start it to play with your other devices."
 msgstr "Kytke se päälle pelataksesi muilla laitteillasi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
-#: src/big_remote_play/ui/headscale_wizard.py:353
-#: src/big_remote_play/ui/headscale_wizard.py:1140
+#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:356
+#: src/big_remote_play/ui/headscale_wizard.py:1143
 msgid "Start over"
 msgstr "Aloita alusta"
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "Start over?"
 msgstr "Aloitetaanko alusta?"
 
@@ -9598,12 +9620,12 @@ msgid ""
 msgstr ""
 "Vaihe vaiheelta: missä palvelin toimii, sen osoite, HTTPS ja tämä tietokone."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1577
+#: src/big_remote_play/ui/headscale_wizard.py:1646
 #, python-brace-format
 msgid "Step {number} of {total}"
 msgstr "Vaihe {number}/{total}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:264
+#: src/big_remote_play/ui/headscale_wizard.py:267
 #, python-brace-format
 msgid "Step {number} of {total} · {name}"
 msgstr "Vaihe {number}/{total} · {name}"
@@ -10098,7 +10120,7 @@ msgstr "Vaihda hiiren vasen ja oikea painike keskenään"
 msgid "Swipe from the left edge of the screen"
 msgstr "Pyyhkäise näytön vasemmasta reunasta"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1368
+#: src/big_remote_play/ui/headscale_wizard.py:1432
 #: src/big_remote_play/ui/remote_connection.py:250
 #: src/big_remote_play/ui/tailscale_accounts.py:107
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:208
@@ -10109,7 +10131,7 @@ msgstr "Vaihda"
 msgid "Switch between full screen and a window"
 msgstr "Vaihda koko näytön ja ikkunan välillä"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1363
+#: src/big_remote_play/ui/headscale_wizard.py:1427
 msgid "Switch from Tailscale to Headscale?"
 msgstr "Vaihdetaanko Tailscalesta Headscaleen?"
 
@@ -10250,7 +10272,7 @@ msgstr "Äänen tekniset tiedot"
 
 #: src/big_remote_play/ui/dependency_installer.py:171
 #: src/big_remote_play/ui/guest_view.py:2087
-#: src/big_remote_play/ui/headscale_wizard.py:424
+#: src/big_remote_play/ui/headscale_wizard.py:427
 #: src/big_remote_play/ui/provider_page.py:1202
 #: src/big_remote_play/ui/zerotier_join.py:225
 msgid "Technical details"
@@ -10295,11 +10317,11 @@ msgstr ""
 "Kyseinen tietokone näyttää kirjautumislinkin. Liitä se tähän hyväksyäksesi "
 "sen tai hyväksy se palvelimella."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "The API key could not be saved."
 msgstr "API-avainta ei voitu tallentaa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "The HTTPS configuration was not accepted."
 msgstr "HTTPS-määritystä ei hyväksytty."
 
@@ -10311,13 +10333,13 @@ msgstr "HTTPS-määritystä ei hyväksytty. Mitään ei otettu käyttöön."
 msgid "The Headscale configuration file is missing."
 msgstr "Headscalen asetustiedosto puuttuu."
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
-#: src/big_remote_play/ui/headscale_wizard.py:86
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:90
 msgid "The Headscale server is not reachable."
 msgstr "Headscale-palvelimeen ei saada yhteyttä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:307
 msgid ""
 "The Headscale server needs to stay available so your devices can find each "
 "other."
@@ -10333,7 +10355,7 @@ msgstr "Headscale-palvelin toimii."
 msgid "The Headscale setup is not finished."
 msgstr "Headscalen määritys ei ole valmis."
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 msgid "The IPv6 record points somewhere else."
 msgstr "IPv6-tietue osoittaa muualle."
 
@@ -10463,7 +10485,7 @@ msgstr ""
 "Aktiivinen VPN-yhteys pysähtyy. Tallennetut tilit säilyvät, jotta voit "
 "yhdistää myöhemmin uudelleen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1048
+#: src/big_remote_play/ui/headscale_wizard.py:1051
 msgid "The address of the computer or VPS that runs Headscale."
 msgstr "Headscalea suorittavan tietokoneen tai VPS:n osoite."
 
@@ -10598,13 +10620,13 @@ msgstr "Laite"
 msgid "The device list could not be read."
 msgstr "Laiteluetteloa ei voitu lukea."
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "The domain could not be checked."
 msgstr "Verkkotunnusta ei voitu tarkistaa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:537
+#: src/big_remote_play/ui/headscale_wizard.py:540
 msgid "The domain you registered"
 msgstr "Rekisteröimäsi verkkotunnus"
 
@@ -10635,7 +10657,7 @@ msgstr "Tiedosto, johon Sunshine-sovelluksen nykyiset lokit tallennetaan."
 msgid "The file that stores Sunshine's current state."
 msgstr "Tiedosto, johon Sunshinen nykyinen tila on tallennettu."
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "The finished steps are forgotten. Nothing on the server is removed."
 msgstr "Valmiit vaiheet unohdetaan. Palvelimelta ei poisteta mitään."
 
@@ -10811,7 +10833,7 @@ msgstr ""
 msgid "The installation was cancelled. Nothing was changed."
 msgstr "Asennus peruttiin. Mitään ei muutettu."
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The internet could not reach this computer."
 msgstr "Internetistä ei saatu yhteyttä tähän tietokoneeseen."
 
@@ -10877,7 +10899,7 @@ msgstr ""
 "Tailscalessa, tämän voi aiheuttaa tietokone, jossa on yhtä aikaa kaapeli- ja "
 "Wi-Fi-yhteys: katkaise yhteys, jota se ei käytä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:90
 #, python-brace-format
 msgid "The network cannot reach it on port {port}."
 msgstr "Verkko ei tavoita sitä portissa {port}."
@@ -10998,7 +11020,7 @@ msgstr "Verkon omistajan on vielä hyväksyttävä tämä tietokone."
 msgid "The pacman package manager is not available on this system."
 msgstr "Pacman-paketinhallinta ei ole käytettävissä tässä järjestelmässä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "The password was not given."
 msgstr "Salasanaa ei annettu."
 
@@ -11118,7 +11140,7 @@ msgstr "Haku pysähtyi ennen kuin kaikki osoitteet oli tarkistettu."
 msgid "The search was cancelled."
 msgstr "Haku peruttiin."
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The secure certificate could not be obtained."
 msgstr "Suojattua varmennetta ei saatu."
 
@@ -11140,11 +11162,11 @@ msgstr ""
 msgid "The server administrator then approves this computer."
 msgstr "Palvelimen ylläpitäjä hyväksyy sitten tämän tietokoneen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:94
 msgid "The server could not be checked."
 msgstr "Palvelinta ei voitu tarkistaa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "The server could not be set up."
 msgstr "Palvelinta ei voitu määrittää."
 
@@ -11152,7 +11174,7 @@ msgstr "Palvelinta ei voitu määrittää."
 msgid "The server details could not be read."
 msgstr "Palvelimen tietoja ei voitu lukea."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "The server did not accept this API key."
 msgstr "Palvelin ei hyväksynyt tätä API-avainta."
 
@@ -11160,11 +11182,11 @@ msgstr "Palvelin ei hyväksynyt tätä API-avainta."
 msgid "The server did not find what was requested."
 msgstr "Palvelin ei löytänyt pyydettyä kohdetta."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
+#: src/big_remote_play/ui/headscale_wizard.py:1402
 msgid "The server did not give a key for this computer."
 msgstr "Palvelin ei antanut avainta tälle tietokoneelle."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "The server did not give a key."
 msgstr "Palvelin ei antanut avainta."
 
@@ -11172,11 +11194,15 @@ msgstr "Palvelin ei antanut avainta."
 msgid "The server log says why a capture could not open."
 msgstr "Palvelinloki kertoo, miksi kaappausta ei voitu avata."
 
+#: src/big_remote_play/ui/headscale_wizard.py:1262
+msgid "The server runs on this computer"
+msgstr "Palvelin toimii tällä tietokoneella"
+
 #: src/big_remote_play/ui/provider_page.py:1249
 msgid "The server setup could not be removed."
 msgstr "Palvelimen määritystä ei voitu poistaa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid ""
 "The server setup is not available when Big Remote Play runs from its source "
 "folder."
@@ -11193,11 +11219,11 @@ msgid "The server tried to redirect the request, which is refused for safety."
 msgstr ""
 "Palvelin yritti uudelleenohjata pyynnön, mikä estetään turvallisuussyistä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:677
+#: src/big_remote_play/ui/headscale_wizard.py:680
 msgid "The server's public IP address"
 msgstr "Palvelimen julkinen IP-osoite"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:91
 msgid "The server's secure certificate is not valid."
 msgstr "Palvelimen suojattu varmenne ei ole kelvollinen."
 
@@ -11224,7 +11250,7 @@ msgstr ""
 msgid "The service did not accept the request."
 msgstr "Palvelu ei hyväksynyt pyyntöä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:224
+#: src/big_remote_play/ui/headscale_wizard.py:227
 msgid "The setup progress could not be saved."
 msgstr "Määrityksen edistymistä ei voitu tallentaa."
 
@@ -11374,7 +11400,7 @@ msgstr ""
 msgid "The {name} service is not running on this computer."
 msgstr "{name}-palvelu ei ole käynnissä tällä tietokoneella."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "Then Set up → Another server."
 msgstr "Sitten Ota käyttöön → Toinen palvelin."
 
@@ -11390,7 +11416,7 @@ msgstr "Kuvaa ei ole"
 msgid "There is no sound"
 msgstr "Ääntä ei ole"
 
-#: src/big_remote_play/ui/headscale_wizard.py:638
+#: src/big_remote_play/ui/headscale_wizard.py:641
 msgid "These are not Cloudflare nameservers. They end in .ns.cloudflare.com."
 msgstr ""
 "Nämä eivät ole Cloudflaren nimipalvelimia. Cloudflaren nimipalvelimien "
@@ -11450,8 +11476,8 @@ msgstr ""
 "Tämä voi mahdollistaa HEVC-koodauksen vanhemmilla Intelin näytönohjaimilla "
 "suuremman GPU-kuorman ja heikomman suorituskyvyn kustannuksella."
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:667
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "This can take a little while."
 msgstr "Tämä voi kestää hetken."
 
@@ -11463,9 +11489,9 @@ msgstr "Tämä muuttaa vain Big Remote Playssa näytettävää nimeä."
 msgid "This code is not complete"
 msgstr "Tämä koodi ei ole täydellinen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:74
-#: src/big_remote_play/ui/headscale_wizard.py:306
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:77
+#: src/big_remote_play/ui/headscale_wizard.py:309
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 #: src/big_remote_play/ui/host_view.py:115
 #: src/big_remote_play/ui/network_devices.py:173
 #: src/big_remote_play/ui/remote_connection.py:356
@@ -11473,9 +11499,15 @@ msgstr "Tämä koodi ei ole täydellinen"
 msgid "This computer"
 msgstr "Tämä tietokone"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "This computer asks to join; the owner approves it on the server."
-msgstr "Tämä tietokone pyytää liittymistä; omistaja hyväksyy sen palvelimella."
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1293
+#, python-brace-format
+msgid ""
+"This computer asks to join; Big Remote Play shows the exact commands for the "
+"owner, with your user “{user}”."
+msgstr ""
+"Tämä tietokone pyytää liittymistä; Big Remote Play näyttää omistajalle "
+"tarkat komennot käyttäjälläsi ”{user}”."
 
 #: src/big_remote_play/ui/provider_page.py:1068
 msgid "This computer can be in several ZeroTier networks."
@@ -11494,7 +11526,7 @@ msgstr ""
 "HDR riippuvat myös molemmista tietokoneista. Muutokset tulevat voimaan, kun "
 "jakaminen käynnistetään uudelleen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "This computer could not join."
 msgstr "Tämä tietokone ei voinut liittyä."
 
@@ -11524,7 +11556,7 @@ msgstr ""
 "Tämä tietokone on valtuutettu, mutta verkko ei ole vielä antanut sille "
 "osoitetta. Verkon omistaja voi määrittää sen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1404
+#: src/big_remote_play/ui/headscale_wizard.py:1468
 msgid "This computer is connected"
 msgstr "Tämä tietokone on yhdistetty"
 
@@ -11567,7 +11599,7 @@ msgstr "Tämä tietokone on verkossa {name}."
 msgid "This computer is on your {name} network."
 msgstr "Tämä tietokone on {name}-verkossasi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "This computer joins your Headscale network."
 msgstr "Tämä tietokone liittyy Headscale-verkkoosi."
 
@@ -11699,12 +11731,12 @@ msgstr ""
 msgid "This device · {state}"
 msgstr "Tämä laite · {state}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1304
+#: src/big_remote_play/ui/headscale_wizard.py:1340
 msgid "This does not look like a key that adds a computer."
 msgstr "Tämä ei näytä avaimelta, joka lisää tietokoneen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:524
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "This domain does not exist yet."
 msgstr "Tätä verkkotunnusta ei ole vielä olemassa."
 
@@ -11734,7 +11766,7 @@ msgstr ""
 msgid "This is a request. It only works when the game PC supports it."
 msgstr "Tämä on pyyntö. Se toimii vain, jos pelitietokone tukee sitä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "This is an administrator key."
 msgstr "Tämä on ylläpitäjän avain."
 
@@ -11750,19 +11782,19 @@ msgstr ""
 msgid "This is not a code from the other device."
 msgstr "Tämä ei ole toisen laitteen koodi."
 
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "This is not a domain."
 msgstr "Tämä ei ole verkkotunnus."
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "This is not a public IP address."
 msgstr "Tämä ei ole julkinen IP-osoite."
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
+#: src/big_remote_play/ui/headscale_wizard.py:86
 msgid "This is not a server address."
 msgstr "Tämä ei ole palvelimen osoite."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "This is not an API key."
 msgstr "Tämä ei ole API-avain."
 
@@ -11778,15 +11810,15 @@ msgstr ""
 msgid "This is the computer that will run the game."
 msgstr "Tämä on tietokone, jolla peli pyörii."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "This key adds one computer; it is not an API key."
 msgstr "Tämä avain lisää yhden tietokoneen; se ei ole API-avain."
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "This name does not lead to a server yet."
 msgstr "Tämä nimi ei vielä johda palvelimeen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "This name is already set in /etc/hosts."
 msgstr "Tämä nimi on jo määritetty tiedostossa /etc/hosts."
 
@@ -11798,7 +11830,7 @@ msgstr "Tämä nimi on jo määritetty tiedostossa /etc/hosts. Mitään ei muute
 msgid "This name is not valid."
 msgstr "Tämä nimi ei kelpaa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid "This needs the installed Big Remote Play package."
 msgstr "Tämä vaatii asennetun Big Remote Play -paketin."
 
@@ -11871,7 +11903,7 @@ msgstr "Tämän näytön tarkkuus"
 msgid "This server address is not valid."
 msgstr "Tämä palvelimen osoite ei kelpaa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1124
+#: src/big_remote_play/ui/headscale_wizard.py:1127
 msgid ""
 "This server runs on this computer. Your router does not send this computer's "
 "own traffic back to it, so Big Remote Play checked it directly and will "
@@ -12003,7 +12035,7 @@ msgstr "Luotetut verkkokäyttöliittymän lähteet"
 msgid "Try again"
 msgstr "Yritä uudelleen"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "Try again, or choose another option."
 msgstr "Yritä uudelleen tai valitse toinen vaihtoehto."
 
@@ -12044,7 +12076,7 @@ msgstr "Poistetaanko ZeroTier käytöstä?"
 msgid "Turn on"
 msgstr "Kytke päälle"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1189
+#: src/big_remote_play/ui/headscale_wizard.py:1192
 msgid "Turn on HTTPS with Caddy"
 msgstr "Ota HTTPS käyttöön Caddylla"
 
@@ -12058,8 +12090,8 @@ msgid "Turned on"
 msgstr "Käytössä"
 
 #: src/big_remote_play/ui/api_access_dialog.py:150
-#: src/big_remote_play/ui/headscale_wizard.py:687
-#: src/big_remote_play/ui/headscale_wizard.py:714
+#: src/big_remote_play/ui/headscale_wizard.py:690
+#: src/big_remote_play/ui/headscale_wizard.py:717
 msgid "Type"
 msgstr "Tyyppi"
 
@@ -12084,8 +12116,8 @@ msgid ""
 msgstr ""
 "Kirjoita palvelimesi osoite. Sen ylläpitäjä hyväksyy tämän tietokoneen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:577
-#: src/big_remote_play/ui/headscale_wizard.py:586
+#: src/big_remote_play/ui/headscale_wizard.py:580
+#: src/big_remote_play/ui/headscale_wizard.py:589
 msgid "Type the domain you registered, for example mydomain.dpdns.org."
 msgstr "Kirjoita rekisteröimäsi verkkotunnus, esimerkiksi mydomain.dpdns.org."
 
@@ -12264,15 +12296,15 @@ msgstr ""
 msgid "Use Tailscale"
 msgstr "Käytä Tailscalea"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "Use a Linux server that stays on"
 msgstr "Käytä Linux-palvelinta, joka on jatkuvasti päällä"
 
-#: src/big_remote_play/ui/headscale_wizard.py:981
+#: src/big_remote_play/ui/headscale_wizard.py:984
 msgid "Use a VPS instead"
 msgstr "Käytä sen sijaan VPS:ää"
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
+#: src/big_remote_play/ui/headscale_wizard.py:308
 msgid "Use a VPS or another computer that stays online."
 msgstr "Käytä VPS:ää tai muuta tietokonetta, joka on jatkuvasti verkossa."
 
@@ -12282,11 +12314,11 @@ msgstr ""
 "Käytä mahdollisuuksien mukaan kaapelia tai 5 GHz:n Wi-Fiä molemmissa "
 "tietokoneissa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1139
+#: src/big_remote_play/ui/headscale_wizard.py:1142
 msgid "Use a different address"
 msgstr "Käytä toista osoitetta"
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Use a domain"
 msgstr "Käytä verkkotunnusta"
 
@@ -12309,10 +12341,10 @@ msgstr ""
 msgid "Use another account"
 msgstr "Käytä toista tiliä"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:402
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:997
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:405
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:1000
 msgid "Use another server"
 msgstr "Käytä toista palvelinta"
 
@@ -12333,13 +12365,13 @@ msgstr "Käytä laitteistodekoodausta, kun se on käytettävissä"
 msgid "Use it"
 msgstr "Käytä sitä"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "Use it in the first option, or ask for a key that adds one computer."
 msgstr ""
 "Käytä sitä ensimmäisessä vaihtoehdossa tai pyydä avain, joka lisää yhden "
 "tietokoneen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "Use it in the second option instead."
 msgstr "Käytä sitä sen sijaan toisessa vaihtoehdossa."
 
@@ -12351,7 +12383,7 @@ msgstr "Käytä useita peliohjaimia"
 msgid "Use only when both computers and the screen support HDR."
 msgstr "Käytä vain, kun molemmat tietokoneet ja näyttö tukevat HDR:ää."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1256
+#: src/big_remote_play/ui/headscale_wizard.py:1280
 msgid "Use the API key"
 msgstr "Käytä API-avainta"
 
@@ -12367,7 +12399,7 @@ msgstr ""
 msgid "Use the controller to move the mouse"
 msgstr "Liikuta hiirtä peliohjaimella"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid "Use the detected address"
 msgstr "Käytä tunnistettua osoitetta"
 
@@ -12383,7 +12415,7 @@ msgstr "Käytä pelikoneen Big Remote Play -sovelluksen hakukoodia."
 msgid "Use the touchscreen as a virtual trackpad"
 msgstr "Käytä kosketusnäyttöä virtuaalisena kosketuslevynä"
 
-#: src/big_remote_play/ui/headscale_wizard.py:306
+#: src/big_remote_play/ui/headscale_wizard.py:309
 msgid "Use this PC as the Headscale server."
 msgstr "Käytä tätä tietokonetta Headscale-palvelimena."
 
@@ -12391,7 +12423,7 @@ msgstr "Käytä tätä tietokonetta Headscale-palvelimena."
 msgid "Use this connection"
 msgstr "Käytä tätä yhteyttä"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1258
+#: src/big_remote_play/ui/headscale_wizard.py:1288
 msgid "Use this key"
 msgstr "Käytä tätä avainta"
 
@@ -12403,7 +12435,7 @@ msgstr "Käytä tätä vain, jos automaattinen haku ei löydä tietokonetta."
 msgid "Use this screen's resolution"
 msgstr "Käytä tämän näytön tarkkuutta"
 
-#: src/big_remote_play/ui/headscale_wizard.py:866
+#: src/big_remote_play/ui/headscale_wizard.py:869
 msgid "Use this server"
 msgstr "Käytä tätä palvelinta"
 
@@ -12460,7 +12492,7 @@ msgstr "Tämän tietokoneen oman hiiren tai näppäimistön käyttö keskeyttä�
 msgid "Using this screen's resolution"
 msgstr "Käytetään tämän näytön tarkkuutta"
 
-#: src/big_remote_play/ui/headscale_wizard.py:990
+#: src/big_remote_play/ui/headscale_wizard.py:993
 msgid ""
 "Usually its address is written under the router. Look for “Port forwarding”, "
 "“Virtual server” or “NAT”."
@@ -12647,7 +12679,7 @@ msgstr "Odotetaan valtuutusta"
 msgid "Waiting for data…"
 msgstr "Odotetaan tietoja…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
+#: src/big_remote_play/ui/headscale_wizard.py:1500
 msgid "Waiting for the server owner"
 msgstr "Odotetaan palvelimen omistajaa"
 
@@ -12663,11 +12695,11 @@ msgstr "Varoittaa, jos palomuuri- tai verkkosäännöt voivat estää yhteyden."
 msgid "Washed out on devices without HDR"
 msgstr "Haalistunut laitteissa ilman HDR:ää"
 
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "We are still waiting for DNS"
 msgstr "Odotamme vielä DNS:ää"
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "We could not find your public address"
 msgstr "Julkista osoitettasi ei löytynyt"
 
@@ -12702,7 +12734,7 @@ msgstr "ZeroTierin vastaus, jonka voit jakaa sinua auttavan henkilön kanssa."
 msgid "What do you want to do?"
 msgstr "Mitä haluat tehdä?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:789
+#: src/big_remote_play/ui/headscale_wizard.py:792
 msgid "What happens"
 msgstr "Mitä tapahtuu"
 
@@ -12710,7 +12742,7 @@ msgstr "Mitä tapahtuu"
 msgid "What is the network code?"
 msgstr "Mikä on verkon koodi?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1047
+#: src/big_remote_play/ui/headscale_wizard.py:1050
 msgid "What is the server address?"
 msgstr "Mikä on palvelimen osoite?"
 
@@ -12793,7 +12825,7 @@ msgstr ""
 "Kun käytät tämän tietokoneen hiirtä tai näppäimistöä, vieraat eivät hetkeen "
 "voi ohjata niitä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "Where do you manage DNS?"
 msgstr "Missä hallitset DNS:ää?"
 
@@ -12801,7 +12833,7 @@ msgstr "Missä hallitset DNS:ää?"
 msgid "Where is the other device?"
 msgstr "Missä toinen laite on?"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Where is the server?"
 msgstr "Missä palvelin on?"
 
@@ -12813,7 +12845,7 @@ msgstr "Mistä tunnus luodaan"
 msgid "Where to create it"
 msgstr "Mistä se luodaan"
 
-#: src/big_remote_play/ui/headscale_wizard.py:303
+#: src/big_remote_play/ui/headscale_wizard.py:306
 msgid "Where will your Headscale server run?"
 msgstr "Missä Headscale-palvelimesi toimii?"
 
@@ -12844,7 +12876,7 @@ msgstr ""
 "Miksi yhteys internetin yli voi epäonnistua ja turvallisin tapa kiertää "
 "kukin ongelma."
 
-#: src/big_remote_play/ui/headscale_wizard.py:706
+#: src/big_remote_play/ui/headscale_wizard.py:709
 msgid "Why?"
 msgstr "Miksi?"
 
@@ -12928,7 +12960,7 @@ msgstr "Ilman todennusavainta avautuu kirjautumislinkki"
 msgid "Without it, members are approved on the ZeroTier website."
 msgstr "Ilman sitä jäsenet hyväksytään ZeroTierin verkkosivustolla."
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Working…"
 msgstr "Käsitellään…"
 
@@ -12945,8 +12977,8 @@ msgstr ""
 msgid "X11 screen capture"
 msgstr "X11-näytönkaappaus"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:472
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/touch_controls.py:81
 msgid "Yes"
 msgstr "Kyllä"
@@ -12980,7 +13012,7 @@ msgstr "Eilen klo {time}"
 msgid "You can control the mouse and keyboard again"
 msgstr "Voit taas ohjata hiirtä ja näppäimistöä"
 
-#: src/big_remote_play/ui/headscale_wizard.py:559
+#: src/big_remote_play/ui/headscale_wizard.py:562
 msgid ""
 "You can use a domain you already own or register one with a domain provider."
 msgstr ""
@@ -13007,7 +13039,7 @@ msgstr "Sinä ohjaat tätä tietokonetta"
 msgid "Your Headscale server"
 msgstr "Headscale-palvelimesi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1032
+#: src/big_remote_play/ui/headscale_wizard.py:1035
 msgid "Your Headscale server is ready"
 msgstr "Headscale-palvelimesi on valmis"
 
@@ -13015,7 +13047,7 @@ msgstr "Headscale-palvelimesi on valmis"
 msgid "Your Tailscale network (tailnet)"
 msgstr "Tailscale-verkkosi (tailnet)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Your VPS provider shows it in its control panel."
 msgstr "VPS-palveluntarjoajasi näyttää sen hallintapaneelissaan."
 
@@ -13038,16 +13070,16 @@ msgstr "Laitteesi"
 msgid "Your devices can now find each other in Big Remote Play."
 msgstr "Laitteesi löytävät nyt toisensa Big Remote Playssa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:491
-#: src/big_remote_play/ui/headscale_wizard.py:614
+#: src/big_remote_play/ui/headscale_wizard.py:494
+#: src/big_remote_play/ui/headscale_wizard.py:617
 msgid "Your domain"
 msgstr "Verkkotunnuksesi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 msgid "Your domain is not pointing to this server yet."
 msgstr "Verkkotunnuksesi ei vielä osoita tähän palvelimeen."
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
+#: src/big_remote_play/ui/headscale_wizard.py:667
 msgid "Your domain still uses other nameservers."
 msgstr "Verkkotunnuksesi käyttää yhä muita nimipalvelimia."
 
@@ -13063,19 +13095,19 @@ msgstr ""
 msgid "Your games. Any screen. Anywhere."
 msgstr "Omat pelisi. Mikä tahansa näyttö. Missä tahansa."
 
-#: src/big_remote_play/ui/headscale_wizard.py:368
+#: src/big_remote_play/ui/headscale_wizard.py:371
 msgid "Your internet connection"
 msgstr "Internetyhteytesi"
 
-#: src/big_remote_play/ui/headscale_wizard.py:976
+#: src/big_remote_play/ui/headscale_wizard.py:979
 msgid "Your internet provider blocks incoming connections."
 msgstr "Internetpalveluntarjoajasi estää saapuvat yhteydet."
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Your internet provider may block incoming connections."
 msgstr "Internetpalveluntarjoajasi saattaa estää saapuvat yhteydet."
 
-#: src/big_remote_play/ui/headscale_wizard.py:1520
+#: src/big_remote_play/ui/headscale_wizard.py:1589
 msgid "Your other device is connected"
 msgstr "Toinen laitteesi on yhdistetty"
 
@@ -13101,7 +13133,7 @@ msgstr "Oma versiosi kohteesta {names} säilytettiin ennallaan."
 msgid "Your password may be requested."
 msgstr "Salasanaasi voidaan kysyä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
+#: src/big_remote_play/ui/headscale_wizard.py:398
 msgid "Your public IP"
 msgstr "Julkinen IP-osoitteesi"
 
@@ -13109,7 +13141,7 @@ msgstr "Julkinen IP-osoitteesi"
 msgid "Your recent sessions will appear here."
 msgstr "Viimeisimmät istuntosi näkyvät tässä."
 
-#: src/big_remote_play/ui/headscale_wizard.py:986
+#: src/big_remote_play/ui/headscale_wizard.py:989
 msgid "Your router needs one more step"
 msgstr "Reitittimesi tarvitsee vielä yhden vaiheen"
 
@@ -13229,7 +13261,7 @@ msgstr "ei tunnistettu"
 msgid "the local network"
 msgstr "lähiverkko"
 
-#: src/big_remote_play/ui/headscale_wizard.py:983
+#: src/big_remote_play/ui/headscale_wizard.py:986
 msgid "this computer"
 msgstr "tämä tietokone"
 

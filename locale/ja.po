@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-17 09:34+0000\n"
+"POT-Creation-Date: 2026-11-17 09:44+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Japanese\n"
@@ -46,13 +46,21 @@ msgstr "1. インターネットに到達できるか確認する"
 msgid "1. Create Account"
 msgstr "1. アカウントを作成"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1503
+msgid "1. Create the user (once)"
+msgstr "1. ユーザーを作成（初回のみ）"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1274
+msgid "1. I manage this server (recommended)"
+msgstr "1. 自分がこのサーバーを管理している（推奨）"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1801
 #: src/big_remote_play/ui/private_network_view.py:1114
 msgid "1. Identification"
 msgstr "1. 識別"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "1. Install Big Remote Play"
 msgstr "1. Big Remote Play をインストール"
 
@@ -76,6 +84,10 @@ msgstr "1440p · 60 FPS · 40 Mbps"
 msgid "1920 × 1080 — best for TVs"
 msgstr "1920 × 1080 — テレビに最適"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1504
+msgid "2. Approve this computer"
+msgstr "2. このコンピューターを承認"
+
 #: src/big_remote_play/ui/connection_guides.py:61
 msgid "2. Choose a domain you control"
 msgstr "2. 管理しているドメインを選ぶ"
@@ -83,6 +95,10 @@ msgstr "2. 管理しているドメインを選ぶ"
 #: src/big_remote_play/ui/connection_guides.py:119
 msgid "2. Domain and HTTPS"
 msgstr "2. ドメインと HTTPS"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1283
+msgid "2. I have a key from the server owner"
+msgstr "2. サーバーの所有者からキーをもらった"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1795
@@ -98,9 +114,13 @@ msgstr "2. 参加"
 msgid "2. Network"
 msgstr "2. ネットワーク"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1446
+#: src/big_remote_play/ui/headscale_wizard.py:1515
 msgid "2. Open Connect your devices"
 msgstr "2.「デバイスをつなぐ」を開く"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1291
+msgid "3. Ask the server owner to approve"
+msgstr "3. サーバーの所有者に承認を頼む"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1803
@@ -108,7 +128,7 @@ msgstr "2.「デバイスをつなぐ」を開く"
 msgid "3. Authorization"
 msgstr "3. 認証"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "3. Choose Headscale"
 msgstr "3. Headscale を選ぶ"
 
@@ -146,7 +166,7 @@ msgstr "4. 承認"
 msgid "4. Connect Big Remote Play"
 msgstr "4. Big Remote Play を接続"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1448
+#: src/big_remote_play/ui/headscale_wizard.py:1517
 msgid "4. Use this server"
 msgstr "4. このサーバーを使う"
 
@@ -180,7 +200,7 @@ msgid ""
 msgstr ""
 "同じ名前の Caddy サイトファイルがすでにあります。何も変更されていません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:865
+#: src/big_remote_play/ui/headscale_wizard.py:868
 msgid "A Headscale server already answers at this address."
 msgstr "このアドレスではすでに Headscale サーバーが応答しています。"
 
@@ -238,7 +258,7 @@ msgstr "デバイスで再生中ですが、Sunshine はまだ音声を録音し
 msgid "A device started playing on this computer."
 msgstr "デバイスがこのコンピューターでプレイを開始しました。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:468
+#: src/big_remote_play/ui/headscale_wizard.py:471
 msgid ""
 "A domain is a name like example.com. Your server gets a name inside it, like "
 "headscale.example.com."
@@ -246,14 +266,17 @@ msgstr ""
 "ドメインとは example.com のような名前です。サーバーには、その中の "
 "headscale.example.com のような名前が付きます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1457
+#: src/big_remote_play/ui/headscale_wizard.py:1526
 msgid "A key for the other computer"
 msgstr "もう一方のコンピューター用のキー"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "A key that adds one computer. It is used once and not saved."
+#: src/big_remote_play/ui/headscale_wizard.py:1284
+msgid ""
+"A key that adds one computer, starting with hskey-auth-. It is used once and "
+"not saved."
 msgstr ""
-"コンピューターを 1 台追加するためのキーです。一度だけ使われ、保存されません。"
+"コンピューターを 1 台追加するためのキーで、hskey-auth- で始まります。一度だけ"
+"使われ、保存されません。"
 
 #: src/big_remote_play/ui/controls_help.py:102
 msgid "A keyboard app with Ctrl and Alt"
@@ -292,11 +315,11 @@ msgstr ""
 "や車の画面には 1920 × 1080 が最も鮮明です。選んだ画面は終了後に元に戻ります。"
 "まず上で画面を選んでください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "A secure connection could not be made."
 msgstr "安全な接続を確立できませんでした。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "A small VPS is enough. Debian, Ubuntu and Arch are fine."
 msgstr "小さな VPS で十分です。Debian、Ubuntu、Arch のどれでも大丈夫です。"
 
@@ -376,7 +399,7 @@ msgid "API error: {status}"
 msgstr "APIエラー：{status}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:1242
+#: src/big_remote_play/ui/headscale_wizard.py:1247
 msgid "API key"
 msgstr "API キー"
 
@@ -537,8 +560,8 @@ msgstr "アカウントまたはネットワークを追加"
 msgid "Add another computer of mine"
 msgstr "自分の別のコンピューターを追加"
 
-#: src/big_remote_play/ui/headscale_wizard.py:75
-#: src/big_remote_play/ui/headscale_wizard.py:1481
+#: src/big_remote_play/ui/headscale_wizard.py:78
+#: src/big_remote_play/ui/headscale_wizard.py:1550
 #: src/big_remote_play/ui/network_devices.py:488
 msgid "Add another device"
 msgstr "別のデバイスを追加"
@@ -552,16 +575,16 @@ msgstr "アドレスで追加"
 msgid "Add device"
 msgstr "デバイスを追加"
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "Add it where you manage your domain's DNS."
 msgstr "ドメインの DNS を管理している場所で追加してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1246
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "Add this computer"
 msgstr "このコンピューターを追加"
 
-#: src/big_remote_play/ui/headscale_wizard.py:713
+#: src/big_remote_play/ui/headscale_wizard.py:716
 msgid ""
 "Add this only if your router lets connections in over IPv6. A wrong IPv6 "
 "record can break the connection."
@@ -569,15 +592,15 @@ msgstr ""
 "ルーターが IPv6 での着信接続を許可している場合にだけ追加してください。IPv6 レ"
 "コードが間違っていると、接続できなくなることがあります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this record."
 msgstr "このレコードを追加してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this to Cloudflare."
 msgstr "これを Cloudflare に追加してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 msgid "Add two rules"
 msgstr "ルールを 2 つ追加"
 
@@ -595,7 +618,7 @@ msgstr ""
 "なく、DNS のみ（灰色の雲）を選んでください。アドレスが変わったらレコードを更"
 "新します。これは Cloudflare Tunnel や VPN ではありません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:613
+#: src/big_remote_play/ui/headscale_wizard.py:616
 msgid "Add your domain to Cloudflare."
 msgstr "ドメインを Cloudflare に追加してください。"
 
@@ -605,8 +628,8 @@ msgid "Add {count} Game"
 msgid_plural "Add {count} Games"
 msgstr[0] "ゲームを {count} 本追加"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1345
-#: src/big_remote_play/ui/headscale_wizard.py:1375
+#: src/big_remote_play/ui/headscale_wizard.py:1409
+#: src/big_remote_play/ui/headscale_wizard.py:1439
 msgid "Adding this computer…"
 msgstr "このコンピューターを追加しています…"
 
@@ -623,7 +646,7 @@ msgstr "アドレス、ばらつき、失われた応答"
 msgid "Address: {address}"
 msgstr "アドレス: {address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "Addresses like 192.168.x.x only work inside a home network."
 msgstr "192.168.x.x のようなアドレスは、家庭内のネットワークでしか使えません。"
 
@@ -703,7 +726,7 @@ msgstr "サーバーの詳細設定"
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "ブラウザでの詳細設定（Sunshine）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid ""
 "Advanced. HTTPS certificates can be harder to configure with an IP address."
 msgstr ""
@@ -839,7 +862,7 @@ msgstr ""
 "一度だけ許可してください。パスワードを求められます。以降は Tailscale がパス"
 "ワードなしで動作します。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1195
+#: src/big_remote_play/ui/headscale_wizard.py:1198
 msgid ""
 "Allow ports 80 and 443 (TCP) in the server's firewall and in your VPS "
 "provider's panel."
@@ -847,7 +870,7 @@ msgstr ""
 "サーバーのファイアウォールと VPS プロバイダーの管理画面で、ポート 80 と 443"
 "（TCP）を許可してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:793
+#: src/big_remote_play/ui/headscale_wizard.py:796
 msgid "Allow web connections in the firewall"
 msgstr "ファイアウォールで Web 接続を許可"
 
@@ -982,16 +1005,16 @@ msgstr ""
 "別のインストールが実行中です。完了するとこのページは自動的に続行します。進行"
 "状況は「技術的な詳細」で確認できます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:873
-#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:876
+#: src/big_remote_play/ui/headscale_wizard.py:957
 msgid ""
 "Another program already uses the web ports (80 and 443) on this computer."
 msgstr ""
 "このコンピューターの Web ポート（80 と 443）は、すでに別のプログラムが使用し"
 "ています。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:1046
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:1049
 msgid "Another server"
 msgstr "別のサーバー"
 
@@ -1186,15 +1209,11 @@ msgstr ""
 "ネットワークを持っていない場合は、どちらかが ZeroTier Central で無料で作成す"
 "るか、いちばん簡単な Tailscale を使ってください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "Ask the server owner to approve"
-msgstr "サーバーの所有者に承認を頼む"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1260
+#: src/big_remote_play/ui/headscale_wizard.py:1296
 msgid "Ask to join"
 msgstr "参加をリクエスト"
 
-#: src/big_remote_play/ui/headscale_wizard.py:987
+#: src/big_remote_play/ui/headscale_wizard.py:990
 msgid "Ask your router to send web connections to this computer:"
 msgstr "Web の接続をこのコンピューターに送るよう、ルーターを設定してください："
 
@@ -1397,7 +1416,7 @@ msgstr "平均セッション時間"
 msgid "BW (target)"
 msgstr "BW（目標）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1558
+#: src/big_remote_play/ui/headscale_wizard.py:1627
 #: src/big_remote_play/ui/main_window.py:686
 #: src/big_remote_play/ui/main_window.py:692
 msgid "Back"
@@ -1477,8 +1496,8 @@ msgstr "最高のパフォーマンスです。"
 msgid "Big Remote Play can start it for you. Your password may be requested."
 msgstr "Big Remote Play が起動できます。パスワードを求められることがあります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:874
-#: src/big_remote_play/ui/headscale_wizard.py:955
+#: src/big_remote_play/ui/headscale_wizard.py:877
+#: src/big_remote_play/ui/headscale_wizard.py:958
 msgid ""
 "Big Remote Play cannot add a secure address next to it. Use another server, "
 "or stop that program first."
@@ -1495,7 +1514,7 @@ msgstr ""
 "Big Remote Play はこのシステムにプログラムをインストールできません。ソフト"
 "ウェアセンターで次のパッケージをインストールしてください: {packages}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1216
+#: src/big_remote_play/ui/headscale_wizard.py:1219
 msgid ""
 "Big Remote Play cannot reach into another computer. Follow these steps "
 "there; each one can be copied."
@@ -1507,7 +1526,7 @@ msgstr ""
 msgid "Big Remote Play cannot start"
 msgstr "Big Remote Play を起動できません"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play が確認します。"
 
@@ -1519,7 +1538,7 @@ msgstr ""
 "Big Remote Play がこのコンピューターに必要なものを確認し、足りないものをイン"
 "ストールします。パスワードを 1 回求められることがあります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:618
+#: src/big_remote_play/ui/headscale_wizard.py:621
 msgid "Big Remote Play checks your domain."
 msgstr "Big Remote Play がドメインを確認します。"
 
@@ -1530,6 +1549,16 @@ msgid ""
 msgstr ""
 "Big Remote Play は、初めて共有を開始するときに Sunshine のパスワードを作成し"
 "て保存します。"
+
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1264
+#, python-brace-format
+msgid ""
+"Big Remote Play creates your network user “{user}” and a key for this "
+"computer by itself. Your password is asked once."
+msgstr ""
+"Big Remote Play がネットワークユーザー「{user}」とこのコンピューター用のキー"
+"を自動で作成します。パスワードは一度だけ求められます。"
 
 #: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:9
 msgid ""
@@ -1548,7 +1577,7 @@ msgid "Big Remote Play installs it for you. Your password may be requested."
 msgstr ""
 "Big Remote Play がインストールします。パスワードを求められることがあります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:824
+#: src/big_remote_play/ui/headscale_wizard.py:827
 msgid ""
 "Big Remote Play installs the server, gives it a secure address and starts "
 "it. Your password will be requested."
@@ -1569,7 +1598,7 @@ msgstr ""
 msgid "Big Remote Play is not installed completely"
 msgstr "Big Remote Play が完全にインストールされていません"
 
-#: src/big_remote_play/ui/headscale_wizard.py:370
+#: src/big_remote_play/ui/headscale_wizard.py:373
 msgid ""
 "Big Remote Play looks for the address the internet sees for this computer."
 msgstr ""
@@ -1582,7 +1611,7 @@ msgstr ""
 msgid "Big Remote Play needs your permission"
 msgstr "Big Remote Play に許可が必要です"
 
-#: src/big_remote_play/ui/headscale_wizard.py:808
+#: src/big_remote_play/ui/headscale_wizard.py:811
 msgid "Big Remote Play will configure HTTPS for you."
 msgstr "Big Remote Play が HTTPS を設定します。"
 
@@ -1710,7 +1739,7 @@ msgstr ""
 msgid "CPU Encoding"
 msgstr "CPUエンコーディング"
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
+#: src/big_remote_play/ui/headscale_wizard.py:954
 msgid "Caddy already has a site with the same file name."
 msgstr "Caddy には同じファイル名のサイトがすでにあります。"
 
@@ -1742,7 +1771,7 @@ msgstr "新しい PIN なしで接続できます"
 #: src/big_remote_play/ui/guest_view.py:1853
 #: src/big_remote_play/ui/guest_view.py:2219
 #: src/big_remote_play/ui/guest_view.py:2506
-#: src/big_remote_play/ui/headscale_wizard.py:1367
+#: src/big_remote_play/ui/headscale_wizard.py:1431
 #: src/big_remote_play/ui/host_view.py:2290
 #: src/big_remote_play/ui/host_view.py:2760
 #: src/big_remote_play/ui/host_view.py:3242
@@ -1813,7 +1842,7 @@ msgstr ""
 "ここでの変更は次回の接続だけに適用されます。ゲーム PC のディスプレイ設定は変"
 "更しません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:977
+#: src/big_remote_play/ui/headscale_wizard.py:980
 msgid "Changing the router will probably not help. A VPS is the reliable way."
 msgstr ""
 "ルーターを変えても、おそらく解決しません。確実なのは VPS を使う方法です。"
@@ -1823,13 +1852,13 @@ msgctxt "check state"
 msgid "Check"
 msgstr "要確認"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:618
-#: src/big_remote_play/ui/headscale_wizard.py:761
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:981
-#: src/big_remote_play/ui/headscale_wizard.py:997
-#: src/big_remote_play/ui/headscale_wizard.py:1138
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:621
+#: src/big_remote_play/ui/headscale_wizard.py:764
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:984
+#: src/big_remote_play/ui/headscale_wizard.py:1000
+#: src/big_remote_play/ui/headscale_wizard.py:1141
 #: src/big_remote_play/ui/remote_connection.py:51
 #: src/big_remote_play/ui/remote_connection.py:57
 #: src/big_remote_play/ui/support_center.py:152
@@ -1848,7 +1877,7 @@ msgstr "接続を確認"
 msgid "Check for blocked connections automatically"
 msgstr "接続のブロックを自動的に確認する"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Check for the other device"
 msgstr "もう一方のデバイスを確認"
 
@@ -1857,12 +1886,12 @@ msgstr "もう一方のデバイスを確認"
 msgid "Check logs for details."
 msgstr "詳細についてはログを確認してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1051
-#: src/big_remote_play/ui/headscale_wizard.py:1211
+#: src/big_remote_play/ui/headscale_wizard.py:1054
+#: src/big_remote_play/ui/headscale_wizard.py:1214
 msgid "Check server"
 msgstr "サーバーを確認"
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Check that Headscale runs behind this address."
 msgstr "このアドレスの先で Headscale が動いていることを確認してください。"
 
@@ -1875,16 +1904,16 @@ msgstr ""
 "ゲーム用PCで共有が実行中で、両方のPCが互いに接続できることを確認してくださ"
 "い。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "Check that this computer is connected to the internet."
 msgstr "このコンピューターがインターネットにつながっているか確認してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "Check that you copied all of it."
 msgstr "すべてコピーしたか確認してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1402
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "Check the API key in Advanced."
 msgstr "「詳細」で API キーを確認してください。"
 
@@ -1900,15 +1929,15 @@ msgstr ""
 msgid "Check the internet connection of this computer."
 msgstr "このコンピューターのインターネット接続を確認してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "Check the name you registered."
 msgstr "登録した名前を確認してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
+#: src/big_remote_play/ui/headscale_wizard.py:524
 msgid "Check the name, or register it first."
 msgstr "名前を確認するか、先に登録してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:797
 msgid "Check the secure connection (HTTPS)"
 msgstr "安全な接続（HTTPS）を確認"
 
@@ -1921,9 +1950,9 @@ msgid "Check this computer, or choose a problem to see what to try."
 msgstr ""
 "このコンピューターを確認するか、問題を選ぶと試すべきことが表示されます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "Check your internet connection and try again."
 msgstr "インターネット接続を確認して、もう一度お試しください。"
 
@@ -1948,7 +1977,7 @@ msgstr ""
 msgid "Checking ZeroTier…"
 msgstr "ZeroTier を確認しています…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:648
+#: src/big_remote_play/ui/headscale_wizard.py:651
 msgid "Checking nameservers…"
 msgstr "ネームサーバーを確認しています…"
 
@@ -1973,12 +2002,12 @@ msgstr "ネットワーク、コンピューター、Sunshine を確認してい
 msgid "Checking the path…"
 msgstr "経路を確認しています…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1069
+#: src/big_remote_play/ui/headscale_wizard.py:1072
 msgid "Checking the server…"
 msgstr "サーバーを確認しています…"
 
 #: src/big_remote_play/ui/dependency_installer.py:198
-#: src/big_remote_play/ui/headscale_wizard.py:852
+#: src/big_remote_play/ui/headscale_wizard.py:855
 #: src/big_remote_play/ui/provider_page.py:543
 #: src/big_remote_play/ui/remote_connection.py:49
 msgid "Checking this computer…"
@@ -1996,16 +2025,16 @@ msgstr "すでに許可されているデバイスを確認しています。"
 msgid "Checking with Sunshine…"
 msgstr "Sunshine に確認しています…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:511
-#: src/big_remote_play/ui/headscale_wizard.py:741
+#: src/big_remote_play/ui/headscale_wizard.py:514
+#: src/big_remote_play/ui/headscale_wizard.py:744
 msgid "Checking your domain…"
 msgstr "ドメインを確認しています…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:369
+#: src/big_remote_play/ui/headscale_wizard.py:372
 msgid "Checking your internet connection"
 msgstr "インターネット接続を確認中"
 
-#: src/big_remote_play/ui/headscale_wizard.py:378
+#: src/big_remote_play/ui/headscale_wizard.py:381
 msgid "Checking your internet connection…"
 msgstr "インターネット接続を確認しています…"
 
@@ -2033,7 +2062,7 @@ msgstr "チェック中…"
 msgid "Checks the name, the port, HTTPS and Headscale itself."
 msgstr "名前、ポート、HTTPS、Headscale 本体を確認します。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:543
+#: src/big_remote_play/ui/headscale_wizard.py:546
 msgid ""
 "Choose Register, check the domain name you want, and read the current "
 "availability and rules shown by DigitalPlat."
@@ -2084,7 +2113,7 @@ msgstr "ビデオエンコーディング用のハードウェアを選択して
 msgid "Choose installed games below."
 msgstr "下の一覧からインストール済みのゲームを選んでください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "Choose one of the options above."
 msgstr "上の選択肢から 1 つ選んでください。"
 
@@ -2176,7 +2205,7 @@ msgstr "接続履歴を消去しますか？"
 msgid "Click and drag, for example to move a window"
 msgstr "クリックしてドラッグ（ウィンドウの移動など）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Click the orange cloud in Cloudflare so it turns gray (DNS only)."
 msgstr ""
 "Cloudflare でオレンジ色の雲をクリックして、灰色（DNS only）にしてください。"
@@ -2206,8 +2235,8 @@ msgid "Close the stream on every device so a new device can pair"
 msgstr ""
 "新しいデバイスをペアリングできるよう、すべてのデバイスでストリームを閉じます"
 
-#: src/big_remote_play/ui/headscale_wizard.py:479
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare"
 msgstr "Cloudflare"
 
@@ -2216,19 +2245,19 @@ msgstr "Cloudflare"
 msgid "Cloudflare DNS-only documentation"
 msgstr "Cloudflare の DNS のみモードに関するドキュメント"
 
-#: src/big_remote_play/ui/headscale_wizard.py:655
+#: src/big_remote_play/ui/headscale_wizard.py:658
 msgid "Cloudflare is now managing your domain"
 msgstr "Cloudflare がドメインを管理しています"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare will manage your domain's records. Its free plan is enough."
 msgstr "Cloudflare がドメインのレコードを管理します。無料プランで十分です。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Cloudflare will show two nameservers."
 msgstr "Cloudflare に 2 つのネームサーバーが表示されます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:703
+#: src/big_remote_play/ui/headscale_wizard.py:706
 msgid ""
 "Cloudflare's proxy (the orange cloud) only passes ordinary web requests. "
 "Tailscale clients keep a long-lived, upgraded HTTP connection to Headscale, "
@@ -2240,7 +2269,7 @@ msgstr ""
 "接続を保つため、プロキシや Cloudflare Tunnel では安定して通りません。DNS "
 "only なら、名前がそのままサーバーを指します。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Cloudflare's proxy is on for this record."
 msgstr "このレコードでは Cloudflare のプロキシがオンになっています。"
 
@@ -2260,7 +2289,7 @@ msgstr "コーデック、HDR、データ上限、接続警告"
 msgid "Codecs, network, capture and recovery tools"
 msgstr "コーデック、ネットワーク、キャプチャ、復旧ツール"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Come back and check again"
 msgstr "あとで戻ってもう一度確認"
 
@@ -2276,12 +2305,12 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 159
 #: src/big_remote_play/ui/game_library_dialog.py:386
-#: src/big_remote_play/ui/headscale_wizard.py:1180
-#: src/big_remote_play/ui/headscale_wizard.py:1185
-#: src/big_remote_play/ui/headscale_wizard.py:1187
-#: src/big_remote_play/ui/headscale_wizard.py:1191
-#: src/big_remote_play/ui/headscale_wizard.py:1196
-#: src/big_remote_play/ui/headscale_wizard.py:1201
+#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1188
+#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1204
 #: src/big_remote_play/ui/host_view.py:586
 #: src/big_remote_play/ui/network_devices.py:733
 #: src/big_remote_play/ui/network_devices.py:764
@@ -2289,9 +2318,9 @@ msgstr ""
 msgid "Command"
 msgstr "コマンド"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1435
-msgid "Command for the server owner"
-msgstr "サーバーの所有者向けのコマンド"
+#: src/big_remote_play/ui/headscale_wizard.py:1276
+msgid "Command for the server"
+msgstr "サーバー用のコマンド"
 
 #: src/big_remote_play/ui/support_center.py:168
 msgid "Common problems"
@@ -2394,7 +2423,7 @@ msgstr "設定する"
 msgid "Configure Firewall (IPv6)"
 msgstr "ファイアウォールを設定する (IPv6)"
 
-#: src/big_remote_play/ui/headscale_wizard.py:792
+#: src/big_remote_play/ui/headscale_wizard.py:795
 msgid "Configure and start the server"
 msgstr "サーバーを設定して起動"
 
@@ -2701,7 +2730,7 @@ msgstr "接続品質"
 msgid "Connection quality: {quality}"
 msgstr "接続品質: {quality}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
+#: src/big_remote_play/ui/headscale_wizard.py:88
 #, python-brace-format
 msgid "Connection refused on port {port}."
 msgstr "ポート {port} で接続が拒否されました。"
@@ -2749,15 +2778,15 @@ msgstr "サービスに問い合わせています…"
 #: src/big_remote_play/ui/guided_setup.py:169
 #: src/big_remote_play/ui/guided_setup.py:257
 #: src/big_remote_play/ui/guided_setup.py:309
-#: src/big_remote_play/ui/headscale_wizard.py:497
+#: src/big_remote_play/ui/headscale_wizard.py:500
 msgid "Continue"
 msgstr "続行"
 
-#: src/big_remote_play/ui/headscale_wizard.py:402
+#: src/big_remote_play/ui/headscale_wizard.py:405
 msgid "Continue anyway"
 msgstr "このまま続ける"
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
+#: src/big_remote_play/ui/headscale_wizard.py:304
 #: src/big_remote_play/ui/provider_page.py:1151
 #: src/big_remote_play/ui/remote_connection.py:534
 msgid "Continue setup"
@@ -2853,7 +2882,7 @@ msgstr "IP をコピー"
 msgid "Copy Path"
 msgstr "パスをコピー"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1450
+#: src/big_remote_play/ui/headscale_wizard.py:1519
 #: src/big_remote_play/ui/network_devices.py:269
 msgid "Copy address"
 msgstr "アドレスをコピー"
@@ -2894,12 +2923,12 @@ msgstr "{name} のプライベートアドレスをコピー"
 msgid "Copy the {field} value to the clipboard"
 msgstr "{field} の値をクリップボードにコピー"
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid "Copy these two Cloudflare nameservers to DigitalPlat."
 msgstr ""
 "Cloudflare の 2 つのネームサーバーを DigitalPlat にコピーしてください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid ""
 "Copy these two Cloudflare nameservers to the company where you registered "
 "your domain."
@@ -3050,7 +3079,7 @@ msgstr ""
 msgid "Create a network"
 msgstr "ネットワークを作成"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1461
+#: src/big_remote_play/ui/headscale_wizard.py:1530
 msgid "Create a one-time key"
 msgstr "ワンタイムキーを作成"
 
@@ -3070,7 +3099,7 @@ msgstr "ネットワークを作成"
 msgid "Create one-time key"
 msgstr "ワンタイムキーを作成"
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
+#: src/big_remote_play/ui/headscale_wizard.py:544
 msgid "Create or sign in to your DigitalPlat account."
 msgstr "DigitalPlat のアカウントを作成するか、サインインしてください。"
 
@@ -3078,11 +3107,11 @@ msgstr "DigitalPlat のアカウントを作成するか、サインインして
 msgid "Create the API key on the server"
 msgstr "サーバーで API キーを作成"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1202
 msgid "Create your network and an API key"
 msgstr "ネットワークと API キーを作成"
 
-#: src/big_remote_play/ui/headscale_wizard.py:795
+#: src/big_remote_play/ui/headscale_wizard.py:798
 msgid "Create your private network"
 msgstr "プライベートネットワークを作成"
 
@@ -3182,16 +3211,16 @@ msgstr "カスタム解像度"
 msgid "Custom image settings"
 msgstr "カスタム映像設定"
 
-#: src/big_remote_play/ui/headscale_wizard.py:71
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:74
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "DNS"
 msgstr "DNS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "DNS is where your domain's records live."
 msgstr "DNS は、ドメインのレコードが置かれている場所です。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "DNS only — the cloud must be gray."
 msgstr "DNS only — 雲は灰色である必要があります。"
 
@@ -3269,8 +3298,8 @@ msgstr "詳細"
 msgid "Details and a sound test are in Preferences."
 msgstr "詳細と音声のテストは「設定」にあります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:398
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Detected automatically"
 msgstr "自動検出"
 
@@ -3357,7 +3386,7 @@ msgstr "診断"
 msgid "Diagnosis"
 msgstr "診断結果"
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Did not work"
 msgstr "うまくいきませんでした"
 
@@ -3365,12 +3394,12 @@ msgstr "うまくいきませんでした"
 msgid "Did you receive a network code?"
 msgstr "ネットワークコードを受け取りましたか？"
 
-#: src/big_remote_play/ui/headscale_wizard.py:553
+#: src/big_remote_play/ui/headscale_wizard.py:556
 msgid ""
 "DigitalPlat can provide domains that can be delegated to a DNS provider."
 msgstr "DigitalPlat では、DNS プロバイダーに委任できるドメインを取得できます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:547
+#: src/big_remote_play/ui/headscale_wizard.py:550
 msgid ""
 "DigitalPlat needs the nameservers from your DNS provider. Cloudflare is "
 "free; Big Remote Play guides you."
@@ -3461,7 +3490,7 @@ msgstr "表示モード"
 msgid "Displays latency, frame rate, and decoding information over the stream."
 msgstr "ストリーム上に遅延、フレームレート、デコード情報を表示します。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:467
+#: src/big_remote_play/ui/headscale_wizard.py:470
 msgid "Do you already have a domain?"
 msgstr "ドメインはもう持っていますか？"
 
@@ -3472,20 +3501,20 @@ msgstr "デフォルト設定を復元しますか？"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1137
-#: src/big_remote_play/ui/headscale_wizard.py:70
-#: src/big_remote_play/ui/headscale_wizard.py:466
-#: src/big_remote_play/ui/headscale_wizard.py:490
-#: src/big_remote_play/ui/headscale_wizard.py:682
+#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:493
+#: src/big_remote_play/ui/headscale_wizard.py:685
 #: src/big_remote_play/ui/private_network_view.py:972
 #: src/big_remote_play/ui/private_network_view.py:1007
 msgid "Domain"
 msgstr "ドメイン"
 
-#: src/big_remote_play/ui/headscale_wizard.py:757
+#: src/big_remote_play/ui/headscale_wizard.py:760
 msgid "Domain is ready"
 msgstr "ドメインの準備ができました"
 
-#: src/big_remote_play/ui/headscale_wizard.py:475
+#: src/big_remote_play/ui/headscale_wizard.py:478
 msgid "Domain or subdomain"
 msgstr "ドメインまたはサブドメイン"
 
@@ -3493,8 +3522,8 @@ msgstr "ドメインまたはサブドメイン"
 msgid "Domain, router ports and security precautions."
 msgstr "ドメイン、ルーターのポート、セキュリティ上の注意事項です。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:898
 #: src/big_remote_play/ui/network_devices.py:727
 msgid "Done"
 msgstr "完了"
@@ -3507,7 +3536,7 @@ msgstr ""
 "公式 Web サイトからダウンロードするか、そのコンピューターで Big Remote Play "
 "を使用してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1184
+#: src/big_remote_play/ui/headscale_wizard.py:1187
 msgid ""
 "Download the .deb for your server from Headscale's releases page, then "
 "install it and Caddy."
@@ -3538,7 +3567,7 @@ msgstr ""
 "デスクトップがタッチに対応している場合、各指がこのコンピューターの画面に触れ"
 "ます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Easier and safer. Example: headscale.example.com"
 msgstr "簡単で安全です。例：headscale.example.com"
 
@@ -3920,17 +3949,17 @@ msgstr "すべて準備できました"
 msgid "Evict IP"
 msgstr "IPを切断"
 
-#: src/big_remote_play/ui/headscale_wizard.py:478
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:481
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "Example: headscale.example.com"
 msgstr "例：headscale.example.com"
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
-#: src/big_remote_play/ui/headscale_wizard.py:1050
+#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:1053
 msgid "Example: headscale.example.com or 203.0.113.10"
 msgstr "例：headscale.example.com または 203.0.113.10"
 
-#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:547
 msgid "Example: mydomain.dpdns.org"
 msgstr "例：mydomain.dpdns.org"
 
@@ -4057,7 +4086,7 @@ msgstr ""
 "指で画面上のコントローラーのボタンを押します。複数同時に押せます。マウスのク"
 "リックにはなりません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Finish"
 msgstr "完了"
 
@@ -4094,7 +4123,7 @@ msgstr "修正"
 msgid "Fix Dependencies"
 msgstr "依存関係を修正する"
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 #, python-brace-format
 msgid "Fix it or delete it: {found}"
 msgstr "修正するか削除してください：{found}"
@@ -4317,8 +4346,8 @@ msgstr "一般"
 msgid "Get Network ID"
 msgstr "ネットワーク ID を取得"
 
-#: src/big_remote_play/ui/headscale_wizard.py:557
-#: src/big_remote_play/ui/headscale_wizard.py:558
+#: src/big_remote_play/ui/headscale_wizard.py:560
+#: src/big_remote_play/ui/headscale_wizard.py:561
 msgid "Get a domain"
 msgstr "ドメインを取得"
 
@@ -4391,7 +4420,7 @@ msgstr[0] ""
 "使うのをやめてから {count} 秒後に、ゲストはマウスとキーボードを再び使えるよう"
 "になります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1137
+#: src/big_remote_play/ui/headscale_wizard.py:1140
 msgid "Guided server setup"
 msgstr "ガイド付きサーバー設定"
 
@@ -4428,8 +4457,8 @@ msgstr "対応時は HEVC または AV1"
 msgid "HTTPS (Caddy)"
 msgstr "HTTPS（Caddy）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "HTTPS is not set up correctly for this address."
 msgstr "このアドレスでは HTTPS が正しく設定されていません。"
 
@@ -4438,7 +4467,7 @@ msgstr "このアドレスでは HTTPS が正しく設定されていません�
 msgid "Hardware and Capture"
 msgstr "ハードウェアとキャプチャ"
 
-#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:76
 msgid "Headscale"
 msgstr "Headscale"
 
@@ -4450,11 +4479,11 @@ msgstr "Headscale API キー"
 msgid "Headscale and Caddy must be installed first."
 msgstr "先に Headscale と Caddy をインストールする必要があります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1101
+#: src/big_remote_play/ui/headscale_wizard.py:1104
 msgid "Headscale answers"
 msgstr "Headscale が応答しています"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "Headscale did not start."
 msgstr "Headscale が起動しませんでした。"
 
@@ -4466,7 +4495,7 @@ msgstr "Headscale が起動しませんでした。「詳細」でログを確�
 msgid "Headscale documentation"
 msgstr "Headscale のドキュメント"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 msgid "Headscale gives you your own private network server."
 msgstr "Headscale で、自分専用のプライベートネットワークサーバーを持てます。"
 
@@ -4482,11 +4511,11 @@ msgstr ""
 "す。VPN を使わずにゲームへ直接アクセスする場合は、「デバイスをつなぐ」ページ"
 "の別ガイドを使用してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Headscale may work better on a VPS."
 msgstr "Headscale は VPS のほうがうまく動く場合があります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid ""
 "Headscale needs a direct connection to your server. Do not use Cloudflare "
 "Tunnel for it either."
@@ -4494,7 +4523,7 @@ msgstr ""
 "Headscale にはサーバーへの直接接続が必要です。Cloudflare Tunnel も使わないで"
 "ください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Headscale on this computer has its own settings."
 msgstr "このコンピューターの Headscale には独自の設定があります。"
 
@@ -4507,7 +4536,7 @@ msgstr ""
 "このコンピューターの Headscale は、すでに ${current} 用に設定されています。何"
 "も変更されていません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
+#: src/big_remote_play/ui/headscale_wizard.py:952
 msgid "Headscale on this computer is already set up for another address."
 msgstr ""
 "このコンピューターの Headscale は、すでに別のアドレス用に設定されています。"
@@ -4519,7 +4548,7 @@ msgstr ""
 "このコンピューターの Headscale は独自の待ち受けアドレスを使っています。何も変"
 "更されていません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Headscale or Caddy is not installed."
 msgstr "Headscale または Caddy がインストールされていません。"
 
@@ -4527,7 +4556,7 @@ msgstr "Headscale または Caddy がインストールされていません。"
 msgid "Headscale server"
 msgstr "Headscale サーバー"
 
-#: src/big_remote_play/ui/headscale_wizard.py:276
+#: src/big_remote_play/ui/headscale_wizard.py:279
 msgid "Headscale setup"
 msgstr "Headscale の設定"
 
@@ -4535,7 +4564,7 @@ msgstr "Headscale の設定"
 msgid "Headscale uses the regular Tailscale client."
 msgstr "Headscale では通常の Tailscale クライアントを使用します。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1118
+#: src/big_remote_play/ui/headscale_wizard.py:1121
 #: src/big_remote_play/ui/provider_page.py:1197
 #, python-brace-format
 msgid "Headscale {version}"
@@ -4557,11 +4586,11 @@ msgstr "ヘルプ"
 msgid "Help and diagnostics"
 msgstr "ヘルプと診断"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
+#: src/big_remote_play/ui/headscale_wizard.py:473
 msgid "Help me get one"
 msgstr "取得を手伝ってほしい"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "Hidden. Use Copy."
 msgstr "非表示です。「コピー」を使ってください。"
@@ -4682,7 +4711,7 @@ msgstr "ホストの操作を優先"
 msgid "Host input priority is not working"
 msgstr "ホストの操作の優先が機能していません"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1248
+#: src/big_remote_play/ui/headscale_wizard.py:1271
 msgid "How do you want to add this computer?"
 msgstr "このコンピューターをどのように追加しますか？"
 
@@ -4706,7 +4735,7 @@ msgid ""
 "down the stream"
 msgstr "ストリームを終了するまでに Moonlight からのデータを待つ時間（ミリ秒）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:446
+#: src/big_remote_play/ui/headscale_wizard.py:449
 msgid "How should your Headscale server be reached?"
 msgstr "Headscale サーバーにはどのようにアクセスしますか？"
 
@@ -4730,11 +4759,11 @@ msgstr "自分のサーバーで Headscale を動かす方法を順番に説明�
 msgid "How to use the selected private network service."
 msgstr "選択したプライベートネットワークサービスの使い方です。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:721
+#: src/big_remote_play/ui/headscale_wizard.py:724
 msgid "I added the record"
 msgstr "レコードを追加しました"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:472
 msgid "I already own a domain"
 msgstr "ドメインをもう持っている"
 
@@ -4759,10 +4788,6 @@ msgstr "まだサーバーを持っていません"
 msgid "I forgot the current password"
 msgstr "現在のパスワードを忘れました"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "I have a key from the server owner"
-msgstr "サーバーの所有者からキーをもらった"
-
 #: src/big_remote_play/ui/guest_view.py:617
 msgid "I have a search code"
 msgstr "検索コードを持っている"
@@ -4770,10 +4795,6 @@ msgstr "検索コードを持っている"
 #: src/big_remote_play/ui/guest_view.py:611
 msgid "I know the IP address"
 msgstr "IPアドレスが分かっています"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1251
-msgid "I manage this server"
-msgstr "自分がこのサーバーを管理している"
 
 #: src/big_remote_play/ui/guided_setup.py:125
 msgid "I will play using another computer."
@@ -4795,7 +4816,7 @@ msgstr "サービスをバインドするためのIPアドレス"
 msgid "IP address: {address}"
 msgstr "IP アドレス: {address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:689
+#: src/big_remote_play/ui/headscale_wizard.py:692
 msgid "IPv4 address"
 msgstr "IPv4 アドレス"
 
@@ -4811,7 +4832,7 @@ msgstr "IPv4 のみ"
 msgid "IPv6"
 msgstr "IPv6"
 
-#: src/big_remote_play/ui/headscale_wizard.py:716
+#: src/big_remote_play/ui/headscale_wizard.py:719
 msgid "IPv6 address"
 msgstr "IPv6 アドレス"
 
@@ -4863,7 +4884,7 @@ msgstr ""
 "していません。「このコンピューターを確認」で、別のキャプチャ方法なら描画でき"
 "るかがわかります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "If you just set up the domain, wait a little and check again."
 msgstr "ドメインを設定したばかりなら、少し待ってからもう一度確認してください。"
 
@@ -4923,7 +4944,7 @@ msgstr ""
 "Big Remote Play で「デバイスをつなぐ」→ ZeroTier を開き、このコードを入力しま"
 "す。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "In Cloudflare: DNS → Records → Add record."
 msgstr "Cloudflare で：DNS → Records → Add record。"
 
@@ -5054,13 +5075,13 @@ msgid "Install Big WM Virtual Keyboard (package {package})"
 msgstr ""
 "Big WM Virtual Keyboard をインストールしてください（パッケージ {package}）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:822
-#: src/big_remote_play/ui/headscale_wizard.py:823
+#: src/big_remote_play/ui/headscale_wizard.py:825
+#: src/big_remote_play/ui/headscale_wizard.py:826
 msgid "Install Headscale"
 msgstr "Headscale をインストール"
 
-#: src/big_remote_play/ui/headscale_wizard.py:791
-#: src/big_remote_play/ui/headscale_wizard.py:1178
+#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:1181
 msgid "Install Headscale and Caddy"
 msgstr "Headscale と Caddy をインストール"
 
@@ -5073,7 +5094,7 @@ msgstr "Tailscale をインストール"
 msgid "Install ZeroTier"
 msgstr "ZeroTier をインストール"
 
-#: src/big_remote_play/ui/headscale_wizard.py:801
+#: src/big_remote_play/ui/headscale_wizard.py:804
 #: src/big_remote_play/ui/private_network_view.py:475
 #: src/big_remote_play/ui/provider_page.py:582
 msgid "Install and continue"
@@ -5083,7 +5104,7 @@ msgstr "インストールして続行"
 msgid "Install it first, then join the network."
 msgstr "先にインストールしてから、ネットワークに参加してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Install them above first."
 msgstr "先に上でインストールしてください。"
 
@@ -5218,7 +5239,7 @@ msgstr "招待を作成しました"
 msgid "Invitation link"
 msgstr "招待リンク"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1458
+#: src/big_remote_play/ui/headscale_wizard.py:1527
 msgid ""
 "It adds one computer and stops working after one hour. It is not an "
 "administrator key."
@@ -5226,7 +5247,7 @@ msgstr ""
 "コンピューターを 1 台追加でき、1 時間で使えなくなります。管理者用のキーではあ"
 "りません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:809
+#: src/big_remote_play/ui/headscale_wizard.py:812
 msgid ""
 "It also allows ports 80 and 443 in this computer's firewall, when a firewall "
 "is active."
@@ -5242,7 +5263,7 @@ msgstr ""
 "ネットワーク上では応答しますが、Sunshine のポートでは応答しません。ゲーム PC "
 "で「共有」を開き、「ファイアウォールで許可」を選んでください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 msgid "It appears here once it joins."
 msgstr "参加すると、ここに表示されます。"
 
@@ -5258,7 +5279,7 @@ msgstr ""
 msgid "It could not start. Stop and start sharing again."
 msgstr "開始できませんでした。共有を停止してから、もう一度開始してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 msgid "It is shown only now and is not stored."
 msgstr "表示されるのは今だけで、保存されません。"
 
@@ -5309,7 +5330,7 @@ msgstr ""
 "ゲーム専用画面を取り込める Sunshine {version} 以降が必要です。Sunshine を更新"
 "してから、Big Remote Play を開き直してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 #, python-brace-format
 msgid "It points to {found}, not {expected}."
 msgstr "{expected} ではなく {found} を指しています。"
@@ -5422,7 +5443,7 @@ msgstr "KDE の画面キャプチャ（KWin）"
 msgid "KMS (Direct)"
 msgstr "KMS（ダイレクト）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid "Keep Proxy status = DNS only"
 msgstr "Proxy status = DNS only のままにする"
 
@@ -5460,7 +5481,7 @@ msgstr ""
 "VPN の使用中は、ルーターのポート転送をオフにしてください。変更は共有を再開し"
 "たときに適用されます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1200
+#: src/big_remote_play/ui/headscale_wizard.py:1203
 msgid ""
 "Keep the API key: Big Remote Play asks for it in the next step. It manages "
 "the server; never give it to a guest."
@@ -5504,12 +5525,12 @@ msgstr ""
 "Big Remote Play を閉じるまでのみ保持されます。システムのキーリングに保存でき"
 "ませんでした。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 #: src/big_remote_play/ui/network_devices.py:761
 msgid "Key created"
 msgstr "キーを作成しました"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1243
+#: src/big_remote_play/ui/headscale_wizard.py:1248
 msgid "Key for this computer"
 msgstr "このコンピューター用のキー"
 
@@ -6159,13 +6180,13 @@ msgid "NVIDIA NVENC"
 msgstr "NVIDIA NVENC"
 
 #: src/big_remote_play/ui/game_library_dialog.py:385
-#: src/big_remote_play/ui/headscale_wizard.py:688
-#: src/big_remote_play/ui/headscale_wizard.py:715
+#: src/big_remote_play/ui/headscale_wizard.py:691
+#: src/big_remote_play/ui/headscale_wizard.py:718
 #: src/big_remote_play/ui/provider_page.py:814
 msgid "Name"
 msgstr "名前"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1098
+#: src/big_remote_play/ui/headscale_wizard.py:1101
 msgid "Name found"
 msgstr "名前が見つかりました"
 
@@ -6177,7 +6198,7 @@ msgstr "ネットワーク上の名前"
 msgid "Name shown in Big Remote Play"
 msgstr "Big Remote Play に表示する名前"
 
-#: src/big_remote_play/ui/headscale_wizard.py:630
+#: src/big_remote_play/ui/headscale_wizard.py:633
 msgid "Nameserver"
 msgstr "ネームサーバー"
 
@@ -6334,24 +6355,24 @@ msgstr ""
 msgid "New passwords do not match."
 msgstr "新しいパスワードが一致しません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:404
-#: src/big_remote_play/ui/headscale_wizard.py:656
-#: src/big_remote_play/ui/headscale_wizard.py:758
-#: src/big_remote_play/ui/headscale_wizard.py:1033
-#: src/big_remote_play/ui/headscale_wizard.py:1130
-#: src/big_remote_play/ui/headscale_wizard.py:1405
-#: src/big_remote_play/ui/headscale_wizard.py:1560
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:407
+#: src/big_remote_play/ui/headscale_wizard.py:659
+#: src/big_remote_play/ui/headscale_wizard.py:761
+#: src/big_remote_play/ui/headscale_wizard.py:1036
+#: src/big_remote_play/ui/headscale_wizard.py:1133
+#: src/big_remote_play/ui/headscale_wizard.py:1469
+#: src/big_remote_play/ui/headscale_wizard.py:1629
 msgid "Next"
 msgstr "次へ"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:473
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/host_view.py:4055
 msgid "No"
 msgstr "いいえ"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "No API key for this server yet."
 msgstr "このサーバーの API キーはまだありません。"
 
@@ -6375,11 +6396,11 @@ msgstr "アカウントが見つかりません"
 msgid "No active connection found"
 msgstr "アクティブな接続が見つかりません"
 
-#: src/big_remote_play/ui/headscale_wizard.py:411
+#: src/big_remote_play/ui/headscale_wizard.py:414
 msgid "No answer from the address services."
 msgstr "アドレス確認サービスから応答がありません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:89
 #, python-brace-format
 msgid "No answer on port {port}. A firewall or the router may block it."
 msgstr ""
@@ -6441,7 +6462,7 @@ msgid "No controller has arrived from the other computer"
 msgstr "もう一方のコンピューターからコントローラーが届いていません"
 
 #: src/big_remote_play/ui/guest_view.py:2088
-#: src/big_remote_play/ui/headscale_wizard.py:425
+#: src/big_remote_play/ui/headscale_wizard.py:428
 #: src/big_remote_play/ui/provider_page.py:1057
 #: src/big_remote_play/ui/provider_page.py:1203
 msgid "No details reported."
@@ -6546,7 +6567,7 @@ msgstr "まだ誰も遊んでいません"
 msgid "No other device online to measure"
 msgstr "測定できるオンラインのデバイスがほかにありません"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 #: src/big_remote_play/ui/network_devices.py:223
 #: src/big_remote_play/ui/provider_page.py:651
 #: src/big_remote_play/ui/provider_page.py:669
@@ -6666,7 +6687,7 @@ msgid "Not available"
 msgstr "利用できません"
 
 #: src/big_remote_play/ui/guest_view.py:2066
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 msgid "Not checked"
 msgstr "未確認"
 
@@ -6779,9 +6800,9 @@ msgstr ""
 msgid "Not signed in"
 msgstr "未ログイン"
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:797
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:800
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Not yet"
 msgstr "まだ"
 
@@ -6789,23 +6810,23 @@ msgstr "まだ"
 msgid "Nothing to install."
 msgstr "インストールするものはありません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "Nothing was changed."
 msgstr "何も変更されていません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "Nothing was changed. Choose Set up the server to try again."
 msgstr ""
 "何も変更されていません。もう一度試すには「サーバーを設定する」を選んでくださ"
 "い。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Nothing was changed. See Advanced on the Headscale page."
 msgstr "何も変更されていません。Headscale ページの「詳細」を確認してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "Nothing was enabled. See the technical details."
 msgstr "何も有効になっていません。技術的な詳細を確認してください。"
 
@@ -6872,7 +6893,7 @@ msgstr "オフライン"
 msgid "Old log files have been removed."
 msgstr "古いログファイルを削除しました。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1179
+#: src/big_remote_play/ui/headscale_wizard.py:1182
 msgid "On Arch Linux:"
 msgstr "Arch Linux の場合："
 
@@ -6888,7 +6909,7 @@ msgstr ""
 msgid "On a computer, a phone or a controller"
 msgstr "コンピューター、スマートフォン、コントローラーで"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1193
 msgid "On a new server this replaces Caddy's example page."
 msgstr "新しいサーバーでは、Caddy のサンプルページがこれに置き換わります。"
 
@@ -6922,7 +6943,7 @@ msgstr ""
 "\n"
 "このウィンドウは開いたままにしてください。承認後に接続が続行されます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1443
+#: src/big_remote_play/ui/headscale_wizard.py:1512
 #: src/big_remote_play/ui/network_devices.py:536
 #: src/big_remote_play/ui/network_devices.py:723
 #: src/big_remote_play/ui/network_devices.py:780
@@ -6984,6 +7005,14 @@ msgstr ""
 "expiration 90d」）。Big Remote Play の「API アクセス」で、サーバーのアドレス"
 "とキーを追加します。API キーはサーバーを管理するためのもので、事前認証キーは "
 "1 台のコンピューターを登録するだけです。"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1275
+msgid ""
+"On the server, run this command and paste the key it prints. Big Remote Play "
+"then does the rest and remembers the key."
+msgstr ""
+"サーバーでこのコマンドを実行し、表示されたキーを貼り付けてください。あとは "
+"Big Remote Play が行い、キーを記憶します。"
 
 #: src/big_remote_play/ui/guest_view.py:633
 msgid "On this computer"
@@ -7071,7 +7100,7 @@ msgstr "コントローラーは一度に一つ"
 msgid "One entry per screen"
 msgstr "画面ごとのエントリ"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "One-time key"
 msgstr "ワンタイムキー"
@@ -7112,7 +7141,7 @@ msgstr ""
 "このコンピューターにのみ保存されます。どこにも送信されず、パスワード、キー、"
 "コードは保存されません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1364
+#: src/big_remote_play/ui/headscale_wizard.py:1428
 msgid ""
 "Only one Tailscale-based network can be active on this computer at a time. "
 "Tailscale stays saved and can be turned on again later. ZeroTier is not "
@@ -7199,8 +7228,8 @@ msgstr ""
 "まず「このコンピューターを確認」を開いて、ここの現在の状態を確認してくださ"
 "い。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:614
-#: src/big_remote_play/ui/headscale_wizard.py:723
+#: src/big_remote_play/ui/headscale_wizard.py:617
+#: src/big_remote_play/ui/headscale_wizard.py:726
 msgid "Open Cloudflare"
 msgstr "Cloudflare を開く"
 
@@ -7216,12 +7245,12 @@ msgstr ""
 "プライベートに通信できるようになったら、ゲーム PC で共有を開始し、そのプライ"
 "ベートアドレスを使って接続します。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
-#: src/big_remote_play/ui/headscale_wizard.py:610
+#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:613
 msgid "Open DigitalPlat"
 msgstr "DigitalPlat を開く"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1210
+#: src/big_remote_play/ui/headscale_wizard.py:1213
 msgid "Open Headscale releases"
 msgstr "Headscale のリリースを開く"
 
@@ -7316,7 +7345,7 @@ msgstr "このページを開くと確認します"
 msgid "Open when a device starts playing"
 msgstr "デバイスがプレイを始めたら開く"
 
-#: src/big_remote_play/ui/headscale_wizard.py:989
+#: src/big_remote_play/ui/headscale_wizard.py:992
 msgid "Open your router's settings page"
 msgstr "ルーターの設定ページを開く"
 
@@ -7354,7 +7383,7 @@ msgstr "操作に失敗しました: {error}"
 msgid "Optimize the mouse for remote desktop"
 msgstr "リモートデスクトップ向けにマウスを最適化"
 
-#: src/big_remote_play/ui/headscale_wizard.py:712
+#: src/big_remote_play/ui/headscale_wizard.py:715
 msgid "Optional: IPv6"
 msgstr "任意：IPv6"
 
@@ -7362,7 +7391,7 @@ msgstr "任意：IPv6"
 msgid "Or choose what you want to do"
 msgstr "または、やりたいことを選んでください"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1186
 msgid "Or on Debian and Ubuntu"
 msgstr "または Debian と Ubuntu の場合"
 
@@ -7370,11 +7399,11 @@ msgstr "または Debian と Ubuntu の場合"
 msgid "Or reset it if it was forgotten"
 msgstr "忘れた場合はリセットできます"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "Or the Tailscale app on a phone."
 msgstr "またはスマートフォンの Tailscale アプリ。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:480
+#: src/big_remote_play/ui/headscale_wizard.py:483
 msgid "Other"
 msgstr "その他"
 
@@ -7555,15 +7584,7 @@ msgstr "まず認証情報を貼り付けてください。"
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "このページの入力欄に、サーバーのアドレスとキーを貼り付けます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1252
-msgid ""
-"Paste the server's API key. Big Remote Play then does the rest. It is kept "
-"in the system keyring."
-msgstr ""
-"サーバーの API キーを貼り付けてください。あとは Big Remote Play が行います。"
-"キーはシステムのキーリングに保存されます。"
-
-#: src/big_remote_play/ui/headscale_wizard.py:603
+#: src/big_remote_play/ui/headscale_wizard.py:606
 msgid "Paste the two nameservers (optional)"
 msgstr "2 つのネームサーバーを貼り付け（任意）"
 
@@ -7573,7 +7594,7 @@ msgstr ""
 "もう一方のコンピューターに表示されたサインインリンクをすべて貼り付けてくださ"
 "い。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Pasting them lets Big Remote Play follow your progress."
 msgstr "貼り付けると、Big Remote Play が進み具合を確認できます。"
 
@@ -7710,7 +7731,7 @@ msgstr "{name} でプレイ中"
 msgid "Plays a short tone and checks that it reaches the shared sound."
 msgstr "短いテスト音を再生し、共有される音声に届くか確認します。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Point a domain to it"
 msgstr "ドメインを向ける"
 
@@ -7735,11 +7756,11 @@ msgstr ""
 "スマートフォンのカメラでコードを読み取ると、プレイしながらこのガイドをスマー"
 "トフォンで見られます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "Point your domain to the server"
 msgstr "ドメインをサーバーに向ける"
 
-#: src/big_remote_play/ui/headscale_wizard.py:683
+#: src/big_remote_play/ui/headscale_wizard.py:686
 msgid "Points to"
 msgstr "指す先"
 
@@ -7764,7 +7785,7 @@ msgstr "ポート転送（上級者向け）"
 msgid "Portal (screen picker)"
 msgstr "ポータル（画面選択）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 #, python-brace-format
 msgid "Ports 80 and 443 (TCP) → {address}"
 msgstr "ポート 80 と 443（TCP）→ {address}"
@@ -7889,11 +7910,11 @@ msgstr "プロジェクトの歩み"
 msgid "Project story on YouTube"
 msgstr "YouTube のプロジェクトストーリー"
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "Proxy status"
 msgstr "Proxy status"
 
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Public IPv6"
 msgstr "公開 IPv6"
 
@@ -8073,8 +8094,8 @@ msgstr "もう一方のコンピューターからゲームを受け取ります
 
 #. TRANSLATORS: shown next to Tailscale: the method suggested for most people.
 #: src/big_remote_play/ui/guided_setup.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:451
 #: src/big_remote_play/ui/provider_page.py:60
 msgid "Recommended"
 msgstr "おすすめ"
@@ -8099,7 +8120,7 @@ msgstr ""
 "友だちと遊ぶ場合におすすめです。友だちがアクセスできるのはこのコンピューター"
 "だけです。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Recommended. Big Remote Play can guide you."
 msgstr "おすすめ。Big Remote Play が案内します。"
 
@@ -8690,8 +8711,8 @@ msgstr[0] "検索中… {total} 件中 {asked} 件のアドレスを確認済み
 msgid "Secure connection"
 msgstr "安全な接続"
 
-#: src/big_remote_play/ui/headscale_wizard.py:72
-#: src/big_remote_play/ui/headscale_wizard.py:1100
+#: src/big_remote_play/ui/headscale_wizard.py:75
+#: src/big_remote_play/ui/headscale_wizard.py:1103
 msgid "Secure connection (HTTPS)"
 msgstr "安全な接続（HTTPS）"
 
@@ -8703,11 +8724,11 @@ msgstr "セキュリティとアクセス"
 msgid "See details"
 msgstr "詳細を見る"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "See its log in Advanced on the Headscale page."
 msgstr "Headscale ページの「詳細」でログを確認してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "See the technical details."
 msgstr "技術的な詳細を確認してください。"
 
@@ -8779,11 +8800,13 @@ msgid "Send the PIN shown on the other device to finish pairing"
 msgstr ""
 "ペアリングを完了するには、相手のデバイスに表示された PIN を送信してください"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
-msgid "Send them this command. This page continues by itself once they run it."
+#: src/big_remote_play/ui/headscale_wizard.py:1500
+msgid ""
+"Send them these commands; the first is needed only once. This page continues "
+"by itself once they run them."
 msgstr ""
-"このコマンドを相手に送ってください。相手が実行すると、このページは自動的に先"
-"へ進みます。"
+"これらのコマンドを相手に送ってください。最初のコマンドは一度だけ必要です。相"
+"手が実行すると、このページは自動的に先へ進みます。"
 
 #: src/big_remote_play/ui/network_devices.py:665
 msgid ""
@@ -8844,8 +8867,8 @@ msgstr ""
 "ピューターで聞こえます。同じ通話に参加している人には、自分の声が戻って聞こえ"
 "ます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:69
-#: src/big_remote_play/ui/headscale_wizard.py:1241
+#: src/big_remote_play/ui/headscale_wizard.py:72
+#: src/big_remote_play/ui/headscale_wizard.py:1246
 msgid "Server"
 msgstr "サーバー"
 
@@ -8858,13 +8881,13 @@ msgstr "サーバーのドメイン（例：vpn.example.com）"
 msgid "Server Failed to Start"
 msgstr "サーバーの起動に失敗しました"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1040
+#: src/big_remote_play/ui/headscale_wizard.py:1043
 msgid "Server IP or domain"
 msgstr "サーバーの IP またはドメイン"
 
 #: src/big_remote_play/ui/api_access_dialog.py:187
-#: src/big_remote_play/ui/headscale_wizard.py:445
-#: src/big_remote_play/ui/headscale_wizard.py:810
+#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:813
 #: src/big_remote_play/ui/network_devices.py:788
 #: src/big_remote_play/ui/network_devices.py:789
 #: src/big_remote_play/ui/private_network_view.py:699
@@ -8873,7 +8896,7 @@ msgstr "サーバーの IP またはドメイン"
 msgid "Server address"
 msgstr "サーバーのアドレス"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1099
+#: src/big_remote_play/ui/headscale_wizard.py:1102
 msgid "Server answers"
 msgstr "サーバーが応答しています"
 
@@ -8881,7 +8904,7 @@ msgstr "サーバーが応答しています"
 msgid "Server control panel"
 msgstr "サーバーのコントロールパネル"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1119
+#: src/big_remote_play/ui/headscale_wizard.py:1122
 msgid "Server found"
 msgstr "サーバーが見つかりました"
 
@@ -8927,7 +8950,7 @@ msgstr "サービス"
 msgid "Sessions"
 msgstr "セッション"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1187
+#: src/big_remote_play/ui/headscale_wizard.py:1190
 msgid "Set the server address"
 msgstr "サーバーのアドレスを設定"
 
@@ -8947,25 +8970,25 @@ msgstr ""
 msgid "Set up"
 msgstr "設定する"
 
-#: src/big_remote_play/ui/headscale_wizard.py:548
+#: src/big_remote_play/ui/headscale_wizard.py:551
 msgid "Set up Cloudflare"
 msgstr "Cloudflare を設定"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Set up DNS with Cloudflare"
 msgstr "Cloudflare で DNS を設定"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 #: src/big_remote_play/ui/provider_page.py:1091
 #: src/big_remote_play/ui/provider_page.py:1170
 msgid "Set up Headscale"
 msgstr "Headscale を設定"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1209
+#: src/big_remote_play/ui/headscale_wizard.py:1212
 msgid "Set up a domain"
 msgstr "ドメインを設定"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1136
+#: src/big_remote_play/ui/headscale_wizard.py:1139
 msgid "Set up a domain for it"
 msgstr "このサーバー用のドメインを設定"
 
@@ -8973,9 +8996,9 @@ msgstr "このサーバー用のドメインを設定"
 msgid "Set up a secure connection"
 msgstr "安全な接続を設定しましょう"
 
-#: src/big_remote_play/ui/headscale_wizard.py:802
-#: src/big_remote_play/ui/headscale_wizard.py:1214
-#: src/big_remote_play/ui/headscale_wizard.py:1215
+#: src/big_remote_play/ui/headscale_wizard.py:805
+#: src/big_remote_play/ui/headscale_wizard.py:1217
+#: src/big_remote_play/ui/headscale_wizard.py:1218
 msgid "Set up the server"
 msgstr "サーバーを設定する"
 
@@ -9280,7 +9303,7 @@ msgstr ""
 msgid "Sign-in expired"
 msgstr "サインインの有効期限切れ"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1436
+#: src/big_remote_play/ui/headscale_wizard.py:1505
 msgid "Sign-in link"
 msgstr "サインインリンク"
 
@@ -9367,7 +9390,7 @@ msgstr ""
 "ドレスが Web サイトから見えるパブリックアドレスと異なる。プライベートネット"
 "ワークを使うか、プロバイダーにパブリック IPv4 アドレスを依頼してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Something answers there, but it is not a Headscale server."
 msgstr "何かが応答していますが、Headscale サーバーではありません。"
 
@@ -9420,7 +9443,7 @@ msgstr "Start + Select"
 msgid "Start ZeroTier"
 msgstr "ZeroTier を起動"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1197
 msgid "Start both and open the ports"
 msgstr "両方を起動してポートを開く"
 
@@ -9428,13 +9451,13 @@ msgstr "両方を起動してポートを開く"
 msgid "Start it to play with your other devices."
 msgstr "オンにすると、ほかのデバイスとプレイできます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
-#: src/big_remote_play/ui/headscale_wizard.py:353
-#: src/big_remote_play/ui/headscale_wizard.py:1140
+#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:356
+#: src/big_remote_play/ui/headscale_wizard.py:1143
 msgid "Start over"
 msgstr "最初からやり直す"
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "Start over?"
 msgstr "最初からやり直しますか？"
 
@@ -9592,12 +9615,12 @@ msgstr ""
 "サーバーを動かす場所、アドレス、HTTPS、このコンピューターの順に一歩ずつ進めま"
 "す。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1577
+#: src/big_remote_play/ui/headscale_wizard.py:1646
 #, python-brace-format
 msgid "Step {number} of {total}"
 msgstr "ステップ {number}/{total}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:264
+#: src/big_remote_play/ui/headscale_wizard.py:267
 #, python-brace-format
 msgid "Step {number} of {total} · {name}"
 msgstr "ステップ {number}/{total} · {name}"
@@ -10097,7 +10120,7 @@ msgstr "マウスの左右ボタンを入れ替える"
 msgid "Swipe from the left edge of the screen"
 msgstr "画面の左端からスワイプ"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1368
+#: src/big_remote_play/ui/headscale_wizard.py:1432
 #: src/big_remote_play/ui/remote_connection.py:250
 #: src/big_remote_play/ui/tailscale_accounts.py:107
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:208
@@ -10108,7 +10131,7 @@ msgstr "切り替え"
 msgid "Switch between full screen and a window"
 msgstr "全画面とウィンドウを切り替え"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1363
+#: src/big_remote_play/ui/headscale_wizard.py:1427
 msgid "Switch from Tailscale to Headscale?"
 msgstr "Tailscale から Headscale に切り替えますか？"
 
@@ -10247,7 +10270,7 @@ msgstr "音声の技術的な詳細"
 
 #: src/big_remote_play/ui/dependency_installer.py:171
 #: src/big_remote_play/ui/guest_view.py:2087
-#: src/big_remote_play/ui/headscale_wizard.py:424
+#: src/big_remote_play/ui/headscale_wizard.py:427
 #: src/big_remote_play/ui/provider_page.py:1202
 #: src/big_remote_play/ui/zerotier_join.py:225
 msgid "Technical details"
@@ -10292,11 +10315,11 @@ msgstr ""
 "そのコンピューターにはサインインリンクが表示されます。ここに貼り付けて承認す"
 "るか、サーバーで承認してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "The API key could not be saved."
 msgstr "API キーを保存できませんでした。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "The HTTPS configuration was not accepted."
 msgstr "HTTPS の設定が受け入れられませんでした。"
 
@@ -10308,13 +10331,13 @@ msgstr "HTTPS の設定が受け入れられませんでした。何も有効に
 msgid "The Headscale configuration file is missing."
 msgstr "Headscale の設定ファイルがありません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
-#: src/big_remote_play/ui/headscale_wizard.py:86
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:90
 msgid "The Headscale server is not reachable."
 msgstr "Headscale サーバーにアクセスできません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:307
 msgid ""
 "The Headscale server needs to stay available so your devices can find each "
 "other."
@@ -10330,7 +10353,7 @@ msgstr "Headscale サーバーは正常に動作しています。"
 msgid "The Headscale setup is not finished."
 msgstr "Headscale の設定が完了していません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 msgid "The IPv6 record points somewhere else."
 msgstr "IPv6 レコードが別の場所を指しています。"
 
@@ -10455,7 +10478,7 @@ msgstr ""
 "有効な VPN 接続を停止します。後で再接続できるよう、保存済みアカウントは保持さ"
 "れます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1048
+#: src/big_remote_play/ui/headscale_wizard.py:1051
 msgid "The address of the computer or VPS that runs Headscale."
 msgstr "Headscale を動かしているコンピューターまたは VPS のアドレスです。"
 
@@ -10593,13 +10616,13 @@ msgstr "デバイス"
 msgid "The device list could not be read."
 msgstr "デバイス一覧を読み取れませんでした。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "The domain could not be checked."
 msgstr "ドメインを確認できませんでした。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:537
+#: src/big_remote_play/ui/headscale_wizard.py:540
 msgid "The domain you registered"
 msgstr "登録したドメイン"
 
@@ -10629,7 +10652,7 @@ msgstr "Sunshine の現在のログを保存するファイル。"
 msgid "The file that stores Sunshine's current state."
 msgstr "Sunshine の現在の状態を保存するファイル。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "The finished steps are forgotten. Nothing on the server is removed."
 msgstr ""
 "完了した手順の記録は消去されます。サーバー上のものは何も削除されません。"
@@ -10806,7 +10829,7 @@ msgstr ""
 msgid "The installation was cancelled. Nothing was changed."
 msgstr "インストールはキャンセルされました。何も変更されていません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The internet could not reach this computer."
 msgstr "インターネットからこのコンピューターに到達できませんでした。"
 
@@ -10874,7 +10897,7 @@ msgstr ""
 "線と Wi-Fi の両方が接続されたコンピューターが原因になることがあります。使って"
 "いない方の接続を切ってください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:90
 #, python-brace-format
 msgid "The network cannot reach it on port {port}."
 msgstr "ネットワークからポート {port} で到達できません。"
@@ -10996,7 +11019,7 @@ msgstr "このコンピューターはまだネットワークの所有者によ
 msgid "The pacman package manager is not available on this system."
 msgstr "このシステムでは pacman パッケージマネージャーを利用できません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "The password was not given."
 msgstr "パスワードが入力されませんでした。"
 
@@ -11117,7 +11140,7 @@ msgstr "すべてのアドレスを確認する前に検索が止まりました
 msgid "The search was cancelled."
 msgstr "検索はキャンセルされました。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The secure certificate could not be obtained."
 msgstr "安全な証明書を取得できませんでした。"
 
@@ -11138,11 +11161,11 @@ msgstr ""
 msgid "The server administrator then approves this computer."
 msgstr "その後、サーバー管理者がこのコンピューターを承認します。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:94
 msgid "The server could not be checked."
 msgstr "サーバーを確認できませんでした。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "The server could not be set up."
 msgstr "サーバーを設定できませんでした。"
 
@@ -11150,7 +11173,7 @@ msgstr "サーバーを設定できませんでした。"
 msgid "The server details could not be read."
 msgstr "サーバーの詳細を読み込めませんでした。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "The server did not accept this API key."
 msgstr "サーバーがこの API キーを受け入れませんでした。"
 
@@ -11158,11 +11181,11 @@ msgstr "サーバーがこの API キーを受け入れませんでした。"
 msgid "The server did not find what was requested."
 msgstr "要求されたものがサーバーで見つかりませんでした。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
+#: src/big_remote_play/ui/headscale_wizard.py:1402
 msgid "The server did not give a key for this computer."
 msgstr "サーバーがこのコンピューター用のキーを発行しませんでした。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "The server did not give a key."
 msgstr "サーバーがキーを発行しませんでした。"
 
@@ -11170,11 +11193,15 @@ msgstr "サーバーがキーを発行しませんでした。"
 msgid "The server log says why a capture could not open."
 msgstr "キャプチャを開けなかった理由はサーバーのログでわかります。"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1262
+msgid "The server runs on this computer"
+msgstr "サーバーはこのコンピューターで動作しています"
+
 #: src/big_remote_play/ui/provider_page.py:1249
 msgid "The server setup could not be removed."
 msgstr "サーバー設定を削除できませんでした。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid ""
 "The server setup is not available when Big Remote Play runs from its source "
 "folder."
@@ -11190,11 +11217,11 @@ msgstr "サーバー設定を削除しました。"
 msgid "The server tried to redirect the request, which is refused for safety."
 msgstr "サーバーが要求をリダイレクトしようとしたため、安全のため拒否しました。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:677
+#: src/big_remote_play/ui/headscale_wizard.py:680
 msgid "The server's public IP address"
 msgstr "サーバーの公開 IP アドレス"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:91
 msgid "The server's secure certificate is not valid."
 msgstr "サーバーの安全な証明書が有効ではありません。"
 
@@ -11222,7 +11249,7 @@ msgstr ""
 msgid "The service did not accept the request."
 msgstr "サービスが要求を受け入れませんでした。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:224
+#: src/big_remote_play/ui/headscale_wizard.py:227
 msgid "The setup progress could not be saved."
 msgstr "設定の進み具合を保存できませんでした。"
 
@@ -11373,7 +11400,7 @@ msgstr ""
 msgid "The {name} service is not running on this computer."
 msgstr "このコンピューターで {name} サービスが実行されていません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "Then Set up → Another server."
 msgstr "次に「設定する」→「別のサーバー」を選びます。"
 
@@ -11389,7 +11416,7 @@ msgstr "映像が出ない"
 msgid "There is no sound"
 msgstr "音が出ない"
 
-#: src/big_remote_play/ui/headscale_wizard.py:638
+#: src/big_remote_play/ui/headscale_wizard.py:641
 msgid "These are not Cloudflare nameservers. They end in .ns.cloudflare.com."
 msgstr ""
 "これは Cloudflare のネームサーバーではありません。Cloudflare のもの"
@@ -11448,8 +11475,8 @@ msgstr ""
 "これにより、古いIntel GPUでHEVCエンコーディングを有効にできますが、GPUの使用"
 "率が高くなり、パフォーマンスが低下します。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:667
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "This can take a little while."
 msgstr "少し時間がかかることがあります。"
 
@@ -11461,9 +11488,9 @@ msgstr "変更されるのは Big Remote Play に表示する名前だけです�
 msgid "This code is not complete"
 msgstr "このコードは不完全です"
 
-#: src/big_remote_play/ui/headscale_wizard.py:74
-#: src/big_remote_play/ui/headscale_wizard.py:306
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:77
+#: src/big_remote_play/ui/headscale_wizard.py:309
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 #: src/big_remote_play/ui/host_view.py:115
 #: src/big_remote_play/ui/network_devices.py:173
 #: src/big_remote_play/ui/remote_connection.py:356
@@ -11471,10 +11498,15 @@ msgstr "このコードは不完全です"
 msgid "This computer"
 msgstr "このコンピューター"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "This computer asks to join; the owner approves it on the server."
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1293
+#, python-brace-format
+msgid ""
+"This computer asks to join; Big Remote Play shows the exact commands for the "
+"owner, with your user “{user}”."
 msgstr ""
-"このコンピューターが参加をリクエストし、所有者がサーバー上で承認します。"
+"このコンピューターが参加をリクエストします。Big Remote Play が、あなたのユー"
+"ザー「{user}」を使った所有者向けの正確なコマンドを表示します。"
 
 #: src/big_remote_play/ui/provider_page.py:1068
 msgid "This computer can be in several ZeroTier networks."
@@ -11493,7 +11525,7 @@ msgstr ""
 "デックと HDR も両方のコンピューターに依存します。変更は共有を再開したときに適"
 "用されます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "This computer could not join."
 msgstr "このコンピューターは参加できませんでした。"
 
@@ -11522,7 +11554,7 @@ msgstr ""
 "このコンピューターは承認されていますが、ネットワークからまだアドレスが割り当"
 "てられていません。ネットワークの所有者が割り当てることができます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1404
+#: src/big_remote_play/ui/headscale_wizard.py:1468
 msgid "This computer is connected"
 msgstr "このコンピューターは接続されています"
 
@@ -11565,7 +11597,7 @@ msgstr "このコンピューターはネットワーク {name} に参加して�
 msgid "This computer is on your {name} network."
 msgstr "このコンピューターはあなたの {name} ネットワークに参加しています。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "This computer joins your Headscale network."
 msgstr "このコンピューターが Headscale ネットワークに参加します。"
 
@@ -11701,12 +11733,12 @@ msgstr ""
 msgid "This device · {state}"
 msgstr "このデバイス · {state}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1304
+#: src/big_remote_play/ui/headscale_wizard.py:1340
 msgid "This does not look like a key that adds a computer."
 msgstr "コンピューターを追加するためのキーではないようです。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:524
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "This domain does not exist yet."
 msgstr "このドメインはまだ存在しません。"
 
@@ -11736,7 +11768,7 @@ msgstr ""
 msgid "This is a request. It only works when the game PC supports it."
 msgstr "これは要求です。ゲーム PC が対応している場合にのみ動作します。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "This is an administrator key."
 msgstr "これは管理者用のキーです。"
 
@@ -11753,19 +11785,19 @@ msgstr ""
 msgid "This is not a code from the other device."
 msgstr "これはもう一方のデバイスのコードではありません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "This is not a domain."
 msgstr "これはドメインではありません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "This is not a public IP address."
 msgstr "これは公開 IP アドレスではありません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
+#: src/big_remote_play/ui/headscale_wizard.py:86
 msgid "This is not a server address."
 msgstr "これはサーバーのアドレスではありません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "This is not an API key."
 msgstr "これは API キーではありません。"
 
@@ -11782,16 +11814,16 @@ msgstr ""
 msgid "This is the computer that will run the game."
 msgstr "ゲームを実行するのはこのコンピューターです。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "This key adds one computer; it is not an API key."
 msgstr ""
 "このキーはコンピューターを 1 台追加するためのもので、API キーではありません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "This name does not lead to a server yet."
 msgstr "この名前はまだサーバーにつながっていません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "This name is already set in /etc/hosts."
 msgstr "この名前はすでに /etc/hosts に設定されています。"
 
@@ -11804,7 +11836,7 @@ msgstr ""
 msgid "This name is not valid."
 msgstr "この名前は無効です。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid "This needs the installed Big Remote Play package."
 msgstr "インストールされた Big Remote Play パッケージが必要です。"
 
@@ -11876,7 +11908,7 @@ msgstr "この画面の解像度"
 msgid "This server address is not valid."
 msgstr "このサーバーアドレスは無効です。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1124
+#: src/big_remote_play/ui/headscale_wizard.py:1127
 msgid ""
 "This server runs on this computer. Your router does not send this computer's "
 "own traffic back to it, so Big Remote Play checked it directly and will "
@@ -12008,7 +12040,7 @@ msgstr "信頼済みWeb UIオリジン"
 msgid "Try again"
 msgstr "再試行"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "Try again, or choose another option."
 msgstr "もう一度試すか、別の方法を選んでください。"
 
@@ -12048,7 +12080,7 @@ msgstr "ZeroTier をオフにしますか？"
 msgid "Turn on"
 msgstr "オンにする"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1189
+#: src/big_remote_play/ui/headscale_wizard.py:1192
 msgid "Turn on HTTPS with Caddy"
 msgstr "Caddy で HTTPS をオンにする"
 
@@ -12062,8 +12094,8 @@ msgid "Turned on"
 msgstr "オン"
 
 #: src/big_remote_play/ui/api_access_dialog.py:150
-#: src/big_remote_play/ui/headscale_wizard.py:687
-#: src/big_remote_play/ui/headscale_wizard.py:714
+#: src/big_remote_play/ui/headscale_wizard.py:690
+#: src/big_remote_play/ui/headscale_wizard.py:717
 msgid "Type"
 msgstr "種類"
 
@@ -12089,8 +12121,8 @@ msgstr ""
 "サーバーのアドレスを入力してください。サーバーの管理者がこのコンピューターを"
 "承認します。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:577
-#: src/big_remote_play/ui/headscale_wizard.py:586
+#: src/big_remote_play/ui/headscale_wizard.py:580
+#: src/big_remote_play/ui/headscale_wizard.py:589
 msgid "Type the domain you registered, for example mydomain.dpdns.org."
 msgstr "登録したドメインを入力してください（例：mydomain.dpdns.org）。"
 
@@ -12272,15 +12304,15 @@ msgstr ""
 msgid "Use Tailscale"
 msgstr "Tailscale を使う"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "Use a Linux server that stays on"
 msgstr "常時稼働する Linux サーバーを使う"
 
-#: src/big_remote_play/ui/headscale_wizard.py:981
+#: src/big_remote_play/ui/headscale_wizard.py:984
 msgid "Use a VPS instead"
 msgstr "代わりに VPS を使う"
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
+#: src/big_remote_play/ui/headscale_wizard.py:308
 msgid "Use a VPS or another computer that stays online."
 msgstr "VPS か、常にオンラインの別のコンピューターを使ってください。"
 
@@ -12289,11 +12321,11 @@ msgid "Use a cable or 5 GHz Wi-Fi on both computers when possible."
 msgstr ""
 "できれば、両方のコンピューターで有線接続か 5 GHz の Wi-Fi を使ってください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1139
+#: src/big_remote_play/ui/headscale_wizard.py:1142
 msgid "Use a different address"
 msgstr "別のアドレスを使う"
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Use a domain"
 msgstr "ドメインを使う"
 
@@ -12315,10 +12347,10 @@ msgstr ""
 msgid "Use another account"
 msgstr "別のアカウントを使う"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:402
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:997
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:405
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:1000
 msgid "Use another server"
 msgstr "別のサーバーを使う"
 
@@ -12339,12 +12371,12 @@ msgstr "利用可能な場合はハードウェアデコードを使用"
 msgid "Use it"
 msgstr "これを使用"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "Use it in the first option, or ask for a key that adds one computer."
 msgstr ""
 "1 つ目の方法で使うか、コンピューターを 1 台追加するキーを頼んでください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "Use it in the second option instead."
 msgstr "代わりに 2 つ目の方法で使ってください。"
 
@@ -12357,7 +12389,7 @@ msgid "Use only when both computers and the screen support HDR."
 msgstr ""
 "両方のコンピューターと画面が HDR に対応している場合にのみ使用してください。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1256
+#: src/big_remote_play/ui/headscale_wizard.py:1280
 msgid "Use the API key"
 msgstr "API キーを使う"
 
@@ -12373,7 +12405,7 @@ msgstr ""
 msgid "Use the controller to move the mouse"
 msgstr "コントローラーでマウスを動かす"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid "Use the detected address"
 msgstr "検出されたアドレスを使う"
 
@@ -12389,7 +12421,7 @@ msgstr "ゲーム用PCのBig Remote Playに表示された検索コードを使�
 msgid "Use the touchscreen as a virtual trackpad"
 msgstr "タッチスクリーンを仮想トラックパッドとして使用"
 
-#: src/big_remote_play/ui/headscale_wizard.py:306
+#: src/big_remote_play/ui/headscale_wizard.py:309
 msgid "Use this PC as the Headscale server."
 msgstr "この PC を Headscale サーバーとして使います。"
 
@@ -12397,7 +12429,7 @@ msgstr "この PC を Headscale サーバーとして使います。"
 msgid "Use this connection"
 msgstr "この接続を使う"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1258
+#: src/big_remote_play/ui/headscale_wizard.py:1288
 msgid "Use this key"
 msgstr "このキーを使う"
 
@@ -12409,7 +12441,7 @@ msgstr "自動検出で PC が見つからない場合にのみ使用してく�
 msgid "Use this screen's resolution"
 msgstr "この画面の解像度を使用"
 
-#: src/big_remote_play/ui/headscale_wizard.py:866
+#: src/big_remote_play/ui/headscale_wizard.py:869
 msgid "Use this server"
 msgstr "このサーバーを使う"
 
@@ -12464,7 +12496,7 @@ msgstr ""
 msgid "Using this screen's resolution"
 msgstr "この画面の解像度を使用中"
 
-#: src/big_remote_play/ui/headscale_wizard.py:990
+#: src/big_remote_play/ui/headscale_wizard.py:993
 msgid ""
 "Usually its address is written under the router. Look for “Port forwarding”, "
 "“Virtual server” or “NAT”."
@@ -12651,7 +12683,7 @@ msgstr "認証を待っています"
 msgid "Waiting for data…"
 msgstr "データを待っています…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
+#: src/big_remote_play/ui/headscale_wizard.py:1500
 msgid "Waiting for the server owner"
 msgstr "サーバーの所有者を待っています"
 
@@ -12669,11 +12701,11 @@ msgstr ""
 msgid "Washed out on devices without HDR"
 msgstr "HDR 非対応のデバイスでは白っぽく見えます"
 
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "We are still waiting for DNS"
 msgstr "DNS の反映をまだ待っています"
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "We could not find your public address"
 msgstr "公開アドレスが見つかりませんでした"
 
@@ -12708,7 +12740,7 @@ msgstr "手伝ってくれる人と共有するための、ZeroTier の応答で
 msgid "What do you want to do?"
 msgstr "何をしますか？"
 
-#: src/big_remote_play/ui/headscale_wizard.py:789
+#: src/big_remote_play/ui/headscale_wizard.py:792
 msgid "What happens"
 msgstr "どうなるか"
 
@@ -12716,7 +12748,7 @@ msgstr "どうなるか"
 msgid "What is the network code?"
 msgstr "ネットワークコードは何ですか？"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1047
+#: src/big_remote_play/ui/headscale_wizard.py:1050
 msgid "What is the server address?"
 msgstr "サーバーのアドレスは何ですか？"
 
@@ -12799,7 +12831,7 @@ msgstr ""
 "このコンピューターのマウスかキーボードを使うと、ゲストはしばらくそれらを操作"
 "できなくなります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "Where do you manage DNS?"
 msgstr "DNS はどこで管理していますか？"
 
@@ -12807,7 +12839,7 @@ msgstr "DNS はどこで管理していますか？"
 msgid "Where is the other device?"
 msgstr "もう一方のデバイスはどこにありますか？"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Where is the server?"
 msgstr "サーバーはどこにありますか？"
 
@@ -12819,7 +12851,7 @@ msgstr "トークンの作成場所"
 msgid "Where to create it"
 msgstr "作成場所"
 
-#: src/big_remote_play/ui/headscale_wizard.py:303
+#: src/big_remote_play/ui/headscale_wizard.py:306
 msgid "Where will your Headscale server run?"
 msgstr "Headscale サーバーをどこで動かしますか？"
 
@@ -12849,7 +12881,7 @@ msgstr ""
 "インターネット経由の接続が失敗する理由と、それぞれの問題を回避する最も安全な"
 "方法。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:706
+#: src/big_remote_play/ui/headscale_wizard.py:709
 msgid "Why?"
 msgstr "なぜ？"
 
@@ -12937,7 +12969,7 @@ msgstr "認証キーがない場合はサインインリンクが開きます"
 msgid "Without it, members are approved on the ZeroTier website."
 msgstr "これがない場合、メンバーの承認は ZeroTier の Web サイトで行います。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Working…"
 msgstr "処理しています…"
 
@@ -12953,8 +12985,8 @@ msgstr ""
 msgid "X11 screen capture"
 msgstr "X11 の画面キャプチャ"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:472
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/touch_controls.py:81
 msgid "Yes"
 msgstr "はい"
@@ -12988,7 +13020,7 @@ msgstr "昨日 {time}"
 msgid "You can control the mouse and keyboard again"
 msgstr "マウスとキーボードを再び操作できます"
 
-#: src/big_remote_play/ui/headscale_wizard.py:559
+#: src/big_remote_play/ui/headscale_wizard.py:562
 msgid ""
 "You can use a domain you already own or register one with a domain provider."
 msgstr "すでに持っているドメインを使うか、ドメイン業者で新しく登録できます。"
@@ -13013,7 +13045,7 @@ msgstr "この PC を操作しているのはあなたです"
 msgid "Your Headscale server"
 msgstr "あなたの Headscale サーバー"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1032
+#: src/big_remote_play/ui/headscale_wizard.py:1035
 msgid "Your Headscale server is ready"
 msgstr "Headscale サーバーの準備ができました"
 
@@ -13021,7 +13053,7 @@ msgstr "Headscale サーバーの準備ができました"
 msgid "Your Tailscale network (tailnet)"
 msgstr "あなたの Tailscale ネットワーク（tailnet）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Your VPS provider shows it in its control panel."
 msgstr "VPS プロバイダーの管理画面に表示されています。"
 
@@ -13045,16 +13077,16 @@ msgstr "あなたのデバイス"
 msgid "Your devices can now find each other in Big Remote Play."
 msgstr "これで Big Remote Play でデバイス同士が見つかるようになりました。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:491
-#: src/big_remote_play/ui/headscale_wizard.py:614
+#: src/big_remote_play/ui/headscale_wizard.py:494
+#: src/big_remote_play/ui/headscale_wizard.py:617
 msgid "Your domain"
 msgstr "あなたのドメイン"
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 msgid "Your domain is not pointing to this server yet."
 msgstr "ドメインはまだこのサーバーを指していません。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
+#: src/big_remote_play/ui/headscale_wizard.py:667
 msgid "Your domain still uses other nameservers."
 msgstr "ドメインはまだ別のネームサーバーを使っています。"
 
@@ -13070,20 +13102,20 @@ msgstr ""
 msgid "Your games. Any screen. Anywhere."
 msgstr "あなたのゲームを。どんな画面でも。どこからでも。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:368
+#: src/big_remote_play/ui/headscale_wizard.py:371
 msgid "Your internet connection"
 msgstr "インターネット接続"
 
-#: src/big_remote_play/ui/headscale_wizard.py:976
+#: src/big_remote_play/ui/headscale_wizard.py:979
 msgid "Your internet provider blocks incoming connections."
 msgstr "インターネットプロバイダーが着信接続をブロックしています。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Your internet provider may block incoming connections."
 msgstr ""
 "インターネットプロバイダーが着信接続をブロックしている可能性があります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1520
+#: src/big_remote_play/ui/headscale_wizard.py:1589
 msgid "Your other device is connected"
 msgstr "もう一方のデバイスが接続されました"
 
@@ -13109,7 +13141,7 @@ msgstr "既存の {names} はそのまま残しました。"
 msgid "Your password may be requested."
 msgstr "パスワードを求められることがあります。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
+#: src/big_remote_play/ui/headscale_wizard.py:398
 msgid "Your public IP"
 msgstr "公開 IP"
 
@@ -13117,7 +13149,7 @@ msgstr "公開 IP"
 msgid "Your recent sessions will appear here."
 msgstr "最近のセッションがここに表示されます。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:986
+#: src/big_remote_play/ui/headscale_wizard.py:989
 msgid "Your router needs one more step"
 msgstr "ルーターでもう 1 つ手順が必要です"
 
@@ -13239,7 +13271,7 @@ msgstr "不明"
 msgid "the local network"
 msgstr "ローカルネットワーク"
 
-#: src/big_remote_play/ui/headscale_wizard.py:983
+#: src/big_remote_play/ui/headscale_wizard.py:986
 msgid "this computer"
 msgstr "このコンピューター"
 

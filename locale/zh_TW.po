@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: big-remote-play\n"
 "Report-Msgid-Bugs-To: https://github.com/biglinux/big-remote-play/issues\n"
-"POT-Creation-Date: 2026-11-17 09:34+0000\n"
+"POT-Creation-Date: 2026-11-17 09:44+0000\n"
 "PO-Revision-Date: 2026-09-16 00:00-0300\n"
 "Last-Translator: BigLinux Translation Team\n"
 "Language-Team: Chinese (Traditional, Taiwan)\n"
@@ -44,13 +44,21 @@ msgstr "1. 檢查網際網路連線"
 msgid "1. Create Account"
 msgstr "1. 建立帳號"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1503
+msgid "1. Create the user (once)"
+msgstr "1. 建立使用者（僅一次）"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1274
+msgid "1. I manage this server (recommended)"
+msgstr "1. 我管理這台伺服器（建議）"
+
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1995
 #: src/big_remote_play/ui/private_network_view.py:1114
 msgid "1. Identification"
 msgstr "1. 識別"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "1. Install Big Remote Play"
 msgstr "1. 安裝 Big Remote Play"
 
@@ -74,6 +82,10 @@ msgstr "1440p · 60 FPS · 40 Mbps"
 msgid "1920 × 1080 — best for TVs"
 msgstr "1920 × 1080 — 最適合電視"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1504
+msgid "2. Approve this computer"
+msgstr "2. 核准這台電腦"
+
 #: src/big_remote_play/ui/connection_guides.py:61
 msgid "2. Choose a domain you control"
 msgstr "2. 選擇您擁有的網域"
@@ -81,6 +93,10 @@ msgstr "2. 選擇您擁有的網域"
 #: src/big_remote_play/ui/connection_guides.py:119
 msgid "2. Domain and HTTPS"
 msgstr "2. 網域與 HTTPS"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1283
+msgid "2. I have a key from the server owner"
+msgstr "2. 我有伺服器擁有者給的金鑰"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1989
@@ -96,9 +112,13 @@ msgstr "2. 加入"
 msgid "2. Network"
 msgstr "2. 網路"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1446
+#: src/big_remote_play/ui/headscale_wizard.py:1515
 msgid "2. Open Connect your devices"
 msgstr "2. 開啟「連接你的裝置」"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1291
+msgid "3. Ask the server owner to approve"
+msgstr "3. 請伺服器擁有者核准"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1997
@@ -106,7 +126,7 @@ msgstr "2. 開啟「連接你的裝置」"
 msgid "3. Authorization"
 msgstr "3. 授權"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "3. Choose Headscale"
 msgstr "3. 選擇 Headscale"
 
@@ -144,7 +164,7 @@ msgstr "4. 核准"
 msgid "4. Connect Big Remote Play"
 msgstr "4. 連接 Big Remote Play"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1448
+#: src/big_remote_play/ui/headscale_wizard.py:1517
 msgid "4. Use this server"
 msgstr "4. 使用這台伺服器"
 
@@ -177,7 +197,7 @@ msgid ""
 "A Caddy site file with the same name already exists. Nothing was changed."
 msgstr "已有同名的 Caddy 網站檔案。沒有做任何變更。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:865
+#: src/big_remote_play/ui/headscale_wizard.py:868
 msgid "A Headscale server already answers at this address."
 msgstr "此位址已有 Headscale 伺服器在回應。"
 
@@ -230,7 +250,7 @@ msgstr "有裝置正在播放，但 Sunshine 尚未錄製聲音。"
 msgid "A device started playing on this computer."
 msgstr "有裝置開始在這台電腦上遊玩。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:468
+#: src/big_remote_play/ui/headscale_wizard.py:471
 msgid ""
 "A domain is a name like example.com. Your server gets a name inside it, like "
 "headscale.example.com."
@@ -238,13 +258,15 @@ msgstr ""
 "網域是像 example.com 這樣的名稱。你的伺服器會在其中取得一個名稱，例如 "
 "headscale.example.com。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1457
+#: src/big_remote_play/ui/headscale_wizard.py:1526
 msgid "A key for the other computer"
 msgstr "給另一台電腦的金鑰"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "A key that adds one computer. It is used once and not saved."
-msgstr "用來新增一台電腦的金鑰。只會使用一次，不會儲存。"
+#: src/big_remote_play/ui/headscale_wizard.py:1284
+msgid ""
+"A key that adds one computer, starting with hskey-auth-. It is used once and "
+"not saved."
+msgstr "用來新增一台電腦的金鑰，以 hskey-auth- 開頭。只會使用一次，不會儲存。"
 
 #: src/big_remote_play/ui/controls_help.py:102
 msgid "A keyboard app with Ctrl and Alt"
@@ -281,11 +303,11 @@ msgstr ""
 "比另一台裝置大的螢幕會被縮小，導致小字模糊。電視和車用螢幕以 1920 × 1080 最清"
 "晰。結束後所選螢幕會恢復原狀。請先在上方選擇螢幕。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "A secure connection could not be made."
 msgstr "無法建立安全連線。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "A small VPS is enough. Debian, Ubuntu and Arch are fine."
 msgstr "一台小型 VPS 就夠了。Debian、Ubuntu 和 Arch 都可以。"
 
@@ -365,7 +387,7 @@ msgid "API error: {status}"
 msgstr "API 錯誤：{status}"
 
 #: src/big_remote_play/ui/api_access_dialog.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:1242
+#: src/big_remote_play/ui/headscale_wizard.py:1247
 msgid "API key"
 msgstr "API 金鑰"
 
@@ -524,8 +546,8 @@ msgstr "新增帳號或網路"
 msgid "Add another computer of mine"
 msgstr "新增我的另一台電腦"
 
-#: src/big_remote_play/ui/headscale_wizard.py:75
-#: src/big_remote_play/ui/headscale_wizard.py:1481
+#: src/big_remote_play/ui/headscale_wizard.py:78
+#: src/big_remote_play/ui/headscale_wizard.py:1550
 #: src/big_remote_play/ui/network_devices.py:488
 msgid "Add another device"
 msgstr "新增另一部裝置"
@@ -539,16 +561,16 @@ msgstr "依位址新增"
 msgid "Add device"
 msgstr "新增裝置"
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "Add it where you manage your domain's DNS."
 msgstr "在管理你網域 DNS 的地方新增。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1246
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "Add this computer"
 msgstr "新增這台電腦"
 
-#: src/big_remote_play/ui/headscale_wizard.py:713
+#: src/big_remote_play/ui/headscale_wizard.py:716
 msgid ""
 "Add this only if your router lets connections in over IPv6. A wrong IPv6 "
 "record can break the connection."
@@ -556,15 +578,15 @@ msgstr ""
 "只有在你的路由器允許透過 IPv6 傳入連線時才新增。錯誤的 IPv6 記錄可能導致無法"
 "連線。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this record."
 msgstr "新增這筆記錄。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:696
+#: src/big_remote_play/ui/headscale_wizard.py:699
 msgid "Add this to Cloudflare."
 msgstr "將這個新增到 Cloudflare。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 msgid "Add two rules"
 msgstr "新增兩條規則"
 
@@ -581,7 +603,7 @@ msgstr ""
 "「僅限 DNS」（灰色雲朵），不要使用橘色 HTTP Proxy。位址變更時請更新記錄。這不"
 "是 Cloudflare Tunnel，也不是 VPN。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:613
+#: src/big_remote_play/ui/headscale_wizard.py:616
 msgid "Add your domain to Cloudflare."
 msgstr "將你的網域新增到 Cloudflare。"
 
@@ -591,8 +613,8 @@ msgid "Add {count} Game"
 msgid_plural "Add {count} Games"
 msgstr[0] "新增 {count} 款遊戲"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1345
-#: src/big_remote_play/ui/headscale_wizard.py:1375
+#: src/big_remote_play/ui/headscale_wizard.py:1409
+#: src/big_remote_play/ui/headscale_wizard.py:1439
 msgid "Adding this computer…"
 msgstr "正在新增這台電腦…"
 
@@ -609,7 +631,7 @@ msgstr "位址、波動與遺失的回應"
 msgid "Address: {address}"
 msgstr "位址：{address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "Addresses like 192.168.x.x only work inside a home network."
 msgstr "像 192.168.x.x 這樣的位址只能在家用網路內使用。"
 
@@ -684,7 +706,7 @@ msgstr "進階伺服器設定"
 msgid "Advanced settings in your browser (Sunshine)"
 msgstr "瀏覽器中的進階設定（Sunshine）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid ""
 "Advanced. HTTPS certificates can be harder to configure with an IP address."
 msgstr "進階。使用 IP 位址時，HTTPS 憑證可能比較難設定。"
@@ -804,13 +826,13 @@ msgid ""
 "without it."
 msgstr "只需允許一次。系統會要求輸入密碼；之後 Tailscale 不需密碼即可運作。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1195
+#: src/big_remote_play/ui/headscale_wizard.py:1198
 msgid ""
 "Allow ports 80 and 443 (TCP) in the server's firewall and in your VPS "
 "provider's panel."
 msgstr "在伺服器的防火牆和 VPS 供應商的控制台中允許連接埠 80 和 443（TCP）。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:793
+#: src/big_remote_play/ui/headscale_wizard.py:796
 msgid "Allow web connections in the firewall"
 msgstr "在防火牆中允許網頁連線"
 
@@ -934,14 +956,14 @@ msgid ""
 "finishes; Technical details shows its progress."
 msgstr "另一項安裝正在進行。完成後此頁面會自動繼續；技術細節會顯示進度。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:873
-#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:876
+#: src/big_remote_play/ui/headscale_wizard.py:957
 msgid ""
 "Another program already uses the web ports (80 and 443) on this computer."
 msgstr "這台電腦上的網頁連接埠（80 和 443）已被其他程式使用。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:1046
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:1049
 msgid "Another server"
 msgstr "另一台伺服器"
 
@@ -1127,15 +1149,11 @@ msgstr ""
 "請向建立 ZeroTier 網路的人索取代碼。如果還沒有人建立網路，你們其中一人可以在 "
 "ZeroTier Central 免費建立，或改用最簡單的 Tailscale。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "Ask the server owner to approve"
-msgstr "請伺服器擁有者核准"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1260
+#: src/big_remote_play/ui/headscale_wizard.py:1296
 msgid "Ask to join"
 msgstr "要求加入"
 
-#: src/big_remote_play/ui/headscale_wizard.py:987
+#: src/big_remote_play/ui/headscale_wizard.py:990
 msgid "Ask your router to send web connections to this computer:"
 msgstr "讓你的路由器把網頁連線轉送到這台電腦："
 
@@ -1326,7 +1344,7 @@ msgstr "平均時長"
 msgid "BW (target)"
 msgstr "頻寬（目標）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1558
+#: src/big_remote_play/ui/headscale_wizard.py:1627
 #: src/big_remote_play/ui/main_window.py:686
 #: src/big_remote_play/ui/main_window.py:692
 msgid "Back"
@@ -1404,8 +1422,8 @@ msgstr "效能最佳。"
 msgid "Big Remote Play can start it for you. Your password may be requested."
 msgstr "Big Remote Play 可以幫你啟動它。可能會要求輸入密碼。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:874
-#: src/big_remote_play/ui/headscale_wizard.py:955
+#: src/big_remote_play/ui/headscale_wizard.py:877
+#: src/big_remote_play/ui/headscale_wizard.py:958
 msgid ""
 "Big Remote Play cannot add a secure address next to it. Use another server, "
 "or stop that program first."
@@ -1422,7 +1440,7 @@ msgstr ""
 "Big Remote Play 無法在這個系統上安裝程式。請用軟體中心安裝這些套件："
 "{packages}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1216
+#: src/big_remote_play/ui/headscale_wizard.py:1219
 msgid ""
 "Big Remote Play cannot reach into another computer. Follow these steps "
 "there; each one can be copied."
@@ -1434,7 +1452,7 @@ msgstr ""
 msgid "Big Remote Play cannot start"
 msgstr "Big Remote Play 無法啟動"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Big Remote Play checks it for you."
 msgstr "Big Remote Play 會幫你檢查。"
 
@@ -1446,7 +1464,7 @@ msgstr ""
 "Big Remote Play 會檢查這台電腦需要什麼，並安裝缺少的部分。可能會要求輸入一次"
 "密碼。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:618
+#: src/big_remote_play/ui/headscale_wizard.py:621
 msgid "Big Remote Play checks your domain."
 msgstr "Big Remote Play 會檢查你的網域。"
 
@@ -1455,6 +1473,16 @@ msgid ""
 "Big Remote Play creates and saves Sunshine's password the first time sharing "
 "starts."
 msgstr "Big Remote Play 會在第一次開始分享時建立並儲存 Sunshine 的密碼。"
+
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1264
+#, python-brace-format
+msgid ""
+"Big Remote Play creates your network user “{user}” and a key for this "
+"computer by itself. Your password is asked once."
+msgstr ""
+"Big Remote Play 會自行建立你的網路使用者「{user}」以及這台電腦的金鑰。只需輸"
+"入一次密碼。"
 
 #: build-aux/i18n/br.com.biglinux.remoteplay.metainfo.xml.in:9
 msgid ""
@@ -1471,7 +1499,7 @@ msgstr ""
 msgid "Big Remote Play installs it for you. Your password may be requested."
 msgstr "Big Remote Play 會幫你安裝。可能會要求輸入密碼。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:824
+#: src/big_remote_play/ui/headscale_wizard.py:827
 msgid ""
 "Big Remote Play installs the server, gives it a secure address and starts "
 "it. Your password will be requested."
@@ -1491,7 +1519,7 @@ msgstr ""
 msgid "Big Remote Play is not installed completely"
 msgstr "Big Remote Play 沒有完整安裝"
 
-#: src/big_remote_play/ui/headscale_wizard.py:370
+#: src/big_remote_play/ui/headscale_wizard.py:373
 msgid ""
 "Big Remote Play looks for the address the internet sees for this computer."
 msgstr "Big Remote Play 會尋找網際網路看到的這台電腦位址。"
@@ -1502,7 +1530,7 @@ msgstr "Big Remote Play 會尋找網際網路看到的這台電腦位址。"
 msgid "Big Remote Play needs your permission"
 msgstr "Big Remote Play 需要你的許可"
 
-#: src/big_remote_play/ui/headscale_wizard.py:808
+#: src/big_remote_play/ui/headscale_wizard.py:811
 msgid "Big Remote Play will configure HTTPS for you."
 msgstr "Big Remote Play 會幫你設定 HTTPS。"
 
@@ -1623,7 +1651,7 @@ msgstr "CGNAT、IPv6、UPnP，以及什麼時候比較適合使用私人網路�
 msgid "CPU Encoding"
 msgstr "CPU 編碼"
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
+#: src/big_remote_play/ui/headscale_wizard.py:954
 msgid "Caddy already has a site with the same file name."
 msgstr "Caddy 中已有使用相同檔名的網站。"
 
@@ -1655,7 +1683,7 @@ msgstr "不需新的 PIN 即可連線"
 #: src/big_remote_play/ui/guest_view.py:1853
 #: src/big_remote_play/ui/guest_view.py:2219
 #: src/big_remote_play/ui/guest_view.py:2506
-#: src/big_remote_play/ui/headscale_wizard.py:1367
+#: src/big_remote_play/ui/headscale_wizard.py:1431
 #: src/big_remote_play/ui/host_view.py:2290
 #: src/big_remote_play/ui/host_view.py:2760
 #: src/big_remote_play/ui/host_view.py:3242
@@ -1724,7 +1752,7 @@ msgid ""
 "PC's display."
 msgstr "此處的變更只會影響下次連線，不會變更遊戲電腦的顯示設定。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:977
+#: src/big_remote_play/ui/headscale_wizard.py:980
 msgid "Changing the router will probably not help. A VPS is the reliable way."
 msgstr "更換路由器可能沒有幫助。使用 VPS 才是可靠的方法。"
 
@@ -1733,13 +1761,13 @@ msgctxt "check state"
 msgid "Check"
 msgstr "注意"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:618
-#: src/big_remote_play/ui/headscale_wizard.py:761
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:981
-#: src/big_remote_play/ui/headscale_wizard.py:997
-#: src/big_remote_play/ui/headscale_wizard.py:1138
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:621
+#: src/big_remote_play/ui/headscale_wizard.py:764
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:984
+#: src/big_remote_play/ui/headscale_wizard.py:1000
+#: src/big_remote_play/ui/headscale_wizard.py:1141
 #: src/big_remote_play/ui/remote_connection.py:51
 #: src/big_remote_play/ui/remote_connection.py:57
 #: src/big_remote_play/ui/support_center.py:152
@@ -1758,7 +1786,7 @@ msgstr "檢查連線"
 msgid "Check for blocked connections automatically"
 msgstr "自動檢查被阻止的連線"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Check for the other device"
 msgstr "檢查另一台裝置"
 
@@ -1767,12 +1795,12 @@ msgstr "檢查另一台裝置"
 msgid "Check logs for details."
 msgstr "檢查記錄以取得詳細資訊。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1051
-#: src/big_remote_play/ui/headscale_wizard.py:1211
+#: src/big_remote_play/ui/headscale_wizard.py:1054
+#: src/big_remote_play/ui/headscale_wizard.py:1214
 msgid "Check server"
 msgstr "檢查伺服器"
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Check that Headscale runs behind this address."
 msgstr "檢查 Headscale 是否在這個位址後方執行。"
 
@@ -1783,16 +1811,16 @@ msgid ""
 "reach each other."
 msgstr "確認遊戲電腦正在分享，而且兩台電腦可以互相存取。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "Check that this computer is connected to the internet."
 msgstr "檢查這台電腦是否已連上網際網路。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "Check that you copied all of it."
 msgstr "檢查是否已全部複製。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1402
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "Check the API key in Advanced."
 msgstr "在「進階」中檢查 API 金鑰。"
 
@@ -1806,15 +1834,15 @@ msgstr "請檢查代碼後再試一次。如果代碼正確，這個網路可能
 msgid "Check the internet connection of this computer."
 msgstr "請檢查這台電腦的網際網路連線。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "Check the name you registered."
 msgstr "檢查你註冊的名稱。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
+#: src/big_remote_play/ui/headscale_wizard.py:524
 msgid "Check the name, or register it first."
 msgstr "檢查名稱，或先註冊它。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:797
 msgid "Check the secure connection (HTTPS)"
 msgstr "檢查安全連線（HTTPS）"
 
@@ -1826,9 +1854,9 @@ msgstr "檢查這台電腦"
 msgid "Check this computer, or choose a problem to see what to try."
 msgstr "檢查這台電腦，或選擇一個問題來查看可以嘗試的方法。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "Check your internet connection and try again."
 msgstr "請檢查你的網路連線，然後再試一次。"
 
@@ -1851,7 +1879,7 @@ msgstr "分享時檢查：Sunshine 會回報是否能將指標繪製到畫面中
 msgid "Checking ZeroTier…"
 msgstr "正在檢查 ZeroTier…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:648
+#: src/big_remote_play/ui/headscale_wizard.py:651
 msgid "Checking nameservers…"
 msgstr "正在檢查名稱伺服器…"
 
@@ -1876,12 +1904,12 @@ msgstr "正在檢查網路、電腦與 Sunshine…"
 msgid "Checking the path…"
 msgstr "正在檢查路徑…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1069
+#: src/big_remote_play/ui/headscale_wizard.py:1072
 msgid "Checking the server…"
 msgstr "正在檢查伺服器…"
 
 #: src/big_remote_play/ui/dependency_installer.py:198
-#: src/big_remote_play/ui/headscale_wizard.py:852
+#: src/big_remote_play/ui/headscale_wizard.py:855
 #: src/big_remote_play/ui/provider_page.py:543
 #: src/big_remote_play/ui/remote_connection.py:49
 msgid "Checking this computer…"
@@ -1899,16 +1927,16 @@ msgstr "正在檢查哪些裝置已獲允許。"
 msgid "Checking with Sunshine…"
 msgstr "正在向 Sunshine 確認…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:511
-#: src/big_remote_play/ui/headscale_wizard.py:741
+#: src/big_remote_play/ui/headscale_wizard.py:514
+#: src/big_remote_play/ui/headscale_wizard.py:744
 msgid "Checking your domain…"
 msgstr "正在檢查你的網域…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:369
+#: src/big_remote_play/ui/headscale_wizard.py:372
 msgid "Checking your internet connection"
 msgstr "正在檢查你的網路連線"
 
-#: src/big_remote_play/ui/headscale_wizard.py:378
+#: src/big_remote_play/ui/headscale_wizard.py:381
 msgid "Checking your internet connection…"
 msgstr "正在檢查你的網路連線…"
 
@@ -1936,7 +1964,7 @@ msgstr "檢查中…"
 msgid "Checks the name, the port, HTTPS and Headscale itself."
 msgstr "檢查名稱、連接埠、HTTPS 以及 Headscale 本身。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:543
+#: src/big_remote_play/ui/headscale_wizard.py:546
 msgid ""
 "Choose Register, check the domain name you want, and read the current "
 "availability and rules shown by DigitalPlat."
@@ -1987,7 +2015,7 @@ msgstr "選擇用於視訊編碼的硬體"
 msgid "Choose installed games below."
 msgstr "請在下方選擇已安裝的遊戲。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "Choose one of the options above."
 msgstr "請從上方的選項中選擇一個。"
 
@@ -2072,7 +2100,7 @@ msgstr "要清除連線歷史記錄嗎？"
 msgid "Click and drag, for example to move a window"
 msgstr "點按並拖曳，例如移動視窗"
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Click the orange cloud in Cloudflare so it turns gray (DNS only)."
 msgstr "在 Cloudflare 中點選橘色雲朵，讓它變成灰色（DNS only）。"
 
@@ -2100,8 +2128,8 @@ msgstr "串流結束時關閉遊戲電腦上的遊戲"
 msgid "Close the stream on every device so a new device can pair"
 msgstr "關閉所有裝置上的串流，讓新裝置可以配對"
 
-#: src/big_remote_play/ui/headscale_wizard.py:479
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare"
 msgstr "Cloudflare"
 
@@ -2110,19 +2138,19 @@ msgstr "Cloudflare"
 msgid "Cloudflare DNS-only documentation"
 msgstr "Cloudflare 僅限 DNS 說明文件"
 
-#: src/big_remote_play/ui/headscale_wizard.py:655
+#: src/big_remote_play/ui/headscale_wizard.py:658
 msgid "Cloudflare is now managing your domain"
 msgstr "Cloudflare 現在正在管理你的網域"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Cloudflare will manage your domain's records. Its free plan is enough."
 msgstr "Cloudflare 會管理你網域的記錄。免費方案就夠了。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Cloudflare will show two nameservers."
 msgstr "Cloudflare 會顯示兩個名稱伺服器。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:703
+#: src/big_remote_play/ui/headscale_wizard.py:706
 msgid ""
 "Cloudflare's proxy (the orange cloud) only passes ordinary web requests. "
 "Tailscale clients keep a long-lived, upgraded HTTP connection to Headscale, "
@@ -2133,7 +2161,7 @@ msgstr ""
 "Headscale 維持一條長時間、已升級的 HTTP 連線，Proxy 和 Cloudflare Tunnel 無法"
 "穩定地傳遞這種連線。使用 DNS only 時，名稱會直接指向你的伺服器。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:769
+#: src/big_remote_play/ui/headscale_wizard.py:772
 msgid "Cloudflare's proxy is on for this record."
 msgstr "這筆記錄已開啟 Cloudflare 的 Proxy。"
 
@@ -2153,7 +2181,7 @@ msgstr "編解碼器、HDR、資料限制與連線警告"
 msgid "Codecs, network, capture and recovery tools"
 msgstr "編解碼器、網路、擷取與復原工具"
 
-#: src/big_remote_play/ui/headscale_wizard.py:994
+#: src/big_remote_play/ui/headscale_wizard.py:997
 msgid "Come back and check again"
 msgstr "稍後回來再檢查"
 
@@ -2168,12 +2196,12 @@ msgstr ""
 
 # File: big-remote-play/usr/share/big-remote-play/ui/host_view.py, line: 186
 #: src/big_remote_play/ui/game_library_dialog.py:386
-#: src/big_remote_play/ui/headscale_wizard.py:1180
-#: src/big_remote_play/ui/headscale_wizard.py:1185
-#: src/big_remote_play/ui/headscale_wizard.py:1187
-#: src/big_remote_play/ui/headscale_wizard.py:1191
-#: src/big_remote_play/ui/headscale_wizard.py:1196
-#: src/big_remote_play/ui/headscale_wizard.py:1201
+#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1188
+#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1204
 #: src/big_remote_play/ui/host_view.py:586
 #: src/big_remote_play/ui/network_devices.py:733
 #: src/big_remote_play/ui/network_devices.py:764
@@ -2181,9 +2209,9 @@ msgstr ""
 msgid "Command"
 msgstr "命令"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1435
-msgid "Command for the server owner"
-msgstr "給伺服器擁有者的指令"
+#: src/big_remote_play/ui/headscale_wizard.py:1276
+msgid "Command for the server"
+msgstr "在伺服器上執行的指令"
 
 #: src/big_remote_play/ui/support_center.py:168
 msgid "Common problems"
@@ -2282,7 +2310,7 @@ msgstr "設定"
 msgid "Configure Firewall (IPv6)"
 msgstr "設定防火牆（IPv6）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:792
+#: src/big_remote_play/ui/headscale_wizard.py:795
 msgid "Configure and start the server"
 msgstr "設定並啟動伺服器"
 
@@ -2584,7 +2612,7 @@ msgstr "連線品質"
 msgid "Connection quality: {quality}"
 msgstr "連線品質：{quality}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
+#: src/big_remote_play/ui/headscale_wizard.py:88
 #, python-brace-format
 msgid "Connection refused on port {port}."
 msgstr "連接埠 {port} 上的連線遭到拒絕。"
@@ -2632,15 +2660,15 @@ msgstr "正在聯繫服務…"
 #: src/big_remote_play/ui/guided_setup.py:169
 #: src/big_remote_play/ui/guided_setup.py:257
 #: src/big_remote_play/ui/guided_setup.py:309
-#: src/big_remote_play/ui/headscale_wizard.py:497
+#: src/big_remote_play/ui/headscale_wizard.py:500
 msgid "Continue"
 msgstr "繼續"
 
-#: src/big_remote_play/ui/headscale_wizard.py:402
+#: src/big_remote_play/ui/headscale_wizard.py:405
 msgid "Continue anyway"
 msgstr "仍要繼續"
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
+#: src/big_remote_play/ui/headscale_wizard.py:304
 #: src/big_remote_play/ui/provider_page.py:1151
 #: src/big_remote_play/ui/remote_connection.py:534
 msgid "Continue setup"
@@ -2730,7 +2758,7 @@ msgstr "複製 IP"
 msgid "Copy Path"
 msgstr "複製路徑"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1450
+#: src/big_remote_play/ui/headscale_wizard.py:1519
 #: src/big_remote_play/ui/network_devices.py:269
 msgid "Copy address"
 msgstr "複製位址"
@@ -2771,11 +2799,11 @@ msgstr "複製 {name} 的私人位址"
 msgid "Copy the {field} value to the clipboard"
 msgstr "將 {field} 的值複製到剪貼簿"
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid "Copy these two Cloudflare nameservers to DigitalPlat."
 msgstr "將這兩個 Cloudflare 名稱伺服器複製到 DigitalPlat。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:607
+#: src/big_remote_play/ui/headscale_wizard.py:610
 msgid ""
 "Copy these two Cloudflare nameservers to the company where you registered "
 "your domain."
@@ -2917,7 +2945,7 @@ msgstr "免費註冊帳號或登入。只有網路的擁有者需要這麼做。
 msgid "Create a network"
 msgstr "建立網路"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1461
+#: src/big_remote_play/ui/headscale_wizard.py:1530
 msgid "Create a one-time key"
 msgstr "建立一次性金鑰"
 
@@ -2937,7 +2965,7 @@ msgstr "建立網路"
 msgid "Create one-time key"
 msgstr "建立一次性金鑰"
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
+#: src/big_remote_play/ui/headscale_wizard.py:544
 msgid "Create or sign in to your DigitalPlat account."
 msgstr "建立或登入你的 DigitalPlat 帳號。"
 
@@ -2945,11 +2973,11 @@ msgstr "建立或登入你的 DigitalPlat 帳號。"
 msgid "Create the API key on the server"
 msgstr "在伺服器上建立 API 金鑰"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1199
+#: src/big_remote_play/ui/headscale_wizard.py:1202
 msgid "Create your network and an API key"
 msgstr "建立你的網路和 API 金鑰"
 
-#: src/big_remote_play/ui/headscale_wizard.py:795
+#: src/big_remote_play/ui/headscale_wizard.py:798
 msgid "Create your private network"
 msgstr "建立你的私人網路"
 
@@ -3052,16 +3080,16 @@ msgstr "自訂解析度"
 msgid "Custom image settings"
 msgstr "自訂影像設定"
 
-#: src/big_remote_play/ui/headscale_wizard.py:71
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:74
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "DNS"
 msgstr "DNS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "DNS is where your domain's records live."
 msgstr "DNS 是存放你網域記錄的地方。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "DNS only — the cloud must be gray."
 msgstr "DNS only — 雲朵必須是灰色的。"
 
@@ -3139,8 +3167,8 @@ msgstr "詳情"
 msgid "Details and a sound test are in Preferences."
 msgstr "詳細資訊和聲音測試位於「偏好設定」中。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:398
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Detected automatically"
 msgstr "自動偵測"
 
@@ -3224,7 +3252,7 @@ msgstr "診斷"
 msgid "Diagnosis"
 msgstr "診斷結果"
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Did not work"
 msgstr "沒有成功"
 
@@ -3232,12 +3260,12 @@ msgstr "沒有成功"
 msgid "Did you receive a network code?"
 msgstr "你收到網路代碼了嗎？"
 
-#: src/big_remote_play/ui/headscale_wizard.py:553
+#: src/big_remote_play/ui/headscale_wizard.py:556
 msgid ""
 "DigitalPlat can provide domains that can be delegated to a DNS provider."
 msgstr "DigitalPlat 可以提供能委派給 DNS 供應商的網域。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:547
+#: src/big_remote_play/ui/headscale_wizard.py:550
 msgid ""
 "DigitalPlat needs the nameservers from your DNS provider. Cloudflare is "
 "free; Big Remote Play guides you."
@@ -3326,7 +3354,7 @@ msgstr "顯示模式"
 msgid "Displays latency, frame rate, and decoding information over the stream."
 msgstr "在串流畫面上顯示延遲、影格率與解碼資訊。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:467
+#: src/big_remote_play/ui/headscale_wizard.py:470
 msgid "Do you already have a domain?"
 msgstr "你已經有網域了嗎？"
 
@@ -3337,20 +3365,20 @@ msgstr "要還原預設設定嗎？"
 
 # File: big-remote-play/usr/share/big-remote-play/ui/private_network_view.py,
 # line: 1137
-#: src/big_remote_play/ui/headscale_wizard.py:70
-#: src/big_remote_play/ui/headscale_wizard.py:466
-#: src/big_remote_play/ui/headscale_wizard.py:490
-#: src/big_remote_play/ui/headscale_wizard.py:682
+#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:493
+#: src/big_remote_play/ui/headscale_wizard.py:685
 #: src/big_remote_play/ui/private_network_view.py:972
 #: src/big_remote_play/ui/private_network_view.py:1007
 msgid "Domain"
 msgstr "網域"
 
-#: src/big_remote_play/ui/headscale_wizard.py:757
+#: src/big_remote_play/ui/headscale_wizard.py:760
 msgid "Domain is ready"
 msgstr "網域已準備就緒"
 
-#: src/big_remote_play/ui/headscale_wizard.py:475
+#: src/big_remote_play/ui/headscale_wizard.py:478
 msgid "Domain or subdomain"
 msgstr "網域或子網域"
 
@@ -3358,8 +3386,8 @@ msgstr "網域或子網域"
 msgid "Domain, router ports and security precautions."
 msgstr "網域、路由器連接埠與安全注意事項。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:898
 #: src/big_remote_play/ui/network_devices.py:727
 msgid "Done"
 msgstr "完成"
@@ -3370,7 +3398,7 @@ msgid ""
 "computer."
 msgstr "從官方網站下載，或在那台電腦上使用 Big Remote Play。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1184
+#: src/big_remote_play/ui/headscale_wizard.py:1187
 msgid ""
 "Download the .deb for your server from Headscale's releases page, then "
 "install it and Caddy."
@@ -3397,7 +3425,7 @@ msgid ""
 "Each finger touches this computer's screen, where the desktop accepts touch."
 msgstr "每根手指都會觸碰這台電腦的螢幕（需桌面支援觸控）。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Easier and safer. Example: headscale.example.com"
 msgstr "更簡單、更安全。例如：headscale.example.com"
 
@@ -3764,17 +3792,17 @@ msgstr "一切就緒"
 msgid "Evict IP"
 msgstr "中斷 IP"
 
-#: src/big_remote_play/ui/headscale_wizard.py:478
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:481
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "Example: headscale.example.com"
 msgstr "例如：headscale.example.com"
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
-#: src/big_remote_play/ui/headscale_wizard.py:1050
+#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:1053
 msgid "Example: headscale.example.com or 203.0.113.10"
 msgstr "例如：headscale.example.com 或 203.0.113.10"
 
-#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:547
 msgid "Example: mydomain.dpdns.org"
 msgstr "例如：mydomain.dpdns.org"
 
@@ -3892,7 +3920,7 @@ msgid ""
 "becomes a mouse click."
 msgstr "手指按下螢幕控制器的按鈕，可同時按多個。不會變成滑鼠點按。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1480
+#: src/big_remote_play/ui/headscale_wizard.py:1549
 msgid "Finish"
 msgstr "完成"
 
@@ -3929,7 +3957,7 @@ msgstr "修復"
 msgid "Fix Dependencies"
 msgstr "修復相依套件"
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 #, python-brace-format
 msgid "Fix it or delete it: {found}"
 msgstr "請修正或刪除它：{found}"
@@ -4149,8 +4177,8 @@ msgstr "一般"
 msgid "Get Network ID"
 msgstr "取得網路 ID"
 
-#: src/big_remote_play/ui/headscale_wizard.py:557
-#: src/big_remote_play/ui/headscale_wizard.py:558
+#: src/big_remote_play/ui/headscale_wizard.py:560
+#: src/big_remote_play/ui/headscale_wizard.py:561
 msgid "Get a domain"
 msgstr "取得網域"
 
@@ -4216,7 +4244,7 @@ msgid_plural ""
 "them."
 msgstr[0] "你停止使用滑鼠和鍵盤 {count} 秒後，訪客會重新取得控制權。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1137
+#: src/big_remote_play/ui/headscale_wizard.py:1140
 msgid "Guided server setup"
 msgstr "引導式伺服器設定"
 
@@ -4253,8 +4281,8 @@ msgstr "支援時使用 HEVC 或 AV1"
 msgid "HTTPS (Caddy)"
 msgstr "HTTPS（Caddy）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
-#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:92
 msgid "HTTPS is not set up correctly for this address."
 msgstr "這個位址的 HTTPS 沒有正確設定。"
 
@@ -4263,7 +4291,7 @@ msgstr "這個位址的 HTTPS 沒有正確設定。"
 msgid "Hardware and Capture"
 msgstr "硬體與擷取"
 
-#: src/big_remote_play/ui/headscale_wizard.py:73
+#: src/big_remote_play/ui/headscale_wizard.py:76
 msgid "Headscale"
 msgstr "Headscale"
 
@@ -4275,11 +4303,11 @@ msgstr "Headscale API 金鑰"
 msgid "Headscale and Caddy must be installed first."
 msgstr "必須先安裝 Headscale 和 Caddy。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1101
+#: src/big_remote_play/ui/headscale_wizard.py:1104
 msgid "Headscale answers"
 msgstr "Headscale 有回應"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "Headscale did not start."
 msgstr "Headscale 沒有啟動。"
 
@@ -4291,7 +4319,7 @@ msgstr "Headscale 沒有啟動。請在「進階」中查看它的記錄。"
 msgid "Headscale documentation"
 msgstr "Headscale 說明文件"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 msgid "Headscale gives you your own private network server."
 msgstr "Headscale 讓你擁有自己的私人網路伺服器。"
 
@@ -4305,17 +4333,17 @@ msgstr ""
 "Headscale 是私人網路的自行託管控制伺服器。其網域指向控制伺服器，而非遊戲串"
 "流。若要不使用 VPN 直接存取遊戲，請使用「連接你的裝置」頁面上的另一份指南。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Headscale may work better on a VPS."
 msgstr "Headscale 在 VPS 上可能運作得更好。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid ""
 "Headscale needs a direct connection to your server. Do not use Cloudflare "
 "Tunnel for it either."
 msgstr "Headscale 需要直接連線到你的伺服器。也不要為它使用 Cloudflare Tunnel。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Headscale on this computer has its own settings."
 msgstr "這台電腦上的 Headscale 有自己的設定。"
 
@@ -4326,7 +4354,7 @@ msgid ""
 "changed."
 msgstr "這台電腦上的 Headscale 已經為 ${current} 設定好。沒有做任何變更。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
+#: src/big_remote_play/ui/headscale_wizard.py:952
 msgid "Headscale on this computer is already set up for another address."
 msgstr "這台電腦上的 Headscale 已經為另一個位址設定好。"
 
@@ -4335,7 +4363,7 @@ msgid ""
 "Headscale on this computer uses a custom listen address. Nothing was changed."
 msgstr "這台電腦上的 Headscale 使用自訂的監聽位址。沒有做任何變更。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Headscale or Caddy is not installed."
 msgstr "尚未安裝 Headscale 或 Caddy。"
 
@@ -4343,7 +4371,7 @@ msgstr "尚未安裝 Headscale 或 Caddy。"
 msgid "Headscale server"
 msgstr "Headscale 伺服器"
 
-#: src/big_remote_play/ui/headscale_wizard.py:276
+#: src/big_remote_play/ui/headscale_wizard.py:279
 msgid "Headscale setup"
 msgstr "Headscale 設定"
 
@@ -4351,7 +4379,7 @@ msgstr "Headscale 設定"
 msgid "Headscale uses the regular Tailscale client."
 msgstr "Headscale 使用一般的 Tailscale 用戶端。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1118
+#: src/big_remote_play/ui/headscale_wizard.py:1121
 #: src/big_remote_play/ui/provider_page.py:1197
 #, python-brace-format
 msgid "Headscale {version}"
@@ -4371,11 +4399,11 @@ msgstr "說明"
 msgid "Help and diagnostics"
 msgstr "說明與診斷"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
+#: src/big_remote_play/ui/headscale_wizard.py:473
 msgid "Help me get one"
 msgstr "幫我取得一個"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "Hidden. Use Copy."
 msgstr "已隱藏。請使用「複製」。"
@@ -4493,7 +4521,7 @@ msgstr "主機輸入優先"
 msgid "Host input priority is not working"
 msgstr "主機輸入優先未生效"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1248
+#: src/big_remote_play/ui/headscale_wizard.py:1271
 msgid "How do you want to add this computer?"
 msgstr "你想如何新增這台電腦？"
 
@@ -4515,7 +4543,7 @@ msgid ""
 "down the stream"
 msgstr "關閉串流前等待 Moonlight 資料的時間（毫秒）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:446
+#: src/big_remote_play/ui/headscale_wizard.py:449
 msgid "How should your Headscale server be reached?"
 msgstr "要如何連線到你的 Headscale 伺服器？"
 
@@ -4539,11 +4567,11 @@ msgstr "一步步教你在自己的伺服器上執行 Headscale。"
 msgid "How to use the selected private network service."
 msgstr "如何使用所選的私人網路服務。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:721
+#: src/big_remote_play/ui/headscale_wizard.py:724
 msgid "I added the record"
 msgstr "我已新增記錄"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
+#: src/big_remote_play/ui/headscale_wizard.py:472
 msgid "I already own a domain"
 msgstr "我已經有網域"
 
@@ -4568,10 +4596,6 @@ msgstr "我還沒有伺服器"
 msgid "I forgot the current password"
 msgstr "我忘記目前的密碼"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1257
-msgid "I have a key from the server owner"
-msgstr "我有伺服器擁有者給的金鑰"
-
 #: src/big_remote_play/ui/guest_view.py:617
 msgid "I have a search code"
 msgstr "我有搜尋代碼"
@@ -4579,10 +4603,6 @@ msgstr "我有搜尋代碼"
 #: src/big_remote_play/ui/guest_view.py:611
 msgid "I know the IP address"
 msgstr "我知道 IP 位址"
-
-#: src/big_remote_play/ui/headscale_wizard.py:1251
-msgid "I manage this server"
-msgstr "我管理這台伺服器"
 
 #: src/big_remote_play/ui/guided_setup.py:125
 msgid "I will play using another computer."
@@ -4604,7 +4624,7 @@ msgstr "要繫結服務的 IP 位址"
 msgid "IP address: {address}"
 msgstr "IP 位址：{address}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:689
+#: src/big_remote_play/ui/headscale_wizard.py:692
 msgid "IPv4 address"
 msgstr "IPv4 位址"
 
@@ -4620,7 +4640,7 @@ msgstr "僅 IPv4"
 msgid "IPv6"
 msgstr "IPv6"
 
-#: src/big_remote_play/ui/headscale_wizard.py:716
+#: src/big_remote_play/ui/headscale_wizard.py:719
 msgid "IPv6 address"
 msgstr "IPv6 位址"
 
@@ -4668,7 +4688,7 @@ msgstr ""
 "如果指標能移動東西卻看不見，表示螢幕擷取沒有繪製它。「檢查這台電腦」會顯示其"
 "他擷取方法能否繪製它。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "If you just set up the domain, wait a little and check again."
 msgstr "如果你剛設定好網域，請稍等一下再檢查。"
 
@@ -4723,7 +4743,7 @@ msgid ""
 "In Big Remote Play, open Connect your devices → ZeroTier and type this code."
 msgstr "在 Big Remote Play 中開啟「連接你的裝置」→ ZeroTier，然後輸入此代碼。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:695
+#: src/big_remote_play/ui/headscale_wizard.py:698
 msgid "In Cloudflare: DNS → Records → Add record."
 msgstr "在 Cloudflare 中：DNS → Records → Add record。"
 
@@ -4847,13 +4867,13 @@ msgstr "安裝"
 msgid "Install Big WM Virtual Keyboard (package {package})"
 msgstr "請安裝 Big WM Virtual Keyboard（套件 {package}）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:822
-#: src/big_remote_play/ui/headscale_wizard.py:823
+#: src/big_remote_play/ui/headscale_wizard.py:825
+#: src/big_remote_play/ui/headscale_wizard.py:826
 msgid "Install Headscale"
 msgstr "安裝 Headscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:791
-#: src/big_remote_play/ui/headscale_wizard.py:1178
+#: src/big_remote_play/ui/headscale_wizard.py:794
+#: src/big_remote_play/ui/headscale_wizard.py:1181
 msgid "Install Headscale and Caddy"
 msgstr "安裝 Headscale 和 Caddy"
 
@@ -4866,7 +4886,7 @@ msgstr "安裝 Tailscale"
 msgid "Install ZeroTier"
 msgstr "安裝 ZeroTier"
 
-#: src/big_remote_play/ui/headscale_wizard.py:801
+#: src/big_remote_play/ui/headscale_wizard.py:804
 #: src/big_remote_play/ui/private_network_view.py:475
 #: src/big_remote_play/ui/provider_page.py:582
 msgid "Install and continue"
@@ -4876,7 +4896,7 @@ msgstr "安裝並繼續"
 msgid "Install it first, then join the network."
 msgstr "請先安裝，然後加入網路。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:948
+#: src/big_remote_play/ui/headscale_wizard.py:951
 msgid "Install them above first."
 msgstr "請先在上方安裝它們。"
 
@@ -5007,13 +5027,13 @@ msgstr "已建立邀請"
 msgid "Invitation link"
 msgstr "邀請連結"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1458
+#: src/big_remote_play/ui/headscale_wizard.py:1527
 msgid ""
 "It adds one computer and stops working after one hour. It is not an "
 "administrator key."
 msgstr "它只能新增一台電腦，並在一小時後失效。它不是管理員金鑰。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:809
+#: src/big_remote_play/ui/headscale_wizard.py:812
 msgid ""
 "It also allows ports 80 and 443 in this computer's firewall, when a firewall "
 "is active."
@@ -5027,7 +5047,7 @@ msgstr ""
 "它在網路上有回應，但 Sunshine 的連接埠沒有回應。請在遊戲電腦上開啟「分享」並"
 "選擇「在防火牆中允許」。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 msgid "It appears here once it joins."
 msgstr "加入後就會顯示在這裡。"
 
@@ -5041,7 +5061,7 @@ msgstr "在 Flatpak 沙箱內無法看到其他應用程式的視窗。請使用
 msgid "It could not start. Stop and start sharing again."
 msgstr "無法啟動。請停止分享後再重新開始。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 msgid "It is shown only now and is not stored."
 msgstr "它只會在現在顯示，不會儲存。"
 
@@ -5084,7 +5104,7 @@ msgstr ""
 "需要 Sunshine {version} 或更新版本，才能擷取遊戲專用畫面。請更新 Sunshine，然"
 "後重新開啟 Big Remote Play。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 #, python-brace-format
 msgid "It points to {found}, not {expected}."
 msgstr "它指向 {found}，而不是 {expected}。"
@@ -5194,7 +5214,7 @@ msgstr "KDE 螢幕擷取（KWin）"
 msgid "KMS (Direct)"
 msgstr "KMS（直接）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:698
+#: src/big_remote_play/ui/headscale_wizard.py:701
 msgid "Keep Proxy status = DNS only"
 msgstr "保持 Proxy status = DNS only"
 
@@ -5229,7 +5249,7 @@ msgid ""
 "starts again."
 msgstr "使用 VPN 時請關閉路由器連接埠轉送。變更會在重新開始分享時套用。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1200
+#: src/big_remote_play/ui/headscale_wizard.py:1203
 msgid ""
 "Keep the API key: Big Remote Play asks for it in the next step. It manages "
 "the server; never give it to a guest."
@@ -5269,12 +5289,12 @@ msgid ""
 "it."
 msgstr "只保留到關閉 Big Remote Play 為止：系統鑰匙圈沒有儲存它。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1509
+#: src/big_remote_play/ui/headscale_wizard.py:1578
 #: src/big_remote_play/ui/network_devices.py:761
 msgid "Key created"
 msgstr "已建立金鑰"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1243
+#: src/big_remote_play/ui/headscale_wizard.py:1248
 msgid "Key for this computer"
 msgstr "這台電腦的金鑰"
 
@@ -5903,13 +5923,13 @@ msgid "NVIDIA NVENC"
 msgstr "NVIDIA NVENC"
 
 #: src/big_remote_play/ui/game_library_dialog.py:385
-#: src/big_remote_play/ui/headscale_wizard.py:688
-#: src/big_remote_play/ui/headscale_wizard.py:715
+#: src/big_remote_play/ui/headscale_wizard.py:691
+#: src/big_remote_play/ui/headscale_wizard.py:718
 #: src/big_remote_play/ui/provider_page.py:814
 msgid "Name"
 msgstr "名稱"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1098
+#: src/big_remote_play/ui/headscale_wizard.py:1101
 msgid "Name found"
 msgstr "已找到名稱"
 
@@ -5921,7 +5941,7 @@ msgstr "網路上的名稱"
 msgid "Name shown in Big Remote Play"
 msgstr "在 Big Remote Play 中顯示的名稱"
 
-#: src/big_remote_play/ui/headscale_wizard.py:630
+#: src/big_remote_play/ui/headscale_wizard.py:633
 msgid "Nameserver"
 msgstr "名稱伺服器"
 
@@ -6076,24 +6096,24 @@ msgstr ""
 msgid "New passwords do not match."
 msgstr "兩次輸入的新密碼不相符。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:404
-#: src/big_remote_play/ui/headscale_wizard.py:656
-#: src/big_remote_play/ui/headscale_wizard.py:758
-#: src/big_remote_play/ui/headscale_wizard.py:1033
-#: src/big_remote_play/ui/headscale_wizard.py:1130
-#: src/big_remote_play/ui/headscale_wizard.py:1405
-#: src/big_remote_play/ui/headscale_wizard.py:1560
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:407
+#: src/big_remote_play/ui/headscale_wizard.py:659
+#: src/big_remote_play/ui/headscale_wizard.py:761
+#: src/big_remote_play/ui/headscale_wizard.py:1036
+#: src/big_remote_play/ui/headscale_wizard.py:1133
+#: src/big_remote_play/ui/headscale_wizard.py:1469
+#: src/big_remote_play/ui/headscale_wizard.py:1629
 msgid "Next"
 msgstr "下一步"
 
-#: src/big_remote_play/ui/headscale_wizard.py:470
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:473
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/host_view.py:4055
 msgid "No"
 msgstr "否"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1316
+#: src/big_remote_play/ui/headscale_wizard.py:1394
 msgid "No API key for this server yet."
 msgstr "這台伺服器還沒有 API 金鑰。"
 
@@ -6115,11 +6135,11 @@ msgstr "找不到帳號"
 msgid "No active connection found"
 msgstr "找不到作用中的連線"
 
-#: src/big_remote_play/ui/headscale_wizard.py:411
+#: src/big_remote_play/ui/headscale_wizard.py:414
 msgid "No answer from the address services."
 msgstr "位址查詢服務沒有回應。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:86
+#: src/big_remote_play/ui/headscale_wizard.py:89
 #, python-brace-format
 msgid "No answer on port {port}. A firewall or the router may block it."
 msgstr "連接埠 {port} 沒有回應。可能被防火牆或路由器封鎖了。"
@@ -6176,7 +6196,7 @@ msgid "No controller has arrived from the other computer"
 msgstr "尚未收到來自另一台電腦的控制器"
 
 #: src/big_remote_play/ui/guest_view.py:2088
-#: src/big_remote_play/ui/headscale_wizard.py:425
+#: src/big_remote_play/ui/headscale_wizard.py:428
 #: src/big_remote_play/ui/provider_page.py:1057
 #: src/big_remote_play/ui/provider_page.py:1203
 msgid "No details reported."
@@ -6274,7 +6294,7 @@ msgstr "還沒有人在遊玩"
 msgid "No other device online to measure"
 msgstr "沒有其他上線的裝置可供測量"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1522
+#: src/big_remote_play/ui/headscale_wizard.py:1591
 #: src/big_remote_play/ui/network_devices.py:223
 #: src/big_remote_play/ui/provider_page.py:651
 #: src/big_remote_play/ui/provider_page.py:669
@@ -6388,7 +6408,7 @@ msgid "Not available"
 msgstr "無法使用"
 
 #: src/big_remote_play/ui/guest_view.py:2066
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 msgid "Not checked"
 msgstr "未檢查"
 
@@ -6493,9 +6513,9 @@ msgstr ""
 msgid "Not signed in"
 msgstr "未登入"
 
-#: src/big_remote_play/ui/headscale_wizard.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:797
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:283
+#: src/big_remote_play/ui/headscale_wizard.py:800
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Not yet"
 msgstr "還沒"
 
@@ -6503,21 +6523,21 @@ msgstr "還沒"
 msgid "Nothing to install."
 msgstr "沒有需要安裝的項目。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:951
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:954
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "Nothing was changed."
 msgstr "沒有做任何變更。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "Nothing was changed. Choose Set up the server to try again."
 msgstr "沒有做任何變更。選擇「設定伺服器」即可再試一次。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:949
-#: src/big_remote_play/ui/headscale_wizard.py:950
+#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:953
 msgid "Nothing was changed. See Advanced on the Headscale page."
 msgstr "沒有做任何變更。請查看 Headscale 頁面上的「進階」。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "Nothing was enabled. See the technical details."
 msgstr "沒有啟用任何項目。請查看技術細節。"
 
@@ -6584,7 +6604,7 @@ msgstr "離線"
 msgid "Old log files have been removed."
 msgstr "舊的記錄檔已移除。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1179
+#: src/big_remote_play/ui/headscale_wizard.py:1182
 msgid "On Arch Linux:"
 msgstr "在 Arch Linux 上："
 
@@ -6598,7 +6618,7 @@ msgstr "在 KDE Plasma 上只分享遊戲視窗，桌面的其餘部分保持私
 msgid "On a computer, a phone or a controller"
 msgstr "在電腦、手機或控制器上"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1190
+#: src/big_remote_play/ui/headscale_wizard.py:1193
 msgid "On a new server this replaces Caddy's example page."
 msgstr "在新的伺服器上，這會取代 Caddy 的範例頁面。"
 
@@ -6631,7 +6651,7 @@ msgstr ""
 "\n"
 "請保持此視窗開啟。核准後會繼續連線。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1443
+#: src/big_remote_play/ui/headscale_wizard.py:1512
 #: src/big_remote_play/ui/network_devices.py:536
 #: src/big_remote_play/ui/network_devices.py:723
 #: src/big_remote_play/ui/network_devices.py:780
@@ -6687,6 +6707,14 @@ msgstr ""
 "在伺服器上建立使用者和 API 金鑰（「headscale apikeys create --expiration "
 "90d」）。在 Big Remote Play 的「API 存取」中新增伺服器位址與金鑰。API 金鑰用"
 "來管理伺服器；預先認證金鑰只會註冊一台電腦。"
+
+#: src/big_remote_play/ui/headscale_wizard.py:1275
+msgid ""
+"On the server, run this command and paste the key it prints. Big Remote Play "
+"then does the rest and remembers the key."
+msgstr ""
+"在伺服器上執行這個指令，並貼上它輸出的金鑰。剩下的交給 Big Remote Play，它也"
+"會記住這個金鑰。"
 
 #: src/big_remote_play/ui/guest_view.py:633
 msgid "On this computer"
@@ -6770,7 +6798,7 @@ msgstr "一次只用一個控制器"
 msgid "One entry per screen"
 msgstr "每個螢幕一個項目"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1508
+#: src/big_remote_play/ui/headscale_wizard.py:1577
 #: src/big_remote_play/ui/network_devices.py:763
 msgid "One-time key"
 msgstr "一次性金鑰"
@@ -6809,7 +6837,7 @@ msgid ""
 msgstr ""
 "只保存在這台電腦上。不會傳送到任何地方，也不會儲存任何密碼、金鑰或代碼。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1364
+#: src/big_remote_play/ui/headscale_wizard.py:1428
 msgid ""
 "Only one Tailscale-based network can be active on this computer at a time. "
 "Tailscale stays saved and can be turned on again later. ZeroTier is not "
@@ -6888,8 +6916,8 @@ msgstr "開啟"
 msgid "Open Check this computer first to see the current state here."
 msgstr "請先開啟「檢查這台電腦」，查看這裡目前的狀態。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:614
-#: src/big_remote_play/ui/headscale_wizard.py:723
+#: src/big_remote_play/ui/headscale_wizard.py:617
+#: src/big_remote_play/ui/headscale_wizard.py:726
 msgid "Open Cloudflare"
 msgstr "開啟 Cloudflare"
 
@@ -6904,12 +6932,12 @@ msgstr ""
 "每台電腦。電腦之間能透過私人網路互相連線後，在遊戲電腦上開始分享，並使用它的"
 "私人位址連線。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:541
-#: src/big_remote_play/ui/headscale_wizard.py:610
+#: src/big_remote_play/ui/headscale_wizard.py:544
+#: src/big_remote_play/ui/headscale_wizard.py:613
 msgid "Open DigitalPlat"
 msgstr "開啟 DigitalPlat"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1210
+#: src/big_remote_play/ui/headscale_wizard.py:1213
 msgid "Open Headscale releases"
 msgstr "開啟 Headscale 發行頁面"
 
@@ -7000,7 +7028,7 @@ msgstr "開啟此頁面即可檢查"
 msgid "Open when a device starts playing"
 msgstr "裝置開始遊玩時開啟"
 
-#: src/big_remote_play/ui/headscale_wizard.py:989
+#: src/big_remote_play/ui/headscale_wizard.py:992
 msgid "Open your router's settings page"
 msgstr "開啟路由器的設定頁面"
 
@@ -7038,7 +7066,7 @@ msgstr "操作失敗：{error}"
 msgid "Optimize the mouse for remote desktop"
 msgstr "針對遠端桌面最佳化滑鼠"
 
-#: src/big_remote_play/ui/headscale_wizard.py:712
+#: src/big_remote_play/ui/headscale_wizard.py:715
 msgid "Optional: IPv6"
 msgstr "選用：IPv6"
 
@@ -7046,7 +7074,7 @@ msgstr "選用：IPv6"
 msgid "Or choose what you want to do"
 msgstr "或選擇您想做的事"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1183
+#: src/big_remote_play/ui/headscale_wizard.py:1186
 msgid "Or on Debian and Ubuntu"
 msgstr "或在 Debian 和 Ubuntu 上"
 
@@ -7054,11 +7082,11 @@ msgstr "或在 Debian 和 Ubuntu 上"
 msgid "Or reset it if it was forgotten"
 msgstr "如果忘記了，也可以重設"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1445
+#: src/big_remote_play/ui/headscale_wizard.py:1514
 msgid "Or the Tailscale app on a phone."
 msgstr "或手機上的 Tailscale 應用程式。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:480
+#: src/big_remote_play/ui/headscale_wizard.py:483
 msgid "Other"
 msgstr "其他"
 
@@ -7228,14 +7256,7 @@ msgstr "請先貼上憑證。"
 msgid "Paste the server address and the key in the fields on this page."
 msgstr "將伺服器位址和金鑰貼到此頁面的欄位中。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1252
-msgid ""
-"Paste the server's API key. Big Remote Play then does the rest. It is kept "
-"in the system keyring."
-msgstr ""
-"貼上伺服器的 API 金鑰。剩下的交給 Big Remote Play。它會保存在系統鑰匙圈中。"
-
-#: src/big_remote_play/ui/headscale_wizard.py:603
+#: src/big_remote_play/ui/headscale_wizard.py:606
 msgid "Paste the two nameservers (optional)"
 msgstr "貼上兩個名稱伺服器（選用）"
 
@@ -7243,7 +7264,7 @@ msgstr "貼上兩個名稱伺服器（選用）"
 msgid "Paste the whole sign-in link shown on the other computer."
 msgstr "貼上另一台電腦上顯示的完整登入連結。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:616
+#: src/big_remote_play/ui/headscale_wizard.py:619
 msgid "Pasting them lets Big Remote Play follow your progress."
 msgstr "貼上後，Big Remote Play 就能追蹤你的進度。"
 
@@ -7373,7 +7394,7 @@ msgstr "正在 {name} 上遊玩"
 msgid "Plays a short tone and checks that it reaches the shared sound."
 msgstr "播放簡短的測試音，並檢查它是否進入分享的聲音。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Point a domain to it"
 msgstr "讓網域指向它"
 
@@ -7395,11 +7416,11 @@ msgid ""
 "play."
 msgstr "用手機相機掃描 QR 碼，即可在玩遊戲時用手機查看本指南。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:725
+#: src/big_remote_play/ui/headscale_wizard.py:728
 msgid "Point your domain to the server"
 msgstr "讓你的網域指向伺服器"
 
-#: src/big_remote_play/ui/headscale_wizard.py:683
+#: src/big_remote_play/ui/headscale_wizard.py:686
 msgid "Points to"
 msgstr "指向"
 
@@ -7424,7 +7445,7 @@ msgstr "連接埠轉送（進階）"
 msgid "Portal (screen picker)"
 msgstr "入口網站（螢幕選擇器）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:993
+#: src/big_remote_play/ui/headscale_wizard.py:996
 #, python-brace-format
 msgid "Ports 80 and 443 (TCP) → {address}"
 msgstr "連接埠 80 和 443（TCP）→ {address}"
@@ -7542,11 +7563,11 @@ msgstr "專案故事"
 msgid "Project story on YouTube"
 msgstr "YouTube 上的專案故事"
 
-#: src/big_remote_play/ui/headscale_wizard.py:692
+#: src/big_remote_play/ui/headscale_wizard.py:695
 msgid "Proxy status"
 msgstr "Proxy status"
 
-#: src/big_remote_play/ui/headscale_wizard.py:397
+#: src/big_remote_play/ui/headscale_wizard.py:400
 msgid "Public IPv6"
 msgstr "公開 IPv6"
 
@@ -7720,8 +7741,8 @@ msgstr "從另一台電腦接收遊戲。"
 
 #. TRANSLATORS: shown next to Tailscale: the method suggested for most people.
 #: src/big_remote_play/ui/guided_setup.py:280
-#: src/big_remote_play/ui/headscale_wizard.py:305
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:308
+#: src/big_remote_play/ui/headscale_wizard.py:451
 #: src/big_remote_play/ui/provider_page.py:60
 msgid "Recommended"
 msgstr "推薦"
@@ -7742,7 +7763,7 @@ msgid ""
 "computer only."
 msgstr "建議與朋友一起玩時使用。您的朋友只能存取這台電腦。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1176
+#: src/big_remote_play/ui/headscale_wizard.py:1179
 msgid "Recommended. Big Remote Play can guide you."
 msgstr "推薦。Big Remote Play 可以引導你。"
 
@@ -8323,8 +8344,8 @@ msgstr[0] "正在搜尋… 已檢查 {asked}/{total} 個位址"
 msgid "Secure connection"
 msgstr "安全連線"
 
-#: src/big_remote_play/ui/headscale_wizard.py:72
-#: src/big_remote_play/ui/headscale_wizard.py:1100
+#: src/big_remote_play/ui/headscale_wizard.py:75
+#: src/big_remote_play/ui/headscale_wizard.py:1103
 msgid "Secure connection (HTTPS)"
 msgstr "安全連線（HTTPS）"
 
@@ -8336,11 +8357,11 @@ msgstr "安全性與存取"
 msgid "See details"
 msgstr "查看詳情"
 
-#: src/big_remote_play/ui/headscale_wizard.py:958
+#: src/big_remote_play/ui/headscale_wizard.py:961
 msgid "See its log in Advanced on the Headscale page."
 msgstr "請在 Headscale 頁面上的「進階」中查看它的記錄。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "See the technical details."
 msgstr "請查看技術細節。"
 
@@ -8410,9 +8431,12 @@ msgstr "將系統快速鍵傳送到遠端電腦"
 msgid "Send the PIN shown on the other device to finish pairing"
 msgstr "傳送另一台裝置上顯示的 PIN 以完成配對"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
-msgid "Send them this command. This page continues by itself once they run it."
-msgstr "把這個指令傳給對方。對方執行後，這個頁面會自動繼續。"
+#: src/big_remote_play/ui/headscale_wizard.py:1500
+msgid ""
+"Send them these commands; the first is needed only once. This page continues "
+"by itself once they run them."
+msgstr ""
+"把這些指令傳給對方；第一個只需執行一次。對方執行後，這個頁面會自動繼續。"
 
 #: src/big_remote_play/ui/network_devices.py:665
 msgid ""
@@ -8467,8 +8491,8 @@ msgstr ""
 "會傳送：另一台電腦會聽到 Discord、Zoom、Teams 等通話 App 中的通話。同樣在通話"
 "中的人會聽到自己的聲音傳回來。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:69
-#: src/big_remote_play/ui/headscale_wizard.py:1241
+#: src/big_remote_play/ui/headscale_wizard.py:72
+#: src/big_remote_play/ui/headscale_wizard.py:1246
 msgid "Server"
 msgstr "伺服器"
 
@@ -8481,13 +8505,13 @@ msgstr "伺服器網域（例如 vpn.example.com）"
 msgid "Server Failed to Start"
 msgstr "伺服器啟動失敗"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1040
+#: src/big_remote_play/ui/headscale_wizard.py:1043
 msgid "Server IP or domain"
 msgstr "伺服器 IP 或網域"
 
 #: src/big_remote_play/ui/api_access_dialog.py:187
-#: src/big_remote_play/ui/headscale_wizard.py:445
-#: src/big_remote_play/ui/headscale_wizard.py:810
+#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:813
 #: src/big_remote_play/ui/network_devices.py:788
 #: src/big_remote_play/ui/network_devices.py:789
 #: src/big_remote_play/ui/private_network_view.py:699
@@ -8496,7 +8520,7 @@ msgstr "伺服器 IP 或網域"
 msgid "Server address"
 msgstr "伺服器位址"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1099
+#: src/big_remote_play/ui/headscale_wizard.py:1102
 msgid "Server answers"
 msgstr "伺服器有回應"
 
@@ -8504,7 +8528,7 @@ msgstr "伺服器有回應"
 msgid "Server control panel"
 msgstr "伺服器控制面板"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1119
+#: src/big_remote_play/ui/headscale_wizard.py:1122
 msgid "Server found"
 msgstr "已找到伺服器"
 
@@ -8550,7 +8574,7 @@ msgstr "服務"
 msgid "Sessions"
 msgstr "工作階段"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1187
+#: src/big_remote_play/ui/headscale_wizard.py:1190
 msgid "Set the server address"
 msgstr "設定伺服器位址"
 
@@ -8569,25 +8593,25 @@ msgstr ""
 msgid "Set up"
 msgstr "設定"
 
-#: src/big_remote_play/ui/headscale_wizard.py:548
+#: src/big_remote_play/ui/headscale_wizard.py:551
 msgid "Set up Cloudflare"
 msgstr "設定 Cloudflare"
 
-#: src/big_remote_play/ui/headscale_wizard.py:622
+#: src/big_remote_play/ui/headscale_wizard.py:625
 msgid "Set up DNS with Cloudflare"
 msgstr "使用 Cloudflare 設定 DNS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:307
+#: src/big_remote_play/ui/headscale_wizard.py:310
 #: src/big_remote_play/ui/provider_page.py:1091
 #: src/big_remote_play/ui/provider_page.py:1170
 msgid "Set up Headscale"
 msgstr "設定 Headscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1209
+#: src/big_remote_play/ui/headscale_wizard.py:1212
 msgid "Set up a domain"
 msgstr "設定網域"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1136
+#: src/big_remote_play/ui/headscale_wizard.py:1139
 msgid "Set up a domain for it"
 msgstr "為它設定網域"
 
@@ -8595,9 +8619,9 @@ msgstr "為它設定網域"
 msgid "Set up a secure connection"
 msgstr "設定安全連線"
 
-#: src/big_remote_play/ui/headscale_wizard.py:802
-#: src/big_remote_play/ui/headscale_wizard.py:1214
-#: src/big_remote_play/ui/headscale_wizard.py:1215
+#: src/big_remote_play/ui/headscale_wizard.py:805
+#: src/big_remote_play/ui/headscale_wizard.py:1217
+#: src/big_remote_play/ui/headscale_wizard.py:1218
 msgid "Set up the server"
 msgstr "設定伺服器"
 
@@ -8889,7 +8913,7 @@ msgstr "請透過瀏覽器登入。在你所有的裝置上使用同一個帳號
 msgid "Sign-in expired"
 msgstr "登入已過期"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1436
+#: src/big_remote_play/ui/headscale_wizard.py:1505
 msgid "Sign-in link"
 msgstr "登入連結"
 
@@ -8973,7 +8997,7 @@ msgstr ""
 "法連到您的電腦。徵兆：路由器 WAN 位址以 100.64–100.127 開頭，或 WAN 位址與網"
 "站看到的公開位址不同。請使用私人網路，或向業者申請公開 IPv4 位址。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:90
+#: src/big_remote_play/ui/headscale_wizard.py:93
 msgid "Something answers there, but it is not a Headscale server."
 msgstr "那裡有回應，但不是 Headscale 伺服器。"
 
@@ -9025,7 +9049,7 @@ msgstr "Start + Select"
 msgid "Start ZeroTier"
 msgstr "啟動 ZeroTier"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1194
+#: src/big_remote_play/ui/headscale_wizard.py:1197
 msgid "Start both and open the ports"
 msgstr "啟動兩者並開放連接埠"
 
@@ -9033,13 +9057,13 @@ msgstr "啟動兩者並開放連接埠"
 msgid "Start it to play with your other devices."
 msgstr "開啟後即可與其他裝置一起玩。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:301
-#: src/big_remote_play/ui/headscale_wizard.py:353
-#: src/big_remote_play/ui/headscale_wizard.py:1140
+#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:356
+#: src/big_remote_play/ui/headscale_wizard.py:1143
 msgid "Start over"
 msgstr "重新開始"
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "Start over?"
 msgstr "要重新開始嗎？"
 
@@ -9191,12 +9215,12 @@ msgid ""
 "Step by step: where the server runs, its address, HTTPS and this computer."
 msgstr "逐步進行：伺服器在哪裡執行、它的位址、HTTPS 以及這台電腦。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1577
+#: src/big_remote_play/ui/headscale_wizard.py:1646
 #, python-brace-format
 msgid "Step {number} of {total}"
 msgstr "第 {number} 步，共 {total} 步"
 
-#: src/big_remote_play/ui/headscale_wizard.py:264
+#: src/big_remote_play/ui/headscale_wizard.py:267
 #, python-brace-format
 msgid "Step {number} of {total} · {name}"
 msgstr "第 {number} 步，共 {total} 步 · {name}"
@@ -9660,7 +9684,7 @@ msgstr "交換滑鼠左右鍵"
 msgid "Swipe from the left edge of the screen"
 msgstr "從螢幕左側邊緣向內滑動"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1368
+#: src/big_remote_play/ui/headscale_wizard.py:1432
 #: src/big_remote_play/ui/remote_connection.py:250
 #: src/big_remote_play/ui/tailscale_accounts.py:107
 #: src/big_remote_play/ui/vpn_accounts_dialog.py:208
@@ -9671,7 +9695,7 @@ msgstr "切換"
 msgid "Switch between full screen and a window"
 msgstr "在全螢幕和視窗之間切換"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1363
+#: src/big_remote_play/ui/headscale_wizard.py:1427
 msgid "Switch from Tailscale to Headscale?"
 msgstr "要從 Tailscale 切換到 Headscale 嗎？"
 
@@ -9807,7 +9831,7 @@ msgstr "音訊技術細節"
 
 #: src/big_remote_play/ui/dependency_installer.py:171
 #: src/big_remote_play/ui/guest_view.py:2087
-#: src/big_remote_play/ui/headscale_wizard.py:424
+#: src/big_remote_play/ui/headscale_wizard.py:427
 #: src/big_remote_play/ui/provider_page.py:1202
 #: src/big_remote_play/ui/zerotier_join.py:225
 msgid "Technical details"
@@ -9850,11 +9874,11 @@ msgid ""
 "it on the server."
 msgstr "那台電腦會顯示登入連結。貼到這裡即可核准，或在伺服器上核准。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "The API key could not be saved."
 msgstr "無法儲存 API 金鑰。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:957
+#: src/big_remote_play/ui/headscale_wizard.py:960
 msgid "The HTTPS configuration was not accepted."
 msgstr "HTTPS 設定未被接受。"
 
@@ -9866,13 +9890,13 @@ msgstr "HTTPS 設定未被接受。沒有啟用任何項目。"
 msgid "The Headscale configuration file is missing."
 msgstr "缺少 Headscale 設定檔。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:85
-#: src/big_remote_play/ui/headscale_wizard.py:86
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:89
+#: src/big_remote_play/ui/headscale_wizard.py:90
 msgid "The Headscale server is not reachable."
 msgstr "無法連線到 Headscale 伺服器。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:304
+#: src/big_remote_play/ui/headscale_wizard.py:307
 msgid ""
 "The Headscale server needs to stay available so your devices can find each "
 "other."
@@ -9886,7 +9910,7 @@ msgstr "Headscale 伺服器運作正常。"
 msgid "The Headscale setup is not finished."
 msgstr "Headscale 設定尚未完成。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:781
+#: src/big_remote_play/ui/headscale_wizard.py:784
 msgid "The IPv6 record points somewhere else."
 msgstr "IPv6 記錄指向了別的地方。"
 
@@ -10000,7 +10024,7 @@ msgid ""
 "reconnect later."
 msgstr "使用中的 VPN 連線將停止。已儲存的帳號會保留，方便日後重新連線。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1048
+#: src/big_remote_play/ui/headscale_wizard.py:1051
 msgid "The address of the computer or VPS that runs Headscale."
 msgstr "執行 Headscale 的電腦或 VPS 的位址。"
 
@@ -10128,13 +10152,13 @@ msgstr "該裝置"
 msgid "The device list could not be read."
 msgstr "無法讀取裝置清單。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:524
-#: src/big_remote_play/ui/headscale_wizard.py:662
-#: src/big_remote_play/ui/headscale_wizard.py:779
+#: src/big_remote_play/ui/headscale_wizard.py:527
+#: src/big_remote_play/ui/headscale_wizard.py:665
+#: src/big_remote_play/ui/headscale_wizard.py:782
 msgid "The domain could not be checked."
 msgstr "無法檢查網域。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:537
+#: src/big_remote_play/ui/headscale_wizard.py:540
 msgid "The domain you registered"
 msgstr "你註冊的網域"
 
@@ -10164,7 +10188,7 @@ msgstr "儲存 Sunshine 目前記錄的檔案。"
 msgid "The file that stores Sunshine's current state."
 msgstr "儲存 Sunshine 目前狀態的檔案。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:353
+#: src/big_remote_play/ui/headscale_wizard.py:356
 msgid "The finished steps are forgotten. Nothing on the server is removed."
 msgstr "已完成的步驟會被清除。伺服器上的任何內容都不會被移除。"
 
@@ -10326,7 +10350,7 @@ msgstr "安裝未完成。請檢查網際網路連線後再試一次。技術細
 msgid "The installation was cancelled. Nothing was changed."
 msgstr "安裝已取消。沒有做任何變更。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The internet could not reach this computer."
 msgstr "網際網路無法連到這台電腦。"
 
@@ -10388,7 +10412,7 @@ msgstr ""
 "Tailscale 這類私人網路中，同時連接了網路線和 Wi-Fi 的電腦可能造成這種情況：請"
 "關閉它沒有使用的那個連線。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:87
+#: src/big_remote_play/ui/headscale_wizard.py:90
 #, python-brace-format
 msgid "The network cannot reach it on port {port}."
 msgstr "網路無法透過連接埠 {port} 連到它。"
@@ -10496,7 +10520,7 @@ msgstr "網路擁有者仍需核准這部電腦。"
 msgid "The pacman package manager is not available on this system."
 msgstr "此系統沒有 pacman 套件管理員。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:947
+#: src/big_remote_play/ui/headscale_wizard.py:950
 msgid "The password was not given."
 msgstr "未提供密碼。"
 
@@ -10606,7 +10630,7 @@ msgstr "搜尋在檢查完所有位址之前就停止了。"
 msgid "The search was cancelled."
 msgstr "已取消搜尋。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:978
+#: src/big_remote_play/ui/headscale_wizard.py:981
 msgid "The secure certificate could not be obtained."
 msgstr "無法取得安全憑證。"
 
@@ -10624,11 +10648,11 @@ msgstr "所選的輸出未連接。請重新連接，或選擇「自動」。"
 msgid "The server administrator then approves this computer."
 msgstr "接著由伺服器管理員核准這台電腦。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:91
+#: src/big_remote_play/ui/headscale_wizard.py:94
 msgid "The server could not be checked."
 msgstr "無法檢查伺服器。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:960
+#: src/big_remote_play/ui/headscale_wizard.py:963
 msgid "The server could not be set up."
 msgstr "無法設定伺服器。"
 
@@ -10636,7 +10660,7 @@ msgstr "無法設定伺服器。"
 msgid "The server details could not be read."
 msgstr "無法讀取伺服器詳細資料。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1285
+#: src/big_remote_play/ui/headscale_wizard.py:1321
 msgid "The server did not accept this API key."
 msgstr "伺服器不接受這個 API 金鑰。"
 
@@ -10644,11 +10668,11 @@ msgstr "伺服器不接受這個 API 金鑰。"
 msgid "The server did not find what was requested."
 msgstr "伺服器找不到要求的內容。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1340
+#: src/big_remote_play/ui/headscale_wizard.py:1402
 msgid "The server did not give a key for this computer."
 msgstr "伺服器沒有提供這台電腦的金鑰。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1506
+#: src/big_remote_play/ui/headscale_wizard.py:1575
 msgid "The server did not give a key."
 msgstr "伺服器沒有提供金鑰。"
 
@@ -10656,11 +10680,15 @@ msgstr "伺服器沒有提供金鑰。"
 msgid "The server log says why a capture could not open."
 msgstr "伺服器記錄會說明擷取無法開啟的原因。"
 
+#: src/big_remote_play/ui/headscale_wizard.py:1262
+msgid "The server runs on this computer"
+msgstr "伺服器在這台電腦上執行"
+
 #: src/big_remote_play/ui/provider_page.py:1249
 msgid "The server setup could not be removed."
 msgstr "無法移除伺服器設定。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid ""
 "The server setup is not available when Big Remote Play runs from its source "
 "folder."
@@ -10674,11 +10702,11 @@ msgstr "已移除伺服器設定。"
 msgid "The server tried to redirect the request, which is refused for safety."
 msgstr "伺服器試圖重新導向要求，基於安全考量已拒絕。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:677
+#: src/big_remote_play/ui/headscale_wizard.py:680
 msgid "The server's public IP address"
 msgstr "伺服器的公開 IP 位址"
 
-#: src/big_remote_play/ui/headscale_wizard.py:88
+#: src/big_remote_play/ui/headscale_wizard.py:91
 msgid "The server's secure certificate is not valid."
 msgstr "伺服器的安全憑證無效。"
 
@@ -10704,7 +10732,7 @@ msgstr "無法連上服務。請檢查網際網路連線與伺服器位址。"
 msgid "The service did not accept the request."
 msgstr "服務未接受此要求。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:224
+#: src/big_remote_play/ui/headscale_wizard.py:227
 msgid "The setup progress could not be saved."
 msgstr "無法儲存設定進度。"
 
@@ -10836,7 +10864,7 @@ msgstr "在系統對話方塊中選擇的視窗不是所選遊戲。請再試一
 msgid "The {name} service is not running on this computer."
 msgstr "這台電腦上沒有執行 {name} 服務。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1447
+#: src/big_remote_play/ui/headscale_wizard.py:1516
 msgid "Then Set up → Another server."
 msgstr "接著選擇「設定」→「另一台伺服器」。"
 
@@ -10852,7 +10880,7 @@ msgstr "沒有畫面"
 msgid "There is no sound"
 msgstr "沒有聲音"
 
-#: src/big_remote_play/ui/headscale_wizard.py:638
+#: src/big_remote_play/ui/headscale_wizard.py:641
 msgid "These are not Cloudflare nameservers. They end in .ns.cloudflare.com."
 msgstr ""
 "這些不是 Cloudflare 的名稱伺服器。Cloudflare 的名稱伺服器"
@@ -10906,8 +10934,8 @@ msgstr ""
 "這可以在較舊的 Intel GPU 上啟用 HEVC 編碼，但代價是 GPU 使用率較高且效能較"
 "差。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:667
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "This can take a little while."
 msgstr "這可能需要一點時間。"
 
@@ -10919,9 +10947,9 @@ msgstr "這只會變更 Big Remote Play 中顯示的名稱。"
 msgid "This code is not complete"
 msgstr "這個代碼不完整"
 
-#: src/big_remote_play/ui/headscale_wizard.py:74
-#: src/big_remote_play/ui/headscale_wizard.py:306
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:77
+#: src/big_remote_play/ui/headscale_wizard.py:309
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 #: src/big_remote_play/ui/host_view.py:115
 #: src/big_remote_play/ui/network_devices.py:173
 #: src/big_remote_play/ui/remote_connection.py:356
@@ -10929,9 +10957,15 @@ msgstr "這個代碼不完整"
 msgid "This computer"
 msgstr "這台電腦"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1259
-msgid "This computer asks to join; the owner approves it on the server."
-msgstr "這台電腦要求加入；擁有者在伺服器上核准。"
+#. TRANSLATORS: {user} is the Headscale user name, such as "ruscher".
+#: src/big_remote_play/ui/headscale_wizard.py:1293
+#, python-brace-format
+msgid ""
+"This computer asks to join; Big Remote Play shows the exact commands for the "
+"owner, with your user “{user}”."
+msgstr ""
+"這台電腦要求加入；Big Remote Play 會為擁有者顯示使用你的使用者「{user}」的確"
+"切指令。"
 
 #: src/big_remote_play/ui/provider_page.py:1068
 msgid "This computer can be in several ZeroTier networks."
@@ -10948,7 +10982,7 @@ msgstr ""
 "格率與影像位元率。此處的位元率上限會限制更高的要求；0 表示不設上限。編解碼器"
 "和 HDR 也取決於兩台電腦是否都支援。變更會在重新開始分享時套用。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "This computer could not join."
 msgstr "這台電腦無法加入。"
 
@@ -10974,7 +11008,7 @@ msgid ""
 msgstr ""
 "這台電腦已獲得授權，但網路尚未分配位址給它。網路擁有者可以指派一個位址。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1404
+#: src/big_remote_play/ui/headscale_wizard.py:1468
 msgid "This computer is connected"
 msgstr "這台電腦已連線"
 
@@ -11017,7 +11051,7 @@ msgstr "這台電腦已在網路 {name} 中。"
 msgid "This computer is on your {name} network."
 msgstr "這台電腦已在您的 {name} 網路上。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1262
+#: src/big_remote_play/ui/headscale_wizard.py:1298
 msgid "This computer joins your Headscale network."
 msgstr "這台電腦會加入你的 Headscale 網路。"
 
@@ -11136,12 +11170,12 @@ msgstr ""
 msgid "This device · {state}"
 msgstr "此裝置 · {state}"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1304
+#: src/big_remote_play/ui/headscale_wizard.py:1340
 msgid "This does not look like a key that adds a computer."
 msgstr "這看起來不像是用來新增電腦的金鑰。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:521
-#: src/big_remote_play/ui/headscale_wizard.py:660
+#: src/big_remote_play/ui/headscale_wizard.py:524
+#: src/big_remote_play/ui/headscale_wizard.py:663
 msgid "This domain does not exist yet."
 msgstr "這個網域還不存在。"
 
@@ -11168,7 +11202,7 @@ msgstr ""
 msgid "This is a request. It only works when the game PC supports it."
 msgstr "這是一項要求。只有遊戲電腦支援時才會生效。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "This is an administrator key."
 msgstr "這是管理員金鑰。"
 
@@ -11184,19 +11218,19 @@ msgstr ""
 msgid "This is not a code from the other device."
 msgstr "這不是來自另一部裝置的代碼。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:506
+#: src/big_remote_play/ui/headscale_wizard.py:509
 msgid "This is not a domain."
 msgstr "這不是網域。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:734
+#: src/big_remote_play/ui/headscale_wizard.py:737
 msgid "This is not a public IP address."
 msgstr "這不是公開 IP 位址。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:83
+#: src/big_remote_play/ui/headscale_wizard.py:86
 msgid "This is not a server address."
 msgstr "這不是伺服器位址。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1290
+#: src/big_remote_play/ui/headscale_wizard.py:1326
 msgid "This is not an API key."
 msgstr "這不是 API 金鑰。"
 
@@ -11212,15 +11246,15 @@ msgstr ""
 msgid "This is the computer that will run the game."
 msgstr "這台電腦將執行遊戲。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "This key adds one computer; it is not an API key."
 msgstr "這個金鑰用來新增一台電腦；它不是 API 金鑰。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:84
+#: src/big_remote_play/ui/headscale_wizard.py:87
 msgid "This name does not lead to a server yet."
 msgstr "這個名稱還沒有指向伺服器。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:952
+#: src/big_remote_play/ui/headscale_wizard.py:955
 msgid "This name is already set in /etc/hosts."
 msgstr "這個名稱已在 /etc/hosts 中設定。"
 
@@ -11232,7 +11266,7 @@ msgstr "這個名稱已在 /etc/hosts 中設定。 沒有做任何變更。"
 msgid "This name is not valid."
 msgstr "這個名稱無效。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:946
+#: src/big_remote_play/ui/headscale_wizard.py:949
 msgid "This needs the installed Big Remote Play package."
 msgstr "這需要已安裝的 Big Remote Play 套件。"
 
@@ -11297,7 +11331,7 @@ msgstr "此螢幕的解析度"
 msgid "This server address is not valid."
 msgstr "這個伺服器位址無效。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1124
+#: src/big_remote_play/ui/headscale_wizard.py:1127
 msgid ""
 "This server runs on this computer. Your router does not send this computer's "
 "own traffic back to it, so Big Remote Play checked it directly and will "
@@ -11425,7 +11459,7 @@ msgstr "受信任的 Web UI 來源"
 msgid "Try again"
 msgstr "再試一次"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1411
+#: src/big_remote_play/ui/headscale_wizard.py:1475
 msgid "Try again, or choose another option."
 msgstr "請再試一次，或選擇其他選項。"
 
@@ -11464,7 +11498,7 @@ msgstr "要關閉 ZeroTier 嗎？"
 msgid "Turn on"
 msgstr "開啟"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1189
+#: src/big_remote_play/ui/headscale_wizard.py:1192
 msgid "Turn on HTTPS with Caddy"
 msgstr "使用 Caddy 開啟 HTTPS"
 
@@ -11478,8 +11512,8 @@ msgid "Turned on"
 msgstr "已開啟"
 
 #: src/big_remote_play/ui/api_access_dialog.py:150
-#: src/big_remote_play/ui/headscale_wizard.py:687
-#: src/big_remote_play/ui/headscale_wizard.py:714
+#: src/big_remote_play/ui/headscale_wizard.py:690
+#: src/big_remote_play/ui/headscale_wizard.py:717
 msgid "Type"
 msgstr "類型"
 
@@ -11502,8 +11536,8 @@ msgid ""
 "Type the address of your server. Its administrator approves this computer."
 msgstr "輸入你的伺服器位址。伺服器管理員會核准這台電腦。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:577
-#: src/big_remote_play/ui/headscale_wizard.py:586
+#: src/big_remote_play/ui/headscale_wizard.py:580
+#: src/big_remote_play/ui/headscale_wizard.py:589
 msgid "Type the domain you registered, for example mydomain.dpdns.org."
 msgstr "輸入你註冊的網域，例如 mydomain.dpdns.org。"
 
@@ -11676,15 +11710,15 @@ msgstr ""
 msgid "Use Tailscale"
 msgstr "使用 Tailscale"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1175
+#: src/big_remote_play/ui/headscale_wizard.py:1178
 msgid "Use a Linux server that stays on"
 msgstr "使用一台持續開機的 Linux 伺服器"
 
-#: src/big_remote_play/ui/headscale_wizard.py:981
+#: src/big_remote_play/ui/headscale_wizard.py:984
 msgid "Use a VPS instead"
 msgstr "改用 VPS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:305
+#: src/big_remote_play/ui/headscale_wizard.py:308
 msgid "Use a VPS or another computer that stays online."
 msgstr "使用 VPS 或另一台持續上線的電腦。"
 
@@ -11692,11 +11726,11 @@ msgstr "使用 VPS 或另一台持續上線的電腦。"
 msgid "Use a cable or 5 GHz Wi-Fi on both computers when possible."
 msgstr "盡可能讓兩台電腦都使用網路線或 5 GHz Wi-Fi。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1139
+#: src/big_remote_play/ui/headscale_wizard.py:1142
 msgid "Use a different address"
 msgstr "使用其他位址"
 
-#: src/big_remote_play/ui/headscale_wizard.py:448
+#: src/big_remote_play/ui/headscale_wizard.py:451
 msgid "Use a domain"
 msgstr "使用網域"
 
@@ -11717,10 +11751,10 @@ msgstr ""
 msgid "Use another account"
 msgstr "使用其他帳號"
 
-#: src/big_remote_play/ui/headscale_wizard.py:393
-#: src/big_remote_play/ui/headscale_wizard.py:402
-#: src/big_remote_play/ui/headscale_wizard.py:876
-#: src/big_remote_play/ui/headscale_wizard.py:997
+#: src/big_remote_play/ui/headscale_wizard.py:396
+#: src/big_remote_play/ui/headscale_wizard.py:405
+#: src/big_remote_play/ui/headscale_wizard.py:879
+#: src/big_remote_play/ui/headscale_wizard.py:1000
 msgid "Use another server"
 msgstr "使用其他伺服器"
 
@@ -11741,11 +11775,11 @@ msgstr "可用時使用硬體解碼"
 msgid "Use it"
 msgstr "使用"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1300
+#: src/big_remote_play/ui/headscale_wizard.py:1336
 msgid "Use it in the first option, or ask for a key that adds one computer."
 msgstr "請在第一個選項中使用它，或索取用來新增一台電腦的金鑰。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1269
+#: src/big_remote_play/ui/headscale_wizard.py:1305
 msgid "Use it in the second option instead."
 msgstr "請改在第二個選項中使用它。"
 
@@ -11757,7 +11791,7 @@ msgstr "使用多個控制器"
 msgid "Use only when both computers and the screen support HDR."
 msgstr "只有兩台電腦和螢幕都支援 HDR 時才使用。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1256
+#: src/big_remote_play/ui/headscale_wizard.py:1280
 msgid "Use the API key"
 msgstr "使用 API 金鑰"
 
@@ -11771,7 +11805,7 @@ msgstr "將控制器當作滑鼠：搖桿移動指標，A 鍵點按，B 鍵按�
 msgid "Use the controller to move the mouse"
 msgstr "使用控制器移動滑鼠"
 
-#: src/big_remote_play/ui/headscale_wizard.py:449
+#: src/big_remote_play/ui/headscale_wizard.py:452
 msgid "Use the detected address"
 msgstr "使用偵測到的位址"
 
@@ -11787,7 +11821,7 @@ msgstr "使用遊戲電腦上 Big Remote Play 中的搜尋代碼。"
 msgid "Use the touchscreen as a virtual trackpad"
 msgstr "將觸控螢幕當作虛擬觸控板"
 
-#: src/big_remote_play/ui/headscale_wizard.py:306
+#: src/big_remote_play/ui/headscale_wizard.py:309
 msgid "Use this PC as the Headscale server."
 msgstr "將這台電腦當作 Headscale 伺服器。"
 
@@ -11795,7 +11829,7 @@ msgstr "將這台電腦當作 Headscale 伺服器。"
 msgid "Use this connection"
 msgstr "使用這個連線"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1258
+#: src/big_remote_play/ui/headscale_wizard.py:1288
 msgid "Use this key"
 msgstr "使用這個金鑰"
 
@@ -11807,7 +11841,7 @@ msgstr "僅在自動探索找不到電腦時使用此方式。"
 msgid "Use this screen's resolution"
 msgstr "使用此螢幕的解析度"
 
-#: src/big_remote_play/ui/headscale_wizard.py:866
+#: src/big_remote_play/ui/headscale_wizard.py:869
 msgid "Use this server"
 msgstr "使用此伺服器"
 
@@ -11861,7 +11895,7 @@ msgstr "使用這台電腦自己的滑鼠或鍵盤會讓它們暫停。"
 msgid "Using this screen's resolution"
 msgstr "正在使用此螢幕的解析度"
 
-#: src/big_remote_play/ui/headscale_wizard.py:990
+#: src/big_remote_play/ui/headscale_wizard.py:993
 msgid ""
 "Usually its address is written under the router. Look for “Port forwarding”, "
 "“Virtual server” or “NAT”."
@@ -12047,7 +12081,7 @@ msgstr "等待授權"
 msgid "Waiting for data…"
 msgstr "正在等待資料…"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1433
+#: src/big_remote_play/ui/headscale_wizard.py:1500
 msgid "Waiting for the server owner"
 msgstr "正在等待伺服器擁有者"
 
@@ -12063,11 +12097,11 @@ msgstr "防火牆或網路規則可能阻止連線時發出警告。"
 msgid "Washed out on devices without HDR"
 msgstr "在不支援 HDR 的裝置上會看起來泛白"
 
-#: src/big_remote_play/ui/headscale_wizard.py:777
+#: src/big_remote_play/ui/headscale_wizard.py:780
 msgid "We are still waiting for DNS"
 msgstr "我們仍在等待 DNS"
 
-#: src/big_remote_play/ui/headscale_wizard.py:392
+#: src/big_remote_play/ui/headscale_wizard.py:395
 msgid "We could not find your public address"
 msgstr "我們找不到你的公開位址"
 
@@ -12103,7 +12137,7 @@ msgstr "ZeroTier 的回應，可分享給正在協助你的人。"
 msgid "What do you want to do?"
 msgstr "您想做什麼？"
 
-#: src/big_remote_play/ui/headscale_wizard.py:789
+#: src/big_remote_play/ui/headscale_wizard.py:792
 msgid "What happens"
 msgstr "會發生什麼事"
 
@@ -12111,7 +12145,7 @@ msgstr "會發生什麼事"
 msgid "What is the network code?"
 msgstr "網路代碼是什麼？"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1047
+#: src/big_remote_play/ui/headscale_wizard.py:1050
 msgid "What is the server address?"
 msgstr "伺服器位址是什麼？"
 
@@ -12190,7 +12224,7 @@ msgid ""
 "controlling them."
 msgstr "當你使用這台電腦的滑鼠或鍵盤時，訪客會暫時無法控制它們。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:482
+#: src/big_remote_play/ui/headscale_wizard.py:485
 msgid "Where do you manage DNS?"
 msgstr "你在哪裡管理 DNS？"
 
@@ -12198,7 +12232,7 @@ msgstr "你在哪裡管理 DNS？"
 msgid "Where is the other device?"
 msgstr "另一台裝置在哪裡？"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Where is the server?"
 msgstr "伺服器在哪裡？"
 
@@ -12210,7 +12244,7 @@ msgstr "在哪裡建立權杖"
 msgid "Where to create it"
 msgstr "在哪裡建立"
 
-#: src/big_remote_play/ui/headscale_wizard.py:303
+#: src/big_remote_play/ui/headscale_wizard.py:306
 msgid "Where will your Headscale server run?"
 msgstr "你的 Headscale 伺服器要在哪裡執行？"
 
@@ -12238,7 +12272,7 @@ msgid ""
 "problem."
 msgstr "透過網際網路連線可能失敗的原因，以及避開各項問題最安全的方法。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:706
+#: src/big_remote_play/ui/headscale_wizard.py:709
 msgid "Why?"
 msgstr "為什麼？"
 
@@ -12317,7 +12351,7 @@ msgstr "沒有認證金鑰時會開啟登入連結"
 msgid "Without it, members are approved on the ZeroTier website."
 msgstr "沒有它時，需在 ZeroTier 網站上核准成員。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:895
+#: src/big_remote_play/ui/headscale_wizard.py:898
 msgid "Working…"
 msgstr "正在處理…"
 
@@ -12333,8 +12367,8 @@ msgstr ""
 msgid "X11 screen capture"
 msgstr "X11 螢幕擷取"
 
-#: src/big_remote_play/ui/headscale_wizard.py:469
-#: src/big_remote_play/ui/headscale_wizard.py:1105
+#: src/big_remote_play/ui/headscale_wizard.py:472
+#: src/big_remote_play/ui/headscale_wizard.py:1108
 #: src/big_remote_play/ui/touch_controls.py:81
 msgid "Yes"
 msgstr "是"
@@ -12368,7 +12402,7 @@ msgstr "昨天 {time}"
 msgid "You can control the mouse and keyboard again"
 msgstr "你可以再次控制滑鼠和鍵盤"
 
-#: src/big_remote_play/ui/headscale_wizard.py:559
+#: src/big_remote_play/ui/headscale_wizard.py:562
 msgid ""
 "You can use a domain you already own or register one with a domain provider."
 msgstr "你可以使用已經擁有的網域，或向網域供應商註冊一個。"
@@ -12392,7 +12426,7 @@ msgstr "你正在控制這台電腦"
 msgid "Your Headscale server"
 msgstr "你的 Headscale 伺服器"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1032
+#: src/big_remote_play/ui/headscale_wizard.py:1035
 msgid "Your Headscale server is ready"
 msgstr "你的 Headscale 伺服器已準備就緒"
 
@@ -12400,7 +12434,7 @@ msgstr "你的 Headscale 伺服器已準備就緒"
 msgid "Your Tailscale network (tailnet)"
 msgstr "你的 Tailscale 網路（tailnet）"
 
-#: src/big_remote_play/ui/headscale_wizard.py:678
+#: src/big_remote_play/ui/headscale_wizard.py:681
 msgid "Your VPS provider shows it in its control panel."
 msgstr "你的 VPS 供應商會在控制台中顯示它。"
 
@@ -12423,16 +12457,16 @@ msgstr "你的裝置"
 msgid "Your devices can now find each other in Big Remote Play."
 msgstr "你的裝置現在可以在 Big Remote Play 中互相找到了。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:491
-#: src/big_remote_play/ui/headscale_wizard.py:614
+#: src/big_remote_play/ui/headscale_wizard.py:494
+#: src/big_remote_play/ui/headscale_wizard.py:617
 msgid "Your domain"
 msgstr "你的網域"
 
-#: src/big_remote_play/ui/headscale_wizard.py:773
+#: src/big_remote_play/ui/headscale_wizard.py:776
 msgid "Your domain is not pointing to this server yet."
 msgstr "你的網域還沒有指向這台伺服器。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:664
+#: src/big_remote_play/ui/headscale_wizard.py:667
 msgid "Your domain still uses other nameservers."
 msgstr "你的網域仍在使用其他名稱伺服器。"
 
@@ -12447,19 +12481,19 @@ msgstr ""
 msgid "Your games. Any screen. Anywhere."
 msgstr "您的遊戲。任何螢幕。隨時隨地。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:368
+#: src/big_remote_play/ui/headscale_wizard.py:371
 msgid "Your internet connection"
 msgstr "你的網路連線"
 
-#: src/big_remote_play/ui/headscale_wizard.py:976
+#: src/big_remote_play/ui/headscale_wizard.py:979
 msgid "Your internet provider blocks incoming connections."
 msgstr "你的網路服務供應商封鎖了傳入連線。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:400
+#: src/big_remote_play/ui/headscale_wizard.py:403
 msgid "Your internet provider may block incoming connections."
 msgstr "你的網路服務供應商可能會封鎖傳入連線。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:1520
+#: src/big_remote_play/ui/headscale_wizard.py:1589
 msgid "Your other device is connected"
 msgstr "你的另一台裝置已連線"
 
@@ -12485,7 +12519,7 @@ msgstr "你自己的 {names} 已保持原樣。"
 msgid "Your password may be requested."
 msgstr "可能會要求輸入密碼。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:395
+#: src/big_remote_play/ui/headscale_wizard.py:398
 msgid "Your public IP"
 msgstr "你的公開 IP"
 
@@ -12493,7 +12527,7 @@ msgstr "你的公開 IP"
 msgid "Your recent sessions will appear here."
 msgstr "您最近的工作階段會顯示在這裡。"
 
-#: src/big_remote_play/ui/headscale_wizard.py:986
+#: src/big_remote_play/ui/headscale_wizard.py:989
 msgid "Your router needs one more step"
 msgstr "你的路由器還需要一個步驟"
 
@@ -12613,7 +12647,7 @@ msgstr "無法識別"
 msgid "the local network"
 msgstr "區域網路"
 
-#: src/big_remote_play/ui/headscale_wizard.py:983
+#: src/big_remote_play/ui/headscale_wizard.py:986
 msgid "this computer"
 msgstr "這台電腦"
 
