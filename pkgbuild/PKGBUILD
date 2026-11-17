@@ -60,7 +60,7 @@ optdepends=(
 	'org.freedesktop.secrets: keep passwords and API tokens in the keyring (GNOME Keyring, KWallet); without one, Sunshine'\''s password is kept in an owner-only file'
 	'libpulse: choose and test the shared sound output (pactl, paplay, parecord)'
 	'pipewire: send only the game sound and keep sound here while a device mutes it'
-	'big-keyboard: on-screen controller that takes several fingers from a phone (Touch controls, with the Big Remote Play Controller app)'
+	'big-keyboard: on-screen controller that takes several fingers from a phone (Touch controls, with the Big Remote Play Controller app; 0.2.3 or newer keeps the phone mouse on wlmaker with everything hidden)'
 	'kwin: Game Window private screen'
 	'xdg-desktop-portal-kde: Game Window capture on KDE Plasma Wayland'
 	'gst-plugin-pipewire: Game Window sharing on KDE Plasma Wayland'
@@ -81,9 +81,11 @@ optdepends=(
 # Dated at build time, never hand-pinned. BRP_BUILD_VERSION and
 # SOURCE_DATE_EPOCH are the same inputs tools/release/build_version.py uses for
 # the wheel, so both halves of one build carry the same version.
-_brp_epoch=${SOURCE_DATE_EPOCH:-$(date -u +%s)}
-pkgver=${BRP_BUILD_VERSION:-$(date -u -d "@${_brp_epoch}" +%y.%m.%d)}
-pkgrel=$(date -u -d "@${_brp_epoch}" +%H%M)
+# Bash's own printf (no date command): namcap reads this file without the
+# coreutils on PATH.
+_brp_epoch=${SOURCE_DATE_EPOCH:-$(printf '%(%s)T' -1)}
+pkgver=${BRP_BUILD_VERSION:-$(TZ=UTC0 printf '%(%y.%m.%d)T' "${_brp_epoch}")}
+pkgrel=$(TZ=UTC0 printf '%(%H%M)T' "${_brp_epoch}")
 
 arch=('any')
 license=('GPL-3.0-or-later')
@@ -97,15 +99,16 @@ provides=('big-remote-play-together')
 # installs an older application under today's version, with nothing to show
 # it. BIGREMOTEPLAY_FROM_GIT=1 builds ruscher/main anyway.
 if [ -z "${BIGREMOTEPLAY_LOCAL_ROOT:-}" ] && [ "${BIGREMOTEPLAY_FROM_GIT:-0}" != 1 ]; then
-	_recipe=$(realpath -qe -- "${BUILDFILE:-PKGBUILD}")
-	_recipe_dir=${_recipe%/*}
-	if [ -n "${_recipe}" ] && [ -f "${_recipe_dir}/../pyproject.toml" ] && [ -d "${_recipe_dir}/../src/big_remote_play" ]; then
+	_recipe=${BUILDFILE:-PKGBUILD}
+	case ${_recipe} in */*) _recipe_dir=${_recipe%/*} ;; *) _recipe_dir=. ;; esac
+	_recipe_dir=$(cd -P -- "${_recipe_dir}" 2>/dev/null && pwd) || _recipe_dir=
+	if [ -f "${_recipe}" ] && [ -n "${_recipe_dir}" ] && [ -f "${_recipe_dir}/../pyproject.toml" ] && [ -d "${_recipe_dir}/../src/big_remote_play" ]; then
 		BIGREMOTEPLAY_LOCAL_ROOT="${_recipe_dir}/.."
 	fi
 fi
 
 if [ -n "${BIGREMOTEPLAY_LOCAL_ROOT:-}" ]; then
-	_local_root=$(realpath -e -- "${BIGREMOTEPLAY_LOCAL_ROOT}") || {
+	_local_root=$(cd -P -- "${BIGREMOTEPLAY_LOCAL_ROOT}" 2>/dev/null && pwd) || {
 		printf 'BIGREMOTEPLAY_LOCAL_ROOT does not exist: %s\n' \
 			"${BIGREMOTEPLAY_LOCAL_ROOT}" >&2
 		return 1
