@@ -111,6 +111,41 @@ class GameLibrary:
             return Change(True, 1, SERVER)
         return self._add_to_file([entry])
 
+    def sync_entries(self, wanted: list[dict]) -> tuple[Change, tuple[str, ...]]:
+        """Offer exactly ``wanted`` of Big Remote Play's ready-made entries.
+
+        Returns the change and the names skipped because the person's own app
+        already uses them. Apps without the entry marker are never changed.
+        """
+        from big_remote_play.host.moonlight_entries import MARKER, apply_to_list, plan_entries
+
+        auth, apps = self._server_apps()
+        current = apps if apps is not None else self.sunshine.read_apps_file()
+        if current is None:
+            return Change(False), ()
+        plan = plan_entries(current, wanted)
+        if not plan.changes:
+            return Change(True, 0, SERVER if apps is not None else FILE), plan.skipped
+        if apps is not None:
+            ok = True
+            for app in plan.remove:
+                # Positions move after each deletion: look the entry up again.
+                _status, fresh = self.sunshine.apps_with_status(auth=auth)
+                index = next((i for i, item in enumerate(fresh or []) if item.get(MARKER) == app.get(MARKER)), None)
+                ok = ok and index is not None and self.sunshine.delete_app(index, auth=auth)
+            for entry in plan.add:
+                ok = ok and self.sunshine.add_app(entry, auth=auth)
+            if ok:
+                return Change(True, len(plan.remove) + len(plan.add), SERVER), plan.skipped
+            # Something was refused: finish in the file, from what is there now.
+            current = self.sunshine.read_apps_file()
+            if current is None:
+                return Change(False), plan.skipped
+            plan = plan_entries(current, wanted)
+        count = len(plan.remove) + len(plan.add)
+        ok = self.sunshine.edit_apps_file(lambda items: apply_to_list(items, plan))
+        return Change(ok, count if ok else 0, FILE), plan.skipped
+
     def remove(self, app: dict) -> Change:
         if app.get("name") in PROTECTED_APPS:
             return Change(False)

@@ -14,6 +14,7 @@ This directory is the maintained documentation set for Big Remote Play. Start wi
 - [Redesign](redesign/01-auditoria.md) — the move to AshyWall's visual language: audit, decisions per page, measurements and what was not validated (Portuguese).
 - [Touch controls](touch/09-relatorio-final.md) — multi-touch from the phone to the Big WM Virtual Keyboard's on-screen controller: audit, design, tests and the Android test plan (Portuguese).
 - [Several screens](moonlight-multi-monitor.md) — the screen where Moonlight opens and the game PC's shared screen.
+- [Moonlight entries](moonlight-entries.md) — Desktop Low, Steam Big Picture and one entry per screen, and the Sunshine build they need.
 - [Game library](game-library-detection.md) — where installed games are found and how they are added to Moonlight.
 - [Finding computers on a ZeroTier network](zerotier-discovery.md) — the search, its limits and what is remembered.
 - [ZeroTier and Tailscale without repeated passwords](zerotier-permissions.md) — the narrow helper and its PolicyKit action.

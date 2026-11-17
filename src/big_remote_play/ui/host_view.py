@@ -4300,6 +4300,7 @@ class HostView(Gtk.Box):
             sunshine_config["brp_stream_display"] = prep_command(target=None, sdr_for_sdr_clients=False)
         return {
             "sunshine_config": sunshine_config,
+            "moonlight_entries": None if game_window is not None else (self._moonlight_entry_settings(), self._moonlight_entry_screens()),
             "pin_code": self.pin_code,
             "audio_output_name": self._selected_audio_sink(),
             "audio_play_on_host": self.audio_play_here_row.get_active(),
@@ -4380,6 +4381,12 @@ class HostView(Gtk.Box):
                 return
             if not self.sunshine.configure(sunshine_config):
                 raise OSError(_("Could not save the server configuration."))
+            # Desktop Low, Steam Big Picture and one entry per screen, as
+            # chosen in Preferences → Game library (none for a Game Window).
+            try:
+                self._sync_moonlight_entries(cfg.get("moonlight_entries"))
+            except Exception as exc:  # the entries are a convenience; sharing still starts
+                _log.warning("Moonlight entries not updated: %s", exc)
             success, msg = self.sunshine.start(wayland_display=wayland_display) if wayland_display else self.sunshine.start()
             if self._closed:
                 if success:
@@ -4947,13 +4954,77 @@ class HostView(Gtk.Box):
 
     # --- Game library (Sunshine apps API) --------------------------------
 
+    def _moonlight_entry_settings(self) -> dict:
+        """GTK thread: the choices saved in Preferences → Game library."""
+        from big_remote_play.host.moonlight_entries import SETTINGS_KEY, settings_from
+
+        return settings_from(self.config.get(SETTINGS_KEY))
+
+    def _save_moonlight_entry_settings(self, settings: dict) -> None:
+        from big_remote_play.host.moonlight_entries import SETTINGS_KEY, settings_from
+
+        self.config.set(SETTINGS_KEY, settings_from(settings))
+
+    def _moonlight_entry_screens(self) -> list:
+        """GTK thread: the connected screens, numbered as Identify screens numbers them.
+
+        Each one by the name Sunshine captures it by: on X11 the kernel's
+        connector name, which can differ from X11's own (see display_connectors).
+        """
+        from big_remote_play.host.moonlight_entries import Screen
+
+        kms = getattr(self, "_kms_connectors", None) or {}
+        names = getattr(self, "_monitor_names", None) or {}
+        return [Screen(kms.get(value, value), names.get(value) or value) for _label, value in getattr(self, "available_monitors", []) if value and value != "auto"]
+
+    def _moonlight_entry_probe(self) -> tuple[bool, bool]:
+        """Worker: (this Sunshine reads per-entry screen and bitrate, Steam is installed)."""
+        from big_remote_play.host.moonlight_entries import sunshine_supports_app_overrides
+        from big_remote_play.host.sunshine_manager import sunshine_executable
+        from big_remote_play.utils.game_detector import STEAM_FLATPAK
+
+        return sunshine_supports_app_overrides(sunshine_executable()), self.game_detector._launcher("steam", STEAM_FLATPAK) is not None
+
+    def _sync_moonlight_entries(self, inputs) -> tuple:
+        """Worker: offer exactly the chosen ready-made entries; ``inputs`` is (settings, screens) or None."""
+        from big_remote_play.host.game_library import GameLibrary
+        from big_remote_play.host.moonlight_entries import sunshine_supports_app_overrides, wanted_entries
+        from big_remote_play.host.sunshine_manager import sunshine_executable
+        from big_remote_play.utils.game_detector import STEAM_FLATPAK
+
+        wanted: list[dict] = []
+        if inputs is not None:
+            settings, screens = inputs
+            wanted = wanted_entries(
+                settings,
+                supported=sunshine_supports_app_overrides(sunshine_executable()),
+                steam_launcher=self.game_detector._launcher("steam", STEAM_FLATPAK),
+                screens=screens,
+                global_prep_cmd=self.sunshine._config_value("global_prep_cmd", ""),
+            )
+        change, skipped = GameLibrary(self.sunshine, self._get_sunshine_creds).sync_entries(wanted)
+        if skipped:
+            _log.info("Moonlight entries kept as the person made them: %s", ", ".join(skipped))
+        return change, skipped
+
+    def _moonlight_entries_backend(self):
+        from .game_library_dialog import EntriesBackend
+
+        return EntriesBackend(
+            settings=self._moonlight_entry_settings,
+            save_settings=self._save_moonlight_entry_settings,
+            screens=self._moonlight_entry_screens,
+            probe=self._moonlight_entry_probe,
+            sync=lambda settings, screens: self._sync_moonlight_entries((settings, screens)),
+        )
+
     def open_game_library_dialog(self, _widget=None):
         """Installed games offered in Moonlight; works with sharing on or off."""
         from big_remote_play.host.game_library import GameLibrary
 
         from .game_library_dialog import GameLibraryDialog
 
-        dialog = GameLibraryDialog(GameLibrary(self.sunshine, self._get_sunshine_creds), self.game_detector)
+        dialog = GameLibraryDialog(GameLibrary(self.sunshine, self._get_sunshine_creds), self.game_detector, entries=self._moonlight_entries_backend())
         self._game_library_dialog = dialog
         dialog.present(self)
         return dialog

@@ -81,6 +81,8 @@ Pairing requests that a device abandoned (cancelled, cut by the network or a fir
 
 **Game Library** lists the games Moonlight offers and the games installed on this computer (Steam on every disk and as a Flatpak, Lutris and Heroic). Check the ones to offer and choose **Add Selected**; it works with sharing off too. Details: [game library](game-library-detection.md).
 
+**Moonlight Entries**, at the top of **Game Library**, chooses what the other device sees besides your games: **Desktop Low** (the same screen at a bitrate ceiling, for slow or mobile connections), **Steam Big Picture** (opens Steam's TV interface for the stream and closes it after) and **One entry per screen** (*01 - Monitor*, *02 - Monitor*… numbered as **Identify screens** shows them). Desktop Low and the screen entries need a Sunshine that reads per-entry settings; the page says when yours does not. Details: [Moonlight entries](moonlight-entries.md).
+
 ### Mouse and keyboard: this computer first
 
 When someone else plays on this computer, they control its mouse and keyboard too. If you also want to use them, turn on **Preferences → Mouse, keyboard and controllers → Host has priority**:

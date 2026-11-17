@@ -1,13 +1,16 @@
-"""Share → Preferences → Game Library: installed games offered in Moonlight.
+"""Share → Preferences → Game Library: what Moonlight offers.
 
-The search for installed games is local and works without sharing. Adding
-and removing go through ``GameLibrary``, which uses Sunshine's API while
-sharing and the library file otherwise; the page says which applies.
+First the ready-made entries (Desktop Low, Steam Big Picture, one per
+screen; see ``host/moonlight_entries.py``), then the installed games. The
+search for installed games is local and works without sharing. Adding and
+removing go through ``GameLibrary``, which uses Sunshine's API while sharing
+and the library file otherwise; the page says which applies.
 """
 
 from __future__ import annotations
 
 from collections.abc import Callable
+from dataclasses import dataclass
 
 import gi
 
@@ -16,6 +19,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw, Gtk  # type: ignore  # noqa: E402
 
 from big_remote_play.host.game_library import FILE, PROTECTED_APPS, SERVER, Change, GameLibrary, LibraryState  # noqa: E402
+from big_remote_play.host.moonlight_entries import DESKTOP_LOW_NAME, DESKTOP_NAME, LOW_BITRATES_KBPS, MARKER, STEAM_BIG_PICTURE_NAME, monitor_entry_name, settings_from  # noqa: E402
 from big_remote_play.utils.game_detector import Game, GameDetector, in_library  # noqa: E402
 from big_remote_play.utils.i18n import _, ngettext  # noqa: E402
 
@@ -23,6 +27,22 @@ from .components import create_icon_widget  # noqa: E402
 from .network_common import Worker  # noqa: E402
 
 _FILTERS = ("", "steam", "lutris", "heroic")
+
+
+@dataclass(frozen=True)
+class EntriesBackend:
+    """What the ready-made entries need from Share (see HostView)."""
+
+    settings: Callable[[], dict]  # GTK thread
+    save_settings: Callable[[dict], object]  # GTK thread
+    screens: Callable[[], list]  # GTK thread: [Screen]
+    probe: Callable[[], tuple[bool, bool]]  # worker: (per-entry screen/bitrate supported, Steam installed)
+    sync: Callable[[dict, list], tuple]  # worker: (Change, skipped names)
+
+
+def bitrate_text(kbps: int) -> str:
+    # TRANSLATORS: a bitrate ceiling; {rate} is a number such as 3 or 1.5.
+    return _("{rate} Mbit/s").format(rate=f"{kbps / 1000:g}")
 
 
 def _validated_command(text: str) -> list[str]:
@@ -36,7 +56,7 @@ def _validated_command(text: str) -> list[str]:
 
 
 class GameLibraryDialog(Adw.Dialog):
-    def __init__(self, library: GameLibrary, detector: GameDetector, *, toast: Callable[[str], object] | None = None):
+    def __init__(self, library: GameLibrary, detector: GameDetector, *, toast: Callable[[str], object] | None = None, entries: EntriesBackend | None = None):
         super().__init__(title=_("Game Library"))
         self.add_css_class("brp-dialog")
         self.set_content_width(640)
@@ -52,6 +72,10 @@ class GameLibraryDialog(Adw.Dialog):
         self._library_worker = Worker()
         self._games_worker = Worker()
         self._change_worker = Worker()
+        self._entries_worker = Worker()
+        if entries is not None:
+            self._entries: EntriesBackend = entries
+        self._entries_ready = False
         self.connect("closed", lambda *_a: self.close_workers())
 
         self._toast_overlay = Adw.ToastOverlay()
@@ -73,6 +97,9 @@ class GameLibraryDialog(Adw.Dialog):
         bottom.append(self.add_button)
         toolbar.add_bottom_bar(bottom)
         self.set_child(toolbar)
+
+        if entries is not None:
+            self._build_entries_group(page)
 
         # In Moonlight now.
         self.library_group = Adw.PreferencesGroup(title=_("In Moonlight"))
@@ -111,7 +138,7 @@ class GameLibraryDialog(Adw.Dialog):
 
     # ── life cycle ──────────────────────────────────────────────────────
     def close_workers(self) -> None:
-        for worker in (self._library_worker, self._games_worker, self._change_worker):
+        for worker in (self._library_worker, self._games_worker, self._change_worker, self._entries_worker):
             worker.close()
 
     def _notify(self, text: str) -> None:
@@ -142,6 +169,8 @@ class GameLibraryDialog(Adw.Dialog):
             row.set_title_lines(1)
             if app.get("name") in PROTECTED_APPS:
                 row.set_subtitle(_("The whole screen"))
+            elif app.get(MARKER):
+                row.set_subtitle(_("Ready-made entry, chosen above"))
             else:
                 remove = Gtk.Button(valign=Gtk.Align.CENTER, tooltip_text=_("Remove from Moonlight"))
                 remove.set_child(create_icon_widget("brp-trash-symbolic", size=16))
@@ -156,6 +185,114 @@ class GameLibraryDialog(Adw.Dialog):
             self._library_rows.append(row)
         self._present = in_library(self._games, list(state.apps))
         self._render_games()
+
+    # ── ready-made entries ──────────────────────────────────────────────
+    def _build_entries_group(self, page: Adw.PreferencesPage) -> None:
+        self.entries_group = Adw.PreferencesGroup(title=_("Moonlight Entries"))
+        self.entries_group.set_description(_("What the other device can choose besides your games."))
+        page.add(self.entries_group)
+
+        desktop = Adw.ActionRow(title=DESKTOP_NAME, subtitle=_("The shared screen, at the quality chosen on the other device. Always offered."))
+        desktop.add_prefix(create_icon_widget("brp-computer-symbolic", size=16))
+        self.entries_group.add(desktop)
+
+        self.low_row = Adw.SwitchRow(title=DESKTOP_LOW_NAME)
+        self.low_row.add_prefix(create_icon_widget("brp-network-wireless-symbolic", size=16))
+        self.entries_group.add(self.low_row)
+        self.low_rate_row = Adw.ComboRow(title=_("Desktop Low limit"), subtitle=_("Highest video bitrate of Desktop Low."))
+        self.low_rate_row.set_model(Gtk.StringList.new([bitrate_text(kbps) for kbps in LOW_BITRATES_KBPS]))
+        self.entries_group.add(self.low_rate_row)
+
+        self.steam_row = Adw.SwitchRow(title=STEAM_BIG_PICTURE_NAME)
+        self.steam_row.add_prefix(create_icon_widget("brp-steam-symbolic", size=16))
+        self.entries_group.add(self.steam_row)
+
+        self.screens_row = Adw.SwitchRow(title=_("One entry per screen"))
+        self.screens_row.add_prefix(create_icon_widget("brp-video-display-symbolic", size=16))
+        self.screens_row.set_subtitle_lines(0)
+        self.entries_group.add(self.screens_row)
+
+        self.entries_note = Adw.ActionRow(title=_("This Sunshine cannot limit one entry or choose its screen"))
+        self.entries_note.set_subtitle(
+            _(
+                "Desktop Low and one entry per screen need a Sunshine that reads a screen and a bitrate for each entry, such as the Big Remote Play build. With another Sunshine, choose the screen in Image and capture."
+            )
+        )
+        self.entries_note.set_subtitle_lines(0)
+        self.entries_note.add_prefix(create_icon_widget("brp-dialog-information-symbolic", size=16))
+        self.entries_note.set_visible(False)
+        self.entries_group.add(self.entries_note)
+
+        for row in (self.low_row, self.steam_row, self.screens_row):
+            row.set_sensitive(False)
+        self.low_rate_row.set_sensitive(False)
+        self._show_entry_settings(self._entries.settings(), supported=False, steam=False)
+        self.low_row.connect("notify::active", lambda *_a: self._entries_changed())
+        self.steam_row.connect("notify::active", lambda *_a: self._entries_changed())
+        self.screens_row.connect("notify::active", lambda *_a: self._entries_changed())
+        self.low_rate_row.connect("notify::selected", lambda *_a: self._entries_changed())
+        self._entries_worker.submit(self._entries.probe, self._entries_probed, failed=lambda _e: self._entries_probed((False, False)))
+
+    def _show_entry_settings(self, settings: dict, *, supported: bool, steam: bool) -> None:
+        self._entries_ready = False
+        settings = settings_from(settings)
+        screens = self._entries.screens()
+        self.low_row.set_active(settings["desktop_low"] and supported)
+        self.low_row.set_sensitive(supported)
+        self.low_rate_row.set_selected(LOW_BITRATES_KBPS.index(settings["low_kbps"]))
+        self.low_rate_row.set_visible(supported and settings["desktop_low"])
+        self.low_rate_row.set_sensitive(supported)
+        # TRANSLATORS: {rate} is a bitrate such as "3 Mbit/s".
+        self.low_row.set_subtitle(_("The same screen using at most {rate}, for slow or mobile connections.").format(rate=bitrate_text(settings["low_kbps"])))
+        self.steam_row.set_active(settings["steam_big_picture"] and steam)
+        self.steam_row.set_sensitive(steam)
+        self.steam_row.set_subtitle(_("Opens Steam on the TV screen when the stream starts and closes it when it ends.") if steam else _("Steam is not installed on this computer."))
+        many = len(screens) > 1
+        self.screens_row.set_active(settings["monitors"] and supported and many)
+        self.screens_row.set_sensitive(supported and many)
+        if many:
+            # TRANSLATORS: one line per screen: "01 - Monitor: LG ULTRAWIDE (DP-1)".
+            lines = [_("{entry}: {screen} ({connector})").format(entry=monitor_entry_name(number), screen=screen.label, connector=screen.connector) for number, screen in enumerate(screens, start=1)]
+            self.screens_row.set_subtitle("\n".join(lines))
+        else:
+            self.screens_row.set_subtitle(_("Only one screen is connected: Desktop already shows it."))
+        self.entries_note.set_visible(not supported)
+        self._entries_ready = True
+
+    def _entries_probed(self, result: tuple[bool, bool]) -> None:
+        supported, steam = result
+        self._entry_support = (supported, steam)
+        self._show_entry_settings(self._entries.settings(), supported=supported, steam=steam)
+
+    def _entries_changed(self) -> None:
+        if not self._entries_ready:
+            return
+        supported, steam = getattr(self, "_entry_support", (False, False))
+        settings = settings_from(self._entries.settings())
+        if supported:
+            settings["desktop_low"] = self.low_row.get_active()
+            settings["monitors"] = self.screens_row.get_active()
+            selected = self.low_rate_row.get_selected()
+            if 0 <= selected < len(LOW_BITRATES_KBPS):
+                settings["low_kbps"] = LOW_BITRATES_KBPS[selected]
+        if steam:
+            settings["steam_big_picture"] = self.steam_row.get_active()
+        self._entries.save_settings(settings)
+        self._show_entry_settings(settings, supported=supported, steam=steam)
+        screens = self._entries.screens()
+
+        def done(result) -> None:
+            change, skipped = result
+            if not change.ok:
+                self._notify(_("The game library was not changed. It was left as it was."))
+            elif skipped:
+                # TRANSLATORS: {names} lists entries such as "Steam Big Picture".
+                self._notify(_("Your own {names} was kept as it is.").format(names=", ".join(skipped)))
+            elif change.count:
+                self._notify(_("Moonlight entries updated.") if change.source == SERVER else _("Moonlight entries updated. They appear in Moonlight the next time you share."))
+            self.refresh_library()
+
+        self._entries_worker.submit(lambda: self._entries.sync(settings, screens), done, failed=lambda _e: done((Change(False), ())))
 
     # ── installed games ─────────────────────────────────────────────────
     def search_games(self) -> None:
