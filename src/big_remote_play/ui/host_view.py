@@ -120,6 +120,17 @@ def internet_access_rows(endpoints, *, toast=None) -> list[Gtk.Widget]:
         row.set_subtitle_lines(0)
         set_row_icon(row, icon)
         rows.append(row)
+    # The address typed in Moonlight, in sight: reported 2026-11-17, a phone
+    # added the Headscale server's internet name and Moonlight could not
+    # connect. The private address works only from the same private network.
+    if device.best_address:
+        moonlight = copy_row(_("Address for Moonlight"), device.best_address, icon="brp-network-private-symbolic", toast=toast)
+        moonlight.set_subtitle(
+            # TRANSLATORS: {address} is this computer's private address (100.64.0.1); {provider} is Tailscale, Headscale or ZeroTier.
+            _("{address} — on devices connected to {provider}. A server's internet address does not work in Moonlight.").format(address=device.best_address, provider=provider.display_name)
+        )
+        moonlight.set_subtitle_lines(0)
+        rows.append(moonlight)
     text = connection_information(endpoints)
     copy = Adw.ButtonRow(title=_("Copy connection information"))
     copy.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Copies this computer's name and private address, to send to the other person")])

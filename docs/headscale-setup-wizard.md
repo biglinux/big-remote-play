@@ -403,6 +403,20 @@ server, 4. use this server, with **Copy address**. **Check for the other
 device** marks the step once Headscale lists another device. **Finish** returns
 to the Headscale page, which now shows the connection.
 
+### A phone or tablet
+
+Reported on 2026-11-17: a phone added the Headscale server's internet name
+(`ruscher.dpdns.org`) in Moonlight and got *Could not connect*. That name is
+the coordination server, not the game PC, and the PC's game ports are not open
+to the internet (nor should they be). **Add another device** now has **On a
+phone or tablet**: install the Tailscale app; before signing in, choose *Use
+an alternate server* and scan the QR code of the server address (or type it);
+sign in and approve the phone on the same page (or give it a one-time key);
+then, in Moonlight, add this computer's **private address**, which the page
+reads from the Headscale status (*Type 100.64.0.1, not the server's
+address*). **Share → Overview** shows the same private address as **Address
+for Moonlight**, with **Copy**, instead of only inside *Connection details*.
+
 ## The Headscale page's Advanced tab
 
 **Headscale server**:

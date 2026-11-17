@@ -1519,7 +1519,7 @@ class HeadscaleWizard:
         copy = _button(_("Copy address"), lambda: self._copy(server), suggested=True)
         self.key_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.device_status = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        widgets: list[Gtk.Widget] = [steps, _actions(copy)]
+        widgets: list[Gtk.Widget] = [steps, _actions(copy), *self._phone_steps(server)]
         if self._api_key():
             widgets.append(
                 _group(
@@ -1548,6 +1548,53 @@ class HeadscaleWizard:
         widgets.append(self.device_status)
         widgets.append(_actions(_button(_("Check for the other device"), self._check_devices), _button(_("Finish"), self.finish, suggested=True)))
         return self._page("hs-another-device", _("Add another device"), _("Add another device"), "", *widgets, step="another_device")
+
+    def _phone_steps(self, server: str) -> list[Gtk.Widget]:
+        """A phone joins with the Tailscale app; Moonlight then uses this computer's private address.
+
+        Reported 2026-11-17: a phone added the server's internet name in
+        Moonlight ("could not connect"): that name is the Headscale server,
+        not the game PC, and it is not on the private network.
+        """
+        from .network_common import qr_code
+
+        self.phone_address = message_row(_("4. In Moonlight, add this computer"), _("Checking this computer's private address…"), "brp-computer-symbolic")
+        group = _group(
+            _("On a phone or tablet"),
+            _("The phone joins the same private network with the Tailscale app, then Moonlight uses this computer's private address."),
+            message_row(_("1. Install the Tailscale app"), _("From Google Play or the App Store."), "brp-network-private-symbolic"),
+            message_row(
+                _("2. Use this server"),
+                # TRANSLATORS: Tailscale app menu names; they can vary with the app version.
+                _("Before signing in, open the app's menu (⋮ or Settings → Accounts), choose “Use an alternate server” and scan or type: {server}").format(server=server),
+                "brp-network-server-symbolic",
+            ),
+            message_row(_("3. Sign in"), _("Approve the phone below when it asks to join, or give it a one-time key."), "brp-emblem-ok-symbolic"),
+            self.phone_address,
+        )
+        widgets: list[Gtk.Widget] = [group]
+        if server:
+            try:
+                widgets.append(qr_code(server, size=180, description=_("QR code of the server address for the Tailscale app")))
+            except ValueError:
+                pass
+
+        def address():
+            status = self.service_factory().status(ProviderId.HEADSCALE)
+            device = getattr(status, "self_device", None)
+            return getattr(device, "best_address", "") or ""
+
+        def show(value: str) -> None:
+            if value:
+                self.phone_address.set_subtitle(
+                    # TRANSLATORS: {address} is this computer's private address, such as 100.64.0.1.
+                    _("Type {address}, not the server's address. It works while the phone is connected to this network.").format(address=value)
+                )
+            else:
+                self.phone_address.set_subtitle(_("Use this computer's private address shown in Share, not the server's address."))
+
+        self.worker.submit(address, show, failed=lambda _error: show(""))
+        return widgets
 
     def _copy(self, text: str) -> None:
         from .network_common import copy_to_clipboard

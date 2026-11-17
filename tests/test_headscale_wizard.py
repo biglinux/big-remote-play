@@ -722,3 +722,25 @@ def test_the_owner_gets_real_commands_never_a_placeholder_user(ui, tmp_path):
     assert "sudo headscale users create player" in content
     assert "sudo headscale auth register --auth-id hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user player" in content
     assert "USER" not in content.replace("users", "").replace("--user player", "")
+
+
+def test_a_phone_is_told_to_use_this_computers_private_address_not_the_server(ui, tmp_path):
+    """Reported 2026-11-17: Moonlight on a phone was given the server's internet
+    name (the Headscale server) and could not connect."""
+    service = WizardService([ProviderStatus(P.HEADSCALE, S.CONNECTED, self_device=PeerDevice("game-pc", ("100.64.0.1",), is_self=True))])
+    wiz = wizard(ui, tmp_path, service=service)
+    wiz.progress = SetupProgress(mode="this_computer", domain=DOMAIN, address_kind="domain", user="player")
+    wiz._push(wiz._another_device_page())
+    content = texts(visible(ui))
+    assert "On a phone or tablet" in content and "Use an alternate server" in content
+    assert wait(lambda: "Type 100.64.0.1, not the server's address" in texts(visible(ui)))
+    found, stack = [], [visible(ui)]
+    while stack:
+        widget = stack.pop()
+        if getattr(widget, "_brp_qr_text", None):
+            found.append(widget._brp_qr_text)
+        child = widget.get_first_child()
+        while child is not None:
+            stack.append(child)
+            child = child.get_next_sibling()
+    assert found == [f"https://{DOMAIN}"]

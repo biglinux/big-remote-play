@@ -102,3 +102,19 @@ def test_pictures_nobody_uses_are_removed(home):
     old = box_art.entry_art("desktop", "Old")
     assert box_art.forget_unused([kept]) == 1
     assert Path(kept).is_file() and not Path(old).exists()
+
+
+def test_share_shows_the_address_moonlight_needs(home) -> None:
+    """The private address is in sight, not only inside Connection details."""
+    from types import SimpleNamespace
+
+    gi = pytest.importorskip("gi")
+    gi.require_version("Gtk", "4.0")
+    gi.require_version("Adw", "1")
+    from big_remote_play.ui.host_view import internet_access_rows
+
+    provider = SimpleNamespace(display_name="Headscale")
+    device = SimpleNamespace(name="ruscher-wmaker", best_address="100.64.0.1", dns_name="ruscher-wmaker.brp.internal")
+    rows = internet_access_rows([(provider, device)])
+    titles = {row.get_title(): row.get_subtitle() for row in rows if hasattr(row, "get_subtitle")}
+    assert "100.64.0.1" in titles["Address for Moonlight"] and "Headscale" in titles["Address for Moonlight"]
