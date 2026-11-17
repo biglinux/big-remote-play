@@ -4,7 +4,8 @@
 
 | Verificação | Resultado |
 |---|---|
-| Suíte completa (Xvfb + D-Bus) | 714 aprovados; 1 falha de texto fixo (nomes de entrada), corrigida com constantes e conferida com `check_hardcoded_text.py` (0) |
+| Suíte completa (Xvfb + D-Bus) | 1818 aprovados, 0 falhas |
+| `make check-i18n`, `make metadata-check` | 32 catálogos completos, 0 achados |
 | `make lint`, `make typecheck` | sem erros (avisos de tipo: 6 → 4) |
 | Novos testes | `test_moonlight_entries.py` (11), `test_monitor_names.py` (6), `test_install_session.py` (2), credenciais sem chaveiro (6), pareamento sem chaveiro (2) |
 
