@@ -220,6 +220,29 @@ def test_on_wlmaker_the_phone_has_a_mouse_without_opening_anything(touch, monkey
     assert ("show", True) not in FakeKeyboard.log and ("keyboard", True) not in FakeKeyboard.log
 
 
+def test_close_while_a_phone_plays_keeps_its_mouse(touch, monkeypatch) -> None:
+    """Close hides the windows; only the last device leaving ends the phone mouse."""
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "wlmaker")
+    touch.load({})
+    touch.on_connections(1)
+    assert wait(lambda: ("configure", "mouse", "DP-1") in FakeKeyboard.log)
+    touch.run_action("close")
+    assert wait(lambda: ("show", False) in FakeKeyboard.log)
+    assert ("configure", "exclusive", "") not in FakeKeyboard.log
+    touch.on_connections(0)
+    assert wait(lambda: ("configure", "exclusive", "") in FakeKeyboard.log)
+
+
+def test_the_reset_follows_the_mode_applied_not_the_mode_chosen_since(touch, monkeypatch) -> None:
+    monkeypatch.setenv("XDG_CURRENT_DESKTOP", "wlmaker")
+    touch.load({})
+    touch.on_connections(1)
+    assert wait(lambda: ("configure", "mouse", "DP-1") in FakeKeyboard.log)
+    touch.load({"touch_mode": "gamepad"})  # changed during the session
+    touch.on_connections(0)
+    assert wait(lambda: ("configure", "exclusive", "") in FakeKeyboard.log)
+
+
 def test_elsewhere_the_desktop_keeps_the_touches_with_everything_hidden(touch, monkeypatch) -> None:
     monkeypatch.setenv("XDG_CURRENT_DESKTOP", "KDE")
     touch.load({"touch_mode": "hybrid", "touch_open_on_connect": False})
