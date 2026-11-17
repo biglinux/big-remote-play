@@ -9,11 +9,15 @@ the most prominent control. Release checks are in
 ## Layout
 
 ```text
-Streaming                         Secure connection
-  Sunshine   (Share)                Tailscale
-  Moonlight  (Connect)              ZeroTier
-                                    Headscale
+Services
+  Sunshine   (Share) or Moonlight (Connect)
+  Tailscale
+  ZeroTier
+  Headscale
 ```
+
+One **Services** heading sits above the first visible row, below the
+navigation (Home · Streaming · Secure connection), as in AshyWall's sidebar.
 
 - **Connect your devices** shows the same cards as Share and Connect: the
   streaming component of the remembered task (Sunshine or Moonlight) and
@@ -125,20 +129,16 @@ account and private addresses are never shown on the card.
 
 ## Visual and accessibility contract
 
-- One 1 px boundary in every state. Active: accent-tinted surface, accent
-  border, accent icon tile and a check icon. Off, missing and checking: neutral
-  surface and a neutral (not faded) icon tile with a small dot. Attention and
-  error: warning/error border and a warning icon.
+- A service is an ordinary sidebar row, not a card: its symbolic icon, its name,
+  the state in words as the subtitle and a small state icon at the end. No
+  border, no tinted surface; hover and press use the sidebar's quiet
+  highlight. Active: a green check icon. Starting or ready: an accent dot.
+  Attention and error: a warning icon. Off, missing and checking: a neutral dot.
 - The state is always written; colour and icon only reinforce it. The
   accessible description is state, second line and service purpose.
-- Keyboard focus draws a separate 2 px ring on `:focus-visible` only. A card
-  that merely holds focus (after a click or a page change) keeps its thin
-  border. The same rule applies to the Home and Guided setup choice cards.
-- Motion: 200 ms colour/border transitions and one 420 ms fading ring when a
-  card becomes active. Nothing loops. `@media (prefers-reduced-motion:
-  reduce)` removes them, and GTK drops them when animations are disabled.
-- High contrast: full-contrast 1 px borders, an inset ring for active cards and
-  full-contrast headings and icons.
-- The **Gamer** appearance (`gamer.css`) repeats the tone rules with its
-  palette: an active card is lit, the rest stay quiet; see
+- Keyboard focus draws a 2 px ring on `:focus-visible` only.
+- Motion: none. A state changes in place, without transitions or animation.
+- High contrast: full-contrast subtitle, state icon and focus ring.
+- The **Gamer** appearance (`gamer.css`) keeps the same rows and lights the
+  active service's icon in cyan; see
   [visual design](visual-design.md#component-mapping).

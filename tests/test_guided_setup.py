@@ -263,12 +263,16 @@ def test_back_goes_one_question_back_and_restarting_is_clean(ui):
 # ── sidebar ──────────────────────────────────────────────────────────────
 
 
-def test_sidebar_groups_are_separated_quietly(ui):
+def test_sidebar_groups_have_quiet_headings(ui):
+    """As in AshyWall: Home alone, then a heading above each group of places."""
     rows = {page: row for row, page in ui._nav_page_by_row.items()}
     assert rows["welcome"].get_header() is None
-    assert isinstance(rows["host"].get_header(), Gtk.Separator)
     assert rows["guest"].get_header() is None
-    assert isinstance(rows["vpn_selector"].get_header(), Gtk.Separator)
+    for page in ("host", "vpn_selector"):
+        heading = rows[page].get_header()
+        assert isinstance(heading, Gtk.Label) and heading.get_label()
+        assert heading.get_accessible_role() == Gtk.AccessibleRole.HEADING
+    assert rows["host"].get_header().get_label() != rows["vpn_selector"].get_header().get_label()
 
 
 def test_sidebar_internet_item_always_opens_the_internet_page(ui):

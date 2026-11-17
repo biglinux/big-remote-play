@@ -239,9 +239,9 @@ class GuestView(Gtk.Box):
 
         # One question per page: which computer. Address and PIN are not rival
         # tabs — they are what the page offers next when no computer answers.
+        # The computers are the cards; the list itself sits on the page, as
+        # AshyWall's gallery does, instead of a card holding cards.
         self.connect_card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.connect_card.add_css_class("card")
-        self.connect_card.add_css_class("padded")
         self.connect_card.append(self.create_discover_page())
 
         reset_btn = Gtk.Button(icon_name="brp-edit-undo-symbolic")
@@ -2345,7 +2345,8 @@ class GuestView(Gtk.Box):
         from big_remote_play.guest.local_screens import local_screens, placement_supported
 
         row = self.local_screen_row
-        settings = self.config.get("guest", {}) if isinstance(self.config.get("guest", {}), dict) else {}
+        stored = self.config.get("guest", {})
+        settings: dict = stored if isinstance(stored, dict) else {}
         self._saved_local_screen = str(settings.get("local_screen", "") or "")
         supported = placement_supported()
         try:

@@ -336,16 +336,17 @@ def test_switching_task_swaps_only_the_streaming_card(live):
     assert card(live, "tailscale").tone == "active"  # kept while the next read runs
 
 
-def test_cards_are_grouped_under_two_headings(live):
-    live.navigate_to("guest")
-    drain()
-    headers = {}
-    for service_id, row in live._status_rows.items():
-        header = row.get_header()
-        headers[service_id] = header.get_label() if isinstance(header, Gtk.Label) else None
-    assert headers["moonlight"] and headers["tailscale"]
-    assert headers["moonlight"] != headers["tailscale"]
-    assert headers["zerotier"] is None and headers["headscale"] is None
+def test_services_have_one_heading_above_the_first_visible_row(live):
+    for page, first in (("guest", "moonlight"), ("host", "sunshine")):
+        live.navigate_to(page)
+        drain()
+        headers = {}
+        for service_id, row in live._status_rows.items():
+            header = row.get_header()
+            headers[service_id] = header if isinstance(header, Gtk.Label) else None
+        assert headers[first] is not None and headers[first].get_label()
+        assert headers[first].get_accessible_role() == Gtk.AccessibleRole.HEADING
+        assert all(headers[sid] is None for sid in ("tailscale", "zerotier", "headscale"))
 
 
 def test_home_shows_no_service_cards_in_the_sidebar(live):
@@ -575,8 +576,10 @@ def test_state_motion_is_short_one_shot_and_can_be_reduced():
     for duration in re.findall(r"(?:transition|animation):[^;]*?(\d+)ms", css):
         assert int(duration) <= 420
     reduced = css.split("@media (prefers-reduced-motion: reduce)", 1)[1]
-    assert "transition: none" in reduced and "animation: none" in reduced
-    assert ".role-card" in reduced and "brp-service-card" in reduced
+    assert "transition: none" in reduced and ".role-card" in reduced
+    # Service rows change state in place without any motion at all.
+    service_rules = [rule for rule in css.split("}") if "brp-service-card" in rule]
+    assert service_rules and not any("transition" in rule or "animation" in rule for rule in service_rules)
 
 
 def test_the_connect_your_devices_sidebar_lists_every_method_with_its_own_state(live):

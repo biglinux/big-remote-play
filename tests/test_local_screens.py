@@ -7,6 +7,7 @@ filled the 2560 px screen chosen with Qt's -qwindowgeometry.
 
 from __future__ import annotations
 
+import io
 from types import SimpleNamespace
 
 from big_remote_play.guest import moonlight_client
@@ -70,7 +71,7 @@ def _commands(monkeypatch, **options):
     commands = []
 
     class Process:
-        stdout = iter(())
+        stdout = io.StringIO("")  # a text pipe that is already at its end
 
         def poll(self):
             return 0

@@ -21,7 +21,7 @@ previous state is kept in a private runtime file so a crash can be undone.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 import json
 import logging
@@ -251,15 +251,32 @@ def read_client_report(path: Path | None = None) -> ClientReport | None:
 Runner = Callable[[list[str]], "subprocess.CompletedProcess[str]"]
 
 
+# kscreen-doctor answers in well under a second on Plasma. Measured on
+# 2026-11-17: outside Plasma (wlmaker) it never answers, and the old 20-second
+# limit, hit twice per connection, made every stream wait 20 s to start.
+TOOL_TIMEOUT_SECONDS = 5
+
+
 def _run(argv: list[str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(argv, capture_output=True, text=True, timeout=20, check=False)
+    return subprocess.run(argv, capture_output=True, text=True, timeout=TOOL_TIMEOUT_SECONDS, check=False)
+
+
+def plasma_session(env: Mapping[str, str] | None = None) -> bool:
+    """kscreen-doctor talks to KDE Plasma's KScreen; anywhere else it only hangs."""
+    env = os.environ if env is None else env
+    desktops = {part.strip().lower() for part in env.get("XDG_CURRENT_DESKTOP", "").split(":")}
+    return "kde" in desktops or env.get("KDE_FULL_SESSION", "").lower() == "true"
+
+
+def default_tool(env: Mapping[str, str] | None = None, which: Callable[[str], str | None] = shutil.which) -> str:
+    return (which("kscreen-doctor") or "") if plasma_session(env) else ""
 
 
 class StreamDisplay:
     def __init__(self, *, runner: Runner = _run, state: Path | None = None, tool: str | None = None) -> None:
         self._runner = runner
         self._state = state or state_file()
-        self._tool = tool if tool is not None else (shutil.which("kscreen-doctor") or "")
+        self._tool = default_tool() if tool is None else tool
 
     @property
     def available(self) -> bool:
@@ -305,7 +322,12 @@ class StreamDisplay:
             mode = next((item for item in screen.modes if item.mode_id == mode_id), None)
             width, height = (mode.width, mode.height) if mode else (0, 0)
             hdr = False if f"output.{screen.name}.hdr.disable" in plan.apply else screen.hdr
-        report = ClientReport(request.width, request.height, request.fps, request.hdr, screen.name if screen else "", width, height, hdr, time.time())
+        # The screen this session captures, also where kscreen-doctor is not
+        # used (wlmaker): Touch controls put the on-screen keyboard and
+        # controller there (a "02 - Monitor" entry streams DP-2, not the
+        # screen chosen in Share).
+        name = screen.name if screen else (target or "")
+        report = ClientReport(request.width, request.height, request.fps, request.hdr, name, width, height, hdr, time.time())
         target_path = path or client_file()
         target_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
         secure_write_text(str(target_path), json.dumps(report.__dict__))

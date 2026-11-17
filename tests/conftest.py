@@ -59,6 +59,19 @@ def _isolated_user_config(tmp_path_factory, monkeypatch):
     from big_remote_play.host import stream_display
 
     monkeypatch.setattr(stream_display.StreamDisplay, "__init__", _offline_display_init(stream_display.StreamDisplay.__init__))
+    # Nor the home router: no UPnP request leaves a test (router_ports).
+    from big_remote_play.host import router_ports
+
+    def _no_router(argv, **_kwargs):
+        import subprocess
+
+        return subprocess.CompletedProcess(argv, 1, "", "router access is disabled in tests")
+
+    def _no_fetch(url):
+        raise OSError("router access is disabled in tests")
+
+    monkeypatch.setattr(router_ports, "_run", _no_router)
+    monkeypatch.setattr(router_ports, "_fetch", _no_fetch)
     # Nor a Sunshine that may be running on the developer machine.
     from big_remote_play.host.sunshine_manager import SunshineHost
 

@@ -33,8 +33,9 @@ def wait(predicate, timeout=2.0):
 class FakeProcess:
     instances: list["FakeProcess"] = []
 
-    def __init__(self, delay, on_event):
+    def __init__(self, delay, on_event, pause_touch=True):
         self.delay = delay
+        self.pause_touch = pause_touch
         self.on_event = on_event
         self.started = self.stopped = False
         self.delays: list[int] = []
@@ -184,3 +185,16 @@ def test_share_preferences_offer_it_and_save_it_with_the_other_host_settings(ui)
     host.load_settings()
     assert controls.enabled and controls.delay == 3
     controls.switch_row.set_active(False)
+
+
+def test_touch_controls_restart_the_helper_so_the_touchscreen_is_never_paused(controls) -> None:
+    controls.load({"input_priority": True})
+    controls.sync(hosting=True, source="desktop")
+    first = FakeProcess.instances[-1]
+    assert first.pause_touch is True
+    controls.set_pause_touch(False)
+    assert first.stopped and FakeProcess.instances[-1] is not first
+    assert FakeProcess.instances[-1].pause_touch is False and FakeProcess.instances[-1].started
+    count = len(FakeProcess.instances)
+    controls.set_pause_touch(False)  # unchanged: no restart
+    assert len(FakeProcess.instances) == count

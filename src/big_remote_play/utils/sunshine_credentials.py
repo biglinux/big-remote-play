@@ -3,6 +3,15 @@
 The Sunshine server owns its credential database. Big Remote Play only needs a
 local copy to authenticate API calls; that copy belongs in the user's Secret
 Service wallet, not in ``sunshine.conf``.
+
+Without any Secret Service (a Window Maker/wlmaker session, measured on
+2026-11-17: libsecret loads but every lookup fails), the copy is kept in a
+private file instead: ``~/.config/big-remote-play/sunshine/api-password``,
+mode 0600 in a 0700 directory, written atomically. Without it, every new
+session forgot the password, Big Remote Play could no longer ask Sunshine
+who is waiting to pair, and the "New connection request" PIN window never
+opened. When a keyring appears later, the password moves into it and the
+file is removed.
 """
 
 from __future__ import annotations
@@ -12,6 +21,9 @@ from dataclasses import dataclass
 import logging
 from pathlib import Path
 import threading
+
+import json
+import os
 
 from big_remote_play import paths
 from big_remote_play.utils.secret_store import SecretKey, SecretStore, SecretStoreTimeout, SecretStoreUnavailable, retry_keyring
@@ -29,6 +41,70 @@ API_CONFIG_DEFAULTS: dict[str, str] = {}  # The API is built in; no enabling key
 
 def default_sunshine_conf_path() -> Path:
     return paths.SUNSHINE_CONF
+
+
+def default_local_password_path() -> Path:
+    return paths.SUNSHINE_CONFIG_DIR / "api-password"
+
+
+def read_local_credentials(path: Path) -> tuple[str, str] | None:
+    """The user and password kept in the private file, or ``None``.
+
+    A file that is not ours (unparseable, wrong shape) is ignored, never
+    rewritten; a file others could read is first made owner-only.
+    """
+    try:
+        info = path.stat()
+    except OSError:
+        return None
+    if info.st_uid != os.getuid():
+        _log.warning("Ignoring %s: it belongs to another user", path)
+        return None
+    if info.st_mode & 0o077:
+        try:
+            os.chmod(path, 0o600)
+        except OSError:
+            return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        _log.warning("Cannot read the saved Sunshine password file; it was left as it is.")
+        return None
+    if not isinstance(data, dict):
+        return None
+    user, password = data.get("user"), data.get("password")
+    if isinstance(user, str) and isinstance(password, str) and user.strip() and password:
+        return user.strip(), password
+    return None
+
+
+def write_local_credentials(path: Path, user: str, password: str) -> None:
+    """Owner-only (0600) and atomic: a half-written password never exists."""
+    secure_write_text(str(path), json.dumps({"user": user, "password": password}))
+
+
+def keyring_absent(store: SecretStore) -> bool:
+    """True only when no keyring answers at all (not a locked or refusing one).
+
+    A keyring whose own creation prompt was dismissed still answers lookups;
+    the password must then not go to a file (Secret Service is there).
+    """
+    try:
+        if not store.is_available():
+            return True
+        store.lookup(SUNSHINE_PASSWORD_KEY)
+    except SecretStoreTimeout:
+        return False
+    except SecretStoreUnavailable:
+        return True
+    return False
+
+
+def clear_local_credentials(path: Path) -> None:
+    try:
+        path.unlink()
+    except FileNotFoundError:
+        pass
 
 
 def _read_lines(conf_path: Path) -> list[str]:
@@ -177,7 +253,11 @@ KEYRING_UNAVAILABLE = "unavailable"  # no Secret Service (or it refused)
 KEYRING_UNRESPONSIVE = "unresponsive"  # did not answer in time (locked, prompting)
 
 SAVED = "saved"  # in the keyring, used from now on
-SESSION_ONLY = "session"  # used until the app closes; the keyring could not keep it
+SAVED_LOCAL = "local"  # no keyring exists: in the private owner-only file
+SESSION_ONLY = "session"  # used until the app closes; nothing could keep it
+
+LOCATION_KEYRING = "keyring"
+LOCATION_FILE = "file"
 
 
 @dataclass(frozen=True)
@@ -189,6 +269,7 @@ class CredentialStatus:
     persisted: bool  # the keyring holds it
     keyring: str
     rejected: bool  # Sunshine refused the held password
+    location: str = ""  # LOCATION_KEYRING, LOCATION_FILE or "" (not kept)
 
 
 class SunshineCredentials:
@@ -205,8 +286,16 @@ class SunshineCredentials:
     is still used for this session and never written anywhere else.
     """
 
-    def __init__(self, conf_path: Callable[[], Path] | None = None, *, store_factory: Callable[[], SecretStore] | None = None) -> None:
+    def __init__(
+        self,
+        conf_path: Callable[[], Path] | None = None,
+        *,
+        store_factory: Callable[[], SecretStore] | None = None,
+        local_path: Callable[[], Path] | None = None,
+    ) -> None:
         self._conf_path = conf_path or default_sunshine_conf_path
+        self._local_path = local_path or default_local_password_path
+        self._location = ""
         self._store_factory = store_factory or SecretStore
         self._state_lock = threading.Lock()
         # Keyring and sunshine.conf writes happen one at a time.
@@ -228,7 +317,7 @@ class SunshineCredentials:
     def status(self) -> CredentialStatus:
         with self._state_lock:
             user = self._credentials[0] if self._credentials else ""
-            return CredentialStatus(user, self._credentials is not None and not self._rejected, self._persisted, self._keyring, self._rejected)
+            return CredentialStatus(user, self._credentials is not None and not self._rejected, self._persisted, self._keyring, self._rejected, self._location if self._persisted else "")
 
     # worker thread --------------------------------------------------------
     def get(self) -> tuple[str, str] | None:
@@ -265,6 +354,18 @@ class SunshineCredentials:
                 keyring = KEYRING_UNRESPONSIVE
             except SecretStoreUnavailable:
                 keyring = KEYRING_UNAVAILABLE
+            location = LOCATION_KEYRING if found else ""
+            local = read_local_credentials(self._local_path())
+            if found is None and local is not None:
+                found, persisted, location = local, True, LOCATION_FILE
+                if keyring == KEYRING_AVAILABLE:
+                    # A keyring exists now: the password moves into it.
+                    try:
+                        save_sunshine_credentials(local[0], local[1], conf_path=path, secret_store=store)
+                        clear_local_credentials(self._local_path())
+                        location = LOCATION_KEYRING
+                    except (OSError, SecretStoreUnavailable):
+                        pass
             legacy = _legacy_credentials(config)
             if found is None and legacy is not None:
                 found = legacy
@@ -273,7 +374,7 @@ class SunshineCredentials:
                     # keeps it if the keyring cannot (never lose a credential).
                     try:
                         save_sunshine_credentials(legacy[0], legacy[1], conf_path=path, secret_store=store)
-                        persisted = True
+                        persisted, location = True, LOCATION_KEYRING
                     except (OSError, SecretStoreUnavailable):
                         pass
             with self._state_lock:
@@ -285,12 +386,13 @@ class SunshineCredentials:
                 if self._credentials is None and found:
                     self._credentials = found
                     self._persisted = persisted
+                    self._location = location
                 return None if self._rejected else self._credentials
 
     def remember(self, user: str, password: str, *, persist: bool = True) -> str:
         """Use these (already verified) credentials; keep them in the keyring if asked.
 
-        Returns :data:`SAVED` or :data:`SESSION_ONLY`. The password is held in
+        Returns :data:`SAVED`, :data:`SAVED_LOCAL` or :data:`SESSION_ONLY`. The password is held in
         memory first, so a keyring failure never undoes a working login and is
         never mistaken for a pairing failure.
         """
@@ -302,9 +404,46 @@ class SunshineCredentials:
             self._loaded = True
             self._rejected = False
             self._persisted = False
+            self._location = ""
         if not persist:
             return SESSION_ONLY
         return self.persist()
+
+    def save_local(self, user: str, password: str) -> bool:
+        """No keyring exists: keep these credentials in the private file (worker thread).
+
+        Used for the user Big Remote Play creates on a first Sunshine; the
+        file is written before Sunshine gets the password, so it is never lost.
+        """
+        with self._io_lock:
+            try:
+                write_local_credentials(self._local_path(), user, password)
+            except OSError as error:
+                _log.warning("Cannot keep the Sunshine password in a private file: %s", type(error).__name__)
+                return False
+            try:
+                _rewrite_config(self._conf_path(), {"sunshine_user": user}, LEGACY_SECRET_KEYS)
+            except OSError:
+                pass
+        with self._state_lock:
+            self._credentials = (user, password)
+            self._loaded = True
+            self._rejected = False
+            self._persisted = True
+            self._location = LOCATION_FILE
+        return True
+
+    def forget_local(self) -> None:
+        """Remove the private file (a password Sunshine refused to take)."""
+        with self._io_lock:
+            try:
+                clear_local_credentials(self._local_path())
+            except OSError:
+                pass
+        with self._state_lock:
+            if self._location == LOCATION_FILE:
+                self._persisted = False
+                self._location = ""
 
     def note_keyring(self, state: str) -> None:
         """Record what a keyring call made elsewhere found out."""
@@ -319,6 +458,7 @@ class SunshineCredentials:
             self._rejected = False
             self._persisted = True
             self._keyring = KEYRING_AVAILABLE
+            self._location = LOCATION_KEYRING
 
     def persist(self) -> str:
         """Write the held credentials to the keyring (worker thread)."""
@@ -334,6 +474,8 @@ class SunshineCredentials:
                 with self._state_lock:
                     self._keyring = KEYRING_AVAILABLE
                     self._persisted = self._credentials == credentials
+                    if self._persisted:
+                        self._location = LOCATION_KEYRING
                 callback = self.on_change
                 if callback is not None:
                     callback()
@@ -347,11 +489,32 @@ class SunshineCredentials:
             except OSError as error:
                 # The keyring has it; sunshine.conf only names the user.
                 _log.warning("Sunshine user name not written to its configuration: %s", type(error).__name__)
+            local = False
+            if keyring == KEYRING_AVAILABLE:
+                try:
+                    clear_local_credentials(self._local_path())  # the keyring has it now
+                except OSError:
+                    pass
+            elif keyring == KEYRING_UNAVAILABLE and keyring_absent(self._store_factory()):
+                # No keyring at all (not a locked or refusing one): the private file keeps it.
+                try:
+                    write_local_credentials(self._local_path(), *credentials)
+                    _rewrite_config(self._conf_path(), {"sunshine_user": credentials[0]}, LEGACY_SECRET_KEYS)
+                    local = True
+                except OSError as error:
+                    _log.warning("Cannot keep the Sunshine password in a private file: %s", type(error).__name__)
             with self._state_lock:
                 self._keyring = keyring
                 # Saved only if these are still the credentials in use.
-                self._persisted = keyring == KEYRING_AVAILABLE and self._credentials == credentials
-                return SAVED if self._persisted else SESSION_ONLY
+                current = self._credentials == credentials
+                if keyring == KEYRING_AVAILABLE and current:
+                    self._persisted, self._location = True, LOCATION_KEYRING
+                    return SAVED
+                if local and current:
+                    self._persisted, self._location = True, LOCATION_FILE
+                    return SAVED_LOCAL
+                self._persisted, self._location = False, ""
+                return SESSION_ONLY
 
     def mark_rejected(self) -> None:
         """Sunshine answered 401: stop using the held password until a new one is given."""

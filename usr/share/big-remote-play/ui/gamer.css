@@ -112,15 +112,18 @@ headerbar {
     box-shadow: inset 3px 0 @brp_gamer_cyan;
 }
 .navigation-sidebar > row:selected image { color: @brp_gamer_cyan; }
-.brp-nav-separator { color: @brp_gamer_border_active; }
+.brp-sidebar-heading { color: @brp_gamer_text_secondary; }
 
 /* Home: the strongest expression of the remote-play identity. */
 .welcome-page {
     background-color: @brp_gamer_bg_secondary;
     background-image: linear-gradient(145deg, alpha(@brp_gamer_violet, 0.08), transparent 58%);
 }
+/* Gamer keeps Home's signature panel (the base design draws no panel). */
 .welcome-hero {
-    border-color: @brp_gamer_border_active;
+    padding: 26px 28px;
+    border-radius: 16px;
+    border: 1px solid @brp_gamer_border_active;
     background-color: @brp_gamer_surface;
     background-image: linear-gradient(120deg, alpha(@brp_gamer_violet, 0.28), alpha(@brp_gamer_magenta, 0.10) 58%, alpha(@brp_gamer_cyan, 0.09));
     box-shadow: 0 12px 32px @brp_gamer_shadow;
@@ -175,32 +178,14 @@ headerbar {
 .brp-step-number { color: @brp_gamer_cyan; background: alpha(@brp_gamer_cyan, 0.12); }
 .brp-metric { background: alpha(@brp_gamer_surface_elevated, 0.72); border: 1px solid @brp_gamer_border; }
 
-list.brp-service-list > row.brp-service-card {
-    background: alpha(@brp_gamer_surface, 0.94);
-    border-color: @brp_gamer_border;
-}
-list.brp-service-list > row.brp-service-card:hover { background: @brp_gamer_surface_secondary; }
-/* Like the Turbo preset: an active service is lit, the rest stay quiet. */
-list.brp-service-list > row.brp-service-card.active {
-    background-image: linear-gradient(135deg, alpha(@brp_gamer_cyan, 0.10), alpha(@brp_gamer_violet, 0.16));
-    border-color: alpha(@brp_gamer_cyan, 0.5);
-}
+/* Services are sidebar rows like every other place (same structure as the
+ * base design); Gamer only lights the active one in cyan. */
+list.brp-service-list > row.brp-service-card:hover { background-color: alpha(@brp_gamer_violet, 0.10); }
+list.brp-service-list > row.brp-service-card .brp-icon-tile { background: none; box-shadow: none; color: @brp_gamer_text_secondary; }
 list.brp-service-list > row.brp-service-card.active .brp-icon-tile { color: @brp_gamer_cyan; }
-list.brp-service-list > row.brp-service-card.inactive .brp-icon-tile,
-list.brp-service-list > row.brp-service-card.missing .brp-icon-tile,
-list.brp-service-list > row.brp-service-card.checking .brp-icon-tile {
-    color: @brp_gamer_text_secondary;
-    background-image: none;
-    background-color: alpha(@brp_gamer_text_secondary, 0.08);
-    box-shadow: inset 0 0 0 1px @brp_gamer_border;
-}
-list.brp-service-list > row.brp-service-card.starting { border-color: alpha(@brp_gamer_violet, 0.42); }
-list.brp-service-list > row.brp-service-card.attention { border-color: alpha(@brp_gamer_warning, 0.45); }
-list.brp-service-list > row.brp-service-card.error { border-color: alpha(@error_bg_color, 0.62); }
-list.brp-service-list > row.brp-service-card:focus-visible {
-    outline-color: alpha(@brp_gamer_focus, 0.8);
-    box-shadow: none;
-}
+list.brp-service-list > row.brp-service-card.active .brp-service-state { color: @brp_gamer_success; }
+list.brp-service-list > row.brp-service-card.attention .brp-service-state { color: @brp_gamer_warning; }
+list.brp-service-list > row.brp-service-card:focus-visible { outline-color: alpha(@brp_gamer_focus, 0.8); }
 
 /* Icon tiles distinguish host and receiver without recolouring routine icons. */
 .brp-icon-tile, .hero-icon-chip, .icon-chip {
@@ -250,6 +235,10 @@ scale > trough > highlight {
 .readiness-pill.needs-setup, .state-pill.attention { color: @brp_gamer_warning; background: alpha(@brp_gamer_warning, 0.13); }
 .state-pill.offline { color: @brp_gamer_text_secondary; background: alpha(@brp_gamer_text_secondary, 0.09); }
 .state-pill.starting { color: @brp_gamer_cyan; background: alpha(@brp_gamer_cyan, 0.12); }
+/* In the sidebar a task's state is quiet text at the end of its row. */
+.state-pill.brp-nav-state, .state-pill.brp-nav-state.offline { border: none; background: none; color: @brp_gamer_text_secondary; }
+.state-pill.brp-nav-state.online { color: @brp_gamer_success; }
+.state-pill.brp-nav-state.starting { color: @brp_gamer_cyan; }
 
 /* Elevated transient surfaces. */
 popover > contents, popover > arrow {

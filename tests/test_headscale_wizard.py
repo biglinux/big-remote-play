@@ -121,6 +121,8 @@ def fake_api(monkeypatch):
     FakeApi.accept = True
     monkeypatch.setattr(api, "HeadscaleApi", FakeApi)
     monkeypatch.setattr("big_remote_play.ui.headscale_wizard.default_user_name", lambda: "player")
+    # Hermetic: the developer's own /etc/headscale never decides a test.
+    monkeypatch.setattr("big_remote_play.private_network.headscale_server.serves_here", lambda url, **kwargs: "")
 
 
 def report(**values):
@@ -478,7 +480,7 @@ def test_asking_the_owner_shows_the_approval_command(ui, tmp_path):
     wiz.service.manager.connect_tailscale = join
     press(ui, "Ask to join")
     try:
-        assert wait(lambda: "headscale auth register --auth-id hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user friends" in texts(visible(ui)))
+        assert wait(lambda: "sudo headscale auth register --auth-id hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user friends" in texts(visible(ui)))
     finally:
         approved.set()
 
@@ -690,3 +692,96 @@ def test_a_wrong_or_expired_code_is_explained(ui, tmp_path):
     press(ui, "Approve")
     assert wait(lambda: "The code was not accepted." in texts(visible(ui)))
     assert not wiz.progress.is_done("another_device")
+
+
+def test_without_an_api_key_a_device_is_approved_on_the_server_here(ui, tmp_path, monkeypatch):
+    asked = []
+
+    def approve_here(url, user, code):
+        asked.append((url, user, code))
+        return HelperResult(True, "ok", {"NODE_NAME": "pixel-8"})
+
+    monkeypatch.setattr("big_remote_play.private_network.headscale_server.approve_here", approve_here)
+    wiz = wizard(ui, tmp_path)
+    wiz.progress = SetupProgress(mode="this_computer", domain=DOMAIN, address_kind="domain", user="ruscher")
+    wiz._push(wiz._another_device_page())
+    assert "Approve a device" in texts(visible(ui))
+    wiz.approval.entry.set_text("headscale auth register --auth-id hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user USERNAME")
+    press(ui, "Approve")
+    assert wait(lambda: "pixel-8 was added to your network." in texts(visible(ui)))
+    assert asked == [(f"https://{DOMAIN}", "ruscher", "hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX")]  # the network's user, never USERNAME
+    assert wiz.progress.is_done("another_device") and FakeApi.registered == []
+
+
+def test_a_dismissed_password_dialog_says_how_to_try_again(ui, tmp_path, monkeypatch):
+    monkeypatch.setattr("big_remote_play.private_network.headscale_server.approve_here", lambda url, user, code: HelperResult(False, "not_authorized"))
+    wiz = wizard(ui, tmp_path)
+    wiz.progress = SetupProgress(mode="this_computer", domain=DOMAIN, address_kind="domain", user="ruscher")
+    wiz._push(wiz._another_device_page())
+    wiz.approval.entry.set_text("hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX")
+    press(ui, "Approve")
+    assert wait(lambda: "Not approved" in texts(visible(ui)))
+    assert not wiz.progress.is_done("another_device")
+
+
+def test_a_server_elsewhere_without_a_key_shows_the_real_command(ui, tmp_path, monkeypatch):
+    monkeypatch.setattr("big_remote_play.private_network.headscale_server.approve_here", lambda url, user, code: None)
+    wiz = wizard(ui, tmp_path)
+    wiz.progress = SetupProgress(mode="another_server", domain=DOMAIN, address_kind="domain", user="ruscher")
+    wiz._push(wiz._another_device_page())
+    wiz.approval.entry.set_text("ABCDEFGHIJKLMNOPQRSTUVWX")
+    press(ui, "Approve")
+    assert wait(lambda: "sudo headscale auth register --auth-id hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user ruscher" in texts(visible(ui)))
+    assert "USERNAME" not in texts(visible(ui))
+
+
+def test_a_server_running_here_is_added_without_pasting_any_key(ui, tmp_path, monkeypatch):
+    """Reported 2026-11-17: the server set up on this computer was later checked
+    as "Another server" and step 6 asked for an API key the person never had."""
+    monkeypatch.setattr("big_remote_play.private_network.headscale_server.serves_here", lambda url, **kwargs: "127.0.0.1:8080" if url == f"https://{DOMAIN}" else "")
+    local = FakeLocal()
+    wiz = wizard(ui, tmp_path, local=local)
+    wiz.progress = SetupProgress(mode="another_server", domain=DOMAIN, address_kind="domain")
+    wiz._push(wiz._this_computer_page())
+    content = texts(visible(ui))
+    assert "The server runs on this computer" in content and "Use the API key" not in content
+    assert wiz.progress.mode == "this_computer" and wiz.progress.local_api == "http://127.0.0.1:8080"
+    press(ui, "Add this computer")
+    assert wait(lambda: "This computer is connected" in texts(visible(ui)))
+    assert local.calls == [("create-user", "player"), ("create-apikey",)]
+    assert FakeApi.created == [("http://127.0.0.1:8080", "1", 1)]
+    assert wiz.service.manager.joins == [(f"https://{DOMAIN}", "hskey-auth-ONETIME")]
+
+
+def test_the_owner_gets_real_commands_never_a_placeholder_user(ui, tmp_path):
+    wiz = wizard(ui, tmp_path)
+    wiz.progress = SetupProgress(mode="another_server", domain=DOMAIN, address_kind="domain")
+    wiz._push(wiz._this_computer_page())
+    assert "sudo headscale apikeys create --expiration 90d" in texts(visible(ui))
+    wiz._show_approval(f"https://{DOMAIN}/register/hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX")
+    content = texts(visible(ui))
+    assert "sudo headscale users create player" in content
+    assert "sudo headscale auth register --auth-id hskey-authreq-ABCDEFGHIJKLMNOPQRSTUVWX --user player" in content
+    assert "USER" not in content.replace("users", "").replace("--user player", "")
+
+
+def test_a_phone_is_told_to_use_this_computers_private_address_not_the_server(ui, tmp_path):
+    """Reported 2026-11-17: Moonlight on a phone was given the server's internet
+    name (the Headscale server) and could not connect."""
+    service = WizardService([ProviderStatus(P.HEADSCALE, S.CONNECTED, self_device=PeerDevice("game-pc", ("100.64.0.1",), is_self=True))])
+    wiz = wizard(ui, tmp_path, service=service)
+    wiz.progress = SetupProgress(mode="this_computer", domain=DOMAIN, address_kind="domain", user="player")
+    wiz._push(wiz._another_device_page())
+    content = texts(visible(ui))
+    assert "On a phone or tablet" in content and "Use an alternate server" in content
+    assert wait(lambda: "Type 100.64.0.1, not the server's address" in texts(visible(ui)))
+    found, stack = [], [visible(ui)]
+    while stack:
+        widget = stack.pop()
+        if getattr(widget, "_brp_qr_text", None):
+            found.append(widget._brp_qr_text)
+        child = widget.get_first_child()
+        while child is not None:
+            stack.append(child)
+            child = child.get_next_sibling()
+    assert found == [f"https://{DOMAIN}"]

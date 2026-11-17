@@ -93,7 +93,7 @@ if pkgbuild.is_file():
         if re.fullmatch(r"[\d.]+", declared):
             # A hand-pinned literal must still agree with the checkout.
             version_sources["pkgbuild/PKGBUILD"] = declared
-        elif "+%y.%m.%d" not in declared:
+        elif "+%y.%m.%d" not in declared and "%(%y.%m.%d)T" not in declared:  # date(1) or bash's printf
             error(f"pkgbuild/PKGBUILD: pkgver is neither a literal nor the build date: {declared}")
         else:
             # Same inputs as tools/release/build_version.py, so the wheel and the

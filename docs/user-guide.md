@@ -15,7 +15,7 @@ The game runs on the **sharing computer**. The person playing remotely uses the 
 
 ## Choose the appearance
 
-Open the application menu and use **Appearance**. **Gamer** is the dark
+Open the application menu (the ☰ button at the top of the sidebar, next to the app's name; in a narrow window, press **Back** to reach the sidebar first) and use **Appearance**. **Gamer** is the dark
 violet/cyan preset; **Automatic** follows the desktop; **Light** and **Dark**
 force the corresponding system appearance. The choice takes effect immediately
 and is restored the next time Big Remote Play opens. High contrast temporarily
@@ -81,6 +81,8 @@ Pairing requests that a device abandoned (cancelled, cut by the network or a fir
 
 **Game Library** lists the games Moonlight offers and the games installed on this computer (Steam on every disk and as a Flatpak, Lutris and Heroic). Check the ones to offer and choose **Add Selected**; it works with sharing off too. Details: [game library](game-library-detection.md).
 
+**Moonlight Entries**, at the top of **Game Library**, chooses what the other device sees besides your games: **Desktop Low** (the same screen at a bitrate ceiling, for slow or mobile connections), **Steam Big Picture** (opens Steam's TV interface for the stream and closes it after) and **One entry per screen** (*01 - Monitor*, *02 - Monitor*… numbered as **Identify screens** shows them). Desktop Low and the screen entries need a Sunshine that reads per-entry settings; the page says when yours does not. Details: [Moonlight entries](moonlight-entries.md).
+
 ### Mouse and keyboard: this computer first
 
 When someone else plays on this computer, they control its mouse and keyboard too. If you also want to use them, turn on **Preferences → Mouse, keyboard and controllers → Host has priority**:
@@ -123,6 +125,8 @@ While a stream runs, **Playing now** at the top of Connect shows the computer's 
 **Image → Playback on this computer → Open on** chooses the screen of this computer where the game appears (X11; on Wayland the desktop chooses). The game PC's screen is chosen on that computer under **Share**. Both are explained in [several screens](moonlight-multi-monitor.md).
 
 **Shortcuts & Instructions** has a tab for Moonlight on a computer, on Android, on iPhone/iPad and for controllers, and a QR code that opens the same guide on the phone: [controlling the game PC from a phone](mobile-controls.md).
+
+To play with fingers on a controller drawn on this computer, open **Preferences → Mouse, keyboard and controllers → Touch controls** and choose **On-screen controller**. When a phone starts playing, the controller opens on the shared screen; when the last one leaves, every button is released and it closes. **Compatibility** checks Sunshine, the Big WM Virtual Keyboard, the virtual controller and the phone's touch, in words. The phone needs Big Remote Play Controller ([guide](mobile-controls.md#a-controller-drawn-by-the-game-pc-touch-controls)). **Mouse** makes Sunshine stop offering touch, so every finger works as a mouse.
 
 ### Playing with friends
 
@@ -188,7 +192,7 @@ Select the rest of a card to open that method's page in the same window; **Back*
 - **Connection**: one sentence and one button — **Start**, **Stop** (asks first), **Set up** (ZeroTier: **Join a network**), **Sign in**, **Allow** or **Try again**. When the program is missing, **Install and continue** installs it (your password may be requested) and goes on to the sign-in or the network code by itself; nothing opens a terminal.
 - **Ready** (once connected): *Your devices can now find each other in Big Remote Play.* with **Back to Share** or **Back to Connect** when you came from there, or **Go to Share** and **Go to Connect**.
 - **Devices**: the computers of this method only — never mixed with another method's. Each shows its name (*This device* for this computer), **Online**, **Offline** or **Waiting for approval**, its private address with **Copy IP**, and, for an offline device, when it was last seen. **⋮** offers **Play on this computer** (opens Connect and connects), **Check connection**, **Rename** (a name only this computer uses) and **Remove device**, which asks *Remove notebook?* first. **Remove device** appears only when the method's API is set up under **Advanced → API access**; without it, **Manage devices** opens the official website instead (Tailscale, ZeroTier). ZeroTier with several networks shows a **Network** choice; without a ZeroTier API token it lists only this computer and says that the others are on the ZeroTier website.
-- **Add device**: how to bring another computer in, step by step. For Tailscale it separates **Share this computer** (a friend gets access to this one computer only — recommended for playing together), **Add a person to my network** and **Add another computer of mine**. For ZeroTier it shows the **Network code** in groups of four (copied without spaces) with a **QR code** and — with an API token — lists new devices with **Approve** while the page is open. For Headscale it shows the server address with a QR code and, with an API key, approves a waiting computer from the sign-in link it shows. Keys never get a QR code.
+- **Add device**: how to bring another computer in, step by step. For Tailscale it separates **Share this computer** (a friend gets access to this one computer only — recommended for playing together), **Add a person to my network** and **Add another computer of mine**. For ZeroTier it shows the **Network code** in groups of four (copied without spaces) with a **QR code** and — with an API token — lists new devices with **Approve** while the page is open. For Headscale it shows the server address with a QR code and **Approve a device**: paste the code the waiting phone or computer shows (`hskey-authreq-…`, the whole line or the link). With an API key it is approved at once; when the server runs on this computer, the system asks for the administrator password; otherwise it shows the exact command for the server owner, with your real user name. Keys never get a QR code.
 
 **Stop** for Tailscale and Headscale disconnects this computer and keeps you signed in, without a password; for ZeroTier it stops ZeroTier's service, which disconnects all its networks (your password may be requested). Headscale is not a separate program: it is the Tailscale app signed in to your server, and its page says when the app is in use by Tailscale.
 
@@ -272,7 +276,7 @@ Changes to the output and to **Also play sound on this computer** apply the next
 - A domain is optional; a reachable public IP can be used directly.
 - Cloudflare must be **DNS only**. Its HTTP proxy does not carry the game stream.
 - DNS does not solve CGNAT, double NAT, blocked ports or firewall rules.
-- UPnP is only an attempt to create router mappings and is not proof that remote access works.
+- **Open the game ports on the router (without a VPN)**, in Share → Advanced, asks the router (UPnP) for the six game ports while sharing, checks them, shows the **Address for Moonlight** in Overview and removes them when sharing stops. It says when the router does not answer (turn on UPnP there) or when CGNAT makes it impossible. Details: [router](router.md#upnp-big-remote-play-opens-the-ports-and-checks-them).
 - Do not expose the Sunshine administration panel publicly.
 - A Headscale control server is still part of a VPN workflow; it is not the direct-domain alternative.
 

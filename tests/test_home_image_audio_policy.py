@@ -444,13 +444,15 @@ def test_new_client_keeps_host_playback_but_preserves_existing_user_choice(ui):
     assert g.moonlight_config.get("hostaudio") == "false"
 
 
-def test_upnp_is_an_explicit_attempt_not_a_connectivity_claim(ui):
+def test_router_ports_are_opt_in_and_checked_by_the_app_not_sunshine(ui):
+    """Big Remote Play opens and reads back the router's ports (router_ports);
+    Sunshine's own unchecked UPnP stays off so nothing is requested twice."""
     h = ui.host_view
     assert not h.upnp_row.get_active()
     assert h._build_sunshine_config()["upnp"] == "disabled"
-    assert "does not confirm" in h.upnp_row.get_subtitle()
+    assert "checks them" in h.upnp_row.get_subtitle()
     h.upnp_row.set_active(True)
-    assert h._build_sunshine_config()["upnp"] == "enabled"
+    assert h._build_sunshine_config()["upnp"] == "disabled"
     assert not h.webui_anyone_row.get_active()
     assert "administration port" in h.webui_anyone_row.get_subtitle()
     assert h._build_sunshine_config()["origin_web_ui_allowed"] == "lan"

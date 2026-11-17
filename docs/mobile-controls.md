@@ -49,7 +49,43 @@ A controller connected to the phone works as a controller on the game PC. Moonli
 | L1 + Start | Select, on controllers without that button |
 | Hold Start | Use the controller as a mouse: a stick moves the pointer, A clicks, B right-clicks |
 
-Moonlight for Android can also draw a controller on the screen: setting **Show on-screen controls**.
+Moonlight for Android can also draw a controller on the screen: setting **Show on-screen controls**. Several of its buttons work at once, and it needs nothing on the game PC.
+
+## A controller drawn by the game PC (Touch controls)
+
+**Share → Preferences → Mouse, keyboard and controllers → Touch controls** puts
+the Big WM Virtual Keyboard's on-screen controller on the shared screen. The
+phone sees it in the picture, and each finger presses its own button: a
+direction and A together, two sticks, triggers, up to five fingers. The game
+sees an ordinary controller. It needs:
+
+- **Big Remote Play Controller** on the phone (a Moonlight build that sends every finger
+  as a touch, with its setting **Send touch to the computer** on). The
+  official Moonlight for Android does not send touches yet. Download,
+  checksum and installation steps are in the
+  [README](../README.md#your-phone-as-a-controller-multi-touch).
+- Sunshine 2026.1113 or newer on the game PC. With 2026.914 the touch lands
+  above the finger when the picture has black bars.
+- The package `big-keyboard` on the game PC and **What touch does** set to
+  **On-screen controller** (or **Controller and touch**).
+
+The two controllers are different things: Moonlight's is drawn on the phone,
+this one on the game PC. Use one at a time, or the game sees two
+controllers. In **Game Window** the phone sees only the game, so use
+Moonlight's own controls there. Technical details: [touch controls](touch/03-arquitetura.md).
+
+### Desktops that do not accept touch (wlmaker)
+
+wlmaker drops touch devices (`WLR_INPUT_DEVICE_TOUCH` is ignored in its input manager), while it takes Sunshine's relative and absolute mice. Reported on 2026-11-17: on Big WindowMaker (Wayland) a phone sending native touch moved nothing, and the controller did not open in **Automatic**. There, **Automatic** now means:
+
+- with the Big WM Virtual Keyboard installed: **Controller and touch**, with the keyboard opened beside the controller and every finger taken by it (`remote-touch = mouse`); fingers on the controller press its buttons, fingers anywhere else move the pointer (big-keyboard's direct-touch mouse). With **both hidden**, the whole screen is a touchpad: dragging a finger moves the pointer from where it is, a quick tap clicks, holding half a second then dragging drags, a tap with a second finger right-clicks and two fingers scroll (big-keyboard 0.2.4; 0.2.3 moved the pointer to the finger instead, which big-keyboard keeps as *Always direct touch*). Reported on 2026-11-17: hiding the keyboard and the controller stopped the phone's mouse, because big-keyboard read the phone only while one of them was open. The `mouse` mode (big-keyboard 0.2.3) keeps reading it; an older big-keyboard refuses the value and gets `exclusive` (the previous behaviour). It is also set when the controller is not opened by itself. **Close** in Touch controls only hides the windows: while a device plays, its mouse keeps working. When the last device leaves, the mode big-keyboard last received goes back from `mouse` to `exclusive` (also after the touch mode was changed during the session), so nothing reads Sunshine's touchscreen with nobody playing;
+- without it: **Mouse** — Sunshine stops offering touch, and Moonlight sends a mouse, which wlmaker accepts.
+
+A mode the person chose is never replaced. The mode row says what Automatic means on this desktop. Tests: `tests/test_touch_controls_ui.py`.
+
+### The screen the session streams
+
+The on-screen keyboard, the controller and the phone's pointer go to the screen the current session captures, not always the one chosen in Share. Reported on 2026-11-17: with a *02 - Monitor* entry (DP-2) they stayed on the main screen and the finger moved the pointer there. Sunshine runs the screen helper before every session; it now records the captured screen even where kscreen-doctor is not used (wlmaker), and Touch controls read it (only a report written during the current sharing session counts), translating the kernel's name (`DP-2`) to the session's (`DisplayPort-1` on X11). Tests: `tests/test_touch_controls_ui.py`, `tests/test_stream_display.py`.
 
 ## Moonlight on a computer
 
@@ -73,4 +109,5 @@ Moonlight on a computer handles these keys itself; they are not sent to the game
 - Moonlight setup guide (keyboard shortcuts and touch gestures): <https://github.com/moonlight-stream/moonlight-docs/wiki/Setup-Guide>.
 - Moonlight for Android: three-finger tap and Back handling in `Game.java`; the gamepad combinations and settings in its strings.
 - Moonlight for iPhone/iPad: the keyboard's extra-keys bar in `StreamView.m`.
+- Native touch: Moonlight for Android 12.2 keeps sending touches to the computer disabled in `Game.java`; Big Remote Play Controller is that app with it fixed ([test plan](touch/08-validacao-android.md)).
 - A virtual panel of keys on the phone would have to be part of the Moonlight app there. A separate service on the game PC that types keys sent from a phone would need its own authentication and pairing, and it is not provided.

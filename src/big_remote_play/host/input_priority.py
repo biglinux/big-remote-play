@@ -121,9 +121,16 @@ def _any_in(bitmap: int, first: int, last: int) -> bool:
     return any(bitmap >> code & 1 for code in range(first, last + 1))
 
 
-def classify(device: DeviceInfo) -> str:
+# Sunshine's touch devices: paused like the mouse, except when the phone's
+# fingers drive an on-screen controller (then they are a controller).
+TOUCH_NAMES = frozenset({"libvirtualhid Touchscreen", "libvirtualhid Pen Tablet", "Touch passthrough", "Pen passthrough"})
+
+
+def classify(device: DeviceInfo, *, pause_touch: bool = True) -> str:
     """``remote`` (the other device's), ``local`` (a person here) or ``ignored``."""
     if device.virtual and device.name in REMOTE_NAMES:
+        if not pause_touch and device.name in TOUCH_NAMES:
+            return "ignored"
         return "remote"
     if device.virtual and any(marker in device.name for marker in _SUNSHINE_MARKERS):
         return "ignored"
@@ -276,8 +283,11 @@ class PrioritySession:
 
     RETRIES = 3
 
-    def __init__(self, delay: int, *, evdev: Evdev | None = None, emit: Callable[[dict], None] = lambda _message: None, scan: Callable[[], list[DeviceInfo]] | None = None) -> None:
+    def __init__(
+        self, delay: int, *, evdev: Evdev | None = None, emit: Callable[[dict], None] = lambda _message: None, scan: Callable[[], list[DeviceInfo]] | None = None, pause_touch: bool = True
+    ) -> None:
         self.arbiter = Arbiter(delay)
+        self.pause_touch = pause_touch
         self.evdev = evdev or Evdev()
         self.emit = emit
         self.scan = scan or (lambda: list_devices())
@@ -290,7 +300,7 @@ class PrioritySession:
 
     def refresh_devices(self) -> None:
         """Open new devices, forget removed ones; a new Sunshine device joins a pause in progress."""
-        seen = {device.node: classify(device) for device in self.scan()}
+        seen = {device.node: classify(device, pause_touch=self.pause_touch) for device in self.scan()}
         for table in (self.remote, self.local):
             for node in [node for node in table if seen.get(node) is None]:
                 self.evdev.close(table.pop(node))
@@ -506,7 +516,9 @@ def run(stdin=sys.stdin, stdout=sys.stdout) -> int:
     if not isinstance(spec, dict) or spec.get("version") != SPEC_VERSION:
         emit({"event": "unavailable", "reason": "invalid-spec"})
         return 1
-    session = PrioritySession(clamp_delay(spec.get("delay")), emit=emit)
+    # "touch": false — the phone's fingers drive an on-screen controller and
+    # must never be paused (absent in older specs: paused like the mouse).
+    session = PrioritySession(clamp_delay(spec.get("delay")), emit=emit, pause_touch=spec.get("touch") is not False)
     session.refresh_devices()
     if session.denied and (not session.remote or not session.local):
         emit({"event": "unavailable", "reason": "permission"})
@@ -594,8 +606,11 @@ class PriorityProcess:
     ``{"event": "stopped"}`` when the helper ends; the UI marshals it.
     """
 
-    def __init__(self, delay: int, on_event: Callable[[Mapping[str, object]], None], *, argv: list[str] | None = None, popen: Callable[..., subprocess.Popen] = subprocess.Popen) -> None:
+    def __init__(
+        self, delay: int, on_event: Callable[[Mapping[str, object]], None], *, argv: list[str] | None = None, popen: Callable[..., subprocess.Popen] = subprocess.Popen, pause_touch: bool = True
+    ) -> None:
         self.delay = clamp_delay(delay)
+        self.pause_touch = pause_touch
         self.on_event = on_event
         self.argv = argv
         self.popen = popen
@@ -615,7 +630,7 @@ class PriorityProcess:
             return False
         with self._lock:
             self.process = process
-        self._send({"version": SPEC_VERSION, "delay": self.delay})
+        self._send({"version": SPEC_VERSION, "delay": self.delay, "touch": self.pause_touch})
         threading.Thread(target=self._read, args=(process,), daemon=True).start()
         return True
 

@@ -52,6 +52,10 @@ After the transaction the components are looked up again, and that decides the r
 
 The flow continues by itself only after an installation started from that checklist. A checklist that finds everything already installed shows the page as it is (for example **Sign in** on Tailscale) instead of starting a sign-in nobody asked for.
 
+## One installation, seen from every page
+
+One package transaction runs at a time in the whole application. Its packages, method and output belong to one shared session, not to the page that started it. Reported on 2026-11-17: on **Headscale → Install Headscale → Install and continue**, Pamac's PolicyKit authentication failed; the page was rebuilt meanwhile and only said *Another installation is running*, without technical details, and its button never came back. Now every page that needs components shows the running installation's **Technical details** (packages, Pamac or pacman, its output), says it continues by itself, and when the installation ends looks at the computer again: what the other page installed counts here, and after a failure the button is offered again with *The other installation did not finish*. Tests: `tests/test_install_session.py`.
+
 ## When the state is read again
 
 A "not installed" seen earlier is never trusted on its own: the program may
