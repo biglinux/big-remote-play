@@ -23,7 +23,7 @@ The chosen screen is Sunshine's `output_name`. Sunshine's KMS capture, which it 
 
 ## One entry per screen in Moonlight
 
-Moonlight can show *01 - Monitor*, *02 - Monitor*, … next to *Desktop*, numbered as **Identify screens** numbers them. Stock Sunshine (checked on 2026.914) cannot do it: `output_name` is one setting for the whole server, read when Sunshine starts, and an app's `output` field is a log file, not a screen. Big Remote Play therefore offers these entries only with a Sunshine that reads a screen per entry (`output-name`), such as the build in `pkgbuild/sunshine/`. Verified on a three-monitor PC: the *02 - Monitor* entry streamed DP-2 while the shared screen was DP-1. Details, the patch and its checks: [Moonlight entries](moonlight-entries.md).
+Moonlight can show *01 - Monitor*, *02 - Monitor*, … next to *Desktop*, numbered as **Identify screens** numbers them. Stock Sunshine (checked on 2026.914) cannot do it: `output_name` is one setting for the whole server, read when Sunshine starts, and an app's `output` field is a log file, not a screen. Big Remote Play therefore offers these entries only with a Sunshine that reads a screen per entry (`output-name`), such as the build in `build-aux/sunshine/`. Verified on a three-monitor PC: the *02 - Monitor* entry streamed DP-2 while the shared screen was DP-1. Details, the patch and its checks: [Moonlight entries](moonlight-entries.md).
 
 With a stock Sunshine, choose the screen in Share; if sharing is on, stop and start sharing to apply it.
 

@@ -1,3 +1,5 @@
+# Maintainer: Rafael Ruscher <rruscher@gmail.com> (Big Remote Play build: per-entry screen and bitrate)
+# Contributor: LizardByte <https://github.com/LizardByte/Sunshine>
 # Edit on github: https://github.com/LizardByte/Sunshine/blob/master/packaging/linux/Arch/PKGBUILD
 # Reference: https://wiki.archlinux.org/title/PKGBUILD
 

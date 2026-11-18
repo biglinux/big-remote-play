@@ -6,6 +6,7 @@ from __future__ import annotations
 import configparser
 import re
 import stat
+import subprocess
 import tomllib
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -81,6 +82,30 @@ if nix.is_file():
     m = re.search(r'^\s*version\s*=\s*"([^"]+)";', text(nix), re.MULTILINE)
     if m:
         version_sources["default.nix"] = m.group(1)
+
+
+# Package builders (BigLinux's included) find the recipe by its file name and
+# enter its folder: a second PKGBUILD made that "cd: too many arguments".
+def _recipe_files() -> list[str]:
+    """Files named PKGBUILD that the source tree ships: tracked by git, or on
+    disk when this is not a git checkout (an extracted source archive); never
+    silently unchecked. makepkg's own work folders (pkgbuild/src, pkgbuild/pkg)
+    hold copies and are reported as generated paths elsewhere."""
+    try:
+        tracked = subprocess.run(["git", "ls-files", "-z"], cwd=ROOT, capture_output=True, text=True, check=False)
+    except OSError:
+        tracked = None
+    if tracked is not None and tracked.returncode == 0:
+        paths = [p for p in tracked.stdout.split("\0") if p]
+    else:
+        skip = {ROOT / ".git", ROOT / "pkgbuild" / "src", ROOT / "pkgbuild" / "pkg"}
+        paths = [str(p.relative_to(ROOT)) for p in ROOT.rglob("*") if p.is_file() and not any(parent in skip for parent in p.parents)]
+    return sorted(p for p in paths if p.rsplit("/", 1)[-1].lower() == "pkgbuild")
+
+
+_recipes = _recipe_files()
+if _recipes != ["pkgbuild/PKGBUILD"]:
+    error(f"exactly one file named PKGBUILD is allowed (pkgbuild/PKGBUILD); found: {', '.join(_recipes) or 'none'}")
 
 pkgbuild = ROOT / "pkgbuild" / "PKGBUILD"
 if pkgbuild.is_file():
